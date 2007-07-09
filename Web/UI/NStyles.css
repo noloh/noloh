@@ -1,0 +1,63 @@
+.NCalCell
+{
+	cursor:pointer;
+	text-align:center;
+	font-family:sans-serif;
+}
+.NCalColHead
+{
+	cursor:default;
+	font-family:sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+}
+.NCalHead
+{
+	cursor:default;
+	font-family:sans-serif;
+	font-weight:bold;
+	text-align:center;
+	color:#FFFFFF;
+	background-color:#0000FF;
+	padding-top:1%;
+}
+.NLabel
+{
+	word-wrap:break-word;
+	overflow:hidden;
+}
+.NLoadLbl
+{
+	background:#ea9c38;
+	color:#011f43;
+	font-family:Arial;
+	font-weight:bold;
+}
+.NLoad
+{
+	cursor:wait;
+	visibility:hidden;
+	z-index:999999;
+}
+.NLVItem
+{
+	padding-left:.3em;
+}
+.NPanel
+{
+	padding:0px;
+}
+.NRollTab
+{
+	text-align:center;
+	padding-top:.2em;
+}
+.NWinPanelTitle
+{
+	color:white;
+	padding-left:5px;
+	background-color:/*#0055ea;*/#ea9c38;
+	font-weight:bold;
+	font-family:Arial, sans-serif;
+}

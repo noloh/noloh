@@ -1,0 +1,86 @@
+<?php
+
+class ImplicitArrayList extends ArrayList 
+{
+	private $Source;
+	public $AddFunctionName;
+	public $InsertFunctionName;
+	public $RemoveAtFunctionName;
+	public $RemoveItemFunctionName;
+	public $ClearFunctionName;
+	
+	function ImplicitArrayList($obj=null, $addFunctionName="", $removeAtFunctionName="", $clearFunctionName="")
+	{
+		parent::ArrayList();
+		$this->Source = $obj instanceof Component ? $obj->DistinctId : $obj;
+		$this->AddFunctionName = $addFunctionName;
+		$this->RemoveAtFunctionName = $removeAtFunctionName;
+		$this->ClearFunctionName = $clearFunctionName;
+	}
+	
+	function Add($object, $passByReference = true, $onlyAdd = false)
+	{
+		if($this->AddFunctionName=="" || $onlyAdd)
+			return parent::Add($object, $passByReference);
+		elseif(is_object($this->Source))
+			return $this->Source->{$this->AddFunctionName}($object);
+		else
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->AddFunctionName}($object);
+	}
+	
+	function Insert($object, $whatIndex, $onlyInsert = false)
+	{
+		if($this->InsertFunctionName=="" || $onlyInsert)
+			return parent::Insert($object, $whatIndex);
+		elseif(is_object($this->Source))
+			return $this->Source->{$this->InsertFunctionName}($whatObject, $whatIndex);
+		else
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $whatIndex);
+	}
+	
+	function RemoveItem($object, $onlyRemove = false)
+	{
+		if($this->RemoveItemFunctionName=="" || $onlyRemove)
+			return parent::RemoveItem($object);
+		elseif(is_object($this->Source))
+			return $this->Source->{$this->RemoveFunctionName}($object);
+		else
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveItemFunctionName}($object);
+	}
+	
+	function RemoveAt($index, $onlyRemove = false)
+	{
+		if($this->RemoveAtFunctionName=="" || $onlyRemove)
+			return parent::RemoveAt($index);
+		elseif(is_object($this->Source))
+			return $this->Source->{$this->RemoveAtFunctionName}($index);
+		else
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveAtFunctionName}($index);		
+	}
+	
+	function Clear($doesPermanentRemove = false, $onlyClear = false)
+	{
+		if($this->ClearFunctionName=="" | $onlyClear)
+			return parent::Clear($doesPermanentRemove);
+		elseif(is_object($this->Source))
+			return $this->Source->{$this->ClearFunctionName}($doesPermanentRemove);
+		else
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->ClearFunctionName}($doesPermanentRemove);
+	}
+	
+	function offsetSet($index, $val)
+	{
+		if($index === null)
+			$this->Add($val);
+		else 
+			parent::offsetSet($index, $val);
+		// Needs an else to replace an index!
+	}
+	
+	function offsetUnset($index)
+	{
+		$this->RemoveItem($this->Item[$index]);
+	}
+}
+
+?>
