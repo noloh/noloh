@@ -233,7 +233,7 @@ class Control extends Component
 	*/
 	function Show()
 	{
-		$parentShow = parent::Show();
+		parent::Show();
 		return "'id','$this->DistinctId'";
 	}
 	
@@ -407,7 +407,7 @@ class Control extends Component
 	
 	function GetEnabled()
 	{
-		return $this->Enabled === null ? true : false;
+		return $this->Enabled === null;
 	}
 	
 	function SetEnabled($whatBool)
@@ -418,7 +418,7 @@ class Control extends Component
 	
 	function GetClientVisible()
 	{
-		return ($this->ClientVisible === null ? true : $this->ClientVisible);
+		return $this->ClientVisible === null ? true : $this->ClientVisible;
 	}
 	
 	function SetClientVisible($newVisibility)

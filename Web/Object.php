@@ -7,19 +7,17 @@ class Object
 	*/
 	function &__get($nm)
 	{
-		$ret = null;
 		$func = 'Get' . $nm;
 		if(method_exists($this, $func))
-			$ret = $this->$func();
+			return $this->$func();
 		else
 		{
 			$func = 'get' . $nm;
 			if(method_exists($this, $func))
-				$ret = $this->$func();
+				return $this->$func();
 			/*elseif(strpos($nm, "CSS") == 0 && $nm != "CSSFile")
 				$ret = $this->CSSPropertyArray[str_replace("_", "-", str_replace("CSS", "", $nm))];*/
 		}
-		return $ret;
 		//else 
 			//if(array_key_exists($nm, $this->PublicProperties))
 				//return $this->PublicProperties[$nm];

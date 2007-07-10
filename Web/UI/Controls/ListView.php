@@ -37,7 +37,7 @@ class ListView extends Panel
 		{
 			$this->Columns->Add($tmpColumn =& $text);
 			if($text->Left = System::Auto)
-				$text->Left = ($tmpCount > 0)?$this->Columns[$tmpCount-1]->Right:0;
+				$text->Left = $tmpCount > 0?$this->Columns[$tmpCount-1]->Right:0;
 		}
 //		if($tmpColumn->Right < $this->Width)
 //		{

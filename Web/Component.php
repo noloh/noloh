@@ -106,35 +106,28 @@ class Component extends Object
 	 */
 	function GetParent($GenerationsAbove = 1)
 	{
+		if($this->ParentId == "")
+			return null;
 		if(is_int($GenerationsAbove))
 		{
-			if($GenerationsAbove == 0)
-				return $this;
-			elseif($this->ParentId != "")
+			if($GenerationsAbove == 1)
+				return GetComponentById($this->ParentId);
+			elseif($GenerationsAbove > 1)
 				return GetComponentById($this->ParentId)->GetParent($GenerationsAbove-1);
-			else
-				return null;
+			else 
+				return $this;
 		}
 		elseif(is_string($GenerationsAbove))
-		{
-			if($this instanceof $GenerationsAbove)
-				return $this;
-			elseif($this->ParentId != "")
-				return GetComponentById($this->ParentId)->GetParent($GenerationsAbove);
-			else 
-				return null;
-		}
+			return $this instanceof $GenerationsAbove ? $this : GetComponentById($this->ParentId)->GetParent($GenerationsAbove);
 		elseif(is_array($GenerationsAbove))
 		{
 			$count = count($GenerationsAbove);
 			for($i=0; $i<$count; $i++)
 				if($this instanceof $GenerationsAbove[$i])
 					return $this;
-			if($this->ParentId != "")
-				return GetComponentById($this->ParentId)->GetParent($GenerationsAbove);
-			else 
-				return null;
+			return GetComponentById($this->ParentId)->GetParent($GenerationsAbove);
 		}
+		return null;
 	}
 	function GetAddId()
 	{
@@ -175,16 +168,16 @@ class Component extends Object
 		//$vars = get_object_vars($this);
 		$vars = (array)$this;
 		foreach ($vars as $key => &$val)
-		{
 			if(is_object($val))
+			{
 				if($val instanceof Pointer)
 					//eval('$this->'.$key.' = &$val->Dereference();');
 					$val = $val->Dereference();
 				elseif($val instanceof ArrayList)
 					$val->RestoreValues();
+			}
 			elseif(is_array($val))
 				ArrayRestoreValues($val);
-		}
 	}
 	
 	function Equals(Component &$obj)

@@ -6,23 +6,19 @@ final class NolohInternal
 	public static function ShowQueue()
 	{
 		foreach($_SESSION['NOLOHControlQueue'] as $objId => $whatBool)
-			NolohInternal::ShowControl(GetComponentById($objId), $whatBool);
-		//{
-			//$control = &GetComponentById($objId);
-			//NolohInternal::ShowControl($control, $whatBool);
-		//}
+			self::ShowControl(GetComponentById($objId), $whatBool);
 	}
 	
 	public static function ShowControl($control, $whatBool)
 	{
-		if(isset($control))
-		{
+		//if(isset($control))
+		//{
 			$parent = $control->Parent;
-			//$tmpParent = &$tmpControl->GetParent(array("Control", "WebPage"));
-						//if(!($tmpParent instanceof Guardian || $tmpParent instanceof Table || $tmpParent instanceof TableRow || $tmpParent instanceof TableColumn) || $tmpParent->HasShown())
-			//if($tmpParent == null)
-				//Alert(get_class($tmpControl));
-		//else 
+			if(!$parent)
+			{
+				$splitStr = explode("i", $control->ParentId, 2);
+				$parent = GetComponentById($splitStr[0]);
+			}
 			if($parent->GetShowStatus()!==0)
 			{
 				if($whatBool)
@@ -37,84 +33,35 @@ final class NolohInternal
 			}
 			elseif(isset($_SESSION['NOLOHControlQueue'][$parent->DistinctId]) && $_SESSION['NOLOHControlQueue'][$parent->DistinctId] && func_num_args()==2)
 			{
-				NolohInternal::ShowControl($parent, true);
-				NolohInternal::ShowControl($control, $whatBool, false);
+				self::ShowControl($parent, true);
+				self::ShowControl($control, $whatBool, false);
 			}
-		}
+		//}
 		//else
 		//	Alert("whatBool=" . ($whatBool?"TRUE":"FALSE"));
 	}
-	/*
-	public static function GetImmediateParentId($whatObj)
-	{
-		$parent = $whatObj->Parent;
-		if(!($parent instanceof Control))
-			return $parent instanceof WebPage ? $parent->DistinctId : NolohInternal::GetImmediateParentId($parent);
-		elseif($parent instanceof TableColumn)
-			return $parent->DistinctId . "InnerCol";
-		elseif($parent instanceof WindowPanel && !in_array($whatObj, $parent->WindowPanelComponents->Item))
-			return $parent->BodyPanel->DistinctId;
-		else
-			return $parent->DistinctId;
-	}
-	*/
+	
 	public static function Show($whatTag, $initialProperties, $whatObj, $addTo = null)
 	{
-		$objId = $whatObj->DistinctId;
 		$parent = $whatObj->GetParent();
-		
-		if($addTo == null)
-			$addTo = $parent ? $parent->GetAddId($whatObj) : $whatObj->ParentId;
-		//	$addTo = NolohInternal::GetImmediateParentId($whatObj);
 
-				
-		/*
-		elseif($parent instanceof Table)
-		{
-			if(GetBrowser() == "ie")
-			{
-				AddScript("document.getElementById('INNERTABLE{$whatObj->ParentId}').appendChild(document.createElement(\"$whatTag\"));SaveControl(\"$objId\")", Priority::High);
-				return;
-			}
-			$addTo = "INNERTABLE" . $whatObj->ParentId;
-		}
-		elseif($parent instanceof TableRow)
-		{
-			if(GetBrowser() == "ie")
-				AddScript("document.getElementById('{$whatObj->ParentId}').appendChild(document.createElement(\"{$whatTag[0]}\"));" . 
-					"document.getElementById('{$whatObj->DistinctId}').appendChild(document.createElement(\"{$whatTag[1]}\"));SaveControl(\"$objId\")", Priority::High);
-			else 
-				AddScript("document.getElementById('{$whatObj->ParentId}').innerHTML += \"{$whatTag[0]}\";" . 
-					"document.getElementById('{$whatObj->DistinctId}').innerHTML += \"{$whatTag[1]}\";SaveControl(\"$objId\")", Priority::High);
-			return;
-		}
-		elseif($parent instanceof TableColumn)
-			$addTo = "INNERCOLUMN" . $whatObj->ParentId;
-		elseif(!($parent instanceof Control))
-			$addTo = $parent->GetParent(array("Control", "WebPage"))->DistinctId;
-		else//if($addTo == NolohInternal::TheParent)
-			$addTo = $whatObj->ParentId;*/
-			
-		// Special fixes involving the object
-		if($whatObj instanceof RadioButton && GetBrowser()=="ie")
-			$whatTag = "<$whatTag name=\"$whatObj->GroupName\">";
-
-		$propertiesString = NolohInternal::GetPropertiesString($objId);
+		$propertiesString = self::GetPropertiesString($whatObj->DistinctId);
 		if($propertiesString != "")
 			$initialProperties .= "," . $propertiesString;
+			
+		if($addTo == null)
+			$addTo = $parent ? $parent->GetAddId($whatObj) : $whatObj->ParentId;
 		AddScript("_NAdd('$addTo','$whatTag',Array($initialProperties))", Priority::High);
 	}
 	
 	public static function Hide($whatObj)
 	{
-		//AddScript("document.getElementById('".NolohInternal::GetImmediateParentId($whatObj)."').removeChild(document.getElementById('$whatObj->DistinctId'));", Priority::High);
-		//AddScript("_NRem('$whatObj->DistinctId','".NolohInternal::GetImmediateParentId($whatObj)."');", Priority::High);
 		AddScript("_NRem('$whatObj->DistinctId');", Priority::High);
 	}
 	
 	public static function Resurrect($whatObj)
 	{
-		AddScript("_NRes('$whatObj->DistinctId','".NolohInternal::GetImmediateParentId($whatObj)."');", Priority::High);
+		AddScript("_NRes('$whatObj->DistinctId','".self::GetImmediateParentId($whatObj)."');", Priority::High);
 	}
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
@@ -139,15 +86,7 @@ final class NolohInternal
 				$nameValPairsString .= "'{$splitStr[0]}','',";
 			}
 			elseif(is_object($val))									// EMBEDS!
-			/*
-				if($val instanceof Event)
-				{
-					$splitStr = explode(" ", $name, 2);
-					//$nameValPairsString .= "'{$splitStr[0]}','".$val->GetEventString($splitStr[1], $objId) ."',";
-					$nameValPairsString .= "'{$splitStr[0]}','".GetComponentById($objId)->GetEventString($splitStr[1]) ."',";
-				}
-				elseif($val instanceof EmbedObject)*/
-					$nameValPairsString .= "'$name','".$val->GetInnerString()."',";
+				$nameValPairsString .= "'$name','".$val->GetInnerString()."',";
 		}
 		unset($_SESSION['NOLOHPropertyQueue'][$objId]);
 		return rtrim($nameValPairsString, ",");
@@ -160,10 +99,10 @@ final class NolohInternal
 		{
 			$obj = &GetComponentById($objId);
 			if($obj!=null && $obj->GetShowStatus())
-				AddScript("_NSetP('$objId', new Array(".NolohInternal::GetPropertiesString($objId, $nameValPairs)."))");
+				AddScript("_NSetP('$objId', new Array(".self::GetPropertiesString($objId, $nameValPairs)."))");
 			else 
 			{
-				$splitStr = explode("e", $objId, 2);
+				$splitStr = explode("i", $objId, 2);
 				$markupPanel = &GetComponentById($splitStr[0]);
 				if($markupPanel!=null && $markupPanel->GetShowStatus())
 				{
@@ -184,8 +123,6 @@ final class NolohInternal
 			if(!isset($_SESSION['NOLOHPropertyQueue'][$objId]))
 				$_SESSION['NOLOHPropertyQueue'][$objId] = array();
 			$_SESSION['NOLOHPropertyQueue'][$objId][$name] = $value;
-			//$_SESSION['NOLOHPropertyQueue'][$objId][$name] = str_replace("'", "\'", $value);
-			//$_SESSION['NOLOHPropertyQueue'][$objId][$name] = addslashes($value);
 		}
 	}
 	

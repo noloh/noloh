@@ -36,7 +36,7 @@ class Timer extends Component
 		$this->Elapsed = $newElapsed;
 		$pair = array($this->DistinctId, "Elapsed");
 		if($newElapsed != null && !in_array($pair, $newElapsed->Handles))
-			$eventObj->Handles[] = $pair;
+			$newElapsed->Handles[] = $pair;
 		$this->UpdateEvent("Elapsed");
 	}
 	
@@ -66,7 +66,7 @@ class Timer extends Component
 	
 	function Show()
 	{
-		$parentShow = parent::Show();
+		parent::Show();
 		$ref = "window.$this->DistinctId";
 		AddScript("$ref = new Object(); $ref.timer = set" . ($this->Repeat?"Interval":"Timeout")
 			. "('if($ref.onelapsed!=null) $ref.onelapsed.call();'," . $this->Interval . ");");

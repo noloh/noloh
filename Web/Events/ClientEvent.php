@@ -12,7 +12,7 @@ class ClientEvent extends Event
 		parent::Event(str_replace("\n"," ", $AllCodeAsString));
 	}
 	
-	function GetInfo(&$arr, &$onlyClientEvents)
+	function GetInfo(&$arr, $onlyClientEvents)
 	{
 		if($onlyClientEvents)
 			$arr[0] .= $this->ExecuteFunction;

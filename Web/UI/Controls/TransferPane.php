@@ -46,7 +46,7 @@ class TransferPane extends Panel
 	
 	function Show()
 	{
-		$parentShow = parent::Show();
+		parent::Show();
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TransferPaneScripts.js");
 	}
 }

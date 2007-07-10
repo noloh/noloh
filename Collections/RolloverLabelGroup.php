@@ -28,9 +28,9 @@ class RolloverLabelGroup extends RolloverGroup
 			if(!($whatObject instanceof RolloverLabel))
 				BloodyMurder("Non-RolloverLabel added to a RolloverLabelGroup.");
 			$whatObject->GroupName = $this->DistinctId;
-			$this->RolloverLabels->Add(GetComponentById($whatObject->DistinctId), $PassByReference, true);
+			$this->RolloverLabels->Add(GetComponentById($whatObject->DistinctId), true, true);
 		}
-		unset($numArgs, $DotDotDot);
+		unset($numArgs, $dotDotDot);
 	}
 	
 	function GetSelectedIndex()

@@ -10,7 +10,7 @@ class CheckListView extends ListView
 		if($whatListViewItem != null)
 		{
 			$tempRow = new TableRow();
-			$tempSubItemCount = $whatListViewItem->SubItems->Count();
+			//$tempSubItemCount = $whatListViewItem->SubItems->Count();
 			for($i = 0; $i<$this->Columns->Count(); $i++)
 			{
 				$tmpColumn = &new TableColumn(null, $this->Columns->Item[$i]->Width + $this->SpacerWidth);

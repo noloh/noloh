@@ -83,7 +83,7 @@ class EmbedObject extends Control
 		if($this->ClassId != null)
 			$tmpStr.='classid = "'.$this->ClassId.'" ';
 		$tmpStr.='>';
-		$paramCount = $this->Parameters->Count();
+//		$paramCount = $this->Parameters->Count();
 		foreach($this->Parameters as $item)
 			$tmpStr .='<PARAM name = "'.$item->Text.'" value = "'.$item->Value.'">';
 //		$InnerEmbedObjectsCount = $this->InnerEmbedObjects->Count();

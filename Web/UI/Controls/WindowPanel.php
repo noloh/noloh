@@ -121,13 +121,13 @@ class WindowPanel extends Panel
 	
 	function SetMenu(MainMenu $mainMenu)
 	{
-		$this->Menu = $whatMainMenu;
+		$this->Menu = $mainMenu;
 		$this->Menu->Width = $this->Width;
 		$this->Menu->Left = 0;
 		$this->Menu->Top = $this->TitleBar->Bottom + 7;
 		$this->ResizeImage->Shifts[] = Shift::Width($this->Menu);
 		$this->BodyPanel->Top = $this->Menu->Bottom;
-		$this->WindowPanelComponents->Add($whatMainMenu);
+		$this->WindowPanelComponents->Add($mainMenu);
 	}
 	
 	function Close()
@@ -137,7 +137,7 @@ class WindowPanel extends Panel
 	
 	function GetMaximizeBox()
 	{
-		return $this->MaximizeBox == null ? true : false;
+		return $this->MaximizeBox == null;
 	}
 	
 	function SetMaximizeBox($bool)
@@ -148,7 +148,7 @@ class WindowPanel extends Panel
 	
 	function GetMinimizeBox()
 	{
-		return $this->MinimizeBox == null ? true : false;
+		return $this->MinimizeBox == null;
 	}
 	
 	function SetMinimizeBox($bool)

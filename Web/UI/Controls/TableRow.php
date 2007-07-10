@@ -13,7 +13,7 @@ class TableRow extends Control
 		$this->Columns->ParentId = $this->DistinctId;
 	}
 	
-	function Show($IndentLevel = 0)
+	function Show()
 	{
 		$intialProperties = parent::Show();
 		//$intialProperties .= ",'style.border','0px'";

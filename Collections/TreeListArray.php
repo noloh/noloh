@@ -7,7 +7,7 @@ class TreeListArray extends ArrayList
 		parent::ArrayList();
 	}
 	
-	function AddInto(&$whatNode, $whatIndex)
+	function AddInto($whatNode, $whatIndex)
 	{
 		$before = array_slice($this->Item, 0, $whatIndex);
 		$this->Add($whatNode);

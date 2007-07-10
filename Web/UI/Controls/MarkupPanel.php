@@ -81,7 +81,7 @@ class MarkupPanel extends Panel
 //	}
 	function Show()
 	{
-		$parentShow = parent::Show();
+		parent::Show();
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupPanelScript.js");
 	}
 }

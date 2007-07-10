@@ -1,28 +1,10 @@
 <?php
 
-class Eventee extends Object
+class Eventee extends MarkupItem 
 {
-	private $Id;
-	private $Keyword;
-	private $Value;
-	private $PanelId;
-	
 	function Eventee($id, $keyword, $value, $panelId)
 	{
-		$this->Id = $id;
-		$this->Keyword = $keyword;
-		$this->Value = $value;
-		$this->PanelId = $panelId;
-	}
-	
-	function GetKeyword()
-	{
-		return $this->Keyword;
-	}
-	
-	function GetValue()
-	{
-		return $this->Value;
+		parent::MarkupItem($id, $keyword, $value, $panelId);
 	}
 	
 	function GetClick()

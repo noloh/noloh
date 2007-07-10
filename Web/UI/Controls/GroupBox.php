@@ -28,7 +28,7 @@ class GroupBox extends Guardian
 		{
 			if(($this->Scrollable == true) && ($this->AutoScroll == false))
 				$parentShow .= " overflow:scroll;";
-			else if($this->AutoScroll == true)
+			elseif($this->AutoScroll == true)
 				$parentShow .=" overflow:auto;";
 			else
 				$parentShow .=" overflow:hidden;";

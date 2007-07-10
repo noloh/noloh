@@ -68,7 +68,7 @@ class TextBox extends Control
 		$initialProperties .= ",'type','";
 		if($this->Password == true)
 			$initialProperties .= "password'";
-		else if($this->Hidden == true)
+		elseif($this->Hidden == true)
 			$initialProperties .= "hidden'";
 		else
 			$initialProperties .= "text'";

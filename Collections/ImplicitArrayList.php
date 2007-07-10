@@ -33,7 +33,7 @@ class ImplicitArrayList extends ArrayList
 		if($this->InsertFunctionName=="" || $onlyInsert)
 			return parent::Insert($object, $whatIndex);
 		elseif(is_object($this->Source))
-			return $this->Source->{$this->InsertFunctionName}($whatObject, $whatIndex);
+			return $this->Source->{$this->InsertFunctionName}($object, $whatIndex);
 		else
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $whatIndex);
 	}

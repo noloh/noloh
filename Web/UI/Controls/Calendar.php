@@ -136,7 +136,7 @@ class Calendar extends Panel
 	
 	function Show()
 	{
-		$parentShow = parent::Show();
+		parent::Show();
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."CalendarScript.js");
 		$this->UpdateClient();
 	}

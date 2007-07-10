@@ -23,8 +23,7 @@ class ComboBox extends ListControl
 	}
 	function GetSelectedItem()
 	{
-		if($this->SelectedIndex != -1)
-			return $this->Items->Item[$this->SelectedIndex];
+		return $this->SelectedIndex != -1 ? $this->Items->Item[$this->SelectedIndex] : null;
 	}
 	function GetEventString($eventTypeAsString)
 	{

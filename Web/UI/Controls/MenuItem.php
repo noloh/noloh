@@ -86,7 +86,7 @@ class MenuItem extends Container
 		$image->Width = 16;
 		$image->Height = 16;
 		$this->SetLeft($image->Right);
-		$this->Controls->Add($whatImage);
+		$this->Controls->Add($image);
 	}
 	function GetText()		{return $this->TextLabel->Text;}
 	function SetText($text)	{$this->TextLabel->Text = $text;}

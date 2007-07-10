@@ -56,7 +56,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		$this->Item = array_merge($this->Item, array_slice($oldItems, $whatIndex));
 	}
 
-	function AddRange($DotDotDot)
+	function AddRange($dotDotDot)
 	{
 		$numArgs = func_num_args();
 		$Args = func_get_args();
@@ -113,6 +113,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	{
 		if($nm == "Count")
 			return count($this->Item);
+		return null;
 	}
 	
 	function Count()

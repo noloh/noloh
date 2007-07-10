@@ -18,7 +18,10 @@ class RadioButton extends GroupedInputControl
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'type','radio'";
 		$initialProperties .= parent::GetEventString(null);
-		NolohInternal::Show("INPUT", $initialProperties, $this);
+		if(GetBrowser()=="ie")
+			NolohInternal::Show("<INPUT name=\"$this->GroupName\">", $initialProperties, $this);
+		else
+			NolohInternal::Show("INPUT", $initialProperties, $this);
 		return $initialProperties;
 	}
 }

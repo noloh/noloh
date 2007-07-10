@@ -33,7 +33,7 @@ class RolloverImageGroup extends RolloverGroup
 			$whatObject->GroupName = $this->DistinctId;
 			$this->RolloverImages->Add(GetComponentById($whatObject->DistinctId), true);
 		}
-		unset($numArgs, $DotDotDot);
+		unset($numArgs, $dotDotDot);
 	}
 	
 	function GetSelectedIndex()
@@ -47,7 +47,7 @@ class RolloverImageGroup extends RolloverGroup
 	
 	function SetSelectedIndex($index)
 	{
-		$this->RolloverImages->Item[$whatIndex]->Selected = true;
+		$this->RolloverImages->Item[$index]->Selected = true;
 	}
 	
 	function &GetSelectedRolloverImage()

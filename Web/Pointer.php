@@ -4,15 +4,14 @@ class Pointer
 {
 	public $RefId;
 	
-	function Pointer(Component &$comp)
+	function Pointer(Component $comp)
 	{
 		$this->RefId = $comp->DistinctId;
 	}
 	
-	function &Dereference()
+	function Dereference()
 	{
-		$ret = &GetComponentById($this->RefId);
-		return $ret;
+		return GetComponentById($this->RefId);
 	}
 	
 	function __toString()

@@ -51,7 +51,7 @@ class RolloverImage extends Image
 	function SetSelected($bool)
 	{			
 		if(isset($this->GroupName))
-			if($whatBool)
+			if($bool)
 				GetComponentById($this->GroupName)->SelectedRolloverImage->SetSelected(false);
 			elseif(GetComponentById($this->GroupName)->GetSelectedIndex() == -1)
 				GetComponentById($this->GroupName)->SetSelectedIndex(0);

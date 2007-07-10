@@ -51,7 +51,7 @@ function GetAbsolutePath($path)
 {
 	if($path[0] == "\\" || $path[0] == "/")
 		return realpath(NOLOHConfig::GetBaseDirectory().$path);
-	else if(strpos($path, "http://") >= 0)
+	elseif(strpos($path, "http://") >= 0)
 		return $path;
 	else
 		return realpath($path);
@@ -248,7 +248,7 @@ function KeyName($whatArray, $whatPosition)
 * @param mixed|variable to be tested
 * @return bool|whether $x is an array
 */
-function isArray(&$x)
+function isArray($x)
 {
    return (bool)($x instanceof ArrayAccess || is_array($x));
 }
