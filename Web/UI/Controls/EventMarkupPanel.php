@@ -29,7 +29,7 @@ class EventMarkupPanel extends MarkupPanel
 		$this->Larvae = array();
 		do 
 		{
-			$text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\sdescriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
+			$text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
               array($this, 'MarkupReplace'), $text, -1, $count);
   		}while ($count);
   		return $text;
