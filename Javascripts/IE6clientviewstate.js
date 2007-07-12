@@ -72,6 +72,36 @@ function CheckURL()
 		}
 }
 
+function AddSelectFix(obj, objstyle)
+{
+	return;
+	var iFrame = document.createElement("IFRAME");
+	iFrame.id = obj.id + "_SF";
+	iFrame.setAttribute("src", "");
+	iFrame.style.position = "absolute";
+	iFrame.style.left = objstyle.left;
+	iFrame.style.top = objstyle.top;
+	iFrame.style.width = objstyle.width;
+	iFrame.style.height = objstyle.height;
+	//iFrame.style.zIndex = objstyle.zIndex-1;
+	iFrame.scrolling = "no";
+	iFrame.frameborder = 0;
+	iFrame.style.display = "block";
+	iFrame.style.filter = "alpha(opacity=0)";
+	//iFrame.style.zIndex = objstyle.zIndex - 1;
+	//obj.style.zIndex = objstyle.zIndex + 1;
+	document.body.appendChild(iFrame);
+	//document.body.appendChild(iFrame);
+	//BringToFront(obj.id);
+	//obj.parentNode.appendChild(iFrame);
+	obj.SelectFix = document.getElementById(obj.id+"_SF");
+	//BringToFront(obj.id);
+	//obj.style.zIndex += 1;
+	//obj.insertAdjacentHTML("beforeBegin", "<IFRAME id='"+obj.id+"_SF' style='position:absolute; left:"+objstyle.left+"; top:"+objstyle.top+"; width:"+objstyle.width+"; height:"+objstyle.height+/*"; z-index:"+(objstyle.zIndex-1)+*/";' scrolling='no' frameborder='0'></IFRAME>");
+	//obj.SelectFix = document.getElementById(obj.id+"_SF");
+	//BringToFront(obj.id);
+}
+
 function SaveControl(id)
 {
 	var temp = document.getElementById(id);
@@ -192,11 +222,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			var objstyle = obj.style;
 			if(obj.parentNode != null && typeof obj.parentNode.id != "undefined" && propertyString == "style.background" && newValue != "" && (objstyle.filter == "" || objstyle.filter == "alpha(opacity=100)"))
 				if(obj.SelectFix == null)
-				{
-					obj.insertAdjacentHTML("beforeBegin", "<IFRAME id='"+obj.id+"_SF' style='position:absolute; left:"+objstyle.left+"; top:"+objstyle.top+"; width:"+objstyle.width+"; height:"+objstyle.height+/*"; z-index:"+(objstyle.zIndex-1)+*/";' scrolling='no' frameborder='0'></IFRAME>");
-					obj.SelectFix = document.getElementById(obj.id+"_SF");
-					//obj.SelectFix.style.zIndex = objstyle.zIndex - 1;
-				}
+					AddSelectFix(obj, objstyle);
 				else
 					obj.SelectFix.display = "";
 			else if(obj.SelectFix != null && objstyle.background == "" && (objstyle.filter != "" && objstyle.filter != "alpha(opacity=100)"))
@@ -219,8 +245,10 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				HighestZIndex = newValue;
 			if(newValue < LowestZIndex)
 				LowestZIndex = newValue;
-			//if(obj.SelectFix != null)
-			//	obj.SelectFix.style.zIndex = newValue - 1;
+			if(obj.SelectFix != null)
+				obj.SelectFix.style.zIndex = newValue - 1;
+			obj.style.zIndex = newValue;
+			break;
 		case "style.left":
 		case "style.top":
 		case "style.width":
@@ -229,6 +257,9 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				eval("obj.SelectFix." + propertyString + " = newValue;");
 		default:
 			eval("obj." + propertyString + " = newValue;");
+/*			if(propertyString == "style.zIndex")
+				if(obj.SelectFix != null)
+					obj.SelectFix.style.zIndex = newValue - 1;*/
 	}
 }
 
@@ -321,14 +352,12 @@ function _NAdd(addTo, tag, nameValuePairs)
 	var i = 0;
 	while(i<nameValuePairs.length)
 		NOLOHChangeByObj(elt, nameValuePairs[i++], nameValuePairs[i++]);
-	document.getElementById(addTo).appendChild(elt);
 	var eltstyle = elt.style;
+	/*if(eltstyle.background != "" && (eltstyle.filter == "" || eltstyle.filter == "alpha(opacity=100)"))
+		AddSelectFix(elt, eltstyle);*/
+	document.getElementById(addTo).appendChild(elt);
 	if(eltstyle.background != "" && (eltstyle.filter == "" || eltstyle.filter == "alpha(opacity=100)"))
-	{
-		elt.insertAdjacentHTML("beforeBegin", "<IFRAME id='"+elt.id+"_SF' style='position:absolute; left:"+eltstyle.left+"; top:"+eltstyle.top+"; width:"+eltstyle.width+"; height:"+eltstyle.height+/*" z-index:"+(eltstyle.zIndex-1)+*/";' scrolling='no' frameborder='0'></IFRAME>");
-		elt.SelectFix = document.getElementById(elt.id+"_SF");
-		//elt.SelectFix.style.zIndex = eltstyle.zIndex - 1;
-	}
+		AddSelectFix(elt, eltstyle);
 	SaveControl(elt.id);
 }
 
@@ -347,7 +376,7 @@ function _NRes(id, parentId)
 	document.getElementById("Graveyard").removeChild(ele);
 	document.getElementById(parentId).appendChild(ele);
 	if(ele.SelectFix != null)
-		_NRes(id+"_SF", parentId);
+		_NRes(id+"_SF", "N1");
 }
 
 function _NAsc(id)

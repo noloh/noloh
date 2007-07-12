@@ -137,10 +137,13 @@ class WebPage extends Component
 				"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html" : 
 				$unsupportedURL).
   "'></NOSCRIPT>
-  </HEAD>
-  <BODY ID='N1' unload='alert(\"heh...\");'>".
-		(GetBrowser()=="ie"?"\n    <IFRAME id='NBackButton' style='display:none;'></IFRAME>":"").
-"\n  </BODY>
+  </HEAD>".(GetBrowser()=="ie"?"
+  <BODY>
+    <DIV id='N1'></DIV>
+    <IFRAME id='NBackButton' style='display:none;'></IFRAME>
+  </BODY>":"
+  <BODY id='N1'>
+  </BODY>")."
 </HTML>
 
 <SCRIPT type='text/javascript'>

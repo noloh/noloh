@@ -20,6 +20,24 @@ class Application
 		new Application($whatClassName, $unsupportedURL, $URLTokenMode);
 	}
 	
+	/**
+	* Resets Application to original state
+	*/
+	public static function Reset()
+	{
+		session_destroy();
+		session_unset();
+		print(
+"/*~NScript~*/
+frm = document.createElement('FORM');
+frm.action = window.location;
+frm.method = 'post';
+document.body.appendChild(frm);
+frm.submit();"
+		);
+		die();
+	}
+	
 	public function Application($whatClassName, $unsupportedURL, $URLTokenMode)
 	{
 		session_name(hash("md5", $_SERVER['PHP_SELF']));
@@ -47,11 +65,15 @@ class Application
 				  (!empty($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']))
 				{
 					if(isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET["NWidth"]))
-						ResetApp();
+						self::Reset();
 					session_destroy();
 					session_unset(); 
 					SetStartUpPage($whatClassName);
 					return;
+				}
+				if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
+				{
+					
 				}
 				$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
 				if(isset($_SESSION["NOLOHOmniscientBeing"]))

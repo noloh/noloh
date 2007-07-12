@@ -167,24 +167,6 @@ function QueueClientFunction(Component $whatObj, $functionName, $paramsArray, $r
 			$_SESSION['NOLOHFunctionQueue'][$objId][] = array($functionName, $paramsArray, $priority);			
 	}
 }
-
-/**
-* Resets Application to original state
-*/
-function ResetApp()
-{
-	session_destroy();
-	session_unset();
-	//print("ResetApp();");
-	print(
-"frm = document.createElement('FORM');
-frm.action = window.location;
-frm.method = 'post';
-document.body.appendChild(frm);
-frm.submit();"
-	);
-	die();
-}
 /**
 * @ignore
 */

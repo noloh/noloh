@@ -118,7 +118,10 @@ class Component extends Object
 				return $this;
 		}
 		elseif(is_string($GenerationsAbove))
-			return $this instanceof $GenerationsAbove ? $this : GetComponentById($this->ParentId)->GetParent($GenerationsAbove);
+		{
+			$parent = GetComponentById($this->ParentId);
+			return $parent instanceof $GenerationsAbove ? $parent : $parent->GetParent($GenerationsAbove);
+		}
 		elseif(is_array($GenerationsAbove))
 		{
 			$count = count($GenerationsAbove);

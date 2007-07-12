@@ -23,6 +23,8 @@ class EventMarkupPanel extends MarkupPanel
 		else 
 			$this->TempString = $markupStringOrFile;
 	}
+	// New one's. Has issues.
+	
 	private function ParseItems($text)
 	{
 		$this->Eventees = array();
@@ -34,7 +36,7 @@ class EventMarkupPanel extends MarkupPanel
   		}while ($count);
   		return $text;
 	}
-	private function MarkupReplace($matches)
+	/*private function MarkupReplace($matches)
 	{
 		static $id;
 		$distinctId = $this->DistinctId . "i" . ++$id;
@@ -49,7 +51,63 @@ class EventMarkupPanel extends MarkupPanel
 			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
 			return "<$matches[1]$matches[2] id=<NQt2>$distinctId<NQt2>$matches[5]>$matches[6]</$matches[7]>";
 		}
+	}*/
+	private function MarkupReplace($matches)
+	{
+		static $id;
+		$distinctId = $this->DistinctId . "i" . ++$id;
+		$keyval = explode(':', $matches[4]);
+		if(strtolower($matches[1]) == 'component')
+		{
+			$this->Larvae[$distinctId] = array($keyval[0], $keyval[1]);
+			return "<div id=\"$distinctId\"$matches[2]$matches[5]>$matches[6]</div>";
+		}
+		else 
+		{
+			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
+			return "<$matches[1]$matches[2] id=\"$distinctId\"$matches[5]>$matches[6]</$matches[7]>";
+		}
 	}
+	
+	// Temporary one.
+	/*private function MarkupReplace($matches)
+	{
+		static $id;
+		$distinctId = $this->DistinctId . "e" . ++$id;
+		$keyval = explode(':', $matches[3]);
+		if(strtolower($matches[1]) == 'component')
+		{
+			$this->Larvae[$distinctId] = array($keyval[0], $keyval[1]);
+			return "<div id=\"$distinctId\">$matches[4]</div>";
+		}
+		else 
+		{
+			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
+			return "<$matches[1] id=\"$distinctId\">$matches[4]</$matches[5]>";
+		}
+	}*/
+	// Old one's. No Larvae.
+	/*private function ParseItems($text)
+	{
+		$this->Eventees = array();
+		$this->Larvae = array();
+		do 
+		{
+			$text = preg_replace_callback('!<n:(.*?)\s+descriptor\s*=\s*([”"\'])([^”"\']+)\2.*?>(.*?)</n:(\w+)>!is', array($this,'MarkupReplace'), $text, -1, $count);
+  		}while ($count);
+  		return $text;
+	}
+	/*
+	private function MarkupReplace($matches)
+	{
+		//global $lookup;
+		static $id;
+		$distinctId = $this->DistinctId . "e" . ++$id;
+		$keyval = explode(':', $matches[3]);
+		$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
+		return "<$matches[1] id=\"$distinctId\">$matches[4]</$matches[5]>";
+	}
+	*/
 	public function GetEventees($byValue=null)
 	{
 		$eventees = array();

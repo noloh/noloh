@@ -1,15 +1,11 @@
-function BringToFront(whatobjid)
+function BringToFront(id)
 {
-	var obj = document.getElementById(whatobjid);
-	HighestZIndex++;
-	ChangeAndSave(whatobjid, "style.zIndex", HighestZIndex);
+	ChangeAndSave(id, "style.zIndex", ++HighestZIndex);
 }
 
-function SendToBack(whatobjid)
+function SendToBack(id)
 {
-	var obj = document.getElementById(whatobjid);
-	LowestZIndex--;
-	ChangeAndSave(whatobjid, "style.zIndex", LowestZIndex);
+	ChangeAndSave(id, "style.zIndex", --LowestZIndex);
 }
 
 function ChangeImage(id, src)
