@@ -56,12 +56,12 @@ final class NolohInternal
 	
 	public static function Hide($whatObj)
 	{
-		AddScript("_NRem('$whatObj->DistinctId');", Priority::High);
+		AddScript("_NRem('$whatObj->DistinctId')", Priority::High);
 	}
 	
 	public static function Resurrect($whatObj)
 	{
-		AddScript("_NRes('$whatObj->DistinctId','".self::GetImmediateParentId($whatObj)."');", Priority::High);
+		AddScript("_NRes('$whatObj->DistinctId','".self::GetImmediateParentId($whatObj)."')", Priority::High);
 	}
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())

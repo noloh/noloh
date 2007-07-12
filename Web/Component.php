@@ -68,6 +68,15 @@ class Component extends Object
 		return $this->ShowStatus === null ? 1 : $this->ShowStatus;
 	}
 	
+	/**
+	* @ignore
+	*/
+	function SecondGuessShowStatus()
+	{
+		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
+			$this->ShowStatus = 0;
+	}
+	
 	function GetParentId() {return $this->ParentId;}
 	function SetParentId($whatParentId)
 	{

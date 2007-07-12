@@ -17,7 +17,10 @@ class Larva extends MarkupItem
 	{
 		$markUpPanel = GetComponentById($this->PanelId);
 		if(isset($markUpPanel->ComponentSpace[$this->Id]))
-			$markUpPanel->ComponentSpace[$this->Id]->SetParentId(null);
+			if($markUpPanel->ComponentSpace[$this->Id] === $component)
+				return;
+			else
+				$markUpPanel->ComponentSpace[$this->Id]->SetParentId(null);
 		$markUpPanel->ComponentSpace[$this->Id] = $component;
 		$component->SetParentId($this->Id);
 		//return Larva::Morphy($this, $component);

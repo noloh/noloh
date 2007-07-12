@@ -9,26 +9,30 @@ class EventMarkupPanel extends MarkupPanel
 	
 	function EventMarkupPanel($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
+		$this->ComponentSpace = array();
 		parent::MarkupPanel($markupStringOrFile, $left, $top, $width, $height);
 	}
 	function SetMarkupString($markupStringOrFile)
 	{
+		$this->Eventees = array();
+		$this->Larvae = array();
+		foreach($this->ComponentSpace as $component)
+			$component->SecondGuessShowStatus();
+		$this->ComponentSpace = array();
 		$this->MarkupString = $markupStringOrFile;
 		$text = is_file($markupStringOrFile)?file_get_contents($markupStringOrFile):$markupStringOrFile;
-		$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array(" ", " ", " ", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
+		$text =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array(" ", " ", " ", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
 		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->DistinctId'", "'$markupStringOrFile'"), true, Priority::High);
-			AddScript("SetMarkupString('$this->DistinctId', '$markupStringOrFile')", Priority::High);
+			AddScript("SetMarkupString('$this->DistinctId', '$text')", Priority::High);
 		else 
-			$this->TempString = $markupStringOrFile;
+			$this->TempString = $text;
 	}
 	// New one's. Has issues.
 	
 	private function ParseItems($text)
 	{
-		$this->Eventees = array();
-		$this->Larvae = array();
 		do 
 		{
 			$text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',

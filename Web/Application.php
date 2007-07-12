@@ -139,7 +139,7 @@ frm.submit();"
 		$_SESSION["NOLOHGarbage"] = array();
 		//foreach($OmniscientBeing as $key => $val)
 		//	$val->RestoreValues();
-		$this->WebPage = &GetComponentById($_SESSION['NOLOHStartUpPageId']);
+		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);
 	}
 	
 	private function HandleClientChanges()
