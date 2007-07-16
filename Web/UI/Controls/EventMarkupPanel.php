@@ -21,7 +21,7 @@ class EventMarkupPanel extends MarkupPanel
 		$this->ComponentSpace = array();
 		$this->MarkupString = $markupStringOrFile;
 		$text = is_file($markupStringOrFile)?file_get_contents($markupStringOrFile):$markupStringOrFile;
-		$text =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array(" ", " ", " ", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
+		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array(" ", " ", " ", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
 		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->DistinctId'", "'$markupStringOrFile'"), true, Priority::High);
@@ -33,14 +33,14 @@ class EventMarkupPanel extends MarkupPanel
 	
 	private function ParseItems($text)
 	{
-		do 
-		{
+		//do 
+		//{
 			$text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
-              array($this, 'MarkupReplace'), $text, -1, $count);
-  		}while ($count);
+            	array($this, 'MarkupReplace'), $text, -1, $count);
+  		//}while ($count);
   		return $text;
 	}
-	/*private function MarkupReplace($matches)
+	private function MarkupReplace($matches)
 	{
 		static $id;
 		$distinctId = $this->DistinctId . "i" . ++$id;
@@ -55,7 +55,7 @@ class EventMarkupPanel extends MarkupPanel
 			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
 			return "<$matches[1]$matches[2] id=<NQt2>$distinctId<NQt2>$matches[5]>$matches[6]</$matches[7]>";
 		}
-	}*/
+	}/*
 	private function MarkupReplace($matches)
 	{
 		static $id;
@@ -71,7 +71,7 @@ class EventMarkupPanel extends MarkupPanel
 			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
 			return "<$matches[1]$matches[2] id=\"$distinctId\"$matches[5]>$matches[6]</$matches[7]>";
 		}
-	}
+	}*/
 	
 	// Temporary one.
 	/*private function MarkupReplace($matches)

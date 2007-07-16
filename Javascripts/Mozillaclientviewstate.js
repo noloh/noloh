@@ -55,7 +55,7 @@ function _NInit(loadLblId, loadImgId)
 function CheckURL()
 {
 	if(NURL != location)
-		if(document.body.NOLOHPostingBack && location.toString().split('#',2)[1] == "")
+		if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
 			NURL = location.toString();
 		else
 			location.reload(true);

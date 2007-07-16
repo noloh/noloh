@@ -60,7 +60,7 @@ function CheckURL()
 {
 	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
 	if(NURL != location || NURL != inner)
-		if(document.body.NOLOHPostingBack && location.toString().split('#',2)[1] == "")
+		if(document.body.NOLOHPostingBack && location.toString().indexOf('#')==location.toString().length-1)
 		{
 			NURL = inner;
 			location = inner;
