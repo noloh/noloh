@@ -257,7 +257,6 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
 	{
 		$str = str_replace("\r", "", $str);
 		$lines = explode("\n", $str);
-		//$height = 4;
 		$ntext = "";
 		foreach($lines as $line)
 		{
@@ -265,13 +264,10 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
 			$nline = "";
 			foreach($words as $word)
 			{
-				//$nline .= $word;
 				$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Fonts/times.ttf", 
 					$nline.$word);
 				if($bbox[4]-$bbox[6] > $width)
 				{
-					//$height += $bbox[1]-$bbox[7] + 4;
-					//$nline = $word;
 					$ntext .= $nline . "\n";
 					$nline = $word;
 				}
@@ -281,7 +277,7 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
 		}
 		$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Fonts/times.ttf", 
 			$ntext==null?$str:$ntext);
-		$retArray[1] = $bbox[1]-$bbox[7] + 4;
+		$retArray[1] = $bbox[1]-$bbox[7] + 6;
 	}
 	return $retArray;
 }

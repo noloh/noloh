@@ -187,10 +187,10 @@ frm.submit();"
 					//break;
 				// Explode string to array
 				case "Items":
-					GetComponentById($splitChange[0])->{$splitChange[1]} = ExplodeItems($splitChange[2]);
+					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeItems($splitChange[2]);
 					break;
 				case "SelectedIndices":					
-					GetComponentById($splitChange[0])->{$splitChange[1]} = ExplodeItems($splitChange[2]);
+					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeItems($splitChange[2]);
 					break;
 					//$tmp = strpos($splitChange[1], "->");
 					//$runThisString = 'GetComponentById($splitChange[0])->';

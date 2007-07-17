@@ -161,15 +161,16 @@ class Component extends Object
 	function __sleep()
 	{
 		$vars = (array)$this;
-		global $OmniscientBeing;
+		//global $OmniscientBeing;
 		foreach ($vars as $key => $val)
-		{			
-        	if(is_null($val))
+		//{			
+        	//if(is_null($val))
+        	if($val == null)
 				unset($vars[$key]);
            /* elseif (is_object($val))
             	if($val instanceof Component)
 					$this->$key = new Pointer($val);*/
-        }
+        //}
 		return array_keys($vars);
 	}
 	/**

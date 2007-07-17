@@ -39,7 +39,7 @@ class EventMarkupPanel extends MarkupPanel
             	array($this, 'MarkupReplace'), $text, -1, $count);
   		//}while ($count);
   		return $text;
-	}
+	}/*
 	private function MarkupReplace($matches)
 	{
 		static $id;
@@ -55,7 +55,7 @@ class EventMarkupPanel extends MarkupPanel
 			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
 			return "<$matches[1]$matches[2] id=<NQt2>$distinctId<NQt2>$matches[5]>$matches[6]</$matches[7]>";
 		}
-	}/*
+	}*/
 	private function MarkupReplace($matches)
 	{
 		static $id;
@@ -71,7 +71,7 @@ class EventMarkupPanel extends MarkupPanel
 			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
 			return "<$matches[1]$matches[2] id=\"$distinctId\"$matches[5]>$matches[6]</$matches[7]>";
 		}
-	}*/
+	}
 	
 	// Temporary one.
 	/*private function MarkupReplace($matches)

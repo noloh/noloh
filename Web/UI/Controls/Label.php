@@ -2,6 +2,8 @@
 
 class Label extends Control 
 {
+	public $CachedWidth;
+	public $CachedHeight;
 	private $Align;
 	private $VAlign;
 	private $Bold;
@@ -10,15 +12,17 @@ class Label extends Control
 	private $LeftPadding;
 	private $Overflow;
 	private $EditInPlace;
-	private $CachedWidth;
-	private $CachedHeight;
 	private $FontSize;
 	
-	function Label($whatText="", $whatLeft = 0, $whatTop = 0, $whatWidth = 83, $whatHeight = 18)
+	function Label($text="", $left = 0, $top = 0, $width = 83, $height = 18)
 	{
-		parent::Control($whatLeft, $whatTop, $whatWidth, $whatHeight);
+		parent::Control($left, $top, null, null);
+		parent::SetWidth($width);
+		parent::SetHeight($height);
+		parent::SetText($text);
+		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $text), $this);
 		$this->SetCSSClass();
-		$this->SetText($whatText);
+		$this->ResetCache();
 	}
 	
 	function SetText($newText)
@@ -26,14 +30,17 @@ class Label extends Control
 		parent::SetText($newText);
 		//$width = parent::GetWidth();
 		//$height = parent::GetHeight();
-		$this->AutoWidthHeight();
+		//$this->AutoWidthHeight();
+		$this->ResetCache();
 		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $newText), $this);
 		//QueueClientFunction($this, "SetLabelText", array("'$this->DistinctId'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
 	}
+	
 	function SetCSSClass($cssClass=null)
 	{
-		parent::SetCSSClass("NLabel ".$cssClass);
+		parent::SetCSSClass("NLabel ". $cssClass);
 	}
+	
 	function GetFontSize()
 	{
 		return isset($this->FontSize) ? $this->FontSize : 12;
@@ -43,19 +50,55 @@ class Label extends Control
 	{
 		$this->FontSize = $newSize;
 		$this->AutoWidthHeight();
-		NolohInternal::SetProperty("style.fontSize",$this->FontSize."px",$this);
+		NolohInternal::SetProperty("style.fontSize", $this->FontSize."px", $this);
 	}
 	
 	function GetWidth()
 	{
-		$Width = parent::GetWidth();
-		return ($Width == System::Auto || $Width == System::AutoHtmlTrim) ? $this->CachedWidth : $Width;
+		$width = parent::GetWidth();
+		if($width == System::Auto || $width == System::AutoHtmlTrim)
+		{
+			if($this->CachedWidth == null)
+				$this->AutoWidthHeight();
+			return $this->CachedWidth;
+		}
+		else 
+			return $width;
+	}
+	
+	function SetWidth($newWidth)
+	{
+		parent::SetWidth($newWidth);
+		$this->ResetCache();
 	}
 	
 	function GetHeight()
 	{
-		$Height = parent::GetHeight();
-		return ($Height == System::Auto || $Height == System::AutoHtmlTrim)? $this->CachedHeight : $Height;
+		$height = parent::GetHeight();
+		if($height == System::Auto || $height == System::AutoHtmlTrim)
+		{
+			if($this->CachedHeight == null)
+				$this->AutoWidthHeight();
+			return $this->CachedHeight;
+		}
+		else 
+			return $height;
+	}
+	
+	function SetHeight($newHeight)
+	{
+		parent::SetHeight($newHeight);
+		$this->ResetCache();
+	}
+	
+	private function ResetCache()
+	{
+		$this->CachedWidth = null;
+		$this->CachedHeight = null;
+		$width = parent::GetWidth();
+		$height = parent::GetHeight();
+		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
+			QueueClientFunction($this, "_NAWH", array("'$this->DistinctId'"));
 	}
 	
 	function GetAlign()
@@ -171,7 +214,6 @@ class Label extends Control
 	{
 		$width = parent::GetWidth();
 		$height = parent::GetHeight();
-		//Added Strip Tags
 		
 		if($width == System::Auto || $height == System::Auto)
 			$widthHeight = AutoWidthHeight($this->Text, $width, $height, $this->GetFontSize());
@@ -180,15 +222,15 @@ class Label extends Control
 		else
 			return;
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
-		{
+		//{
 			$this->CachedWidth = $widthHeight[0];
-			NolohInternal::SetProperty("style.width", $this->CachedWidth."px", $this);
-		}
+			//NolohInternal::SetProperty("style.width", $this->CachedWidth."px", $this);
+		//}
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
-		{
+		//{
 			$this->CachedHeight = $widthHeight[1];
-			NolohInternal::SetProperty("style.height", $this->CachedHeight."px", $this);
-		}
+			//NolohInternal::SetProperty("style.height", $this->CachedHeight."px", $this);
+		//}
 	}
 	
 	function Show()

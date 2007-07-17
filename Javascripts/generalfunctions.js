@@ -60,6 +60,13 @@ function FindY(objId)
 	return curtop;
 }
 
+function _NAWH(id)
+{
+	var ele = document.getElementById(id);
+	_NSave(id, "CachedWidth", ele.offsetWidth);
+	_NSave(id, "CachedHeight", ele.offsetHeight);
+}
+
 function IsAvailable(objId)
 {
 	var obj = document.getElementById(objId);
