@@ -17,7 +17,7 @@ class ListView extends Panel
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;
 		$this->ListViewItems = new ImplicitArrayList($this, "AddListViewItem");
-		$this->ListViewItems->ParentId = $this->DistinctId;
+		$this->ListViewItems->ParentId = $this->Id;
 		$this->BodyPanelsHolder = new Panel(0, $this->ColumnsPanel->Bottom, $width, $height - $this->ColumnsPanel->Height);
 		$this->BodyPanels = &$this->BodyPanelsHolder->Controls;
 		$this->BodyPanelsHolder->Scrolling = System::Auto;
@@ -104,8 +104,8 @@ class ListView extends Panel
 		}
 		/*
 		if($tmpSubItemCount > $tmpColCount)
-			if(empty($this->LVItemsQueue["{$listViewItem->DistinctId}"])) 
-				$this->LVItemsQueue["{$listViewItem->DistinctId}"] = $listViewItem;*/
+			if(empty($this->LVItemsQueue["{$listViewItem->Id}"])) 
+				$this->LVItemsQueue["{$listViewItem->Id}"] = $listViewItem;*/
 	}
 //	function AddListViewItem(ListViewItem $listViewItem)
 //	{
@@ -124,8 +124,8 @@ class ListView extends Panel
 ////			}
 //		}
 //		if($tmpSubItemCount > $tmpColCount)
-//			if(empty($this->LVItemsQueue["{$listViewItem->DistinctId}"])) 
-//				$this->LVItemsQueue["{$listViewItem->DistinctId}"] = $listViewItem;
+//			if(empty($this->LVItemsQueue["{$listViewItem->Id}"])) 
+//				$this->LVItemsQueue["{$listViewItem->Id}"] = $listViewItem;
 //	}
 	function Update($listViewItem=null/*, $addToQueue=true*/)
 	{
@@ -151,8 +151,8 @@ class ListView extends Panel
 			if($tmpSubItemCount <= $tmpColCount)
 				return true;/*
 			else
-				if(empty($this->LVItemsQueue["{$listViewItem->DistinctId}"]))
-					$this->LVItemsQueue["{$listViewItem->DistinctId}"] = $listViewItem;*/
+				if(empty($this->LVItemsQueue["{$listViewItem->Id}"]))
+					$this->LVItemsQueue["{$listViewItem->Id}"] = $listViewItem;*/
 		}
 		return false;
 	}
@@ -163,7 +163,7 @@ class ListView extends Panel
 	}
 	private function ModifyScroll()
 	{
-		$this->BodyPanelsHolder->Scroll = new ClientEvent("Noloh_UI_ListView_ScrollColumnPanel('{$this->BodyPanelsHolder->DistinctId}', '{$this->ColumnPanel->DistinctId}')");
+		$this->BodyPanelsHolder->Scroll = new ClientEvent("Noloh_UI_ListView_ScrollColumnPanel('{$this->BodyPanelsHolder->Id}', '{$this->ColumnPanel->Id}')");
 	}
 	public function Clear()
 	{

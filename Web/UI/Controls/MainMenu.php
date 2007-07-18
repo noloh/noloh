@@ -21,16 +21,16 @@ class MainMenu extends Panel
 		$menuItem->MainMenuPanel->SetTop($menuItem->GetTop() + $menuItem->GetHeight());
 		if($this->MenuType == "Click")
 		{
-			$menuItem->Click = new ClientEvent("ToggleSubMenuItems('{$menuItem->TextLabel->DistinctId}','{$menuItem->MainMenuPanel->DistinctId}', true);");
-			$menuItem->MouseOver = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->DistinctId}','#316AC5', '#FFFFFF');");
-			$menuItem->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$menuItem->TextLabel->DistinctId}','{$menuItem->MainMenuPanel->DistinctId}'), false;");
-			$menuItem->MouseOut = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->DistinctId}','{$menuItem->OutBackColor}', '{$menuItem->OutTextColor}');");
+			$menuItem->Click = new ClientEvent("ToggleSubMenuItems('{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}', true);");
+			$menuItem->MouseOver = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','#316AC5', '#FFFFFF');");
+			$menuItem->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}'), false;");
+			$menuItem->MouseOut = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','{$menuItem->OutBackColor}', '{$menuItem->OutTextColor}');");
 		}
 		$this->MenuItems->Add($menuItem, true, true);
 		NolohInternal::SetProperty("IsMainMenu","true", $menuItem->TextLabel);
-		NolohInternal::SetProperty("MenuPanelParentId", $this->DistinctId, $menuItem->TextLabel);
-		//QueueClientFunction($this, "document.getElementById('{$menuItem->TextLabel->DistinctId}').IsMainMenu = true;");
-		//AddScript("document.getElementById('{$menuItem->TextLabel->DistinctId}').IsMainMenu = true; document.getElementById('{$menuItem->TextLabel->DistinctId}').MenuPanelParentId = '{$this->DistinctId}';");
+		NolohInternal::SetProperty("MenuPanelParentId", $this->Id, $menuItem->TextLabel);
+		//QueueClientFunction($this, "document.getElementById('{$menuItem->TextLabel->Id}').IsMainMenu = true;");
+		//AddScript("document.getElementById('{$menuItem->TextLabel->Id}').IsMainMenu = true; document.getElementById('{$menuItem->TextLabel->Id}').MenuPanelParentId = '{$this->Id}';");
 	}
 	function Clear()
 	{

@@ -11,7 +11,7 @@ class ColumnHeader extends Label
 		parent::Label($text, $left, 0, $width, $height);
 		$this->SizeHandle = new Image(NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/Win/DataGridColumnDivider.gif", $this->Width - 5, 0);
 		$this->SizeHandle->Cursor = Cursor::WestResize;
-		$this->SizeHandle->ParentId = $this->DistinctId;
+		$this->SizeHandle->ParentId = $this->Id;
 		$this->Cursor = Cursor::Arrow;
 		//$this->Font = "11px Tahoma";
 		$this->CSSMargin = "3px";

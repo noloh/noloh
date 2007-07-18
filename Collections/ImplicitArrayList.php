@@ -12,7 +12,7 @@ class ImplicitArrayList extends ArrayList
 	function ImplicitArrayList($obj=null, $addFunctionName="", $removeAtFunctionName="", $clearFunctionName="")
 	{
 		parent::ArrayList();
-		$this->Source = $obj instanceof Component ? $obj->DistinctId : $obj;
+		$this->Source = $obj instanceof Component ? $obj->Id : $obj;
 		$this->AddFunctionName = $addFunctionName;
 		$this->RemoveAtFunctionName = $removeAtFunctionName;
 		$this->ClearFunctionName = $clearFunctionName;

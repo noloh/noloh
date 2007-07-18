@@ -13,7 +13,7 @@ class ListViewItem extends Object //extends Component
 		if($objOrText != null)
 			$this->AddSubItem($objOrText);
 	}
-	function SetListView($listView)	{$this->ListViewId = $listView->DistinctId;}
+	function SetListView($listView)	{$this->ListViewId = $listView->Id;}
 	function AddSubItem($objOrText=null)
 	{
 		$this->SubItems->Add((is_string($objOrText) || $objOrText == null)?$objOrText = new Label($objOrText, 0, 0, System::Auto):$objOrText, true, true);

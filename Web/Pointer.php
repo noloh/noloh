@@ -6,7 +6,7 @@ class Pointer
 	
 	function Pointer(Component $comp)
 	{
-		$this->RefId = $comp->DistinctId;
+		$this->RefId = $comp->Id;
 	}
 	
 	function Dereference()

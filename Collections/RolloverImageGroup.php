@@ -17,7 +17,7 @@ class RolloverImageGroup extends RolloverGroup
 			BloodyMurder("Non-RolloverImage added to a RolloverImageGroup.");
 		if($this->RolloverImages->Count() == 0)
 			$whatObject->Selected = true;
-		$whatObject->GroupName = $this->DistinctId;
+		$whatObject->GroupName = $this->Id;
 		$this->RolloverImages->Add($whatObject, $PassByReference);
 	}
 	
@@ -30,8 +30,8 @@ class RolloverImageGroup extends RolloverGroup
 			if(!is_a($whatObject, "RolloverImage"))
 			//if(get_class($whatObject) != "RolloverImage")
 				BloodyMurder("Non-RolloverImage added to a RolloverImageGroup.");
-			$whatObject->GroupName = $this->DistinctId;
-			$this->RolloverImages->Add(GetComponentById($whatObject->DistinctId), true);
+			$whatObject->GroupName = $this->Id;
+			$this->RolloverImages->Add(GetComponentById($whatObject->Id), true);
 		}
 		unset($numArgs, $dotDotDot);
 	}

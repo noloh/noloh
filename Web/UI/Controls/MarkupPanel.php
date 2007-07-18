@@ -68,9 +68,9 @@ class MarkupPanel extends Panel
 		$this->MarkupString = $whatMarkupStringOrFile;
 //		if(is_file($whatMarkupStringOrFile))
 //		{
-			$whatMarkupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array(" ", " ", " ", "<NQt2>", "<NQt1>"), ($tmpFullString = ((is_file($whatMarkupStringOrFile))?file_get_contents($whatMarkupStringOrFile):$whatMarkupStringOrFile)));
+			$whatMarkupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array("<Nendl>", "<Nendl>", "<Nendl>", "<NQt2>", "<NQt1>"), ($tmpFullString = ((is_file($whatMarkupStringOrFile))?file_get_contents($whatMarkupStringOrFile):$whatMarkupStringOrFile)));
 			$this->AutoWidthHeight($tmpFullString);
-			QueueClientFunction($this, "SetMarkupString", array("'$this->DistinctId'", "'$whatMarkupStringOrFile'"));
+			QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$whatMarkupStringOrFile'"));
 //		}
 //		else
 //			NolohInternal::SetProperty("innerHTML", $whatMarkupStringOrFile, $this);

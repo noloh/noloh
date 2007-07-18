@@ -10,7 +10,7 @@ class TableRow extends Control
 		parent::Control(0, 0, null, 20);
 		$this->PositionType = 1;
 		$this->Columns = new ArrayList();
-		$this->Columns->ParentId = $this->DistinctId;
+		$this->Columns->ParentId = $this->Id;
 	}
 	
 	function Show()

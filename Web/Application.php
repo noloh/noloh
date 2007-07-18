@@ -3,9 +3,9 @@
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($whatClassName, $unsupportedURL="", $URLTokenMode=URL::Display)
+function SetStartUpPage($className, $unsupportedURL="", $URLTokenMode=URL::Display)
 {
-	new Application($whatClassName, $unsupportedURL, $URLTokenMode);
+	new Application($className, $unsupportedURL, $URLTokenMode);
 }
 
 /**
@@ -15,9 +15,9 @@ class Application
 {
 	private $WebPage;
 	
-	public static function SetStartUpPage($whatClassName, $unsupportedURL="", $URLTokenMode=URL::Display)
+	public static function SetStartUpPage($className, $unsupportedURL="", $URLTokenMode=URL::Display)
 	{
-		new Application($whatClassName, $unsupportedURL, $URLTokenMode);
+		new Application($className, $unsupportedURL, $URLTokenMode);
 	}
 	
 	/**
@@ -38,7 +38,7 @@ frm.submit();"
 		die();
 	}
 	
-	public function Application($whatClassName, $unsupportedURL, $URLTokenMode)
+	public function Application($className, $unsupportedURL, $URLTokenMode)
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
 		ini_set('session.gc_probability', 50);
@@ -66,10 +66,10 @@ frm.submit();"
 					self::Reset();
 				session_destroy();
 				session_unset(); 
-				SetStartUpPage($whatClassName);
+				self::SetStartUpPage($className, $unsupportedURL, $URLTokenMode);
 				return;
 			}
-			if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
+			if(isset($_POST['NoNoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
 			{
 				
 			}
@@ -93,10 +93,10 @@ frm.submit();"
 			$this->Run();
 		}
 		else
-			$this->HandleFirstRun($whatClassName, $unsupportedURL);
+			$this->HandleFirstRun($className, $unsupportedURL);
 	}
 	
-	private function HandleFirstRun($whatClassName, $unsupportedURL)
+	private function HandleFirstRun($className, $unsupportedURL)
 	{
 		$_SESSION['NOLOHControlQueue'] = array();
 		$_SESSION['NOLOHFunctionQueue'] = array();
@@ -108,7 +108,7 @@ frm.submit();"
 		$_SESSION['NOLOHNumberOfComponents'] = 0;
 		$_SESSION['NOLOHVisit'] = -1;
 		$_SESSION['NOLOHGarbage'] = array();
-		$_SESSION['NOLOHStartUpPageClass'] = $whatClassName;
+		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
 		DeclareGlobal("HighestZIndex", 0);
 		DeclareGlobal("LowestZIndex", 0);
@@ -272,9 +272,9 @@ frm.submit();"
 					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
 				}
 			}
-			$whatClassName = $_SESSION['NOLOHStartUpPageClass'];
-			$this->WebPage = new $whatClassName();
-			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->DistinctId;
+			$className = $_SESSION['NOLOHStartUpPageClass'];
+			$this->WebPage = new $className();
+			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
 			$this->WebPage->Show();
 		}
 		
@@ -284,7 +284,7 @@ frm.submit();"
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
 		print(/*$_SESSION['NOLOHSrcScript'] .*/ "/*~NScript~*/" . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2]);
-		$_SESSION['NOLOHSrcScript'] = "";
+		//$_SESSION['NOLOHSrcScript'] = "";
 		$_SESSION['NOLOHScript'] = array("", "", "");
 		$_SESSION['NOLOHOmniscientBeing'] = serialize($OmniscientBeing);
 		$GLOBALS["NOLOHGarbage"] = true;

@@ -18,7 +18,7 @@ class Shift
 			$min = 1;
 		if($max === null)
 			$max = "null";
-		$id = $control->DistinctId;
+		$id = $control->Id;
 		return array($id,1,"Array(\"$id\",1,$type,$min,$max,null,null,$ratio)");
 	}
 
@@ -28,7 +28,7 @@ class Shift
 			$min = 1;
 		if($max === null)
 			$max = "null";
-		$id = $control->DistinctId;
+		$id = $control->Id;
 		return array($id,2,"Array(\"$id\",2,$type,null,null,$min,$max,$ratio)");
 	}
 	
@@ -42,7 +42,7 @@ class Shift
 			$minHeight = 1;
 		if($maxHeight === null)
 			$maxHeight = "null";
-		$id = $control->DistinctId;
+		$id = $control->Id;
 		return array($id,3,"Array(\"$id\",3,$type,$minWidth,$maxWidth,$minHeight,$maxHeight,$ratio)");
 	}
 	
@@ -52,7 +52,7 @@ class Shift
 			$min = "null";
 		if($max === null)
 			$max = "null";
-		$id = $control->DistinctId;
+		$id = $control->Id;
 		return array($id,4,"Array(\"$id\",4,$type,$min,$max,null,null,$ratio)");
 	}
 	
@@ -62,7 +62,7 @@ class Shift
 			$min = "null";
 		if($max === null)
 			$max = "null";
-		$id = $control->DistinctId;
+		$id = $control->Id;
 		return array($id,5,"Array(\"$id\",5,$type,null,null,$min,$max,$ratio)");
 	}
 	
@@ -76,7 +76,7 @@ class Shift
 			$minTop = "null";
 		if($maxTop === null)
 			$maxTop = "null";
-		$id = $control->DistinctId;
+		$id = $control->Id;
 		return array($id,6,"Array(\"$id\",6,$type,$minLeft,$maxLeft,$minTop,$maxTop,$ratio)");
 	}
 	
@@ -86,7 +86,7 @@ class Shift
 			$min = 1;
 		if($max === null)
 			$max = "null";
-		return array($object->DistinctId,7,"$shiftType,0,$min,$max,null,null,$ratio)");
+		return array($object->Id,7,"$shiftType,0,$min,$max,null,null,$ratio)");
 	}
 }
 

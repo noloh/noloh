@@ -16,11 +16,11 @@ class TabControl extends Panel
 		$this->TabPagesPanel = new Panel(0, $this->TabControlBar->Height, $this->Width, ($this->Height - $this->TabControlBar->Height), $this);
 		//$this->TabPagesPanel->CSSLeft_Border = "1px solid #91a7b7";
 		//Added this line to Make the TabControl the TabPages Parent;
-		//$this->TabPagesPanel->Controls->ParentId = $this->DistinctId;
+		//$this->TabPagesPanel->Controls->ParentId = $this->Id;
 		$this->TabPages = &$this->TabPagesPanel->Controls;
 		//$this->TabPages->SpecialFunction = "AddTabPage";
 		$this->TabPages->AddFunctionName = "AddTabPage";
-		//$this->TabPages->SpecialObjectId = $this->DistinctId;
+		//$this->TabPages->SpecialObjectId = $this->Id;
 		$this->Controls->Add($this->TabControlBar);
 		$this->Controls->Add($this->TabPagesPanel);
 	}
@@ -47,16 +47,16 @@ class TabControl extends Panel
 			//Need to address the following line, currenty it breaks TabControl - Asher
 			//$this->TabControlBar->Controls->Item[$whatSelectedIndex]->SetSelected(true);
 			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent
-			QueueClientFunction($this, "SetTabPage", array("'$this->DistinctId'", "'{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->DistinctId}'","'{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->DistinctId}'"), Priority::Low);
-			//AddScript("SetTabPage('{$this->DistinctId}','{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->DistinctId}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->DistinctId}')", Priority::Low);
-			//AddScript("SetTabPage('{$this->DistinctId}', '{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->DistinctId}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->DistinctId}')");
+			QueueClientFunction($this, "SetTabPage", array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}'"), Priority::Low);
+			//AddScript("SetTabPage('{$this->Id}','{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}')", Priority::Low);
+			//AddScript("SetTabPage('{$this->Id}', '{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}')");
 		}
 	}
 	public function AddTabPage($whatTabPage)
 	{	
 		$temp = $whatTabPage->GetRolloverTab();
-		$temp->Click = new ClientEvent("SetTabPage('{$this->DistinctId}','{$temp->DistinctId}','{$whatTabPage->DistinctId}');");
-		$temp->TabPageId = $whatTabPage->DistinctId;
+		$temp->Click = new ClientEvent("SetTabPage('{$this->Id}','{$temp->Id}','{$whatTabPage->Id}');");
+		$temp->TabPageId = $whatTabPage->Id;
 		if($this->TabControlBar->Controls->Count() < 1)
 		{
 			$this->TabControlBar->Height = $temp->Height;

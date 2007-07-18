@@ -33,7 +33,7 @@ class WebPage extends Component
 			$this->Height = $_GET["NHeight"];
 		}
 		$this->Controls = new ArrayList();
-		$this->Controls->ParentId = $this->DistinctId;
+		$this->Controls->ParentId = $this->Id;
 		$this->SetTitle($title);
 		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, "AddCSSFile", "RemoveCSSFileAt", "ClearCSSFiles");
@@ -44,9 +44,9 @@ class WebPage extends Component
 		$this->Controls->Add($this->LoadLbl = new Label(" Loading...", 31, 4));
 		$this->LoadLbl->Opacity = 70;
 		$this->LoadLbl->CSSClass = "NLoad NLoadLbl";
-		unset($_SESSION['NOLOHPropertyQueue'][$this->LoadLbl->DistinctId]["style.zIndex"],$_SESSION['NOLOHPropertyQueue'][$this->LoadImg->DistinctId]["style.zIndex"]);
+		unset($_SESSION['NOLOHPropertyQueue'][$this->LoadLbl->Id]["style.zIndex"],$_SESSION['NOLOHPropertyQueue'][$this->LoadImg->Id]["style.zIndex"]);
 		//$this->LoadImg->ZIndex = $this->LoadLbl->ZIndex = null;
-		//AddScript("document.getElementById('{$this->LoadLbl->DistinctId}').style.zIndex=document.getElementById('{$this->LoadImg->DistinctId}').style.zIndex=999999");
+		//AddScript("document.getElementById('{$this->LoadLbl->Id}').style.zIndex=document.getElementById('{$this->LoadImg->Id}').style.zIndex=999999");
 		//require_once($_SERVER['DOCUMENT_ROOT'] ."/NOLOH/Javascripts/GetBrowserAndOs.php");
 		//require_once(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/GetBrowserAndOs.php");
 		
@@ -168,8 +168,8 @@ class WebPage extends Component
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
 			(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
-		AddScript("_NInit('{$this->LoadLbl->DistinctId}','{$this->LoadImg->DistinctId}')", Priority::High);
-		AddScript("SaveControl('$this->DistinctId')");
+		AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
+		AddScript("SaveControl('$this->Id')");
 		/*
 		parent::Show();
 		print(stripslashes("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n<HTML>\n<!-- Powered by NOLOH Alpha3 -->\n<!--      www.noloh.com      -->\n<HEAD id='NHead'>\n  <META HTTP-EQUIV='Pragma' CONTENT='no-cache'>\n  <TITLE>$this->Title</TITLE>\n"));
@@ -185,10 +185,10 @@ class WebPage extends Component
 			$_SESSION['NOLOHSrcScript'] = "";
 		}
 		print("  <NOSCRIPT><META http-equiv='refresh' content='0;url=".(empty($this->AlternativePath)?
-			"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html":"$this->AlternativePath")."'></NOSCRIPT>\n</HEAD>\n<BODY ID='$this->DistinctId'>\n");
+			"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html":"$this->AlternativePath")."'></NOSCRIPT>\n</HEAD>\n<BODY ID='$this->Id'>\n");
 		print("  <DIV id='NOLOHCSSFiles'></DIV>\n");
-		AddScript("_NInit('{$this->LoadLbl->DistinctId}','{$this->LoadImg->DistinctId}')", Priority::High);
-		AddScript("SaveControl('$this->DistinctId')");
+		AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
+		AddScript("SaveControl('$this->Id')");
 		print("</BODY>\n");
 		if(isset($_SESSION['UnlockNOLOHDebug']) && $_SESSION['UnlockNOLOHDebug'] == 'mddevmddev')
 		{
@@ -205,7 +205,7 @@ class WebPage extends Component
 	
 	function GetAddId()
 	{
-		return $this->DistinctId;
+		return $this->Id;
 	}
 }
 

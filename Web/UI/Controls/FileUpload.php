@@ -30,7 +30,7 @@ class FileUpload extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		$initialProperties .= ",'marginWidth',0,'marginHeight',0,'frameBorder',0,'scrolling','no','name','$this->DistinctId','src','".$_SERVER['PHP_SELF']."?NOLOHFileUpload={$this->DistinctId}&Width={$this->GetWidth()}&Height={$this->GetHeight()}'";
+		$initialProperties .= ",'marginWidth',0,'marginHeight',0,'frameBorder',0,'scrolling','no','name','$this->Id','src','".$_SERVER['PHP_SELF']."?NOLOHFileUpload={$this->Id}&Width={$this->GetWidth()}&Height={$this->GetHeight()}'";
 		NolohInternal::Show("IFRAME", $initialProperties, $this);
 	}
 	

@@ -234,7 +234,7 @@ class Control extends Component
 	function Show()
 	{
 		parent::Show();
-		return "'id','$this->DistinctId'";
+		return "'id','$this->Id'";
 	}
 	
 	function Hide()
@@ -531,7 +531,7 @@ class Control extends Component
 			$this->EventSpace = array();
 		return isset($this->EventSpace[$eventType]) 
 			? $this->EventSpace[$eventType]
-			: new Event(array(), array(array($this->DistinctId, $eventType)));
+			: new Event(array(), array(array($this->Id, $eventType)));
 	}
 	
 	function SetEvent($eventObj, $eventType)
@@ -539,7 +539,7 @@ class Control extends Component
 		if($this->EventSpace == null)
 			$this->EventSpace = array();
 		$this->EventSpace[$eventType] = $eventObj;
-		$pair = array($this->DistinctId, $eventType);
+		$pair = array($this->Id, $eventType);
 		if($eventObj != null && !in_array($pair, $eventObj->Handles))
 			$eventObj->Handles[] = $pair;
 		$this->UpdateEvent($eventType);
@@ -553,7 +553,7 @@ class Control extends Component
 	function GetEventString($eventType)
 	{
 		return isset($this->EventSpace[$eventType])
-			? $this->EventSpace[$eventType]->GetEventString($eventType, $this->DistinctId)
+			? $this->EventSpace[$eventType]->GetEventString($eventType, $this->Id)
 			: "";
 	}
 	
@@ -572,12 +572,12 @@ class Control extends Component
 	function AddShift($shift)
 	{
 		if($shift[1]==7)
-			QueueClientFunction($this, "AddShiftWith", array("'{$shift[0]}'", "Array(\"$this->DistinctId\"," . $shift[2]), false, Priority::High);
+			QueueClientFunction($this, "AddShiftWith", array("'{$shift[0]}'", "Array(\"$this->Id\"," . $shift[2]), false, Priority::High);
 		else
 		{
-			$fncStr = "document.getElementById('$this->DistinctId').Shifts.splice";
-			if(isset($_SESSION['NOLOHFunctionQueue'][$this->DistinctId]) && isset($_SESSION['NOLOHFunctionQueue'][$this->DistinctId][$fncStr]))
-				$_SESSION['NOLOHFunctionQueue'][$this->DistinctId][$fncStr][0][] = $shift[2];
+			$fncStr = "document.getElementById('$this->Id').Shifts.splice";
+			if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]) && isset($_SESSION['NOLOHFunctionQueue'][$this->Id][$fncStr]))
+				$_SESSION['NOLOHFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
 			else 
 				QueueClientFunction($this, $fncStr, array(-1, 0, $shift[2]));
 		}
@@ -597,7 +597,7 @@ class Control extends Component
 				  ($shift[1]==6 && ($curType==4||$curType==5)))
 				{
 					$this->Shifts->RemoveAt($i);
-					QueueClientFunction($this, "document.getElementById('$this->DistinctId').Shifts.splice", array($i,1), false);
+					QueueClientFunction($this, "document.getElementById('$this->Id').Shifts.splice", array($i,1), false);
 				}
 				elseif($curType==3)
 				{
@@ -624,7 +624,7 @@ class Control extends Component
 		$tmp = $this->Shifts[$arrayIndex];
 		$tmp[1] = $newType;
 		$this->Shifts[$arrayIndex] = $tmp;
-		QueueClientFunction($this, "ChangeShiftType", array("'$this->DistinctId'", $arrayIndex, $newType));
+		QueueClientFunction($this, "ChangeShiftType", array("'$this->Id'", $arrayIndex, $newType));
 	}
 	
 	function ClearShift()
@@ -650,7 +650,7 @@ class Control extends Component
 	
 	function GetAddId()
 	{
-		return $this->DistinctId;
+		return $this->Id;
 	}
 	
 	function &__get($nm)

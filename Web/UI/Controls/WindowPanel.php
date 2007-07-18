@@ -28,7 +28,7 @@ class WindowPanel extends Panel
 
 		parent::Panel($left, $top, $width, $height);
 		$this->WindowPanelComponents = new ArrayList();
-		$this->WindowPanelComponents->ParentId = $this->DistinctId;
+		$this->WindowPanelComponents->ParentId = $this->Id;
 		//$this->BodyPanel->SetWidth($width);
 		$this->BodyPanel->SetScrolling(System::Auto);
 		//$this->BodyPanel->AutoScroll = true;
@@ -83,19 +83,19 @@ class WindowPanel extends Panel
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
-		$this->CloseImage->Click["Hide"] = new ClientEvent("NOLOHChange('$this->DistinctId', 'style.visibility', 'hidden');");
+		$this->CloseImage->Click["Hide"] = new ClientEvent("NOLOHChange('$this->Id', 'style.visibility', 'hidden');");
 		$this->CloseImage->Click[] = new ServerEvent($this, "Close");
 				
 		/*
 		$closeE = new Event();
-		$closeE["Hide"] = new ClientEvent("document.getElementById('$this->DistinctId').style.visibility='hidden'");
+		$closeE["Hide"] = new ClientEvent("document.getElementById('$this->Id').style.visibility='hidden'");
 		$closeE = new ServerEvent($this, "Close");
 		$this->CloseImage->Click = $closeE;
 		*/
 		
 		/*if($this->WindowShade != false)
 		{
-			$this->TitleBar->DoubleClick = new ClientEvent("SwapWindowPanelShade('{$this->DistinctId}', '{$this->TitleBar->DistinctId}')");
+			$this->TitleBar->DoubleClick = new ClientEvent("SwapWindowPanelShade('{$this->Id}', '{$this->TitleBar->Id}')");
 		}*/
 		
 		$this->ResizeImage->Shifts[] = Shift::Size($this);
@@ -177,7 +177,7 @@ class WindowPanel extends Panel
 	
 	function GetAddId($whatObj)
 	{
-		return in_array($whatObj, $this->WindowPanelComponents->Item) ? $this->DistinctId : $this->BodyPanel->DistinctId;
+		return in_array($whatObj, $this->WindowPanelComponents->Item) ? $this->Id : $this->BodyPanel->Id;
 	}
 	
 	function Show()
@@ -187,8 +187,8 @@ class WindowPanel extends Panel
 	
 		//if($this->DropShadow == true)
 		//{
-		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->DistinctId}DS' style='POSITION:absolute; LEFT:".($this->Left + 10)."px; TOP:".($this->Top+10)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background-color:black; filter:alpha(opacity=100)'></DIV>\n");
-		//	AddScript("document.getElementById('{$this->DistinctId}').ShiftsWith = '{$this->DistinctId}DS'");
+		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->Id}DS' style='POSITION:absolute; LEFT:".($this->Left + 10)."px; TOP:".($this->Top+10)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background-color:black; filter:alpha(opacity=100)'></DIV>\n");
+		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
 		//}
 		NolohInternal::Show("DIV", $initialProperties, $this);
 	}

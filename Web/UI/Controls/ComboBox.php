@@ -29,7 +29,7 @@ class ComboBox extends ListControl
 	{
 		$preStr = "";
 		if($eventTypeAsString == "Change")
-			$preStr = "_NSave(\"$this->DistinctId\",\"selectedIndex\");";
+			$preStr = "_NSave(\"$this->Id\",\"selectedIndex\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	function AddItem($item)

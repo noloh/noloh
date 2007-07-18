@@ -20,15 +20,15 @@ class RolloverLabel extends Label
 		if(is_array($color))
 		{
 			$this->OutColor = $color;
-			$this->MouseOut = new ClientEvent("ChangeAndSave('$this->DistinctId', 'style.color', '{$color[0]}');");
-			$this->MouseOut[] = new ClientEvent("ChangeAndSave('$this->DistinctId', 'style.background', '{$color[1]}');");
+			$this->MouseOut = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '{$color[0]}');");
+			$this->MouseOut[] = new ClientEvent("ChangeAndSave('$this->Id', 'style.background', '{$color[1]}');");
 			$this->CSSColor = $color[0];
 			$this->CSSBackground = $color[1];
 		}
 		else
 		{
 			$this->CSSColor = $this->OutColor = $color;
-			$this->MouseOut = new ClientEvent("ChangeAndSave('$this->DistinctId', 'style.color', '$color');");
+			$this->MouseOut = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '$color');");
 		}
 	}
 	function GetOverColor()	{return $this->OverColor;}
@@ -37,11 +37,11 @@ class RolloverLabel extends Label
 		$this->OverColor = $color;
 		if(is_array($color))
 		{
-			$this->MouseOver = new ClientEvent("ChangeAndSave('$this->DistinctId', 'style.color', '{$color[0]}');");
-			$this->MouseOver[] = new ClientEvent("ChangeAndSave('$this->DistinctId', 'style.background', '{$color[1]}');");
+			$this->MouseOver = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '{$color[0]}');");
+			$this->MouseOver[] = new ClientEvent("ChangeAndSave('$this->Id', 'style.background', '{$color[1]}');");
 		}
 		else
-			$this->MouseOver = new ClientEvent("ChangeAndSave('$this->DistinctId', 'style.color', '$color');");
+			$this->MouseOver = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '$color');");
 	}
 	function GetSelectedColor()	{return $this->SelectedColor;}
 	function SetSelectedColor($color){$this->SelectedColor = $color;}

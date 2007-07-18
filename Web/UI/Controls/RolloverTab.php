@@ -107,7 +107,7 @@ class RolloverTab extends Panel
 			$this->OutTab = $whatOutTab;
 		$this->OutTab->SetWidth($this->Width);
 		if(!empty($whatOutTab))
-			$this->MouseOut = new ClientEvent("ChangeRolloverTab('{$this->DistinctId}','{$this->OutTab->DistinctId}');");
+			$this->MouseOut = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OutTab->Id}');");
 	}
 	function SetOverTab($whatOverTab)
 	{
@@ -121,7 +121,7 @@ class RolloverTab extends Panel
 		$this->OverTab->SetWidth($this->Width);
 		$this->OverTab->ClientVisible = false;
 		if(!empty($whatOverTab))
-			$this->MouseOver = new ClientEvent("ChangeRolloverTab('{$this->DistinctId}','{$this->OverTab->DistinctId}');");
+			$this->MouseOver = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OverTab->Id}');");
 	}
 	function SetDownTab($whatDownTab)
 	{
@@ -135,7 +135,7 @@ class RolloverTab extends Panel
 		$this->DownTab->SetWidth($this->Width);
 		$this->OverTab->ClientVisible = false;
 		if(!empty($whatDownTab))
-			$this->MouseDown = new ClientEvent("ChangeRolloverTab('{$this->DistinctId}','{$this->DownTab->DistinctId}');");
+			$this->MouseDown = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->DownTab->Id}');");
 	}
 	function SetSelectedTab($whatSelectedTab)
 	{
@@ -169,7 +169,7 @@ class RolloverTab extends Panel
 			if($tmpSelectedTab != null)
 			{
 				//Alert("I'm unselecting");
-//				Alert($tmpSelectedTab->DistinctId . " & " . $this->DistinctId);
+//				Alert($tmpSelectedTab->Id . " & " . $this->Id);
 					$tempGroup->SelectedRolloverTab->SetSelected(false);
 //				}
 //				$tempGroup->SetSelectedRolloverTab($this);
@@ -203,11 +203,11 @@ class RolloverTab extends Panel
 	{
 		$this->TextObject->BringToFront();
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/RolloverTab.js");
-		//AddScript("SetRolloverTabInitialProperties('{$this->DistinctId}', '{$this->OutTab->DistinctId}', '{$this->SelectedTab->DistinctId}')", Priority::High);
-		//QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->OutTab->DistinctId'", "'$this->SelectedTab->DistinctId'");
-		AddScript("SetRolloverTabInitialProperties('{$this->DistinctId}', '{$this->OutTab->DistinctId}', '{$this->SelectedTab->DistinctId}')");
+		//AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')", Priority::High);
+		//QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->OutTab->Id'", "'$this->SelectedTab->Id'");
+		AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')");
 		//Should it be?
-		//QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->DistinctId'", "{$this->OutTab->DistinctId}", "{$this->SelectedTab->DistinctId}");
+		//QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->Id'", "{$this->OutTab->Id}", "{$this->SelectedTab->Id}");
 		parent::Show();
 	}
 }

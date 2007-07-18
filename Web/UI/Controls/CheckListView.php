@@ -15,7 +15,7 @@ class CheckListView extends ListView
 			{
 				$tmpColumn = &new TableColumn(null, $this->Columns->Item[$i]->Width + $this->SpacerWidth);
 				$this->ResizeImages->Item[$i]->Shifts[] = Shift::Width($tmpColumn);
-				$this->ResizeImages->Item[$i]->Shifts[] = "Array(\"INNERCOLUMN{$tmpColumn->DistinctId}\",1,0,1,null,null,null,1)";
+				$this->ResizeImages->Item[$i]->Shifts[] = "Array(\"INNERCOLUMN{$tmpColumn->Id}\",1,0,1,null,null,null,1)";
 				//$this->ResizeImages->Item[$i]->Shifts[] = Shift::Width($tmpColumn);
 				$tempRow->Columns->Add($tmpColumn);
 			}
@@ -41,14 +41,14 @@ class CheckListView extends ListView
 			$whatListViewItem->ListView = $this;
 			$this->DataTable->Rows->Add($tempRow);
 			$this->ListViewItems->Add($whatListViewItem);
-			$this->Relationships[$whatListViewItem->DistinctId] = array('TableIndex' => $this->DataTable->Rows->Count() - 1, 'ColumnCount' => $tmpDiff);
+			$this->Relationships[$whatListViewItem->Id] = array('TableIndex' => $this->DataTable->Rows->Count() - 1, 'ColumnCount' => $tmpDiff);
 		}
 	}
 	function Update(ListViewItem $whatListViewItem = null)
 	{
 		if($whatListViewItem != null)
 		{
-			$tmpRelationship = &$this->Relationships[$whatListViewItem->DistinctId];
+			$tmpRelationship = &$this->Relationships[$whatListViewItem->Id];
 			$tmpRow = $this->DataTable->Rows->Item[$tmpRelationship['TableIndex']];
 			$tmpSubItemCount = $whatListViewItem->SubItems->Count();
 			if($tmpSubItemCount > $tmpRelationship['ColumnCount'] &&  $tmpRelationship['ColumnCount'] < $this->Columns->Count())

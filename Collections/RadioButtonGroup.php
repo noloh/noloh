@@ -8,13 +8,13 @@ class RadioButtonGroup extends RolloverGroup
 	{
 		parent::RolloverGroup();
 		$this->RadioButtons = new ArrayList();
-		$this->RadioButtons->ParentId = $this->DistinctId;
+		$this->RadioButtons->ParentId = $this->Id;
 	}
 	function Add(&$object, $passByReference = true)
 	{
 		if(!($object instanceof RadioButton))
 			BloodyMurder("Non-RadioButton added to a RadioButtonGroup.");
-		$object->GroupName = $this->DistinctId;
+		$object->GroupName = $this->Id;
 		$this->RadioButtons->Add($object, $passByReference);
 	}
 	function AddRange($dotDotDot)
@@ -24,7 +24,7 @@ class RadioButtonGroup extends RolloverGroup
 		{
 			if(!(func_get_arg($i) instanceof RadioButton))
 				BloodyMurder("Non-RadioButton added to a RadioButtonGroup.");
-			$this->Add(GetComponentById(func_get_arg($i)->DistinctId));
+			$this->Add(GetComponentById(func_get_arg($i)->Id));
 		}
 	}
 	//Deprecated

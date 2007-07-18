@@ -12,10 +12,10 @@ class GroupedInputControl extends Control
 		$this->Caption = new Label($text);
 		parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
-		//$this->Caption->Click = new ClientEvent("document.getElementById('$this->DistinctId').click()");
-		//$this->Caption->Click = new ClientEvent("var obj=document.getElementById('$this->DistinctId');var val=obj.checked;obj.click();if(val!=obj.checked&&obj.onchange!=null) obj.onchange.call();");
-		$this->Caption->Click = new ClientEvent("CaptionClick('$this->DistinctId')");
-		$this->GroupName = $this->DistinctId;
+		//$this->Caption->Click = new ClientEvent("document.getElementById('$this->Id').click()");
+		//$this->Caption->Click = new ClientEvent("var obj=document.getElementById('$this->Id');var val=obj.checked;obj.click();if(val!=obj.checked&&obj.onchange!=null) obj.onchange.call();");
+		$this->Caption->Click = new ClientEvent("CaptionClick('$this->Id')");
+		$this->GroupName = $this->Id;
 	}
 	function GetText()
 	{

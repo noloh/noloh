@@ -32,9 +32,9 @@ class MenuItem extends Container
 		$this->MenuItems->AddFunctionName = "AddMenuItem";
 		
 		//New Way
-		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->DistinctId}','{$this->MainMenuPanel->DistinctId}', false); document.getElementById('{$this->TextLabel->DistinctId}').style.background = '{$this->OverBackColor}'; document.getElementById('{$this->TextLabel->DistinctId}').style.color = '{$this->OverTextColor}';");
-		//$this->MouseOut = new ClientEvent("ChangeMenuOutColors('{$this->DistinctId}','{$this->OutBackColor}', '{$this->OutTextColor}')");
-		$this->TextLabel->MouseOut[] = new ClientEvent("document.getElementById('{$this->TextLabel->DistinctId}').style.background = '{$this->OutBackColor}'; document.getElementById('{$this->TextLabel->DistinctId}').style.color = '{$this->OutTextColor}';");
+		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false); document.getElementById('{$this->TextLabel->Id}').style.background = '{$this->OverBackColor}'; document.getElementById('{$this->TextLabel->Id}').style.color = '{$this->OverTextColor}';");
+		//$this->MouseOut = new ClientEvent("ChangeMenuOutColors('{$this->Id}','{$this->OutBackColor}', '{$this->OutTextColor}')");
+		$this->TextLabel->MouseOut[] = new ClientEvent("document.getElementById('{$this->TextLabel->Id}').style.background = '{$this->OutBackColor}'; document.getElementById('{$this->TextLabel->Id}').style.color = '{$this->OutTextColor}';");
 		$this->Controls->AddRange($this->TextLabel, $this->MainMenuPanel);
 	}
 	function AddMenuItem(MenuItem $menuItem)
@@ -50,7 +50,7 @@ class MenuItem extends Container
 			//$this->Controls->Add($tempImage);
 			//NolohInternal::SetProperty("HasChildren", "true", $this->TextLabel);
 			NolohInternal::SetProperty("ChildrenArray", "Array()", $this->MainMenuPanel);
-			//AddScript("document.getElementById('{$this->TextLabel->DistinctId}').HasChildren = true; document.getElementById('{$this->MainMenuPanel->DistinctId}').ChildrenArray = new Array();");
+			//AddScript("document.getElementById('{$this->TextLabel->Id}').HasChildren = true; document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray = new Array();");
 		}
 		if($this->MainMenuPanel->GetWidth() < $menuItem->GetWidth())
 		{
@@ -63,15 +63,15 @@ class MenuItem extends Container
 			$menuItem->Width = $this->MainMenuPanel->Width;
 		$this->MainMenuPanel->Height += $menuItem->Height;
 		$this->MainMenuPanel->Controls->Add($menuItem, true, true);
-		//QueueClientFunction($this, "document.getElementById('{$this->MainMenuPanel->DistinctId}').ChildrenArray.push", array("'{$menuItem->TextLabel->DistinctId}'"));
-		$tmpId = $this->MainMenuPanel->DistinctId;
+		//QueueClientFunction($this, "document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray.push", array("'{$menuItem->TextLabel->Id}'"));
+		$tmpId = $this->MainMenuPanel->Id;
 		$fncStr = "document.getElementById('$tmpId').ChildrenArray.splice";
 		if(isset($_SESSION['NOLOHFunctionQueue'][$tmpId]) && isset($_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr]))
-			$_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->TextLabel->DistinctId}'";
+			$_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->TextLabel->Id}'";
 		else 
-			QueueClientFunction($this->MainMenuPanel, $fncStr, array(-1, 0, "'{$menuItem->TextLabel->DistinctId}'"));
+			QueueClientFunction($this->MainMenuPanel, $fncStr, array(-1, 0, "'{$menuItem->TextLabel->Id}'"));
 		NolohInternal::SetProperty("MenuPanelParentId", $tmpId, $menuItem->TextLabel);
-		//AddScript("document.getElementById('{$this->MainMenuPanel->DistinctId}').ChildrenArray.push('{$menuItem->TextLabel->DistinctId}'); document.getElementById('{$menuItem->TextLabel->DistinctId}').MenuPanelParentId = '{$this->MainMenuPanel->DistinctId}';");
+		//AddScript("document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray.push('{$menuItem->TextLabel->Id}'); document.getElementById('{$menuItem->TextLabel->Id}').MenuPanelParentId = '{$this->MainMenuPanel->Id}';");
 		if(!$this->Parent instanceof MainMenu)
 			$this->TextLabel->MouseOut->Enabled = false;
 		return $menuItem;

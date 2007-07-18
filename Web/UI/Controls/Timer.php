@@ -27,14 +27,14 @@ class Timer extends Component
 	function GetElapsed()
 	{
 		if($this->Elapsed == null)
-			$this->Elapsed = new Event(array(), array(array($this->DistinctId, "Elapsed")));
+			$this->Elapsed = new Event(array(), array(array($this->Id, "Elapsed")));
 		return $this->Elapsed;
 	}
 	
 	function SetElapsed($newElapsed)
 	{
 		$this->Elapsed = $newElapsed;
-		$pair = array($this->DistinctId, "Elapsed");
+		$pair = array($this->Id, "Elapsed");
 		if($newElapsed != null && !in_array($pair, $newElapsed->Handles))
 			$newElapsed->Handles[] = $pair;
 		$this->UpdateEvent("Elapsed");
@@ -47,7 +47,7 @@ class Timer extends Component
 	
 	function UpdateEvent($eventType)
 	{
-		QueueClientFunction($this, "NOLOHChangeByObj", array("window.$this->DistinctId", "'onelapsed'", "'".$this->Elapsed->GetEventString("Elapsed",$this->DistinctId)."'"));
+		QueueClientFunction($this, "NOLOHChangeByObj", array("window.$this->Id", "'onelapsed'", "'".$this->Elapsed->GetEventString("Elapsed",$this->Id)."'"));
 	}
 	
 	function GetRepeat()
@@ -67,7 +67,7 @@ class Timer extends Component
 	function Show()
 	{
 		parent::Show();
-		$ref = "window.$this->DistinctId";
+		$ref = "window.$this->Id";
 		AddScript("$ref = new Object(); $ref.timer = set" . ($this->Repeat?"Interval":"Timeout")
 			. "('if($ref.onelapsed!=null) $ref.onelapsed.call();'," . $this->Interval . ");");
 	}

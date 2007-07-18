@@ -143,14 +143,10 @@ function GetBrowser()
 */
 function AddScriptSrc($src)
 {
-	if(!in_array($src, $_SESSION['NOLOHScriptSrcs']))
+	if(!isset($_SESSION['NOLOHScriptSrcs'][$src]))
 	{
 		print(file_get_contents($src));
-		/*if(isset($_SESSION['UnlockNOLOHDebug']) && $_SESSION['UnlockNOLOHDebug'] == 'mddevmddev')
-			$_SESSION['NOLOHSrcScript'] .= $buffer;
-		else
-			$_SESSION['NOLOHSrcScript'] .= $buffer;*/
-		$_SESSION['NOLOHScriptSrcs'][] = $src;
+		$_SESSION['NOLOHScriptSrcs'][$src] = true;
 	}
 }
 
@@ -158,7 +154,7 @@ function QueueClientFunction(Component $whatObj, $functionName, $paramsArray, $r
 {
 	if(!isset($GLOBALS["PropertyQueueDisabled"]))
 	{
-		$objId = $whatObj->DistinctId;
+		$objId = $whatObj->Id;
 		if(!isset($_SESSION['NOLOHFunctionQueue'][$objId]))
 			$_SESSION['NOLOHFunctionQueue'][$objId] = array();
 		if($replace)
@@ -175,9 +171,9 @@ function UnlockNOLOHDebug($password)
 	$_SESSION['UnlockNOLOHDebug'] = $password;
 }
 /**
-* Gets a Component by it's DistinctId
-* @param string|DistinctId
-* @return Component|Component with DistinctId specified by $whatId
+* Gets a Component by it's Id
+* @param string|Id
+* @return Component|Component with Id specified by $whatId
 */
 function &GetComponentById($whatId)
 {
@@ -298,7 +294,7 @@ function IsSubclassWeaklyOf($Object, $ClassAsString)
 
 function CreatePointer($obj)
 {
-	return "NOLOH" . $obj->DistinctId;
+	return "NOLOH" . $obj->Id;
 }
 /**
 * @ignore

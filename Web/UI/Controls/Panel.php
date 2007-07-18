@@ -19,7 +19,7 @@ class Panel extends Guardian
 	}		
 	function OpenPrintableVersion()
 	{
-		AddScript("var oldNode = document.getElementById('$this->DistinctId'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
+		AddScript("var oldNode = document.getElementById('$this->Id'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
 	}
 	function SetScrolling($scrollType)
 	{
@@ -115,24 +115,24 @@ class Panel extends Guardian
 		
 //			if(false && $this->SelectFix && (GetBrowser() == "ie"))
 //			{
-//				$initialProperties = "'id','{$this->DistinctId}IFRAME','style.position','absolute','style.left','{$this->Left}px','style.top','{$this->Top}px','style.width','{$this->Width}px','style.height','{$this->Height}px','src','javascript:false','scrolling','no','frameborder','0'";
+//				$initialProperties = "'id','{$this->Id}IFRAME','style.position','absolute','style.left','{$this->Left}px','style.top','{$this->Top}px','style.width','{$this->Width}px','style.height','{$this->Height}px','src','javascript:false','scrolling','no','frameborder','0'";
 //				NolohInternal::Show("IFRAME", $initialProperties, $this);
-//				AddScript("document.getElementById('{$this->DistinctId}').ShiftsWith = '{$this->DistinctId}IFRAME'");
+//				AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 //			}
 		
 		
 		/*
 		if($showIFrame)
-			$dispStr .= "<IFRAME ID = '{$this->DistinctId}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px;' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>";
+			$dispStr .= "<IFRAME ID = '{$this->Id}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px;' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>";
 		//if($this->DropShadow == true)
 		//{
-		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->DistinctId}DS' style='POSITION:absolute; LEFT:".($this->Left + 5)."px; TOP:".($this->Top+5)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background:black; filter:alpha(opacity=20)'></DIV>\n");
-		//	AddScript("document.getElementById('{$this->DistinctId}').ShiftsWith = '{$this->DistinctId}DS'");
+		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->Id}DS' style='POSITION:absolute; LEFT:".($this->Left + 5)."px; TOP:".($this->Top+5)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background:black; filter:alpha(opacity=20)'></DIV>\n");
+		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
 		//}
 			/*else
 			{
-				print(str_repeat("  ", $IndentLevel) . "<IFRAME ID = '{$this->DistinctId}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; filter: alpha(opacity=0)' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>\n");
-				AddScript("document.getElementById('{$this->DistinctId}').ShiftsWith = '{$this->DistinctId}IFRAME'");
+				print(str_repeat("  ", $IndentLevel) . "<IFRAME ID = '{$this->Id}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; filter: alpha(opacity=0)' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>\n");
+				AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 			}*
 		
 		$dispStr .= "<DIV " . $parentShow;
@@ -143,7 +143,7 @@ class Panel extends Guardian
 		NolohInternal::Show($dispStr, $this);*/
 		//$this->IterateThroughAllControls();
 		//if($showIFrame)
-		//	AddScript("document.getElementById('{$this->DistinctId}').ShiftsWith = '{$this->DistinctId}IFRAME'");
+		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 
 		return $initialProperties;
 	}

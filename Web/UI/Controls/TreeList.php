@@ -27,9 +27,9 @@ class TreeList extends Panel
 	}
 	private function AddNodeHelper(TreeNode $node)
 	{
-		$node->SetTreeListId($this->DistinctId);
+		$node->SetTreeListId($this->Id);
 		$node->ListIndex = $this->TreeNodesList->Items->Count();
-		$this->TreeNodesList->Items->Add(new Item($node->DistinctId, $node->NodeElement->DistinctId));
+		$this->TreeNodesList->Items->Add(new Item($node->Id, $node->NodeElement->Id));
 		$nodeControlCount = $node->NodePanel->Controls->Count();
 		for($i = 0; $i < $nodeControlCount; ++$i)
 			$this->AddNodeHelper($node->NodePanel->Controls->Item[$i]);
@@ -100,8 +100,8 @@ class TreeList extends Panel
 	function Show()
 	{	
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TreeListScripts.js");
-		//AddScript("document.getElementById('" . $this->DistinctId . "').treeNodesList = document.getElementById('" . $this->TreeNodesList->DistinctId . "');");
-		AddScript("document.getElementById('" . $this->DistinctId . "').treeNodesList = '" . $this->TreeNodesList->DistinctId . "';");
+		//AddScript("document.getElementById('" . $this->Id . "').treeNodesList = document.getElementById('" . $this->TreeNodesList->Id . "');");
+		AddScript("document.getElementById('" . $this->Id . "').treeNodesList = '" . $this->TreeNodesList->Id . "';");
 		parent::Show();
 	}
 }

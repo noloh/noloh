@@ -120,11 +120,11 @@ abstract class ListControl extends Control
 	
 	public function SetSelectedIndex($index)
 	{
-		//AddScript("document.getElementById('$this->DistinctId').options[$whatIndex].selected=true");
+		//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=true");
 		//NolohInternal::SetProperty("options[$whatIndex].selected", true, $this);
 		//$tmpIndex = $index == "first"?0:$index;	
-		//QueueClientFunction($this, "document.getElementById('$this->DistinctId').options[$index].selected=true;void", array(0), true, Priority::Low);
-		QueueClientFunction($this, "_NListSel", array("'$this->DistinctId'", $index), false);
+		//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
+		QueueClientFunction($this, "_NListSel", array("'$this->Id'", $index), false);
 		if(/*$this->GetSelectedIndex() !== $index && */$this->Change != null /*&& $index != "first"*/)
 			$this->Change->Exec();
 	}
@@ -134,17 +134,17 @@ abstract class ListControl extends Control
 		//Alert("Adding Items");
 		//if(func_num_args()==1)
 			$this->Items->Add($item, true, true);
-		//QueueClientFunction($this, "document.getElementById('$this->DistinctId').options.add", array("new Option('$item->Text','$item->Value')"), false);
-		QueueClientFunction($this, "_NListAdd", array("'$this->DistinctId'", "'$item->Text'", "'$item->Value'"), false);
-		//AddScript("document.getElementById('$this->DistinctId').options.add(new Option('$item->Text','$item->Value'))");
+		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
+		QueueClientFunction($this, "_NListAdd", array("'$this->Id'", "'$item->Text'", "'$item->Value'"), false);
+		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	
 	public function InsertItem($item, $index)
 	{
 		$this->Items->Insert($item, $index, true);
-		//QueueClientFunction($this, "document.getElementById('$this->DistinctId').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
-		QueueClientFunction($this, "_NListAdd", array("'$this->DistinctId'", "'$item->Text'", "'$item->Value'", $index), false);
-		//AddScript("document.getElementById('$this->DistinctId').options.add(new Option('$item->Text','$item->Value'),$index)");
+		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
+		QueueClientFunction($this, "_NListAdd", array("'$this->Id'", "'$item->Text'", "'$item->Value'", $index), false);
+		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
 	
 	public function RemoveItemAt($index)
@@ -152,20 +152,20 @@ abstract class ListControl extends Control
 		//We should decide whether this should be commented - Asher
 		//if(func_num_args()==1)
 			$this->Items->RemoveAt($index, true);
-		//QueueClientFunction($this, "document.getElementById('$this->DistinctId').options.remove", array($index), false);
-		QueueClientFunction($this, "_NListRem", array("'$this->DistinctId'", $index), false);
-		//AddScript("document.getElementById('$this->DistinctId').remove($index)");
+		//QueueClientFunction($this, "document.getElementById('$this->Id').options.remove", array($index), false);
+		QueueClientFunction($this, "_NListRem", array("'$this->Id'", $index), false);
+		//AddScript("document.getElementById('$this->Id').remove($index)");
 	}
 	
 	public function ClearItems()
 	{
 		//if(func_num_args()==0)
 			$this->Items->Clear(false, true);
-		//AddScript("document.getElementById('$this->DistinctId').options.length=0);");
+		//AddScript("document.getElementById('$this->Id').options.length=0);");
 		//Changed previos line to SetProperty
 		//NolohInternal::SetProperty("options.length", 0, $this);
-		//QueueClientFunction($this, "document.getElementById('$this->DistinctId').options.length=0;void", array(0), false);
-		QueueClientFunction($this, "_NListClr", array("'$this->DistinctId'"), false);
+		//QueueClientFunction($this, "document.getElementById('$this->Id').options.length=0;void", array(0), false);
+		QueueClientFunction($this, "_NListClr", array("'$this->Id'"), false);
 	}
 	
 	function GetEventString($whatEventTypeAsString)

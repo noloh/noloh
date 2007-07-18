@@ -11,7 +11,7 @@ class Table extends Control
 	{
 		parent::Control($left, $top, $width, $height);
 		$this->Rows = new ArrayList();
-		$this->Rows->ParentId = $this->DistinctId;
+		$this->Rows->ParentId = $this->Id;
 	}
 	function BuildTable($numRows, $numCols, $typeAsString, $params="")
 	{
@@ -31,7 +31,7 @@ class Table extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		$id = $this->DistinctId;
+		$id = $this->Id;
 		$initialProperties .= ",'style.overflow','auto'";
 		NolohInternal::Show("DIV", $initialProperties, $this);
 		$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.borderCollapse','collapse','style.position','relative','style.width','{$this->Width}px','style.height','{$this->Height}px'";
@@ -42,9 +42,9 @@ class Table extends Control
 		$initialProperties = "'id','{$id}InnerTBody', 'style.position','relative'";
 		NolohInternal::Show("TBODY", $initialProperties, $this, $id."InnerTable");
 		if($this->ScrollLeft != null)
-			AddScript("document.getElementById('$this->DistinctId').scrollLeft = $this->ScrollLeft;");
+			AddScript("document.getElementById('$this->Id').scrollLeft = $this->ScrollLeft;");
 		if($this->ScrollTop != null)
-			AddScript("document.getElementById('$this->DistinctId').scrollTop = $this->ScrollTop;");
+			AddScript("document.getElementById('$this->Id').scrollTop = $this->ScrollTop;");
 	}
 }
 ?>

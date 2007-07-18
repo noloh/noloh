@@ -10,7 +10,7 @@ class CheckBox extends GroupedInputControl
 	{
 		$preStr = "";
 		if($whatEventTypeAsString == "Click")
-			$preStr = "_NSave(\"$this->DistinctId\",\"checked\");";
+			$preStr = "_NSave(\"$this->Id\",\"checked\");";
 		return $preStr . parent::GetEventString($whatEventTypeAsString);
 	}
 	function Show()

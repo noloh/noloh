@@ -27,7 +27,7 @@ class ServerEvent extends Event
 	{
 		$arr = array();
 		foreach($this->Uploads as $ul)
-			$arr[] = "\\\"" . $ul->DistinctId . "\\\"";
+			$arr[] = "\\\"" . $ul->Id . "\\\"";
 		return $arr;
 	}
 	

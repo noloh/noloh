@@ -20,13 +20,13 @@ class Calendar extends Panel
 		$this->MonthYearLabel = new Label("Out of Service", 0, 0, $width, 25);
 		$this->MonthYearLabel->SetCSSClass("NCalHead");
 		$LeftYear = new Button("<<", 0, 0, 25, 25);
-		$LeftYear->Click = new ClientEvent("LastYear('" . $this->DistinctId . "')");
+		$LeftYear->Click = new ClientEvent("LastYear('$this->Id')");
 		$RightYear = new Button(">>", $width-25, 0, 25, 25);
-		$RightYear->Click = new ClientEvent("NextYear('" . $this->DistinctId . "')");
+		$RightYear->Click = new ClientEvent("NextYear('$this->Id')");
 		$LeftMonth = new Button("<", 25, 0, 25, 25);
-		$LeftMonth->Click = new ClientEvent("LastMonth('" . $this->DistinctId . "')");
+		$LeftMonth->Click = new ClientEvent("LastMonth('$this->Id')");
 		$RightMonth = new Button(">", $width-50, 0, 25, 25);
-		$RightMonth->Click = new ClientEvent("NextMonth('" . $this->DistinctId . "')");
+		$RightMonth->Click = new ClientEvent("NextMonth('$this->Id')");
 		$this->Controls->AddRange($this->MonthYearLabel, $LeftYear, $RightYear, $LeftMonth, $RightMonth/*, $this->CalendarTable*/);
 		for($i=6; $i>=0; --$i)
 		{
@@ -38,7 +38,7 @@ class Calendar extends Panel
 			{
 				$this->Controls->Add($lbl = &new Label("", $j*31, 33+23*$i, 31));
 				$lbl->SetCSSClass("NCalCell");
-				$lbl->SetMouseUp(new ClientEvent('CalSelectDate(event,"'. $this->DistinctId . '")'));
+				$lbl->SetMouseUp(new ClientEvent("CalSelectDate(event,'$this->Id')"));
 			}
 		$this->SetUNIXEpoch($UNIXEpochTime);
 	}
@@ -127,10 +127,10 @@ class Calendar extends Panel
 	
 	function UpdateClient()
 	{
-		//QueueClientFunction($this, "ShowCalendar", "'$this->DistinctId'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year);
-		QueueClientFunction($this, "ShowCalendar", array("'$this->DistinctId'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
+		//QueueClientFunction($this, "ShowCalendar", "'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year);
+		QueueClientFunction($this, "ShowCalendar", array("'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
 		/*if($this->HasShown())
-			AddScript('ShowCalendar("' . $this->DistinctId . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
+			AddScript('ShowCalendar("' . $this->Id . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
 				$this->Date . ', ' . $this->Month . ', ' . $this->Year . ');'/*, Priority::High);*/
 	}
 	

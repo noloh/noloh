@@ -57,7 +57,7 @@ class TextBox extends Control
 
 		$preStr = "";
 		if($whatEventTypeAsString == "Change")
-			$preStr = "_NSave(\"$this->DistinctId\",\"value\");";
+			$preStr = "_NSave(\"$this->Id\",\"value\");";
 		return $preStr . parent::GetEventString($whatEventTypeAsString);
 	}
 		

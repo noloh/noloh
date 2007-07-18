@@ -69,16 +69,16 @@
 				$this->Controls = new ImplicitArrayList(null);
 			else 
 				$this->Controls = new ImplicitArrayList($implicitObject);
-			$this->Controls->ParentId = $this->DistinctId;
+			$this->Controls->ParentId = $this->Id;
 		}
 
 		function Show()
 		{
 			$parentShow = parent::Show();
 			if($this->ScrollLeft != null)
-				AddScript("document.getElementById('$this->DistinctId').scrollLeft = $this->ScrollLeft;");
+				AddScript("document.getElementById('$this->Id').scrollLeft = $this->ScrollLeft;");
 			if($this->ScrollTop != null)
-				AddScript("document.getElementById('$this->DistinctId').scrollTop = $this->ScrollTop;");
+				AddScript("document.getElementById('$this->Id').scrollTop = $this->ScrollTop;");
 
 			return $parentShow;
 		}

@@ -10,7 +10,7 @@ class RadioButton extends GroupedInputControl
 	{
 		$preStr = "";
 		if($eventTypeAsString == "Click")
-			$preStr = "RadioButtonSave(\\\"$this->DistinctId\\\");";
+			$preStr = "RadioButtonSave(\\\"$this->Id\\\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	function Show()

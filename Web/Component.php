@@ -18,19 +18,19 @@
  * A component has a <b>Parent</b>, which establishes
  * a tree based on the parent-child relationship.
  *
- * Each component has an <b>DistinctId</b> that uniquely identifies itself among
+ * Each component has an <b>Id</b> that uniquely identifies itself among
  * all other components. 
  *
  * Properties
- * - <b>DistinctId</b>, string, read-only
- *   <br>Gets the DistinctId of this Component
+ * - <b>Id</b>, string, read-only
+ *   <br>Gets the Id of this Component
  * - <b>Opacity</b>, integer,
  *   <br>Gets or Sets the Opacity of this Component
  * - <b>Parent</b>, Component, read-only
  *   <br>Gets the component's parent component in the Application.
  *   Note, a webpage has no parent and it's Parent property is null.
  * - <b>ParentId</b>, string,
- *   <br>Gets or Sets the DistinctId of the Parent of this Component
+ *   <br>Gets or Sets the Id of the Parent of this Component
  * - <b>ScrollLeft</b>, integer,
  *   <br>Gets or Sets the ScrollLeft ot this Component
  * - <b>ScrollTop</b>, integer,
@@ -52,10 +52,10 @@ class Component extends Object
 	*/
 	public $ServerVisible;
 	/**
-	 * DistinctId of the component
+	 * Id of the component
 	 * @var string
 	 */
-	public $DistinctId;
+	public $Id;
 	/**
 	 * ParentId of the component
 	 * @var string
@@ -83,7 +83,7 @@ class Component extends Object
 		$bool = $whatParentId != null;
 		if($bool)
 			$this->ParentId = $whatParentId;
-		$_SESSION['NOLOHControlQueue'][$this->DistinctId] = $bool;
+		$_SESSION['NOLOHControlQueue'][$this->Id] = $bool;
 	}
 	/**
 	 * Constructor.
@@ -94,9 +94,9 @@ class Component extends Object
 	function Component()
 	{
 		$this->ShowStatus = 0;
-		$this->DistinctId = "N" . ++$_SESSION['NOLOHNumberOfComponents'];
+		$this->Id = "N" . ++$_SESSION['NOLOHNumberOfComponents'];
 		global $OmniscientBeing;
-		$OmniscientBeing[$this->DistinctId] = &$this;
+		$OmniscientBeing[$this->Id] = &$this;
 	}
 	/**
 	 * Shows the Component.
@@ -196,7 +196,7 @@ class Component extends Object
 	function Equals(Component &$obj)
 	{
 		global $OmniscientBeing;
-		$OmniscientBeing[$this->DistinctId] = $obj;
+		$OmniscientBeing[$this->Id] = $obj;
 	}
 	
 	function SetPropertyByReference($whatPropertyNameAsString, &$whatValue)
@@ -206,14 +206,14 @@ class Component extends Object
 	
 	function __toString()
 	{
-		return $this->DistinctId;
+		return $this->Id;
 	}
 	
 	function __destruct()
 	{
 		if(isset($GLOBALS["NOLOHGarbage"]))
 		{
-			$id = $this->DistinctId;
+			$id = $this->Id;
 			unset($_SESSION['NOLOHControlQueue'][$id],
 				$_SESSION['NOLOHFunctionQueue'][$id],
 				$_SESSION['NOLOHPropertyQueue'][$id]);
@@ -224,16 +224,16 @@ class Component extends Object
 	function Show()
 	{	
 		$this->ShowStatus = null;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->DistinctId]))
-			unset($_SESSION['NOLOHControlQueue'][$this->DistinctId]);
+		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
 	}
 	
 	function Hide()
 	{
 		$this->ShowStatus = 2;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->DistinctId]))
+		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
 		{
-			unset($_SESSION['NOLOHControlQueue'][$this->DistinctId]);
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
 			$this->ParentId = null;
 		}
 		return true;
@@ -242,8 +242,8 @@ class Component extends Object
 	function Resurrect()
 	{
 		$this->ShowStatus = null;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->DistinctId]))
-			unset($_SESSION['NOLOHControlQueue'][$this->DistinctId]);
+		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
 		return true;
 	}
 	

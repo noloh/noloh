@@ -8,7 +8,7 @@ class RolloverTabGroup extends RolloverGroup
 		parent::RolloverGroup();
 		$this->RolloverTabs = new ImplicitArrayList($this, "Add");
 		$this->RolloverTabs->InsertFunctionName = "Insert";
-		$this->RolloverTabs->ParentId = $this->DistinctId;
+		$this->RolloverTabs->ParentId = $this->Id;
 	}
 	function GetRolloverTabs()	{return $this->RolloverTabs;}
 	function Add(&$whatObject, $PassByReference = true)
@@ -17,7 +17,7 @@ class RolloverTabGroup extends RolloverGroup
 			BloodyMurder("Non-RolloverTab added to a RolloverTabGroup.");
 		//if($this->RolloverTabs->Count() == 0)
 			//$whatObject->Selected = true;
-		$whatObject->GroupName = $this->DistinctId;
+		$whatObject->GroupName = $this->Id;
 		$this->RolloverTabs->Add($whatObject, $PassByReference, true);
 	}
 	function AddRange($dotDotDot)
@@ -28,15 +28,15 @@ class RolloverTabGroup extends RolloverGroup
 			$object = &func_get_arg($i);
 			if(!($object instanceof RolloverTab))
 				BloodyMurder("Non-RolloverTab added to a RolloverTabGroup.");
-			$object->GroupName = $this->DistinctId;
-			$this->RolloverTabs->Add(GetComponentById($object->DistinctId), true, true);
+			$object->GroupName = $this->Id;
+			$this->RolloverTabs->Add(GetComponentById($object->Id), true, true);
 		}
 	}
 	function Insert($obj, $index)
 	{
 		if(!($obj instanceof RolloverTab))
 			BloodyMurder("Non-RolloverTab inserted to a RolloverTabGroup.");
-		$obj->GroupName = $this->DistinctId;
+		$obj->GroupName = $this->Id;
 		$this->RolloverTabs->Insert($obj, $index, true);
 	}
 	function GetSelectedIndex()

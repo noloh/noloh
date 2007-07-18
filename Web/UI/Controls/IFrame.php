@@ -59,7 +59,7 @@ class IFrame extends Control
 	function IFrame($whatSrc ="", $whatLeft=0, $whatTop=0, $whatWidth=300, $whatHeight=300)
 	{
 		Control::Control($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		$this->HtmlName = $this->DistinctId;
+		$this->HtmlName = $this->Id;
 		$this->SetSrc($whatSrc);
 	}
 	

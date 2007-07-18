@@ -33,7 +33,7 @@ class Label extends Control
 		//$this->AutoWidthHeight();
 		$this->ResetCache();
 		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $newText), $this);
-		//QueueClientFunction($this, "SetLabelText", array("'$this->DistinctId'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
+		//QueueClientFunction($this, "SetLabelText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
 	}
 	
 	function SetCSSClass($cssClass=null)
@@ -98,7 +98,7 @@ class Label extends Control
 		$width = parent::GetWidth();
 		$height = parent::GetHeight();
 		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
-			QueueClientFunction($this, "_NAWH", array("'$this->DistinctId'"));
+			QueueClientFunction($this, "_NAWH", array("'$this->Id'"));
 	}
 	
 	function GetAlign()
@@ -203,11 +203,11 @@ class Label extends Control
 		$txt = new TextBox($this->Left, $this->Top, $this->Width, $this->Height);
 		$txt->Text = $this->Text;
 		$this->ClientVisible = false;
-		$txt->LoseFocus = new ClientEvent("_NSave('$txt->DistinctId','value');");
-		$txt->LoseFocus[] = new ServerEvent($txt, "EditComplete", $this->DistinctId);
-		$txt->ReturnKey = new ClientEvent("document.getElementById('$txt->DistinctId').blur()");
+		$txt->LoseFocus = new ClientEvent("_NSave('$txt->Id','value');");
+		$txt->LoseFocus[] = new ServerEvent($txt, "EditComplete", $this->Id);
+		$txt->ReturnKey = new ClientEvent("document.getElementById('$txt->Id').blur()");
 		$this->Parent->Controls->Add($txt);
-		AddScript("document.getElementById('$txt->DistinctId').select();");
+		AddScript("document.getElementById('$txt->Id').select();");
 	}
 	
 	private function AutoWidthHeight()

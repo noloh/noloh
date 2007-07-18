@@ -9,7 +9,7 @@ class Form extends Guardian
 	function Form($whatAction ="", $whatLeft = 0, $whatTop = 0, $whatWidth = 800, $whatHeight = 600, $method = "POST" )  
 	{
 		parent::Guardian($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		$this->HtmlName = $this->DistinctId;
+		$this->HtmlName = $this->Id;
 		$this->Method = $method;
 		$this->Action = $whatAction;
 	}

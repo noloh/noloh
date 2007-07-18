@@ -31,7 +31,7 @@ final class NolohInternal
 				elseif($control->GetShowStatus()!==0)
 					$control->Hide();
 			}
-			elseif(isset($_SESSION['NOLOHControlQueue'][$parent->DistinctId]) && $_SESSION['NOLOHControlQueue'][$parent->DistinctId] && func_num_args()==2)
+			elseif(isset($_SESSION['NOLOHControlQueue'][$parent->Id]) && $_SESSION['NOLOHControlQueue'][$parent->Id] && func_num_args()==2)
 			{
 				self::ShowControl($parent, true);
 				self::ShowControl($control, $whatBool, false);
@@ -45,7 +45,7 @@ final class NolohInternal
 	{
 		$parent = $whatObj->GetParent();
 
-		$propertiesString = self::GetPropertiesString($whatObj->DistinctId);
+		$propertiesString = self::GetPropertiesString($whatObj->Id);
 		if($propertiesString != "")
 			$initialProperties .= "," . $propertiesString;
 			
@@ -56,12 +56,12 @@ final class NolohInternal
 	
 	public static function Hide($whatObj)
 	{
-		AddScript("_NRem('$whatObj->DistinctId')", Priority::High);
+		AddScript("_NRem('$whatObj->Id')", Priority::High);
 	}
 	
 	public static function Resurrect($whatObj)
 	{
-		AddScript("_NRes('$whatObj->DistinctId','".self::GetImmediateParentId($whatObj)."')", Priority::High);
+		AddScript("_NRes('$whatObj->Id','".self::GetImmediateParentId($whatObj)."')", Priority::High);
 	}
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
@@ -119,7 +119,7 @@ final class NolohInternal
 	{
 		if(!isset($GLOBALS["PropertyQueueDisabled"]))
 		{
-			$objId = is_object($whatObj) ? $whatObj->DistinctId : $whatObj;
+			$objId = is_object($whatObj) ? $whatObj->Id : $whatObj;
 			if(!isset($_SESSION['NOLOHPropertyQueue'][$objId]))
 				$_SESSION['NOLOHPropertyQueue'][$objId] = array();
 			$_SESSION['NOLOHPropertyQueue'][$objId][$name] = $value;

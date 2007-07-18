@@ -26,7 +26,7 @@ class TextArea extends Control
 	function SetText($newText)
 	{
 		parent::SetText($newText);
-		QueueClientFunction($this, "SetTextAreaText", array("'$this->DistinctId'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
+		QueueClientFunction($this, "SetTextAreaText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
 	}
 	
 	function GetEventString($whatEventTypeAsString)
@@ -35,14 +35,14 @@ class TextArea extends Control
 			return ",'onchange','".$this->GetEventString("Change")."'" .
 				(GetBrowser()=="ie" 
 				?
-					",'onkeypress','doKeyPress(\"$this->DistinctId\",this.MaxLength);'" .
-					",'onpaste','doPaste(\"$this->DistinctId\",this.MaxLength);'"
+					",'onkeypress','doKeyPress(\"$this->Id\",this.MaxLength);'" .
+					",'onpaste','doPaste(\"$this->Id\",this.MaxLength);'"
 				:
 					",'onkeypress','doKeyPress(event);'");
 
 		$preStr = "";
 		if($whatEventTypeAsString == "Change")
-			$preStr = "_NSave(\"$this->DistinctId\",\"value\");";
+			$preStr = "_NSave(\"$this->Id\",\"value\");";
 		return $preStr . parent::GetEventString($whatEventTypeAsString);
 	}
 	
@@ -53,7 +53,7 @@ class TextArea extends Control
 		$initialProperties .= $this->GetEventString(null);
 		NolohInternal::Show("TEXTAREA", $initialProperties, $this);
 		if(GetBrowser() != "ie")
-			AddScript("document.getElementById('$this->DistinctId').addEventListener('input',doInput,false)");
+			AddScript("document.getElementById('$this->Id').addEventListener('input',doInput,false)");
 	}
 }
 

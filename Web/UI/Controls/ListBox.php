@@ -46,9 +46,9 @@ class ListBox extends ListControl
 		elseif(in_array($index, $this->SelectedIndices))
 		{
 			//NolohInternal::SetProperty("options[$whatIndex].selected", false, $this);
-			//QueueClientFunction($this, "document.getElementById('$this->DistinctId').options[$index].selected=false;void", array(0));
-			QueueClientFunction($this, "_NListDesel", array("'$this->DistinctId'", $index), false);
-			//AddScript("document.getElementById('$this->DistinctId').options[$whatIndex].selected=false");
+			//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=false;void", array(0));
+			QueueClientFunction($this, "_NListDesel", array("'$this->Id'", $index), false);
+			//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=false");
 			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
 		}
 	}
@@ -57,7 +57,7 @@ class ListBox extends ListControl
 	{
 		$preStr = "";
 		if($whatEventTypeAsString == "Change")
-			$preStr = "_NSave(\"$this->DistinctId\",\"selectedIndices\",ImplodeSelectedIndices(this.options));";
+			$preStr = "_NSave(\"$this->Id\",\"selectedIndices\",ImplodeSelectedIndices(this.options));";
 		return $preStr . parent::GetEventString($whatEventTypeAsString);
 	}
 

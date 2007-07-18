@@ -62,7 +62,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		$Args = func_get_args();
 		for($i = 0; $i < $numArgs; $i++)
 			if($Args[$i] instanceof Component)
-				$this->Add(GetComponentById($Args[$i]->DistinctId));
+				$this->Add(GetComponentById($Args[$i]->Id));
 			else 
 				$this->Add($Args[$i]);
 	}
@@ -210,7 +210,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		{
 			if(is_object($this->Item[$i]) && is_subclass_of($this->Item[$i], "Component"))
 			{
-				$ret[$this->Item[$i]->DistinctId] = $this->Item[$i];
+				$ret[$this->Item[$i]->Id] = $this->Item[$i];
 				$ret += $this->Item[$i]->ReferencedComponents();
 			}
 			/*elseif(is_array($this->Item[$i]))

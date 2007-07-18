@@ -10,7 +10,7 @@ class GroupBox extends Guardian
 	
 	function OpenPrintableVersion()
 	{
-		AddScript("var oldNode = document.getElementById('" . $this->DistinctId . "'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
+		AddScript("var oldNode = document.getElementById('" . $this->Id . "'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
 	}
 
 	function GetStyleString()

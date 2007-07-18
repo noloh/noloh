@@ -33,16 +33,16 @@ class TableColumn extends Panel
 	}
 	function GetAddId()
 	{
-		return $this->DistinctId . 'IC';
+		return $this->Id . 'IC';
 	}
 	function Show()
 	{
 		$initialProperties = Control::Show();
 		NolohInternal::Show("TD", $initialProperties, $this);
-//		$initialProperties = "'id','{$this->DistinctId}InnerCol','style.position','relative','style.overflow','hidden'";
-		//$initialProperties = "'id','{$this->DistinctId}InnerCol','style.position','relative','style.overflow','hidden'";
-		$initialProperties = "'id','{$this->DistinctId}IC','style.position','relative','style.overflow','hidden','style.width','{$this->Width}px'";
-		NolohInternal::Show("DIV", $initialProperties, $this, $this->DistinctId);
+//		$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
+		//$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
+		$initialProperties = "'id','{$this->Id}IC','style.position','relative','style.overflow','hidden','style.width','{$this->Width}px'";
+		NolohInternal::Show("DIV", $initialProperties, $this, $this->Id);
 	}
 }
 

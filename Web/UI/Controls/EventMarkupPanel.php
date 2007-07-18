@@ -21,11 +21,11 @@ class EventMarkupPanel extends MarkupPanel
 		$this->ComponentSpace = array();
 		$this->MarkupString = $markupStringOrFile;
 		$text = is_file($markupStringOrFile)?file_get_contents($markupStringOrFile):$markupStringOrFile;
-		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array(" ", " ", " ", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
+		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array("<Nendl>", "<Nendl>", "<Nendl>", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
 		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
-			//QueueClientFunction($this, "SetMarkupString", array("'$this->DistinctId'", "'$markupStringOrFile'"), true, Priority::High);
-			AddScript("SetMarkupString('$this->DistinctId', '$text')", Priority::High);
+			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
+			AddScript("SetMarkupString('$this->Id', '$text')", Priority::High);
 		else 
 			$this->TempString = $text;
 	}
@@ -43,33 +43,33 @@ class EventMarkupPanel extends MarkupPanel
 	private function MarkupReplace($matches)
 	{
 		static $id;
-		$distinctId = $this->DistinctId . "i" . ++$id;
+		$Id = $this->Id . "i" . ++$id;
 		$keyval = explode(':', $matches[4]);
 		if(strtolower($matches[1]) == 'component')
 		{
-			$this->Larvae[$distinctId] = array($keyval[0], $keyval[1]);
-			return "<div id=<NQt2>$distinctId<NQt2>$matches[2]$matches[5]>$matches[6]</div>";
+			$this->Larvae[$Id] = array($keyval[0], $keyval[1]);
+			return "<div id=<NQt2>$Id<NQt2>$matches[2]$matches[5]>$matches[6]</div>";
 		}
 		else 
 		{
-			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1]$matches[2] id=<NQt2>$distinctId<NQt2>$matches[5]>$matches[6]</$matches[7]>";
+			$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
+			return "<$matches[1]$matches[2] id=<NQt2>$Id<NQt2>$matches[5]>$matches[6]</$matches[7]>";
 		}
 	}*/
 	private function MarkupReplace($matches)
 	{
 		static $id;
-		$distinctId = $this->DistinctId . "i" . ++$id;
+		$Id = $this->Id . "i" . ++$id;
 		$keyval = explode(':', $matches[4]);
 		if(strtolower($matches[1]) == 'component')
 		{
-			$this->Larvae[$distinctId] = array($keyval[0], $keyval[1]);
-			return "<div id=\"$distinctId\"$matches[2]$matches[5]>$matches[6]</div>";
+			$this->Larvae[$Id] = array($keyval[0], $keyval[1]);
+			return "<div id=\"$Id\"$matches[2]$matches[5]>$matches[6]</div>";
 		}
 		else 
 		{
-			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1]$matches[2] id=\"$distinctId\"$matches[5]>$matches[6]</$matches[7]>";
+			$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
+			return "<$matches[1]$matches[2] id=\"$Id\"$matches[5]>$matches[6]</$matches[7]>";
 		}
 	}
 	
@@ -77,17 +77,17 @@ class EventMarkupPanel extends MarkupPanel
 	/*private function MarkupReplace($matches)
 	{
 		static $id;
-		$distinctId = $this->DistinctId . "e" . ++$id;
+		$Id = $this->Id . "e" . ++$id;
 		$keyval = explode(':', $matches[3]);
 		if(strtolower($matches[1]) == 'component')
 		{
-			$this->Larvae[$distinctId] = array($keyval[0], $keyval[1]);
-			return "<div id=\"$distinctId\">$matches[4]</div>";
+			$this->Larvae[$Id] = array($keyval[0], $keyval[1]);
+			return "<div id=\"$Id\">$matches[4]</div>";
 		}
 		else 
 		{
-			$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1] id=\"$distinctId\">$matches[4]</$matches[5]>";
+			$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
+			return "<$matches[1] id=\"$Id\">$matches[4]</$matches[5]>";
 		}
 	}*/
 	// Old one's. No Larvae.
@@ -106,10 +106,10 @@ class EventMarkupPanel extends MarkupPanel
 	{
 		//global $lookup;
 		static $id;
-		$distinctId = $this->DistinctId . "e" . ++$id;
+		$Id = $this->Id . "e" . ++$id;
 		$keyval = explode(':', $matches[3]);
-		$this->Eventees[$distinctId] = array($matches[1], $keyval[0], $keyval[1]);
-		return "<$matches[1] id=\"$distinctId\">$matches[4]</$matches[5]>";
+		$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
+		return "<$matches[1] id=\"$Id\">$matches[4]</$matches[5]>";
 	}
 	*/
 	public function GetEventees($byValue=null)
@@ -117,11 +117,11 @@ class EventMarkupPanel extends MarkupPanel
 		$eventees = array();
 		if($byValue===null)
 			foreach($this->Eventees as $id => $info)
-				$eventees[] = new Eventee($id, $info[1], $info[2], $this->DistinctId);
+				$eventees[] = new Eventee($id, $info[1], $info[2], $this->Id);
 		else 
 			foreach($this->Eventees as $id => $info)
 				if($info[1] == $byValue)
-					$eventees[] = new Eventee($id, $info[1], $info[2], $this->DistinctId);
+					$eventees[] = new Eventee($id, $info[1], $info[2], $this->Id);
 		return $eventees;
 	}
 	public function GetLarvae($byValue=null)
@@ -129,11 +129,11 @@ class EventMarkupPanel extends MarkupPanel
 		$larvae = array();
 		if($byValue===null)
 			foreach($this->Larvae as $id => $info)
-				$larvae[] = new Larva($id, $info[0], $info[1], $this->DistinctId);
+				$larvae[] = new Larva($id, $info[0], $info[1], $this->Id);
 		else 
 			foreach($this->Eventees as $id => $info)
 				if($info[0] == $byValue)
-					$larvae[] = new Larva($id, $info[0], $info[1], $this->DistinctId);
+					$larvae[] = new Larva($id, $info[0], $info[1], $this->Id);
 		return $larvae;
 	}
 	public function GetMarkupItems($byValue=null)
@@ -155,7 +155,7 @@ class EventMarkupPanel extends MarkupPanel
 		if(!isset($this->EventSpace[$eventeeId]))
 			$this->EventSpace[$eventeeId] = array();
 		if(!isset($this->EventSpace[$eventeeId][$eventType]))
-			$this->EventSpace[$eventeeId][$eventType] = new Event(array(), array(array(array($this->DistinctId, $eventeeId), $eventType)));
+			$this->EventSpace[$eventeeId][$eventType] = new Event(array(), array(array(array($this->Id, $eventeeId), $eventType)));
 		return $this->EventSpace[$eventeeId][$eventType];
 	}
 	public function SetEvent($eventObj, $eventType, $eventeeId=null)
@@ -185,7 +185,7 @@ class EventMarkupPanel extends MarkupPanel
 	public function Show()
 	{
 		parent::Show();
-		AddScript("SetMarkupString('$this->DistinctId', '$this->TempString')", Priority::High);
+		AddScript("SetMarkupString('$this->Id', '$this->TempString')", Priority::High);
 		$this->TempString = null;
 	}
 }

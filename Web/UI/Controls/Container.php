@@ -9,6 +9,6 @@ class Container extends Component
 	{
 		parent::Component();
 		$this->Controls = new ArrayList();
-		$this->Controls->ParentId = $this->DistinctId;
+		$this->Controls->ParentId = $this->Id;
 	}
 }

@@ -62,16 +62,16 @@ class DatePicker extends Panel
 	function DatePicker($whatLeft = 0, $whatTop = 0, $whatWidth = 219, $whatHeight = 21)
 	{
 		parent::Panel($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		//$this->Load = new ClientEvent('ShowCalendar("' . $this->DistinctId . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
+		//$this->Load = new ClientEvent('ShowCalendar("' . $this->Id . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
 		//	$this->Date . ', ' . $this->Month . ', ' . $this->Year . ');');
 		$this->DatePickerCombo = new ComboBox(0,0,$whatWidth,20);
 		$this->DatePickerCalendar = new Calendar(0, 21, 217, 200);
 		$this->SetFormat("l, F d, Y");
 		//$this->DatePickerCalendar->ClientVisible = false;
 		if(GetBrowser() == "ie")
-			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DistinctId}')");
+			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->Id}')");
 		else 
-			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DistinctId}', '{$this->DatePickerCombo->DistinctId}')");
+			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->Id}', '{$this->DatePickerCombo->Id}')");
 		//$this->LoadImage->ClientVisible = "NoDisplay";
 		$this->Controls->Add($this->DatePickerCombo);
 		$this->Controls->Add($this->DatePickerCalendar);
@@ -79,7 +79,7 @@ class DatePicker extends Panel
 		//Needs to be something like this // $this->FullDate = $this->DatePickerCombo->GetSelectedText();
 		//$this->Controls->AddRangeArray(true, array(&$this->DatePickerCombo, &$this->DatePickerCalendar));
 		//$this->Date = &$this->DatePickerCalendar->Date;
-		//$this->Date = &$_SESSION[$this->DatePickerCalendar->DistinctId]->Date;
+		//$this->Date = &$_SESSION[$this->DatePickerCalendar->Id]->Date;
 	}
 	/**
 	*<b>Note:</b>Can also be called as a property.
@@ -107,7 +107,7 @@ class DatePicker extends Panel
 	function SetUNIXEpoch($UNIXEpochTime)
 	{
 		$this->DatePickerCalendar->SetUNIXEpoch($UNIXEpochTime);
-		QueueClientFunction($this, "document.getElementById('{$this->DatePickerCalendar->DistinctId}').onchange.call", array());
+		QueueClientFunction($this, "document.getElementById('{$this->DatePickerCalendar->Id}').onchange.call", array());
 	}
 	function GetFormat()									
 	{
@@ -116,7 +116,7 @@ class DatePicker extends Panel
 	function SetFormat($newFormat)
 	{
 		$this->Format = $newFormat;
-		$this->DatePickerCalendar->Change = new ClientEvent('var calObj = document.getElementById("' . $this->DatePickerCalendar->DistinctId . '"); var ds = GetDateString(calObj.id,"'.$this->Format.'"); document.getElementById("' . $this->DatePickerCombo->DistinctId . '").options[0] = new Option(ds,ds); document.getElementById("' . $this->DistinctId . '").style.height="21px";');
+		$this->DatePickerCalendar->Change = new ClientEvent('var calObj = document.getElementById("' . $this->DatePickerCalendar->Id . '"); var ds = GetDateString(calObj.id,"'.$this->Format.'"); document.getElementById("' . $this->DatePickerCombo->Id . '").options[0] = new Option(ds,ds); document.getElementById("' . $this->Id . '").style.height="21px";');
 	}
 	/**
 	* @ignore
@@ -126,7 +126,7 @@ class DatePicker extends Panel
 		parent::Show();
 		//$this->DatePickerCalendar->Show();
 		if($this->DatePickerCombo->Items->Count()==0)
-			AddScript('ShowDatePicker("'.$this->DatePickerCalendar->DistinctId.'","'.$this->DatePickerCombo->DistinctId.'","'.$this->Format.'")'/*, Priority::High*/);
+			AddScript('ShowDatePicker("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$this->Format.'")'/*, Priority::High*/);
 	}
 }
 

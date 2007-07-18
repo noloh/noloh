@@ -13,7 +13,7 @@ class EmbedObject extends Control
 		parent::Control($left, $top, $width, $height);
 		$this->Parameters = new ImplicitArrayList($this, "AddParameter"/*, "RemoveParam", "ClearParam"*/);
 		$this->InnerEmbedObjects = new ArrayList();
-		$this->InnerEmbedObjects->ParentId = $this->DistinctId;
+		$this->InnerEmbedObjects->ParentId = $this->Id;
 		$this->SetData($data);
 		$this->BackColor = "white";
 	}
@@ -56,7 +56,7 @@ class EmbedObject extends Control
 //		if($this->GetShowStatus())
 //		{
 //			$initialProperties = "'name','$item->Text','value','$item->Value'";
-//			NolohInternal::Show("PARAM", $initialProperties, $this, $this->DistinctId);
+//			NolohInternal::Show("PARAM", $initialProperties, $this, $this->Id);
 //		}
 		NolohInternal::SetProperty("innerHTML", $this, $this);
 		$this->Parameters->Add($item, true, true);
@@ -64,18 +64,18 @@ class EmbedObject extends Control
 	function SetWidth($width)
 	{
 		$this->Width = $width;
-		QueueClientFunction($this, "NOLOHChange", array("'".$this->DistinctId . "I'", "'style.width'", "'".$width ."px'"), false);
+		QueueClientFunction($this, "NOLOHChange", array("'".$this->Id . "I'", "'style.width'", "'".$width ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}
 	function SetHeight($height)
 	{
 		$this->Height = $height;
-		QueueClientFunction($this, "NOLOHChange", array("'".$this->DistinctId . "I'", "'style.height'", "'".$height ."px'"), false);
+		QueueClientFunction($this, "NOLOHChange", array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}
 	function GetInnerString()
 	{
-		$tmpStr = '<OBJECT id="'.$this->DistinctId.'I"';
+		$tmpStr = '<OBJECT id="'.$this->Id.'I"';
 		if($this->Type != null)
 			$tmpStr.='type="'.$this->Type.'" ';
 		if($this->Data != null)
@@ -104,7 +104,7 @@ class EmbedObject extends Control
 //		foreach($this->Parameters as $item)
 //		{
 //			$paramProps = "'name','$item->Text','value','$item->Value'";
-//			NolohInternal::Show("PARAM", $paramProps, $this, $this->DistinctId);
+//			NolohInternal::Show("PARAM", $paramProps, $this, $this->Id);
 //		}
 //		$InnerEmbedObjectsCount = $this->InnerEmbedObjects->Count();
 //		for($i=0; $i < $InnerEmbedObjectsCount; $i++)

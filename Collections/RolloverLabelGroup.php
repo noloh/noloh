@@ -7,7 +7,7 @@ class RolloverLabelGroup extends RolloverGroup
 	{
 		parent::RolloverGroup();
 		$this->RolloverLabels = new ImplicitArrayList($this, "Add");
-		$this->RolloverLabels->ParentId = $this->DistinctId;
+		$this->RolloverLabels->ParentId = $this->Id;
 	}
 	function GetRolloverLabels()	{return $this->RolloverLabels;}
 	function Add(&$whatObject, $PassByReference = true)
@@ -16,7 +16,7 @@ class RolloverLabelGroup extends RolloverGroup
 			BloodyMurder("Non-RolloverLabel added to a RolloverLabelGroup.");
 		//if($this->RolloverTabs->Count() == 0)
 			//$whatObject->Selected = true;
-		$whatObject->GroupName = $this->DistinctId;
+		$whatObject->GroupName = $this->Id;
 		$this->RolloverLabels->Add($whatObject, $PassByReference, true);
 	}
 	function AddRange($dotDotDot)
@@ -27,8 +27,8 @@ class RolloverLabelGroup extends RolloverGroup
 			$whatObject = &func_get_arg($i);
 			if(!($whatObject instanceof RolloverLabel))
 				BloodyMurder("Non-RolloverLabel added to a RolloverLabelGroup.");
-			$whatObject->GroupName = $this->DistinctId;
-			$this->RolloverLabels->Add(GetComponentById($whatObject->DistinctId), true, true);
+			$whatObject->GroupName = $this->Id;
+			$this->RolloverLabels->Add(GetComponentById($whatObject->Id), true, true);
 		}
 		unset($numArgs, $dotDotDot);
 	}

@@ -25,19 +25,19 @@ class RolloverImage extends Image
 	{
 		$this->OutSrc = $whatOutSrc;
 		if(!empty($whatOutSrc))
-			$this->MouseOut = new ClientEvent("ChangeImage('{$this->DistinctId}','{$this->OutSrc}');");
+			$this->MouseOut = new ClientEvent("ChangeImage('{$this->Id}','{$this->OutSrc}');");
 	}
 	function SetOverSrc($whatOverSrc)
 	{
 		$this->OverSrc = $whatOverSrc;
 		if(!empty($whatOverSrc))
-			$this->MouseOver = new ClientEvent("ChangeImage('{$this->DistinctId}','{$this->OverSrc}');");
+			$this->MouseOver = new ClientEvent("ChangeImage('{$this->Id}','{$this->OverSrc}');");
 	}
 	function SetDownSrc($whatDownSrc)
 	{
 		$this->DownSrc = $whatDownSrc;
 		if(!empty($whatDownSrc))
-			$this->MouseDown = new ClientEvent("ChangeImage('{$this->DistinctId}','{$this->DownSrc}');");
+			$this->MouseDown = new ClientEvent("ChangeImage('{$this->Id}','{$this->DownSrc}');");
 	}
 	function SetSelectSrc($whatSelectSrc)
 	{

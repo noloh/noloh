@@ -148,8 +148,8 @@ class Image extends Control
 			{
 				$tmpHeight = intval($tmpHeight)/100;
 				$tmpHeight = round($tmpHeight * $tmpImageSize[1]);
+			}
 		}
-	}
 		parent::SetHeight($tmpHeight);
 	}
 	function SetLoad($newLoad)
@@ -157,7 +157,7 @@ class Image extends Control
 		$this->AltLoad = $newLoad;
 		if($newLoad instanceof ServerEvent)
 			NolohInternal::SetProperty("src", $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
-				get_class(GetComponentById($newLoad->ObjsId))."&Function={$newLoad->ExecuteFunction}", $this);
+				(is_object($newLoad->Source)?get_class($newLoad->Source->Dereference()):$newLoad->Src)."&Function={$newLoad->ExecuteFunction}", $this);
 	}
 	function GetLoad()
 	{
