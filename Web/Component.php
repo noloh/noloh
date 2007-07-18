@@ -165,7 +165,7 @@ class Component extends Object
 		foreach ($vars as $key => $val)
 		//{			
         	//if(is_null($val))
-        	if($val == null)
+        	if($val === null)
 				unset($vars[$key]);
            /* elseif (is_object($val))
             	if($val instanceof Component)

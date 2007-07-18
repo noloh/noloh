@@ -99,7 +99,7 @@ final class NolohInternal
 		{
 			$obj = &GetComponentById($objId);
 			if($obj!=null && $obj->GetShowStatus())
-				AddScript("_NSetP('$objId', new Array(".self::GetPropertiesString($objId, $nameValPairs)."))");
+				AddScript("_NSetP('$objId',Array(".self::GetPropertiesString($objId, $nameValPairs)."))");
 			else 
 			{
 				$splitStr = explode("i", $objId, 2);
@@ -109,7 +109,7 @@ final class NolohInternal
 					$nameValPairsString = "";
 					foreach($nameValPairs as $name => $eventType)
 						$nameValPairsString .= "'$name','".$markupPanel->GetEventString($eventType, $objId)."',";
-					AddScript("_NSetP('$objId', new Array(".rtrim($nameValPairsString,",")."))");
+					AddScript("_NSetP('$objId',Array(".rtrim($nameValPairsString,",")."))");
 				}
 			}
 		}

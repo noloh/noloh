@@ -40,7 +40,7 @@ frm.submit();"
 	
 	public function Application($whatClassName, $unsupportedURL, $URLTokenMode)
 	{
-		session_name(hash("md5", $_SERVER['PHP_SELF']));
+		session_name(hash('md5', $_SERVER['PHP_SELF']));
 		ini_set('session.gc_probability', 50);
 		session_start();
 		
@@ -56,47 +56,44 @@ frm.submit();"
 				$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= "N";
 			}
 		}
-		else 
+		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
+			if(!isset($_SESSION['NOLOHVisit']) || $_SESSION['NOLOHURL'] != $_SERVER['PHP_SELF'] || 
+			  (!isset($_POST['NOLOHVisit']) && !isset($_POST['NOLOHServerEvent']) && $_SESSION['NOLOHVisit']>=0) ||
+			  (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']))
 			{
-				if(!isset($_SESSION['NOLOHVisit']) || $_SESSION['NOLOHURL'] != $_SERVER['PHP_SELF'] || 
-				  (empty($_POST['NOLOHVisit']) && !isset($_POST['NOLOHServerEvent']) && $_SESSION['NOLOHVisit']>=0) ||
-				  (!empty($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']))
-				{
-					if(isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET["NWidth"]))
-						self::Reset();
-					session_destroy();
-					session_unset(); 
-					SetStartUpPage($whatClassName);
-					return;
-				}
-				if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
-				{
-					
-				}
-				$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
-				if(isset($_SESSION["NOLOHOmniscientBeing"]))
-					$this->TheComingOfTheOmniscientBeing();
-				if(!empty($_POST['NOLOHClientChanges']))
-					$this->HandleClientChanges();
-				if(!empty($_POST['NOLOHFileUploadId']))
-					GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
-				foreach($_SESSION['NOLOHFiles'] as $key => $val)
-					GetComponentById($key)->File = new File($val);
-				if(!empty($_POST['NOLOHServerEvent']))
-					$this->HandleServerEvent();
-				foreach($_SESSION['NOLOHFiles'] as $key => $val)
-				{
-					unlink($_SESSION['NOLOHFiles'][$key]['tmp_name']);
-					GetComponentById($key)->File = null;
-					unset($_SESSION['NOLOHFiles'][$key]);
-				}
-				$this->Run();
+				if(isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET["NWidth"]))
+					self::Reset();
+				session_destroy();
+				session_unset(); 
+				SetStartUpPage($whatClassName);
+				return;
 			}
-			else
-				$this->HandleFirstRun($whatClassName, $unsupportedURL);
+			if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
+			{
+				
+			}
+			$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
+			if(isset($_SESSION["NOLOHOmniscientBeing"]))
+				$this->TheComingOfTheOmniscientBeing();
+			if(!empty($_POST['NOLOHClientChanges']))
+				$this->HandleClientChanges();
+			if(!empty($_POST['NOLOHFileUploadId']))
+				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
+			foreach($_SESSION['NOLOHFiles'] as $key => $val)
+				GetComponentById($key)->File = new File($val);
+			if(!empty($_POST['NOLOHServerEvent']))
+				$this->HandleServerEvent();
+			foreach($_SESSION['NOLOHFiles'] as $key => $val)
+			{
+				unlink($_SESSION['NOLOHFiles'][$key]['tmp_name']);
+				GetComponentById($key)->File = null;
+				unset($_SESSION['NOLOHFiles'][$key]);
+			}
+			$this->Run();
 		}
+		else
+			$this->HandleFirstRun($whatClassName, $unsupportedURL);
 	}
 	
 	private function HandleFirstRun($whatClassName, $unsupportedURL)
@@ -129,14 +126,14 @@ frm.submit();"
 		global $OmniscientBeing;
 		$OmniscientBeing = unserialize($_SESSION['NOLOHOmniscientBeing']);
 		unset($_SESSION['NOLOHOmniscientBeing']);
-		foreach($_SESSION["NOLOHGarbage"] as $id => $nothing)
+		foreach($_SESSION['NOLOHGarbage'] as $id => $nothing)
 		{
-			$control = &$GLOBALS["OmniscientBeing"][$id];
-			if(!isset($_SESSION["NOLOHGarbage"][$control->ParentId]) && $control->GetShowStatus()!==0 && $control instanceof Control)
+			$control = &$GLOBALS['OmniscientBeing'][$id];
+			if(!isset($_SESSION['NOLOHGarbage'][$control->ParentId]) && $control->GetShowStatus()!==0 && $control instanceof Control)
 				AddScript("_NAsc('$id')");
-			unset($GLOBALS["OmniscientBeing"][$id]);
+			unset($GLOBALS['OmniscientBeing'][$id]);
 		}
-		$_SESSION["NOLOHGarbage"] = array();
+		$_SESSION['NOLOHGarbage'] = array();
 		//foreach($OmniscientBeing as $key => $val)
 		//	$val->RestoreValues();
 		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);

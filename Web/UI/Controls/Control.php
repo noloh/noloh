@@ -382,6 +382,7 @@ class Control extends Component
 	{
 		return $this->PositionType === null ? 0 : $this->PositionType;
 	}
+	
 	function SetPositionType($newPositionType)
 	{
 		if($newPositionType < 3)
