@@ -9,13 +9,13 @@ ConversionArray["style.width"] = "Width";
 ConversionArray["style.height"] = "Height";
 ConversionArray["style.zIndex"] = "ZIndex";
 ConversionArray["style.background"] = "BackColor";
-ConversionArray["style.color"] = "Color"; 
+ConversionArray["style.color"] = "Color";
 ConversionArray["style.opacity"] = "Opacity";
 ConversionArray["style.filter"] = "Opacity";
 ConversionArray["value"] = "Text";
 ConversionArray["newText"] = "Text";
-ConversionArray["selectedIndex"] = "SelectedIndex"; 
-ConversionArray["selectedTab"] = "SelectedTab"; 
+ConversionArray["selectedIndex"] = "SelectedIndex";
+ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
 ConversionArray["killlater"] = "KillLater";
 ConversionArray["src"] = "Src";
@@ -50,8 +50,8 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.id = "Graveyard";
 	Graveyard.style.display = "none";
 	document.body.appendChild(Graveyard);
-	setInterval('CheckURL()', 500);
 	NURL = location.toString();
+	setInterval('CheckURL()', 500);
 	var d=document.getElementById('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.toString());
@@ -62,12 +62,13 @@ function CheckURL()
 {
 	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
 	if(NURL != location || NURL != inner)
-		if(document.body.NOLOHPostingBack && location.toString().indexOf('#')==location.toString().length-1)
-		{
-			NURL = inner;
-			location = inner;
-		}
-		else
+		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
+		//{
+			//NURL = location.toString();
+		//	NURL = inner;
+		//	location = NURL;
+		//}
+		//else
 		{
 			location.replace(inner);
 			location.reload(false);
@@ -213,6 +214,9 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			else
 				NOLOHCatchers.push(obj.id);
 			eval("obj.DragCatch = function(event) {" + newValue + ";}");
+			break;
+		case "href":
+			obj.href = newValue=="#" ? "javascript:void(0);" : newValue;
 			break;
 		case "Shifts":
 		case "ChildrenArray":

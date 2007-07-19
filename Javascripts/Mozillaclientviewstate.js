@@ -37,7 +37,7 @@ NOLOHUpload = new Object();
 NOLOHUpload.FileUploadObjIds = new Array();
 NOLOHVisit = -1;
 HighestZIndex = 0;
-LowestZIndex = 0; 
+LowestZIndex = 0;
 
 function _NInit(loadLblId, loadImgId)
 {
@@ -50,16 +50,18 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.id = "Graveyard";
 	Graveyard.style.visibility = "hidden";
 	document.body.appendChild(Graveyard);
-	X = setInterval('CheckURL()', 500);
 	NURL = location.toString();
+	X = setInterval('CheckURL()', 500);
 }
 
 function CheckURL()
 {
+	//alert(NURL);
 	if(NURL != location)
-		if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
-			NURL = location.toString();
-		else
+		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
+			//NURL = location.toString();
+		//	location.replace(NURL);
+		//else
 			location.reload(true);
 }
 
@@ -172,6 +174,9 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			else
 				NOLOHCatchers.push(obj.id);
 			eval("obj.DragCatch = function(event) {" + newValue + ";}");
+			break;
+		case "href":
+			obj.href = newValue=="#" ? "javascript:void(0);" : newValue;
 			break;
 		case "Shifts":
 		case "ChildrenArray":

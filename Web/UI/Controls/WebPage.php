@@ -140,7 +140,7 @@ class WebPage extends Component
   </HEAD>".(GetBrowser()=="ie"?"
   <BODY>
     <DIV id='N1'></DIV>
-    <IFRAME id='NBackButton' style='display:none;'></IFRAME>
+    <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>
   </BODY>":"
   <BODY id='N1'>
   </BODY>")."
