@@ -60,12 +60,12 @@ class ImplicitArrayList extends ArrayList
 	
 	function Clear($doesPermanentRemove = false, $onlyClear = false)
 	{
-		if($this->ClearFunctionName=="" | $onlyClear)
-			return parent::Clear($doesPermanentRemove);
+		if($this->ClearFunctionName=="" || $onlyClear)
+			return parent::Clear();
 		elseif(is_object($this->Source))
-			return $this->Source->{$this->ClearFunctionName}($doesPermanentRemove);
+			return $this->Source->{$this->ClearFunctionName}();
 		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->ClearFunctionName}($doesPermanentRemove);
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->ClearFunctionName}();
 	}
 	
 	function offsetSet($index, $val)

@@ -5,23 +5,23 @@ final class NolohInternal
 
 	public static function ShowQueue()
 	{
-		foreach($_SESSION['NOLOHControlQueue'] as $objId => $whatBool)
-			self::ShowControl(GetComponentById($objId), $whatBool);
+		foreach($_SESSION['NOLOHControlQueue'] as $objId => $bool)
+			self::ShowControl(GetComponentById($objId), $bool);
 	}
 	
-	public static function ShowControl($control, $whatBool)
+	public static function ShowControl($control, $bool)
 	{
 		//if(isset($control))
 		//{
-			$parent = $control->Parent;
+			$parent = $control->GetParent();
 			if(!$parent)
 			{
-				$splitStr = explode("i", $control->ParentId, 2);
+				$splitStr = explode("i", $control->GetParentId(), 2);
 				$parent = GetComponentById($splitStr[0]);
 			}
 			if($parent->GetShowStatus()!==0)
 			{
-				if($whatBool)
+				if($bool)
 				{
 					if($control->GetShowStatus()===0)
 						$control->Show();
@@ -34,34 +34,34 @@ final class NolohInternal
 			elseif(isset($_SESSION['NOLOHControlQueue'][$parent->Id]) && $_SESSION['NOLOHControlQueue'][$parent->Id] && func_num_args()==2)
 			{
 				self::ShowControl($parent, true);
-				self::ShowControl($control, $whatBool, false);
+				self::ShowControl($control, $bool, false);
 			}
 		//}
 		//else
 		//	Alert("whatBool=" . ($whatBool?"TRUE":"FALSE"));
 	}
 	
-	public static function Show($whatTag, $initialProperties, $whatObj, $addTo = null)
+	public static function Show($tag, $initialProperties, $obj, $addTo = null)
 	{
-		$parent = $whatObj->GetParent();
+		$parent = $obj->GetParent();
 
-		$propertiesString = self::GetPropertiesString($whatObj->Id);
+		$propertiesString = self::GetPropertiesString($obj->Id);
 		if($propertiesString != "")
 			$initialProperties .= "," . $propertiesString;
 			
 		if($addTo == null)
-			$addTo = $parent ? $parent->GetAddId($whatObj) : $whatObj->ParentId;
-		AddScript("_NAdd('$addTo','$whatTag',Array($initialProperties))", Priority::High);
+			$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
+		AddScript("_NAdd('$addTo','$tag',Array($initialProperties))", Priority::High);
 	}
 	
-	public static function Hide($whatObj)
+	public static function Hide($obj)
 	{
-		AddScript("_NRem('$whatObj->Id')", Priority::High);
+		AddScript("_NRem('$obj->Id')", Priority::High);
 	}
 	
-	public static function Resurrect($whatObj)
+	public static function Resurrect($obj)
 	{
-		AddScript("_NRes('$whatObj->Id','".self::GetImmediateParentId($whatObj)."')", Priority::High);
+		AddScript("_NRes('$obj->Id','".$obj->GetParentId()->GetAddId()."')", Priority::High);
 	}
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
@@ -115,11 +115,11 @@ final class NolohInternal
 		}
 	}
 	
-	public static function SetProperty($name, $value, $whatObj)
+	public static function SetProperty($name, $value, $obj)
 	{
 		if(!isset($GLOBALS["PropertyQueueDisabled"]))
 		{
-			$objId = is_object($whatObj) ? $whatObj->Id : $whatObj;
+			$objId = is_object($obj) ? $obj->Id : $obj;
 			if(!isset($_SESSION['NOLOHPropertyQueue'][$objId]))
 				$_SESSION['NOLOHPropertyQueue'][$objId] = array();
 			$_SESSION['NOLOHPropertyQueue'][$objId][$name] = $value;

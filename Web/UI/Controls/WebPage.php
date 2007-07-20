@@ -95,10 +95,10 @@ class WebPage extends Component
 		return $this->Title;
 	}
 	
-	function SetTitle($newTitle)
+	function SetTitle($title)
 	{
-		$this->Title = $newTitle;
-		AddScript("document.title='$newTitle'");
+		$this->Title = $title;
+		AddScript("document.title='$title'");
 	}
 	
 	function GetWidth()

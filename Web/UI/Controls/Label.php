@@ -25,14 +25,14 @@ class Label extends Control
 		$this->ResetCache();
 	}
 	
-	function SetText($newText)
+	function SetText($text)
 	{
-		parent::SetText($newText);
+		parent::SetText($text);
 		//$width = parent::GetWidth();
 		//$height = parent::GetHeight();
 		//$this->AutoWidthHeight();
 		$this->ResetCache();
-		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $newText), $this);
+		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $text), $this);
 		//QueueClientFunction($this, "SetLabelText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
 	}
 	
@@ -188,14 +188,18 @@ class Label extends Control
 		return $this->EditInPlace == null ? false : true;
 	}
 	
-	function SetEditInPlace($whatBool)
+	function SetEditInPlace($bool)
 	{
-		if($whatBool === true)
+		if($bool)
+		{
 			$this->DoubleClick = new ServerEvent($this, "EditStart");
+			$this->EditInPlace = true;
+		}
 		else 
+		{
 			$this->DoubleClick = null;
-			
-		$this->EditInPlace = $whatBool == false ? null : true;
+			$this->EditInPlace = null;
+		}
 	}
 	
 	function EditStart()
@@ -222,15 +226,15 @@ class Label extends Control
 		else
 			return;
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
-		//{
+		{
 			$this->CachedWidth = $widthHeight[0];
-			//NolohInternal::SetProperty("style.width", $this->CachedWidth."px", $this);
-		//}
+			NolohInternal::SetProperty("style.width", $this->CachedWidth."px", $this);
+		}
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
-		//{
+		{
 			$this->CachedHeight = $widthHeight[1];
-			//NolohInternal::SetProperty("style.height", $this->CachedHeight."px", $this);
-		//}
+			NolohInternal::SetProperty("style.height", $this->CachedHeight."px", $this);
+		}
 	}
 	
 	function Show()

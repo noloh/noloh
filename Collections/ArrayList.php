@@ -26,13 +26,13 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		}
 	}
 	
-	protected function ActualAdd($whatObject, $passByReference)
+	protected function ActualAdd($object, $passByReference)
 	{
 		//if(is_object($whatObject))
 			if($passByReference)
-				$this->Item[] = &$whatObject;
+				$this->Item[] = &$object;
 			else 
-				$this->Item[] = $whatObject;
+				$this->Item[] = $object;
 		/*else 
 			if($passByReference)
 				$this->Item[] = &$whatObject;
@@ -41,19 +41,19 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		*/
 	}
 
-	function Add($whatObject, $passByReference = true)
+	function Add($object, $passByReference = true)
 	{
-		$this->PreActualAdd($whatObject);
-		$this->ActualAdd($whatObject, $passByReference);
+		$this->PreActualAdd($object);
+		$this->ActualAdd($object, $passByReference);
 		return $whatObject;
 	}
 
-	function Insert($whatObject, $whatIndex)
+	function Insert($object, $index)
 	{
 		$oldItems = $this->Item;
-		$this->Item = array_slice($this->Item, 0, $whatIndex);
-		$this->Add($whatObject, true, true);
-		$this->Item = array_merge($this->Item, array_slice($oldItems, $whatIndex));
+		$this->Item = array_slice($this->Item, 0, $index);
+		$this->Add($object, true, true);
+		$this->Item = array_merge($this->Item, array_slice($oldItems, $index));
 	}
 
 	function AddRange($dotDotDot)
@@ -67,16 +67,16 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 				$this->Add($Args[$i]);
 	}
 
-	function RemoveAt($whatIndex)
+	function RemoveAt($index)
 	{
-		if(isset($this->Item[$whatIndex]) && $this->Item[$whatIndex] instanceof Component && $this->Item[$whatIndex]->ParentId == $this->ParentId)
-			$this->Item[$whatIndex]->SetParentId(null);
-		array_splice($this->Item, $whatIndex, 1);
+		if(isset($this->Item[$index]) && $this->Item[$index] instanceof Component && $this->Item[$index]->ParentId == $this->ParentId)
+			$this->Item[$index]->SetParentId(null);
+		array_splice($this->Item, $index, 1);
 	}
 
-	function RemoveItem($whatItem)
+	function RemoveItem($item)
 	{
-		$idx = $this->IndexOf($whatItem);
+		$idx = $this->IndexOf($item);
 		if($idx != -1)
 		{
 			$this->RemoveAt($idx);
@@ -97,16 +97,12 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		*/
 	}
 
-	function Clear($doesPermanentRemove = false)
+	function Clear()
 	{
 		foreach($this->Item as $val)
-			if($val instanceof Component && $val->ParentId==$this->ParentId)
+			if($val instanceof Component && $val->GetParentId()==$this->ParentId)
 				$val->SetParentId(null);
-
-		if($doesPermanentRemove)
-			unset($this->Item);
-		else
-			$this->Item = array();
+		$this->Item = array();
 	}
 	
 	function __get($nm)
