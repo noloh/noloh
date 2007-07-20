@@ -87,7 +87,7 @@ class WebPage extends Component
 	{
 		foreach($this->CSSFiles as $index => $path)
 			$this->RemoveCSSFileAt($index);
-		$this->CSSFiles->Clear(false, true);
+		$this->CSSFiles->Clear(true);
 	}
 	
 	function GetTitle()

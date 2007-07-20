@@ -630,7 +630,7 @@ class Control extends Component
 	function ClearShift()
 	{
 		NolohInternal::SetProperty("Shifts", "Array()", $this);
-		$this->Shifts->Clear(false, true);
+		$this->Shifts->Clear(true);
 	}
 	
 	/**

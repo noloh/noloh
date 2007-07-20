@@ -58,7 +58,7 @@ class ImplicitArrayList extends ArrayList
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveAtFunctionName}($index);		
 	}
 	
-	function Clear($doesPermanentRemove = false, $onlyClear = false)
+	function Clear($onlyClear = false)
 	{
 		if($this->ClearFunctionName=="" || $onlyClear)
 			return parent::Clear();

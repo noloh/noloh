@@ -160,7 +160,7 @@ abstract class ListControl extends Control
 	public function ClearItems()
 	{
 		//if(func_num_args()==0)
-			$this->Items->Clear(false, true);
+			$this->Items->Clear(true);
 		//AddScript("document.getElementById('$this->Id').options.length=0);");
 		//Changed previos line to SetProperty
 		//NolohInternal::SetProperty("options.length", 0, $this);
