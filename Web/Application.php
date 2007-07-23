@@ -69,11 +69,14 @@ frm.submit();"
 				self::SetStartUpPage($className, $unsupportedURL, $URLTokenMode);
 				return;
 			}
-			if(isset($_POST['NoNoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
+			if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
 			{
+				$srcs = $_SESSION['NOLOHScriptSrcs'];
 				session_destroy();
 				session_unset();
 				$this->HandleFirstRun($className, $unsupportedURL, false);
+				$_SESSION['NOLOHScriptSrcs'] = $srcs;
+				AddScript("NOLOHVisit=-1", Priority::High);
 			}
 			$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
 			if(isset($_SESSION["NOLOHOmniscientBeing"]))
@@ -100,13 +103,14 @@ frm.submit();"
 	
 	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
 	{
+		$_SESSION['NOLOHVisit'] = -1;
+		$_SESSION['NOLOHNumberOfComponents'] = 0;
 		$_SESSION['NOLOHControlQueue'] = array();
 		$_SESSION['NOLOHFunctionQueue'] = array();
 		$_SESSION['NOLOHPropertyQueue'] = array();
 		$_SESSION['NOLOHScript'] = array("", "", "");
 		$_SESSION['NOLOHScriptSrcs'] = array();
 		$_SESSION['NOLOHFiles'] = array();
-		$_SESSION['NOLOHNumberOfComponents'] = 0;
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
@@ -115,7 +119,7 @@ frm.submit();"
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
 		{
-			$_SESSION['NOLOHVisit'] = -1;
+			//$_SESSION['NOLOHVisit'] = -1;
 			if($_SESSION["NOLOHBrowser"] == "other" && $_SESSION["NOLOHOS"] == "other")
 			{
 				//Search engine code here
@@ -291,7 +295,7 @@ frm.submit();"
 			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
 			$this->WebPage->Show();
 		}
-		if(isset($GLOBALS["NOLOHTokenUpdate"]))
+		if(isset($GLOBALS["NOLOHTokenUpdate"]) && (!isset($_POST['NoSkeleton']) || GetBrowser()!="ie"))
 			URL::UpdateTokens();
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
@@ -302,7 +306,6 @@ frm.submit();"
 		//elseif(defined('FORCE_GZIP'))
 		//	print(gzencode($sendStr,1));
 		print($sendStr);
-		//$_SESSION['NOLOHSrcScript'] = "";
 		$_SESSION['NOLOHScript'] = array("", "", "");
 		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
 		$GLOBALS["NOLOHGarbage"] = true;

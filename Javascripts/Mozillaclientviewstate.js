@@ -68,7 +68,7 @@ function CheckURL()
 function SaveControl(id)
 {
 	var temp = document.getElementById(id);
-	SavedControls[id] = temp.cloneNode(true);
+	SavedControls[id] = temp.cloneNode(false);
 	SavedControls[id].selectedIndex = temp.selectedIndex;
 	SavedControls[id].checked = temp.checked;
 	SavedControls[id].SelectedTab = temp.SelectedTab;

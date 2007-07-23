@@ -51,7 +51,7 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.style.display = "none";
 	document.body.appendChild(Graveyard);
 	NURL = location.toString();
-	setInterval('CheckURL()', 500);
+	_NURLCheck = setInterval('CheckURL()', 500);
 	var d=document.getElementById('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.toString());
@@ -70,8 +70,23 @@ function CheckURL()
 		//}
 		//else
 		{
+			clearInterval(_NURLCheck);
+			NURL = inner;
+			location = inner;
+			var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+			document.getElementById(_NLoadImg).style.visibility = "visible";
+			document.getElementById(_NLoadLbl).style.visibility = "visible";
+			req.onreadystatechange = processReqChange;
+			req.open("POST", (inner.indexOf('#')==-1 ? inner+'?' : inner.replace('#','?')+'&') 
+               + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			req.send(str);
+			document.getElementById("N1").innerHTML = "";
+			/*
 			location.replace(inner);
 			location.reload(false);
+			*/
 		}
 }
 
@@ -108,7 +123,7 @@ function AddSelectFix(obj, objstyle)
 function SaveControl(id)
 {
 	var temp = document.getElementById(id);
-	SavedControls[id] = temp.cloneNode(true);
+	SavedControls[id] = temp.cloneNode(false);
 	SavedControls[id].selectedIndex = temp.selectedIndex;
 	SavedControls[id].checked = temp.checked;
 	SavedControls[id].SelectedTab = temp.SelectedTab;
@@ -425,6 +440,7 @@ function processReqChange()
 		document.getElementById(_NLoadImg).style.visibility = "hidden";
 		document.getElementById(_NLoadLbl).style.visibility = "hidden";
 		document.body.NOLOHPostingBack = false;
+		_NURLCheck = setInterval('CheckURL()', 500);
 	}
 }
 

@@ -175,9 +175,9 @@ class WindowPanel extends Panel
 		$this->ResizeImage->SetLeft($newWidth - 17); 
 	}
 	
-	function GetAddId($whatObj)
+	function GetAddId($obj)
 	{
-		return in_array($whatObj, $this->WindowPanelComponents->Item) ? $this->Id : $this->BodyPanel->Id;
+		return in_array($obj, $this->WindowPanelComponents->Item) ? $this->Id : $this->BodyPanel->Id;
 	}
 	
 	function Show()

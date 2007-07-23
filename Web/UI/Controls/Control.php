@@ -321,8 +321,7 @@ class Control extends Component
 	function SetWidth($newWidth) 
 	{
 		$this->Width = $newWidth;
-		if(is_numeric($newWidth))
-			NolohInternal::SetProperty("style.width", $newWidth."px", $this);
+		NolohInternal::SetProperty("style.width", $newWidth.(is_numeric($newWidth)?"px":""), $this);
 	}
 	/**
 	* @ignore
@@ -338,8 +337,7 @@ class Control extends Component
 	function SetHeight($newHeight) 
 	{
 		$this->Height = $newHeight;
-		if(is_numeric($newHeight))
-			NolohInternal::SetProperty("style.height", $newHeight."px", $this);
+		NolohInternal::SetProperty("style.height", $newHeight.(is_numeric($newHeight)?"px":""), $this);
 	}
 	//
 	function GetLeft() {return $this->Left;}
@@ -347,8 +345,7 @@ class Control extends Component
 	function SetLeft($newLeft) 
 	{
 		$this->Left = $newLeft;
-		if(is_numeric($newLeft))
-			NolohInternal::SetProperty("style.left", $newLeft."px", $this);
+		NolohInternal::SetProperty("style.left", $newLeft.(is_numeric($newLeft)?"px":""), $this);
 	}
 	//
 	function GetTop() {return $this->Top;}
@@ -356,8 +353,7 @@ class Control extends Component
 	function SetTop($newTop) 
 	{
 		$this->Top = $newTop;
-		if(is_numeric($newTop))
-			NolohInternal::SetProperty("style.top", $newTop."px", $this);
+		NolohInternal::SetProperty("style.top", $newTop.(is_numeric($newTop)?"px":""), $this);
 	}
 	/**
 	*<b>Note:</b>Can also be called as a property.

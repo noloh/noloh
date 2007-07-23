@@ -168,7 +168,8 @@ class WebPage extends Component
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
 		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
 			(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
-		AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
+		if(!isset($_POST['NoSkeleton']) || GetBrowser()!="ie")
+			AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
 		AddScript("SaveControl('$this->Id')");
 		/*
 		parent::Show();

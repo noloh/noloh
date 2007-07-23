@@ -141,9 +141,9 @@ class Component extends Object
 		}
 		return null;
 	}
-	function GetAddId()
+	function GetAddId($obj)
 	{
-		return $this->GetParent()->GetAddId();
+		return $this->GetParent()->GetAddId($obj);
 	}
 	/*
 	function __isset($nm)

@@ -98,7 +98,6 @@ class Image extends Control
 	}
 	function GetWidth($unit="px")
 	{
-		
 		if($unit == "%")
 		{
 			$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
