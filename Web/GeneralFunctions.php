@@ -145,6 +145,7 @@ function AddScriptSrc($src)
 {
 	if(!isset($_SESSION['NOLOHScriptSrcs'][$src]))
 	{
+		//print(gzencode(file_get_contents($src)));
 		print(file_get_contents($src));
 		$_SESSION['NOLOHScriptSrcs'][$src] = true;
 	}

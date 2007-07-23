@@ -36,7 +36,7 @@ ConversionArray["calSelectDate.setFullYear"] = "Year";
 NOLOHUpload = new Object();
 NOLOHUpload.FileUploadObjIds = new Array();
 NOLOHVisit = -1;
-HighestZIndex = 0; 
+HighestZIndex = 0;
 LowestZIndex = 0;
 
 function _NInit(loadLblId, loadImgId)
@@ -395,7 +395,7 @@ function _NAsc(id)
 
 function GetChanges()
 {
-	var changes = "", distinctId, property, condition;
+	var changes = "", distinctId, property;
 	for(distinctId in NOLOHChanges)
 		for(property in NOLOHChanges[distinctId])
 			if(NOLOHChanges[distinctId][property][0] != SavedControls[distinctId][property])

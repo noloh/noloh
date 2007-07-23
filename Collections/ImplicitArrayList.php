@@ -28,14 +28,14 @@ class ImplicitArrayList extends ArrayList
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->AddFunctionName}($object);
 	}
 	
-	function Insert($object, $whatIndex, $onlyInsert = false)
+	function Insert($object, $index, $onlyInsert = false)
 	{
 		if($this->InsertFunctionName=="" || $onlyInsert)
-			return parent::Insert($object, $whatIndex);
+			return parent::Insert($object, $index);
 		elseif(is_object($this->Source))
-			return $this->Source->{$this->InsertFunctionName}($object, $whatIndex);
+			return $this->Source->{$this->InsertFunctionName}($object, $index);
 		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $whatIndex);
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $index);
 	}
 	
 	function RemoveItem($object, $onlyRemove = false)
@@ -79,7 +79,8 @@ class ImplicitArrayList extends ArrayList
 	
 	function offsetUnset($index)
 	{
-		$this->RemoveItem($this->Item[$index]);
+		//$this->RemoveItem($this->Item[$index]);
+		$this->RemveAt($index);
 	}
 }
 

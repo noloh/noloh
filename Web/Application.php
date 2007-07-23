@@ -11,7 +11,7 @@ function SetStartUpPage($className, $unsupportedURL="", $URLTokenMode=URL::Displ
 /**
 * @ignore
 */
-class Application
+final class Application
 {
 	private $WebPage;
 	
@@ -71,7 +71,9 @@ frm.submit();"
 			}
 			if(isset($_POST['NoNoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
 			{
-				
+				session_destroy();
+				session_unset();
+				$this->HandleFirstRun($className, $unsupportedURL, false);
 			}
 			$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
 			if(isset($_SESSION["NOLOHOmniscientBeing"]))
@@ -96,40 +98,42 @@ frm.submit();"
 			$this->HandleFirstRun($className, $unsupportedURL);
 	}
 	
-	private function HandleFirstRun($className, $unsupportedURL)
+	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
 	{
 		$_SESSION['NOLOHControlQueue'] = array();
 		$_SESSION['NOLOHFunctionQueue'] = array();
 		$_SESSION['NOLOHPropertyQueue'] = array();
 		$_SESSION['NOLOHScript'] = array("", "", "");
-		//$_SESSION['NOLOHSrcScript'] = "";
 		$_SESSION['NOLOHScriptSrcs'] = array();
 		$_SESSION['NOLOHFiles'] = array();
 		$_SESSION['NOLOHNumberOfComponents'] = 0;
-		$_SESSION['NOLOHVisit'] = -1;
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
 		DeclareGlobal("HighestZIndex", 0);
 		DeclareGlobal("LowestZIndex", 0);
 		UserAgentDetect::LoadInformation();
-		if($_SESSION["NOLOHBrowser"] == "other" && $_SESSION["NOLOHOS"] == "other")
+		if($trulyFirst)
 		{
-			
+			$_SESSION['NOLOHVisit'] = -1;
+			if($_SESSION["NOLOHBrowser"] == "other" && $_SESSION["NOLOHOS"] == "other")
+			{
+				//Search engine code here
+			}
+			else 
+				WebPage::SkeletalShow($unsupportedURL);
 		}
-		else 
-			WebPage::SkeletalShow($unsupportedURL);
 	}
 	
 	private function TheComingOfTheOmniscientBeing()
 	{
 		global $OmniscientBeing;
-		$OmniscientBeing = unserialize($_SESSION['NOLOHOmniscientBeing']);
+		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['NOLOHOmniscientBeing']) : $_SESSION['NOLOHOmniscientBeing']);
 		unset($_SESSION['NOLOHOmniscientBeing']);
 		foreach($_SESSION['NOLOHGarbage'] as $id => $nothing)
 		{
 			$control = &$GLOBALS['OmniscientBeing'][$id];
-			if(!isset($_SESSION['NOLOHGarbage'][$control->ParentId]) && $control->GetShowStatus()!==0 && $control instanceof Control)
+			if(!isset($_SESSION['NOLOHGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
 				AddScript("_NAsc('$id')");
 			unset($GLOBALS['OmniscientBeing'][$id]);
 		}
@@ -187,7 +191,7 @@ frm.submit();"
 					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeItems($splitChange[2]);
 					break;
 				case "SelectedIndices":					
-					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeItems($splitChange[2]);
+					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeSelectedIndices($splitChange[2]);
 					break;
 					//$tmp = strpos($splitChange[1], "->");
 					//$runThisString = 'GetComponentById($splitChange[0])->';
@@ -255,6 +259,16 @@ frm.submit();"
 	private function Run()
 	{
 		global $OmniscientBeing;
+		
+		/*global $HTTP_ACCEPT_ENCODING;
+		if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false)
+			header("Content-Encoding: x-gzip");
+		elseif (strpos($HTTP_ACCEPT_ENCODING,'gzip') !== false)
+			header("Content-Encoding: gzip");
+		else 
+			Alert("neeeeh");*/
+		//if(defined('FORCE_GZIP'))
+			
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
 			if($GLOBALS["NOLOHURLTokenMode"] == 1)
@@ -277,16 +291,20 @@ frm.submit();"
 			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
 			$this->WebPage->Show();
 		}
-		
 		if(isset($GLOBALS["NOLOHTokenUpdate"]))
 			URL::UpdateTokens();
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
-		print(/*$_SESSION['NOLOHSrcScript'] .*/ "/*~NScript~*/" . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2]);
+		$sendStr = "/*~NScript~*/" . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2];
+		//if(strstr($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator')!==false || strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')===false)
+		//	print($sendStr);
+		//elseif(defined('FORCE_GZIP'))
+		//	print(gzencode($sendStr,1));
+		print($sendStr);
 		//$_SESSION['NOLOHSrcScript'] = "";
 		$_SESSION['NOLOHScript'] = array("", "", "");
-		$_SESSION['NOLOHOmniscientBeing'] = serialize($OmniscientBeing);
+		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
 		$GLOBALS["NOLOHGarbage"] = true;
 		unset($OmniscientBeing, $GLOBALS["OmniscientBeing"]);
 		unset($GLOBALS["NOLOHGarbage"]);

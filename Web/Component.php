@@ -78,11 +78,11 @@ class Component extends Object
 	}
 	
 	function GetParentId() {return $this->ParentId;}
-	function SetParentId($whatParentId)
+	function SetParentId($parentId)
 	{
-		$bool = $whatParentId != null;
+		$bool = $parentId != null;
 		if($bool)
-			$this->ParentId = $whatParentId;
+			$this->ParentId = $parentId;
 		$_SESSION['NOLOHControlQueue'][$this->Id] = $bool;
 	}
 	/**
@@ -103,9 +103,9 @@ class Component extends Object
 	 * Should not be called under most circumstances, should only be called in overriding the Show() of custom components.
 	 * @return boolean
 	 */
-	function AddEventHandler($whatFunctionAsString)
+	function AddEventHandler($functionAsString)
 	{
-		return new ServerEvent($this, $whatFunctionAsString);
+		return new ServerEvent($this, $functionAsString);
 	}
 	/**
 	 * Gets Parent of this Component, or Parent based on $GenerationsAbove paramater 
@@ -199,9 +199,9 @@ class Component extends Object
 		$OmniscientBeing[$this->Id] = $obj;
 	}
 	
-	function SetPropertyByReference($whatPropertyNameAsString, &$whatValue)
+	function SetPropertyByReference($propertyNameAsString, &$value)
 	{
-		$this->$whatPropertyNameAsString = $whatValue;
+		$this->$propertyNameAsString = $value;
 	}
 	
 	function __toString()

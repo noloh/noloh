@@ -9,7 +9,7 @@ ConversionArray["style.width"] = "Width";
 ConversionArray["style.height"] = "Height";
 ConversionArray["style.zIndex"] = "ZIndex";
 ConversionArray["style.background"] = "BackColor";
-ConversionArray["style.color"] = "Color"; 
+ConversionArray["style.color"] = "Color";
 ConversionArray["style.opacity"] = "Opacity";
 ConversionArray["style.filter"] = "Opacity";
 ConversionArray["value"] = "Text";
@@ -367,7 +367,7 @@ function PostBack(EventType, ID)
 		if(NOLOHCaught.length != 0)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
 	    req = new XMLHttpRequest();
-	   	document.getElementById(_NLoadImg).style.visibility = "visible";
+		document.getElementById(_NLoadImg).style.visibility = "visible";
 		document.getElementById(_NLoadLbl).style.visibility = "visible";
 	    req.onreadystatechange = processReqChange;
 	    req.open("POST", document.URL.split("#", 1)[0], true);

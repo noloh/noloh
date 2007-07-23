@@ -45,7 +45,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	{
 		$this->PreActualAdd($object);
 		$this->ActualAdd($object, $passByReference);
-		return $whatObject;
+		return $object;
 	}
 
 	function Insert($object, $index)
