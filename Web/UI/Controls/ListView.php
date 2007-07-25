@@ -16,7 +16,8 @@ class ListView extends Panel
 		$this->ColumnsPanel->CSSBackground_Image = "url(". NOLOHConfig::GetNOLOHPath() . "Web/UI/Controls/Images/Win/DataGridColumnHeaderBack.gif)";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;
-		$this->ListViewItems = new ImplicitArrayList($this, "AddListViewItem");//, "", "ClearListViewItems");
+		$this->ListViewItems = new ImplicitArrayList($this, "AddListViewItem", "", "ClearListViewItems");
+		$this->ListViewItems->InsertFunctionName = "InsertListViewItem";
 		$this->ListViewItems->ParentId = $this->Id;
 		$this->BodyPanelsHolder = new Panel(0, $this->ColumnsPanel->Bottom, $width, $height - $this->ColumnsPanel->Height);
 		$this->BodyPanels = &$this->BodyPanelsHolder->Controls;
@@ -37,6 +38,7 @@ class ListView extends Panel
 				$text->SetLeft($tmpCount > 0?$this->Columns[$tmpCount-1]->GetRight():0);
 		}
 		$this->BodyPanels->Add($tmpPanel = new Panel($tmpColumn->GetLeft(), 0, $tmpColumn->GetWidth(), "100%"));
+		$tmpPanel->Scrolling = System::Full;
 		//$tmpColumn->SizeHandle->Shifts[] = Shift::Width($tmpPanel);
 		$tmpColumn->Shifts[] = Shift::Width($tmpPanel);
 		//$tmpColumn->SizeHandle->Shifts[] = Shift::Left($tmpColumn->SizeHandle);
@@ -70,9 +72,8 @@ class ListView extends Panel
 					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop = ((($tmpBodyCount = $tmpBodyControls->Count) > 0)?$tmpBodyControls[$tmpBodyCount-1]->GetBottom():0));
 				else
 					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop);
-
 				$tmpBodyControls->Add($listViewItem->SubItems[$i]);
-				$listViewItem->SubItems->Item[$i]->Left = 0;
+//				$listViewItem->SubItems->Item[$i]->Left = 0;
 			}
 			//}
 		}
@@ -81,16 +82,17 @@ class ListView extends Panel
 			if(empty($this->LVItemsQueue["{$listViewItem->Id}"])) 
 				$this->LVItemsQueue["{$listViewItem->Id}"] = $listViewItem;*/
 	}
-	function InsertListViewItem(ListViewItem $listViewItem, $idx)
+	function InsertListViewItem($listViewItem, $idx)
 	{
 		$this->ListViewItems->Insert($listViewItem, $idx, true);
 		$tmpSubItemCount = $listViewItem->SubItems->Count();
 		$tmpColCount = $this->Columns->Count();
 		$listViewItem->SetListView($this);
-		if($this->ListViewItems[$idx] != null)
-		{
-			
-		}
+//		if($this->ListViewItems[$idx] != null)
+//		{
+//			$tmpHeight = $this->ListViewItems[$idx]->GetHeight();
+//			$listV
+//		}
 		for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
 		{
 			if($listViewItem->SubItems->Item[$i] !== null)
@@ -103,7 +105,7 @@ class ListView extends Panel
 
 				$tmpBodyControls->Add($listViewItem->SubItems[$i]);
 				$listViewItem->SubItems->Item[$i]->Left = 0;
-			}
+			}	
 			//}
 		}
 	}
