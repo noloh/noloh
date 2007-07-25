@@ -39,9 +39,11 @@ class WebPage extends Component
 		$this->CSSFiles = new ImplicitArrayList($this, "AddCSSFile", "RemoveCSSFileAt", "ClearCSSFiles");
 		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath()."Web/UI/NStyles.css");
 		
-		$this->Controls->Add($this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/noloh_ani_small.gif", 1, 1));
+		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/noloh_ani_small.gif", 1, 1);
 		$this->LoadImg->CSSClass = "NLoad";
-		$this->Controls->Add($this->LoadLbl = new Label(" Loading...", 31, 4));
+		$this->LoadImg->SetParentId($this->Id);
+		$this->LoadLbl = new Label(" Loading...", 31, 4);
+		$this->LoadLbl->SetParentId($this->Id);
 		$this->LoadLbl->Opacity = 70;
 		$this->LoadLbl->CSSClass = "NLoad NLoadLbl";
 		unset($_SESSION['NOLOHPropertyQueue'][$this->LoadLbl->Id]["style.zIndex"],$_SESSION['NOLOHPropertyQueue'][$this->LoadImg->Id]["style.zIndex"]);

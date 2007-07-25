@@ -31,12 +31,12 @@ class Object
 	{
 		$func = 'Set' . $nm;
 		if(method_exists($this, $func))
-			return $this->$func($val);
+			$this->$func($val);
 		else 
 		{
 			$func = 'set' . $nm;
 			if(method_exists($this, $func))
-				return $this->$func($val);
+				$this->$func($val);
 			/*elseif(strpos($nm, "CSS") === 0 && $nm != "CSSFile")
 			{
 				if($this->CSSPropertyArray == null)

@@ -559,13 +559,14 @@ class Control extends Component
 		{
 			$this->Shifts = new ImplicitArrayList($this, "AddShift", "", "ClearShift");
 			$this->Shifts->RemoveItemFunctionName = "RemoveShift";
+			$this->Shifts->InsertFunctionName = "InsertShift";
 			NolohInternal::SetProperty("Shifts", "Array()", $this);
 			$this->UpdateEvent("MouseDown");
 		}
 		return $this->Shifts;
 	}
 	
-	function AddShift($shift)
+	private function AddShiftHelper($shift)
 	{
 		if($shift[1]==7)
 			QueueClientFunction($this, "AddShiftWith", array("'{$shift[0]}'", "Array(\"$this->Id\"," . $shift[2]), false, Priority::High);
@@ -578,13 +579,26 @@ class Control extends Component
 				QueueClientFunction($this, $fncStr, array(-1, 0, $shift[2]));
 		}
 		unset($shift[2]);
+	}
+	
+	function AddShift($shift)
+	{
+		$this->AddShiftHelper($shift);
 		$this->Shifts->Add($shift, true, true);
+	}
+	
+	function InsertShift($shift, $index)
+	{
+		$this->AddShiftHelper($shift);
+		$this->Shifts->Insert($shift, $index, true);
 	}
 	
 	function RemoveShift($shift)
 	{
-		$shiftCount = $this->Shifts->Count;
-		for($i=0; $i<$shiftCount; ++$i)
+		//$shiftCount = $this->Shifts->Count;
+		//for($i=0; $i<$shiftCount; ++$i)
+		Alert($shift[0]);
+		foreach($this->Shifts as $i => $val)
 			if($this->Shifts[$i][0] == $shift[0])
 			{
 				$curType = $this->Shifts[$i][1];
@@ -613,13 +627,14 @@ class Control extends Component
 					continue;
 				return;
 			}
+		Alert("YA!");
 	}
 	
 	private function ChangeShiftType($arrayIndex, $newType)
 	{
 		$tmp = $this->Shifts[$arrayIndex];
 		$tmp[1] = $newType;
-		$this->Shifts[$arrayIndex] = $tmp;
+		$this->Shifts->Item[$arrayIndex] = $tmp;
 		QueueClientFunction($this, "ChangeShiftType", array("'$this->Id'", $arrayIndex, $newType));
 	}
 	

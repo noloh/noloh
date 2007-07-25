@@ -56,11 +56,11 @@ class IFrame extends Control
 	* @param integer|optional
 	* @param integer|optional
 	*/
-	function IFrame($whatSrc ="", $whatLeft=0, $whatTop=0, $whatWidth=300, $whatHeight=300)
+	function IFrame($src ="", $left=0, $top=0, $width=300, $height=300)
 	{
-		Control::Control($whatLeft, $whatTop, $whatWidth, $whatHeight);
+		Control::Control($left, $top, $width, $height);
 		$this->HtmlName = $this->Id;
-		$this->SetSrc($whatSrc);
+		$this->SetSrc($src);
 	}
 	
 	function GetSrc()
@@ -117,7 +117,7 @@ class IFrame extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		$initialProperties .= ",'frameborder','0'";
+		$initialProperties .= ",'frameborder','no'";
 		NolohInternal::Show("IFRAME", $initialProperties, $this);
 	}
 }

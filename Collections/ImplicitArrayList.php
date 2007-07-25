@@ -73,14 +73,18 @@ class ImplicitArrayList extends ArrayList
 		if($index === null)
 			$this->Add($val);
 		else 
-			parent::offsetSet($index, $val);
+		{
+			$this->RemoveAt($index);
+			$this->Insert($val, $index);
+		}
+			//parent::offsetSet($index, $val);
 		// Needs an else to replace an index!
 	}
 	
 	function offsetUnset($index)
 	{
-		//$this->RemoveItem($this->Item[$index]);
-		$this->RemveAt($index);
+		$this->RemoveItem($this->Item[$index]);
+		//$this->RemveAt($index);
 	}
 }
 
