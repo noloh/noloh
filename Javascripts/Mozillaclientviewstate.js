@@ -50,19 +50,25 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.id = "Graveyard";
 	Graveyard.style.visibility = "hidden";
 	document.body.appendChild(Graveyard);
-	NURL = location.toString();
-	X = setInterval('CheckURL()', 500);
+	_NHash = location.hash;
+	_NURLCheck = setInterval('CheckURL()', 500);
 }
 
 function CheckURL()
 {
-	//alert(NURL);
-	if(NURL != location)
+	//alert(_NHash);
+	if(_NHash != location.hash && location.hash.charAt(1)=="/" && _NHash.charAt(1)=="/")
 		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
-			//NURL = location.toString();
-		//	location.replace(NURL);
+			//_NHash = location.toString();
+		//	location.replace(_NHash);
 		//else
 			location.reload(true);
+}
+
+function _NSetURL(hash)
+{
+	location = document.URL.split('#/',1)[0] + "#/" + hash;
+	_NHash = location.hash;
 }
 
 function SaveControl(id)

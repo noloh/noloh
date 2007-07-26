@@ -152,7 +152,7 @@ class WebPage extends Component
   var head= document.getElementById('NHead');
   var script= document.createElement('SCRIPT');
   script.type = 'text/javascript';
-  script.src = (document.URL.indexOf('#')==-1 ? document.URL+'?' : document.URL.replace('#','?')+'&') 
+  script.src = (document.URL.indexOf('#/')==-1 ? document.URL+'?' : document.URL.replace('#/','?')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
   head.appendChild(script);
 </SCRIPT>");

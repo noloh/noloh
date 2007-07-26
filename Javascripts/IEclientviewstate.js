@@ -50,37 +50,40 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.id = "Graveyard";
 	Graveyard.style.display = "none";
 	document.body.appendChild(Graveyard);
-	NURL = location.toString();
-	_NURLCheck = setInterval('CheckURL()', 500);
+	_NHash = location.hash;
+	_NURL = location.toString();
 	var d=document.getElementById('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.toString());
 	d.close();
+	_NURLCheck = setInterval('CheckURL()', 2000);
 }
 
 function CheckURL()
 {
 	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
 	//alert(inner);
-	if(NURL != location || NURL != inner)
+	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner/* && _NHash.charAt(1)=="/" && _NInnerHas.charAt(1)=="/"*/))
 		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
 		//{
-			//NURL = location.toString();
-		//	NURL = inner;
-		//	location = NURL;
+			//_NHash = location.toString();
+		//	_NHash = inner;
+		//	location = _NHash;
 		//}
 		//else
 		{
 			clearInterval(_NURLCheck);
-			NURL = inner;
+			//alert(inner);
 			location = inner;
+			_NHash = location.hash;
+			_NURL = location.toString();
 			var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
 			//req = new XMLHttpRequest();
 			req = new ActiveXObject("Microsoft.XMLHTTP");
 			document.getElementById(_NLoadImg).style.visibility = "visible";
 			document.getElementById(_NLoadLbl).style.visibility = "visible";
 			req.onreadystatechange = processReqChange;
-			req.open("POST", (inner.indexOf('#')==-1 ? inner+'?' : inner.replace('#','?')+'&') 
+			req.open("POST", (inner.indexOf('#/')==-1 ? inner+'?' : inner.replace('#/','?')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			req.send(str);
@@ -90,6 +93,17 @@ function CheckURL()
 			location.reload(false);
 			*/
 		}
+}
+
+function _NSetURL(hash)
+{
+	location = document.URL.split('#/',1)[0] + "#/" + hash;
+	_NHash = location.hash;
+	_NURL=location.toString();
+	var d=document.getElementById('NBackButton').contentWindow.document;
+	d.open();
+	d.write(location.toString());
+	d.close();
 }
 
 function SaveControl(id)

@@ -30,9 +30,10 @@ abstract class URL
 		$URLString = rtrim($URLString, "&");
 		if($GLOBALS["NOLOHURLTokenMode"] == 2)
 			$URLString = base64_encode($URLString);
-		AddScript("location=document.URL.split('#',1)[0]+'#$URLString';NURL=location.toString()", Priority::Low);
+		AddScript("_NSetURL('$URLString')", Priority::Low);
+		/*AddScript("location=document.URL.split('#/',1)[0]+'#/$URLString';_NHash=location.hash", Priority::Low);
 		if(GetBrowser() == "ie")
-			AddScript("var d=document.getElementById('NBackButton').contentWindow.document;d.open();d.write(location.toString());d.close()", Priority::Low);
+			AddScript("var d=document.getElementById('NBackButton').contentWindow.document;d.open();d.write(location.toString());d.close();_NURL=location.toString()", Priority::Low);*/
 	}
 }
 
