@@ -61,6 +61,7 @@ function _NInit(loadLblId, loadImgId)
 function CheckURL()
 {
 	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
+	//alert(inner);
 	if(NURL != location || NURL != inner)
 		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
 		//{
@@ -74,6 +75,7 @@ function CheckURL()
 			NURL = inner;
 			location = inner;
 			var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
+			//req = new XMLHttpRequest();
 			req = new ActiveXObject("Microsoft.XMLHTTP");
 			document.getElementById(_NLoadImg).style.visibility = "visible";
 			document.getElementById(_NLoadLbl).style.visibility = "visible";
@@ -370,6 +372,7 @@ function PostBack(EventType, ID)
 {
 	if(!document.body.NOLOHPostingBack)
 	{
+		clearInterval(_NURLCheck);
 		document.body.NOLOHPostingBack = true;
 		var str = "NOLOHClientChanges="+GetChanges()+"&NOLOHServerEvent="+EventType+"@"+ID+"&NOLOHVisit="+ ++NOLOHVisit;
 		if(window.event != null)
@@ -382,7 +385,8 @@ function PostBack(EventType, ID)
 		}
 		if(NOLOHCaught.length != 0)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
-	    req = new XMLHttpRequest();
+	    //req = new XMLHttpRequest();
+	    req = new ActiveXObject("Microsoft.XMLHTTP");
 		document.getElementById(_NLoadImg).style.visibility = "visible";
 		document.getElementById(_NLoadLbl).style.visibility = "visible";
 	    req.onreadystatechange = processReqChange;
@@ -406,6 +410,7 @@ function ReadyBox(id)
 
 function PostBackWithUpload(EventType, ID, FileUploadObjIds)
 {
+	clearInterval(_NURLCheck);
 	NOLOHUpload.EventType = EventType;
 	NOLOHUpload.ID = ID;
 	NOLOHUpload.FileUploadObjIds = FileUploadObjIds;

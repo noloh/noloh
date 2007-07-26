@@ -41,8 +41,10 @@ frm.submit();"
 	public function Application($className, $unsupportedURL, $URLTokenMode)
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
-		ini_set('session.gc_probability', 50);
+		//ini_set('session.gc_probability', 50);
 		session_start();
+		//header("Content-type: text/javascript");
+		//ini_set('zlib_output_compression','On'); 
 		
 		if(isset($_GET['NOLOHImage']))
 			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function']);
@@ -72,10 +74,10 @@ frm.submit();"
 			if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
 			{
 				$srcs = $_SESSION['NOLOHScriptSrcs'];
-				session_destroy();
-				session_unset();
+				$_SESSION = array();
 				$this->HandleFirstRun($className, $unsupportedURL, false);
 				$_SESSION['NOLOHScriptSrcs'] = $srcs;
+				//$_SESSION['NOLOHVisit'] = -1;
 				AddScript("NOLOHVisit=-1", Priority::High);
 			}
 			$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
@@ -231,39 +233,16 @@ frm.submit();"
 		//$runThisString = 'return GetComponentById($splitEvent[1])->' . $splitEvent[0] . '->Exec(false);';
 		//eval($runThisString);
 	}
-	
-	private function ExplodeDragCatch($objectsString)
-	{
-		$objs = array();
-		$objectsIdArray = explode(",", $objectsString);
-		$objectsCount = count($objectsIdArray);
-		for($i=0; $i<$objectsCount; $i++)
-			$objs[] = GetComponentById($objectsIdArray[$i]);
-		return $objs;
-	}
-	
-	private function ExplodeItems($optionsString)
-	{
-		$items = new ArrayList();
-		$optionsArray = explode("~d3~", $optionsString);
-		$optionsCount = count($optionsArray);
-		for($i=0; $i<$optionsCount; $i++)
-		{
-			$option = explode("~d2~", $optionsArray[$i]);
-			$items->Add(new Item($option[0], $option[1]));
-		}
-		return $items;
-	}
-	
-	private function ExplodeSelectedIndices($indicesString)
-	{
-		return explode("~d2~", $indicesString);
-	}
 
 	private function Run()
 	{
 		global $OmniscientBeing;
-		
+		/*ini_set("zlib.output_compression", "On");
+		ini_set("zlib.output_compression_level", 1);
+		header("Content-Encoding: gzip");
+		header("Vary: Accept-Encoding");*/
+		if(defined('FORCE_GZIP'))
+			ob_start("ob_gzhandler");
 		/*global $HTTP_ACCEPT_ENCODING;
 		if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false)
 			header("Content-Encoding: x-gzip");
@@ -311,6 +290,34 @@ frm.submit();"
 		$GLOBALS["NOLOHGarbage"] = true;
 		unset($OmniscientBeing, $GLOBALS["OmniscientBeing"]);
 		unset($GLOBALS["NOLOHGarbage"]);
+	}
+	
+	private function ExplodeDragCatch($objectsString)
+	{
+		$objs = array();
+		$objectsIdArray = explode(",", $objectsString);
+		$objectsCount = count($objectsIdArray);
+		for($i=0; $i<$objectsCount; $i++)
+			$objs[] = GetComponentById($objectsIdArray[$i]);
+		return $objs;
+	}
+	
+	private function ExplodeItems($optionsString)
+	{
+		$items = new ArrayList();
+		$optionsArray = explode("~d3~", $optionsString);
+		$optionsCount = count($optionsArray);
+		for($i=0; $i<$optionsCount; $i++)
+		{
+			$option = explode("~d2~", $optionsArray[$i]);
+			$items->Add(new Item($option[0], $option[1]));
+		}
+		return $items;
+	}
+	
+	private function ExplodeSelectedIndices($indicesString)
+	{
+		return explode("~d2~", $indicesString);
 	}
 }
 

@@ -51,7 +51,7 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.style.display = "none";
 	document.body.appendChild(Graveyard);
 	NURL = location.toString();
-	_NURLCheck = setInterval('CheckURL()', 500);
+	_NURLCheck = setInterval('CheckURL()', 2000);
 	var d=document.getElementById('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.toString());
@@ -61,6 +61,7 @@ function _NInit(loadLblId, loadImgId)
 function CheckURL()
 {
 	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
+	//alert(inner);
 	if(NURL != location || NURL != inner)
 		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
 		//{
@@ -440,7 +441,7 @@ function processReqChange()
 		document.getElementById(_NLoadImg).style.visibility = "hidden";
 		document.getElementById(_NLoadLbl).style.visibility = "hidden";
 		document.body.NOLOHPostingBack = false;
-		_NURLCheck = setInterval('CheckURL()', 500);
+		_NURLCheck = setInterval('CheckURL()', 2000);
 	}
 }
 
@@ -448,6 +449,7 @@ function PostBack(EventType, ID)
 {
 	if(!document.body.NOLOHPostingBack)
 	{
+		clearInterval(_NURLCheck);
 		document.body.NOLOHPostingBack = true;
 		var str = "NOLOHClientChanges="+GetChanges()+"&NOLOHServerEvent="+EventType+"@"+ID+"&NOLOHVisit="+ ++NOLOHVisit;
 		if(window.event != null)
@@ -484,6 +486,7 @@ function ReadyBox(id)
 
 function PostBackWithUpload(EventType, ID, FileUploadObjIds)
 {
+	clearInterval(_NURLCheck);
 	NOLOHUpload.EventType = EventType;
 	NOLOHUpload.ID = ID;
 	NOLOHUpload.FileUploadObjIds = FileUploadObjIds;
