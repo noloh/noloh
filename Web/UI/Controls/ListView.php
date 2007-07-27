@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class ListView extends Panel
 {
 	public $ListViewItems;
@@ -88,16 +92,16 @@ class ListView extends Panel
 		$tmpSubItemCount = $listViewItem->SubItems->Count();
 		$tmpColCount = $this->Columns->Count();
 		$listViewItem->SetListView($this);
-//		if($this->ListViewItems[$idx] != null)
-//		{
-//			$tmpHeight = $this->ListViewItems[$idx]->GetHeight();
-//			$listV
-//		}
+////		if($this->ListViewItems[$idx] != null)
+////		{
+////			$tmpHeight = $this->ListViewItems[$idx]->GetHeight();
+////			$listV
+////		}
 		for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
 		{
 			if($listViewItem->SubItems->Item[$i] !== null)
 			{
-				$tmpBodyControls = &$this->BodyPanels[$i]->Controls;
+				$tmpBodyControls = &$this->BodyPanels->Item[$i]->Controls;
 				if($i == 0)
 					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop = ((($tmpBodyCount = $tmpBodyControls->Count) > 0)?$tmpBodyControls[$tmpBodyCount-1]->GetBottom():0));
 				else
@@ -142,17 +146,17 @@ class ListView extends Panel
 	}
 	public function ClearListViewItems()
 	{
-		$this->ListViewItems->Clear();
+		$this->ListViewItems->Clear(true);
 		$bodyPanelsCount = $this->BodyPanels->Count;
 		for($i=0; $i<$bodyPanelsCount; ++$i)
 			$this->BodyPanels[$i]->Controls->Clear();
-		$this->BodyPanels->Clear();
 		$this->LVItemsQueue = array();
 	}
 	public function Clear()
 	{
 		$this->ClearListViewItems();
 		$this->Columns->Clear();
+		$this->BodyPanels->Clear();
 	}
 	function Show()
 	{

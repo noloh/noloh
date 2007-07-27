@@ -1,4 +1,8 @@
 <?php	
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class ListViewItem extends Object //extends Component
 {
 	public $Checked;
