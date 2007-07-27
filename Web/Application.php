@@ -60,18 +60,21 @@ frm.submit();"
 		}
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if(!isset($_SESSION['NOLOHVisit']) || $_SESSION['NOLOHURL'] != $_SERVER['PHP_SELF'] || 
-			  (!isset($_POST['NOLOHVisit']) && !isset($_POST['NOLOHServerEvent']) && $_SESSION['NOLOHVisit']>=0) ||
+			if(!isset($_SESSION['NOLOHVisit']) || /*$_SESSION['NOLOHURL'] != $_SERVER['PHP_SELF'] || */
+			  (((!isset($_POST['NOLOHVisit']) && !isset($_POST['NOLOHServerEvent'])) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0) ||
 			  (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']))
 			{
-				if(isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET["NWidth"]))
+				//if(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit'])
+					//print("alert('" . $_SESSION['NOLOHVisit'] . " vs " . $_POST['NOLOHVisit'] . "');");
+				//	print("location.reload(true);");
+				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET["NWidth"]))
 					self::Reset();
 				session_destroy();
 				session_unset(); 
 				self::SetStartUpPage($className, $unsupportedURL, $URLTokenMode);
 				return;
 			}
-			if(isset($_POST['NoSkeleton']) && isset($_SESSION['NOLOHVisit']) && GetBrowser()=="ie")
+			if(isset($_POST['NoSkeleton']) && GetBrowser()=="ie")
 			{
 				$srcs = $_SESSION['NOLOHScriptSrcs'];
 				$_SESSION = array();

@@ -50,6 +50,8 @@ function _NInit(loadLblId, loadImgId)
 	Graveyard.id = "Graveyard";
 	Graveyard.style.display = "none";
 	document.body.appendChild(Graveyard);
+	if(location.hash=="")
+		location = location + "#/";
 	_NHash = location.hash;
 	_NURL = location.toString();
 	var d=document.getElementById('NBackButton').contentWindow.document;
@@ -85,9 +87,13 @@ function CheckURL()
 			req.onreadystatechange = processReqChange;
 			req.open("POST", (inner.indexOf('#/')==-1 ? inner+'?' : inner.replace('#/','?')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+            //alert((inner.indexOf('#/')==-1 ? inner+'?' : inner.replace('#/','?')+'&') 
+            //   + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 			req.send(str);
 			document.getElementById("N1").innerHTML = "";
+			//alert("so far so good boss");
 			/*
 			location.replace(inner);
 			location.reload(false);
@@ -367,6 +373,7 @@ function processReqChange()
 	if (ready==4)
 	{
    		var response = req.responseText.split("/*~NScript~*/", 2);
+   		//alert(req.responseText);
    		if(response[0] != "")
    		{
 	   		var s = document.createElement("SCRIPT");
@@ -406,6 +413,7 @@ function PostBack(EventType, ID)
 	    req.onreadystatechange = processReqChange;
 	    req.open("POST", document.URL.split("#", 1)[0], true);
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 	    req.send(str);
 	}
 }

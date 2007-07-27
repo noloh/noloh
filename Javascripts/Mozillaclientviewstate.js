@@ -57,7 +57,7 @@ function _NInit(loadLblId, loadImgId)
 function CheckURL()
 {
 	//alert(_NHash);
-	if(_NHash != location.hash && location.hash.charAt(1)=="/" && _NHash.charAt(1)=="/")
+	if(_NHash != location.hash && (location.hash=="" || location.hash.charAt(1)=="/") && (_NHash=="" || _NHash.charAt(1)=="/"))
 		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
 			//_NHash = location.toString();
 		//	location.replace(_NHash);
@@ -368,6 +368,7 @@ function PostBack(EventType, ID, event)
 	    req.onreadystatechange = processReqChange;
 	    req.open("POST", window.location.href, true);
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 	    req.send(str);
 	}
 }
