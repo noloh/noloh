@@ -6,6 +6,8 @@
 define("NoDisplay", "NoDisplay");
 
 /**
+ * @package UI
+ * @subpackage Controls
  * Control class file.
  */
  
@@ -321,7 +323,10 @@ class Control extends Component
 	function SetWidth($newWidth) 
 	{
 		$this->Width = $newWidth;
-		NolohInternal::SetProperty("style.width", $newWidth.(is_numeric($newWidth)?"px":""), $this);
+		if(is_numeric($newWidth))
+			NolohInternal::SetProperty("style.width", $newWidth."px", $this);
+		elseif(is_numeric(rtrim($newWidth, "%")))
+			NolohInternal::SetProperty("style.width", $newWidth, $this);
 	}
 	/**
 	* @ignore
@@ -337,7 +342,10 @@ class Control extends Component
 	function SetHeight($newHeight) 
 	{
 		$this->Height = $newHeight;
-		NolohInternal::SetProperty("style.height", $newHeight.(is_numeric($newHeight)?"px":""), $this);
+		if(is_numeric($newHeight))
+			NolohInternal::SetProperty("style.height", $newHeight."px", $this);
+		elseif(is_numeric(rtrim($newHeight, "%")))
+			NolohInternal::SetProperty("style.height", $newHeight, $this);
 	}
 	//
 	function GetLeft() {return $this->Left;}
@@ -345,7 +353,10 @@ class Control extends Component
 	function SetLeft($newLeft) 
 	{
 		$this->Left = $newLeft;
-		NolohInternal::SetProperty("style.left", $newLeft.(is_numeric($newLeft)?"px":""), $this);
+		if(is_numeric($newLeft))
+			NolohInternal::SetProperty("style.left", $newLeft."px", $this);
+		elseif(is_numeric(rtrim($newLeft, "%")))
+			NolohInternal::SetProperty("style.left", $newLeft, $this);
 	}
 	//
 	function GetTop() {return $this->Top;}
@@ -353,7 +364,10 @@ class Control extends Component
 	function SetTop($newTop) 
 	{
 		$this->Top = $newTop;
-		NolohInternal::SetProperty("style.top", $newTop.(is_numeric($newTop)?"px":""), $this);
+		if(is_numeric($newTop))
+			NolohInternal::SetProperty("style.top", $newTop."px", $this);
+		elseif(is_numeric(rtrim($newTop, "%")))
+			NolohInternal::SetProperty("style.top", $newTop, $this);
 	}
 	/**
 	*<b>Note:</b>Can also be called as a property.
