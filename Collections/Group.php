@@ -1,4 +1,8 @@
 <?
+/**
+ * @ignore 
+ *
+ */
 abstract class Group extends Component
 {
 	function Group()

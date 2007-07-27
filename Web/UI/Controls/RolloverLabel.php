@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class RolloverLabel extends Label
 {
 	private $OutColor;

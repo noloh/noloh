@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class Panel extends Guardian
 {
 	private $Scrolling;

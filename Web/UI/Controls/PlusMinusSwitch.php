@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class PlusMinusSwitch extends Image
 {	
 	function PlusMinusSwitch($left=0, $top=0, $width=9, $height=9)

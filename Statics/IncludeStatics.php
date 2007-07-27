@@ -1,4 +1,7 @@
 <?php
+/**
+ * @ignore 
+ */
 require_once("NolohInternal.php");
 require_once("Cursor.php");
 require_once("Priority.php");

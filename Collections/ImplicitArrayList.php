@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Collections
+ */
 class ImplicitArrayList extends ArrayList 
 {
 	private $Source;

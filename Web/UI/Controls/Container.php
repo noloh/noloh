@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 //Hope for this to be a container for things that should not be in a panel.
 class Container extends Component
 {

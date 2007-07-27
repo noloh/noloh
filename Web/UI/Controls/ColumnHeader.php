@@ -1,5 +1,8 @@
 <?php
-	
+/**
+ * @package UI
+ * @subpackage Controls
+ */	
 class ColumnHeader extends Label
 {
 	private $Order = 0;

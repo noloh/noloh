@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class Timer extends Component
 {
 	private $Interval;

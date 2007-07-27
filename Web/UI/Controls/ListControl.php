@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @package UI
+ * @subpackage Controls
  * ListControl class
  *
  * The base class for ListControls, this class is usually extended. 

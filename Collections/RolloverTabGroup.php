@@ -1,4 +1,7 @@
 <?
+/**
+ * @package Collections
+ */
 class RolloverTabGroup extends RolloverGroup 
 {
 	private $RolloverTabs;

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class GroupBox extends Guardian
 {	
 	function GroupBox($whatCaption ="", $whatLeft = 0, $whatTop = 0, $whatWidth = 100, $whatHeight = 100)  

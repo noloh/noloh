@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Data
+ */
 class MySqlConnection
 {
 	public $UserName;

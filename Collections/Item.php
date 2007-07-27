@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Collections
+ */
 class Item
 {
 	public $Text;

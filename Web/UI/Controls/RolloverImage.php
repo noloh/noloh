@@ -1,5 +1,8 @@
 <?php
-	
+/**
+ * @package UI
+ * @subpackage Controls
+ */	
 class RolloverImage extends Image
 {
 	public $GroupName;

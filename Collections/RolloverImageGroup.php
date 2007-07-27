@@ -1,5 +1,7 @@
 <?
-
+/**
+ * @package Collections
+ */
 class RolloverImageGroup extends RolloverGroup 
 {
 	private $RolloverImages;

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class Calendar extends Panel 
 {
 	public $MonthYearLabel;

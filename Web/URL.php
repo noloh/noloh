@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web
+ *
+ */
 abstract class URL
 {
 	const Disable = 0;

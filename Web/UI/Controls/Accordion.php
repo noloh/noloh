@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web.UI
+ * @subpackage Controls
+ */
 class Accordion extends Panel
 {
 	public $AccordionParts;

@@ -1,5 +1,6 @@
 <?php
 /**
+ * @package Web.UI
  * Button class file.
  */
  

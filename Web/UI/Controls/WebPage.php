@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class WebPage extends Component
 {
 	public $CSSFiles;

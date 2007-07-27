@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Data
+ */
 class MySqlDataReader
 {
 	public $Command;

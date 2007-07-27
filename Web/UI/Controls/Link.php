@@ -1,5 +1,7 @@
 <?php
 /**
+ * @package UI
+ * @subpackage Controls
  * Link class file.
  */
  

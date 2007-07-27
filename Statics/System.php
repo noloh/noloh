@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Statics
+ */
 class System
 {
 	const Auto = "Auto";

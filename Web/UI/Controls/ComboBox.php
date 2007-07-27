@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class ComboBox extends ListControl 
 {
 	private $SelectedIndex;

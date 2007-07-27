@@ -1,4 +1,7 @@
 <?php
+/**
+ * @ignore 
+ */
 	require_once("ArrayList.php");
 	require_once("ImplicitArrayList.php");
 	require_once("Item.php");

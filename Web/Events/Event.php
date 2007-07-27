@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web
+ * @subpackage Events
+ */
 class Event implements ArrayAccess
 {
 	public $Handles;

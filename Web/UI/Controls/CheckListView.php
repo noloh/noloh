@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class CheckListView extends ListView
 {
 	function CheckListView($whatLeft, $whatTop, $whatWidth, $whatHeight)

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web
+ *
+ */
 class Pointer
 {
 	public $RefId;

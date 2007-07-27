@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Collections
+ */
 class CheckableItem extends Item
 {
 	public $Checked;

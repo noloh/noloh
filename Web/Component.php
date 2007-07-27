@@ -1,5 +1,6 @@
 <?php
 /**
+ * @package Web
  * Component class file.
  */
  

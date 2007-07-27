@@ -1,5 +1,7 @@
 <?php
 /**
+ * @package UI
+ * @subpackage Controls
  * Guardian class file.
  */
  

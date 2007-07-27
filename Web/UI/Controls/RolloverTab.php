@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class RolloverTab extends Panel
 {	
 	private $OutTab;

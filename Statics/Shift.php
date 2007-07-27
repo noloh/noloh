@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Statics
+ */
 class Shift
 {
 	const Normal = 0;

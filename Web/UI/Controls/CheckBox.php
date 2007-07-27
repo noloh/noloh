@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class CheckBox extends GroupedInputControl
 {
 	function CheckBox($text="", $left = 0, $top = 0, $width = 50, $height = 20)

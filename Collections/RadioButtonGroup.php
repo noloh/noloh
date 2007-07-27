@@ -1,5 +1,7 @@
 <?
-
+/**
+ * @package Collections
+ */
 class RadioButtonGroup extends RolloverGroup 
 {
 	public $RadioButtons;

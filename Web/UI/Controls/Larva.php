@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class Larva extends MarkupItem 
 {
 	public static function Morphy(&$larva, $component)

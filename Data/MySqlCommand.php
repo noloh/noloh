@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Data
+ */
 class MySqlCommand
 {
 	public $Connection;

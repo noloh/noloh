@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class TextArea extends Control 
 {
 	private $MaxLength;

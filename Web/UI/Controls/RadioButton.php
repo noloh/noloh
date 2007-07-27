@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class RadioButton extends GroupedInputControl
 {
 	function RadioButton($text="", $left = 0, $top = 0, $width = 50, $height = 20)

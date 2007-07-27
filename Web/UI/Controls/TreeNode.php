@@ -1,4 +1,8 @@
 <?
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class TreeNode extends Panel
 {
 	public $PlusMinus;

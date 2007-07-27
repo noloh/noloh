@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web
+ * @subpackage Events
+ */
 class ServerEvent extends Event
 {
 	public $Source;

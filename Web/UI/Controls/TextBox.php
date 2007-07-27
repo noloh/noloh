@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class TextBox extends Control
 {
 	public $Password;

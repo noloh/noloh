@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class TreeList extends Panel 
 {
 	public $TreeNodesList;

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class Slider extends Panel
 {
 	private $SlidingObject;

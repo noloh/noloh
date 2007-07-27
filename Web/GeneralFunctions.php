@@ -1,5 +1,6 @@
 <?php
 /**
+* @package Web 
 * Throws an Exception, and destroy the Session, similar to die()
 * @param mixed|specifies Error Message to throw.
  */

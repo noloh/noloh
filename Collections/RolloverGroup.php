@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Collections
+ */
 abstract class RolloverGroup extends Component
 {
 	function RolloverGroup()

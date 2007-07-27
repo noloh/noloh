@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Web
+ */
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @ignore 
+ *
+ */
 abstract class Collection extends ArrayObject
 {
 	public $Item = array();

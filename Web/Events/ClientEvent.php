@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web
+ * @subpackage Events
+ */
 class ClientEvent extends Event
 {
 	static function GenerateString($str)

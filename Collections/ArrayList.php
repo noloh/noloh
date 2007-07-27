@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Collections
+ */
 class ArrayList implements ArrayAccess, Countable, Iterator
 {
 	public $Item;

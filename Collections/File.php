@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Collections
+ */
 class File
 {
 	const Read = "r";

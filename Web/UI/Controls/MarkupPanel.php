@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class MarkupPanel extends Panel
 {
 	protected $MarkupString;

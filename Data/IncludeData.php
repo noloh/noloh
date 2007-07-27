@@ -1,4 +1,7 @@
 <?php
+/**
+ * @ignore 
+ */
 require_once("PGSqlCommand.php");
 require_once("PGSqlConnection.php");
 require_once("PGSqlDataReader.php");

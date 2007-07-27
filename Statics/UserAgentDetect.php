@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Statics
+ */
 final class UserAgentDetect 
 {	
 	private function UserAgentDetect(){}

@@ -1,5 +1,8 @@
 <?php 
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class GroupedInputControl extends Control
 {
 	private $GroupName;

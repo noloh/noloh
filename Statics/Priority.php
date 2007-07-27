@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package Statics
+ */
 class Priority
 {
 	const High = 0;

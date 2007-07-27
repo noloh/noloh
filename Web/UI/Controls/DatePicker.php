@@ -1,5 +1,7 @@
 <?php
 /**
+ * @package UI
+ * @subpackage Controls
  * DatePicker class file.
  */
  

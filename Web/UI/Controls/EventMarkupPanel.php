@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class EventMarkupPanel extends MarkupPanel
 {
 	private $Eventees;

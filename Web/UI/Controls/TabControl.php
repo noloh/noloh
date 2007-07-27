@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class TabControl extends Panel
 {
 	const Top = "Top";

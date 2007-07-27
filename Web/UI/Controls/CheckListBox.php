@@ -1,5 +1,8 @@
 <?php
-	
+/**
+ * @package UI
+ * @subpackage Controls
+ */	
 class CheckListBox extends Panel
 {
 	public $Items;

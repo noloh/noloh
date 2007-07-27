@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Collections
+ */
 class RolloverLabelGroup extends RolloverGroup
 {
 	private $RolloverLabels;

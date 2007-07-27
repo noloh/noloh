@@ -1,5 +1,8 @@
 <?php
-	
+/**
+ * @package UI
+ * @subpackage Controls
+ */	
 class ListBox extends ListControl
 {
 	private $SelectedIndices;

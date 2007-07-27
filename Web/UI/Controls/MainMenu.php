@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class MainMenu extends Panel
 {
 	public $MenuItems;

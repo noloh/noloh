@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @package UI
+ * @subpackage Controls
  * IFrame class file.
  */
  

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @ignore 
+ *
+ */
 final class NolohInternal
 {
 	private function NolohInternal(){}

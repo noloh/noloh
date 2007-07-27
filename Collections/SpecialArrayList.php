@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @ignore
+ */
 	class SpecialArrayList extends ArrayList 
 	{
 		public $SpecialFunction;

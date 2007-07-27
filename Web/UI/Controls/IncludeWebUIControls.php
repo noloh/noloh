@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @ignore
+ */
 require_once("Control.php");
 require_once("Container.php");
 require_once("EmbedObject.php");

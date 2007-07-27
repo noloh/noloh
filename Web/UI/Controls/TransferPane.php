@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class TransferPane extends Panel
 {
 	public $LeftPane;

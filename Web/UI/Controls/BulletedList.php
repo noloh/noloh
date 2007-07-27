@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package Web.UI
+ * @subpackage Controls
+ */
 class BulletedList extends Control
 {
 	public $Ordered = false;

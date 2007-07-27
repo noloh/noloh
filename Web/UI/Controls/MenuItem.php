@@ -1,5 +1,8 @@
 <?php 
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class MenuItem extends Container
 {
 	//public $RolloverImage;

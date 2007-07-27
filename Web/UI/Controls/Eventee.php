@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @package UI
+ * @subpackage Controls
+ */
 class Eventee extends MarkupItem 
 {
 	function Eventee($id, $keyword, $value, $panelId)
