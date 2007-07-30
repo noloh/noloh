@@ -104,7 +104,8 @@ function DeclareGlobal($whatName, $whatValue=null)
 */
 function Alert($msg)
 {
-	AddScript("alert('" . addslashes(str_replace("\n","",$msg)) . "');");
+	AddScript("alert('" . addslashes(str_replace(array("\n","\r"),array("",""),$msg)) . "');");
+	//AddScript("alert('" . addslashes(str_replace("\n","",$msg)) . "');");
 	//$_SESSION['NOLOHScript'] .= 'alert("' . str_replace('"','\"',str_replace("'","\'",str_replace("\n","",$msg))) . '");';
 }
 /**

@@ -155,7 +155,7 @@ class WebPage extends Component
   var head= document.getElementById('NHead');
   var script= document.createElement('SCRIPT');
   script.type = 'text/javascript';
-  script.src = (document.URL.indexOf('#/')==-1 ? document.URL+'?' : document.URL.replace('#/','?')+'&') 
+  script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
   head.appendChild(script);
 </SCRIPT>");
@@ -164,7 +164,7 @@ class WebPage extends Component
 	function Show()
 	{
 		parent::Show();
-		
+		//Alert($this->Width);
 		/*if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false)
 			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/IE6clientviewstate.js");
 		else*/

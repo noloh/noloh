@@ -76,17 +76,17 @@ function CheckURL()
 		{
 			clearInterval(_NURLCheck);
 			//alert(inner);
-			location = inner;
-			_NHash = location.hash;
-			_NURL = location.toString();
 			var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
 			//req = new XMLHttpRequest();
 			req = new ActiveXObject("Microsoft.XMLHTTP");
 			document.getElementById(_NLoadImg).style.visibility = "visible";
 			document.getElementById(_NLoadLbl).style.visibility = "visible";
 			req.onreadystatechange = processReqChange;
-			req.open("POST", (inner.indexOf('#/')==-1 ? inner+'?' : inner.replace('#/','?')+'&') 
+			req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+			location = inner;
+			_NHash = location.hash;
+			_NURL = location.toString();
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 			req.send(str);

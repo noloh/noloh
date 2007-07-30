@@ -276,6 +276,17 @@ class TreeNode extends Panel
 		$this->NodeElement->Click[] = $newClick;
 	}
 	
+	function GetText()
+	{
+		return $this->NodeElement == null ? null : $this->NodeElement->GetText();
+	}
+	
+	function SetText($text)
+	{
+		if($this->NodeElement != null)
+			$this->NodeElement->SetText($text);
+	}
+	
 	function GetLeafSrc()
 	{
 		return $this->LeafSrc;

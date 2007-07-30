@@ -40,9 +40,9 @@ class Event implements ArrayAccess
 		return isset(self::$Conversion[$eventName]) ? self::$Conversion[$eventName] : $eventName;
 	}
 	
-	function Event($whatFunctionAsString, $handles=array())
+	function Event($eventarray=array(), $handles=array())
 	{
-		$this->ExecuteFunction = $whatFunctionAsString;
+		$this->ExecuteFunction = $eventarray;
 		$this->Handles = $handles;
 	}
 
