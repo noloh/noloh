@@ -67,7 +67,7 @@ function CheckURL()
 
 function _NSetURL(hash)
 {
-	location = document.URL.split('#/',1)[0] + "#/" + hash;
+	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 }
 

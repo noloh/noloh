@@ -9,16 +9,16 @@ class TreeList extends Panel
 	public $Multiple;
 	public $Nodes;
 	
-	function TreeList($whatLeft=0, $whatTop=0, $whatWidth=200, $whatHeight=500)
+	function TreeList($left=0, $top=0, $width=200, $height=500)
 	{
-		parent::Panel($whatLeft, $whatTop, $whatWidth, $whatHeight, $this);
+		parent::Panel($left, $top, $width, $height, $this);
 		$this->TreeNodesList = new ListBox();
 		$this->TreeNodesList->SetClientVisible(false);
 		$this->Controls->Add($this->TreeNodesList, true, true);
 		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;
 		$this->Nodes = &$this->Controls;
-		$this->Nodes->AddFunctionName = "AddNode";
+		$this->Nodes->AddFunctionName = 'AddNode';
 		//$this->Nodes->RemoveFunctionName = "RemoveNode";
 	}
 	function AddNode(TreeNode $node)
@@ -102,7 +102,8 @@ class TreeList extends Panel
 	}
 	function Show()
 	{	
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TreeListScripts.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TreeListScripts.js");
+		AddNolohScriptSrc('TreeList.js');
 		//AddScript("document.getElementById('" . $this->Id . "').treeNodesList = document.getElementById('" . $this->TreeNodesList->Id . "');");
 		AddScript("document.getElementById('" . $this->Id . "').treeNodesList = '" . $this->TreeNodesList->Id . "';");
 		parent::Show();

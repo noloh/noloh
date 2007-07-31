@@ -10,7 +10,7 @@ class GroupedInputControl extends Control
 	protected $Value;
 	public $Caption;
 	
-	function GroupedInputControl($text="", $left = 0, $top = 0, $width = 50, $height = 20)
+	function GroupedInputControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
 		$this->Caption = new Label($text);
 		parent::Control($left, $top, $width, $height);
@@ -43,7 +43,7 @@ class GroupedInputControl extends Control
 	function SetGroupName($newGroupName)
 	{
 		$this->GroupName = $newGroupName;
-		NolohInternal::SetProperty("name", $newGroupName, $this);
+		NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
 	}
 	function GetChecked()
@@ -53,7 +53,7 @@ class GroupedInputControl extends Control
 	function SetChecked($bool)
 	{
 		$this->Checked = $bool ? true : null;
-		NolohInternal::SetProperty("checked", $bool, $this);
+		NolohInternal::SetProperty('checked', $bool, $this);
 	}
 	function SetLeft($newLeft)
 	{
@@ -95,14 +95,15 @@ class GroupedInputControl extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onclick','".$this->GetEventString("Click")."this.blur();'";
+			return ",'onclick','".$this->GetEventString('Click')."this.blur();'";
 		return parent::GetEventString($eventTypeAsString);
 	}
 	function Show()
 	{
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/GroupedInputControl.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/GroupedInputControl.js");
+		AddNolohScriptSrc('GroupedInputControl.js');
 		if(GetBrowser()=="ie")
-			NolohInternal::SetProperty("defaultChecked", $this->Checked, $this);
+			NolohInternal::SetProperty('defaultChecked', $this->Checked, $this);
 		$parentShow = parent::Show();
 		$this->Caption->Show();
 		return $parentShow;

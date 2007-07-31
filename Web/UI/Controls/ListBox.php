@@ -50,27 +50,28 @@ class ListBox extends ListControl
 		{
 			//NolohInternal::SetProperty("options[$whatIndex].selected", false, $this);
 			//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=false;void", array(0));
-			QueueClientFunction($this, "_NListDesel", array("'$this->Id'", $index), false);
+			QueueClientFunction($this, '_NListDesel', array("'$this->Id'", $index), false);
 			//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=false");
 			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
 		}
 	}
 	
-	function GetEventString($whatEventTypeAsString)
+	function GetEventString($eventTypeAsString)
 	{
 		$preStr = "";
-		if($whatEventTypeAsString == "Change")
+		if($eventTypeAsString == 'Change')
 			$preStr = "_NSave(\"$this->Id\",\"selectedIndices\",ImplodeSelectedIndices(this.options));";
-		return $preStr . parent::GetEventString($whatEventTypeAsString);
+		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 
 	function Show()
 	{
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
+		AddNolohScriptSrc('ListControl.js');
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'multiple','true'";
 		$initialProperties .= $this->GetEventString(null);
-		NolohInternal::Show("SELECT", $initialProperties, $this);
+		NolohInternal::Show('SELECT', $initialProperties, $this);
 	}
 }
 

@@ -52,8 +52,9 @@ class TextArea extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."TextAreaScripts.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."TextAreaScripts.js");
 		$initialProperties .= $this->GetEventString(null);
+		AddNolohScriptSrc('TextArea.js', true);
 		NolohInternal::Show("TEXTAREA", $initialProperties, $this);
 		if(GetBrowser() != "ie")
 			AddScript("document.getElementById('$this->Id').addEventListener('input',doInput,false)");

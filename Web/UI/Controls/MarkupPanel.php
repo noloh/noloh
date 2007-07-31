@@ -57,23 +57,23 @@ class MarkupPanel extends Panel
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
 		{
 			$this->CachedWidth = $widthHeight[0];
-			NolohInternal::SetProperty("style.width", $this->CachedWidth."px", $this);
+			NolohInternal::SetProperty('style.width', $this->CachedWidth.'px', $this);
 		}
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
 		{
 			$this->CachedHeight = $widthHeight[1];
-			NolohInternal::SetProperty("style.height", $this->CachedHeight."px", $this);
+			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
 	}
-	function SetMarkupString($whatMarkupStringOrFile)
+	function SetMarkupString($markupStringOrFile)
 	{
 		//$this->IsFile = (is_file($whatMarkupStringOrFile))? true : false;
-		$this->MarkupString = $whatMarkupStringOrFile;
+		$this->MarkupString = $markupStringOrFile;
 //		if(is_file($whatMarkupStringOrFile))
 //		{
-			$whatMarkupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array("<Nendl>", "<Nendl>", "<Nendl>", "<NQt2>", "<NQt1>"), ($tmpFullString = ((is_file($whatMarkupStringOrFile))?file_get_contents($whatMarkupStringOrFile):$whatMarkupStringOrFile)));
+			$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
 			$this->AutoWidthHeight($tmpFullString);
-			QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$whatMarkupStringOrFile'"));
+			QueueClientFunction($this, 'SetMarkupString', array("'$this->Id'", "'$markupStringOrFile'"));
 //		}
 //		else
 //			NolohInternal::SetProperty("innerHTML", $whatMarkupStringOrFile, $this);
@@ -85,7 +85,8 @@ class MarkupPanel extends Panel
 	function Show()
 	{
 		parent::Show();
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupPanelScript.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupPanelScript.js");
+		AddNolohScriptSrc('MarkupPanel.js');
 	}
 }
 

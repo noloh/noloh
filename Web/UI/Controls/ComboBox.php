@@ -30,8 +30,8 @@ class ComboBox extends ListControl
 	}
 	function GetEventString($eventTypeAsString)
 	{
-		$preStr = "";
-		if($eventTypeAsString == "Change")
+		$preStr = '';
+		if($eventTypeAsString == 'Change')
 			$preStr = "_NSave(\"$this->Id\",\"selectedIndex\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
@@ -43,10 +43,11 @@ class ComboBox extends ListControl
 	}
 	function Show()
 	{
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
+		AddNolohScriptSrc('ListControl.js');
 		$initialProperties = parent::Show();
 		$initialProperties .= $this->GetEventString(null);
-		NolohInternal::Show("SELECT", $initialProperties, $this);
+		NolohInternal::Show('SELECT', $initialProperties, $this);
 	}
 }
 

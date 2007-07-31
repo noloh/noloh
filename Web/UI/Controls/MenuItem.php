@@ -28,11 +28,11 @@ class MenuItem extends Container
 		$this->TextLabel->Cursor = Cursor::Arrow;
 		$this->MainMenuPanel = new Panel($this->TextLabel->GetRight(), $this->TextLabel->GetTop(), 0, 0, $this);
 		$this->MainMenuPanel->Scrolling = System::Full;
-		$this->MainMenuPanel->Border = "1px solid black";
-		$this->MainMenuPanel->BackColor = "white";
+		$this->MainMenuPanel->Border = '1px solid black';
+		$this->MainMenuPanel->BackColor = 'white';
 		$this->MainMenuPanel->ClientVisible = false;
 		$this->MenuItems = &$this->MainMenuPanel->Controls;
-		$this->MenuItems->AddFunctionName = "AddMenuItem";
+		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		
 		//New Way
 		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false); document.getElementById('{$this->TextLabel->Id}').style.background = '{$this->OverBackColor}'; document.getElementById('{$this->TextLabel->Id}').style.color = '{$this->OverTextColor}';");
@@ -52,7 +52,7 @@ class MenuItem extends Container
 			//$tempImage = new Image(NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/MenuItemArrow.gif", $menuItem->Width - 5, 3);
 			//$this->Controls->Add($tempImage);
 			//NolohInternal::SetProperty("HasChildren", "true", $this->TextLabel);
-			NolohInternal::SetProperty("ChildrenArray", "Array()", $this->MainMenuPanel);
+			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MainMenuPanel);
 			//AddScript("document.getElementById('{$this->TextLabel->Id}').HasChildren = true; document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray = new Array();");
 		}
 		if($this->MainMenuPanel->GetWidth() < $menuItem->GetWidth())
@@ -73,7 +73,7 @@ class MenuItem extends Container
 			$_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->TextLabel->Id}'";
 		else 
 			QueueClientFunction($this->MainMenuPanel, $fncStr, array(-1, 0, "'{$menuItem->TextLabel->Id}'"));
-		NolohInternal::SetProperty("MenuPanelParentId", $tmpId, $menuItem->TextLabel);
+		NolohInternal::SetProperty('MenuPanelParentId', $tmpId, $menuItem->TextLabel);
 		//AddScript("document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray.push('{$menuItem->TextLabel->Id}'); document.getElementById('{$menuItem->TextLabel->Id}').MenuPanelParentId = '{$this->MainMenuPanel->Id}';");
 		if(!$this->Parent instanceof MainMenu)
 			$this->TextLabel->MouseOut->Enabled = false;
@@ -117,10 +117,11 @@ class MenuItem extends Container
 	
 	function Show()
 	{
-		if(GetBrowser() == "ie")
+		/*if(GetBrowser() == "ie")
 			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/IEMenuItem.js");
 		else
-			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MozillaMenuItem.js");	
+			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MozillaMenuItem.js");	*/
+		AddNolohScriptSrc('MenuItem.js', true);
 		parent::Show();	
 	}
 }

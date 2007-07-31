@@ -8,7 +8,7 @@ final class UserAgentDetect
 	
 	static function LoadInformation()
 	{
-		$agt = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : "";
+		$agt = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 		
 		/*
 		if(strpos($agt, 'google') !== false || 
@@ -24,37 +24,37 @@ final class UserAgentDetect
 		   )
 		*/
 		   
-		$_SESSION["NOLOHIsIE"] = false;
+		$_SESSION['NOLOHIsIE'] = false;
         if(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
-        	$_SESSION["NOLOHBrowser"] = "sa";
+        	$_SESSION['NOLOHBrowser'] = 'sa';
         elseif(strpos($agt, 'gecko') !== false && strpos($agt, 'firefox') !== false)
-        	$_SESSION["NOLOHBrowser"] = "ff";
+        	$_SESSION['NOLOHBrowser'] = 'ff';
         elseif(strpos($agt, 'opera') !== false)
-        	$_SESSION["NOLOHBrowser"] = "op";
+        	$_SESSION['NOLOHBrowser'] = 'op';
         elseif(strpos($agt, 'msie') !== false)
         {
-        	$_SESSION["NOLOHBrowser"] = "ie";
-        	$_SESSION["NOLOHIsIE"] = true;
+        	$_SESSION['NOLOHBrowser'] = 'ie';
+        	$_SESSION['NOLOHIsIE'] = true;
         }
         else
-        	$_SESSION["NOLOHBrowser"] = "other";
+        	$_SESSION['NOLOHBrowser'] = 'other';
         
         if(strpos($agt, 'win') !== false || strpos($agt, '16bit') !== false)
-        	$_SESSION["NOLOHOS"] = "win";
+        	$_SESSION['NOLOHOS'] = 'win';
         elseif(strpos($agt, 'mac') !== false)
-        	$_SESSION["NOLOHOS"] = "mac";
+        	$_SESSION['NOLOHOS'] = 'mac';
         else
-        	$_SESSION["NOLOHOS"] = "other";
+        	$_SESSION['NOLOHOS'] = 'other';
 	}
 	
 	public static function GetBrowser()
 	{
-		return $_SESSION["NOLOHBrowser"];
+		return $_SESSION['NOLOHBrowser'];
 	}
 	
 	public static function IsIE()
 	{
-		return $_SESSION["NOLOHIsIE"];
+		return $_SESSION['NOLOHIsIE'];
 	}
 	
 	/*

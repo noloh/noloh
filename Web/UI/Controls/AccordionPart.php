@@ -8,11 +8,11 @@ class AccordionPart extends Panel
 	private $TopPart;
 	private $BottomPart;
 	
-	function AccordionPart($whatTopPartHeight = 15)
+	function AccordionPart($topPartHeight = 15)
 	{
 		parent::Panel();
 		$this->TopPart = new Panel();
-		$this->TopPart->SetHeight($whatTopPartHeight);
+		$this->TopPart->SetHeight($topPartHeight);
 		$this->BottomPart = new Panel();
 		$this->BottomPart->SetTop($this->TopPart->Bottom);
 		$this->Controls->Add($this->TopPart);
@@ -26,21 +26,22 @@ class AccordionPart extends Panel
 	{
 		return $this->BottomPart;
 	}
-	function SetWidth($whatWidth)
+	function SetWidth($width)
 	{
-		parent::SetWidth($whatWidth);
-		$this->TopPart->Width = $whatWidth - 2;
-		$this->BottomPart->Width = $whatWidth - 2;
+		parent::SetWidth($width);
+		$this->TopPart->Width = $width - 2;
+		$this->BottomPart->Width = $width - 2;
 	}
-	function SetTopPartHeight($whatTopPartHeight)
+	function SetTopPartHeight($topPartHeight)
 	{
-		$this->TopPart->Height = $whatTopPartHeight;
+		$this->TopPart->Height = $topPartHeight;
 	}
 	function Show()
 	{
 		parent::Show();
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/Accordion.js");
-		QueueClientFunction($this, "SetAccordionPart", array("'$this->Id'", "'{$this->TopPart->Id}'", "'{$this->BottomPart->Id}'"));
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/Accordion.js");
+		AddNolohScriptSrc('Accordian.js');
+		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TopPart->Id}'", "'{$this->BottomPart->Id}'"));
 		//AddScript("SetAccordionPart('$this->Id', '{$this->TopPart->Id}', '{$this->BottomPart->Id}')", Priority::High);
 	}
 }

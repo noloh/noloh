@@ -160,7 +160,8 @@ class ListView extends Panel
 	}
 	function Show()
 	{
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListView.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListView.js");
+		AddNolohScriptSrc('ListView.js');
 		parent::Show();
 	}
 }

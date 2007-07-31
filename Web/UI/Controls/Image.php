@@ -1,7 +1,6 @@
 <?php
 /**
- * @package UI
- * @subpackage Controls
+* @package Web.UI.Controls
 * Image class file.
 */
  
@@ -14,15 +13,17 @@
  * - <b>Src</b>, string, 
  *   <br>Gets or Sets the image source file
  * 
- * You can use the Button as follows
+ * Example 1: Instantiating and Adding an Image
  * <code>
  *
  *		function Foo()
- *		{
- *			$tempButton = new Image("Images/SomePicture.gif",10,10);
- * 			$this->Controls->Add($tempButton); //Adds a button to the Controls class of some Container
- *		}
- *		
+ *      {
+ *          //Instatiates $tmpImage as a new Image, with the src of SomePicture.gif, and a left, 
+ *          //and top of 10px.
+ *          $tmpImage = new Image("Images/SomePicture.gif", 10, 10);
+ *          $this->Controls->Add($tmpImage); //Adds a button to the Controls of some Container
+ *      }
+ *      	
  * </code>
  */
 class Image extends Control 
@@ -33,9 +34,7 @@ class Image extends Control
 	*/
 	private $Src;
 	private $AltLoad;
-	//private $Count = 1;
 	
-	//public $ToolTip;
 	/**
 	* Constructor.
 	* for inherited components, be sure to call the parent constructor first
@@ -48,13 +47,13 @@ class Image extends Control
 	* @param integer|optional //The Width of the Image is determined automatically if not explicitly set
 	* @param integer|optional //The Height of the Image is determined automatically if not explicitly set
 	*/
-	function Image($whatSrc="", $whatLeft = 0, $whatTop = 0, $whatWidth = System::Auto, $whatHeight = System::Auto)  
+	function Image($src='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)  
 	{
-		parent::Control($whatLeft, $whatTop, null, null);
-		if(!empty($whatSrc))
-			$this->SetSrc($whatSrc);
-		$this->SetWidth($whatWidth);
-		$this->SetHeight($whatHeight);
+		parent::Control($left, $top, null, null);
+		if(!empty($src))
+			$this->SetSrc($src);
+		$this->SetWidth($width);
+		$this->SetHeight($height);
 	}
 	/**
 	* Gets the Src of the Image
@@ -79,28 +78,27 @@ class Image extends Control
 		$this->Src = $newSrc;
 		$load = $this->GetLoad();
 		if($load instanceof ServerEvent)
-			NolohInternal::SetProperty("src", $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
 				get_class(GetComponentById($load->ObjsId))."&Function={$load->ExecuteFunction}", $this);
 		else 
-			NolohInternal::SetProperty("src", $newSrc, $this);
+			NolohInternal::SetProperty('src', $newSrc, $this);
 		if($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
 			$this->SetHeight(System::Auto);
 		}
-//		if(!is_numeric($this->Width) || !is_numeric($this->Height))
-//		{
-//			//$tempimagesize = getimagesize(GetAbsolutePath($this->Src));
-//			//if($this->Width == null)
-//			$this->SetWidth($this->Width);
-//			//if($this->Height == null)
-//			$this->SetHeight($this->Height);
-//		}
 		return $newSrc;
 	}
-	function GetWidth($unit="px")
+	/**
+	*Gets the Width of the Image.
+	*<b>Note:</b>Can also get as a property.
+	*<code>$tmpVar = $this->Width;</code>
+	*@param string|unit|optional| //Units you would like the width in, either px, or "%".
+	*@return mixed
+	*/
+	function GetWidth($unit='px')
 	{
-		if($unit == "%")
+		if($unit == '%')
 		{
 			$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
 			return parent::GetWidth()/$tmpImageSize[0] * 100;
@@ -108,10 +106,15 @@ class Image extends Control
 		else
 			return parent::GetWidth();
 	}
+	/**
+	*Sets the Width of the Image.
+	*<b>Note:</b>Can also be set as a property.
+	*<code>$this->Width = 200;</code>
+	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
+	*@param integer|Src
+	*/
 	function SetWidth($width)
 	{
-//		Alert($this->Count);
-//		$this->Count +=1;
 		$tmpWidth = $width;
 		if(!is_numeric($tmpWidth))
 		{
@@ -127,9 +130,16 @@ class Image extends Control
 //		Alert($tmpWidth);
 		parent::SetWidth($tmpWidth);
 	}
-	function GetHeight($unit="px")
+	/**
+	*Gets the Width of the Image.
+	*<b>Note:</b>Can also get as a property.
+	*<code>$tmpVar = $this->Height;</code>
+	*@param string|unit|optional| //Units you would like the height in, either px, or "%".
+	*@return mixed
+	*/
+	function GetHeight($unit='px')
 	{
-		if($unit == "%")
+		if($unit == '%')
 		{
 			$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
 			return parent::GetHeight()/$tmpImageSize[1] * 100;
@@ -137,6 +147,13 @@ class Image extends Control
 		else
 			return parent::GetHeight();
 	}
+	/**
+	*Sets the Height of the Image.
+	*<b>Note:</b>Can also be set as a property.
+	*<code>$this->Height = 200;</code>
+	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
+	*@param integer|Src
+	*/
 	function SetHeight($height)
 	{
 		$tmpHeight = $height;
@@ -153,13 +170,19 @@ class Image extends Control
 		}
 		parent::SetHeight($tmpHeight);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetLoad($newLoad)
 	{
 		$this->AltLoad = $newLoad;
 		if($newLoad instanceof ServerEvent)
-			NolohInternal::SetProperty("src", $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
 				(is_object($newLoad->Source)?get_class($newLoad->Source->Dereference()):$newLoad->Src)."&Function={$newLoad->ExecuteFunction}", $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetLoad()
 	{
 		return $this->AltLoad;
@@ -170,17 +193,20 @@ class Image extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		NolohInternal::Show("IMG", $initialProperties, $this);
+		NolohInternal::Show('IMG', $initialProperties, $this);
 	}
+	/**
+	 *@ignore 
+	*/
 	static function MagicGeneration($src, $class, $function)
 	{
-		$splitString = explode(".", $src);
+		$splitString = explode('.', $src);
 		$extension = $splitString[count($splitString)-1];
 		$imgtypes = imagetypes();
-		if($extension == "jpg")
-			$extension = "jpeg";
-		if($extension == "bmp")
-			$extension = "wbmp";
+		if($extension == 'jpg')
+			$extension = 'jpeg';
+		if($extension == 'bmp')
+			$extension = 'wbmp';
 			
 		eval('if(imagetypes() & IMG_'.strtoupper($extension).') {' .
 			'$im = imagecreatefrom'.$extension.'($src);' .

@@ -10,15 +10,15 @@ class TransferPane extends Panel
 	public $ToRight;
 	public $ToLeft;
 	
-	function TransferPane($whatLeft=0, $whatTop=0, $whatWidth=300, $whatHeight=100)
+	function TransferPane($left=0, $top=0, $width=300, $height=100)
 	{	
-		parent::Panel($whatLeft, $whatTop);
-		$this->ToRight = new Button(">", 0,0,25,25);
-		$this->ToLeft = new Button("<", 0,0,25,25);
+		parent::Panel($left, $top);
+		$this->ToRight = new Button('>', 0,0,25,25);
+		$this->ToLeft = new Button('<', 0,0,25,25);
 		$this->LeftPane = new ListBox();
 		$this->RightPane = new ListBox();
-		$this->SetWidth($whatWidth);
-		$this->SetHeight($whatHeight);
+		$this->SetWidth($width);
+		$this->SetHeight($height);
 		$this->ToRight->Click = new ClientEvent("TransferPaneAdd('". $this->LeftPane->Id ."', '". $this->RightPane->Id ."');");
 		$this->ToLeft->Click = new ClientEvent("TransferPaneAdd('". $this->RightPane->Id ."', '". $this->LeftPane->Id ."');");
 		$this->Controls->Add($this->LeftPane);
@@ -27,9 +27,9 @@ class TransferPane extends Panel
 		$this->Controls->Add($this->ToLeft);
 	}
 
-	public function SetWidth($whatWidth)
+	public function SetWidth($width)
 	{
-		parent::SetWidth($whatWidth);
+		parent::SetWidth($width);
 		$this->LeftPane->Left = 0;
 		$this->LeftPane->Width = ($this->Width/2)-18;
 		$this->ToRight->Left = ($this->LeftPane->Width) +5;
@@ -38,9 +38,9 @@ class TransferPane extends Panel
 		$this->RightPane->Width = ($this->Width/2)-18;
 	}
 	
-	public function SetHeight($whatHeight)
+	public function SetHeight($height)
 	{
-		parent::SetHeight($whatHeight);
+		parent::SetHeight($height);
 		$this->LeftPane->Height = $this->Height;
 		$this->ToRight->Top = ($this->Height/2) - $this->ToRight->Height - .025*($this->Height);
 		$this->ToLeft->Top = ($this->Height/2)  + .025*($this->Height);
@@ -50,6 +50,7 @@ class TransferPane extends Panel
 	function Show()
 	{
 		parent::Show();
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TransferPaneScripts.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TransferPaneScripts.js");
+		AddNolohScriptSrc('TransferPane.js');
 	}
 }

@@ -4,11 +4,11 @@
 * Throws an Exception, and destroy the Session, similar to die()
 * @param mixed|specifies Error Message to throw.
  */
-function BloodyMurder($whatErrorMessage)
+function BloodyMurder($errorMessage)
 {
 	session_destroy();
 	session_unset(); 
-	die($whatErrorMessage);
+	die($errorMessage);
 }
 /**
 * A String split that works like most splits. It <b>always</b> returns an array of parts
@@ -39,7 +39,7 @@ function SaneSplit($whatString, $whatDelimeter, $whatLimit=null)
 * Gets the size of session in bytes.
 * @return size of session in bytes
  */
-function MemoryGetUsage()
+function GetHardMemoryUsage()
 {
 	return strlen(serialize($GLOBALS['OmniscientBeing']));
 }
@@ -122,23 +122,6 @@ function AddScript($script, $priority=Priority::Medium)
 		$_SESSION['NOLOHScript'][$priority] .= $script . ";";
 }
 /**
-* Gets operating system that user is using.
-* @return string|shorthand of operating system(e.g., nt, mac, ...)
-*/
-function GetOperatingSystem()
-{
-	return "win";
-}
-/**
-* Gets Browser that user is using.
-* @return string|shorthand of browser(e.g., ie, mozilla, ...)
-*/
-function GetBrowser()
-{
-	return $_SESSION["NOLOHBrowser"];
-	//return GetGlobal("BrowserName");
-}
-/**
 * Adds a Javascript script to be run immediately on client, or be written to client depending on case.
 * <br> See AddScriptSrc($src) to add actual script files.
 * @param string|path to script, not code of script
@@ -147,15 +130,29 @@ function AddScriptSrc($src)
 {
 	if(!isset($_SESSION['NOLOHScriptSrcs'][$src]))
 	{
-		//print(gzencode(file_get_contents($src)));
 		print(file_get_contents($src));
+		$_SESSION['NOLOHScriptSrcs'][$src] = true;
+	}
+}
+/**
+* @ignore
+*/
+function AddNolohScriptSrc($src, $browserSpecific = false)
+{
+	if(!isset($_SESSION['NOLOHScriptSrcs'][$src]))
+	{
+		$path = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Javascripts/';
+		if($browserSpecific)
+			$path .= $_SESSION['NOLOHIsIE'] ? 'IE/' : 'Standard/';
+		$path .= $src;
+		print(file_get_contents($path));
 		$_SESSION['NOLOHScriptSrcs'][$src] = true;
 	}
 }
 
 function QueueClientFunction(Component $whatObj, $functionName, $paramsArray, $replace=true, $priority=Priority::Medium)
 {
-	if(!isset($GLOBALS["PropertyQueueDisabled"]))
+	if(!isset($GLOBALS['PropertyQueueDisabled']))
 	{
 		$objId = $whatObj->Id;
 		if(!isset($_SESSION['NOLOHFunctionQueue'][$objId]))
@@ -165,6 +162,23 @@ function QueueClientFunction(Component $whatObj, $functionName, $paramsArray, $r
 		else
 			$_SESSION['NOLOHFunctionQueue'][$objId][] = array($functionName, $paramsArray, $priority);			
 	}
+}
+/**
+* Gets operating system that user is using.
+* @return string|shorthand of operating system(e.g., nt, mac, ...)
+*/
+function GetOperatingSystem()
+{
+	return 'win';
+}
+/**
+* Gets Browser that user is using.
+* @return string|shorthand of browser(e.g., ie, mozilla, ...)
+*/
+function GetBrowser()
+{
+	return $_SESSION['NOLOHBrowser'];
+	//return GetGlobal("BrowserName");
 }
 /**
 * @ignore

@@ -5,12 +5,12 @@
  */
 class TabControl extends Panel
 {
-	const Top = "Top";
-	const Bottom = "Bottom";
+	const Top = 'Top';
+	const Bottom = 'Bottom';
 	public $TabPages;
 	public $TabControlBar;
 	public $TabPagesPanel;
-	private $TabAlignment = "Top";
+	private $TabAlignment = 'Top';
 	private $SelectedIndex = -1;
 		
 	function TabControl($left = 0, $top = 0, $width = 500, $height = 500)
@@ -25,7 +25,7 @@ class TabControl extends Panel
 		//$this->TabPagesPanel->Controls->ParentId = $this->Id;
 		$this->TabPages = &$this->TabPagesPanel->Controls;
 		//$this->TabPages->SpecialFunction = "AddTabPage";
-		$this->TabPages->AddFunctionName = "AddTabPage";
+		$this->TabPages->AddFunctionName = 'AddTabPage';
 		//$this->TabPages->SpecialObjectId = $this->Id;
 		$this->Controls->Add($this->TabControlBar);
 		$this->Controls->Add($this->TabPagesPanel);
@@ -53,15 +53,15 @@ class TabControl extends Panel
 		else 
 			$this->SetSelectedIndex($this->TabPages->IndexOf($tabPage));
 	}
-	public function SetSelectedIndex($whatSelectedIndex)
+	public function SetSelectedIndex($selectedIndex)
 	{
-		if($whatSelectedIndex != $this->SelectedIndex)
+		if($selectedIndex != $this->SelectedIndex)
 		{
-			$this->SelectedIndex = $whatSelectedIndex;
+			$this->SelectedIndex = $selectedIndex;
 			//Need to address the following line, currenty it breaks TabControl - Asher
 			//$this->TabControlBar->Controls->Item[$whatSelectedIndex]->SetSelected(true);
 			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent
-			QueueClientFunction($this, "SetTabPage", array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}'"), Priority::Low);
+			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$selectedIndex]->Id}'"), Priority::Low);
 			//AddScript("SetTabPage('{$this->Id}','{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}')", Priority::Low);
 			//AddScript("SetTabPage('{$this->Id}', '{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}')");
 		}
@@ -81,19 +81,19 @@ class TabControl extends Panel
 		$this->TabPagesPanel->Controls->Add($tabPage, true, true);
 		if($this->TabPages->Count == 1)
 			$this->SetSelectedIndex(0);
-		$tabPage->ClientVisible = "NoDisplay";
+		$tabPage->ClientVisible = 'NoDisplay';
 	}
 	public function GetTabAlignment(){return $this->TabAlignment;}
 	public function SetTabAlignment($tabAlignment)
 	{
 		$this->TabAlignment = $tabAlignment;
-		if($this->TabAlignment == "Top")
+		if($this->TabAlignment == 'Top')
 		{
 			$this->TabControlBar->Left = 0;
 			$this->TabControlBar->Top = 0; 
 			$this->TabPagesPanel->Top = $this->TabControlBar->Height;
 		}
-		else if($this->TabAlignment == "Bottom")
+		else if($this->TabAlignment == 'Bottom')
 		{
 			$this->TabControlBar->Left = 0;
 			$this->TabControlBar->Top = $this->TabPagesPanel->Height;
@@ -102,7 +102,8 @@ class TabControl extends Panel
 	}
 	function Show()
 	{
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TabControlScripts.js");
+		AddNolohScriptSrc('TabControl.js');
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TabControlScripts.js");
 		parent::Show();
 	}
 }

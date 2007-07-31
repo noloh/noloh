@@ -17,30 +17,30 @@ class Calendar extends Panel
 	{
 		parent::Panel($left, $top, $width, $height);
 		//$this->SelectFix = true;
-		$this->Border = "1px solid #000000";
-		$this->BackColor = "#FFFFCC";
-		$DaysOfWeek = array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
-		$this->MonthYearLabel = new Label("Out of Service", 0, 0, $width, 25);
-		$this->MonthYearLabel->SetCSSClass("NCalHead");
-		$LeftYear = new Button("<<", 0, 0, 25, 25);
+		$this->Border = '1px solid #000000';
+		$this->BackColor = '#FFFFCC';
+		$DaysOfWeek = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+		$this->MonthYearLabel = new Label('Out of Service', 0, 0, $width, 25);
+		$this->MonthYearLabel->SetCSSClass('NCalHead');
+		$LeftYear = new Button('<<', 0, 0, 25, 25);
 		$LeftYear->Click = new ClientEvent("LastYear('$this->Id')");
-		$RightYear = new Button(">>", $width-25, 0, 25, 25);
+		$RightYear = new Button('>>', $width-25, 0, 25, 25);
 		$RightYear->Click = new ClientEvent("NextYear('$this->Id')");
-		$LeftMonth = new Button("<", 25, 0, 25, 25);
+		$LeftMonth = new Button('<', 25, 0, 25, 25);
 		$LeftMonth->Click = new ClientEvent("LastMonth('$this->Id')");
-		$RightMonth = new Button(">", $width-50, 0, 25, 25);
+		$RightMonth = new Button('>', $width-50, 0, 25, 25);
 		$RightMonth->Click = new ClientEvent("NextMonth('$this->Id')");
 		$this->Controls->AddRange($this->MonthYearLabel, $LeftYear, $RightYear, $LeftMonth, $RightMonth/*, $this->CalendarTable*/);
 		for($i=6; $i>=0; --$i)
 		{
 			$this->Controls->Add($lbl = &new Label($DaysOfWeek[$i], $i*31, 33, 31));
-			$lbl->SetCSSClass("NCalColHead");
+			$lbl->SetCSSClass('NCalColHead');
 		}
 		for($i=1; $i<7; ++$i)
 			for($j=0; $j<7; ++$j)
 			{
-				$this->Controls->Add($lbl = &new Label("", $j*31, 33+23*$i, 31));
-				$lbl->SetCSSClass("NCalCell");
+				$this->Controls->Add($lbl = &new Label('', $j*31, 33+23*$i, 31));
+				$lbl->SetCSSClass('NCalCell');
 				$lbl->SetMouseUp(new ClientEvent("CalSelectDate(event,'$this->Id')"));
 			}
 		$this->SetUNIXEpoch($UNIXEpochTime);
@@ -125,13 +125,13 @@ class Calendar extends Panel
 	{
 		$UNIXEpoch = $this->GetUNIXEpoch();
 		$date = getdate($UNIXEpoch);
-		return $date["weekday"].', '.$date["month"].' '.$date["mday"].', '.$date["year"];
+		return $date['weekday'].', '.$date['month'].' '.$date['mday'].', '.$date['year'];
 	}
 	
 	function UpdateClient()
 	{
 		//QueueClientFunction($this, "ShowCalendar", "'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year);
-		QueueClientFunction($this, "ShowCalendar", array("'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
+		QueueClientFunction($this, 'ShowCalendar', array("'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
 		/*if($this->HasShown())
 			AddScript('ShowCalendar("' . $this->Id . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
 				$this->Date . ', ' . $this->Month . ', ' . $this->Year . ');'/*, Priority::High);*/
@@ -140,7 +140,8 @@ class Calendar extends Panel
 	function Show()
 	{
 		parent::Show();
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."CalendarScript.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."CalendarScript.js");
+		AddNolohScriptSrc('Calendar.js', true);
 		$this->UpdateClient();
 	}
 }

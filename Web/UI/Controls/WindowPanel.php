@@ -18,7 +18,7 @@ class WindowPanel extends Panel
 	private $MinimizeBox;
 	private $Menu;
 	
-	function WindowPanel($title = "WindowPanel", $left=0, $top=0, $width=300, $height = 200, $reflectStyle = true)
+	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200, $reflectStyle = true)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
 		$this->TitleBar = new Label($title, 0, 0, null, 25);
@@ -45,7 +45,7 @@ class WindowPanel extends Panel
 		$this->SelectFix = true;
 		//$this->TitleBar->SetWidth($width);
 		//$this->DropShadow = true;
-		$this->BackColor = "white";
+		$this->BackColor = 'white';
 		
 //		if (GetOperatingSystem() == "mac" && GetGlobal("ReflectOS") == true)
 //		{
@@ -63,12 +63,12 @@ class WindowPanel extends Panel
 //		}
 //		else
 //		{
-			$this->TitleBar->CSSClass = "NWinPanelTitle";
+			$this->TitleBar->CSSClass = 'NWinPanelTitle';
 //			$this->TitleBar->Color = "White";
 //			$this->TitleBar->LeftPadding = 5;
 //			$this->TitleBar->BackColor="#0055ea";
 //			$BorderColor="#0055ea";
-			$this->Border = "1px solid  #0055ea";//. $BorderColor;
+			$this->Border = '1px solid  #0055ea';//. $BorderColor;
 			
 //		}
 		
@@ -86,8 +86,8 @@ class WindowPanel extends Panel
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
-		$this->CloseImage->Click["Hide"] = new ClientEvent("NOLOHChange('$this->Id', 'style.visibility', 'hidden');");
-		$this->CloseImage->Click[] = new ServerEvent($this, "Close");
+		$this->CloseImage->Click['Hide'] = new ClientEvent("NOLOHChange('$this->Id', 'style.visibility', 'hidden');");
+		$this->CloseImage->Click[] = new ServerEvent($this, 'Close');
 				
 		/*
 		$closeE = new Event();
@@ -186,14 +186,14 @@ class WindowPanel extends Panel
 	function Show()
 	{
 		$initialProperties = $this->GetStyleString();
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/WindowPanelScripts.js");
-	
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/WindowPanelScripts.js");
+		AddNolohScriptSrc('WindowPanel.js');
 		//if($this->DropShadow == true)
 		//{
 		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->Id}DS' style='POSITION:absolute; LEFT:".($this->Left + 10)."px; TOP:".($this->Top+10)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background-color:black; filter:alpha(opacity=100)'></DIV>\n");
 		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
 		//}
-		NolohInternal::Show("DIV", $initialProperties, $this);
+		NolohInternal::Show('DIV', $initialProperties, $this);
 	}
 }
 

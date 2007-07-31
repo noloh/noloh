@@ -27,29 +27,29 @@ class WebPage extends Component
 	protected $LoadImg;
 	protected $LoadLbl;
 	
-	function WebPage($title = "Unititled Document")
+	function WebPage($title = 'Unititled Document')
 	{
 		parent::Component();
-		if(isset($_GET["NWidth"]))
+		if(isset($_GET['NWidth']))
 		{
-			$this->Width = $_GET["NWidth"];
-			$this->Height = $_GET["NHeight"];
+			$this->Width = $_GET['NWidth'];
+			$this->Height = $_GET['NHeight'];
 		}
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->SetTitle($title);
 		$this->ReflectOS = false;
-		$this->CSSFiles = new ImplicitArrayList($this, "AddCSSFile", "RemoveCSSFileAt", "ClearCSSFiles");
-		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath()."Web/UI/NStyles.css");
+		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
+		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Web/UI/NStyles.css');
 		
-		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/noloh_ani_small.gif", 1, 1);
-		$this->LoadImg->CSSClass = "NLoad";
+		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/noloh_ani_small.gif', 1, 1);
+		$this->LoadImg->CSSClass = 'NLoad';
 		$this->LoadImg->SetParentId($this->Id);
-		$this->LoadLbl = new Label(" Loading...", 31, 4);
+		$this->LoadLbl = new Label(' Loading...', 31, 4);
 		$this->LoadLbl->SetParentId($this->Id);
 		$this->LoadLbl->Opacity = 70;
-		$this->LoadLbl->CSSClass = "NLoad NLoadLbl";
-		unset($_SESSION['NOLOHPropertyQueue'][$this->LoadLbl->Id]["style.zIndex"],$_SESSION['NOLOHPropertyQueue'][$this->LoadImg->Id]["style.zIndex"]);
+		$this->LoadLbl->CSSClass = 'NLoad NLoadLbl';
+		unset($_SESSION['NOLOHPropertyQueue'][$this->LoadLbl->Id]['style.zIndex'],$_SESSION['NOLOHPropertyQueue'][$this->LoadImg->Id]['style.zIndex']);
 		//$this->LoadImg->ZIndex = $this->LoadLbl->ZIndex = null;
 		//AddScript("document.getElementById('{$this->LoadLbl->Id}').style.zIndex=document.getElementById('{$this->LoadImg->Id}').style.zIndex=999999");
 		//require_once($_SERVER['DOCUMENT_ROOT'] ."/NOLOH/Javascripts/GetBrowserAndOs.php");
@@ -57,7 +57,7 @@ class WebPage extends Component
 		
 		//SetOperatingSystem();
 		//SetBrowser();
-		DeclareGlobal("ReflectOS", $this->ReflectOS);
+		DeclareGlobal('ReflectOS', $this->ReflectOS);
 		//$this->Controls->Add(new PostBackForm());
 		/*
 		//$this->JSIframe = new Iframe("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
@@ -73,8 +73,8 @@ class WebPage extends Component
 	
 	function AddCSSFile($path)
 	{
-		$initialProperties = "'id','".hash("md5",$path)."','rel','stylesheet','type','text/css','href','$path'";
-		NolohInternal::Show("LINK", $initialProperties, $this, "NHead");
+		$initialProperties = "'id','".hash('md5',$path)."','rel','stylesheet','type','text/css','href','$path'";
+		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead');
 		$this->CSSFiles->Add($path, true, true);
 	}
 	
@@ -84,7 +84,7 @@ class WebPage extends Component
 		{
 			$path = $this->CSSFiles[$index];
 			$this->CSSFiles->RemoveAt($index, true);
-			AddScript("_NRemStyle('".hash("md5",$path)."','".NOLOHConfig::GetNOLOHPath()."')");
+			AddScript("_NRemStyle('".hash('md5',$path)."','".NOLOHConfig::GetNOLOHPath()."')");
 		}
 	}
 	
@@ -138,11 +138,11 @@ class WebPage extends Component
     <META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
     <TITLE>Loading NOLOH Application...</TITLE>
     <NOSCRIPT><META http-equiv='refresh' content='0;url=".
-				($unsupportedURL=="" ?
-				"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html" : 
+				($unsupportedURL=='' ?
+				'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
 				$unsupportedURL).
   "'></NOSCRIPT>
-  </HEAD>".(GetBrowser()=="ie"?"
+  </HEAD>".(GetBrowser()=='ie'?"
   <BODY>
     <DIV id='N1'></DIV>
     <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>
@@ -168,12 +168,15 @@ class WebPage extends Component
 		/*if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false)
 			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/IE6clientviewstate.js");
 		else*/
-			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
-				(GetBrowser() == "ie" ? "IEclientviewstate.js" : "Mozillaclientviewstate.js"));
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
-			(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
-		if(!isset($_POST['NoSkeleton']) || GetBrowser()!="ie")
+			//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
+			//	(GetBrowser() == "ie" ? "IEclientviewstate.js" : "Mozillaclientviewstate.js"));
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
+		//	(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
+		AddNolohScriptSrc('ClientViewState.js', true);
+		AddNolohScriptSrc('GeneralFunctions.js');
+		AddNolohScriptSrc('Shift.js', true);
+		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')
 			AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
 		AddScript("SaveControl('$this->Id')");
 		/*

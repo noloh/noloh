@@ -6,12 +6,9 @@
 define("NoDisplay", "NoDisplay");
 
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
  * Control class file.
- */
- 
-/**
+ *
  * Control class
  *
  * Control is the base class for all NOLOH controls.
@@ -20,27 +17,45 @@ define("NoDisplay", "NoDisplay");
  * The Control Class enables Controls to handle events, as well as most visual properties
  *
  *
- * Properties
+ * Properties<br>
  * - <b>CSSClass</b>, string, 
  *   <br>Gets or sets the CSSClass of this Control
+ * - <b>CSS________ </b>, string, 
+ *   <br>sets a CSS property of the Control
  * - <b>PositionType</b>, integer,
- *   <br>Sets whether the position is abosolute, or relative
+ *   <br>Sets whether the position is absolute, relative, or static
  * - <b>Enabled</b>, boolean
  *   <br>Gets or sets whether the Control is Enabled
  * - <b>Left</b>, Integer
+ *   <br>Gets or sets the Left of the Control
  * - <b>Top</b>, Integer
+ *   <br>Gets or sets the Top of the Control
  * - <b>Width</b>, Integer
+ *   <br>Gets or sets the Width of the Control
  * - <b>Height</b>, Integer
+ *   <br>Gets or sets the Height of the Control
  * - <b>Bottom</b>, Integer, read-only
+ *   <br>Gets the Bottom of the Control
  * - <b>Right</b>, Integer, read-only
- * - <b>Overlap</b>, boolean
- * 	 <br>Gets or sets whether this control can overlap
+ *   <br>Gets the Right of the Control
+ * - <b>Opacity</b>, integer
+ * 	 <br>Gets or sets the Opacity of the Control
  * - <b>ClientVisible</b>, boolean
+ *   <br>Gets or sets the Visibility of the Control
  * - <b>Border</b>, string
+ *   <br>Gets or sets the Border of the Control
  * - <b>BackColor</b>, string
+ *   <br>Gets or sets the BackColor of the Control
  * - <b>Cursor</b>, string
- 
- * Events
+ *   <br>Gets or sets the Mouse Cursor to be shown while over the the Control
+ * - <b>Text</b>, string
+ *   <br>Gets or sets the Text of the Control
+ * - <b>ToolTip</b>, string
+ *   <br>Gets or sets the ToolTip to be displayed while the mouse cursor is over the Control
+ * - <b>ZIndex</b>, integer
+ *   <br>Gets or sets the z index position of this control on the webpage, or in it's container
+ *  
+ * Events<br>
  * - <b>Change</b>, Event
  * - <b>Click</b>, Event
  * - <b>DoubleClick</b>, Event
@@ -50,21 +65,21 @@ define("NoDisplay", "NoDisplay");
  * - <b>MouseOver</b>, Event
  * - <b>MouseUp</b>, Event
  * - <b>RightClick</b>, Event
+ * - <b>Scroll</b>, Event
  *
  * Events play a crucial role in NOLOH, you can set an event as follows
  * <code>
  *
  * Class Foo extends Control
  * {
- *		function Foo()
- *		{
- *			$this->Click = new ServerEvent($this, "HelloWorld");
- *		}
- *		
- *		public function HelloWorld()
- *		{
- *			Alert("Hello World");
- *		}
+ *      function Foo()
+ *      {
+ *          $this->Click = new ServerEvent($this, "HelloWorld");
+ *      }
+ *      public function HelloWorld()
+ *      {
+ *          Alert("Hello World");
+ *      }
  * </code>
  */
 
@@ -131,11 +146,6 @@ class Control extends Component
 	*/
 	private $Height;
 	/**
-	*	Overlap, Gets or sets whether this control can Overlap another control, if set to false, the control will be placed to the immediate Right of the closest control.
-	* @var boolean
-	*/
-	public $Overlap;
-	/**
 	*	ClientVisible, Gets or sets the whether this control is visible on the client.
 	*	<b>Note:</b> This is different from ServerVisible, when ServerVisible is set to false the control is not drawn on the client, when ClientVisible is set to false the control is drawn, but set to hidden.
 	* @var boolean
@@ -153,8 +163,7 @@ class Control extends Component
 	*	e.g, "1px solid black", "5px dashed red"
 	* @var String
 	*/
-	private $Border;
-	
+	private $Border;	
 	//Styles
 	/**
 	*	BackColor, Gets or sets  the BackgroundColor of this Control
@@ -181,8 +190,8 @@ class Control extends Component
 	*/
 	private $ToolTip;
 	/**
-	*	Text, Gets or sets  the Text of this Control
-	*	<b>Note:</b>Different Controls use this differently
+	*Text, Gets or sets  the Text of this Control
+	*<b>Note:</b>Different Controls use this differently
 	* @var String
 	*/
 	private $Text;

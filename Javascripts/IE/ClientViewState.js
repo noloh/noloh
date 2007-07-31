@@ -100,7 +100,7 @@ function CheckURL()
 
 function _NSetURL(hash)
 {
-	location = document.URL.split('#/',1)[0] + "#/" + hash;
+	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 	_NURL=location.toString();
 	var d=document.getElementById('NBackButton').contentWindow.document;

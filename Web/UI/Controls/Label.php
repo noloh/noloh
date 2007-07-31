@@ -17,13 +17,13 @@ class Label extends Control
 	private $EditInPlace;
 	private $FontSize;
 	
-	function Label($text="", $left = 0, $top = 0, $width = 83, $height = 18)
+	function Label($text='', $left = 0, $top = 0, $width = 83, $height = 18)
 	{
 		parent::Control($left, $top, null, null);
 		parent::SetWidth($width);
 		parent::SetHeight($height);
 		parent::SetText($text);
-		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $text), $this);
+		NolohInternal::SetProperty('innerHTML', preg_replace('(\r\n|\n|\r)', '<BR>', $text), $this);
 		$this->SetCSSClass();
 		$this->ResetCache();
 	}
@@ -35,13 +35,13 @@ class Label extends Control
 		//$height = parent::GetHeight();
 		//$this->AutoWidthHeight();
 		$this->ResetCache();
-		NolohInternal::SetProperty("innerHTML", preg_replace("(\r\n|\n|\r)", "<BR>", $text), $this);
+		NolohInternal::SetProperty('innerHTML', preg_replace('(\r\n|\n|\r)', '<BR>', $text), $this);
 		//QueueClientFunction($this, "SetLabelText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
 	}
 	
 	function SetCSSClass($cssClass=null)
 	{
-		parent::SetCSSClass("NLabel ". $cssClass);
+		parent::SetCSSClass('NLabel '. $cssClass);
 	}
 	
 	function GetFontSize()
@@ -53,7 +53,7 @@ class Label extends Control
 	{
 		$this->FontSize = $newSize;
 		$this->AutoWidthHeight();
-		NolohInternal::SetProperty("style.fontSize", $this->FontSize."px", $this);
+		NolohInternal::SetProperty('style.fontSize', $this->FontSize.'px', $this);
 	}
 	
 	function GetWidth()
@@ -101,29 +101,29 @@ class Label extends Control
 		$width = parent::GetWidth();
 		$height = parent::GetHeight();
 		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
-			QueueClientFunction($this, "_NAWH", array("'$this->Id'"));
+			QueueClientFunction($this, '_NAWH', array("'$this->Id'"));
 	}
 	
 	function GetAlign()
 	{
-		return $this->Align == null ? "left" : $this->Align;
+		return $this->Align == null ? 'left' : $this->Align;
 	}
 	
 	function SetAlign($newAlign)
 	{
-		$this->Align = $newAlign == "left" ? null : $newAlign;
-		NolohInternal::SetProperty("style.textAlign", $newAlign, $this);
+		$this->Align = $newAlign == 'left' ? null : $newAlign;
+		NolohInternal::SetProperty('style.textAlign', $newAlign, $this);
 	}
 	
 	function GetVAlign()
 	{
-		return $this->VAlign == null ? "baseline" : $this->VAlign;
+		return $this->VAlign == null ? 'baseline' : $this->VAlign;
 	}
 	
 	function SetVAlign($newVAlign)
 	{
-		$this->VAlign = $newVAlign == "baseline" ? null : $newVAlign;
-		NolohInternal::SetProperty("style.verticalAlign", $newVAlign, $this);
+		$this->VAlign = $newVAlign == 'baseline' ? null : $newVAlign;
+		NolohInternal::SetProperty('style.verticalAlign', $newVAlign, $this);
 	}
 	
 	function GetBold()
@@ -136,12 +136,12 @@ class Label extends Control
 		if($whatBool)
 		{
 			$this->Bold = true;
-			NolohInternal::SetProperty("style.fontWeight", "bold", $this);
+			NolohInternal::SetProperty('style.fontWeight', 'bold', $this);
 		}
 		else 
 		{
 			$this->Bold = null;
-			NolohInternal::SetProperty("style.fontWeight", "normal", $this);
+			NolohInternal::SetProperty('style.fontWeight', 'normal', $this);
 		}
 	}
 	
@@ -153,7 +153,7 @@ class Label extends Control
 	function SetFont($newFont)
 	{
 		$this->Font = $newFont;
-		NolohInternal::SetProperty("style.fontFamily", $newFont, $this);
+		NolohInternal::SetProperty('style.fontFamily', $newFont, $this);
 	}
 	
 	function GetLeftPadding()
@@ -164,7 +164,7 @@ class Label extends Control
 	function SetLeftPadding($newPadding)
 	{
 		$this->LeftPadding = $newPadding == 0 ? null : $newPadding;
-		NolohInternal::SetProperty("style.paddingLeft", $newPadding."px", $this);
+		NolohInternal::SetProperty('style.paddingLeft', $newPadding.'px', $this);
 	}
 	
 	function GetOverflow()
@@ -177,12 +177,12 @@ class Label extends Control
 		if($bool)
 		{
 			$this->Overflow = true;
-			NolohInternal::SetProperty("style.overflow", "visible", $this);
+			NolohInternal::SetProperty('style.overflow', 'visible', $this);
 		}
 		else 
 		{
 			$this->Overflow = null;
-			NolohInternal::SetProperty("style.overflow", "hidden", $this);
+			NolohInternal::SetProperty('style.overflow', 'hidden', $this);
 		}
 	}
 	
@@ -195,7 +195,7 @@ class Label extends Control
 	{
 		if($bool)
 		{
-			$this->DoubleClick = new ServerEvent($this, "EditStart");
+			$this->DoubleClick = new ServerEvent($this, 'EditStart');
 			$this->EditInPlace = true;
 		}
 		else 
@@ -211,7 +211,7 @@ class Label extends Control
 		$txt->Text = $this->Text;
 		$this->ClientVisible = false;
 		$txt->LoseFocus = new ClientEvent("_NSave('$txt->Id','value');");
-		$txt->LoseFocus[] = new ServerEvent($txt, "EditComplete", $this->Id);
+		$txt->LoseFocus[] = new ServerEvent($txt, 'EditComplete', $this->Id);
 		$txt->ReturnKey = new ClientEvent("document.getElementById('$txt->Id').blur()");
 		$this->Parent->Controls->Add($txt);
 		AddScript("document.getElementById('$txt->Id').select();");
@@ -231,12 +231,12 @@ class Label extends Control
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
 		{
 			$this->CachedWidth = $widthHeight[0];
-			NolohInternal::SetProperty("style.width", $this->CachedWidth."px", $this);
+			NolohInternal::SetProperty('style.width', $this->CachedWidth.'px', $this);
 		}
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
 		{
 			$this->CachedHeight = $widthHeight[1];
-			NolohInternal::SetProperty("style.height", $this->CachedHeight."px", $this);
+			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
 	}
 	
@@ -244,7 +244,7 @@ class Label extends Control
 	{
 		$initialProperties = parent::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
-		NolohInternal::Show("DIV", $initialProperties, $this);
+		NolohInternal::Show('DIV', $initialProperties, $this);
 		return $initialProperties;
 	}
 }

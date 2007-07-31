@@ -18,7 +18,7 @@ class Panel extends Guardian
 	}
 	function SetCSSClass($cssClass=null)
 	{
-		parent::SetCSSClass("NPanel ".$cssClass);
+		parent::SetCSSClass('NPanel '.$cssClass);
 	}		
 	function OpenPrintableVersion()
 	{
@@ -29,17 +29,17 @@ class Panel extends Guardian
 		$this->Scrolling = $scrollType;
 		$tmpScroll = null;
 		if($scrollType == System::Auto)
-			$tmpScroll = "auto";
+			$tmpScroll = 'auto';
 		elseif($scrollType == System::Full)
-			$tmpScroll = "visible";
+			$tmpScroll = 'visible';
 		elseif($scrollType === null)
-			$tmpScroll = "";
+			$tmpScroll = '';
 		elseif($scrollType)
-			$tmpScroll = "scroll";
+			$tmpScroll = 'scroll';
 		else//if(!$scrollType)
-			$tmpScroll = "hidden";
+			$tmpScroll = 'hidden';
 		//Alert($tmpScroll);
-		NolohInternal::SetProperty("style.overflow", $tmpScroll, $this);
+		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
 	function GetStyleString()
 	{
@@ -114,7 +114,7 @@ class Panel extends Guardian
 	{
 		//$initialProperties = $this->GetStyleString();
 		$initialProperties = parent::Show();
-		NolohInternal::Show("DIV", $initialProperties, $this);
+		NolohInternal::Show('DIV', $initialProperties, $this);
 		
 //			if(false && $this->SelectFix && (GetBrowser() == "ie"))
 //			{
