@@ -23,30 +23,30 @@ class TextArea extends Control
 	function SetMaxLength($newMaxLength)
 	{
 		$this->MaxLength = $newMaxLength;
-		NolohInternal::SetProperty("MaxLength", $newMaxLength, $this);
+		NolohInternal::SetProperty('MaxLength', $newMaxLength, $this);
 	}
 	
 	function SetText($newText)
 	{
 		parent::SetText($newText);
-		QueueClientFunction($this, "SetTextAreaText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
+		QueueClientFunction($this, 'SetTextAreaText', array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($newText))."'"));
 	}
 	
-	function GetEventString($whatEventTypeAsString)
+	function GetEventString($eventTypeAsString)
 	{
-		if($whatEventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString("Change")."'" .
-				(GetBrowser()=="ie" 
+		if($eventTypeAsString === null)
+			return ",'onchange','".$this->GetEventString('Change')."'" .
+				(GetBrowser()=='ie' 
 				?
 					",'onkeypress','doKeyPress(\"$this->Id\",this.MaxLength);'" .
 					",'onpaste','doPaste(\"$this->Id\",this.MaxLength);'"
 				:
 					",'onkeypress','doKeyPress(event);'");
 
-		$preStr = "";
-		if($whatEventTypeAsString == "Change")
+		$preStr = '';
+		if($eventTypeAsString == 'Change')
 			$preStr = "_NSave(\"$this->Id\",\"value\");";
-		return $preStr . parent::GetEventString($whatEventTypeAsString);
+		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	
 	function Show()
@@ -55,8 +55,8 @@ class TextArea extends Control
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."TextAreaScripts.js");
 		$initialProperties .= $this->GetEventString(null);
 		AddNolohScriptSrc('TextArea.js', true);
-		NolohInternal::Show("TEXTAREA", $initialProperties, $this);
-		if(GetBrowser() != "ie")
+		NolohInternal::Show('TEXTAREA', $initialProperties, $this);
+		if(GetBrowser() != 'ie')
 			AddScript("document.getElementById('$this->Id').addEventListener('input',doInput,false)");
 	}
 }

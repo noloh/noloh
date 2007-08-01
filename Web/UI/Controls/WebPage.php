@@ -12,6 +12,7 @@ class WebPage extends Component
 	private $Title;
 	private $Width;
 	private $Height;
+	private $BackColor;
 	//var $MetaInformation;
 	//var $JSIframe;
 	/**
@@ -114,6 +115,17 @@ class WebPage extends Component
 	function GetHeight()
 	{
 		return $this->Height;
+	}
+	
+	function GetBackColor()
+	{
+		return $this->BackColor;
+	}
+	
+	function SetBackColor($newBackColor)
+	{
+		$this->BackColor = $newBackColor;
+		QueueClientFunction($this, "document.bgColor='$newBackColor'; void", array(0));
 	}
 	
 	static function SkeletalShow($unsupportedURL)

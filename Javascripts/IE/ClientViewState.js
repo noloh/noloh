@@ -129,18 +129,18 @@ function SaveControl(id)
 	}
 }
 
-function ChangeAndSave(whatDistinctId, propertyString, newValue)
+function ChangeAndSave(id, propertyString, newValue)
 {
-	NOLOHChange(whatDistinctId, propertyString, newValue);
-	_NSave(whatDistinctId, propertyString, newValue);
+	NOLOHChange(id, propertyString, newValue);
+	_NSave(id, propertyString, newValue);
 }
 
-function NOLOHChangeInit(whatDistinctId, propertyString)
+function NOLOHChangeInit(id, propertyString)
 {
-	if(NOLOHChanges[whatDistinctId] == null)
-		NOLOHChanges[whatDistinctId] = new Object();
-	if(NOLOHChanges[whatDistinctId][propertyString] == null)
-		NOLOHChanges[whatDistinctId][propertyString] = new Object();
+	if(NOLOHChanges[id] == null)
+		NOLOHChanges[id] = new Object();
+	if(NOLOHChanges[id][propertyString] == null)
+		NOLOHChanges[id][propertyString] = new Object();
 }
 
 function NOLOHChange(distinctId, propertyString, newValue)
@@ -236,36 +236,39 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 	}
 }
 
-function _NSave(whatDistinctId, propertyString, newValue)
+function _NSave(id, propertyString, newValue)
 {
-	if(whatDistinctId.indexOf("_") >= 0)
+	if(id.indexOf("_") >= 0)
 		return;
-	NOLOHChangeInit(whatDistinctId, propertyString);
+	NOLOHChangeInit(id, propertyString);
 	var tempObj;
-	var propertyStringLower = propertyString.toLowerCase();
+	//var propertyStringLower = propertyString.toLowerCase();
 	if(propertyString != "timer")
-		tempObj = document.getElementById(whatDistinctId);
+		tempObj = document.getElementById(id);
 	else
-		eval("tempObj = window." + whatDistinctId + ";");
+		eval("tempObj = window." + id + ";");
 	if(typeof newValue == "undefined")
 		eval("newValue = tempObj."+propertyString+";");
 	switch(propertyString)
 	{
+		case "value":
+			NOLOHChanges[id][propertyString][0] = newValue.replace(/&/g, "~da~");
+			break;
 		case "style.left":
 		case "style.top":
 		case "style.width":
 		case "style.height":
-		case "style.zIndex":
-			NOLOHChanges[whatDistinctId][propertyString][0] = parseInt(newValue);
+		//case "style.zIndex":
+			NOLOHChanges[id][propertyString][0] = parseInt(newValue);
 			break;
 		case "style.visibility":
-			NOLOHChanges[whatDistinctId][propertyString][0] = (newValue == "visible");
+			NOLOHChanges[id][propertyString][0] = (newValue == "visible");
 			break;
 		case "style.display":
-			NOLOHChanges[whatDistinctId][propertyString][0] = (newValue == "");
+			NOLOHChanges[id][propertyString][0] = (newValue == "");
 			break;
 		default:
-			NOLOHChanges[whatDistinctId][propertyString][0] = newValue;
+			NOLOHChanges[id][propertyString][0] = newValue;
 	}
 }
 

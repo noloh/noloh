@@ -124,7 +124,7 @@ class TreeNode extends Panel
 		if($this->ParentNodeId != null)
 		{
 			$parentNode = $this->GetParentNode();
-			$parentNode->NodePanel->Controls->RemoveItem($this);
+			$parentNode->NodePanel->Controls->Remove($this);
 			if($parentNode->NodePanel->Controls->Count() == 0)
 			{
 				$parentNode->PlusMinus->ClientVisible = false;
@@ -132,7 +132,7 @@ class TreeNode extends Panel
 			}
 		}
 		else 
-			$tList->Nodes->RemoveItem($this);
+			$tList->Nodes->Remove($this);
 		$listNodes = $tList->TreeNodesList->Items;
 		for($i=0; $i<=$legacyLength; ++$i)
 			$listNodes->RemoveAt($this->ListIndex);

@@ -135,7 +135,7 @@ class WindowPanel extends Panel
 	
 	function Close()
 	{
-		$this->GetParent()->Controls->RemoveItem($this);
+		$this->GetParent()->Controls->Remove($this);
 	}
 	
 	function GetMaximizeBox()

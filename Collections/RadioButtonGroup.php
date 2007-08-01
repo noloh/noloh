@@ -98,12 +98,12 @@ class RadioButtonGroup extends RolloverGroup
 		for($i = 0; $i < $RadioButtonsCount; $i++)
 			$this->RadioButtons->Item[$i]->Show();
 	}*/
-	function Hide()
+	function Bury()
 	{
 		$RadioButtonsCount = $this->RadioButtons->Count();
 		for($i = 0; $i < $RadioButtonsCount; $i++)
-			$this->RadioButtons->Item[$i]->Hide();
-		parent::Hide();
+			$this->RadioButtons->Item[$i]->Bury();
+		parent::Bury();
 	}
 }
 

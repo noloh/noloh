@@ -70,12 +70,12 @@ class RolloverLabelGroup extends RolloverGroup
 	{
 		$this->SetSelectedIndex($this->RolloverLabels->IndexOf($rolloverLabel));
 	}
-	function Hide()
+	function Bury()
 	{
 		$rolloverLabelCount = $this->RolloverLabels->Count();
 		for($i = 0; $i < $rolloverLabelCount; $i++)
-			$this->RolloverLabels->Item[$i]->Hide();
-		parent::Hide();
+			$this->RolloverLabels->Item[$i]->Bury();
+		parent::Bury();
 	}
 }
 ?>

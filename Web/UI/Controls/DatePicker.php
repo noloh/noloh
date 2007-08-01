@@ -8,117 +8,103 @@
 /**
  * DatePicker class
  *
- * DatePicker is a Panel with a ComboBox and a Calendar Control in it.
+ * DatePicker is a Panel with a Calendar Control in it that can be pulled up and down, and keeps track of the Date selected.
  *
- * Properties
- * - <b>DatePickerCombo</b>, ComboBox, 
- *   <br>The ComboBox in the DatePicker
- * - <b>DatePickerCalendar</b>, Calendar,
- *   <br>The Calendar in the DatePicker
- * - <b>UnixEpoch</b>, Integer
- *   <br>Gets or sets the UnixEpoch of the DatePicker
- * - <b>FullDate</b>, ReadOnly, String
- * - <br>Gets the FullDate selected</b>, Integer
- 
  * You can use the DatePicker as follows
  * <code>
  *
- *		function Foo()
- *		{
- *			$tempDatePicker = new DatePicker(0,0);
- *			$tempDatePicker->UnixEpoch = 1095379198; //Sets the UnixEpoch
- *		}
+ *	$datePicker = new DatePicker();
+ *	$datePicker->Timestamp = 1095379198; //Sets the Timestamp
  *		
  * </code>
+ * 
+ * @property-read string $FullDate The full date of the selected day. It will be formated according to the Format property.
+ * @property integer $Timestamp The currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
+ * @property string $Format The format of the DatePicker display, the same kind as PHP's native date() function. NOLOH's default is 'l, F d, Y'.
  */
 
 class DatePicker extends Panel
 {
 	/**
- 	* DatePickerCombo, DatePicker's ComboBox
+ 	* DatePickerCombo, the ComboBox of the DatePicker for pulling down the Calendar
  	* @var ComboBox
  	*/
 	public $DatePickerCombo;
 	/**
- 	* DatePickerCalendar, DatePicker's Calendar
+ 	* DatePickerCalendar, the Calendar of the DatePicker
  	* @var Calendar
  	*/
 	public $DatePickerCalendar;
 	/**
  	* Format of the calendar displays as a string
+ 	* @access private
  	* @var string
  	*/
 	private $Format;
-	//public $DateChange;
 	/**
 	* Constructor.
-	* for inherited components, be sure to call the parent constructor first
- 	* so that the component properties and events are defined.
+	* Be sure to call this from the constructor of any class that extends DatePicker
  	* Example
  	*	<code> $tempVar = new DatePicker(15, 15, 219, 21);</code>
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
+	* @param integer[optional] $left
+	* @param integer[optional] $top
+	* @param integer[optional] $width
+	* @param integer[optional] $height
 	*/
-	function DatePicker($whatLeft = 0, $whatTop = 0, $whatWidth = 219, $whatHeight = 21)
+	function DatePicker($left = 0, $top = 0, $width = 219, $height = 21)
 	{
-		parent::Panel($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		//$this->Load = new ClientEvent('ShowCalendar("' . $this->Id . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
-		//	$this->Date . ', ' . $this->Month . ', ' . $this->Year . ');');
-		$this->DatePickerCombo = new ComboBox(0,0,$whatWidth,20);
+		parent::Panel($left, $top, $width, $height);
+		$this->DatePickerCombo = new ComboBox(0,0,$width,20);
 		$this->DatePickerCalendar = new Calendar(0, 21, 217, 200);
-		$this->SetFormat("l, F d, Y");
-		//$this->DatePickerCalendar->ClientVisible = false;
-		if(GetBrowser() == "ie")
+		$this->SetFormat('l, F d, Y');
+		if(GetBrowser() == 'ie')
 			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->Id}')");
 		else 
 			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->Id}', '{$this->DatePickerCombo->Id}')");
-		//$this->LoadImage->ClientVisible = "NoDisplay";
 		$this->Controls->Add($this->DatePickerCombo);
 		$this->Controls->Add($this->DatePickerCalendar);
-		//$this->FullDate = &$this->DatePickerCombo->Text;
-		//Needs to be something like this // $this->FullDate = $this->DatePickerCombo->GetSelectedText();
-		//$this->Controls->AddRangeArray(true, array(&$this->DatePickerCombo, &$this->DatePickerCalendar));
-		//$this->Date = &$this->DatePickerCalendar->Date;
-		//$this->Date = &$_SESSION[$this->DatePickerCalendar->Id]->Date;
 	}
 	/**
-	*<b>Note:</b>Can also be called as a property.
-	*<code> $tempFullDate = $this->FullDate;</code>
-	* @return string|FullDate
-	*/
+	 * Returns the full date of the selected day. It will be formated according to the Format property.
+	 * @return string 
+	 */
 	function GetFullDate()
 	{
 		return $this->DatePickerCalendar->GetFullDate();
 	}
 	/**
-	*<b>Note:</b>Can also be called as a property.
-	*<code> $tempEpoch = $this->UNIXEpoch;</code>
-	* @return integer|UnixEpoch
-	*/
-	function GetUNIXEpoch()
+	 * Gets the currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
+	 * @return integer
+	 */
+	function GetTimestamp()
 	{
-		return $this->DatePickerCalendar->GetUNIXEpoch();
+		return $this->DatePickerCalendar->GetTimestamp();
 	}
 	/**
-	*<b>Note:</b>Can also be called as a property.
-	*<code> $this->UNIXEpoch = 1095379198;</code>
-	* @return integer|UnixEpoch
-	*/
-	function SetUNIXEpoch($UNIXEpochTime)
+	 * Sets the current day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
+	 * @param integer $TimestampTime
+	 */
+	function SetTimestamp($TimestampTime)
 	{
-		$this->DatePickerCalendar->SetUNIXEpoch($UNIXEpochTime);
+		$this->DatePickerCalendar->SetTimestamp($TimestampTime);
 		QueueClientFunction($this, "document.getElementById('{$this->DatePickerCalendar->Id}').onchange.call", array());
 	}
+	/**
+	 * Returns the currently used format of the display of the DatePicker
+	 * @return string This returns the same kind of format as PHP's native date() function. NOLOH's default is 'l, F d, Y'.
+	 */
 	function GetFormat()									
 	{
 		return $this->Format;
 	}
-	function SetFormat($newFormat)
+	/**
+	 * Sets the format of the display of the DatePicker.
+	 * @param string $format This expects the same kind of format as PHP's native date() function
+	 */
+	function SetFormat($format)
 	{
-		$this->Format = $newFormat;
-		$this->DatePickerCalendar->Change = new ClientEvent('var calObj = document.getElementById("' . $this->DatePickerCalendar->Id . '"); var ds = GetDateString(calObj.id,"'.$this->Format.'"); document.getElementById("' . $this->DatePickerCombo->Id . '").options[0] = new Option(ds,ds); document.getElementById("' . $this->Id . '").style.height="21px";');
+		$this->Format = $format;
+		$this->DatePickerCalendar->Change = new ClientEvent('var calObj = document.getElementById("' . $this->DatePickerCalendar->Id . '"); var ds = GetDateString(calObj.id,"'.$format.'"); document.getElementById("' . $this->DatePickerCombo->Id . '").options[0] = new Option(ds,ds); document.getElementById("' . $this->Id . '").style.height="21px";');
 	}
 	/**
 	* @ignore
@@ -126,7 +112,6 @@ class DatePicker extends Panel
 	function Show()
 	{
 		parent::Show();
-		//$this->DatePickerCalendar->Show();
 		if($this->DatePickerCombo->Items->Count()==0)
 			AddScript('ShowDatePicker("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$this->Format.'")'/*, Priority::High*/);
 	}

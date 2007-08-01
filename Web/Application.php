@@ -5,7 +5,7 @@
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL="", $URLTokenMode=URL::Display)
+function SetStartUpPage($className, $unsupportedURL='', $URLTokenMode=URL::Display)
 {
 	new Application($className, $unsupportedURL, $URLTokenMode);
 }
@@ -17,7 +17,7 @@ final class Application
 {
 	private $WebPage;
 	
-	public static function SetStartUpPage($className, $unsupportedURL="", $URLTokenMode=URL::Display)
+	public static function SetStartUpPage($className, $unsupportedURL='', $URLTokenMode=URL::Display)
 	{
 		new Application($className, $unsupportedURL, $URLTokenMode);
 	}
@@ -30,12 +30,12 @@ final class Application
 		session_destroy();
 		session_unset();
 		print(
-"/*~NScript~*/
-frm = document.createElement('FORM');
+'/*~NScript~*/
+frm = document.createElement("FORM");
 frm.action = window.location;
-frm.method = 'post';
+frm.method = "post";
 document.body.appendChild(frm);
-frm.submit();"
+frm.submit();'
 		);
 		die();
 	}
@@ -53,11 +53,11 @@ frm.submit();"
 		elseif(isset($_GET['NOLOHFileUpload']))
 		{
 			FileUpload::ShowInside($_GET['NOLOHFileUpload'], $_GET['Width'], $_GET['Height']);
-			if(isset($_FILES['NOLOHFile']) && $_FILES['NOLOHFile']['tmp_name']!="")
+			if(isset($_FILES['NOLOHFile']) && $_FILES['NOLOHFile']['tmp_name']!='')
 			{
-				rename($_FILES['NOLOHFile']['tmp_name'], $_FILES['NOLOHFile']['tmp_name']."N");
+				rename($_FILES['NOLOHFile']['tmp_name'], $_FILES['NOLOHFile']['tmp_name'].'N');
 				$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']] = $_FILES['NOLOHFile'];
-				$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= "N";
+				$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
 			}
 		}
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
@@ -69,24 +69,24 @@ frm.submit();"
 				//if(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit'])
 					//print("alert('" . $_SESSION['NOLOHVisit'] . " vs " . $_POST['NOLOHVisit'] . "');");
 				//	print("location.reload(true);");
-				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET["NWidth"]))
+				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset();
 				session_destroy();
 				session_unset(); 
 				self::SetStartUpPage($className, $unsupportedURL, $URLTokenMode);
 				return;
 			}
-			if(isset($_POST['NoSkeleton']) && GetBrowser()=="ie")
+			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 			{
 				$srcs = $_SESSION['NOLOHScriptSrcs'];
 				$_SESSION = array();
 				$this->HandleFirstRun($className, $unsupportedURL, false);
 				$_SESSION['NOLOHScriptSrcs'] = $srcs;
 				//$_SESSION['NOLOHVisit'] = -1;
-				AddScript("NOLOHVisit=-1", Priority::High);
+				AddScript('NOLOHVisit=-1', Priority::High);
 			}
-			$GLOBALS["NOLOHURLTokenMode"] = $URLTokenMode;
-			if(isset($_SESSION["NOLOHOmniscientBeing"]))
+			$GLOBALS['NOLOHURLTokenMode'] = $URLTokenMode;
+			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
 				$this->HandleClientChanges();
@@ -115,19 +115,19 @@ frm.submit();"
 		$_SESSION['NOLOHControlQueue'] = array();
 		$_SESSION['NOLOHFunctionQueue'] = array();
 		$_SESSION['NOLOHPropertyQueue'] = array();
-		$_SESSION['NOLOHScript'] = array("", "", "");
+		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHScriptSrcs'] = array();
 		$_SESSION['NOLOHFiles'] = array();
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
-		DeclareGlobal("HighestZIndex", 0);
-		DeclareGlobal("LowestZIndex", 0);
+		DeclareGlobal('HighestZIndex', 0);
+		DeclareGlobal('LowestZIndex', 0);
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
 		{
 			//$_SESSION['NOLOHVisit'] = -1;
-			if($_SESSION["NOLOHBrowser"] == "other" && $_SESSION["NOLOHOS"] == "other")
+			if($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other')
 			{
 				//Search engine code here
 			}
@@ -149,21 +149,19 @@ frm.submit();"
 			unset($GLOBALS['OmniscientBeing'][$id]);
 		}
 		$_SESSION['NOLOHGarbage'] = array();
-		//foreach($OmniscientBeing as $key => $val)
-		//	$val->RestoreValues();
 		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);
 	}
 	
 	private function HandleClientChanges()
 	{
-		$GLOBALS["PropertyQueueDisabled"] = true;
+		$GLOBALS['PropertyQueueDisabled'] = true;
 		//$runThisString = "";
-		$splitChanges = explode("~d0~", $_POST['NOLOHClientChanges']);
+		$splitChanges = explode('~d0~', $_POST['NOLOHClientChanges']);
 		$numChanges = count($splitChanges);
 		for($i = 0; $i < $numChanges; $i++)
 		{
 			//$runThisString = 'GetComponentById($splitChange[0])->';
-			$splitChange = explode("~d1~", $splitChanges[$i]);
+			$splitChange = explode('~d1~', $splitChanges[$i]);
 			switch($splitChange[1])
 			{
 				// Strings
@@ -182,7 +180,7 @@ frm.submit();"
 					//$runThisString .= $splitChange[1] . ' = "' . $splitChange[2] . '";';
 					break;*/
 				// Functions
-				case "KillLater":
+				/*case "KillLater":
 					if(GetComponentById($splitChange[0]) != null)
 						GetComponentById($splitChange[0])->Close();
 						/*$runThisString .= 'Close();';
@@ -198,16 +196,19 @@ frm.submit();"
 					//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
 					//break;
 				// Explode string to array
-				case "Items":
-					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeItems($splitChange[2]);
+				case 'Items':
+					GetComponentById($splitChange[0])->Items = self::ExplodeItems($splitChange[2]);
 					break;
-				case "SelectedIndices":					
-					GetComponentById($splitChange[0])->{$splitChange[1]} = self::ExplodeSelectedIndices($splitChange[2]);
+				case 'SelectedIndices':					
+					GetComponentById($splitChange[0])->SelectedIndices = self::ExplodeSelectedIndices($splitChange[2]);
 					break;
 					//$tmp = strpos($splitChange[1], "->");
 					//$runThisString = 'GetComponentById($splitChange[0])->';
 					//$runThisString .= $splitChange[1] . ' = $this->Explode' . ($tmp===false?$splitChange[1]:substr($splitChange[1], 0, $tmp)) . '("' . $splitChange[2] . '");';
 					//break;
+				case 'Text':
+					GetComponentById($splitChange[0])->Text = str_replace('~da~','&',$splitChange[2]);
+					break;
 				default:
 					//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
 					GetComponentById($splitChange[0])->{$splitChange[1]} = $splitChange[2];
@@ -215,7 +216,7 @@ frm.submit();"
 			//echo $runThisString;
 			//eval($runThisString);
 		}
-		unset($GLOBALS["PropertyQueueDisabled"]);
+		unset($GLOBALS['PropertyQueueDisabled']);
 	}
 	
 	private function HandleServerEvent()
@@ -224,15 +225,15 @@ frm.submit();"
 			Event::$Key = $_POST['NOLOHKey'];
 		if(isset($_POST['NOLOHCaught']))
 			Event::$Caught = $this->ExplodeDragCatch($_POST['NOLOHCaught']);
-		Event::$MouseX = $_POST["NOLOHMouseX"];
-		Event::$MouseY = $_POST["NOLOHMouseY"];
-		$splitEvent = explode("@", $_POST['NOLOHServerEvent']);
+		Event::$MouseX = $_POST['NOLOHMouseX'];
+		Event::$MouseY = $_POST['NOLOHMouseY'];
+		$splitEvent = explode('@', $_POST['NOLOHServerEvent']);
 		$obj = GetComponentById($splitEvent[1]);
 		if($obj != null)
 			return $obj->{$splitEvent[0]}->Exec($execClientEvents=false);
 		else 
 		{
-			$splitStr = explode("i", $splitEvent[1], 2);
+			$splitStr = explode('i', $splitEvent[1], 2);
 			return GetComponentById($splitStr[0])->ExecEvent($splitEvent[0], $splitEvent[1]);
 		}
 		//$runThisString = 'return GetComponentById($splitEvent[1])->' . $splitEvent[0] . '->Exec(false);';
@@ -247,7 +248,7 @@ frm.submit();"
 		header("Content-Encoding: gzip");
 		header("Vary: Accept-Encoding");*/
 		if(defined('FORCE_GZIP'))
-			ob_start("ob_gzhandler");
+			ob_start('ob_gzhandler');
 		/*global $HTTP_ACCEPT_ENCODING;
 		if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false)
 			header("Content-Encoding: x-gzip");
@@ -259,18 +260,18 @@ frm.submit();"
 			
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
-			if($GLOBALS["NOLOHURLTokenMode"] == 1)
+			if($GLOBALS['NOLOHURLTokenMode'] == 1)
 			{
 				$_SESSION['NOLOHTokens'] = $_GET;
-				unset($_SESSION['NOLOHTokens']["NWidth"], $_SESSION['NOLOHTokens']["NHeight"]);
+				unset($_SESSION['NOLOHTokens']['NWidth'], $_SESSION['NOLOHTokens']['NHeight']);
 			}
-			elseif($GLOBALS["NOLOHURLTokenMode"] == 2)
+			elseif($GLOBALS['NOLOHURLTokenMode'] == 2)
 			{
-				$split = explode("&", base64_decode(key($_GET)));
+				$split = explode('&', base64_decode(key($_GET)));
 				$count = count($split);
 				for($i=0; $i<$count; $i++)
 				{
-					$split2 = explode("=", $split[$i]."=");
+					$split2 = explode('=', $split[$i].'=');
 					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
 				}
 			}
@@ -279,28 +280,28 @@ frm.submit();"
 			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
 			$this->WebPage->Show();
 		}
-		if(isset($GLOBALS["NOLOHTokenUpdate"]) && (!isset($_POST['NoSkeleton']) || GetBrowser()!="ie"))
+		if(isset($GLOBALS['NOLOHTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
 			URL::UpdateTokens();
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
-		$sendStr = "/*~NScript~*/" . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2];
+		$sendStr = '/*~NScript~*/' . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2];
 		//if(strstr($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator')!==false || strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')===false)
 		//	print($sendStr);
 		//elseif(defined('FORCE_GZIP'))
 		//	print(gzencode($sendStr,1));
 		print($sendStr);
-		$_SESSION['NOLOHScript'] = array("", "", "");
+		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-		$GLOBALS["NOLOHGarbage"] = true;
-		unset($OmniscientBeing, $GLOBALS["OmniscientBeing"]);
-		unset($GLOBALS["NOLOHGarbage"]);
+		$GLOBALS['NOLOHGarbage'] = true;
+		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
+		unset($GLOBALS['NOLOHGarbage']);
 	}
 	
 	private function ExplodeDragCatch($objectsString)
 	{
 		$objs = array();
-		$objectsIdArray = explode(",", $objectsString);
+		$objectsIdArray = explode(',', $objectsString);
 		$objectsCount = count($objectsIdArray);
 		for($i=0; $i<$objectsCount; $i++)
 			$objs[] = GetComponentById($objectsIdArray[$i]);
@@ -310,11 +311,11 @@ frm.submit();"
 	private function ExplodeItems($optionsString)
 	{
 		$items = new ArrayList();
-		$optionsArray = explode("~d3~", $optionsString);
+		$optionsArray = explode('~d3~', $optionsString);
 		$optionsCount = count($optionsArray);
 		for($i=0; $i<$optionsCount; $i++)
 		{
-			$option = explode("~d2~", $optionsArray[$i]);
+			$option = explode('~d2~', $optionsArray[$i]);
 			$items->Add(new Item($option[0], $option[1]));
 		}
 		return $items;
@@ -322,7 +323,7 @@ frm.submit();"
 	
 	private function ExplodeSelectedIndices($indicesString)
 	{
-		return explode("~d2~", $indicesString);
+		return explode('~d2~', $indicesString);
 	}
 }
 

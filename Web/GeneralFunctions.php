@@ -202,18 +202,6 @@ function &GetComponentById($whatId)
 /**
 * @ignore
 */
-function ArrayRestoreValues(&$ar)
-{
-	$ItemCount = count($ar);
-	for($i=0; $i<$ItemCount; $i++)
-		if(is_object($ar[$i]) && get_class($ar[$i]) == "Pointer")
-			$ar[$i] = $ar[$i]->Dereference();
-		elseif(isArray($ar[$i]))
-			ArrayRestoreValues($ar[$i]);
-}
-/**
-* @ignore
-*/
 function RefCount(&$thing)
 {
 	ob_start();

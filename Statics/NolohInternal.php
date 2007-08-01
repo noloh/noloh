@@ -33,7 +33,7 @@ final class NolohInternal
 						$control->Resurrect();
 				}
 				elseif($control->GetShowStatus()!==0)
-					$control->Hide();
+					$control->Bury();
 			}
 			elseif(isset($_SESSION['NOLOHControlQueue'][$parent->Id]) && $_SESSION['NOLOHControlQueue'][$parent->Id] && func_num_args()==2)
 			{
@@ -58,7 +58,7 @@ final class NolohInternal
 		AddScript("_NAdd('$addTo','$tag',Array($initialProperties))", Priority::High);
 	}
 	
-	public static function Hide($obj)
+	public static function Bury($obj)
 	{
 		AddScript("_NRem('$obj->Id')", Priority::High);
 	}

@@ -7,51 +7,20 @@
 /**
  * Component class
  *
- * Component is the base class for all NOLOH components.
- * A component, an instance of the Component class or its descendent class, is
- * a basic building-block in a NOLOH application.
+ * A component is a basic building-block in a NOLOH application. It is an abstract class, so you may not instantiate a new Component, only write classes that extend them.<br>
+ * Each component has an <b>Id</b> that uniquely identifies itself among all other components.<br>
+ * A component may have a <b>Parent</b>, which establishes a tree based on the parent-child relationship.<br>
  *
- * A component has
- * - properties, which can be accessed by other components or functions.
- *
- * Properties are inheritable, but can be redefined.
- *
- * A component has a <b>Parent</b>, which establishes
- * a tree based on the parent-child relationship.
- *
- * Each component has an <b>Id</b> that uniquely identifies itself among
- * all other components. 
- *
- * Properties
- * - <b>Id</b>, string, read-only
- *   <br>Gets the Id of this Component
- * - <b>Opacity</b>, integer,
- *   <br>Gets or Sets the Opacity of this Component
- * - <b>Parent</b>, Component, read-only
- *   <br>Gets the component's parent component in the Application.
- *   Note, a webpage has no parent and it's Parent property is null.
- * - <b>ParentId</b>, string,
- *   <br>Gets or Sets the Id of the Parent of this Component
- * - <b>ScrollLeft</b>, integer,
- *   <br>Gets or Sets the ScrollLeft ot this Component
- * - <b>ScrollTop</b>, integer,
- *   <br>Gets or Sets the DiScrollTop of this Component
- * - <b>ServerVisible</b>, boolean,
- *   <br>Gets or Sets the ServerVisible of this Component
- * - <b>ZIndex</b>, integer,
- *   <br>Gets or Sets the ZIndex of this Component
+ * @property-read Component::(NotShown\Shown\Buried) $ShowStatus Whether it is Shown, NotShown, Buried
+ * @property-read Component $Parent The Parent Component
  *
  */
 
-class Component extends Object
+abstract class Component extends Object
 {
-	//private $PublicProperties = array();
-
-	/**
-	*Determines whether the Component is drawn on the Client
-	*@var boolean
-	*/
-	public $ServerVisible;
+	const NotShown = 0;
+	const Shown = 1;
+	const Buried = 2;
 	/**
 	 * Id of the component
 	 * @var string
@@ -59,16 +28,34 @@ class Component extends Object
 	public $Id;
 	/**
 	 * ParentId of the component
+	 * @access private
 	 * @var string
 	 */
 	private $ParentId;
+	/**
+	 * Whether it is not shown, shown, or in the graveyard
+	 * @access private
+	 * @var integer
+	 */
 	private $ShowStatus;
-
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Component.
+	 */ 
+	function Component()
+	{
+		$this->ShowStatus = 0;
+		global $OmniscientBeing;
+		$OmniscientBeing[$this->Id = 'N' . ++$_SESSION['NOLOHNumberOfComponents']] = &$this;
+	}
+	/**
+	 * Whether the component has never been shown, has been shown, or has been shown and removed
+	 * @return Component::(NotShown\Shown\Buried)
+	 */
 	function GetShowStatus()
 	{
 		return $this->ShowStatus === null ? 1 : $this->ShowStatus;
 	}
-	
 	/**
 	* @ignore
 	*/
@@ -77,8 +64,18 @@ class Component extends Object
 		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
 			$this->ShowStatus = 0;
 	}
-	
-	function GetParentId() {return $this->ParentId;}
+	/**
+	 * Gets the Id of the Parent Component
+	 * @return string 
+	 */
+	function GetParentId() 
+	{
+		return $this->ParentId;
+	}
+	/**
+	 * Sets the ParentId of the Component. The Component whose Id is passed in will become the new Parent of this Component. Note that an ArrayList with a ParentId will automatically do this for you. {@link ArrayList::ParentId}
+	 * @param string $parentId The Id of the Parent Component
+	 */
 	function SetParentId($parentId)
 	{
 		$bool = $parentId != null;
@@ -87,75 +84,83 @@ class Component extends Object
 		$_SESSION['NOLOHControlQueue'][$this->Id] = $bool;
 	}
 	/**
-	 * Constructor.
-	 *
-	 * for inherited components, be sure to call the parent constructor first
-	 * so that the component properties and events are defined.
+	 * Gets Parent of this Component, or Parent based on the $generation paramater as follows:<br>
+	 * If $generation is an integer, it will return that number of Parents above, e.g., GetParent(2) will return the grandparent.<br>
+	 * If $generation is a string, it will return the closest ancestor that is an instance of the class passed in.
+	 * @param integer|string[optional] $generation
+	 * @return Component
 	 */
-	function Component()
+	function GetParent($generation = 1)
 	{
-		$this->ShowStatus = 0;
-		$this->Id = "N" . ++$_SESSION['NOLOHNumberOfComponents'];
-		global $OmniscientBeing;
-		$OmniscientBeing[$this->Id] = &$this;
-	}
-	/**
-	 * Shows the Component.
-	 * Should not be called under most circumstances, should only be called in overriding the Show() of custom components.
-	 * @return boolean
-	 */
-	function AddEventHandler($functionAsString)
-	{
-		return new ServerEvent($this, $functionAsString);
-	}
-	/**
-	 * Gets Parent of this Component, or Parent based on $GenerationsAbove paramater 
-	 * <br> Can also be called as a property
-	 * <code>$this->SomeComponent->Parent</code>
-	 * @param integer|specifies whatlevel of Parent to get.
-	 */
-	function GetParent($GenerationsAbove = 1)
-	{
-		if($this->ParentId == "")
+		if($this->ParentId == '')
 			return null;
-		if(is_int($GenerationsAbove))
+		if(is_int($generation))
 		{
-			if($GenerationsAbove == 1)
+			if($generation == 1)
 				return GetComponentById($this->ParentId);
-			elseif($GenerationsAbove > 1)
-				return GetComponentById($this->ParentId)->GetParent($GenerationsAbove-1);
+			elseif($generation > 1)
+				return GetComponentById($this->ParentId)->GetParent($generation-1);
 			else 
 				return $this;
 		}
-		elseif(is_string($GenerationsAbove))
+		elseif(is_string($generation))
 		{
 			$parent = GetComponentById($this->ParentId);
-			return $parent instanceof $GenerationsAbove ? $parent : $parent->GetParent($GenerationsAbove);
+			return $parent instanceof $generation ? $parent : $parent->GetParent($generation);
 		}
-		elseif(is_array($GenerationsAbove))
+		elseif(is_array($generation))
 		{
-			$count = count($GenerationsAbove);
+			$count = count($generation);
 			for($i=0; $i<$count; $i++)
-				if($this instanceof $GenerationsAbove[$i])
+				if($this instanceof $generation[$i])
 					return $this;
-			return GetComponentById($this->ParentId)->GetParent($GenerationsAbove);
+			return GetComponentById($this->ParentId)->GetParent($generation);
 		}
 		return null;
 	}
+	/**
+	* @ignore
+	*/
 	function GetAddId($obj)
 	{
 		return $this->GetParent()->GetAddId($obj);
 	}
-	/*
-	function __isset($nm)
-	{
-		return isset($this->PublicProperties[$nm]);
+	/**
+	 * Shows the Component.
+	 * Should not be called under most circumstances. Should only be called in overriding the Show() of advanced, custom components.
+	 * Overriding this function allows you to have code execute when the Component is first shown on the client.
+	 */
+	function Show()
+	{	
+		$this->ShowStatus = null;
+		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
 	}
-	
-	function __unset($nm)
+	/**
+	 * The opposite of Showing. If the Component has a client-side aspect, it will be removed from the client.
+	 * Should not be called under most circumstances. Should only be called in overriding the Bury() of advanced, custom components.
+	 * Overriding this function allows you to have code execute when the Component is removed from the client.
+	 */
+	function Bury()
 	{
-		unset($this->PublicProperties[$nm]);
-	}*/
+		$this->ShowStatus = 2;
+		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
+		{
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+			$this->ParentId = null;
+		}
+	}
+	/**
+	 * Re-shows an object that was once shown, then buried.
+	 * Should not be called under most circumstances. Should only be called in overriding the Resurrect() of advanced, custom components.
+	 * Overriding this function allows you to have code execute when the Component is shown on the client after the first time.
+	 */
+	function Resurrect()
+	{
+		$this->ShowStatus = null;
+		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+	}
 	/**
 	* @ignore
 	*/
@@ -177,97 +182,24 @@ class Component extends Object
 	/**
 	* @ignore
 	*/
-	function RestoreValues()
-	{
-		//$vars = get_object_vars($this);
-		$vars = (array)$this;
-		foreach ($vars as $key => &$val)
-			if(is_object($val))
-			{
-				if($val instanceof Pointer)
-					//eval('$this->'.$key.' = &$val->Dereference();');
-					$val = $val->Dereference();
-				elseif($val instanceof ArrayList)
-					$val->RestoreValues();
-			}
-			elseif(is_array($val))
-				ArrayRestoreValues($val);
-	}
-	
-	function Equals(Component &$obj)
-	{
-		global $OmniscientBeing;
-		$OmniscientBeing[$this->Id] = $obj;
-	}
-	
-	function SetPropertyByReference($propertyNameAsString, &$value)
-	{
-		$this->$propertyNameAsString = $value;
-	}
-	
 	function __toString()
 	{
 		return $this->Id;
 	}
-	
+	/**
+	* @ignore
+	*/
 	function __destruct()
 	{
-		if(isset($GLOBALS["NOLOHGarbage"]))
+		if(isset($GLOBALS['NOLOHGarbage']))
 		{
 			$id = $this->Id;
 			unset($_SESSION['NOLOHControlQueue'][$id],
 				$_SESSION['NOLOHFunctionQueue'][$id],
 				$_SESSION['NOLOHPropertyQueue'][$id]);
-			$_SESSION["NOLOHGarbage"][$id] = "";
+			$_SESSION['NOLOHGarbage'][$id] = '';
 		}
 	}
-	
-	function Show()
-	{	
-		$this->ShowStatus = null;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
-	}
-	
-	function Hide()
-	{
-		$this->ShowStatus = 2;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
-		{
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
-			$this->ParentId = null;
-		}
-		return true;
-	}
-	
-	function Resurrect()
-	{
-		$this->ShowStatus = null;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
-		return true;
-	}
-	
-	/*
-	function __wakeup()
-	{
-		/*
-		$VarNames = array_keys(GetDeepClassVars(get_class($this)));
-		//$VarNames = array_keys((array)($this));
-		$VarNums = count($VarNames);
-		for($i=0; $i<$VarNums; $i++)
-			if($VarNames[$i] != "PublicProperties")
-				eval('unset($this->'.$VarNames[$i].');');
-		
-		$vars = get_object_vars($this);
-		//var_dump($vars);
-		foreach ($vars as $key => $val)
-			if(is_object($val) && get_class($val) == "Pointer")
-			//if(IsPointer($val))
-				eval('$this->'.$key.' = $val->Dereference(); echo " -".get_class($this->'.$key.')."- ";');
-				//eval('$this->'.$key.' = DereferencePointer($val);');
-	}
-	*/
 }
 
 ?>

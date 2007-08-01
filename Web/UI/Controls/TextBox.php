@@ -5,15 +5,13 @@
  */
 class TextBox extends Control
 {
-	public $Password;
-	public $Hidden;
+	private $Password;
+	private $Hidden;
 	private $MaxLength;
 		
-	function TextBox($whatLeft = 0, $whatTop = 0, $whatWidth = 83, $whatHeight = 16)  
+	function TextBox($left = 0, $top = 0, $width = 83, $height = 16)  
 	{
-		parent::Control($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		$this->Password = false;
-		$this->Hidden = false;
+		parent::Control($left, $top, $width, $height);
 	}
 	
 	function EditComplete($labId)
@@ -34,7 +32,7 @@ class TextBox extends Control
 				$lab->Change->Exec();
 		}
 		//$Lab->Text = $this->Text;
-		$this->Parent->Controls->RemoveItem($this);
+		$this->Parent->Controls->Remove($this);
 	}
 	
 	function GetMaxLength()
@@ -45,24 +43,44 @@ class TextBox extends Control
 	function SetMaxLength($newMaxLength)
 	{
 		$this->MaxLength = $newMaxLength;
-		NolohInternal::SetProperty("maxLength", $newMaxLength, $this);
+		NolohInternal::SetProperty('maxLength', $newMaxLength, $this);
+	}
+	
+	function GetPassword()
+	{
+		return $this->Password != null;
+	}
+	
+	function SetPassword($bool)
+	{
+		$this->Password = $bool ? true : null;
+	}
+	
+	function GetHidden()
+	{
+		return $this->Hidden != null;
+	}
+	
+	function SetHidden($bool)
+	{
+		$this->Hidden = $bool ? true : null;
 	}
 	
 	function SetText($newText)
 	{
 		parent::SetText($newText);
-		NolohInternal::SetProperty("value", $newText, $this);
+		NolohInternal::SetProperty('value', $newText, $this);
 	}
 	
-	function GetEventString($whatEventTypeAsString)
+	function GetEventString($eventTypeAsString)
 	{
-		if($whatEventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString("Change")."'";
+		if($eventTypeAsString === null)
+			return ",'onchange','".$this->GetEventString('Change')."'";
 
-		$preStr = "";
-		if($whatEventTypeAsString == "Change")
+		$preStr = '';
+		if($eventTypeAsString == 'Change')
 			$preStr = "_NSave(\"$this->Id\",\"value\");";
-		return $preStr . parent::GetEventString($whatEventTypeAsString);
+		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 		
 	function Show()
@@ -79,10 +97,10 @@ class TextBox extends Control
 		
 		//$tempStr = str_repeat("  ", $IndentLevel) . "<INPUT "  . $parentShow . "' ";
 		//if(!is_null($this->Text))
-		if(!empty($this->MaxLength))
-			$initialProperties .= ",'MaxLength','$this->MaxLength'";
+		//if(!empty($this->MaxLength))
+		//	$initialProperties .= ",'MaxLength','$this->MaxLength'";
 		$initialProperties .= $this->GetEventString(null);
-		NolohInternal::Show("INPUT", $initialProperties, $this);
+		NolohInternal::Show('INPUT', $initialProperties, $this);
 	}
 }
 ?>

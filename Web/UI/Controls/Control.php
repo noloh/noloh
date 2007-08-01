@@ -3,7 +3,7 @@
 * @ignore
 */
 	
-define("NoDisplay", "NoDisplay");
+define('NoDisplay', 'NoDisplay');
 
 /**
  * @package Web.UI.Controls
@@ -248,10 +248,10 @@ class Control extends Component
 		return "'id','$this->Id'";
 	}
 	
-	function Hide()
+	function Bury()
 	{
-		NolohInternal::Hide($this);
-		parent::Hide();
+		NolohInternal::Bury($this);
+		parent::Bury();
 	}
 	
 	function Resurrect()
@@ -268,7 +268,7 @@ class Control extends Component
 	function SetCSSClass($newClass)
 	{
 		$this->CSSClass = $newClass;
-		NolohInternal::SetProperty("className", $newClass, $this);
+		NolohInternal::SetProperty('className', $newClass, $this);
 	}
 	
 	function GetOpacity()
@@ -279,10 +279,10 @@ class Control extends Component
 	function SetOpacity($newOpacity)
 	{
 		$this->Opacity = $newOpacity;
-		if(UserAgentDetect::GetBrowser()=="ie")
-			NolohInternal::SetProperty("style.filter", "alpha(opacity=$newOpacity)", $this);
+		if(UserAgentDetect::GetBrowser()=='ie')
+			NolohInternal::SetProperty('style.filter', "alpha(opacity=$newOpacity)", $this);
 		else 
-			NolohInternal::SetProperty("style.opacity", $newOpacity/100, $this);
+			NolohInternal::SetProperty('style.opacity', $newOpacity/100, $this);
 	}
 	
 	function GetZIndex()
@@ -292,12 +292,12 @@ class Control extends Component
 	
 	function SetZIndex($newZIndex)
 	{
-		if($newZIndex > GetGlobal("HighestZIndex"))
-			SetGlobal("HighestZIndex", $newZIndex);
-		if($newZIndex < GetGlobal("LowestZIndex"))
-			SetGlobal("LowestZIndex", $newZIndex);
+		if($newZIndex > GetGlobal('HighestZIndex'))
+			SetGlobal('HighestZIndex', $newZIndex);
+		if($newZIndex < GetGlobal('LowestZIndex'))
+			SetGlobal('LowestZIndex', $newZIndex);
 		$this->ZIndex = $newZIndex;
-		NolohInternal::SetProperty("style.zIndex", $newZIndex, $this);
+		NolohInternal::SetProperty('style.zIndex', $newZIndex, $this);
 	}
 	
 	/**
@@ -305,7 +305,7 @@ class Control extends Component
 	*/
 	function GetText() 
 	{
-		return ($this->Text == null?"":$this->Text);
+		return ($this->Text == null?'':$this->Text);
 	}
 	/**
 	*Sets the Text of the Control.
@@ -333,9 +333,9 @@ class Control extends Component
 	{
 		$this->Width = $newWidth;
 		if(is_numeric($newWidth))
-			NolohInternal::SetProperty("style.width", $newWidth."px", $this);
-		elseif(is_numeric(rtrim($newWidth, "%")))
-			NolohInternal::SetProperty("style.width", $newWidth, $this);
+			NolohInternal::SetProperty('style.width', $newWidth.'px', $this);
+		elseif(is_numeric(rtrim($newWidth, '%')))
+			NolohInternal::SetProperty('style.width', $newWidth, $this);
 	}
 	/**
 	* @ignore
@@ -352,9 +352,9 @@ class Control extends Component
 	{
 		$this->Height = $newHeight;
 		if(is_numeric($newHeight))
-			NolohInternal::SetProperty("style.height", $newHeight."px", $this);
-		elseif(is_numeric(rtrim($newHeight, "%")))
-			NolohInternal::SetProperty("style.height", $newHeight, $this);
+			NolohInternal::SetProperty('style.height', $newHeight.'px', $this);
+		elseif(is_numeric(rtrim($newHeight, '%')))
+			NolohInternal::SetProperty('style.height', $newHeight, $this);
 	}
 	//
 	function GetLeft() {return $this->Left;}
@@ -363,9 +363,9 @@ class Control extends Component
 	{
 		$this->Left = $newLeft;
 		if(is_numeric($newLeft))
-			NolohInternal::SetProperty("style.left", $newLeft."px", $this);
-		elseif(is_numeric(rtrim($newLeft, "%")))
-			NolohInternal::SetProperty("style.left", $newLeft, $this);
+			NolohInternal::SetProperty('style.left', $newLeft.'px', $this);
+		elseif(is_numeric(rtrim($newLeft, '%')))
+			NolohInternal::SetProperty('style.left', $newLeft, $this);
 	}
 	//
 	function GetTop() {return $this->Top;}
@@ -374,9 +374,9 @@ class Control extends Component
 	{
 		$this->Top = $newTop;
 		if(is_numeric($newTop))
-			NolohInternal::SetProperty("style.top", $newTop."px", $this);
-		elseif(is_numeric(rtrim($newTop, "%")))
-			NolohInternal::SetProperty("style.top", $newTop, $this);
+			NolohInternal::SetProperty('style.top', $newTop.'px', $this);
+		elseif(is_numeric(rtrim($newTop, '%')))
+			NolohInternal::SetProperty('style.top', $newTop, $this);
 	}
 	/**
 	*<b>Note:</b>Can also be called as a property.
@@ -408,19 +408,19 @@ class Control extends Component
 		{
 			switch($newPositionType)
 			{
-				case 0: $printAs = "absolute"; break;
-				case 1: $printAs = "relative"; break;
-				case 2: $printAs = "static";
+				case 0: $printAs = 'absolute'; break;
+				case 1: $printAs = 'relative'; break;
+				case 2: $printAs = 'static';
 			}
-			NolohInternal::SetProperty("style.position", $printAs, $this);
+			NolohInternal::SetProperty('style.position', $printAs, $this);
 			if($this->PositionType == 3)
-				NolohInternal::SetProperty("style.float", "", $this);
+				NolohInternal::SetProperty('style.float', '', $this);
 		}
 		else 
 		{
-			NolohInternal::SetProperty("style.float", "left", $this);
+			NolohInternal::SetProperty('style.float', 'left', $this);
 			if($this->PositionType < 3)
-				NolohInternal::SetProperty("style.position", "static", $this);
+				NolohInternal::SetProperty('style.position', 'static', $this);
 		}
 		$this->PositionType = $newPositionType === 0 ? null : $newPositionType;
 	}
@@ -433,7 +433,7 @@ class Control extends Component
 	function SetEnabled($whatBool)
 	{
 		$this->Enabled = $whatBool ? null : false;
-		NolohInternal::SetProperty("disabled", !$whatBool, $this);
+		NolohInternal::SetProperty('disabled', !$whatBool, $this);
 	}
 	
 	function GetClientVisible()
@@ -446,14 +446,14 @@ class Control extends Component
 		if(is_string($newVisibility))
 		{
 			$this->ClientVisible = $newVisibility;
-			NolohInternal::SetProperty("style.display", "none", $this);
-			NolohInternal::SetProperty("style.visibility", "inherit", $this);
+			NolohInternal::SetProperty('style.display', 'none', $this);
+			NolohInternal::SetProperty('style.visibility', 'inherit', $this);
 		}
 		else 
 		{
 			$this->ClientVisible = $newVisibility ? null : false;
-			NolohInternal::SetProperty("style.display", "", $this);
-			NolohInternal::SetProperty("style.visibility", $newVisibility?"inherit":"hidden", $this);
+			NolohInternal::SetProperty('style.display', '', $this);
+			NolohInternal::SetProperty('style.visibility', $newVisibility?'inherit':'hidden', $this);
 		}
 	}
 	
@@ -465,7 +465,7 @@ class Control extends Component
 	function SetBorder($newBorder)
 	{
 		$this->Border = $newBorder;
-		NolohInternal::SetProperty("style.border", $newBorder, $this);
+		NolohInternal::SetProperty('style.border', $newBorder, $this);
 	}
 	
 	function GetBackColor()
@@ -476,7 +476,7 @@ class Control extends Component
 	function SetBackColor($newBackColor)
 	{
 		$this->BackColor = $newBackColor;
-		NolohInternal::SetProperty("style.background", $newBackColor, $this);
+		NolohInternal::SetProperty('style.background', $newBackColor, $this);
 	}
 	
 	function GetColor()
@@ -487,7 +487,7 @@ class Control extends Component
 	function SetColor($newColor)
 	{
 		$this->Color = $newColor;
-		NolohInternal::SetProperty("style.color", $newColor, $this);			
+		NolohInternal::SetProperty('style.color', $newColor, $this);			
 	}
 	
 	function GetCursor()
@@ -498,7 +498,7 @@ class Control extends Component
 	function SetCursor($newCursor)
 	{
 		$this->Cursor = $newCursor == Cursor::Arrow ? null : $newCursor;
-		NolohInternal::SetProperty("style.cursor", $newCursor, $this);
+		NolohInternal::SetProperty('style.cursor', $newCursor, $this);
 	}
 	
 	function GetToolTip()
@@ -509,40 +509,40 @@ class Control extends Component
 	function SetToolTip($newToolTip)
 	{
 		$this->ToolTip = $newToolTip;
-		NolohInternal::SetProperty("title", $newToolTip, $this);
+		NolohInternal::SetProperty('title', $newToolTip, $this);
 	}
 	
 	//Event Functions
-	function GetChange()							{return $this->GetEvent("Change");}
-	function SetChange($newChange)					{$this->SetEvent($newChange, "Change");}
-	function GetClick()								{return $this->GetEvent("Click");}
-	function SetClick($newClick)					{$this->SetEvent($newClick, "Click");}
-	function GetDoubleClick()						{return $this->GetEvent("DoubleClick");}
-	function SetDoubleClick($newDoubleClick)		{$this->SetEvent($newDoubleClick, "DoubleClick");}
-	function GetDragCatch()							{return $this->GetEvent("DragCatch");}
-	function SetDragCatch($newDragCatch)			{$this->SetEvent($newDragCatch, "DragCatch");}
-	function GetKeyPress()							{return $this->GetEvent("KeyPress");}
-	function SetKeyPress($newKeyPress)				{$this->SetEvent($newKeyPress, "KeyPress");}
-	function GetLoseFocus()							{return $this->GetEvent("LoseFocus");}
-	function SetLoseFocus($newLoseFocus)			{$this->SetEvent($newLoseFocus, "LoseFocus");}
-	function GetMouseDown()							{return $this->GetEvent("MouseDown");}
-	function SetMouseDown($newMouseDown)			{$this->SetEvent($newMouseDown, "MouseDown");}
-	function GetMouseOut()							{return $this->GetEvent("MouseOut");}
-	function SetMouseOut($newMouseOut)				{$this->SetEvent($newMouseOut, "MouseOut");}
-	function GetMouseOver()							{return $this->GetEvent("MouseOver");}
-	function SetMouseOver($newMouseOver)			{$this->SetEvent($newMouseOver, "MouseOver");}
-	function GetMouseUp()							{return $this->GetEvent("MouseUp");}
-	function SetMouseUp($newMouseUp)				{$this->SetEvent($newMouseUp, "MouseUp");}
-	function GetReturnKey()							{return $this->GetEvent("ReturnKey");}
-	function SetReturnKey($newReturnKey)			{$this->SetEvent($newReturnKey, "ReturnKey");}
-	function GetRightClick()						{return $this->GetEvent("RightClick");}
-	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, "RightClick");}
-	function GetLoad()								{return $this->GetEvent("Load");}
-	function SetLoad($newLoad)						{$this->SetEvent($newLoad, "Load");}
-	function GetScroll()							{return $this->GetEvent("Scroll");}
-	function SetScroll($newScroll)					{$this->SetEvent($newScroll, "Scroll");}
-	function GetTypePause()							{return $this->GetEvent("TypePause");}
-	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, "TypePause");}
+	function GetChange()							{return $this->GetEvent('Change');}
+	function SetChange($newChange)					{$this->SetEvent($newChange, 'Change');}
+	function GetClick()								{return $this->GetEvent('Click');}
+	function SetClick($newClick)					{$this->SetEvent($newClick, 'Click');}
+	function GetDoubleClick()						{return $this->GetEvent('DoubleClick');}
+	function SetDoubleClick($newDoubleClick)		{$this->SetEvent($newDoubleClick, 'DoubleClick');}
+	function GetDragCatch()							{return $this->GetEvent('DragCatch');}
+	function SetDragCatch($newDragCatch)			{$this->SetEvent($newDragCatch, 'DragCatch');}
+	function GetKeyPress()							{return $this->GetEvent('KeyPress');}
+	function SetKeyPress($newKeyPress)				{$this->SetEvent($newKeyPress, 'KeyPress');}
+	function GetLoseFocus()							{return $this->GetEvent('LoseFocus');}
+	function SetLoseFocus($newLoseFocus)			{$this->SetEvent($newLoseFocus, 'LoseFocus');}
+	function GetMouseDown()							{return $this->GetEvent('MouseDown');}
+	function SetMouseDown($newMouseDown)			{$this->SetEvent($newMouseDown, 'MouseDown');}
+	function GetMouseOut()							{return $this->GetEvent('MouseOut');}
+	function SetMouseOut($newMouseOut)				{$this->SetEvent($newMouseOut, 'MouseOut');}
+	function GetMouseOver()							{return $this->GetEvent('MouseOver');}
+	function SetMouseOver($newMouseOver)			{$this->SetEvent($newMouseOver, 'MouseOver');}
+	function GetMouseUp()							{return $this->GetEvent('MouseUp');}
+	function SetMouseUp($newMouseUp)				{$this->SetEvent($newMouseUp, 'MouseUp');}
+	function GetReturnKey()							{return $this->GetEvent('ReturnKey');}
+	function SetReturnKey($newReturnKey)			{$this->SetEvent($newReturnKey, 'ReturnKey');}
+	function GetRightClick()						{return $this->GetEvent('RightClick');}
+	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, 'RightClick');}
+	function GetLoad()								{return $this->GetEvent('Load');}
+	function SetLoad($newLoad)						{$this->SetEvent($newLoad, 'Load');}
+	function GetScroll()							{return $this->GetEvent('Scroll');}
+	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
+	function GetTypePause()							{return $this->GetEvent('TypePause');}
+	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
 	
 	function GetEvent($eventType)
 	{
@@ -573,18 +573,18 @@ class Control extends Component
 	{
 		return isset($this->EventSpace[$eventType])
 			? $this->EventSpace[$eventType]->GetEventString($eventType, $this->Id)
-			: "";
+			: '';
 	}
 	
 	function GetShifts()
 	{
 		if($this->Shifts == null)
 		{
-			$this->Shifts = new ImplicitArrayList($this, "AddShift", "", "ClearShift");
-			$this->Shifts->RemoveItemFunctionName = "RemoveShift";
-			$this->Shifts->InsertFunctionName = "InsertShift";
-			NolohInternal::SetProperty("Shifts", "Array()", $this);
-			$this->UpdateEvent("MouseDown");
+			$this->Shifts = new ImplicitArrayList($this, 'AddShift', '', 'ClearShift');
+			$this->Shifts->RemoveFunctionName = 'RemoveShift';
+			$this->Shifts->InsertFunctionName = 'InsertShift';
+			NolohInternal::SetProperty('Shifts', 'Array()', $this);
+			$this->UpdateEvent('MouseDown');
 		}
 		return $this->Shifts;
 	}
@@ -592,7 +592,7 @@ class Control extends Component
 	private function AddShiftHelper($shift)
 	{
 		if($shift[1]==7)
-			QueueClientFunction($this, "AddShiftWith", array("'{$shift[0]}'", "Array(\"$this->Id\"," . $shift[2]), false, Priority::High);
+			QueueClientFunction($this, 'AddShiftWith', array("'{$shift[0]}'", "Array(\"$this->Id\"," . $shift[2]), false, Priority::High);
 		else
 		{
 			$fncStr = "document.getElementById('$this->Id').Shifts.splice";
@@ -650,7 +650,7 @@ class Control extends Component
 					continue;
 				return;
 			}
-		Alert("YA!");
+		Alert('YA!');
 	}
 	
 	private function ChangeShiftType($arrayIndex, $newType)
@@ -658,12 +658,12 @@ class Control extends Component
 		$tmp = $this->Shifts[$arrayIndex];
 		$tmp[1] = $newType;
 		$this->Shifts->Item[$arrayIndex] = $tmp;
-		QueueClientFunction($this, "ChangeShiftType", array("'$this->Id'", $arrayIndex, $newType));
+		QueueClientFunction($this, 'ChangeShiftType', array("'$this->Id'", $arrayIndex, $newType));
 	}
 	
 	function ClearShift()
 	{
-		NolohInternal::SetProperty("Shifts", "Array()", $this);
+		NolohInternal::SetProperty('Shifts', 'Array()', $this);
 		$this->Shifts->Clear(true);
 	}
 	
@@ -689,11 +689,11 @@ class Control extends Component
 	
 	function &__get($nm)
 	{
-		if(strpos($nm, "CSS") === 0 && $nm != "CSSFile" && $nm != "CSSClass")
+		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
-			$key = str_replace("_", "", str_replace("CSS", "", $nm));
+			$key = str_replace('_', '', str_replace('CSS', '', $nm));
 			$first = strtolower(substr($key, 0, 1));
 			$key = $first . substr($key, 1, strlen($key)-1);
 			$ret = &$this->CSSPropertyArray[$key];
@@ -708,11 +708,11 @@ class Control extends Component
 	function __set($nm, $val)
 	{
 		parent::__set($nm, $val);
-		if(strpos($nm, "CSS") === 0 && $nm != "CSSFile" && $nm != "CSSClass")
+		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
-			$key = str_replace("_", "", str_replace("CSS", "", $nm));
+			$key = str_replace('_', '', str_replace('CSS', '', $nm));
 			$first = strtolower(substr($key, 0, 1));
 			$key = $first . substr($key, 1, strlen($key)-1);
 			$this->CSSPropertyArray[$key] = $val;

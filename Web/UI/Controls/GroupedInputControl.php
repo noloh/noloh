@@ -108,10 +108,10 @@ class GroupedInputControl extends Control
 		$this->Caption->Show();
 		return $parentShow;
 	}
-	function Hide()
+	function Bury()
 	{
-		$this->Caption->Hide();
-		parent::Hide();
+		$this->Caption->Bury();
+		parent::Bury();
 	}
 }
 

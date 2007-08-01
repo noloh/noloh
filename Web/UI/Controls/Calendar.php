@@ -13,7 +13,7 @@ class Calendar extends Panel
 	private $Month;
 	private $Year;
 	
-	function Calendar($left=0, $top=0, $width=215, $height=200, $UNIXEpochTime=null)
+	function Calendar($left=0, $top=0, $width=215, $height=200, $TimestampTime=null)
 	{
 		parent::Panel($left, $top, $width, $height);
 		//$this->SelectFix = true;
@@ -43,7 +43,7 @@ class Calendar extends Panel
 				$lbl->SetCSSClass('NCalCell');
 				$lbl->SetMouseUp(new ClientEvent("CalSelectDate(event,'$this->Id')"));
 			}
-		$this->SetUNIXEpoch($UNIXEpochTime);
+		$this->SetTimestamp($TimestampTime);
 	}
 	
 	function GetViewMonth()
@@ -101,21 +101,21 @@ class Calendar extends Panel
 		$this->UpdateClient();
 	}	
 	
-	function GetUNIXEpoch()
+	function GetTimestamp()
 	{
 		return mktime(0, 0, 0, $this->Month+1, $this->Date, $this->Year);
 	}
 	
-	function SetUNIXEpoch($UNIXEpochTime)
+	function SetTimestamp($TimestampTime)
 	{
-		if($UNIXEpochTime==null)
-			$UNIXEpochTime = date('U');
+		if($TimestampTime==null)
+			$TimestampTime = date('U');
 	
-		$dateM = date('n', $UNIXEpochTime)-1;
-		$dateY = date('Y', $UNIXEpochTime);
+		$dateM = date('n', $TimestampTime)-1;
+		$dateY = date('Y', $TimestampTime);
 		$this->ViewMonth = $dateM;
 		$this->ViewYear = $dateY;
-		$this->Date = date('d', $UNIXEpochTime);
+		$this->Date = date('d', $TimestampTime);
 		$this->Month = $dateM;
 		$this->Year = $dateY;
 		$this->UpdateClient();
@@ -123,8 +123,8 @@ class Calendar extends Panel
 	
 	function GetFullDate()
 	{
-		$UNIXEpoch = $this->GetUNIXEpoch();
-		$date = getdate($UNIXEpoch);
+		$Timestamp = $this->GetTimestamp();
+		$date = getdate($Timestamp);
 		return $date['weekday'].', '.$date['month'].' '.$date['mday'].', '.$date['year'];
 	}
 	

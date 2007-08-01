@@ -8,7 +8,7 @@ class ImplicitArrayList extends ArrayList
 	public $AddFunctionName;
 	public $InsertFunctionName;
 	public $RemoveAtFunctionName;
-	public $RemoveItemFunctionName;
+	public $RemoveFunctionName;
 	public $ClearFunctionName;
 	
 	function ImplicitArrayList($obj=null, $addFunctionName="", $removeAtFunctionName="", $clearFunctionName="")
@@ -40,14 +40,14 @@ class ImplicitArrayList extends ArrayList
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $index);
 	}
 	
-	function RemoveItem($object, $onlyRemove = false)
+	function Remove($object, $onlyRemove = false)
 	{
-		if($this->RemoveItemFunctionName=="" || $onlyRemove)
-			return parent::RemoveItem($object);
+		if($this->RemoveFunctionName=="" || $onlyRemove)
+			return parent::Remove($object);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->RemoveFunctionName}($object);
 		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveItemFunctionName}($object);
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveFunctionName}($object);
 	}
 	
 	function RemoveAt($index, $onlyRemove = false)
@@ -85,7 +85,7 @@ class ImplicitArrayList extends ArrayList
 	
 	function offsetUnset($index)
 	{
-		$this->RemoveItem($this->Item[$index]);
+		$this->Remove($this->Item[$index]);
 		//$this->RemveAt($index);
 	}
 }
