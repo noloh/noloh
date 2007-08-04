@@ -25,7 +25,7 @@ class EventMarkupPanel extends MarkupPanel
 		$this->ComponentSpace = array();
 		$this->MarkupString = $markupStringOrFile;
 		$text = is_file($markupStringOrFile)?file_get_contents($markupStringOrFile):$markupStringOrFile;
-		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array("<Nendl>", "<Nendl>", "<Nendl>", "<NQt2>", "<NQt1>"), ($tmpFullString = $this->ParseItems($text)));
+		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), ($tmpFullString = $this->ParseItems($text)));
 		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
@@ -37,11 +37,20 @@ class EventMarkupPanel extends MarkupPanel
 	
 	private function ParseItems($text)
 	{
-		//do 
-		//{
-			$text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
-            	array($this, 'MarkupReplace'), $text, -1, $count);
-  		//}while ($count);
+		//return;
+//		return $text;
+		do 
+		{
+/*        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
+           	array($this, 'MarkupReplace'), $text, -1, $count);*/
+        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is',
+           	array($this, 'MarkupReplace'), $text, -1, $count);   
+//           $text = preg_replace('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is', "<replacement></replacement>", $text);
+//           	array($this, 'MarkupReplace'), $text, 1, $count);  	
+          
+//            $text = preg_replace_callback('/\s\s+/',
+//            	array($this, 'MarkupReplace'), $text, -1, $count);
+  		}while ($count);
   		return $text;
 	}/*
 	private function MarkupReplace($matches)
@@ -62,18 +71,41 @@ class EventMarkupPanel extends MarkupPanel
 	}*/
 	private function MarkupReplace($matches)
 	{
-		static $id;
-		$Id = $this->Id . "i" . ++$id;
-		$keyval = explode(':', $matches[4]);
+	    
+//	    print_r($matches);
+//	    Alert(serialize($matches));
+//	    return "<replacement></replacement>";
+		static $count = 0;
+		$id = $this->Id . 'i' . ++$count;
+		//return;
+		$tmp2 = explode(':', $matches[4]);
+//		return "<$matches[1]$matches[2] id=\"$id\"$matches[5]>$matches[6]</$matches[7]>";
+//		$keyval = explode(':', $matches[4], 2);
+//		$keyval = array();
+//		$pos = strpos($matches[4], ':');
+//		if($pos === false)
+//		{
+//			$keyval[0] = $matches[4];
+//			$keyval[1] = "";
+//		}
+//		else 
+//		{
+//			$keyval[0] = substr($matches[4], 0, $pos);
+//			$keyval[1] = substr($matches[4], $pos+1, strlen($matches[4])-$pos-1);
+//		}
+		//return;
 		if(strtolower($matches[1]) == 'component')
 		{
-			$this->Larvae[$Id] = array($keyval[0], $keyval[1]);
-			return "<div id=\"$Id\"$matches[2]$matches[5]>$matches[6]</div>";
+			$this->Larvae[$id] = array($keyval[0], $keyval[1]);
+			return "<div id=\"$id\"$matches[2]$matches[5]>$matches[6]</div>";
 		}
 		else 
 		{
-			$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1]$matches[2] id=\"$Id\"$matches[5]>$matches[6]</$matches[7]>";
+			$this->Eventees[$id] = array($matches[1], $keyval[0], $keyval[1]);
+			if($this->Eventees[$id][1] == "tools_services")
+				Alert("Blah: " . $this->Eventees["N30i1"][2]);
+			//	Alert("Blah2: " . $this->Eventees[$id][2]);
+			return "<$matches[1]$matches[2] id=\"$id\"$matches[5]>$matches[6]</$matches[7]>";
 		}
 	}
 	
@@ -121,7 +153,11 @@ class EventMarkupPanel extends MarkupPanel
 		$eventees = array();
 		if($byValue===null)
 			foreach($this->Eventees as $id => $info)
+			{
+				if($info[1] == "tools_services")
+					Alert("Blah: " . $this->Eventees["N30i1"][2]);
 				$eventees[] = new Eventee($id, $info[1], $info[2], $this->Id);
+			}
 		else 
 			foreach($this->Eventees as $id => $info)
 				if($info[1] == $byValue)
@@ -135,7 +171,7 @@ class EventMarkupPanel extends MarkupPanel
 			foreach($this->Larvae as $id => $info)
 				$larvae[] = new Larva($id, $info[0], $info[1], $this->Id);
 		else 
-			foreach($this->Eventees as $id => $info)
+			foreach($this->Larvae as $id => $info)
 				if($info[0] == $byValue)
 					$larvae[] = new Larva($id, $info[0], $info[1], $this->Id);
 		return $larvae;

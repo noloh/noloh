@@ -224,6 +224,12 @@ class WebPage extends Component
 		*/
 	}
 	
+	function SearchEngineShow()
+	{
+		foreach($this->Controls as $control)
+			$control->SearchEngineShow();
+	}
+	
 	function GetAddId()
 	{
 		return $this->Id;

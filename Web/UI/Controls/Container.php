@@ -14,4 +14,10 @@ class Container extends Component
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 	}
+	
+	function SearchEngineShow()
+	{
+		foreach($this->Controls as $control)
+			$control->SearchEngineShow();
+	}
 }

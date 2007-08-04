@@ -162,6 +162,10 @@ abstract class Component extends Object
 			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
 	}
 	/**
+	 * @ignore
+	 */
+	function SearchEngineShow()		{}
+	/**
 	* @ignore
 	*/
 	function __sleep()

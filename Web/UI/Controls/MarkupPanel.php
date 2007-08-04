@@ -10,12 +10,12 @@ class MarkupPanel extends Panel
 	private $CachedHeight;
 	//private $FontSize;
 	
-	function MarkupPanel($whatMarkupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
+	function MarkupPanel($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
 		parent::Panel($left, $top, $width, $height);
 		$this->Scrolling = System::Auto;
 		//$this->AutoScroll = true;
-		$this->SetMarkupString($whatMarkupStringOrFile);
+		$this->SetMarkupString($markupStringOrFile);
 	}
 	function GetFontSize()
 	{
@@ -87,6 +87,10 @@ class MarkupPanel extends Panel
 		parent::Show();
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupPanelScript.js");
 		AddNolohScriptSrc('MarkupPanel.js');
+	}
+	function SearchEngineShow()
+	{
+		print(((is_file($this->MarkupString))?file_get_contents($this->MarkupString):$this->MarkupString).' ');
 	}
 }
 

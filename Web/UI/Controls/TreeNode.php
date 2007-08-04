@@ -22,7 +22,7 @@ class TreeNode extends Panel
 	
 	private static function GetDefaultLeafSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/document.gif";
+		return NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/document.gif';
 	}
 	private static function GetDefaultCloseSrc()
 	{
@@ -37,8 +37,8 @@ class TreeNode extends Panel
 		parent::Panel(20, 0, 0, null);
 		$this->SetScrolling(System::Full);
 		$this->SetPositionType(1);
-		if(GetBrowser() == "ie")
-			NolohInternal::SetProperty("style.marginTop","6px",$this);
+		if(GetBrowser() == 'ie')
+			NolohInternal::SetProperty('style.marginTop','6px',$this);
 		$this->PlusMinus = new PlusMinusSwitch(0, 0);
 		$this->PlusMinus->SetPositionType(1);
 		$this->PlusMinus->SetClientVisible(false);
@@ -61,7 +61,7 @@ class TreeNode extends Panel
 			//$this->NodeElement = new Label($element, 0, 0, null, 15);
 			$this->NodeElement = new Label($element, 0, 0, System::Auto, 15);
 		}
-		$this->NodeElement->SetCursor = Cursor::Arrow;
+		$this->NodeElement->SetCursor(Cursor::Hand);
 		$this->NodeElement->SetLeft(40);
 		$this->NodeIcon = new Image(TreeNode::GetDefaultLeafSrc(), 8, 3, 16, 15);
 		//$this->NodeIcon = new Image(null, 17, 3, 16, 15);
@@ -69,9 +69,9 @@ class TreeNode extends Panel
 		$this->NodePanel = new Panel(25, 20, null, null, $this);
 		$this->NodePanel->SetScrolling(System::Full);
 		$this->NodePanel->SetPositionType(2);
-		$this->NodePanel->SetClientVisible("NoDisplay");
+		$this->NodePanel->SetClientVisible('NoDisplay');
 		$this->Nodes = &$this->NodePanel->Controls;
-		$this->Nodes->AddFunctionName = "AddNode";
+		$this->Nodes->AddFunctionName = 'AddNode';
 		//$this->Nodes->RemoveFunctionName = "RemoveNode";
 		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->NodePanel->Id.'","'.$this->NodeIcon->Id.'")');
 		$this->Controls->Add($this->PlusMinus);
@@ -193,7 +193,7 @@ class TreeNode extends Panel
 
 	function Expand($deep = false)
 	{
-		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/minus.gif";
+		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/minus.gif';
 		$this->NodePanel->ClientVisible = true;
 		if($deep)
 		{
@@ -221,7 +221,7 @@ class TreeNode extends Panel
 		//$this->NodeElement->Click = new ClientEvent("SelectNode('$this->Id', '$this->TreeListId', ".(GetBrowser()=="ie"?"window.":"")."event);");
 		//DOESN'T WORK ANYMORE - ASHER
 		//Alert("about to");
-		$this->NodeElement->Click["_N"] = new ClientEvent("SelectNode('$this->Id', '$this->TreeListId', ".(GetBrowser()=="ie"?"window.":"")."event);");
+		$this->NodeElement->Click['_N'] = new ClientEvent("SelectNode('$this->Id', '$this->TreeListId', ".(GetBrowser()=='ie'?'window.':'').'event);');
 		//$this->SetClick($this->AltClick);
 		//$this->SetClick(null);
 	}
@@ -234,14 +234,14 @@ class TreeNode extends Panel
 	function SetListIndex($newListIndex)
 	{
 		$this->ListIndex = $newListIndex;
-		NolohInternal::SetProperty("ListIndex", $newListIndex, $this);
+		NolohInternal::SetProperty('ListIndex', $newListIndex, $this);
 	}
 
 	function GetClick()
 	{
 		$click = $this->NodeElement->Click;
-		if(!isset($click["_N"]))
-			$click["_N"] = new ClientEvent("");
+		if(!isset($click['_N']))
+			$click['_N'] = new ClientEvent('');
 		return $this->NodeElement->Click;
 	}
 
@@ -269,10 +269,10 @@ class TreeNode extends Panel
 			$this->NodeElement->Click[] = $newClick;
 		}
 		*/
-		$this->NodeElement->Click = new Event(array(), array(array($this->NodeElement->Id,"Click")));
-		$this->NodeElement->Click["_N"] = $this->TreeListId==null 
+		$this->NodeElement->Click = new Event(array(), array(array($this->NodeElement->Id,'Click')));
+		$this->NodeElement->Click['_N'] = $this->TreeListId==null 
 			? new ClientEvent("alert('hi kids');")
-			: new ClientEvent("SelectNode('$this->Id', '$this->TreeListId', ".(GetBrowser()=="ie"?"window.":"")."event);");
+			: new ClientEvent("SelectNode('$this->Id', '$this->TreeListId', ".(GetBrowser()=='ie'?'window.':'').'event);');
 		$this->NodeElement->Click[] = $newClick;
 	}
 	
@@ -311,7 +311,7 @@ class TreeNode extends Panel
 		if($newSrc == null)
 			$newSrc = TreeNode::GetDefaultCloseSrc();
 		$this->CloseSrc = $newSrc;
-		NolohInternal::SetProperty("CloseSrc", $newSrc, $this->NodeIcon);
+		NolohInternal::SetProperty('CloseSrc', $newSrc, $this->NodeIcon);
 		if($this->NodePanel->Controls->Count() != 0 && $this->NodePanel->ClientVisible !== true)
 			$this->NodeIcon->SetSrc($newSrc);
 	}
@@ -324,7 +324,7 @@ class TreeNode extends Panel
 		if($newSrc == null)
 			$newSrc = TreeNode::GetDefaultOpenSrc();
 		$this->OpenSrc = $newSrc;
-		NolohInternal::SetProperty("OpenSrc", $newSrc, $this->NodeIcon);
+		NolohInternal::SetProperty('OpenSrc', $newSrc, $this->NodeIcon);
 		if($this->NodePanel->Controls->Count() != 0 && $this->NodePanel->ClientVisible === true)
 			$this->NodeIcon->SetSrc($newSrc);
 	}
@@ -338,8 +338,8 @@ class TreeNode extends Panel
 	*/
 	function Show()
 	{
-		NolohInternal::SetProperty("OpenSrc", $this->OpenSrc!=null?$this->OpenSrc:TreeNode::GetDefaultOpenSrc(), $this->NodeIcon);
-		NolohInternal::SetProperty("CloseSrc", $this->CloseSrc!=null?$this->CloseSrc:TreeNode::GetDefaultCloseSrc(), $this->NodeIcon);
+		NolohInternal::SetProperty('OpenSrc', $this->OpenSrc!=null?$this->OpenSrc:TreeNode::GetDefaultOpenSrc(), $this->NodeIcon);
+		NolohInternal::SetProperty('CloseSrc', $this->CloseSrc!=null?$this->CloseSrc:TreeNode::GetDefaultCloseSrc(), $this->NodeIcon);
 		//if($this->Click instanceof Event)
 		//{
 		//	$this->NodeElement->Click->Plus = new ClientEvent($this->GetEventJS("Click"));

@@ -3,7 +3,7 @@
  * @package UI
  * @subpackage Controls
  */
-class MarkupItem extends Object
+abstract class MarkupItem extends Object
 {
 	protected $Id;
 	private $Keyword;

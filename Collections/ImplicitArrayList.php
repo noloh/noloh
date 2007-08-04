@@ -11,7 +11,7 @@ class ImplicitArrayList extends ArrayList
 	public $RemoveFunctionName;
 	public $ClearFunctionName;
 	
-	function ImplicitArrayList($obj=null, $addFunctionName="", $removeAtFunctionName="", $clearFunctionName="")
+	function ImplicitArrayList($obj=null, $addFunctionName='', $removeAtFunctionName='', $clearFunctionName='')
 	{
 		parent::ArrayList();
 		$this->Source = $obj instanceof Component ? $obj->Id : $obj;
@@ -22,7 +22,7 @@ class ImplicitArrayList extends ArrayList
 	
 	function Add($object, $passByReference = true, $onlyAdd = false)
 	{
-		if($this->AddFunctionName=="" || $onlyAdd)
+		if($this->AddFunctionName=='' || $onlyAdd)
 			return parent::Add($object, $passByReference);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->AddFunctionName}($object);
@@ -32,7 +32,7 @@ class ImplicitArrayList extends ArrayList
 	
 	function Insert($object, $index, $onlyInsert = false)
 	{
-		if($this->InsertFunctionName=="" || $onlyInsert)
+		if($this->InsertFunctionName=='' || $onlyInsert)
 			return parent::Insert($object, $index);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->InsertFunctionName}($object, $index);
@@ -42,7 +42,7 @@ class ImplicitArrayList extends ArrayList
 	
 	function Remove($object, $onlyRemove = false)
 	{
-		if($this->RemoveFunctionName=="" || $onlyRemove)
+		if($this->RemoveFunctionName=='' || $onlyRemove)
 			return parent::Remove($object);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->RemoveFunctionName}($object);
@@ -52,7 +52,7 @@ class ImplicitArrayList extends ArrayList
 	
 	function RemoveAt($index, $onlyRemove = false)
 	{
-		if($this->RemoveAtFunctionName=="" || $onlyRemove)
+		if($this->RemoveAtFunctionName=='' || $onlyRemove)
 			return parent::RemoveAt($index);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->RemoveAtFunctionName}($index);
@@ -62,7 +62,7 @@ class ImplicitArrayList extends ArrayList
 	
 	function Clear($onlyClear = false)
 	{
-		if($this->ClearFunctionName=="" || $onlyClear)
+		if($this->ClearFunctionName=='' || $onlyClear)
 			return parent::Clear();
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->ClearFunctionName}();

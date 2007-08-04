@@ -2,13 +2,27 @@
 /**
  * @package Web
  */
+
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL='', $URLTokenMode=URL::Display)
+function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $recordingForSearchEngine=true)
 {
-	new Application($className, $unsupportedURL, $URLTokenMode);
+	new Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
 }
+
+/**
+ * @ignore
+ */
+/*function NOLOHErrorHandler($errno, $errstr)
+{
+	//print("var err=document.createElement('DIV'); err.innerHTML='$errstr'; err.style.zdocument.body.appendChild(err);");
+	//if($errnor == 1 || $errno == 4 || $errno == 16 || $errno == 64 || $errno == 256)
+	//{
+		print("alert('Errorno $errno : $errstr');");
+		//die();
+	//}
+}*/
 
 /**
 * @ignore
@@ -17,9 +31,9 @@ final class Application
 {
 	private $WebPage;
 	
-	public static function SetStartUpPage($className, $unsupportedURL='', $URLTokenMode=URL::Display)
+	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $recordingForSearchEngine=true)
 	{
-		new Application($className, $unsupportedURL, $URLTokenMode);
+		new Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
 	}
 	
 	/**
@@ -29,25 +43,20 @@ final class Application
 	{
 		session_destroy();
 		session_unset();
-		print(
-'/*~NScript~*/
-frm = document.createElement("FORM");
-frm.action = window.location;
-frm.method = "post";
-document.body.appendChild(frm);
-frm.submit();'
-		);
+		print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = window.location;frm.method = "post"; document.body.appendChild(frm); frm.submit();');
 		die();
 	}
 	
-	public function Application($className, $unsupportedURL, $URLTokenMode)
+	public function Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine)
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
+		//Alert(hash('md5', $_SERVER['PHP_SELF']));
 		//ini_set('session.gc_probability', 50);
 		session_start();
 		//header("Content-type: text/javascript");
-		//ini_set('zlib_output_compression','On'); 
-		
+		//ini_set('zlib_output_compression','On');
+		$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
+		$GLOBALS['NOLOHRecordingForSearchEngine'] = $recordingForSearchEngine;
 		if(isset($_GET['NOLOHImage']))
 			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function']);
 		elseif(isset($_GET['NOLOHFileUpload']))
@@ -62,7 +71,7 @@ frm.submit();'
 		}
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if(!isset($_SESSION['NOLOHVisit']) || /*$_SESSION['NOLOHURL'] != $_SERVER['PHP_SELF'] || */
+			if(!isset($_SESSION['NOLOHVisit']) || 
 			  (((!isset($_POST['NOLOHVisit']) && !isset($_POST['NOLOHServerEvent'])) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0) ||
 			  (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']))
 			{
@@ -73,7 +82,7 @@ frm.submit();'
 					self::Reset();
 				session_destroy();
 				session_unset(); 
-				self::SetStartUpPage($className, $unsupportedURL, $URLTokenMode);
+				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode);
 				return;
 			}
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
@@ -85,7 +94,10 @@ frm.submit();'
 				//$_SESSION['NOLOHVisit'] = -1;
 				AddScript('NOLOHVisit=-1', Priority::High);
 			}
-			$GLOBALS['NOLOHURLTokenMode'] = $URLTokenMode;
+			//set_error_handler('NOLOHErrorHandler');
+			//set_exception_handler('NOLOHErrorHandler');
+			$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
+			$GLOBALS['NOLOHRecordingForSearchEngine'] = $recordingForSearchEngine;
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
@@ -125,15 +137,10 @@ frm.submit();'
 		DeclareGlobal('LowestZIndex', 0);
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
-		{
-			//$_SESSION['NOLOHVisit'] = -1;
-			if($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other')
-			{
-				//Search engine code here
-			}
+			if(/*true || */($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other'))
+				$this->SearchEngineRun();
 			else 
 				WebPage::SkeletalShow($unsupportedURL);
-		}
 	}
 	
 	private function TheComingOfTheOmniscientBeing()
@@ -234,10 +241,30 @@ frm.submit();'
 		else 
 		{
 			$splitStr = explode('i', $splitEvent[1], 2);
+			//return;
 			return GetComponentById($splitStr[0])->ExecEvent($splitEvent[0], $splitEvent[1]);
 		}
 		//$runThisString = 'return GetComponentById($splitEvent[1])->' . $splitEvent[0] . '->Exec(false);';
 		//eval($runThisString);
+	}
+	
+	private function HandleTokens()
+	{
+		if($GLOBALS['NOLOHURLTokenMode'] == 1)
+		{
+			$_SESSION['NOLOHTokens'] = $_GET;
+			unset($_SESSION['NOLOHTokens']['NWidth'], $_SESSION['NOLOHTokens']['NHeight']);
+		}
+		elseif($GLOBALS['NOLOHURLTokenMode'] == 2)
+		{
+			$split = explode('&', base64_decode(key($_GET)));
+			$count = count($split);
+			for($i=0; $i<$count; $i++)
+			{
+				$split2 = explode('=', $split[$i].'=');
+				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+			}
+		}
 	}
 
 	private function Run()
@@ -260,21 +287,7 @@ frm.submit();'
 			
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
-			if($GLOBALS['NOLOHURLTokenMode'] == 1)
-			{
-				$_SESSION['NOLOHTokens'] = $_GET;
-				unset($_SESSION['NOLOHTokens']['NWidth'], $_SESSION['NOLOHTokens']['NHeight']);
-			}
-			elseif($GLOBALS['NOLOHURLTokenMode'] == 2)
-			{
-				$split = explode('&', base64_decode(key($_GET)));
-				$count = count($split);
-				for($i=0; $i<$count; $i++)
-				{
-					$split2 = explode('=', $split[$i].'=');
-					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
-				}
-			}
+			$this->HandleTokens();
 			$className = $_SESSION['NOLOHStartUpPageClass'];
 			$this->WebPage = new $className();
 			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
@@ -293,9 +306,30 @@ frm.submit();'
 		print($sendStr);
 		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+		//print('alert("' . strlen($_SESSION['NOLOHOmniscientBeing']) . '")');
 		$GLOBALS['NOLOHGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['NOLOHGarbage']);
+	}
+	
+	private function SearchEngineRun()
+	{
+		$this->HandleTokens();
+		$file = getcwd()."/NOLOHSearchTrails.dat";
+		if(file_exists($file))
+		{
+			$tokenString = URL::TokenString($_SESSION['NOLOHTokens']);
+			$trails = unserialize(base64_decode(file_get_contents($file)));
+			if($trails !== false && isset($trails[$tokenString]))
+				foreach($trails[$tokenString] as $key => $nothing)
+					print('<a href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ');
+		}
+		$className = $_SESSION['NOLOHStartUpPageClass'];
+		$this->WebPage = new $className();
+		$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
+		$this->WebPage->SearchEngineShow();
+		session_destroy();
+		session_unset();
 	}
 	
 	private function ExplodeDragCatch($objectsString)

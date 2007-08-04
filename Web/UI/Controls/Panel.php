@@ -150,23 +150,11 @@ class Panel extends Guardian
 
 		return $initialProperties;
 	}
-
-	/*function IterateThroughAllControls()
+	
+	function SearchEngineShow()
 	{
-		$ControlCount = $this->Controls->Count();
-		for($i=0; $i<$ControlCount; $i++)
-		{
-			if($this->Controls->Item[$i]->Overlap === false)
-				for($j=0; $j<$i; $j++)
-				{
-					if($this->Controls->Item[$i]->Left >= $this->Controls->Item[$j]->Left &&
-					 $this->Controls->Item[$i]->Left < $this->Controls->Item[$j]->Left + $this->Controls->Item[$j]->Width &&
-					 $this->Controls->Item[$i]->Top >= $this->Controls->Item[$j]->Top &&
-					 $this->Controls->Item[$i]->Top < $this->Controls->Item[$j]->Top + $this->Controls->Item[$j]->Height)
-					 	$this->Controls->Item[$i]->Left = $this->Controls->Item[$j]->Left + $this->Controls->Item[$j]->Width;
-				}
-				$this->Controls->Item[$i]->Show();
-		}
-	}*/
+		foreach($this->Controls as $control)
+			$control->SearchEngineShow();
+	}
 }
 ?>

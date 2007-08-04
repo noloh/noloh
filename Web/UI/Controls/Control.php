@@ -650,7 +650,6 @@ class Control extends Component
 					continue;
 				return;
 			}
-		Alert('YA!');
 	}
 	
 	private function ChangeShiftType($arrayIndex, $newType)
@@ -685,6 +684,11 @@ class Control extends Component
 	function GetAddId()
 	{
 		return $this->Id;
+	}
+	
+	function SearchEngineShow()
+	{
+		print($this->Text . ' ');
 	}
 	
 	function &__get($nm)

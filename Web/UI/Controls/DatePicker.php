@@ -54,6 +54,7 @@ class DatePicker extends Panel
 	function DatePicker($left = 0, $top = 0, $width = 219, $height = 21)
 	{
 		parent::Panel($left, $top, $width, $height);
+		$ar = new ArrayList();
 		$this->DatePickerCombo = new ComboBox(0,0,$width,20);
 		$this->DatePickerCalendar = new Calendar(0, 21, 217, 200);
 		$this->SetFormat('l, F d, Y');

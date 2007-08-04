@@ -69,7 +69,7 @@ class RolloverImageGroup extends RolloverGroup
 		$this->RolloverImages->Item[$this->RolloverImages->IndexOf($whatRolloverImage)]->Selected = true;
 	}
 	
-	function Show($IndentLevel)
+	function Show()
 	{
 		$ParentShow = parent::Show();
 		if($ParentShow == false)
@@ -77,9 +77,7 @@ class RolloverImageGroup extends RolloverGroup
 		
 		$RolloverImagesCount = $this->RolloverImages->Count();
 		for($i = 0; $i < $RolloverImagesCount; $i++)
-			$this->RolloverImages->Item[$i]->Show($IndentLevel);
-		
-		unset($ParentShow, $RolloverImagesCount);
+			$this->RolloverImages->Item[$i]->Show();
 	}
 }
 

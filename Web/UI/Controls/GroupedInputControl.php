@@ -113,6 +113,15 @@ class GroupedInputControl extends Control
 		$this->Caption->Bury();
 		parent::Bury();
 	}
+	function Resurrect()
+	{
+		$this->Caption->Resurrect();
+		parent::Resurrect();
+	}
+	function SearchEngineShow()
+	{
+		$this->Caption->SearchEngineShow();
+	}
 }
 
 ?>

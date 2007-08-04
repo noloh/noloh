@@ -1,7 +1,34 @@
 <?php
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
+ * ComboBox class file.
+ */
+/**
+ * ComboBox class
+ *
+ * A Control for ComboBox. A ComboBox allows you to select items from a dropdown menu.a conventional web checkbox. Checkbox's are usually used to indicate
+ * whether a condition is on/off, yes/no, or true/false. Checkbox is simlar to RadioButton,
+ * except that RadioButton's are usually limited to one choice, while a CheckBox allows for
+ * multiple choices.
+ * 
+ * The following is an example of instantiating and adding a CheckBox
+ * <code>
+ *
+ *      function Foo()
+ *      {
+ *          $tmpCheck = new CheckBox("CheckBox1", 0,0);
+ *          //Adds a button to the Controls class of some Container object
+ * 		    $this->Controls->Add($tmpCheck);
+ *      }
+ *      function SomeFunc()
+ *      {
+ *          Alert("Click event was triggered");
+ *      }
+ *		
+ * </code>
+ * 
+ * @property string $Type The type of the button
+ * The Type of this Button, the Default is "Normal", can also be set to "Submit".
  */
 class ComboBox extends ListControl 
 {

@@ -338,15 +338,28 @@ function processReqChange()
 	if (ready==4)
 	{
    		var response = req.responseText.split("/*~NScript~*/", 2);
-   		if(response[0] != "")
+   		try
    		{
-	   		var s = document.createElement("SCRIPT");
-			s.type = "text/javascript";
-			s.innerHTML = response[0];
-			document.getElementsByTagName('head')[0].appendChild(s);
-			eval(response[0]);
+	   		if(response[0] != "")
+	   		{
+		   		var s = document.createElement("SCRIPT");
+				s.type = "text/javascript";
+				s.innerHTML = response[0];
+				document.getElementsByTagName('head')[0].appendChild(s);
+				eval(response[0]);
+	   		}
+			eval(response[1]);
    		}
-		eval(response[1]);
+   		catch(err)
+   		{
+   			var errsplit = req.responseText.split("<br />");
+   			var err = document.createElement("DIV");
+   			err.innerHTML = errsplit[errsplit.length-1];
+   			err.onclick = function() {location.reload(true);}
+   			document.body.innerHTML = "";
+   			document.body.appendChild(err);
+   			return;
+   		}
 		document.getElementById(_NLoadImg).style.visibility = "hidden";
 		document.getElementById(_NLoadLbl).style.visibility = "hidden";
 		document.body.NOLOHPostingBack = false;

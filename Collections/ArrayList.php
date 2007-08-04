@@ -94,7 +94,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	function Add($element, $setsByReference = true)
 	{
 		$this->PreAdd($element);
-		if($passByReference)
+		if($setsByReference)
 			$this->Item[] = &$element;
 		else 
 			$this->Item[] = $element;

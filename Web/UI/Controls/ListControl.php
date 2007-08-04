@@ -176,6 +176,12 @@ abstract class ListControl extends Control
 			return ",'onchange','".$this->GetEventString("Change")."'";
 		return parent::GetEventString($eventTypeAsString);
 	}
+	
+	function SearchEngineShow()
+	{
+		foreach($this->Items as $item)
+			print($item->Text . ' ' . $item->Value . ' ');
+	}
 }
 	
 ?>
