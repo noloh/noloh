@@ -96,8 +96,8 @@ final class Application
 			}
 			//set_error_handler('NOLOHErrorHandler');
 			//set_exception_handler('NOLOHErrorHandler');
-			$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
-			$GLOBALS['NOLOHRecordingForSearchEngine'] = $recordingForSearchEngine;
+			//$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
+			//$GLOBALS['NOLOHRecordingForSearchEngine'] = $recordingForSearchEngine;
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
