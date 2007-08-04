@@ -6,9 +6,9 @@
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $recordingForSearchEngine=true)
+function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800)
 {
-	new Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
+	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
 }
 
 /**
@@ -31,9 +31,9 @@ final class Application
 {
 	private $WebPage;
 	
-	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $recordingForSearchEngine=true)
+	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800)
 	{
-		new Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
+		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ final class Application
 		//header("Content-type: text/javascript");
 		//ini_set('zlib_output_compression','On');
 		$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
-		$GLOBALS['NOLOHRecordingForSearchEngine'] = $recordingForSearchEngine;
+		$GLOBALS['NOLOHTokenTrailsExpiration'] = $tokenTrailsExpiration;
 		if(isset($_GET['NOLOHImage']))
 			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function']);
 		elseif(isset($_GET['NOLOHFileUpload']))

@@ -49,5 +49,10 @@ class Table extends Control
 		if($this->ScrollTop != null)
 			AddScript("document.getElementById('$this->Id').scrollTop = $this->ScrollTop;");
 	}
+	function SearchEngineShow()
+	{
+		foreach($this->Rows as $row)
+			$row->SearchEngineShow();
+	}
 }
 ?>

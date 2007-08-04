@@ -22,5 +22,11 @@ class TableRow extends Control
 		//$intialProperties .= ",'style.border','0px'";
 		NolohInternal::Show("TR", $intialProperties, $this, $this->ParentId."InnerTBody");
 	}
+	
+	function SearchEngineShow()
+	{
+		foreach($this->Columns as $column)
+			$column->SearchEngineShow();
+	}
 }
 ?>

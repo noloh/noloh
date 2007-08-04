@@ -226,6 +226,7 @@ class WebPage extends Component
 	
 	function SearchEngineShow()
 	{
+		print($this->Title . ' ');
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
 	}
