@@ -252,7 +252,7 @@ function _NSave(id, propertyString, newValue)
 	switch(propertyString)
 	{
 		case "value":
-			NOLOHChanges[id][propertyString][0] = newValue.replace(/&/g, "~da~");
+			NOLOHChanges[id][propertyString][0] = (typeof newValue == "string" ? newValue.replace(/&/g, "~da~") : newValue);
 			break;
 		case "style.left":
 		case "style.top":
