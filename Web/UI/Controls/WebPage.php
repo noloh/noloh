@@ -19,12 +19,12 @@ class WebPage extends Component
 	*ScrollLeft of the component
 	*@var integer
 	*/
-	public $ScrollLeft;
+	//public $ScrollLeft;
 	/**
 	*ScrollTop of the component
 	*@var integer
 	*/
-	public $ScrollTop;
+	//public $ScrollTop;
 	protected $LoadImg;
 	protected $LoadLbl;
 	
@@ -126,6 +126,18 @@ class WebPage extends Component
 	{
 		$this->BackColor = $newBackColor;
 		QueueClientFunction($this, "document.bgColor='$newBackColor'; void", array(0));
+	}
+	
+	function SetScrollLeft($scrollLeft)
+	{
+		//NolohInternal::SetProperty("scrollLeft", $scrollLeft, $this);
+		QueueClientFunction($this, "document.documentElement.scrollLeft=$scrollLeft;void", array(0));
+	}
+	
+	function SetScrollTop($scrollTop)
+	{
+		QueueClientFunction($this, "document.documentElement.scrollTop=$scrollTop;void", array(0));
+		//NolohInternal::SetProperty("scrollTop", $scrollTop, $this);
 	}
 	
 	static function SkeletalShow($unsupportedURL)

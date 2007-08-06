@@ -27,8 +27,9 @@ class EventMarkupPanel extends MarkupPanel
 		$this->ComponentSpace = array();
 		$this->MarkupString = $markupStringOrFile;
 		$text = is_file($markupStringOrFile)?file_get_contents($markupStringOrFile):$markupStringOrFile;
-		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), ($tmpFullString = $this->ParseItems($text)));
-		$this->AutoWidthHeight($tmpFullString);
+		$tmpFullString = $this->ParseItems($text);
+		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString );
+//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
 			AddScript("SetMarkupString('$this->Id', '$text')", Priority::High);
@@ -45,7 +46,7 @@ class EventMarkupPanel extends MarkupPanel
 //		{
 /*        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
            	array($this, 'MarkupReplace'), $text, -1, $count);*/
-        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is',
+        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is',
            	array($this, 'MarkupReplace'), $text, -1, $count);   
 //           $text = preg_replace('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is', "<replacement></replacement>", $text);
 //           	array($this, 'MarkupReplace'), $text, 1, $count);  	
