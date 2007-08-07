@@ -180,7 +180,7 @@ class WebPage extends Component
   var script= document.createElement('SCRIPT');
   script.type = 'text/javascript';
   script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&') 
-               + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
+               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
   head.appendChild(script);
 </SCRIPT>");
 	}
@@ -202,6 +202,8 @@ class WebPage extends Component
 		AddNolohScriptSrc('Shift.js', true);
 		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')
 			AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
+		//elseif(!isset($_POST['NoSkeleton']))
+		//	AddScript("if(!_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')) {return;}", Priority::High);
 		AddScript("SaveControl('$this->Id')");
 		/*
 		parent::Show();

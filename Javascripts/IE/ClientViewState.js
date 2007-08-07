@@ -54,11 +54,22 @@ function _NInit(loadLblId, loadImgId)
 		location = location + "#/";
 	_NHash = location.hash;
 	_NURL = location.toString();
-	var d=document.getElementById('NBackButton').contentWindow.document;
-	d.open();
-	d.write(location.toString());
-	d.close();
-	_NURLCheck = setInterval('CheckURL()', 2000);
+	try
+	{
+		var d=document.getElementById('NBackButton').contentWindow.document;
+	}
+	catch(e)
+	{
+		location.reload(true);
+		return;
+	}
+	finally
+	{
+		d.open();
+		d.write(location.toString());
+		d.close();
+		_NURLCheck = setInterval('CheckURL()', 500);
+	}
 }
 
 function CheckURL()

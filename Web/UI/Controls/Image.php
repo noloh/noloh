@@ -3,28 +3,28 @@
 * @package Web.UI.Controls
 * Image class file.
 */
- 
+
 /**
  * Image class
  *
- * A Control for an Image
+ * A Control for an Image. An image can either be used to diplay a graphic, or be used as a custom button.
  *
- * Properties
- * - <b>Src</b>, string, 
- *   <br>Gets or Sets the image source file
  * 
  * Example 1: Instantiating and Adding an Image
- * <code>
  *
- *		function Foo()
- *      {
- *          //Instatiates $tmpImage as a new Image, with the src of SomePicture.gif, and a left, 
- *          //and top of 10px.
- *          $tmpImage = new Image("Images/SomePicture.gif", 10, 10);
- *          $this->Controls->Add($tmpImage); //Adds a button to the Controls of some Container
- *      }
- *      	
- * </code>
+ * <code>
+ *function Foo()
+ *{
+ *    //Instatiates $tmpImage as a new Image, with the src of SomePicture.gif, and a left, 
+ *    //and top of 10px.
+ *    $tmpImage = new Image("Images/SomePicture.gif", 10, 10);
+ *    $this->Controls->Add($tmpImage); //Adds a button to the Controls of some Container
+ *}     	
+ *</code>
+ * 
+ * @property string $Src The source file of this image
+ * 
+ * {@inheritdoc }
  */
 class Image extends Control 
 {
@@ -41,11 +41,11 @@ class Image extends Control
  	* so that the component properties and events are defined.
  	* Example
  	*	<code> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</code>
- 	* @param string|optional
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional //The Width of the Image is determined automatically if not explicitly set
-	* @param integer|optional //The Height of the Image is determined automatically if not explicitly set
+ 	* @param string[optional]
+	* @param integer[optiona]
+	* @param integer[optional]
+	* @param integer[optional] //The Width of the Image is determined automatically if not explicitly set
+	* @param integer[optional] //The Height of the Image is determined automatically if not explicitly set
 	*/
 	function Image($src='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)  
 	{
@@ -69,8 +69,9 @@ class Image extends Control
 	*Sets the Src of the Image.
 	*<b>Note:</b>Can also be set as a property.
 	*<code>$this->Src = "Images/NewImage.gif";</code>
+	*The path is relative to your main file 
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
-	*@param string|Src
+	*@param string $Src
 	*@return string|Src
 	*/
 	function SetSrc($newSrc, $adjustSize=false)
@@ -93,7 +94,7 @@ class Image extends Control
 	*Gets the Width of the Image.
 	*<b>Note:</b>Can also get as a property.
 	*<code>$tmpVar = $this->Width;</code>
-	*@param string|unit|optional| //Units you would like the width in, either px, or "%".
+	*@param string $unit[optional] //Units you would like the width in, either px, or "%".
 	*@return mixed
 	*/
 	function GetWidth($unit='px')
@@ -111,7 +112,7 @@ class Image extends Control
 	*<b>Note:</b>Can also be set as a property.
 	*<code>$this->Width = 200;</code>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
-	*@param integer|Src
+	*@param integer $Width
 	*/
 	function SetWidth($width)
 	{
@@ -127,14 +128,13 @@ class Image extends Control
 				$tmpWidth = round($tmpWidth * $tmpImageSize[0]);
 			}
 		}
-//		Alert($tmpWidth);
 		parent::SetWidth($tmpWidth);
 	}
 	/**
 	*Gets the Width of the Image.
 	*<b>Note:</b>Can also get as a property.
 	*<code>$tmpVar = $this->Height;</code>
-	*@param string|unit|optional| //Units you would like the height in, either px, or "%".
+	*@param string $unit[optional|] //Units you would like the height in, either px, or "%".
 	*@return mixed
 	*/
 	function GetHeight($unit='px')
@@ -149,10 +149,10 @@ class Image extends Control
 	}
 	/**
 	*Sets the Height of the Image.
-	*<b>Note:</b>Can also be set as a property.
+	*<b>Note:</b>Can also be set as a property. 
 	*<code>$this->Height = 200;</code>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
-	*@param integer|Src
+	*@param integer $height
 	*/
 	function SetHeight($height)
 	{
