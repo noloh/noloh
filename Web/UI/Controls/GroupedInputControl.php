@@ -12,9 +12,10 @@ class GroupedInputControl extends Control
 	
 	function GroupedInputControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		$this->Caption = new Label($text);
+		$this->Caption = new Label(null);
 		parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
+		$this->SetText($text);
 		//$this->Caption->Click = new ClientEvent("document.getElementById('$this->Id').click()");
 		//$this->Caption->Click = new ClientEvent("var obj=document.getElementById('$this->Id');var val=obj.checked;obj.click();if(val!=obj.checked&&obj.onchange!=null) obj.onchange.call();");
 		$this->Caption->Click = new ClientEvent("CaptionClick('$this->Id')");
@@ -26,7 +27,12 @@ class GroupedInputControl extends Control
 	}
 	function SetText($newText)
 	{
-		$this->Caption->Text = $newText;
+		if($newText instanceof Item)
+		{ 
+			$this->SetValue($newText->Value);
+			$newText = $newText->Text;
+		}
+		$this->Caption->SetText($newText);
 	}
 	function GetValue()
 	{

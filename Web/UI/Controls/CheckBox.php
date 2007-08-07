@@ -13,22 +13,14 @@
  * 
  * The following is an example of instantiating and adding a CheckBox
  * <code>
- *
- *      function Foo()
- *      {
- *          $tmpCheck = new CheckBox("CheckBox1", 0,0);
- *          //Adds a button to the Controls class of some Container object
- * 		    $this->Controls->Add($tmpCheck);
- *      }
- *      function SomeFunc()
- *      {
- *          Alert("Click event was triggered");
- *      }
- *		
+ * function Foo()
+ * {
+ *     $tmpCheck = new CheckBox("CheckBox1", 0,0);
+ *     //Adds a CheckBox to the Controls class of some Container object
+ *     $this->Controls->Add($tmpCheck);
+ * }
  * </code>
  * 
- * @property string $Type The type of the button
- * The Type of this Button, the Default is "Normal", can also be set to "Submit".
  */
 class CheckBox extends GroupedInputControl
 {

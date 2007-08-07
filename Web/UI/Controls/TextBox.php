@@ -18,20 +18,12 @@ class TextBox extends Control
 	{
 		$lab = GetComponentById($labId);
 		$lab->ClientVisible = true;
-		/*Old Way
-		if($lab->Text != $this->Text && isset($lab->Change))
-		{
-			$lab->Text = $this->Text; //Was line 22
-			$lab->Change->Exec();
-		}*/
-		//New Way , Asher
 		if($lab->Text != $this->Text)
 		{
-			$lab->Text = $this->Text; //Was line 22
+			$lab->Text = $this->Text; 
 			if($lab->Change != null)
 				$lab->Change->Exec();
 		}
-		//$Lab->Text = $this->Text;
 		$this->Parent->Controls->Remove($this);
 	}
 	

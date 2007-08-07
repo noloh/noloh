@@ -188,20 +188,9 @@ class RolloverTab extends Panel
 				$sel->Exec();
 		}
 		$this->Selected = $bool;
-				
-		$notBool = !bool;
-		if($this->MouseOut != null)
-			$this->MouseOut->Enabled = $notBool;
-		if($this->MouseOver != null)
-			$this->MouseOver->Enabled = $notBool;
-		if($this->MouseDown != null)
-			$this->MouseDown->Enabled = $notBool;
-		if($this->Click != null)
-			$this->Click->Enabled = $notBool;
-			
-		$this->OutTab->ClientVisible =  $notBool;
-		$this->OverTab->ClientVisible = $notBool;
-		$this->DownTab->ClientVisible = $notBool;
+		$notBool = !$bool;
+		$this->MouseOut->Enabled = $this->MouseOver->Enabled = $this->Click->Enabled = $notBool;
+		$this->OutTab->ClientVisible = $this->OverTab->ClientVisible = $this->DownTab->ClientVisible = $notBool;
 		$this->SelectedTab->ClientVisible = $bool;
 	}
 	function Show()

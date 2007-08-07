@@ -1,13 +1,15 @@
 <?php 
 /**
 * @ignore
-*/
-	
+*/	
 define('NoDisplay', 'NoDisplay');
 
 /**
  * @package Web.UI.Controls
  * Control class file.
+ *
+ */
+/** 
  *
  * Control class
  *
@@ -16,12 +18,12 @@ define('NoDisplay', 'NoDisplay');
  * <br>
  * The Control Class enables Controls to handle events, as well as most visual properties
  *
- *
- * Properties<br>
- * - <b>CSSClass</b>, string, 
- *   <br>Gets or sets the CSSClass of this Control
- * - <b>CSS________ </b>, string, 
- *   <br>sets a CSS property of the Control
+ * 
+ *  @property string CSSClass The CSSClass of the Control
+ *  @proprety string CSS_________ Allows for the ability to
+ *  set ANY CSS property on the fly. Just prepend the style with CSS,
+ *  and change dash to underscore. ex. CSSBorder_Bottom = "1px solid black";
+ *  @proprety integer PositionType
  * - <b>PositionType</b>, integer,
  *   <br>Sets whether the position is absolute, relative, or static
  * - <b>Enabled</b>, boolean

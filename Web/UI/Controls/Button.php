@@ -15,7 +15,7 @@
  *      {
  *          $tmpButton = new Button("Some Button");
  *          //Adds a button to the Controls class of some Container object
- * 		    $this->Controls->Add($tmpButton);
+ *          $this->Controls->Add($tmpButton);
  *          //Sets the Click event of button, when $tmpButton is clicked, it will
  *          //trigger function SomeFunc
  *          $tmpButton->Click = new ServerEvent($this, "SomeFunc");
