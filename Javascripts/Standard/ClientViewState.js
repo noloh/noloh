@@ -353,11 +353,14 @@ function processReqChange()
    		catch(err)
    		{
    			var errsplit = req.responseText.split("<br />");
-   			var err = document.createElement("DIV");
-   			err.innerHTML = errsplit[errsplit.length-1];
-   			err.onclick = function() {location.reload(true);}
-   			document.body.innerHTML = "";
-   			document.body.appendChild(err);
+			var errdiv = document.createElement("DIV");
+			if(errsplit.length == 1)
+				errdiv.innerHTML = "<P style='color:red; font-size:18px; cursor:pointer;'>" + err + "<BR><BR>Click here to restart the application.</P>";
+			else
+				errdiv.innerHTML = errsplit[errsplit.length-1];
+			errdiv.onclick = function() {location.reload(true);}
+			document.body.innerHTML = "";
+			document.body.appendChild(errdiv);
    			return;
    		}
 		document.getElementById(_NLoadImg).style.visibility = "hidden";
