@@ -40,7 +40,7 @@ class AccordionPart extends Panel
 	{
 		parent::Show();
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/Accordion.js");
-		AddNolohScriptSrc('Accordian.js');
+		AddNolohScriptSrc('Accordion.js');
 		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TopPart->Id}'", "'{$this->BottomPart->Id}'"));
 		//AddScript("SetAccordionPart('$this->Id', '{$this->TopPart->Id}', '{$this->BottomPart->Id}')", Priority::High);
 	}
