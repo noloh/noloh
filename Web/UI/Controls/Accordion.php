@@ -47,7 +47,7 @@ class Accordion extends Panel
 	function Show()
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/Accordion.js");
-		AddNolohScriptSrc('Accordian.js');
+		AddNolohScriptSrc('Accordion.js');
 		parent::Show();
 	}
 }
