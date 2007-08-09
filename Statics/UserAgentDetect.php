@@ -2,10 +2,19 @@
 /**
  * @package Statics
  */
+
+/**
+ * This class has static functions that pertain to retrieving user agent's information, such as browser and operating system.
+ */
 final class UserAgentDetect 
 {	
+	/**
+	 * @ignore
+	 */
 	private function UserAgentDetect(){}
-	
+	/**
+	 * @ignore
+	 */
 	static function LoadInformation()
 	{
 		$agt = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
@@ -43,18 +52,39 @@ final class UserAgentDetect
         	$_SESSION['NOLOHOS'] = 'win';
         elseif(strpos($agt, 'mac') !== false)
         	$_SESSION['NOLOHOS'] = 'mac';
+        elseif(strpos($agt, 'inux') !== false)
+        	$_SESSION['NOLOHOS'] = 'lin';
+        elseif(strpos($agt, 'unix') !== false)
+        	$_SESSION['NOLOHOS'] = 'unix';
         else
         	$_SESSION['NOLOHOS'] = 'other';
 	}
 	
+	/**
+	 * Gets browser that user is using in shorthand (e.g., ie, ff, sa, op, ...)
+	 * @return string
+	 */
 	public static function GetBrowser()
 	{
 		return $_SESSION['NOLOHBrowser'];
 	}
-	
+	/**
+	 * Returns whether or not the user is using internet explorer as their browser.<br>
+	 * This is identical in functionality to GetBrowser()=='ie', but provides a shortcut as, in practice, internet explorer<br>
+	 * often needs code different than other browsers.
+	 * @return boolean
+	 */
 	public static function IsIE()
 	{
 		return $_SESSION['NOLOHIsIE'];
+	}
+	/**
+	* Gets operating system that user is using in shorthand (e.g., win, mac, lin, ...)
+	* @return string
+	*/
+	public static function GetOperatingSystem()
+	{
+		return $_SESSION['NOLOHOS'];
 	}
 	
 	/*
@@ -187,10 +217,10 @@ final class UserAgentDetect
         	if($val)
 				$tempOSArray[$key] = $val;        	
 
-		DeclareGlobal("Browser", $tempBrowserArray);
-		DeclareGlobal("Platform", $tempOSArray);
-		DeclareGlobal("Version", $majorVersion . $subVersion);
-		DeclareGlobal("IsIE", (self::IsBrowser("ie"))?true:false);
+		SetGlobal("Browser", $tempBrowserArray);
+		SetGlobal("Platform", $tempOSArray);
+		SetGlobal("Version", $majorVersion . $subVersion);
+		SetGlobal("IsIE", (self::IsBrowser("ie"))?true:false);
 		if(self::IsBrowser("ie"))
 			$browserName = "ie";
 		elseif(self::IsBrowser("firefox"))
@@ -201,7 +231,7 @@ final class UserAgentDetect
 			$browserName = "op";
 		else 
 			$browserName = "other";
-		DeclareGlobal("BrowserName", $browserName);
+		SetGlobal("BrowserName", $browserName);
     }
 	public static function GetBrowser(){return GetGlobal("Browser");}
 	public static function GetVersion(){return GetGlobal("Version");}

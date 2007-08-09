@@ -20,7 +20,7 @@
  * 
  * @property-read string $FullDate The full date of the selected day. It will be formated according to the Format property.
  * @property integer $Timestamp The currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
- * @property string $Format The format of the DatePicker display, the same kind as PHP's native date() function. NOLOH's default is 'l, F d, Y'.
+ * @property string $Format The format of the DatePicker display, the same kind as PHP's native date() {@see PHP_Manual#date} function. NOLOH's default is 'l, F d, Y'.
  */
 
 class DatePicker extends Panel

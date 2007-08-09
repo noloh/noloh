@@ -173,7 +173,7 @@ abstract class ListControl extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString("Change")."'";
+			return ",'onchange','".$this->GetEventString('Change')."'";
 		return parent::GetEventString($eventTypeAsString);
 	}
 	

@@ -3,6 +3,19 @@
  * @package Web
  * @subpackage Events
  */
+
+/**
+ * The Event class serves a several purposes. 
+ * 
+ * First of all, it is the parent class of ServerEvent and ClientEvent and 
+ * allows them to have some common functionality, for instance the Enabled property, and using the [] notation to 
+ * chain events. 
+ * 
+ * Also, an Event object serves as 
+ * 
+ * For more information, please see
+ * @link /Tutorials/Events.html
+ */
 class Event implements ArrayAccess
 {
 	public $Handles;
@@ -30,11 +43,16 @@ class Event implements ArrayAccess
 		"Scroll" => "onscroll"
 	);
 	
+	/**
+	 * @ignore
+	 */
 	static function ValidType($eventName)
 	{
 		return isset(self::$Conversion[$eventName]);
 	}
-	
+	/**
+	 * @ignore
+	 */	
 	static function ConvertToJS($eventName)
 	{
 		return isset(self::$Conversion[$eventName]) ? self::$Conversion[$eventName] : $eventName;
@@ -45,7 +63,9 @@ class Event implements ArrayAccess
 		$this->ExecuteFunction = $eventarray;
 		$this->Handles = $handles;
 	}
-
+	/**
+	 * @ignore
+	 */
 	function GetInfo(&$arr, &$onlyClientEvents)
 	{
 		foreach($this->ExecuteFunction as $event)
@@ -53,7 +73,9 @@ class Event implements ArrayAccess
 				$event->GetInfo($arr, $onlyClientEvents);
 		return $arr;
 	}
-	
+	/**
+	 * @ignore
+	 */	
 	function GetEventString($eventType, $objsId)
 	{
 		if($this->GetEnabled())
@@ -77,7 +99,9 @@ class Event implements ArrayAccess
 			if($event->GetEnabled())
 				$event->Exec($execClientEvents);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function UpdateClient()
 	{
 		foreach($this->Handles as $pair)
@@ -88,33 +112,55 @@ class Event implements ArrayAccess
 			else 
 				GetComponentById($pair[0][0])->UpdateEvent($pair[1], $pair[0][1]);
 	}
-	
+	/**
+	 * 
+	 * @return boolean
+	 */
 	function GetEnabled()
 	{
 		return $this->Enabled===null;
 	}
-	
-	function SetEnabled($whatBool)
+	/**
+	 * 
+	 * @param boolean $bool
+	 */
+	function SetEnabled($bool)
 	{
-		$this->Enabled = ($whatBool ? null : false);
+		$this->Enabled = ($bool ? null : false);
 		$this->UpdateClient();
 	}
-	
+	/**
+	 * For the events of Controls, checking to see if they are null will always return false as an Event object will always
+	 * be automatically instantiated for you. You must therefore check to see if it is blank instead.<br>
+	 * <code>
+	 * // Will always be false. Do not do this:
+	 * if($this->Click == null) {...}
+	 * // Use the Blank function instead:
+	 * if($this->Click->Blank()) {...}
+	 * </code>
+	 * @return boolean
+	 */
 	function Blank()
 	{
 		return (get_class($this)=="Event" && count($this->ExecuteFunction)==0);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function offsetExists($index)
 	{
 		return(is_array($this->ExecuteFunction) && isset($this->ExecuteFunction[$index]));
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function offsetGet($index)
 	{
 		return $this->offsetExists($index) ? $this->ExecuteFunction[$index] : null;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function offsetSet($index, $val)
 	{
 		if(get_class($this) == "Event")
@@ -160,12 +206,16 @@ class Event implements ArrayAccess
 					GetComponentById($pair[0][0])->SetEvent($val, $pair[1], $pair[0][1]);
 		}
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function offsetUnset($index)
 	{
 		unset($this->ExecuteFunction[$index]);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function __get($nm)
 	{
 		if($nm == "Enabled")
@@ -175,7 +225,9 @@ class Event implements ArrayAccess
 				if($event instanceof ServerEvent)
 					return $event->Uploads;
 	}
-	
+	/**
+	 * @ignore
+	 */	
 	function __set($nm, $val)
 	{
 		if($nm == "Enabled")

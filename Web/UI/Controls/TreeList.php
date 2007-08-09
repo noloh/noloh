@@ -13,7 +13,7 @@ class TreeList extends Panel
 	{
 		parent::Panel($left, $top, $width, $height, $this);
 		$this->TreeNodesList = new ListBox();
-		$this->TreeNodesList->SetClientVisible('NoDisplay');
+		$this->TreeNodesList->SetClientVisible(GetBrowser()=="ie" ? false : 'NoDisplay');
 		$this->Controls->Add($this->TreeNodesList, true, true);
 		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;

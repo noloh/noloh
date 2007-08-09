@@ -71,15 +71,12 @@ final class Application
 		}
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if(!isset($_SESSION['NOLOHVisit']) || 
-			  ((!isset($_POST['NOLOHVisit']) || !isset($_POST['NOLOHServerEvent']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])) ||
-			  (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']))
+			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
+			  ((!isset($_POST['NOLOHVisit']) || !isset($_POST['NOLOHServerEvent']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 			{
 				//if(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit'])
 					//print("alert('" . $_SESSION['NOLOHVisit'] . " vs " . $_POST['NOLOHVisit'] . "');");
 				//	print("location.reload(true);");
-				if(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit'])
-					print($_SESSION['NOLOHVisit'] . " vs " . $_POST['NOLOHVisit']);
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset();
 				session_destroy();
@@ -135,8 +132,8 @@ final class Application
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
-		DeclareGlobal('HighestZIndex', 0);
-		DeclareGlobal('LowestZIndex', 0);
+		SetGlobal('HighestZIndex', 0);
+		SetGlobal('LowestZIndex', 0);
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
 			if(/*true || */($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other'))
@@ -255,7 +252,7 @@ final class Application
 		if($GLOBALS['NOLOHURLTokenMode'] == 1)
 		{
 			$_SESSION['NOLOHTokens'] = $_GET;
-			unset($_SESSION['NOLOHTokens']['NWidth'], $_SESSION['NOLOHTokens']['NHeight']);
+			unset($_SESSION['NOLOHTokens']['NOLOHVisit'], $_SESSION['NOLOHTokens']['NWidth'], $_SESSION['NOLOHTokens']['NHeight']);
 		}
 		elseif($GLOBALS['NOLOHURLTokenMode'] == 2)
 		{
@@ -264,7 +261,8 @@ final class Application
 			for($i=0; $i<$count; $i++)
 			{
 				$split2 = explode('=', $split[$i].'=');
-				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+				if($split2[0]!='NOLOHVisit' && $split2[0]!='NWidth' && $split2[0]!='NHeight')
+					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
 			}
 		}
 	}

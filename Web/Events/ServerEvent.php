@@ -13,12 +13,12 @@ class ServerEvent extends Event
 	{
 		return count($uploadArray) == 0
 			? "PostBack(\"$eventType\",\"$objId\",event);"
-			: "PostBackWithUpload(\"$eventType\",\"$objId\", Array(" . implode(",", $uploadArray) . "),event);";
+			: "PostBackWithUpload(\"$eventType\",\"$objId\", Array(" . implode(',', $uploadArray) . '),event);';
 	}
 	
-	function ServerEvent($objOrClassName, $whatFunctionAsString, $ifAnyObjectParamAsObject = null)
+	function ServerEvent($objOrClassName, $functionAsString, $ifAnyObjectParamAsObject = null)
 	{
-		parent::Event($whatFunctionAsString);
+		parent::Event($functionAsString);
 		$this->Source = is_object($objOrClassName) && $objOrClassName instanceof Component
 			? new Pointer($objOrClassName)
 			: $objOrClassName;
@@ -44,12 +44,12 @@ class ServerEvent extends Event
 	{
 		return $this->GetEnabled()
 			? ServerEvent::GenerateString($eventType, $objsId, $this->GetUploads())
-			: "";
+			: '';
 	}
 	
 	function Exec(&$execClientEvents=true)
 	{
-		if(isset($GLOBALS["PropertyQueueDisabled"]))
+		if(isset($GLOBALS['PropertyQueueDisabled']))
 			return;
 		$execClientEvents = true;		
 		
@@ -59,10 +59,10 @@ class ServerEvent extends Event
 			else 
 				$runThisString = '$this->Source->';
 		else 
-			$runThisString = $this->Source . "::";
+			$runThisString = $this->Source . '::';
 		$runThisString .= $this->ExecuteFunction;
 		
-		if(strpos($this->ExecuteFunction,"(") === false)
+		if(strpos($this->ExecuteFunction,'(') === false)
 		{
 			$parameterCount = count($this->Parameters);
 			$runThisString .= '(';

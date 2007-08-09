@@ -58,7 +58,7 @@ class WebPage extends Component
 		
 		//SetOperatingSystem();
 		//SetBrowser();
-		DeclareGlobal('ReflectOS', $this->ReflectOS);
+		SetGlobal('ReflectOS', $this->ReflectOS);
 		//$this->Controls->Add(new PostBackForm());
 		/*
 		//$this->JSIframe = new Iframe("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
