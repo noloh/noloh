@@ -26,7 +26,7 @@
  * 
  * 
  * Moreover, an ArrayList is capable of setting the Parent of an added Component, thus allowing it to display correctly. 
- * This is useful for more advanced functionality. {@link Component::GetParent()} 
+ * This is useful for more advanced functionality. {@see Component::GetParent()} 
  * 
  * <code>
  * class Sample extends Control
@@ -57,7 +57,6 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 {
 	/**
 	 * The underlying array of the ArrayList.
-	 * @deprecated 
 	 * @var array
 	 */ 
 	public $Item;
@@ -69,7 +68,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends ArrayList.
-	 * @param array[optional] An array representing the initial items. Note that the Parents of these items will not be changed.
+	 * @param array An array representing the initial items. Note that the Parents of these items will not be changed.
 	 */ 
 	function ArrayList($elements=array())
 	{
@@ -88,7 +87,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an element to the ArrayList.
 	 * @param mixed $element The element to be added 
-	 * @param bool[optional] $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
+	 * @param bool $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
 	 * @return mixed The element that has been added
 	 */
 	function Add($element, $setsByReference = true)

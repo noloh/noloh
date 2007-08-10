@@ -6,8 +6,8 @@
 
 /**
  * An Eventee is a MarkupItem that is capable of recieving events.<br>
- * This is used only with connection with EventMarkupPanel.<br>
- * This class should never be instantiated by the developer. Use only the Eventees that EventMarkupPanel::GetEventees() returns.<br>
+ * This is used only in connection with EventMarkupPanel.<br>
+ * This class should never be instantiated by the developer. Use only the Eventee objects that EventMarkupPanel::GetEventees() returns.<br>
  * See {@see EventMarkupPanel} and {@see EventMarkupPanel::GetEventees()} for more information.<br>
  * 
  * The possible events are:

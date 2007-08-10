@@ -39,7 +39,7 @@ class CheckBox extends GroupedInputControl
      * integer, percentage, System::Auto
      * @return CheckBox
      */
-	function CheckBox($text="", $left = 0, $top = 0, $width = 50, $height = 20)
+	function CheckBox($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
 		parent::GroupedInputControl($text, $left, $top, $width, $height);
 	}
@@ -49,7 +49,7 @@ class CheckBox extends GroupedInputControl
 	function GetEventString($eventTypeAsString)
 	{
 		$preStr = "";
-		if($eventTypeAsString == "Click")
+		if($eventTypeAsString == 'Click')
 			$preStr = "_NSave(\"$this->Id\",\"checked\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
@@ -61,7 +61,7 @@ class CheckBox extends GroupedInputControl
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'type','checkbox'";
 		$initialProperties .= parent::GetEventString(null);
-		NolohInternal::Show("INPUT", $initialProperties, $this);
+		NolohInternal::Show('INPUT', $initialProperties, $this);
 		return $initialProperties;
 	}
 }	

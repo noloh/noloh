@@ -3,49 +3,31 @@
 /**
  * @package UI
  * @subpackage Controls
+ */
+
+/**
  * ListControl class
  *
- * The base class for ListControls, this class is usually extended. 
- * <br>
- * The Show() <b>MUST</b> be overriden.
- *
- * Properties
- * - <b>SelectedIndex</b>, Integer, 
- *   <br>Gets or Sets the SelectedIndex of the ListControl
- * - <b>SelectedValue</b>, mixed, 
- *   <br>Gets or Sets the SelectedValue of the ListControl
- * - <b>SelectedText</b>, string, 
- *   <br>Gets or Sets the SelectedText of the ListControl
- * - <b>Items</b>, ArrayList, 
- *   <br>An ArrayList containing the Items of the ListControl
- * 
- * You can use the ListControl as follows
- * <code>
- *		class MyOwnList extends ListControl
- * 		{
- *			function MyOwnList()
- *			{
- *				parent::ListControl(0,0,100,100);
- *				$this->Items->Add(new Item(1, "SomeItem"));
- *			}	
- * </code>
+ * A ListControl is a Control that has Items in it that may become selected. For example, {@see ComboBox}, {@see ListBox}, and {@see CheckListBox}
+ * both extend ListControl, and it is ListControl's purpose to provide functionality that is common to both ComboBox, ListBox, and CheckListBox
+ * as well as for proper organization and inheritance. 
+ * It is not recommended that you extend ListControl directly, instead, you should extend ComboBox, ListBox, or CheckListBox. 
  */
 abstract class ListControl extends Control
 {
 	/**
 	* Items, An ArrayList containing the Items of the ListControl
+	* @access public
 	* @var ArrayList
 	*/
 	public $Items;
 	/**
-	* Constructor.
-	* for inherited components, be sure to call the parent constructor first
-	* <br>The Show() <b>MUST</b> be overriden
- 	* so that the component properties and events are defined.
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends ArrayList.
+	* @param integer $left
+	* @param integer $top
+	* @param integer $width
+	* @param integer $height
 	*/
 	function ListControl($left=0, $top=0, $width=0, $height=0)
 	{
@@ -58,9 +40,24 @@ abstract class ListControl extends Control
 	*/
 	abstract public function GetSelectedIndex();
 	/**
-	 * Gets the SelectedValue of the ListControl
+	 * Selects an item based on the index
+	 * @param integer|string $index
+	 */
+	public function SetSelectedIndex($index)
+	{
+		//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=true");
+		//NolohInternal::SetProperty("options[$whatIndex].selected", true, $this);
+		//$tmpIndex = $index == "first"?0:$index;	
+		//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
+		QueueClientFunction($this, '_NListSel', array("'$this->Id'", $index), false);
+		if(/*$this->GetSelectedIndex() !== $index && */$this->Change != null /*&& $index != "first"*/)
+			$this->Change->Exec();
+	}
+	/**
+	 * Gets the Value of a selected Item
 	 * <br> Can also be called as a property
 	 * <code>$tempVal = $this->SelectedValue</code>
+	 * @return string
 	 */
 	function GetSelectedValue()
 	{
@@ -70,12 +67,12 @@ abstract class ListControl extends Control
 		return null;
 	}
 	/**
-	 * Sets the SelectedValue of the ListControl.
+	 * Selects an item whose Value matches the value passed in
 	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Value in the Items ArrayList
 	 * <br> Can also be called as a property
 	 * <code>$this->SelectedValue = 42;</code>
-	 * @param mixed|specifies the value to set.
-	 * @return mixed|if found, the value passed in; otherwise null.
+	 * @param string $value
+	 * @return mixed If found, the value passed in; otherwise null.
 	 */
 	function SetSelectedValue($value)
 	{
@@ -89,9 +86,10 @@ abstract class ListControl extends Control
 		return null;
 	}
 	/**
-	 * Gets the SelectedText of the ListControl
+	 * Gets the Text of the selected Item
 	 * <br> Can also be called as a property
 	 * <code>$tempText = $this->SelectedText</code>
+	 * @return string
 	 */
 	function GetSelectedText()
 	{
@@ -101,12 +99,12 @@ abstract class ListControl extends Control
 		return null;
 	}
 	/**
-	 * Sets the SelectedText of the ListControl.
+	 * Selects an item whose Text matches the text passed in
 	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Text in the Items ArrayList
 	 * <br> Can also be called as a property
 	 * <code>$this->SelectedText = "Asher";</code>
-	 * @param string|specifies the text to set.
-	 * @return mixed|if found, the text passed in; otherwise null.
+	 * @param string $text specifies the text to set.
+	 * @return mixed If found, the text passed in; otherwise null.
 	 */
 	function SetSelectedText($text)
 	{
@@ -119,18 +117,12 @@ abstract class ListControl extends Control
 			}
 		return null;
 	}
-	
-	public function SetSelectedIndex($index)
-	{
-		//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=true");
-		//NolohInternal::SetProperty("options[$whatIndex].selected", true, $this);
-		//$tmpIndex = $index == "first"?0:$index;	
-		//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
-		QueueClientFunction($this, '_NListSel', array("'$this->Id'", $index), false);
-		if(/*$this->GetSelectedIndex() !== $index && */$this->Change != null /*&& $index != "first"*/)
-			$this->Change->Exec();
-	}
-	
+	/**
+	 * Adds an Item to the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->Add($item)</code>
+	 * @param Item $item
+	 */
 	public function AddItem($item)
 	{
 		//Alert("Adding Items");
@@ -140,7 +132,12 @@ abstract class ListControl extends Control
 		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'$item->Text'", "'$item->Value'"), false);
 		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
-	
+	/**
+	 * Inserts an Item into a particular index of the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->Insert($item, $index)</code>
+	 * @param Item $item
+	 */
 	public function InsertItem($item, $index)
 	{
 		$this->Items->Insert($item, $index, true);
@@ -148,7 +145,12 @@ abstract class ListControl extends Control
 		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'$item->Text'", "'$item->Value'", $index), false);
 		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
-	
+	/**
+	 * Removes an Item from a particular index of the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->RemoveAt($index)</code>
+	 * @param integer $index
+	 */
 	public function RemoveItemAt($index)
 	{
 		//We should decide whether this should be commented - Asher
@@ -158,7 +160,12 @@ abstract class ListControl extends Control
 		QueueClientFunction($this, '_NListRem', array("'$this->Id'", $index), false);
 		//AddScript("document.getElementById('$this->Id').remove($index)");
 	}
-	
+	/**
+	 * Clears the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->Clear()</code>
+	 * @param Item $item
+	 */
 	public function ClearItems()
 	{
 		//if(func_num_args()==0)
@@ -169,14 +176,18 @@ abstract class ListControl extends Control
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.length=0;void", array(0), false);
 		QueueClientFunction($this, '_NListClr', array("'$this->Id'"), false);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
 			return ",'onchange','".$this->GetEventString('Change')."'";
 		return parent::GetEventString($eventTypeAsString);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		foreach($this->Items as $item)

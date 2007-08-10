@@ -3,19 +3,39 @@
  * @package UI
  * @subpackage Controls
  */
+
+/**
+ * A Larva is a MarkupItem that is capable of turning into Components.<br>
+ * This is used only in connection with EventMarkupPanel.<br>
+ * This class should never be instantiated by the developer. Use only the Larva objects that EventMarkupPanel::GetLarvae() returns.<br>
+ * See {@see EventMarkupPanel} and {@see EventMarkupPanel::GetLarvae()} for more information.<br>
+ *  
+ * <code>
+ * // A function which takes an EventMarkupPanel object that we'll locally name $eventMarkupPanel
+ * function MakeLarvaeButtons(EventMarkupPanel $eventMarkupPanel)
+ * {
+ * 	// Iterates through all Larvae of $eventMarkupPanel
+ * 	foreach($eventMarkupPanel->GetLarvae() as $larva)
+ * 		// Morphs each Larva intoa Button whose Text is that Larva's value
+ * 		$larva->Morph(new Button($eventee->Value));
+ * }
+ * </code>
+ */
 class Larva extends MarkupItem 
-{
-	public static function Morphy(&$larva, $component)
-	{
-		$larva = $component;
-		return $component;
-	}
-	
+{	
+	/**
+	 * @ignore
+	 */
 	function Eventee($id, $keyword, $value, $panelId)
 	{
 		parent::MarkupItem($id, $keyword, $value, $panelId);
 	}
-	
+	/**
+	 * Morph inserts a Component object into where your n:component tag would have been. The Component's PositionType will 
+	 * automatically be set to relative so that it would look correct in the context of surrounding mark-up.
+	 * @param Component $component
+	 * @return Component The object passed in
+	 */
 	function Morph(Component $component)
 	{
 		$markUpPanel = GetComponentById($this->PanelId);
@@ -27,7 +47,6 @@ class Larva extends MarkupItem
 		$markUpPanel->ComponentSpace[$this->Id] = &$component;
 		$component->SetParentId($this->Id);
 		$component->SetPositionType(1);
-		//return Larva::Morphy($this, $component);
 		return $component;
 	}
 }

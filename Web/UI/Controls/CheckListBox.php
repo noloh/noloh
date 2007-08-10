@@ -2,27 +2,60 @@
 /**
  * @package UI
  * @subpackage Controls
- */	
-class CheckListBox extends Panel
-{
-	public $Items;
-	public $CheckBoxes;
+ */
 	
+/* A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.
+ * 
+ * <code>
+ * // Instantiates a new CheckListBox
+ * $checkListBox = new CheckListBox();
+ * // Adds an Item to the CheckListBox
+ * $checkListBox->Items->Add(new Item("value1", "text1"));
+ * // Adds another Item to the CheckListBox
+ * $checkListBox->Items->Add(new Item("value2", "text2"));
+ * </code>
+ */
+class CheckListBox extends ListControl
+{
+	/**
+	 * The ArrayList of CheckBox objects
+	 * @access protected
+	 * @var ArrayList
+	 */
+	protected $CheckBoxes;
+	
+	/**
+	* Constructor.
+	* Be sure to call this from the constructor of any class that extends CheckListBox.
+	* @param integer $left
+	* @param integer $top
+	* @param integer $width
+	* @param integer $height
+	*/
 	function CheckListBox($left = 0, $top = 0, $width = 83, $height = 40)  
 	{
-		parent::Panel($left, $top, $width, $height, $this);
-		$this->Items = new ArrayList();
-		$this->BackColor = "white";
-		$this->Border = "2px ridge";
-		$this->CheckBoxes = &$this->Controls;
-		$this->CheckBoxes->AddFunctionName = "AddCheckBox";
+		parent::ListControl($left, $top, $width, $height);
+		$this->CheckBoxes = new ArrayList();
+		$this->CheckBoxes->ParentId = $this->Id;
+		$this->SetCSSClass();
 	}
-	function AddCheckBox($item)
+	/**
+	 * @ignore
+	 */
+	function SetCSSClass($cssClass=null)
 	{
-		if($this->Controls->Count() == 0)
-			$whatTop = 0;
-		else 
-			$whatTop = $this->Controls->Item[$this->Controls->Count()-1]->Bottom;
+		parent::SetCSSClass('NCheckListBox '. $cssClass);
+	}
+	/**
+	 * Adds an Item to the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->Add($item)</code>
+	 * @param Item $item
+	 * @return Item
+	 */
+	function AddItem($item)
+	{
+		$whatTop = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes->Item[$this->CheckBoxes->Count()-1]->Bottom;
 			
 		if(is_string($item))
 		{
@@ -42,50 +75,113 @@ class CheckListBox extends Panel
 				$newCheckBox = $item;
 			}
 		}
-		//$newCheckBox->Checked = &$CheckItem->Checked;
-		$this->Items->Add($checkItem);
-		//if(func_num_args()==1)
-		$this->Controls->Add($newCheckBox, true, true);
+		$this->Items->Add($checkItem, true, true);
+		$this->CheckBoxes->Add($newCheckBox);
 		return $item;
 	}
+	/**
+	 * Removes an Item from a particular index of the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->RemoveAt($index)</code>
+	 * @param integer $index
+	 */
+	public function RemoveItemAt($index)
+	{
+		$this->Items->RemoveAt($index, true);
+		$this->CheckBoxes->RemoveAt($index);
+		$checkBoxCount = $this->CheckBoxes->Count();
+		$this->CheckBoxes->Item[$index]->Top = $index == 0 ? 0 : $this->CheckBoxes->Item[$index-1]->Bottom;
+		for($i=$index+1; $i<$checkBoxCount; ++$i)
+			$this->CheckBoxes->Item[$i]->Top = $this->CheckBoxes->Item[$i-1]->Bottom;
+	}
+	/**
+	 * Clears the Items ArrayList. 
+	 * <br> This is equivalent to:
+	 * <code>$this->Items->Clear()</code>
+	 * @param Item $item
+	 */
+	function ClearItems()
+	{
+		$this->Items->Clear(true);
+		$this->CheckBoxes->Clear();
+	}
+	/**
+	 * Returns the index of the first selected Item
+	 * @return integer
+	 */
 	function GetSelectedIndex()
 	{
-		$controlCount = $this->Controls->Count();
-		for($i=0; $i<$controlCount; $i++)
-			if($this->Controls->Item[$i]->Checked)
+		$checkBoxCount = $this->CheckBoxes->Count();
+		for($i=0; $i<$checkBoxCount; $i++)
+			if($this->CheckBoxes->Item[$i]->Checked)
 				return $i;
 		return -1;
 	}
-	function SetSelectedIndex($idx, $bool=true)
+	/**
+	 * Selects or deselect an Item whose index in the Items ArrayList matches the parameter
+	 * @param integer $index
+	 * @param boolean $select Indicates whether the Item should be selected or deseleted
+	 */
+	function SetSelectedIndex($idx, $select=true)
 	{
-		$this->Controls->Item[$idx]->Checked = $bool;
+		$this->CheckBoxes->Item[$idx]->Checked = $select;
 	}
+	/**
+	 * Returns an array of all the indices of the selected Items
+	 * @return array
+	 */
 	function GetSelectedIndices()
 	{
 		$checkedArray = array();
-		$controlCount = $this->Controls->Count();
-		for($i=0; $i<$controlCount; $i++)
-			if($this->Controls->Item[$i]->Checked)
+		$checkBoxCount = $this->CheckBoxes->Count();
+		for($i=0; $i<$checkBoxCount; $i++)
+			if($this->CheckBoxes->Item[$i]->Checked)
 				$checkedArray[] = $i;
 		return $checkedArray;
 	}
-	function SetSelectedIndices($array, $bool=true)
+	/**
+	 * Selects or deselects those and only those Items whose index in the Items ArrayList is an elements of the specified array.
+	 * @param array|ArrayList $selectedIndices
+	 * @param boolean $select Indicates whether the Item should be selected or deseleted
+	 */
+	function SetSelectedIndices($array, $select=true)
 	{
 		foreach($array as $idx)
-			$this->SetSelectedIndex($idx, $bool);
+			$this->SetSelectedIndex($idx, $select);
 	}
+	/**
+	 * Gets the Value of a selected Item
+	 * @return string
+	 */
 	function GetSelectedValue()
 	{
 		$selIdx = $this->GetSelectedIndex();
-		return $selIdx != -1 ? $this->Items->Item[$selIdx]->Value : "";
+		return $selIdx != -1 ? $this->Items->Item[$selIdx]->Value : '';
 	}
+	/**
+	 * Selects an item whose Value matches the value passed in
+	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Value in the Items ArrayList
+	 * <br> Can also be called as a property
+	 * <code>$this->SelectedValue = 42;</code>
+	 * @param string $value
+	 * @param boolean $select Indicates whether the Item should be selected or deseleted
+	 * @return mixed If found, the value passed in; otherwise null.
+	 */
 	function SetSelectedValue($val, $bool=true)
 	{
-		$controlCount = $this->Controls->Count();
-		for($i=0; $i<$controlCount; $i++)
+		$checkBoxCount = $this->CheckBoxes->Count();
+		for($i=0; $i<$checkBoxCount; $i++)
 			if($this->Items->Item[$i]->Value == $val)
-				$this->Controls->Item[$i]->Checked = $bool;
+			{
+				$this->CheckBoxes->Item[$i]->Checked = $bool;
+				return $val;
+			}
+		return null;
 	}
+	/**
+	 * Returns an array of all the values of the selected Items
+	 * @return array
+	 */
 	function GetSelectedValues()
 	{
 		$checkedArray = array();
@@ -94,10 +190,24 @@ class CheckListBox extends Panel
 			$checkedArray[] = $this->Items->Item[$idx]->Value;
 		return $checkedArray;
 	}
+	/**
+	* Selects or deselects those and only those Items whose values are elements of the specified array.
+	* @param array $array
+	* @param boolean $select Indicates whether the Items should be selected or deseleted
+	*/
 	function SetSelectedValues($array, $bool=true)
 	{
 		foreach($array as $val)
 			$this->SetSelectedValue($val, $bool);
+	}
+	/**
+	 * @ignore
+	 */
+	function Show()
+	{
+		$initialProperties = parent::Show();
+		NolohInternal::Show('DIV', $initialProperties, $this);
+		return $initialProperties;
 	}
 }
 

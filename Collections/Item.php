@@ -7,10 +7,10 @@ class Item
 	public $Text;
 	public $Value;
 	
-	function Item($whatValue = "", $whatText = "")
+	function Item($value = "", $text = "")
 	{
-		$this->Value = $whatValue;
-		$this->Text = $whatText;
+		$this->Value = $value;
+		$this->Text = $text;
 	}
 }
 	

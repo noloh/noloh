@@ -32,8 +32,8 @@
  */
 	class Button extends Control 
 	{
-		const Normal = "Button";
-		const Submit = "Submit";
+		const Normal = 'Button';
+		const Submit = 'Submit';
 		
 		private $Type;
 		/**
@@ -49,7 +49,7 @@
 		* @param integer[optional] $height The height of this element
 		* @param string [optional] $type The type of this button
 		*/
-		function Button($text="", $left = 0, $top = 0, $width = 80, $height = 24, $type = Button::Normal)
+		function Button($text='', $left = 0, $top = 0, $width = 80, $height = 24, $type = Button::Normal)
 		{
 			parent::Control($left, $top, $width, $height);
 			$this->SetType($type);
@@ -72,7 +72,7 @@
 		function SetType($type)
 		{
 			$this->Type = ($type == Button::Normal?null:$type);
-			NolohInternal::SetProperty("type", $type, $this);
+			NolohInternal::SetProperty('type', $type, $this);
 		}
 		/**
 		 * This will set the text that is displayed on the button
@@ -82,7 +82,7 @@
 		function SetText($newText)
 		{
 			parent::SetText($newText);
-			NolohInternal::SetProperty("value", $newText, $this);
+			NolohInternal::SetProperty('value', $newText, $this);
 		}
 		/**
 		* @ignore
@@ -91,7 +91,7 @@
 		{
 			$initialProperties = parent::Show();
 			//$initialProperties .= ",'type','$this->Type'";
-			NolohInternal::Show("INPUT", $initialProperties, $this);
+			NolohInternal::Show('INPUT', $initialProperties, $this);
 		}
 	}
 ?>

@@ -43,7 +43,10 @@ final class Application
 	{
 		session_destroy();
 		session_unset();
-		print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = window.location;frm.method = "post"; document.body.appendChild(frm); frm.submit();');
+		if(GetBrowser()=="ie")
+			print('/*~NScript~*/location.reload(true);');
+		else
+			print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = location.href; frm.method = "post"; document.body.appendChild(frm); frm.submit();');
 		die();
 	}
 	

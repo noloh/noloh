@@ -131,12 +131,12 @@ class WebPage extends Component
 	function SetScrollLeft($scrollLeft)
 	{
 		//NolohInternal::SetProperty("scrollLeft", $scrollLeft, $this);
-		QueueClientFunction($this, "document.documentElement.scrollLeft=$scrollLeft;void", array(0));
+		QueueClientFunction($this, "document.documentElement.scrollLeft=$scrollLeft;BodyScrollState", array());
 	}
 	
 	function SetScrollTop($scrollTop)
 	{
-		QueueClientFunction($this, "document.documentElement.scrollTop=$scrollTop;void", array(0));
+		QueueClientFunction($this, "document.documentElement.scrollTop=$scrollTop;BodyScrollState", array());
 		//NolohInternal::SetProperty("scrollTop", $scrollTop, $this);
 	}
 	

@@ -22,6 +22,11 @@
 	background-color:#0000FF;
 	padding-top:1%;
 }
+.NCheckListBox
+{
+	background-color:#FFFFFF;
+	border:2px ridge;
+}
 .NLabel
 {
 	word-wrap:break-word;
