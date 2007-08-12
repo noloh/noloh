@@ -66,6 +66,10 @@ abstract class MarkupItem extends Object
 	{
 		return $this->Value;
 	}
+	function GetId()
+	{
+		return $this->Id;
+	}
 }
 
 ?>

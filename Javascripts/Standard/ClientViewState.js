@@ -48,7 +48,8 @@ function _NInit(loadLblId, loadImgId)
 	_NLoadImg = loadImgId;
 	var Graveyard = document.createElement("DIV");
 	Graveyard.id = "Graveyard";
-	Graveyard.style.visibility = "hidden";
+	Graveyard.style.display = "none";
+	//Graveyard.style.visibility = "hidden";
 	document.body.appendChild(Graveyard);
 	_NHash = location.hash;
 	_NURLCheck = setInterval('CheckURL()', 500);
