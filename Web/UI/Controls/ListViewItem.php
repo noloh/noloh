@@ -1,7 +1,6 @@
 <?php	
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
  */
 class ListViewItem extends Object //extends Component
 {

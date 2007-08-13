@@ -24,7 +24,6 @@
  * 
  * @property string $Src The source file of this image
  * 
- * {@inheritdoc }
  */
 class Image extends Control 
 {

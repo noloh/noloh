@@ -1,7 +1,6 @@
 <?php
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
  */
 class WebPage extends Component
 {
@@ -199,7 +198,6 @@ class WebPage extends Component
 		//	(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
 		AddNolohScriptSrc('ClientViewState.js', true);
 		AddNolohScriptSrc('GeneralFunctions.js');
-		AddNolohScriptSrc('Shift.js', true);
 		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')
 			AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
 		//elseif(!isset($_POST['NoSkeleton']))

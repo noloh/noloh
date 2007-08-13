@@ -1,10 +1,11 @@
 <?php
 /**
- * @package Collections
  * ArrayList class file
  */
 
 /**
+ * @package Collections
+ * 
  * ArrayList class
  * 
  * An ArrayList is an array with additional functionality. 

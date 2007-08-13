@@ -1,7 +1,6 @@
 <?php
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
  */
 	
 /* A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.

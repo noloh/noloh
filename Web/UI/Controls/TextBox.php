@@ -1,7 +1,6 @@
 <?php
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
  */
 class TextBox extends Control
 {

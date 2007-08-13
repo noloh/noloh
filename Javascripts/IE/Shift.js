@@ -15,13 +15,12 @@ function ShiftStart(objArray)
 		if(thisObjArray[i][2] == 1)
 		{
 			Obj = document.getElementById(thisObjArray[i][0]).cloneNode(true);
-			Obj.id = thisObjArray[i][0] + "_Ghost";
+			thisObjArray[i][0] = Obj.id = thisObjArray[i][0] + "_Ghost";
 			Obj.style.position = "absolute";
 			Obj.style.filter = "alpha(opacity=50)";
 			document.body.appendChild(Obj);
 			Obj.style.left = FindX(Obj.id)+"px";
 			Obj.style.top = yPos+"px";//FindY(Obj.id)+"px";
-			thisObjArray[i][0] = thisObjArray[i][0] + "_Ghost";
 			thisObjArray.Ghosts[thisObjArray.Ghosts.length] = i;
 		}
 		else

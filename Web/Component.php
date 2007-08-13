@@ -135,6 +135,7 @@ abstract class Component extends Object
 		$this->ShowStatus = null;
 		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
 			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+		return "'id','$this->Id'";
 	}
 	/**
 	 * The opposite of Showing. If the Component has a client-side aspect, it will be removed from the client.

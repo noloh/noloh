@@ -1,16 +1,11 @@
 <?php 
 /**
-* @ignore
-*/	
-define('NoDisplay', 'NoDisplay');
-
-/**
- * @package Web.UI.Controls
- * Control class file.
- *
+ * Control Class File
  */
+
 /** 
- *
+ * @package Web.UI.Controls
+ * 
  * Control class
  *
  * Control is the base class for all NOLOH controls.
@@ -238,16 +233,6 @@ class Control extends Component
 			$this->SetWidth($width);
 		if($height !== null)
 			$this->SetHeight($height);
-	}
-	/**
-	* Show for the Control, <br><b>Note:</b>Is automatically called by NOLOH,
-	* Should not be called under most circumstances, should only be called in overriding the Show() of a custom Control.
-	* @return string
-	*/
-	function Show()
-	{
-		parent::Show();
-		return "'id','$this->Id'";
 	}
 	
 	function Bury()
@@ -601,7 +586,10 @@ class Control extends Component
 			if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]) && isset($_SESSION['NOLOHFunctionQueue'][$this->Id][$fncStr]))
 				$_SESSION['NOLOHFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
 			else 
+			{
+				AddNolohScriptSrc('Shift.js', true);
 				QueueClientFunction($this, $fncStr, array(-1, 0, $shift[2]));
+			}
 		}
 		unset($shift[2]);
 	}

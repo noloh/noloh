@@ -1,7 +1,6 @@
 <?
 /**
- * @package UI
- * @subpackage Controls
+ * @package Web.UI.Controls
  */
 class TreeNode extends Panel
 {
