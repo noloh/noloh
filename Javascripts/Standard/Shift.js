@@ -19,6 +19,8 @@ function ShiftStart(event, objArray)
 			Obj.style.position = "absolute";
 			Obj.style.opacity = ".5";
 			document.body.appendChild(Obj);
+			Obj.style.left = FindX(Obj.id)+"px";
+			Obj.style.top = yPos+"px";//FindY(Obj.id)+"px";
 			thisObjArray[i][0] = thisObjArray[i][0] + "_Ghost";
 			thisObjArray.Ghosts[thisObjArray.Ghosts.length] = i;
 		}
@@ -161,7 +163,7 @@ function ShiftStop(event)
 			Catcher = document.getElementById(NOLOHCatchers[i]);
 			CatcherX = FindX(NOLOHCatchers[i]);
 			CatcherY = FindY(NOLOHCatchers[i]);
-			if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?20:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
+			if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
 				for(j=0; j<thisObjArray.length; j++)
 					if(4 <= thisObjArray[j][1] && thisObjArray[j][1] <= 6 && NOLOHCatchers[i]!=thisObjArray[j][0].replace("_Ghost",""))
 						NOLOHCaught.push(thisObjArray[j][0].replace("_Ghost",""));

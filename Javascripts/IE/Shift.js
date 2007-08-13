@@ -19,6 +19,8 @@ function ShiftStart(objArray)
 			Obj.style.position = "absolute";
 			Obj.style.filter = "alpha(opacity=50)";
 			document.body.appendChild(Obj);
+			Obj.style.left = FindX(Obj.id)+"px";
+			Obj.style.top = yPos+"px";//FindY(Obj.id)+"px";
 			thisObjArray[i][0] = thisObjArray[i][0] + "_Ghost";
 			thisObjArray.Ghosts[thisObjArray.Ghosts.length] = i;
 		}
@@ -94,7 +96,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 			}
 			else if(objects[i][5] != null)
 				ChangeAndSave(objects[i][0], "style.height", (tempFinalVer >= objects[i][5]) ? tempFinalVer  + "px" : objects[i][5] + "px");
-			else 
+			elseW
 				ChangeAndSave(objects[i][0], "style.height", (tempFinalVer <= objects[i][6]) ? tempFinalVer  + "px" : objects[i][6] + "px");		
 		}
 		if(objects[i][1] == 4 || objects[i][1] == 6)
@@ -154,7 +156,6 @@ function SetShiftWithInitials(objects)
 			SetShiftWithInitials(Obj.ShiftsWith);
 	}
 }
-
 function ShiftStop()
 {
 	var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
@@ -166,7 +167,7 @@ function ShiftStop()
 			Catcher = document.getElementById(NOLOHCatchers[i]);
 			CatcherX = FindX(NOLOHCatchers[i]);
 			CatcherY = FindY(NOLOHCatchers[i]);
-			if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?20:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
+			if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
 				for(j=0; j<thisObjArray.length; j++)
 					if(4 <= thisObjArray[j][1] && thisObjArray[j][1] <= 6 && NOLOHCatchers[i]!=thisObjArray[j][0].replace("_Ghost",""))
 						NOLOHCaught.push(thisObjArray[j][0].replace("_Ghost",""));
