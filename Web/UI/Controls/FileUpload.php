@@ -45,6 +45,12 @@ class FileUpload extends Control
 			  	</FORM>
 			</BODY>
 		");
+		if(isset($_FILES['NOLOHFile']) && $_FILES['NOLOHFile']['tmp_name']!='')
+		{
+			rename($_FILES['NOLOHFile']['tmp_name'], $_FILES['NOLOHFile']['tmp_name'].'N');
+			$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']] = $_FILES['NOLOHFile'];
+			$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
+		}
 	}
 }
 

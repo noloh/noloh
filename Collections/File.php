@@ -18,6 +18,30 @@ class File
 	private $TempFilename = null;
 	private $AutoSave = true;
 	
+	static function Send($fileName)
+	{
+		AddScript('_NRequestFile("' . $_SERVER['PHP_SELF'] . '?NOLOHFileRequest=' . $fileName . '")');
+		$_SESSION['NOLOHFileSend'][$fileName] = true;
+		//$webPage = GetComponentById('N1');
+		//$webPage->Controls->Add($iframe = new IFrame($_SERVER['PHP_SELF'].'?NOLOHFileRequest='.$fileName));
+	}
+	
+	static function SendRequestedFile($fileName)
+	{
+		if(isset($_SESSION['NOLOHFileSend'][$fileName]))
+		{
+		    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		    header('Content-Description: File Transfer');
+		    header('Content-Type: application/octet-stream');
+		    header('Content-Length: ' . filesize($fileName));
+	    	header('Content-Disposition: attachment; filename=' . basename($fileName));
+			readfile($fileName);
+			unset($_SESSION['NOLOHFileSend'][$fileName]);
+		}
+		else 
+			print("You do not have permission to access that file!");
+	}
+	
 	function File($whatFile = null)
 	{
 		if(is_array($whatFile))

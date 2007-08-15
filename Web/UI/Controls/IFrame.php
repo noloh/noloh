@@ -57,10 +57,9 @@ class IFrame extends Control
 	* @param integer|optional
 	* @param integer|optional
 	*/
-	function IFrame($src ="", $left=0, $top=0, $width=300, $height=300)
+	function IFrame($src ='', $left=0, $top=0, $width=300, $height=300)
 	{
 		Control::Control($left, $top, $width, $height);
-		$this->HtmlName = $this->Id;
 		$this->SetSrc($src);
 	}
 	
@@ -72,7 +71,7 @@ class IFrame extends Control
 	function SetSrc($newSrc)
 	{
 		$this->Src = $newSrc;
-		NolohInternal::SetProperty("src", $newSrc, $this);
+		NolohInternal::SetProperty('src', $newSrc, $this);
 	}
 	
 	function GetScrollLeft()
@@ -83,7 +82,7 @@ class IFrame extends Control
 	function SetScrollLeft($newScrollLeft)
 	{
 		$this->ScrollLeft = $newScrollLeft;
-		NolohInternal::SetProperty("scrollLeft", $newScrollLeft, $this);
+		NolohInternal::SetProperty('scrollLeft', $newScrollLeft, $this);
 	}
 	
 	function GetScrollTop()
@@ -94,22 +93,22 @@ class IFrame extends Control
 	function SetScrollTop($newScrollTop)
 	{
 		$this->ScrollTop = $newScrollTop;
-		NolohInternal::SetProperty("scrollTop", $newScrollTop, $this);
+		NolohInternal::SetProperty('scrollTop', $newScrollTop, $this);
 	}
 	function SetScrolling($scrollType)
 	{
 		$this->Scrolling = $scrollType;
 		$tmpScroll = null;
 		if($scrollType == System::Auto)
-			$tmpScroll = "auto";
+			$tmpScroll = 'auto';
 		elseif($scrollType)
-			$tmpScroll = "yes";
+			$tmpScroll = 'yes';
 		elseif(!$scrollType)
-			$tmpScroll = "no";
+			$tmpScroll = 'no';
 		elseif($scrollType === null)
-			$tmpScroll = "";
+			$tmpScroll = '';
 		//Alert($tmpScroll);
-		NolohInternal::SetProperty("scrolling", $tmpScroll, $this);
+		NolohInternal::SetProperty('scrolling', $tmpScroll, $this);
 	}
 	function GetScrolling(){return $this->Scrolling;}
 	/**
@@ -119,7 +118,7 @@ class IFrame extends Control
 	{
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'frameborder','no'";
-		NolohInternal::Show("IFRAME", $initialProperties, $this);
+		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
 }
 	

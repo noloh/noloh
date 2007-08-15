@@ -12,7 +12,7 @@ class TreeList extends Panel
 	{
 		parent::Panel($left, $top, $width, $height, $this);
 		$this->TreeNodesList = new ListBox();
-		$this->TreeNodesList->SetClientVisible(GetBrowser()=="ie" ? false : 'NoDisplay');
+		$this->TreeNodesList->SetClientVisible(GetBrowser()=='ie' ? false : 0);
 		$this->Controls->Add($this->TreeNodesList, true, true);
 		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;
@@ -100,11 +100,12 @@ class TreeList extends Panel
 			$this->Controls->Item[$i]->Expand(true);
 	}
 	function Show()
-	{	
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TreeListScripts.js");
+	{
 		AddNolohScriptSrc('TreeList.js');
-		//AddScript("document.getElementById('" . $this->Id . "').treeNodesList = document.getElementById('" . $this->TreeNodesList->Id . "');");
-		AddScript("document.getElementById('" . $this->Id . "').treeNodesList = '" . $this->TreeNodesList->Id . "';");
+		//AddScript("document.getElementById('" . $this->Id . "').treeNodesList = '" . $this->TreeNodesList->Id . "';");
+		NolohInternal::SetProperty('treeNodesList', $this->TreeNodesList->Id, $this);
+		NolohInternal::SetProperty('OpenSrc', /*$this->OpenSrc!=null?$this->OpenSrc:*/TreeNode::GetDefaultOpenSrc(), $this);
+		NolohInternal::SetProperty('CloseSrc', /*$this->CloseSrc!=null?$this->CloseSrc:*/TreeNode::GetDefaultCloseSrc(), $this);
 		parent::Show();
 	}
 }

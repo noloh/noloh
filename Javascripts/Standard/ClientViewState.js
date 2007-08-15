@@ -21,8 +21,8 @@ ConversionArray["killlater"] = "KillLater";
 ConversionArray["src"] = "Src";
 ConversionArray["scrollLeft"] = "ScrollLeft";
 ConversionArray["scrollTop"] = "ScrollTop";
-ConversionArray["style.visibility"] = "ClientVisible";
-ConversionArray["style.display"] = "ClientVisible";
+ConversionArray["style.visibility"] = "Visible";
+ConversionArray["style.display"] = "Visible";
 ConversionArray["options"] = "Items";
 ConversionArray["selectedIndices"] = "SelectedIndices";
 ConversionArray["timer"] = "ServerVisible";
@@ -228,7 +228,7 @@ function _NSave(id, propertyString, newValue)
 			NOLOHChanges[id][propertyString][0] = (newValue == "visible");
 			break;
 		case "style.display":
-			NOLOHChanges[id][propertyString][0] = (newValue == "");
+			NOLOHChanges[id][propertyString][0] = newValue == "" ? true : "System::Vacuous";
 			break;
 		case "value":
 			NOLOHChanges[id][propertyString][0] = newValue.replace(/&/g, "~da~");

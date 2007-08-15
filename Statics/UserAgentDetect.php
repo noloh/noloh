@@ -70,7 +70,7 @@ final class UserAgentDetect
 	}
 	/**
 	 * Returns whether or not the user is using internet explorer as their browser.<br>
-	 * This is identical in functionality to GetBrowser()=='ie', but provides a shortcut as, in practice, internet explorer<br>
+	 * This is identical in functionality to UserAgentDetect::GetBrowser()=='ie', but provides a shortcut as, in practice, internet explorer
 	 * often needs code different than other browsers.
 	 * @return boolean
 	 */

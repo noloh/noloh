@@ -1,7 +1,8 @@
-function SelectNode(nodeId, listId, event)
+function SelectNode(nodeId, event)
 {
-	var idx = document.getElementById(nodeId).ListIndex;
-	var listobj = document.getElementById(document.getElementById(listId).treeNodesList);
+	var node = document.getElementById(nodeId);
+	var idx = node.ListIndex;
+	var listobj = document.getElementById(document.getElementById(node.ListId).treeNodesList);
 	var selIdx, i;
 	/*if(event.shiftKey)
 	{
@@ -39,22 +40,17 @@ function SelectNode(nodeId, listId, event)
 	//alert("select node finished");
 }
 
-function PlusMinusChange(PanelId, IconId)
+function PlusMinusChange(PanelId, IconId, NodeId)
 {
-	var PanelObj = document.getElementById(PanelId); 
-	var IconObj = document.getElementById(IconId);
-	if(PanelObj.style.display=="")
+	var Node = document.getElementById(NodeId);
+	if(document.getElementById(PanelId).style.display=="")
 	{
-		ChangeAndSave(PanelObj.id, "style.display", "none");
-		//PanelObj.style.display = "none"; 
-		ChangeAndSave(IconObj.id, "src", IconObj.CloseSrc);
-		//IconObj.src = IconObj.CloseSrc;
+		ChangeAndSave(PanelId, "style.display", "none");
+		ChangeAndSave(IconId, "src", Node.CloseSrc!=null?Node.CloseSrc:document.getElementById(Node.ListId).CloseSrc);
 	}
 	else 
 	{
-		ChangeAndSave(PanelObj.id, "style.display", "");
-		//PanelObj.style.display="";
-		ChangeAndSave(IconObj.id, "src", IconObj.OpenSrc);
-		//IconObj.src = IconObj.OpenSrc;
+		ChangeAndSave(PanelId, "style.display", "");
+		ChangeAndSave(IconId, "src", Node.OpenSrc!=null?Node.OpenSrc:document.getElementById(Node.ListId).OpenSrc);
 	}
 }

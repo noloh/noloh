@@ -8,12 +8,11 @@ class Form extends Guardian
 	private $Method;
 	private $EncType;
 	
-	function Form($whatAction ="", $whatLeft = 0, $whatTop = 0, $whatWidth = 800, $whatHeight = 600, $method = "POST" )  
+	function Form($action = "", $left = 0, $top = 0, $width = 800, $height = 600, $method = "POST" )  
 	{
-		parent::Guardian($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		$this->HtmlName = $this->Id;
+		parent::Guardian($left, $top, $width, $height);
 		$this->Method = $method;
-		$this->Action = $whatAction;
+		$this->Action = $action;
 	}
 	
 	function GetAction()

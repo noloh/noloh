@@ -63,15 +63,9 @@ final class Application
 		if(isset($_GET['NOLOHImage']))
 			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function']);
 		elseif(isset($_GET['NOLOHFileUpload']))
-		{
 			FileUpload::ShowInside($_GET['NOLOHFileUpload'], $_GET['Width'], $_GET['Height']);
-			if(isset($_FILES['NOLOHFile']) && $_FILES['NOLOHFile']['tmp_name']!='')
-			{
-				rename($_FILES['NOLOHFile']['tmp_name'], $_FILES['NOLOHFile']['tmp_name'].'N');
-				$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']] = $_FILES['NOLOHFile'];
-				$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
-			}
-		}
+		elseif(isset($_GET['NOLOHFileRequest']))
+			File::SendRequestedFile($_GET['NOLOHFileRequest']);
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
 			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
@@ -132,6 +126,7 @@ final class Application
 		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHScriptSrcs'] = array();
 		$_SESSION['NOLOHFiles'] = array();
+		$_SESSION['NOLOHFileSend'] = array();
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];

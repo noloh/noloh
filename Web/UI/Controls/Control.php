@@ -1,24 +1,20 @@
 <?php 
 /**
  * Control Class File
- */
-
-/** 
  * @package Web.UI.Controls
- * 
- * Control class
- *
+ */
+/** 
  * Control is the base class for all NOLOH controls.
  * All Custom defined controls must extends Control.
  * <br>
  * The Control Class enables Controls to handle events, as well as most visual properties
  *
  * 
- *  @property string CSSClass The CSSClass of the Control
- *  @proprety string CSS_________ Allows for the ability to
+ *  @property string $CSSClass The CSSClass of the Control
+ *  @property string $CSS_________ Allows for the ability to
  *  set ANY CSS property on the fly. Just prepend the style with CSS,
  *  and change dash to underscore. ex. CSSBorder_Bottom = "1px solid black";
- *  @proprety integer PositionType
+ *  @property integer PositionType
  * - <b>PositionType</b>, integer,
  *   <br>Sets whether the position is absolute, relative, or static
  * - <b>Enabled</b>, boolean
@@ -147,14 +143,7 @@ class Control extends Component
 	*	<b>Note:</b> This is different from ServerVisible, when ServerVisible is set to false the control is not drawn on the client, when ClientVisible is set to false the control is drawn, but set to hidden.
 	* @var boolean
 	*/
-	private $ClientVisible;
-	/**
-	*	HtmlName, Gets or sets the HtmlName of this Control, usually only applicable to RadioButtons, and CheckBoxes.
-	*	Can only be used when making a custom Control, and overriding Show() to somehow use HtmlName
-	*	<b>Note:</b> This gets shown as the NAME Attribute in Markup on the Client.
-	* @var String
-	*/
-	public $HtmlName;
+	private $Visible;
 	/**
 	*	Border, Gets or sets  the border of this Control
 	*	e.g, "1px solid black", "5px dashed red"
@@ -425,22 +414,50 @@ class Control extends Component
 	
 	function GetClientVisible()
 	{
-		return $this->ClientVisible === null ? true : $this->ClientVisible;
+		return $this->Visible === null ? true : $this->Visible;
 	}
 	
 	function SetClientVisible($newVisibility)
 	{
 		if(is_string($newVisibility))
 		{
-			$this->ClientVisible = $newVisibility;
+			$this->Visible = $newVisibility;
 			NolohInternal::SetProperty('style.display', 'none', $this);
 			NolohInternal::SetProperty('style.visibility', 'inherit', $this);
 		}
 		else 
 		{
-			$this->ClientVisible = $newVisibility ? null : false;
+			$this->Visible = $newVisibility ? null : false;
 			NolohInternal::SetProperty('style.display', '', $this);
 			NolohInternal::SetProperty('style.visibility', $newVisibility?'inherit':'hidden', $this);
+		}
+	}
+	
+	function GetVisible()
+	{
+		return $this->Visible === null ? true : $this->Visible;
+	}
+	
+	function SetVisible($visibility)
+	{
+		if(is_bool($visibility))
+		{
+			NolohInternal::SetProperty('style.display', '', $this);
+			if($newVisibility)
+			{
+				$this->Visible = null;
+				NolohInternal::SetProperty('style.visibility', 'inherit', $this);
+			}
+			else 
+			{
+				$this->Visible = false;
+				NolohInternal::SetProperty('style.visibility', 'hidden', $this);
+			}
+		}
+		else 
+		{
+			$this->Visible = 0;
+			NolohInternal::SetProperty('style.display', 'none', $this);
 		}
 	}
 	

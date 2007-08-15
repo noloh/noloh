@@ -85,3 +85,13 @@ function _NRemStyle(remPath, nPath)
 	document.getElementById('NHead').appendChild(blankStyle);
 	document.getElementById('NHead').removeChild(blankStyle);
 }
+
+function _NRequestFile(iSrc)
+{
+	var iframe = document.createElement("IFRAME");
+	iframe.id = iSrc;
+	iframe.src = iSrc;
+	iframe.style.display = "none";
+	document.body.appendChild(iframe);
+	window.setTimeout('document.body.removeChild(document.getElementById("' + iSrc + '"))', 5000);
+}

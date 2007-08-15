@@ -7,13 +7,12 @@
 /**
  * Component class
  *
- * A component is a basic building-block in a NOLOH application. It is an abstract class, so you may not instantiate a new Component, only write classes that extend them.<br>
+ * A component is a basic building-block in a NOLOH application. It is an abstract class, so you may not instantiate a new Component, only write classes that extend this class.<br>
  * Each component has an <b>Id</b> that uniquely identifies itself among all other components.<br>
  * A component may have a <b>Parent</b>, which establishes a tree based on the parent-child relationship.<br>
  *
  * @property-read Component::(NotShown\Shown\Buried) $ShowStatus Whether it is Shown, NotShown, Buried
  * @property-read Component $Parent The Parent Component
- *
  */
 
 abstract class Component extends Object
@@ -65,7 +64,7 @@ abstract class Component extends Object
 			$this->ShowStatus = 0;
 	}
 	/**
-	 * Gets the Id of the Parent Component
+	 * Gets the Id of the immediate Parent Component
 	 * @return string 
 	 */
 	function GetParentId() 
@@ -73,7 +72,8 @@ abstract class Component extends Object
 		return $this->ParentId;
 	}
 	/**
-	 * Sets the ParentId of the Component. The Component whose Id is passed in will become the new Parent of this Component. Note that an ArrayList with a ParentId will automatically do this for you. {@link ArrayList::ParentId}
+	 * Sets the ParentId of the Component. The Component whose Id is passed in will become the new Parent of this Component. <br>
+	 * Note that an ArrayList with a ParentId will automatically do this for you. {@link ArrayList::ParentId}
 	 * @param string $parentId The Id of the Parent Component
 	 */
 	function SetParentId($parentId)
@@ -87,7 +87,11 @@ abstract class Component extends Object
 	 * Gets Parent of this Component, or Parent based on the $generation paramater as follows:<br>
 	 * If $generation is an integer, it will return that number of Parents above, e.g., GetParent(2) will return the grandparent.<br>
 	 * If $generation is a string, it will return the closest ancestor that is an instance of the class passed in.
-	 * @param integer|string[optional] $generation
+	 * <code>
+	 * // Sets $parentPanel to the Panel that is the closest ancestor of $btn
+	 * $parentPanel = $btn->GetParent('Panel');
+	 * </code>
+	 * @param integer|string $generation
 	 * @return Component
 	 */
 	function GetParent($generation = 1)

@@ -16,7 +16,7 @@
  * // Instantiate a new ArrayList
  * $arrayList = new ArrayList();
  * // Adds the string "Hello" into the ArrayList.
- * $arrayList->Add("Hello!");
+ * $arrayList->Add("Hello");
  * // Adds the number 42 into the ArrayList. These two ways of adding are identical.
  * $arrayList[] = 42;
  * // Iterates the ArrayList as a standard foreach loop and alerts the contents
@@ -103,6 +103,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an unlimited number elements to the ArrayList.
 	 * @param mixed ... Unlimited number of elements to be added
+	 * <code>$arrayList->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</code>
 	 */
 	function AddRange($dotDotDot)
 	{
@@ -120,6 +121,11 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	 * @param mixed $element The element to be inserted
 	 * @param integer|string $index The index into which your element will be added
 	 * @return mixed The element that has been added
+	 * <code>
+	 * // Inserts a new Button into the zeroth index
+	 * $this->Controls->Insert(new Button('Click'), 0);
+	 * // The Controls ArrayList will now begin with the said button, followed by whatever else was there previously
+	 * </code>
 	 */
 	function Insert($element, $index)
 	{
@@ -141,7 +147,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		array_splice($this->Item, $index, 1);
 	}
 	/**
-	 * Removes a particular element of the ArrayList.
+	 * Removes the first occurrence of a particular element from the ArrayList.
 	 * @param mixed $element The element to be removed
 	 * @return bool Whether the remove was successful
 	 */
@@ -156,7 +162,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		return false;
 	}
 	/**
-	 * Finds the index of a particular element.
+	 * Finds the index of a particular element. Numeric indices start from 0 on.
 	 * @param mixed $element The element to be searched for
 	 * @return integer|string If found, the index of the element. Otherwise, -1.
 	 */

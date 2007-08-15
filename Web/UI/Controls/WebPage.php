@@ -62,7 +62,7 @@ class WebPage extends Component
 		/*
 		//$this->JSIframe = new Iframe("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 		$this->JSIframe = new Iframe();
-		//$this->JSIframe->ClientVisible = "NoDisplay";
+		//$this->JSIframe->Visible = 0;
 		$this->JSIframe->Width = 0;
 		$this->JSIframe->Height = 0;
 		$this->Controls->Add($this->JSIframe); 

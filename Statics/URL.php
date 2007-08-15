@@ -14,19 +14,28 @@ final class URL
 	/**
 	 * When passed into the third parameter, $tokenMode, of SetStartupPage, URL::Disable disables the use of tokens altogether.
 	 * SetToken will have no effect, and GetToken will always return the default value. 
+	 * <code>SetStartupPage('MyWebPage', 'http://www.mysite.com/ErrorPage.html', URL::Disable);</code>
 	 */
 	const Disable = 0;
 	/**
 	 * When passed into the third parameter, $tokenMode, of SetStartupPage, URL::Disable will display the name and value in the 
 	 * user's address bar of any tokens that are set. Hence:
-	 * <code>URL::SetToken('productid', 17);</code>
+	 * <code>
+	 * SetStartupPage('MyWebPage', 'http://www.mysite.com/ErrorPage.html', URL::Display);
+	 * // Assume the two lines are separated out in accordance with good object-oriented programming practices
+	 * URL::SetToken('productid', 17);
+	 * </code>
 	 * Will have the effect of writing #/productid=17 in the user's URL.
 	 */
 	const Display = 1;
 	/**
 	 * When passed into the third parameter, $tokenMode, of SetStartupPage, URL::Encrypt will display an encrypted string in the
 	 * user's address bar of any tokens that are set. Hence:
-	 * <code>URL::SetToken('productid', 17);</code>
+	 * <code>
+	 * SetStartupPage('MyWebPage', 'http://www.mysite.com/ErrorPage.html', URL::Encrypt);
+	 * // Assume the two lines are separated out in accordance with good object-oriented programming practices
+	 * URL::SetToken('productid', 17);
+	 * </code>
 	 * Will have the effect of writing random-looking characters in the user's URL.
 	 */
 	const Encrypt = 2;

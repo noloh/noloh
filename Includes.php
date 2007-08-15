@@ -20,7 +20,6 @@ require('Web/Events/ServerEvent.php');
 require('Collections/ArrayList.php');
 require('Collections/ImplicitArrayList.php');
 require('Collections/Item.php');
-//require('CheckableItem.php');
 require('Collections/File.php');
 require('Collections/RolloverGroup.php');
 require('Collections/RadioButtonGroup.php');

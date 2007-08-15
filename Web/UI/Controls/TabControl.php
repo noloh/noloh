@@ -80,7 +80,7 @@ class TabControl extends Panel
 		$this->TabPagesPanel->Controls->Add($tabPage, true, true);
 		if($this->TabPages->Count == 1)
 			$this->SetSelectedIndex(0);
-		$tabPage->ClientVisible = 'NoDisplay';
+		$tabPage->Visible = 0;
 	}
 	public function GetTabAlignment(){return $this->TabAlignment;}
 	public function SetTabAlignment($tabAlignment)
