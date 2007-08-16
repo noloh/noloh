@@ -81,9 +81,7 @@ final class URL
 		foreach($keyValuePairs as $key => $val)
 			$str .= $key . '=' . $val . '&';
 		$str = rtrim($str, '&');
-		if($GLOBALS['NOLOHURLTokenMode'] == 2)
-			$str = base64_encode($str);
-		return $str;
+		return $GLOBALS['NOLOHURLTokenMode'] == 2 ? base64_encode($str) : $str;
 	}
 	/**
 	 * @ignore
@@ -103,7 +101,6 @@ final class URL
 					$trails = array();
 				if(!isset($trails[$initialURLString]))
 					$trails[$initialURLString] = array();
-				Alert(serialize($trails));
 			}
 			else 
 			{

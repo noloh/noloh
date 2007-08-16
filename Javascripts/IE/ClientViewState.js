@@ -53,7 +53,7 @@ function _NInit(loadLblId, loadImgId)
 	if(location.hash=="")
 		location = location + "#/";
 	_NHash = location.hash;
-	_NURL = location.toString();
+	_NURL = location.href;
 	try
 	{
 		var d=document.getElementById('NBackButton').contentWindow.document;
@@ -66,7 +66,7 @@ function _NInit(loadLblId, loadImgId)
 	finally
 	{
 		d.open();
-		d.write(location.toString());
+		d.write(location.href);
 		d.close();
 		_NURLCheck = setInterval('CheckURL()', 500);
 	}
@@ -74,12 +74,12 @@ function _NInit(loadLblId, loadImgId)
 
 function CheckURL()
 {
-	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
+	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerText;
 	//alert(inner);
 	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner/* && _NHash.charAt(1)=="/" && _NInnerHas.charAt(1)=="/"*/))
-		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
+		//if(/*document.body.NOLOHPostingBack && */location.href.indexOf('#')==location.href.length-1)
 		//{
-			//_NHash = location.toString();
+			//_NHash = location.href;
 		//	_NHash = inner;
 		//	location = _NHash;
 		//}
@@ -97,7 +97,7 @@ function CheckURL()
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
 			location = inner;
 			_NHash = location.hash;
-			_NURL = location.toString();
+			_NURL = location.href;
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 			req.send(str);
@@ -113,10 +113,10 @@ function _NSetURL(hash)
 {
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
-	_NURL=location.toString();
+	_NURL=location.href;
 	var d=document.getElementById('NBackButton').contentWindow.document;
 	d.open();
-	d.write(location.toString());
+	d.write(location.href);
 	d.close();
 }
 

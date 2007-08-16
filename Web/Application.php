@@ -247,11 +247,9 @@ final class Application
 	
 	private function HandleTokens()
 	{
+		unset($_GET['NOLOHVisit'], $_GET['NWidth'], $_GET['NHeight']);
 		if($GLOBALS['NOLOHURLTokenMode'] == 1)
-		{
 			$_SESSION['NOLOHTokens'] = $_GET;
-			unset($_SESSION['NOLOHTokens']['NOLOHVisit'], $_SESSION['NOLOHTokens']['NWidth'], $_SESSION['NOLOHTokens']['NHeight']);
-		}
 		elseif($GLOBALS['NOLOHURLTokenMode'] == 2)
 		{
 			$split = explode('&', base64_decode(key($_GET)));
@@ -259,8 +257,7 @@ final class Application
 			for($i=0; $i<$count; $i++)
 			{
 				$split2 = explode('=', $split[$i].'=');
-				if($split2[0]!='NOLOHVisit' && $split2[0]!='NWidth' && $split2[0]!='NHeight')
-					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
 			}
 		}
 	}

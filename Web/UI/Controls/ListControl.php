@@ -128,7 +128,7 @@ abstract class ListControl extends Control
 		//if(func_num_args()==1)
 			$this->Items->Add($item, true, true);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
-		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'$item->Text'", "'$item->Value'"), false);
+		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'".addslashes($item->Text)."'", "'".$item->Value."'"), false);
 		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	/**
