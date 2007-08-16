@@ -49,7 +49,7 @@ abstract class ListControl extends Control
 		//$tmpIndex = $index == "first"?0:$index;	
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
 		QueueClientFunction($this, '_NListSel', array("'$this->Id'", $index), false);
-		if(/*$this->GetSelectedIndex() !== $index && */$this->Change != null /*&& $index != "first"*/)
+		if(/*$this->GetSelectedIndex() !== $index && */!$this->Change->Blank() /*&& $index != "first"*/)
 			$this->Change->Exec();
 	}
 	/**

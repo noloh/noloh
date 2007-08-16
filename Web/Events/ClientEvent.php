@@ -61,6 +61,13 @@ class ClientEvent extends Event
 	/**
 	 * @ignore
 	 */
+	function Blank()
+	{
+		return false;
+	}
+	/**
+	 * @ignore
+	 */
 	function ParseToJS($eventTypeAsString, $ObjsId)
 	{
 		//Temporary solution until it parses

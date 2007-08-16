@@ -46,8 +46,16 @@ class RadioButtonGroup extends RolloverGroup
 	}
 	function SetSelectedIndex($index)
 	{
+		$this->RadioButtons[$index]->Checked = true;
 	}
-	function GetSelectedIndex(){return $this->SelectedIndex;}
+	function GetSelectedIndex()
+	{
+		$tmpCount = $this->RadioButtons->Count();
+		for($i = 0;  $i < $tmpCount; $i++)
+			if($this->RadioButtons->Item[$i]->Checked == true)
+				return $i;
+		return -1;
+	}
 	function GetSelectedValue()
 	{
 		$tmpCount = $this->RadioButtons->Count();

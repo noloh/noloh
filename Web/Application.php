@@ -39,14 +39,15 @@ final class Application
 	/**
 	* Resets Application to original state
 	*/
-	public static function Reset()
+	public static function Reset($clearURLTokens = true)
 	{
 		session_destroy();
 		session_unset();
-		if(GetBrowser()=="ie")
-			print('/*~NScript~*/location.reload(true);');
+		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
+		if(GetBrowser()=='ie')
+			print('/*~NScript~*/location.replace('.$url.');');
 		else
-			print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = location.href; frm.method = "post"; document.body.appendChild(frm); frm.submit();');
+			print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = '.$url.'; frm.method = "post"; document.body.appendChild(frm); frm.submit();');
 		die();
 	}
 	
@@ -75,7 +76,7 @@ final class Application
 					//print("alert('" . $_SESSION['NOLOHVisit'] . " vs " . $_POST['NOLOHVisit'] . "');");
 				//	print("location.reload(true);");
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
-					self::Reset();
+					self::Reset(false);
 				session_destroy();
 				session_unset(); 
 				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
@@ -149,7 +150,7 @@ final class Application
 		{
 			$control = &$GLOBALS['OmniscientBeing'][$id];
 			if(!isset($_SESSION['NOLOHGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
-				AddScript("_NAsc('$id')");
+				AddScript("_NAsc('$id')", Priority::Low);
 			unset($GLOBALS['OmniscientBeing'][$id]);
 		}
 		$_SESSION['NOLOHGarbage'] = array();

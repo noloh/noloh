@@ -57,8 +57,21 @@ class GroupedInputControl extends Control
 	}
 	function SetChecked($bool)
 	{
-		$this->Checked = $bool ? true : null;
-		NolohInternal::SetProperty('checked', $bool, $this);
+		$newChecked = $bool ? true : null;
+		if($this->Checked != $newChecked)
+		{
+			$group = GetComponentById($this->GroupName);
+			if($bool && $group instanceof RadioButtonGroup)
+			{
+				$selectedIndex = $group->GetSelectedIndex();
+				if($selectedIndex != -1)
+					$group->RadioButtons[$selectedIndex]->SetChecked(false);
+			}
+			$this->Checked = $newChecked;
+			NolohInternal::SetProperty('checked', $bool, $this);
+			if(!$this->Change->Blank())
+				$this->Change->Exec();
+		}
 	}
 	function SetLeft($newLeft)
 	{
@@ -107,7 +120,7 @@ class GroupedInputControl extends Control
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/GroupedInputControl.js");
 		AddNolohScriptSrc('GroupedInputControl.js');
-		if(GetBrowser()=="ie")
+		if(GetBrowser()=='ie')
 			NolohInternal::SetProperty('defaultChecked', $this->Checked, $this);
 		$parentShow = parent::Show();
 		$this->Caption->Show();

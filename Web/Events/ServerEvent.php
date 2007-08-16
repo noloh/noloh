@@ -113,6 +113,13 @@ class ServerEvent extends Event
 			: '';
 	}
 	/**
+	 * @ignore
+	 */
+	function Blank()
+	{
+		return false;
+	}
+	/**
 	 * Launches the particular event. That is, the specified function will be called on the specified object or class 
 	 * using the specified parameters.
 	 * <code>

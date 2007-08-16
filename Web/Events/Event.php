@@ -193,7 +193,7 @@ class Event extends Object implements ArrayAccess
 	 */
 	function Blank()
 	{
-		return (get_class($this)=='Event' && count($this->ExecuteFunction)==0);
+		return count($this->ExecuteFunction)==0;
 	}
 	/**
 	 * @ignore

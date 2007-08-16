@@ -278,6 +278,9 @@ function _NSave(id, propertyString, newValue)
 		case "style.display":
 			NOLOHChanges[id][propertyString][0] = newValue == "" ? true : "System::Vacuous";
 			break;
+		case "checked":
+			NOLOHChanges[id][propertyString][0] = newValue ? 1 : 0;
+			break;
 		default:
 			NOLOHChanges[id][propertyString][0] = newValue;
 	}
@@ -316,20 +319,15 @@ function RemoveOptionAndSave(id, index)
 	_NSave(id, "options", ImplodeOptions(tempObj.options));
 }
 
-function RadioButtonSave(id)
-{
-	var radio = document.getElementById(id);
-	var radioGroup = document.getElementsByName(radio.name);
-	for(var i=0; i < radioGroup.length; i++)
-		_NSave(radioGroup[i].id, "checked", radioGroup[i].id == id);
-}
-
 function _NSetP(id, nameValuePairs)
 {
 	var i = 0;
 	var obj = document.getElementById(id);
 	while(i<nameValuePairs.length)
-		NOLOHChangeByObj(obj, nameValuePairs[i++], nameValuePairs[i++]);
+	{
+		NOLOHChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
+		SavedControls[id][nameValuePairs[i++]] = nameValuePairs[i++]; 
+	}
 }
 
 function _NAdd(addTo, tag, nameValuePairs)
@@ -368,12 +366,15 @@ function GetChanges()
 	var changes = "", distinctId, property;
 	for(distinctId in NOLOHChanges)
 		for(property in NOLOHChanges[distinctId])
+		{
 			if(NOLOHChanges[distinctId][property][0] != SavedControls[distinctId][property])
 			{
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
 				changes += distinctId + "~d1~" + ConversionArray[property] + "~d1~" + NOLOHChanges[distinctId][property][0] + "~d0~";
-				delete NOLOHChanges[distinctId][property];
 			}
+			//delete NOLOHChanges[distinctId][property];
+		}
+	NOLOHChanges = new Object();
 	return changes.substring(0,changes.length-4);
 }
 
