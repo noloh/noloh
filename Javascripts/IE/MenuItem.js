@@ -79,8 +79,8 @@ function HideAllMenuItemChildren(whatMenuItemId, IsClick, changeColor)
 		for(var i=0; i < ChildMenu.ChildrenArray.length; ++i)
 			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], IsClick, changeColor);
 		OpenMenuItem.IsSelected = null;
-		if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && menuWasDeactivated != true && changeColor == true))
-			ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");
+		/*if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && menuWasDeactivated != true && changeColor == true))
+			ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");*/
 		ChangeAndSave(ChildMenu.id, "style.visibility", "hidden");
 	}
 	OpenMenuItem.IsSelected = null;

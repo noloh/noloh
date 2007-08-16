@@ -6,10 +6,6 @@ class MenuItem extends Container
 {
 	//public $RolloverImage;
 	//public $Checked;
-	public $OverBackColor = '#316AC5';
-	public $OutBackColor = 'transparent';
-	public $OverTextColor = '#FFFFFF';
-	public $OutTextColor = '#000000';
 	public $DefaultItem;
 	public $MainMenuPanel;
 	public $MenuItems;
@@ -32,18 +28,19 @@ class MenuItem extends Container
 		$this->MainMenuPanel->ClientVisible = false;
 		$this->MenuItems = &$this->MainMenuPanel->Controls;
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';
-		
+		$this->SetOutBackColor();
+		$this->SetOutTextColor();
+		$this->SetOverBackColor();
+		$this->SetOverTextColor();
 		//New Way
-		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false); document.getElementById('{$this->TextLabel->Id}').style.background = '{$this->OverBackColor}'; document.getElementById('{$this->TextLabel->Id}').style.color = '{$this->OverTextColor}';");
-		//$this->MouseOut = new ClientEvent("ChangeMenuOutColors('{$this->Id}','{$this->OutBackColor}', '{$this->OutTextColor}')");
-		$this->TextLabel->MouseOut[] = new ClientEvent("document.getElementById('{$this->TextLabel->Id}').style.background = '{$this->OutBackColor}'; document.getElementById('{$this->TextLabel->Id}').style.color = '{$this->OutTextColor}';");
+		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false);");
 		$this->Controls->AddRange($this->TextLabel, $this->MainMenuPanel);
 	}
 	function AddMenuItem(MenuItem $menuItem)
 	{
 		if($this->MainMenuPanel->Controls->Count() > 0)
 		{
-			$menuItem->Top = $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->Top + $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->Height;
+			$menuItem->Top = $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->GetTop() + $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->GetHeight();
 			$menuItem->MainMenuPanel->SetTop($menuItem->GetTop());
 		}
 		else
@@ -58,7 +55,7 @@ class MenuItem extends Container
 		{
 			$this->MainMenuPanel->Width = $menuItem->Width;
 			$tmpCount = $this->MainMenuPanel->Controls->Count();
-			for($i=0; $i<$tmpCount;$i++)
+			for($i=0; $i<$tmpCount; ++$i)
 				$this->MainMenuPanel->Controls->Item[$i]->Width = $menuItem->Width; 
 		}
 		else
@@ -90,9 +87,9 @@ class MenuItem extends Container
 		$this->SetLeft($image->Right);
 		$this->Controls->Add($image);
 	}
-	function GetText()		{return $this->TextLabel->Text;}
-	function SetText($text)	{$this->TextLabel->Text = $text;}
-	function GetLeft()		{return $this->TextLabel->Left;}
+	function GetText()		{return $this->TextLabel->GetText();}
+	function SetText($text)	{$this->TextLabel->SetText($text);}
+	function GetLeft()		{return $this->TextLabel->GetLeft();}
 	function SetLeft($left)
 	{
 		$this->TextLabel->SetLeft($left);
@@ -104,22 +101,35 @@ class MenuItem extends Container
 	function GetHeight()	{return $this->TextLabel->GetHeight();}
 	function GetWidth()		{return $this->TextLabel->GetWidth();}
 	function SetWidth($newWidth)			{$this->TextLabel->SetWidth($newWidth);}
-	function SetBackColor($backColor)		{$this->TextLabel->SetBackColor($this->OutTextColor);}
-	function SetOutTextColor($outTextColor)	{$this->TextLabel->SetColor($this->OutTextColor);}
-	function SetOutOverTextColor($overTextColor){$this->TextLabel->SetColor($this->OutTextColor);}
+	function SetBackColor($backColor)		{$this->TextLabel->SetBackColor($backColor);}
 	function GetMouseOver()	{return $this->TextLabel->MouseOver;}
 	function GetMouseOut()	{return $this->TextLabel->MouseOut;}
 	function GetClick()		{return $this->TextLabel->Click;}
 	function SetMouseOver($event)	{$this->TextLabel->SetMouseOver($event);}
 	function SetMouseOut($event)	{$this->TextLabel->SetMouseOut($event);}
 	function SetClick($event)		{$this->TextLabel->SetClick($event);}
+	function SetPositionType($positionType)		{$this->TextLabel->SetPositionType($positionType);}
+	function SetOutTextColor($color='#000000')	
+	{
+		$this->TextLabel->SetColor($color);
+		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+	}
+	function SetOverTextColor($color='#FFFFFF')
+	{
+		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+	}
+	function SetOutBackColor($color='transparent')	
+	{
+		$this->TextLabel->SetBackColor($color);
+		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+	}
+	function SetOverBackColor($color='#316AC5')
+	{
+		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+	}
 	
 	function Show()
 	{
-		/*if(GetBrowser() == "ie")
-			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/IEMenuItem.js");
-		else
-			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MozillaMenuItem.js");	*/
 		AddNolohScriptSrc('MenuItem.js', true);
 		parent::Show();	
 	}
