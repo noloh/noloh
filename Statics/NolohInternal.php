@@ -113,7 +113,7 @@ final class NolohInternal
 					$nameValPairsString = "";
 					foreach($nameValPairs as $name => $eventType)
 						$nameValPairsString .= "'$name','".$markupPanel->GetEventString($eventType, $objId)."',";
-					AddScript("_NSetP('$objId',Array(".rtrim($nameValPairsString,",")."))");
+					AddScript("_NSetPEvtee('$objId',Array(".rtrim($nameValPairsString,",")."))");
 				}
 			}
 		}

@@ -278,8 +278,16 @@ function _NSetP(id, nameValuePairs)
 	while(i<nameValuePairs.length)
 	{
 		NOLOHChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
-		SavedControls[id][nameValuePairs[i++]] = nameValuePairs[i++]; 
+		SavedControls[id][nameValuePairs[i++]] = nameValuePairs[i++];
 	}
+}
+
+function _NSetPEvtee(id, nameValuePairs)
+{
+	var i = 0;
+	var obj = document.getElementById(id);
+	while(i<nameValuePairs.length)
+		NOLOHChangeByObj(obj, nameValuePairs[i++], nameValuePairs[i++]);
 }
 
 function _NAdd(addTo, tag, nameValuePairs)
@@ -310,7 +318,8 @@ function _NRes(id, parentId)
 function _NAsc(id)
 {
 	var ele = document.getElementById(id);
-	ele.parentNode.removeChild(ele);
+	if(ele)
+		ele.parentNode.removeChild(ele);
 }
 
 function GetChanges()
