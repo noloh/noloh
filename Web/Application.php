@@ -54,11 +54,7 @@ final class Application
 	public function Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine)
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
-		//Alert(hash('md5', $_SERVER['PHP_SELF']));
-		//ini_set('session.gc_probability', 50);
 		session_start();
-		//header("Content-type: text/javascript");
-		//ini_set('zlib_output_compression','On');
 		$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['NOLOHTokenTrailsExpiration'] = $tokenTrailsExpiration;
 		if(isset($_GET['NOLOHImage']))
@@ -70,11 +66,8 @@ final class Application
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
 			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
-			  ((!isset($_POST['NOLOHVisit']) || !isset($_POST['NOLOHServerEvent']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
+			  ((!isset($_POST['NOLOHVisit']) || /*!isset($_POST['NOLOHServerEvent']) || */!isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 			{
-				//if(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit'])
-					//print("alert('" . $_SESSION['NOLOHVisit'] . " vs " . $_POST['NOLOHVisit'] . "');");
-				//	print("location.reload(true);");
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset(false);
 				session_destroy();

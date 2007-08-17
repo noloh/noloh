@@ -75,7 +75,6 @@ function _NInit(loadLblId, loadImgId)
 function CheckURL()
 {
 	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerText;
-	//alert(inner);
 	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner/* && _NHash.charAt(1)=="/" && _NInnerHas.charAt(1)=="/"*/))
 		//if(/*document.body.NOLOHPostingBack && */location.href.indexOf('#')==location.href.length-1)
 		//{
@@ -96,7 +95,7 @@ function CheckURL()
 			req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
 			location = inner;
-			_NHash = location.hash;
+            _NHash = location.hash;
 			_NURL = location.href;
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
