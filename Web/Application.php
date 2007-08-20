@@ -144,7 +144,7 @@ final class Application
 			$control = &$GLOBALS['OmniscientBeing'][$id];
 			if(!isset($_SESSION['NOLOHGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
 				AddScript("_NAsc('$id')", Priority::Low);
-			unset($GLOBALS['OmniscientBeing'][$id]);
+			unset($OmniscientBeing[$id]);
 		}
 		$_SESSION['NOLOHGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);

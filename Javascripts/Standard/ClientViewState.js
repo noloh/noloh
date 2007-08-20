@@ -320,6 +320,8 @@ function _NAsc(id)
 	var ele = document.getElementById(id);
 	if(ele)
 		ele.parentNode.removeChild(ele);
+	else
+		alert("ele problem: " + id);
 }
 
 function GetChanges()

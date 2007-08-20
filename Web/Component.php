@@ -64,6 +64,17 @@ abstract class Component extends Object
 			$this->ShowStatus = 0;
 	}
 	/**
+	 * @ignore
+	 */
+	function SecondGuessParent()
+	{
+		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
+		{
+			$this->ParentId = null;
+			unset($_SESSION['NOLOHControlQueue'][$id]);
+		}
+	}
+	/**
 	 * Gets the Id of the immediate Parent Component
 	 * @return string 
 	 */
@@ -96,7 +107,7 @@ abstract class Component extends Object
 	 */
 	function GetParent($generation = 1)
 	{
-		if($this->ParentId == '')
+		if($this->ParentId == null)
 			return null;
 		if(is_int($generation))
 		{

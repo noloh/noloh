@@ -146,9 +146,9 @@ class ListView extends Panel
 	public function ClearListViewItems()
 	{
 		$this->ListViewItems->Clear(true);
-		$bodyPanelsCount = $this->BodyPanels->Count;
-		for($i=0; $i<$bodyPanelsCount; ++$i)
-			$this->BodyPanels[$i]->Controls->Clear();
+		//$bodyPanelsCount = $this->BodyPanels->Count;
+		//for($i=0; $i<$bodyPanelsCount; ++$i)
+		//	$this->BodyPanels[$i]->Controls->Clear();
 		$this->LVItemsQueue = array();
 	}
 	public function Clear()
@@ -159,7 +159,6 @@ class ListView extends Panel
 	}
 	function Show()
 	{
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListView.js");
 		AddNolohScriptSrc('ListView.js');
 		parent::Show();
 	}
@@ -188,25 +187,4 @@ class ListView extends Panel
 //		for($i=0; $i< $tmpCount; $i++)
 //			$this->DataTable->Rows[$i] = $tempRows[$tempArrayKeys[$i]];
 //	}
-//	public function ClearListView()
-//	{
-//		$this->Items->Clear();
-//		$this->DataTable->Rows->Clear();
-//		$this->ResizeImages->Clear();
-//		/*for($i = 0; $i < $this->Columns->Count(); $i++)
-//		{
-//			//$this->ResizeImages[$i]->Shifts[] = Shift::Left($this->ResizeImages[$i]);
-//			$this->ResizeImages[$i]->Shifts[] = Shift::Width($this->Columns[$i]);
-//			for($j=0; $j < $this->ResizeImages->Count(); $i++)
-//			{
-//				if($j != $i)
-//					$this->ResizeImages->Item[$j]->Shifts[] = Shift::Left($this->Columns[$j]);
-//				$this->ResizeImages->Item[$j]->Shifts[] = Shift::Left($this->ResizeImages[$j]);
-//			}
-//		}*/
-//		$this->ListViewItems->Clear();
-//		$this->ColumnPanel->Controls->Clear();
-//		$this->Columns->Clear();
-//	}
-//}
 ?>

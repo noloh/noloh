@@ -22,6 +22,11 @@ final class NolohInternal
 			{
 				$splitStr = explode("i", $control->GetParentId(), 2);
 				$parent = GetComponentById($splitStr[0]);
+				if(!$parent)
+				{
+					$control->SecondGuessParent();
+					return;
+				}
 			}
 			if($parent->GetShowStatus()!==0)
 			{
