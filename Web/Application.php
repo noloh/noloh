@@ -238,20 +238,29 @@ final class Application
 		//$runThisString = 'return GetComponentById($splitEvent[1])->' . $splitEvent[0] . '->Exec(false);';
 		//eval($runThisString);
 	}
-	
+
 	private function HandleTokens()
 	{
 		unset($_GET['NOLOHVisit'], $_GET['NWidth'], $_GET['NHeight']);
 		if($GLOBALS['NOLOHURLTokenMode'] == 1)
 			$_SESSION['NOLOHTokens'] = $_GET;
-		elseif($GLOBALS['NOLOHURLTokenMode'] == 2)
+		if($GLOBALS['NOLOHURLTokenMode'] == 2)
 		{
-			$split = explode('&', base64_decode(key($_GET)));
-			$count = count($split);
-			for($i=0; $i<$count; $i++)
+			$keys = array_keys($_GET);
+			$ubound = count($keys) - 1;
+			for($i=0; $i<$ubound; ++$i)
+				$_SESSION['NOLOHTokens'][$keys[$i]] = $_GET[$keys[$i]];
+			if($_GET[$keys[$ubound]]!='')
+				$_SESSION['NOLOHTokens'][$keys[$ubound]] = $_GET[$keys[$ubound]];
+			else
 			{
-				$split2 = explode('=', $split[$i].'=');
-				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+				$split = explode('&', base64_decode($keys[$ubound]));
+				$count = count($split);
+				for($i=0; $i<$count; ++$i)
+				{
+					$split2 = explode('=', $split[$i].'=');
+					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+				}
 			}
 		}
 	}
