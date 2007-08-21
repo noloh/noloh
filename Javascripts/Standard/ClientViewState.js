@@ -290,14 +290,24 @@ function _NSetPEvtee(id, nameValuePairs)
 		NOLOHChangeByObj(obj, nameValuePairs[i++], nameValuePairs[i++]);
 }
 
-function _NAdd(addTo, tag, nameValuePairs)
+function _NAdd(addTo, tag, nameValuePairs, beforeId)
 {
 	var elt = document.createElement(tag);
 	elt.style.position = "absolute";
 	var i = 0;
 	while(i<nameValuePairs.length)
 		NOLOHChangeByObj(elt, nameValuePairs[i++], nameValuePairs[i++]);
-	document.getElementById(addTo).appendChild(elt);
+	addTo = document.getElementById(addTo);
+	if(typeof beforeId == "undefined")
+		addTo.appendChild(elt);
+	else
+	{
+		var before = document.getElementById(beforeId);
+		if(before && before.parentNode == addTo)
+			addTo.insertBefore(elt, before);
+		else
+			addTo.appendChild(elt);
+	}
 	SaveControl(elt.id);
 }
 

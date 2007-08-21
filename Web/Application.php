@@ -115,6 +115,7 @@ final class Application
 		$_SESSION['NOLOHVisit'] = -1;
 		$_SESSION['NOLOHNumberOfComponents'] = 0;
 		$_SESSION['NOLOHControlQueue'] = array();
+		$_SESSION['NOLOHControlInserts'] = array();
 		$_SESSION['NOLOHFunctionQueue'] = array();
 		$_SESSION['NOLOHPropertyQueue'] = array();
 		$_SESSION['NOLOHScript'] = array('', '', '');
@@ -250,7 +251,7 @@ final class Application
 			$ubound = count($keys) - 1;
 			for($i=0; $i<$ubound; ++$i)
 				$_SESSION['NOLOHTokens'][$keys[$i]] = $_GET[$keys[$i]];
-			if($_GET[$keys[$ubound]]!='')
+			if($_GET[$keys[$ubound]] != '')
 				$_SESSION['NOLOHTokens'][$keys[$ubound]] = $_GET[$keys[$ubound]];
 			else
 			{

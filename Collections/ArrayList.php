@@ -130,6 +130,8 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	function Insert($element, $index)
 	{
 		$oldItems = $this->Item;
+		if($this->ParentId != null && $element instanceof Component && isset($oldItems[$index]) && $oldItems[$index] instanceof Component)
+			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldItems[$index]->Id;
 		$this->Item = array_slice($this->Item, 0, $index);
 		$this->Add($element, true, true);
 		$this->Item = array_merge($this->Item, array_slice($oldItems, $index));
