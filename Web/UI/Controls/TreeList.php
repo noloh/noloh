@@ -5,7 +5,6 @@
 class TreeList extends Panel 
 {
 	public $TreeNodesList;
-	public $Multiple;
 	public $Nodes;
 	
 	function TreeList($left=0, $top=0, $width=200, $height=500)
@@ -18,7 +17,9 @@ class TreeList extends Panel
 		//$this->AutoScroll = true;
 		$this->Nodes = &$this->Controls;
 		$this->Nodes->AddFunctionName = 'AddNode';
-		//$this->Nodes->RemoveFunctionName = "RemoveNode";
+		$this->Nodes->InsertFunctionName = 'InsertNode';
+		$this->Nodes->RemoveAtFunctionName = 'RemoveNodeAt';
+		$this->Nodes->ClearFunctionName = 'Clear';
 	}
 	function AddNode(TreeNode $node)
 	{
@@ -27,18 +28,42 @@ class TreeList extends Panel
 		$this->AddNodeHelper($node);
 		return $node;
 	}
-	private function AddNodeHelper(TreeNode $node)
+	private function AddNodeHelper($node)
 	{
 		$node->SetTreeListId($this->Id);
-		$node->ListIndex = $this->TreeNodesList->Items->Count();
+		$node->SetListIndex($this->TreeNodesList->Items->Count());
 		$this->TreeNodesList->Items->Add(new Item($node->Id, $node->NodeElement->Id));
 		$nodeControlCount = $node->NodePanel->Controls->Count();
 		for($i = 0; $i < $nodeControlCount; ++$i)
 			$this->AddNodeHelper($node->NodePanel->Controls->Item[$i]);
 	}
+	function InsertNode(TreeNode $node, $index)
+	{
+		$node->SetWidth($this->Width-20);
+		$nodesCount = $this->Nodes->Count();
+		$nodesDown = $node->GetLegacyLength()+1;
+		for($i=++$index; $i<$nodesCount; ++$i)
+			$this->Nodes->Item[$i]->MoveListIndexRecursively($nodesDown);
+		$this->Controls->Insert($node, $index, true);
+		$this->InsertNodeHelper($node, --$index);
+		return $node;
+	}
+	private function InsertNodeHelper($node, &$index)
+	{
+		$node->SetTreeListId($this->Id);
+		$node->SetListIndex($index);
+		$this->TreeNodesList->Items->Insert(new Item($node->Id, $node->NodeElement->Id), $index);
+		$nodeControlCount = $node->NodePanel->Controls->Count();
+		for($i = 0; $i < $nodeControlCount; ++$i)
+			$this->InsertNodeHelper($node->NodePanel->Controls->Item[$i], ++$index);
+	}
+	function RemoveNodeAt($index)
+	{
+		$this->Controls->Item[$index]->Remove();
+	}
 	function Clear()
 	{
-		$this->Controls->Clear();
+		$this->Controls->Clear(true);
 		$this->TreeNodesList->Items->Clear();
 		$this->Controls->Add($this->TreeNodesList, true, true);
 	}

@@ -158,7 +158,10 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		$idx = $this->IndexOf($element);
 		if($idx != -1)
 		{
-			$this->RemoveAt($idx);
+			if(func_num_args()==1 || !func_get_arg(1))
+				$this->RemoveAt($idx);
+			else
+				$this->RemoveAt($idx, true);
 			return true;
 		}
 		return false;

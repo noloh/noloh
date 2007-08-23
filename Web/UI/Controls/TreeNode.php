@@ -71,21 +71,23 @@ class TreeNode extends Panel
 		$this->NodePanel->SetVisible(0);
 		$this->Nodes = &$this->NodePanel->Controls;
 		$this->Nodes->AddFunctionName = 'AddNode';
-		//$this->Nodes->RemoveFunctionName = "RemoveNode";
+		$this->Nodes->InsertFunctionName = 'InsertNode';
+		$this->Nodes->RemoveAtFunctionName = 'RemoveNodeAt';
 		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->NodePanel->Id.'","'.$this->NodeIcon->Id.'","' . $this->Id . '")');
 		$this->Controls->Add($this->PlusMinus);
 		$this->Controls->Add($this->NodeElement);
 		$this->Controls->Add($this->NodeIcon);
 		$this->Controls->Add($this->NodePanel);
 	}
-	function AddNode(TreeNode $node)
+	private function AddNodeHelper($node, $lastNodeId=null)
 	{
 		$node->SetWidth($this->Width-20);
 		if($this->TreeListId != null)
 		{
 			$node->SetTreeListId($this->TreeListId);
 			$listNodes = &GetComponentById($this->TreeListId)->TreeNodesList->Items;
-			$lastNodeId = $this->GetRightBottomChildId();
+			if(!$lastNodeId)
+				$lastNodeId = $this->GetRightBottomChildId();
 			//for($node->SetListIndex(1); $listNodes->Item[$node->GetListIndex()-1]->Value!=$lastNodeId; $node->SetListIndex($node->GetListIndex()+1));
 			for($tmpLI=0; $listNodes->Item[$tmpLI]->Value!=$lastNodeId; $tmpLI++);
 			$node->SetListIndex($tmpLI+1);
@@ -108,11 +110,29 @@ class TreeNode extends Panel
 			else 
 				$this->NodeIcon->Src = $this->CloseSrc!=null ? $this->CloseSrc : TreeNode::GetDefaultCloseSrc();
 		}
-		//if(func_num_args()==1)
-			$this->NodePanel->Controls->Add($node, true, true);
+	}
+	function AddNode(TreeNode $node)
+	{
+		$this->AddNodeHelper($node);
+		$this->NodePanel->Controls->Add($node, true, true);
 		return $node;
 	}
-	function RemoveNode($idx)
+	function InsertNode(TreeNode $node, $index)
+	{
+		if(isset($this->NodePanel->Controls->Item[$index]))
+		{
+			$this->AddNodeHelper($node, $this->NodePanel->Controls->Item[$index]->GetRightBottomChildId());
+			$this->NodePanel->Controls->Insert($node, $index, true);
+			$nodesCount = $this->NodePanel->Controls->Count();
+		}
+		else
+		{
+			$this->AddNodeHelper($node);
+			$this->NodePanel->Controls->Add($node, true, true);
+		}
+		return $node;
+	}
+	function RemoveNodeAt($idx)
 	{
 		$this->NodePanel->Controls->Items[$idx]->Remove();
 	}
@@ -123,7 +143,7 @@ class TreeNode extends Panel
 		if($this->ParentNodeId != null)
 		{
 			$parentNode = $this->GetParentNode();
-			$parentNode->NodePanel->Controls->Remove($this);
+			$parentNode->NodePanel->Controls->Remove($this, true);
 			if($parentNode->NodePanel->Controls->Count() == 0)
 			{
 				$parentNode->PlusMinus->ClientVisible = false;
@@ -131,7 +151,7 @@ class TreeNode extends Panel
 			}
 		}
 		else 
-			$tList->Nodes->Remove($this);
+			$tList->Nodes->Remove($this, true);
 		$listNodes = $tList->TreeNodesList->Items;
 		for($i=0; $i<=$legacyLength; ++$i)
 			$listNodes->RemoveAt($this->ListIndex);
@@ -157,6 +177,14 @@ class TreeNode extends Panel
 			$index += $node->TellChildren($treeListId, $listNodes);
 		}
 		return $i;
+	}
+	
+	function MoveListIndexRecursively($by)
+	{
+		$this->SetListIndex($this->ListIndex + $by);
+		$nodesCount = $this->Nodes->Count();
+		for($i=0; $i<$nodesCount; ++$i)
+			$this->Nodes[$i]->MoveListIndexRecursively($by);
 	}
 
 	private function ForgetListDeeply()

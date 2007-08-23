@@ -118,7 +118,7 @@ class ImplicitArrayList extends ArrayList
 	function Remove($object, $onlyRemove = false)
 	{
 		if($this->RemoveFunctionName=='' || $onlyRemove)
-			return parent::Remove($object);
+			return parent::Remove($object, $onlyRemove);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->RemoveFunctionName}($object);
 		else
