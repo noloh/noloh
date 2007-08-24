@@ -181,63 +181,68 @@ final class Application
 	{
 		$GLOBALS['PropertyQueueDisabled'] = true;
 		//$runThisString = "";
-		$splitChanges = explode('~d0~', $_POST['NOLOHClientChanges']);
-		$numChanges = count($splitChanges);
-		for($i = 0; $i < $numChanges; $i++)
+		$componentChanges = explode('~d0~', $_POST['NOLOHClientChanges']);
+		$numComponents = count($componentChanges);
+		for($i = 0; $i < $numComponents; ++$i)
 		{
 			//$runThisString = 'GetComponentById($splitChange[0])->';
-			$splitChange = explode('~d1~', $splitChanges[$i]);
-			switch($splitChange[1])
-			{
-				// Strings
-				/*case "ViewMonth":
-				case "ViewYear":
-				case "Date":
-				case "Month":
-				case "Year":
-				case "Text":
-				case "Src":
-				case "BackColor":
-				case "Color":
-				case "ZIndex":
-				case "SelectedTab":
-					GetComponentById($splitChange[0])->{$splitChange[1]} = $splitChange[2];
-					//$runThisString .= $splitChange[1] . ' = "' . $splitChange[2] . '";';
-					break;*/
-				// Functions
-				/*case "KillLater":
-					if(GetComponentById($splitChange[0]) != null)
-						GetComponentById($splitChange[0])->Close();
-						/*$runThisString .= 'Close();';
-					else
-						$runThisString = "";
-					break;*/
-				//case "SelectedTab":
-				//	$runThisString .= 'SelectedIndex = GetComponentById($splitChange[0])->TabControlBar->Controls->IndexOf(GetComponentById($splitChange[2]));';
-					//break;
-				// Booleans
-				//case "Checked":
-				//case "ClientVisible":
-					//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
-					//break;
-				// Explode string to array
-				case 'Items':
-					GetComponentById($splitChange[0])->Items = self::ExplodeItems($splitChange[2]);
-					break;
-				case 'SelectedIndices':					
-					GetComponentById($splitChange[0])->SelectedIndices = self::ExplodeSelectedIndices($splitChange[2]);
-					break;
-					//$tmp = strpos($splitChange[1], "->");
-					//$runThisString = 'GetComponentById($splitChange[0])->';
-					//$runThisString .= $splitChange[1] . ' = $this->Explode' . ($tmp===false?$splitChange[1]:substr($splitChange[1], 0, $tmp)) . '("' . $splitChange[2] . '");';
-					//break;
-				case 'Text':
-					GetComponentById($splitChange[0])->Text = str_replace('~da~','&',$splitChange[2]);
-					break;
-				default:
-					//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
-					GetComponentById($splitChange[0])->{$splitChange[1]} = $splitChange[2];
-			}
+			$changes = explode('~d1~', $componentChanges[$i]);
+			$component = &GetComponentById($changes[0]);
+			$changeCount = count($changes) - 1;
+			//for($j = 0; $j < $changeCount; ++$j)
+			$j = 0;
+			while($j < $changeCount)
+				switch($changes[++$j])
+				{
+					// Strings
+					/*case "ViewMonth":
+					case "ViewYear":
+					case "Date":
+					case "Month":
+					case "Year":
+					case "Text":
+					case "Src":
+					case "BackColor":
+					case "Color":
+					case "ZIndex":
+					case "SelectedTab":
+						GetComponentById($splitChange[0])->{$splitChange[1]} = $splitChange[2];
+						//$runThisString .= $splitChange[1] . ' = "' . $splitChange[2] . '";';
+						break;*/
+					// Functions
+					/*case "KillLater":
+						if(GetComponentById($splitChange[0]) != null)
+							GetComponentById($splitChange[0])->Close();
+							/*$runThisString .= 'Close();';
+						else
+							$runThisString = "";
+						break;*/
+					//case "SelectedTab":
+					//	$runThisString .= 'SelectedIndex = GetComponentById($splitChange[0])->TabControlBar->Controls->IndexOf(GetComponentById($splitChange[2]));';
+						//break;
+					// Booleans
+					//case "Checked":
+					//case "ClientVisible":
+						//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
+						//break;
+					// Explode string to array
+					case 'Items':
+						$component->Items = self::ExplodeItems($changes[++$j]);
+						break;
+					case 'SelectedIndices':					
+						$component->SelectedIndices = self::ExplodeSelectedIndices($changes[++$j]);
+						break;
+						//$tmp = strpos($splitChange[1], "->");
+						//$runThisString = 'GetComponentById($splitChange[0])->';
+						//$runThisString .= $splitChange[1] . ' = $this->Explode' . ($tmp===false?$splitChange[1]:substr($splitChange[1], 0, $tmp)) . '("' . $splitChange[2] . '");';
+						//break;
+					case 'Text':
+						$component->Text = str_replace('~da~', '&', $changes[++$j]);
+						break;
+					default:
+						//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
+						$component->{$changes[$j]} = $changes[++$j];
+				}
 			//echo $runThisString;
 			//eval($runThisString);
 		}

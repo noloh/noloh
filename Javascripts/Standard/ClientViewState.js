@@ -330,23 +330,26 @@ function _NAsc(id)
 	var ele = document.getElementById(id);
 	if(ele)
 		ele.parentNode.removeChild(ele);
-	else
-		alert("ele problem: " + id);
 }
 
 function GetChanges()
 {
 	var changes = "", distinctId, property;
 	for(distinctId in NOLOHChanges)
+	{
+		changes += distinctId;
 		for(property in NOLOHChanges[distinctId])
 		{
 			if(NOLOHChanges[distinctId][property][0] != SavedControls[distinctId][property])
 			{
+				changes += "~d1~";
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
-				changes += distinctId + "~d1~" + ConversionArray[property] + "~d1~" + NOLOHChanges[distinctId][property][0] + "~d0~";
+				changes += /*distinctId + "~d1~" + */ConversionArray[property] + "~d1~" + NOLOHChanges[distinctId][property][0];
 			}
 			//delete NOLOHChanges[distinctId][property];
 		}
+		changes += "~d0~";
+	}
 	NOLOHChanges = new Object();
 	return changes.substring(0,changes.length-4);
 }
