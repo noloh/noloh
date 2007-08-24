@@ -129,6 +129,7 @@ final class Application
 			$_SESSION['NOLOHGarbage'],
 			$_SESSION['NOLOHStartUpPageClass'],
 			$_SESSION['NOLOHURL'],
+			$_SESSION['NOLOHTokens'],
 			$_SESSION['HighestZIndex'],
 			$_SESSION['LowestZIndex']);
 	}
@@ -149,6 +150,7 @@ final class Application
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
+		$_SESSION['NOLOHTokens'] = array();
 		$_SESSION['HighestZIndex'] = 0;
 		$_SESSION['LowestZIndex'] = 0;
 		UserAgentDetect::LoadInformation();
