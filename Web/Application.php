@@ -41,8 +41,9 @@ final class Application
 	*/
 	public static function Reset($clearURLTokens = true)
 	{
-		session_destroy();
-		session_unset();
+		//session_destroy();
+		//session_unset();
+		self::UnsetNolohSessionVars();
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
 		if(GetBrowser()=='ie')
 			print('/*~NScript~*/location.replace('.$url.');');
@@ -70,15 +71,17 @@ final class Application
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset(false);
-				session_destroy();
-				session_unset(); 
+				//session_destroy();
+				//session_unset(); 
+				self::UnsetNolohSessionVars();
 				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
 				return;
 			}
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 			{
 				$srcs = $_SESSION['NOLOHScriptSrcs'];
-				$_SESSION = array();
+				//$_SESSION = array();
+				self::UnsetNolohSessionVars();
 				$this->HandleFirstRun($className, $unsupportedURL, false);
 				$_SESSION['NOLOHScriptSrcs'] = $srcs;
 				//$_SESSION['NOLOHVisit'] = -1;
@@ -110,6 +113,25 @@ final class Application
 			$this->HandleFirstRun($className, $unsupportedURL);
 	}
 	
+	static function UnsetNolohSessionVars()
+	{
+		unset($_SESSION['NOLOHVisit'],
+			$_SESSION['NOLOHNumberOfComponents'],
+			$_SESSION['NOLOHControlQueue'],
+			$_SESSION['NOLOHControlInserts'],
+			$_SESSION['NOLOHFunctionQueue'],
+			$_SESSION['NOLOHPropertyQueue'],
+			$_SESSION['NOLOHScript'],
+			$_SESSION['NOLOHScriptSrcs'],
+			$_SESSION['NOLOHFiles'],
+			$_SESSION['NOLOHFileSend'],
+			$_SESSION['NOLOHGarbage'],
+			$_SESSION['NOLOHStartUpPageClass'],
+			$_SESSION['NOLOHURL'],
+			$_SESSION['HighestZIndex'],
+			$_SESSION['LowestZIndex']);
+	}
+	
 	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
 	{
 		$_SESSION['NOLOHVisit'] = -1;
@@ -125,8 +147,8 @@ final class Application
 		$_SESSION['NOLOHGarbage'] = array();
 		$_SESSION['NOLOHStartUpPageClass'] = $className;
 		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
-		SetGlobal('HighestZIndex', 0);
-		SetGlobal('LowestZIndex', 0);
+		$_SESSION['HighestZIndex'] = 0;
+		$_SESSION['LowestZIndex'] = 0;
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
 			if(/*true || */($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other'))

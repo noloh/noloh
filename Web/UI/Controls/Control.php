@@ -268,10 +268,15 @@ class Control extends Component
 	
 	function SetZIndex($newZIndex)
 	{
-		if($newZIndex > GetGlobal('HighestZIndex'))
-			SetGlobal('HighestZIndex', $newZIndex);
-		if($newZIndex < GetGlobal('LowestZIndex'))
-			SetGlobal('LowestZIndex', $newZIndex);
+		if($newZIndex > $_SESSION['HighestZIndex'])
+			$_SESSION['HighestZIndex'] = $newZIndex;
+		if($newZIndex < $_SESSION['LowestZIndex'])
+			$_SESSION['LowestZIndex'] = $newZIndex;
+		$this->_NSetZIndex($newZIndex);
+	}
+	
+	function _NSetZIndex($newZIndex)
+	{
 		$this->ZIndex = $newZIndex;
 		NolohInternal::SetProperty('style.zIndex', $newZIndex, $this);
 	}
@@ -678,14 +683,14 @@ class Control extends Component
 	*/
 	function BringToFront()
 	{
-		$this->SetZIndex(GetGlobal('HighestZIndex')+1);
+		$this->_NSetZIndex(++$_SESSION['HighestZIndex']);
 	}
 	/**
 	* Sends this Control to the back of whatever container it is in.
 	*/
 	function SendToBack()
 	{
-		$this->SetZIndex(GetGlobal('LowestZIndex')-1);
+		$this->_NSetZIndex(--$_SESSION['LowestZIndex']);
 	}
 	
 	function GetAddId()
