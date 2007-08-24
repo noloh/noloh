@@ -93,7 +93,7 @@ function CheckURL()
 			document.getElementById(_NLoadLbl).style.visibility = "visible";
 			req.onreadystatechange = processReqChange;
 			req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
-               + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
 			location = inner;
             _NHash = location.hash;
 			_NURL = location.href;

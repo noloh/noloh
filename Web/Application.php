@@ -123,6 +123,7 @@ final class Application
 			$_SESSION['NOLOHPropertyQueue'],
 			$_SESSION['NOLOHScript'],
 			$_SESSION['NOLOHScriptSrcs'],
+			$_SESSION['NOLOHGlobals'],
 			$_SESSION['NOLOHFiles'],
 			$_SESSION['NOLOHFileSend'],
 			$_SESSION['NOLOHGarbage'],
@@ -142,6 +143,7 @@ final class Application
 		$_SESSION['NOLOHPropertyQueue'] = array();
 		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHScriptSrcs'] = array();
+		$_SESSION['NOLOHGlobals'] = array();
 		$_SESSION['NOLOHFiles'] = array();
 		$_SESSION['NOLOHFileSend'] = array();
 		$_SESSION['NOLOHGarbage'] = array();
@@ -264,6 +266,8 @@ final class Application
 
 	private function HandleTokens()
 	{
+		if($GLOBALS['NOLOHURLTokenMode'] == 0)
+			return;
 		unset($_GET['NOLOHVisit'], $_GET['NWidth'], $_GET['NHeight']);
 		if($GLOBALS['NOLOHURLTokenMode'] == 1)
 			$_SESSION['NOLOHTokens'] = $_GET;
@@ -278,6 +282,31 @@ final class Application
 			else
 			{
 				$split = explode('&', base64_decode($keys[$ubound]));
+				$count = count($split);
+				for($i=0; $i<$count; ++$i)
+				{
+					$split2 = explode('=', $split[$i].'=');
+					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+				}
+			}
+		}
+		$query = explode('?', $_SERVER['REQUEST_URI']);
+		if(isset($query[1]) && $query[1]!=$_SERVER['QUERY_STRING'])
+		{
+			$query = $query[1];
+			$split = explode('&', $query);
+			$ubound = count($split) - 4;
+			for($i=0; $i<$ubound; ++$i)
+			{
+				$split2 = explode('=', $split[$i]);
+				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+			}
+			$split2 = explode('=', $split[$ubound]);
+			if($GLOBALS['NOLOHURLTokenMode'] == 1 || $split2[1] != '')
+				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+			else 
+			{
+				$split = explode('&', base64_decode($split2[0]));
 				$count = count($split);
 				for($i=0; $i<$count; ++$i)
 				{

@@ -44,7 +44,7 @@ function GetAbsolutePath($path)
 */
 function GetGlobal($name)
 {
-	return isset($_SESSION['NOLOHGlobal' . $name]) ? $_SESSION['NOLOHGlobal' . $name] : null;
+	return isset($_SESSION['NOLOHGlobals'][$name]) ? $_SESSION['NOLOHGlobals'][$name] : null;
 }
 /**
 * Gets a global that lasts as long as the application does, as opposed to PHP's globals that are forgotten as soon as the server is left.
@@ -53,7 +53,7 @@ function GetGlobal($name)
 */
 function SetGlobal($name, $value)
 {
-	$_SESSION['NOLOHGlobal' . $name] = &$value;
+	$_SESSION['NOLOHGlobals'][$name] = &$value;
 }
 /**
 * Alert a string specified by the $msg variable.
