@@ -39,11 +39,15 @@ final class Application
 	/**
 	* Resets Application to original state
 	*/
-	public static function Reset($clearURLTokens = true)
+	public static function Reset($clearURLTokens = true, $clearSessionVariables = true)
 	{
-		//session_destroy();
-		//session_unset();
-		self::UnsetNolohSessionVars();
+		if($clearSessionVariables)
+		{
+			session_destroy();
+			session_unset();
+		}
+		else
+			self::UnsetNolohSessionVars();
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
 		if(GetBrowser()=='ie')
 			print('/*~NScript~*/location.replace('.$url.');');
@@ -70,7 +74,7 @@ final class Application
 			  ((!isset($_POST['NOLOHVisit']) || /*!isset($_POST['NOLOHServerEvent']) || */!isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
-					self::Reset(false);
+					self::Reset(false, false);
 				//session_destroy();
 				//session_unset(); 
 				self::UnsetNolohSessionVars();
