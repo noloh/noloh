@@ -37,8 +37,10 @@ final class Application
 	}
 	
 	/**
-	* Resets Application to original state
-	*/
+	 * Resets Application to original state
+	 * @param boolean $clearURLTokens Whether the URL Tokens will be cleared out
+	 * @param boolean $clearSessionVariables Whether the session will be cleared out
+	 */
 	public static function Reset($clearURLTokens = true, $clearSessionVariables = true)
 	{
 		if($clearSessionVariables)
@@ -56,7 +58,7 @@ final class Application
 		die();
 	}
 	
-	public function Application($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine)
+	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration)
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
 		session_start();
@@ -78,7 +80,7 @@ final class Application
 				//session_destroy();
 				//session_unset(); 
 				self::UnsetNolohSessionVars();
-				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $recordingForSearchEngine);
+				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
 				return;
 			}
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
@@ -93,8 +95,6 @@ final class Application
 			}
 			//set_error_handler('NOLOHErrorHandler');
 			//set_exception_handler('NOLOHErrorHandler');
-			//$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
-			//$GLOBALS['NOLOHRecordingForSearchEngine'] = $recordingForSearchEngine;
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
