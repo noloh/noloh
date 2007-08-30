@@ -92,7 +92,12 @@ final class NolohInternal
 			elseif(is_numeric($val))
 				$nameValPairsString .= "'$name',".$val.",";
 			elseif(is_array($val))									// EVENTS!
-				$nameValPairsString .= "'$name','".GetComponentById($objId)->GetEventString($val[0])."',";
+			{
+				if(isset(Event::$Conversion[$name]))
+					$nameValPairsString .= "'".Event::$Conversion[$name]."','".GetComponentById($objId)->GetEventString($val[0])."',";
+				else 
+					$nameValPairsString .= "'$name'," . "function(event) {" . stripslashes(GetComponentById($objId)->GetEventString($val[0])) . "},";
+			}
 			elseif(is_bool($val))
 				$nameValPairsString .= "'$name',".($val?'true':'false').',';
 			elseif($val === null)

@@ -56,7 +56,7 @@ class ClientEvent extends Event
 	{
 		return $this->GetEnabled() 
 			? $this->ParseToJS($eventType, $ObjsId)
-			: "";
+			: '';
 	}
 	/**
 	 * @ignore
@@ -92,7 +92,7 @@ class ClientEvent extends Event
 	 */
 	function Exec(&$execClientEvents=true)
 	{
-		if(!isset($GLOBALS["PropertyQueueDisabled"]) && $execClientEvents && $this->Enabled===null)
+		if(!isset($GLOBALS['PropertyQueueDisabled']) && $execClientEvents && $this->Enabled===null)
 			AddScript($this->ExecuteFunction);
 	}
 }

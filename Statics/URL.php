@@ -108,7 +108,7 @@ final class URL
 				$trails[$initialURLString] = array();
 			}
 			$trails[$initialURLString][$tokenString] = true;
-			file_put_contents($file, base64_encode(serialize($trails)));
+			@file_put_contents($file, base64_encode(serialize($trails)));
 		}
 	}
 }

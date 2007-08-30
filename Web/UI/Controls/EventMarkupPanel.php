@@ -188,7 +188,7 @@ class EventMarkupPanel extends MarkupPanel
 		if($eventeeId == null)
 			return parent::UpdateEvent($eventType);
 		
-		NolohInternal::SetProperty(Event::ConvertToJS($eventType), $eventType, $eventeeId);
+		NolohInternal::SetProperty(Event::$Conversion[$eventType], $eventType, $eventeeId);
 	}
 	public function GetEvent($eventType, $eventeeId=null)
 	{

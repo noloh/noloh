@@ -69,36 +69,23 @@ class Event extends Object implements ArrayAccess
 	/**
 	 * @ignore
 	 */
-	private static $Conversion = array(
+	public static $Conversion = array(
 		'Change' => 'onchange',
 		'Click' => 'onclick',
 		'DoubleClick' => 'ondblclick',
-		//'DragCatch' => 'DragCatch',
+		'DragCatch' => 'DragCatch',
+		'KeyPress' => 'KeyPress',
 		'LoseFocus' => 'onblur',
 		'MouseDown' => 'onmousedown',
 		'MouseOut' => 'onmouseout',
 		'MouseOver' => 'onmouseover',
 		'MouseUp' => 'onmouseup',
-		//'ReturnKey' => 'onkeypress',
+		'ReturnKey' => 'ReturnKey',
 		'RightClick' => 'oncontextmenu',
 		'Load' => 'onload',
-		'Scroll' => 'onscroll'
+		'Scroll' => 'onscroll',
+		'TypePause' => 'TypePause'
 	);
-	
-	/**
-	 * @ignore
-	 */
-	static function ValidType($eventName)
-	{
-		return isset(self::$Conversion[$eventName]);
-	}
-	/**
-	 * @ignore
-	 */	
-	static function ConvertToJS($eventName)
-	{
-		return isset(self::$Conversion[$eventName]) ? self::$Conversion[$eventName] : $eventName;
-	}
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Event.
