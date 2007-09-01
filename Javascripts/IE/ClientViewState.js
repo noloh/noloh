@@ -386,15 +386,12 @@ function GetChanges()
 	{
 		changes += distinctId;
 		for(property in NOLOHChanges[distinctId])
-		{
 			if(NOLOHChanges[distinctId][property][0] != SavedControls[distinctId][property])
 			{
 				changes += "~d1~";
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
-				changes += /*distinctId + "~d1~" + */ConversionArray[property] + "~d1~" + NOLOHChanges[distinctId][property][0];
+				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + NOLOHChanges[distinctId][property][0];
 			}
-			//delete NOLOHChanges[distinctId][property];
-		}
 		changes += "~d0~";
 	}
 	NOLOHChanges = new Object();
