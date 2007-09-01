@@ -121,6 +121,7 @@ final class Application
 	{
 		unset($_SESSION['NOLOHVisit'],
 			$_SESSION['NOLOHNumberOfComponents'],
+			$_SESSION['NOLOHOmniscientBeing'],
 			$_SESSION['NOLOHControlQueue'],
 			$_SESSION['NOLOHControlInserts'],
 			$_SESSION['NOLOHFunctionQueue'],
