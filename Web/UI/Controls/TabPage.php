@@ -6,10 +6,10 @@ class TabPage extends Panel
 {
 	private $MyRolloverTab;
 	
-	function TabPage($whatName="TabPage", $whatLeft = 0, $whatTop = 0, $whatWidth = 100, $whatHeight = 100)
+	function TabPage($tabName="TabPage", $left = 0, $top = 0, $width = null, $height = null)
 	{
-		parent::Panel($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		$this->Text = $whatName;
+		parent::Panel($left, $top, $width, $height);
+		$this->Text = $tabName;
 		$this->SetRolloverTab();
 		/*if(GetBrowser() == "ie")
 		{
@@ -23,13 +23,13 @@ class TabPage extends Panel
 		}
 		else
 			$this->BgColor = "white";*/
-		$this->BackColor = "white";
+//		$this->BackColor = "white";
 	}
-	public function SetRolloverTab(RolloverTab $whatRolloverTab = null)
+	public function SetRolloverTab(RolloverTab $rolloverTab = null)
 	{
-		if($whatRolloverTab == null)
-			$whatRolloverTab = new RolloverTab($this->Text, null, null);
-		$this->MyRolloverTab = $whatRolloverTab;
+		if($rolloverTab == null)
+			$rolloverTab = new RolloverTab($this->Text, null, null);
+		$this->MyRolloverTab = $rolloverTab;
 	}
 	public function GetRolloverTab(){return $this->MyRolloverTab;}
 }

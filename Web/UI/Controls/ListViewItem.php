@@ -19,7 +19,8 @@ class ListViewItem extends Object //extends Component
 	{
 		$this->SubItems->Add((is_string($objOrText) || $objOrText == null)?$objOrText = new Label($objOrText, null, null, "100%"):$objOrText, true, true);
 		$objOrText->SetCSSClass("NLVItem");	
-//		$objOrText->PositionType = 2;
+		/*$objOrText->CSSFloat = 'left';
+		$objOrText->PositionType = 1;*/
 		if($this->ListViewId != null)
 			GetComponentById($this->ListViewId)->Update($this);
 	}

@@ -198,10 +198,10 @@ class RolloverTab extends Panel
 		AddNolohScriptSrc('RolloverTab.js');
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/RolloverTab.js");
 		//AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')", Priority::High);
-		//QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->OutTab->Id'", "'$this->SelectedTab->Id'");
+//		QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->OutTab->Id'", "'$this->SelectedTab->Id'");
 		AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')");
 		//Should it be?
-		//QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->Id'", "{$this->OutTab->Id}", "{$this->SelectedTab->Id}");
+//		QueueClientFunction($this, 'SetRolloverTabInitialProperties', array("'$this->Id'", "'{$this->OutTab->Id}'", "'{$this->SelectedTab->Id}'"));
 		parent::Show();
 	}
 }

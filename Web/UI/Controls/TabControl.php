@@ -16,7 +16,7 @@ class TabControl extends Panel
 	{
 		parent::Panel($left, $top, null, null);
 		$this->TabControlBar = new Panel(0, 0, null, 24);
-		$this->TabPagesPanel = new Panel(0, $this->TabControlBar->GetHeight(), null, ($this->Height - $this->TabControlBar->GetHeight()), $this);
+		$this->TabPagesPanel = new Panel(0, $this->TabControlBar->GetHeight(), null, ($height - $this->TabControlBar->GetHeight()), $this);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 		//$this->TabPagesPanel->CSSLeft_Border = "1px solid #91a7b7";
@@ -57,12 +57,11 @@ class TabControl extends Panel
 		if($selectedIndex != $this->SelectedIndex)
 		{
 			$this->SelectedIndex = $selectedIndex;
+			
 			//Need to address the following line, currenty it breaks TabControl - Asher
 			//$this->TabControlBar->Controls->Item[$whatSelectedIndex]->SetSelected(true);
 			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent
 			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$selectedIndex]->Id}'"), Priority::Low);
-			//AddScript("SetTabPage('{$this->Id}','{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}')", Priority::Low);
-			//AddScript("SetTabPage('{$this->Id}', '{$this->TabControlBar->Controls->Item[$this->SelectedIndex]->Id}','{$this->TabPagesPanel->Controls->Item[$this->SelectedIndex]->Id}')");
 		}
 	}
 	public function AddTabPage($tabPage)
@@ -78,9 +77,10 @@ class TabControl extends Panel
 		$temp->Left = (($tmpCount = $this->TabControlBar->Controls->Count()) > 0)?$this->TabControlBar->Controls->Item[$tmpCount -1]->Right:0;
 		$this->TabControlBar->Controls->Add($temp);
 		$this->TabPagesPanel->Controls->Add($tabPage, true, true);
-		if($this->TabPages->Count == 1)
+		if($this->TabPages->Count() == 1)
 			$this->SetSelectedIndex(0);
-		$tabPage->Visible = 0;
+		else
+			$tabPage->Visible = System::Vacuous;
 	}
 	public function GetTabAlignment(){return $this->TabAlignment;}
 	public function SetTabAlignment($tabAlignment)
@@ -102,7 +102,6 @@ class TabControl extends Panel
 	function Show()
 	{
 		AddNolohScriptSrc('TabControl.js');
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TabControlScripts.js");
 		parent::Show();
 	}
 }

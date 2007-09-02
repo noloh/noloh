@@ -8,7 +8,8 @@ class ListView extends Panel
 	public $Columns;
 	private $ColumnsPanel;
 	private $LVItemsQueue = array();
-	private $BodyPanelsHolder;
+	//Temporary Workaround, made this public, should be private - 
+	public $BodyPanelsHolder;
 	protected $BodyPanels;
 	
 	function GetColumnPanel(){return $this->ColumnsPanel;}
@@ -40,7 +41,7 @@ class ListView extends Panel
 			if($text->GetLeft() == System::Auto)
 				$text->SetLeft($tmpCount > 0?$this->Columns[$tmpCount-1]->GetRight():0);
 		}
-		$this->BodyPanels->Add($tmpPanel = new Panel($tmpColumn->GetLeft(), 0, $tmpColumn->GetWidth(), "100%"));
+		$this->BodyPanels->Add($tmpPanel = new Panel($tmpColumn->GetLeft(), 0, $tmpColumn->GetWidth(), null));
 		$tmpPanel->Scrolling = System::Full;
 		//$tmpColumn->SizeHandle->Shifts[] = Shift::Width($tmpPanel);
 		$tmpColumn->Shifts[] = Shift::Width($tmpPanel);
@@ -156,6 +157,17 @@ class ListView extends Panel
 		$this->ClearListViewItems();
 		$this->Columns->Clear();
 		$this->BodyPanels->Clear();
+	}
+	function GetDataBind()
+	{
+//		return $this->BodyPanelsHolder->GetEvent('DataBind');
+		return $this->GetEvent('DataBind');
+	}
+	
+	function SetDataBind($newEvent)
+	{
+//		$this->BodyPanelsHolder->SetEvent($newEvent, 'DataBind');
+		$this->SetEvent($newEvent, 'DataBind');
 	}
 	function Show()
 	{
