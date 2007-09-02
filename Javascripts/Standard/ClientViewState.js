@@ -343,7 +343,7 @@ function GetChanges()
 			{
 				changes += "~d1~";
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
-				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + NOLOHChanges[distinctId][property][0];
+				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + SavedControls[distinctId][property];
 			}
 		changes += "~d0~";
 	}
