@@ -20,7 +20,7 @@ class ListView extends Panel
 		$this->ColumnsPanel->CSSBackground_Image = "url(". NOLOHConfig::GetNOLOHPath() . "Web/UI/Controls/Images/Win/DataGridColumnHeaderBack.gif)";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;
-		$this->ListViewItems = new ImplicitArrayList($this, "AddListViewItem", "", "ClearListViewItems");
+		$this->ListViewItems = new ImplicitArrayList($this, 'AddListViewItem', '', 'ClearListViewItems');
 		$this->ListViewItems->InsertFunctionName = "InsertListViewItem";
 		$this->ListViewItems->ParentId = $this->Id;
 		$this->BodyPanelsHolder = new Panel(0, $this->ColumnsPanel->Bottom, $width, $height - $this->ColumnsPanel->Height);
@@ -144,17 +144,20 @@ class ListView extends Panel
 	{
 		$this->BodyPanelsHolder->Scroll = new ClientEvent("Noloh_UI_ListView_ScrollColumnPanel('{$this->BodyPanelsHolder->Id}', '{$this->ColumnPanel->Id}')");
 	}
-	public function ClearListViewItems()
+	public function ClearListViewItems($clearBodyPanels=true)
 	{
 		$this->ListViewItems->Clear(true);
-		//$bodyPanelsCount = $this->BodyPanels->Count;
-		//for($i=0; $i<$bodyPanelsCount; ++$i)
-		//	$this->BodyPanels[$i]->Controls->Clear();
+		if($clearBodyPanels)
+		{
+			$bodyPanelsCount = $this->BodyPanels->Count;
+			for($i=0; $i<$bodyPanelsCount; ++$i)
+				$this->BodyPanels[$i]->Controls->Clear();
+		}
 		$this->LVItemsQueue = array();
 	}
 	public function Clear()
 	{
-		$this->ClearListViewItems();
+		$this->ClearListViewItems(false);
 		$this->Columns->Clear();
 		$this->BodyPanels->Clear();
 	}
