@@ -92,25 +92,27 @@ class ListView extends Panel
 		$tmpSubItemCount = $listViewItem->SubItems->Count();
 		$tmpColCount = $this->Columns->Count();
 		$listViewItem->SetListView($this);
-////		if($this->ListViewItems[$idx] != null)
-////		{
-////			$tmpHeight = $this->ListViewItems[$idx]->GetHeight();
-////			$listV
-////		}
-		for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
+		if($tmpColCount > 0 && $tmpSubItemCount > 0)
 		{
-			if($listViewItem->SubItems->Item[$i] !== null)
+			$tmpTop = (($tmpBodyCount = $this->BodyPanels->Item[0]->Controls->Count()) > 0)?$this->BodyPanels->Item[0]->Controls[$tmpBodyCount-1]->GetBottom():0;
+			for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
 			{
-				$tmpBodyControls = &$this->BodyPanels->Item[$i]->Controls;
-				if($i == 0)
-					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop = ((($tmpBodyCount = $tmpBodyControls->Count) > 0)?$tmpBodyControls[$tmpBodyCount-1]->GetBottom():0));
-				else
+				if($listViewItem->SubItems->Item[$i] !== null)
+				{
+					$tmpBodyControls = &$this->BodyPanels->Item[$i]->Controls;
 					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop);
-
-				$tmpBodyControls->Add($listViewItem->SubItems[$i]);
-				$listViewItem->SubItems->Item[$i]->Left = 0;
-			}	
-			//}
+					$tmpBodyControls->Add($listViewItem->SubItems[$i]);
+					$listViewItem->SubItems->Item[$i]->Left = 0;
+				}	
+			}
+			/*$tmpHeight = $listViewItem->SubItems->Item[0]->GetHeight();
+			if(is_int($idx && $idx < $this->ListViewItems->Count -1))
+			{
+				$tmpCount = $this->ListViewItems->Count();
+				for($i=$idx; $i < $tmpCount; ++$i)
+					$this->ListView
+					
+			}*/
 		}
 	}
 	function Update(ListViewItem $listViewItem=null, $startColumn=null/*, $addToQueue=true*/)
@@ -163,13 +165,11 @@ class ListView extends Panel
 	}
 	function GetDataBind()
 	{
-//		return $this->BodyPanelsHolder->GetEvent('DataBind');
 		return $this->GetEvent('DataBind');
 	}
 	
 	function SetDataBind($newEvent)
 	{
-//		$this->BodyPanelsHolder->SetEvent($newEvent, 'DataBind');
 		$this->SetEvent($newEvent, 'DataBind');
 	}
 	function Show()
