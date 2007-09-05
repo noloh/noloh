@@ -48,7 +48,7 @@ class CheckBox extends GroupedInputControl
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		$preStr = "";
+		$preStr = '';
 		if($eventTypeAsString == 'Click')
 			$preStr = "_NSave(\"$this->Id\",\"checked\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);

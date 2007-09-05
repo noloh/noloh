@@ -141,7 +141,7 @@ abstract class ListControl extends Control
 	{
 		$this->Items->Insert($item, $index, true);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
-		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'$item->Text'", "'$item->Value'", $index), false);
+		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'$item->Text'", "'$item->Value'", is_numeric($index)?$index:"'$index'"), false);
 		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
 	/**
@@ -156,7 +156,7 @@ abstract class ListControl extends Control
 		//if(func_num_args()==1)
 			$this->Items->RemoveAt($index, true);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.remove", array($index), false);
-		QueueClientFunction($this, '_NListRem', array("'$this->Id'", $index), false);
+		QueueClientFunction($this, '_NListRem', array("'$this->Id'", is_numeric($index)?$index:"'$index'"), false);
 		//AddScript("document.getElementById('$this->Id').remove($index)");
 	}
 	/**

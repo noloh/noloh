@@ -118,6 +118,8 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	/**
 	 * Inserts an element into a particular index of the ArrayList, not overwriting what was previously there.
 	 * If the index is an integer, the ArrayList is reindexed to fill in the gap.
+	 * If the index is a string and there already is an element at the specified index, that element's index will be appended
+	 * with a ' (indicating prime), to make room for the element being inserted.
 	 * @param mixed $element The element to be inserted
 	 * @param integer|string $index The index into which your element will be added
 	 * @return mixed The element that has been added
@@ -125,6 +127,20 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	 * // Inserts a new Button into the zeroth index
 	 * $this->Controls->Insert(new Button('Click'), 0);
 	 * // The Controls ArrayList will now begin with the said button, followed by whatever else was there previously
+	 * </code><br>
+	 * <code>
+	 * // Instantiates a new ArrayList
+	 * $arr = new ArrayList();
+	 * // Inserts the string "a" into a string position in the ArrayList
+	 * $arr["ind"] = "a";
+	 * // Inserts the string "b" into the same string position in the ArrayList
+	 * $arr->Insert("b", "ind");
+	 * // Inserts the string "c" into the same string position in the ArrayList
+	 * $arr->Insert("c", "ind");
+	 * // At this point of the program:
+	 * // "c" will be in the position "ind"
+	 * // "b" will be in the position "ind'" 
+	 * // "a" will be in the position "ind''"
 	 * </code>
 	 */
 	function Insert($element, $index)
@@ -132,10 +148,27 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		$oldItems = $this->Item;
 		if($this->ParentId != null && $element instanceof Component && isset($oldItems[$index]) && $oldItems[$index] instanceof Component)
 			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldItems[$index]->Id;
-		$this->Item = array_slice($this->Item, 0, $index);
-		$this->Add($element, true, true);
-		$this->Item = array_merge($this->Item, array_slice($oldItems, $index));
+		if(is_numeric($index))
+		{
+			$this->Item = array_slice($this->Item, 0, $index);
+			$this->Add($element, true, true);
+			$this->Item = array_merge($this->Item, array_slice($oldItems, $index));
+		}
+		elseif(is_string($index)) 
+		{
+			$this->PreAdd($element);
+			$this->InsertIntoStringHelper($element, $index);
+		}
 		return $element;
+	}
+	/**
+	 * @ignore
+	 */
+	function InsertIntoStringHelper($element, $index)
+	{
+		if(isset($this->Item[$index]))
+			$this->InsertIntoStringHelper($this->Item[$index], $index . "'");
+		$this->Item[$index] = &$element;
 	}
 	/**
 	 * Removes an element at a particular index. 
