@@ -179,12 +179,8 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "KeyPress":
 		case "ReturnKey":
 		case "TypePause":
-			obj.onkeyup = function(event) 
+			obj.onkeypress = function(event) 
 			{
-				if(obj.KeyDown)
-					obj.KeyDown = null;
-				else
-					return;
 				_NSave(obj.id,'value',obj.value);
 				if(obj.ReturnKey != null && window.event.keyCode == 13)
 					obj.ReturnKey.call();
@@ -193,17 +189,19 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 					NOLOHKey = window.event.keyCode;
 					obj.KeyPress.call();
 				}
-				if(obj.TypePause != null/* && (window.event.keyCode < 37 || window.event.keyCode > 40)*/)
+				if(obj.TypePause != null && (window.event.keyCode < 37 || window.event.keyCode > 40))
 				{
 					clearTimeout(obj.TypePauseTimeout);
 					obj.TypePauseTimeout = setTimeout("var obj = document.getElementById('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
 				}
 			}
-			obj.onkeydown = function(event)
+			obj.onkeyup = function(event)
 			{
-				obj.KeyDown = true;
-				if(obj.TypePause != null)
+				if(window.event.keyCode == 8 && obj.TypePause != null)
+				{
 					clearTimeout(obj.TypePauseTimeout);
+					obj.TypePauseTimeout = setTimeout("var obj = document.getElementById('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
+				}
 			}
 		case "onblur":
 		case "onchange":
