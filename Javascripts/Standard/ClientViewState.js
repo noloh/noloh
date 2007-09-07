@@ -166,7 +166,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			eval("obj.oncontextmenu = function(event) {" + newValue + "; return false;}");
 			break;
 		case "onmousedown":
-			eval("obj.onmousedown = function(event) {if(obj.Shifts!=null) ShiftStart(event, obj.Shifts);" + newValue + ";}");
+			eval("obj.onmousedown = function(event) {" + newValue + "; if(obj.Shifts!=null) {if(obj.onclick!=null) obj.onclick.call(obj, event); ShiftStart(event, obj.Shifts);}}");
 			break;
 		case "DragCatch":
 			if(newValue == "")

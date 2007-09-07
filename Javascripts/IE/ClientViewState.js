@@ -179,8 +179,12 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "KeyPress":
 		case "ReturnKey":
 		case "TypePause":
-			obj.onkeypress = function(event) 
+			obj.onkeyup = function(event) 
 			{
+				if(obj.KeyDown)
+					obj.KeyDown = null;
+				else
+					return;
 				_NSave(obj.id,'value',obj.value);
 				if(obj.ReturnKey != null && window.event.keyCode == 13)
 					obj.ReturnKey.call();
@@ -194,6 +198,12 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 					clearTimeout(obj.TypePauseTimeout);
 					obj.TypePauseTimeout = setTimeout("var obj = document.getElementById('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
 				}
+			}
+			obj.onkeydown = function(event)
+			{
+				obj.KeyDown = true;
+				if(obj.TypePause != null)
+					clearTimeout(obj.TypePauseTimeout);
 			}
 		case "onblur":
 		case "onchange":
@@ -213,7 +223,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			eval("obj.oncontextmenu = function(event) {" + newValue + "; return false;}");
 			break;
 		case "onmousedown":
-			eval("obj.onmousedown = function(event) {if(obj.Shifts!=null) ShiftStart(obj.Shifts);" + newValue + ";}");
+			eval("obj.onmousedown = function(event) {" + newValue + "; if(obj.Shifts!=null) {if(obj.onclick!=null) obj.onclick.call(obj, event); ShiftStart(obj.Shifts);}}");
 			break;
 		case "DragCatch":
 			if(newValue == "")
