@@ -187,6 +187,20 @@ abstract class ListControl extends Control
 	/**
 	 * @ignore
 	 */
+	function Set_NItems($items)
+	{
+		$this->Items = new ArrayList();
+		$optionsArray = explode('~d3~', $optionsString);
+		$optionsCount = count($optionsArray);
+		for($i=0; $i<$optionsCount; $i++)
+		{
+			$option = explode('~d2~', $optionsArray[$i]);
+			$this->Items->Add(new Item($option[0], $option[1]));
+		}
+	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		foreach($this->Items as $item)

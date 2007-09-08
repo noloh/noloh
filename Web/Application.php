@@ -77,8 +77,6 @@ final class Application
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset(false, false);
-				//session_destroy();
-				//session_unset(); 
 				self::UnsetNolohSessionVars();
 				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
 				return;
@@ -86,11 +84,9 @@ final class Application
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 			{
 				$srcs = $_SESSION['NOLOHScriptSrcs'];
-				//$_SESSION = array();
 				self::UnsetNolohSessionVars();
 				$this->HandleFirstRun($className, $unsupportedURL, false);
 				$_SESSION['NOLOHScriptSrcs'] = $srcs;
-				//$_SESSION['NOLOHVisit'] = -1;
 				AddScript('NOLOHVisit=-1', Priority::High);
 			}
 			//set_error_handler('NOLOHErrorHandler');
@@ -185,20 +181,19 @@ final class Application
 	private function HandleClientChanges()
 	{
 		$GLOBALS['PropertyQueueDisabled'] = true;
-		//$runThisString = "";
 		$componentChanges = explode('~d0~', $_POST['NOLOHClientChanges']);
 		$numComponents = count($componentChanges);
 		for($i = 0; $i < $numComponents; ++$i)
 		{
-			//$runThisString = 'GetComponentById($splitChange[0])->';
 			$changes = explode('~d1~', $componentChanges[$i]);
 			$component = &GetComponentById($changes[0]);
-			$changeCount = count($changes) - 1;
-			//for($j = 0; $j < $changeCount; ++$j)
+			$changeCount = count($changes);
 			$j = 0;
-			while($j < $changeCount)
-				switch($changes[++$j])
-				{
+			while(++$j < $changeCount)
+				$component->{$changes[$j]} = $changes[++$j];
+			
+			//	switch($changes[++$j])
+			//	{
 					// Strings
 					/*case "ViewMonth":
 					case "ViewYear":
@@ -231,23 +226,23 @@ final class Application
 						//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
 						//break;
 					// Explode string to array
-					case 'Items':
-						$component->Items = self::ExplodeItems($changes[++$j]);
-						break;
-					case 'SelectedIndices':					
-						$component->SelectedIndices = self::ExplodeSelectedIndices($changes[++$j]);
-						break;
+				//	case 'Items':
+				//		$component->Items = self::ExplodeItems($changes[++$j]);
+				//		break;
+				//	case 'SelectedIndices':					
+				//		$component->SelectedIndices = self::ExplodeSelectedIndices($changes[++$j]);
+				//		break;
 						//$tmp = strpos($splitChange[1], "->");
 						//$runThisString = 'GetComponentById($splitChange[0])->';
 						//$runThisString .= $splitChange[1] . ' = $this->Explode' . ($tmp===false?$splitChange[1]:substr($splitChange[1], 0, $tmp)) . '("' . $splitChange[2] . '");';
 						//break;
-					case 'Text':
-						$component->Text = str_replace('~da~', '&', $changes[++$j]);
-						break;
-					default:
+				//	case 'Text':
+				//		$component->Text = str_replace('~da~', '&', $changes[++$j]);
+				//		break;
+				//	default:
 						//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
-						$component->{$changes[$j]} = $changes[++$j];
-				}
+				//		$component->{$changes[$j]} = $changes[++$j];
+				//}
 			//echo $runThisString;
 			//eval($runThisString);
 		}
@@ -269,11 +264,8 @@ final class Application
 		else 
 		{
 			$splitStr = explode('i', $splitEvent[1], 2);
-			//return;
 			return GetComponentById($splitStr[0])->ExecEvent($splitEvent[0], $splitEvent[1]);
 		}
-		//$runThisString = 'return GetComponentById($splitEvent[1])->' . $splitEvent[0] . '->Exec(false);';
-		//eval($runThisString);
 	}
 
 	private function HandleTokens()
@@ -332,20 +324,8 @@ final class Application
 	private function Run()
 	{
 		global $OmniscientBeing;
-		/*ini_set("zlib.output_compression", "On");
-		ini_set("zlib.output_compression_level", 1);
-		header("Content-Encoding: gzip");
-		header("Vary: Accept-Encoding");*/
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
-		/*global $HTTP_ACCEPT_ENCODING;
-		if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false)
-			header("Content-Encoding: x-gzip");
-		elseif (strpos($HTTP_ACCEPT_ENCODING,'gzip') !== false)
-			header("Content-Encoding: gzip");
-		else 
-			Alert("neeeeh");*/
-		//if(defined('FORCE_GZIP'))
 			
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
@@ -361,14 +341,9 @@ final class Application
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
 		$sendStr = '/*~NScript~*/' . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2];
-		//if(strstr($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator')!==false || strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')===false)
-		//	print($sendStr);
-		//elseif(defined('FORCE_GZIP'))
-		//	print(gzencode($sendStr,1));
 		print($sendStr);
 		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-		//print('alert("' . strlen($_SESSION['NOLOHOmniscientBeing']) . '")');
 		$GLOBALS['NOLOHGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['NOLOHGarbage']);
@@ -403,7 +378,7 @@ final class Application
 			$objs[] = GetComponentById($objectsIdArray[$i]);
 		return $objs;
 	}
-	
+	/*
 	private function ExplodeItems($optionsString)
 	{
 		$items = new ArrayList();
@@ -421,6 +396,7 @@ final class Application
 	{
 		return explode('~d2~', $indicesString);
 	}
+	*/
 }
 
 ?>

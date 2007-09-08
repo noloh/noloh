@@ -108,6 +108,13 @@ class ListBox extends ListControl
 	/**
 	 * @ignore
 	 */
+	function Set_NSelectedIndices($selectedIndices)
+	{
+		$this->SelectedIndices = explode('~d2~', $indicesString);
+	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");

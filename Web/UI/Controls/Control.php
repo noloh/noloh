@@ -521,6 +521,11 @@ class Control extends Component
 		NolohInternal::SetProperty('title', $newToolTip, $this);
 	}
 	
+	function Set_NText($text)
+	{
+		$this->Text = str_replace('~da~', '&', $text);
+	}
+	
 	//Event Functions
 	function GetChange()							{return $this->GetEvent('Change');}
 	function SetChange($newChange)					{$this->SetEvent($newChange, 'Change');}
