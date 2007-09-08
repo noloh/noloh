@@ -1,9 +1,14 @@
-function SelectNode(nodeId, event)
+function InitTreeList(id)
+{
+	var tree = document.getElementById(id);
+	tree.SelectedElements = Array();
+	tree.SelectedNodes = "";
+}
+
+function SelectNode(nodeId, elementId, event)
 {
 	var node = document.getElementById(nodeId);
-	var idx = node.ListIndex;
-	var listobj = document.getElementById(document.getElementById(node.ListId).treeNodesList);
-	var selIdx, i;
+	var tree = document.getElementById(node.ListId);
 	/*if(event.shiftKey)
 	{
 		
@@ -11,46 +16,37 @@ function SelectNode(nodeId, event)
 	else */
 	if(event.ctrlKey)
 	{
-		listobj.options[idx].selected = true;
-		ChangeAndSave(listobj.options[idx].text, "style.background", "#316AC5");
-		//document.getElementById(listobj.options[idx].text).style.background = "#316AC5";
-		ChangeAndSave(listobj.options[idx].text, "style.color", "#FFFFFF");
-		//document.getElementById(listobj.options[idx].text).style.color = "#FFFFFF";
+		tree.SelectedElements.push(elementId);
+		if(tree.SelectedNodes != "")
+			tree.SelectedNodes += "~d2~";
+		tree.SelectedNodes += elementId;
 	}
 	else
 	{
-		while(listobj.selectedIndex != -1)
+		for(i = 0; i < tree.SelectedElements.length; ++i)
 		{
-			selIdx = listobj.selectedIndex;
-			listobj.options[selIdx].selected = false;
-			ChangeAndSave(listobj.options[selIdx].text, "style.background", "transparent");
-			//document.getElementById(listobj.options[selIdx].text).style.background = "transparent";
-			ChangeAndSave(listobj.options[selIdx].text, "style.color", "#000000");
-			//document.getElementById(listobj.options[selIdx].text).style.color = "#000000";
+			ChangeAndSave(tree.SelectedElements[i], "style.background", "transparent");
+			ChangeAndSave(tree.SelectedElements[i], "style.color", "#000000");
 		}
-		//alert(nodeId + " " + idx);
-		listobj.options[idx].selected = true;
-		ChangeAndSave(listobj.options[idx].text, "style.background", "#316AC5");
-		//document.getElementById(listobj.options[idx].text).style.background = "#316AC5";
-		ChangeAndSave(listobj.options[idx].text, "style.color", "#FFFFFF");
-		//document.getElementById(listobj.options[idx].text).style.color = "#FFFFFF";
+		tree.SelectedElements = Array(elementId);
+		tree.SelectedNodes = nodeId;
 	}
-	ChangeAndSave(listobj.id, "selectedIndex", listobj.selectedIndex);
-	ChangeAndSave(listobj.id, "selectedIndices", ImplodeSelectedIndices(listobj.options));
-	//alert("select node finished");
+	_NSave(tree.id, "_NSelectedNodes", tree.SelectedNodes);
+	ChangeAndSave(elementId, "style.background", "#316AC5");
+	ChangeAndSave(elementId, "style.color", "#FFFFFF");
 }
 
-function PlusMinusChange(PanelId, IconId, NodeId)
+function PlusMinusChange(panelId, iconId, nodeId)
 {
-	var Node = document.getElementById(NodeId);
-	if(document.getElementById(PanelId).style.display=="")
+	var Node = document.getElementById(nodeId);
+	if(document.getElementById(panelId).style.display=="")
 	{
-		ChangeAndSave(PanelId, "style.display", "none");
-		ChangeAndSave(IconId, "src", Node.CloseSrc!=null?Node.CloseSrc:document.getElementById(Node.ListId).CloseSrc);
+		ChangeAndSave(panelId, "style.display", "none");
+		ChangeAndSave(iconId, "src", Node.CloseSrc!=null?Node.CloseSrc:document.getElementById(Node.ListId).CloseSrc);
 	}
 	else 
 	{
-		ChangeAndSave(PanelId, "style.display", "");
-		ChangeAndSave(IconId, "src", Node.OpenSrc!=null?Node.OpenSrc:document.getElementById(Node.ListId).OpenSrc);
+		ChangeAndSave(panelId, "style.display", "");
+		ChangeAndSave(iconId, "src", Node.OpenSrc!=null?Node.OpenSrc:document.getElementById(Node.ListId).OpenSrc);
 	}
 }

@@ -4,58 +4,37 @@
  */
 class TreeList extends Panel 
 {
-	public $TreeNodesList;
 	public $Nodes;
+	private $SelectedNodes;
+	private $OpenSrc;
+	private $CloseSrc;
 	
 	function TreeList($left=0, $top=0, $width=200, $height=500)
 	{
 		parent::Panel($left, $top, $width, $height, $this);
-		$this->TreeNodesList = new ListBox();
-		$this->TreeNodesList->SetClientVisible(GetBrowser()=='ie' ? false : 0);
-		$this->Controls->Add($this->TreeNodesList, true, true);
 		$this->SetScrolling(System::Auto);
-		//$this->AutoScroll = true;
 		$this->Nodes = &$this->Controls;
 		$this->Nodes->AddFunctionName = 'AddNode';
 		$this->Nodes->InsertFunctionName = 'InsertNode';
 		$this->Nodes->RemoveAtFunctionName = 'RemoveNodeAt';
-		$this->Nodes->ClearFunctionName = 'Clear';
+		NolohInternal::SetProperty('OpenSrc', TreeNode::GetDefaultOpenSrc(), $this);
+		NolohInternal::SetProperty('CloseSrc', TreeNode::GetDefaultCloseSrc(), $this);
 	}
 	function AddNode(TreeNode $node)
 	{
 		$node->SetWidth($this->Width-20);
 		$this->Controls->Add($node, true, true);
-		$this->AddNodeHelper($node);
-		return $node;
-	}
-	private function AddNodeHelper($node)
-	{
 		$node->SetTreeListId($this->Id);
-		$node->SetListIndex($this->TreeNodesList->Items->Count());
-		$this->TreeNodesList->Items->Add(new Item($node->Id, $node->NodeElement->Id));
-		$nodeControlCount = $node->NodePanel->Controls->Count();
-		for($i = 0; $i < $nodeControlCount; ++$i)
-			$this->AddNodeHelper($node->NodePanel->Controls->Item[$i]);
+		$node->TellChildren($this->Id);
+		return $node;
 	}
 	function InsertNode(TreeNode $node, $index)
 	{
 		$node->SetWidth($this->Width-20);
-		$nodesCount = $this->Nodes->Count();
-		$nodesDown = $node->GetLegacyLength()+1;
-		for($i=++$index; $i<$nodesCount; ++$i)
-			$this->Nodes->Item[$i]->MoveListIndexRecursively($nodesDown);
 		$this->Controls->Insert($node, $index, true);
-		$this->InsertNodeHelper($node, --$index);
-		return $node;
-	}
-	private function InsertNodeHelper($node, &$index)
-	{
 		$node->SetTreeListId($this->Id);
-		$node->SetListIndex($index);
-		$this->TreeNodesList->Items->Insert(new Item($node->Id, $node->NodeElement->Id), $index);
-		$nodeControlCount = $node->NodePanel->Controls->Count();
-		for($i = 0; $i < $nodeControlCount; ++$i)
-			$this->InsertNodeHelper($node->NodePanel->Controls->Item[$i], ++$index);
+		$node->TellChildren($this->Id);
+		return $node;
 	}
 	function RemoveNodeAt($index)
 	{
@@ -64,59 +43,64 @@ class TreeList extends Panel
 	function Clear()
 	{
 		$this->Controls->Clear(true);
-		$this->TreeNodesList->Items->Clear();
-		$this->Controls->Add($this->TreeNodesList, true, true);
-	}
-	function GetNodeByIndex($NodeId)
-	{
-		return GetComponentById($this->TreeNodesList->Items->Item[$NodeId]->Value);
 	}
 	function GetSelectedNode()
 	{
-		if($this->TreeNodesList->SelectedIndex != -1)
-			return GetComponentById($this->TreeNodesList->Items->Item[$this->TreeNodesList->SelectedIndex]->Value);
-		return null;
+		return count($this->SelectedNodes)==0 ? null : GetComponentById($this->SelectedNodes[0]);
 	}
-	function GetSelectedElement()
+	function GetSelectedNodes()
 	{
-		$ret = null;
-		if($this->TreeNodesList->SelectedIndex != -1 && $this->TreeNodesList->SelectedIndex != null)
-		{
-			$SelectedNode = $this->GetSelectedNode();
-			//$SelectedNode = &GetComponentById($this->TreeNodesList->Items->Item[$this->TreeNodesList->SelectedIndex]->Value);
-			if($SelectedNode->NodeItem != null)
-				$ret = $SelectedNode->NodeItem;
-			elseif($SelectedNode->NodeString != null)
-				$ret = $SelectedNode->NodeString;
-			else
-				$ret = GetComponentById($this->TreeNodesList->Items->Item[$this->TreeNodesList->SelectedIndex]->Text);
-		}
+		$ret = array();
+		$selectedNodesCount = count($this->SelectedNodes);
+		for($i = 0; $i < $selectedNodesCount; ++$i)
+			$ret[] = GetComponentById($this->SelectedNodes[$i]);
 		return $ret;
 	}
 	function GetSelectedValue()
 	{
-//		$El = $this->GetSelectedElement();
-//		if(is_object($El))
-//		{
-//			if(get_class($El) == "Item")
-//				return $El->Value;
-//			elseif($El instanceof Control)
-//				return $El->Text;
-//		}
-//		if($El == null)
-//			return "";
-//		return $El;
-		$el = $this->GetSelectedElement();
-		if($el == null)
-			return "";
-		if(is_object($el))
-		{
-			if($el instanceof Item)
-				return $el->Value;
-			elseif($el instanceof Control)
-				return $el->Text;
-		}
-		return $el;
+		$selectedNode = $this->GetSelectedNode();
+		if($selectedNode != null)
+			if($selectedNode->NodeItem != null)
+				return $selectedNode->NodeItem->Value;
+			else 
+				return $selectedNode->NodeElement->Text;
+		else 
+			return null;
+	}
+	function GetSelectedText()
+	{
+		$selectedNode = $this->GetSelectedNode();
+		return $selectedNode ? $selectedNode->NodeElement->Text : null;
+	}
+	function SetOpenSrc($openSrc)
+	{
+		NolohInternal::SetProperty('OpenSrc', $openSrc, $this);
+		$nodeCount = $this->Nodes->Count;
+		for($i=0; $i<$nodeCount; ++$i)
+			self::OpenSrcHelper($openSrc, $this->Nodes[$i]);
+	}
+	static function OpenSrcHelper($openSrc, $node)
+	{
+		if($node->GetOpenSrc() == null && $node->NodePanel->Controls->Count() != 0 && $node->NodePanel->ClientVisible === true)
+			$this->NodeIcon->SetSrc($openSrc);
+		$nodeCount = $this->Nodes->Count;
+		for($i=0; $i<$nodeCount; ++$i)
+			self::OpenSrcHelper($openSrc, $this->Nodes[$i]);
+	}
+	function SetCloseSrc($closeSrc)
+	{
+		NolohInternal::SetProperty('CloseSrc', $closeSrc, $this);
+		$nodeCount = $this->Nodes->Count;
+		for($i=0; $i<$nodeCount; ++$i)
+			self::CloseSrcHelper($openSrc, $this->Nodes[$i]);
+	}
+	static function CloseSrcHelper($closeSrc, $node)
+	{
+		if($node->GetCloseSrc() == null && $node->NodePanel->Controls->Count() != 0 && $node->NodePanel->ClientVisible !== true)
+			$this->NodeIcon->SetSrc($closeSrc);
+		$nodeCount = $this->Nodes->Count;
+		for($i=0; $i<$nodeCount; ++$i)
+			self::CloseSrcHelper($closeSrc, $this->Nodes[$i]);
 	}
 	function ExpandAll()
 	{
@@ -124,13 +108,14 @@ class TreeList extends Panel
 		for($i=1; $i<$nodeCount; ++$i)
 			$this->Controls->Item[$i]->Expand(true);
 	}
+	function Set_NSelectedNodes($selectedNodes)
+	{
+		$this->SelectedNodes = explode('~d2~', $selectedNodes);
+	}
 	function Show()
 	{
 		AddNolohScriptSrc('TreeList.js');
-		//AddScript("document.getElementById('" . $this->Id . "').treeNodesList = '" . $this->TreeNodesList->Id . "';");
-		NolohInternal::SetProperty('treeNodesList', $this->TreeNodesList->Id, $this);
-		NolohInternal::SetProperty('OpenSrc', /*$this->OpenSrc!=null?$this->OpenSrc:*/TreeNode::GetDefaultOpenSrc(), $this);
-		NolohInternal::SetProperty('CloseSrc', /*$this->CloseSrc!=null?$this->CloseSrc:*/TreeNode::GetDefaultCloseSrc(), $this);
+		AddScript("InitTreeList('$this->Id')");
 		parent::Show();
 	}
 }
