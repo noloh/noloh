@@ -25,7 +25,7 @@ class TabPage extends Panel
 			$this->BgColor = "white";*/
 //		$this->BackColor = "white";
 	}
-	public function SetRolloverTab(RolloverTab $rolloverTab = null)
+	public function SetRolloverTab($rolloverTab = null)
 	{
 		if($rolloverTab == null)
 			$rolloverTab = new RolloverTab($this->Text, null, null);

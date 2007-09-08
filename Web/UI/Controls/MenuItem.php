@@ -127,7 +127,6 @@ class MenuItem extends Container
 	{
 		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
 	}
-	
 	function Show()
 	{
 		AddNolohScriptSrc('MenuItem.js', true);
