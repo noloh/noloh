@@ -3,6 +3,7 @@ function ShiftStart(objArray)
 	var xPos, yPos, Obj;
 	thisObjArray = objArray;
 	thisObjArray.Ghosts = Array();
+	thisObjArray.HasMoved = false;
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 	yPos = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
@@ -15,12 +16,12 @@ function ShiftStart(objArray)
 		if(thisObjArray[i][2] == 1)
 		{
 			Obj = document.getElementById(thisObjArray[i][0]).cloneNode(true);
-			thisObjArray[i][0] = Obj.id = thisObjArray[i][0] + "_Ghost";
 			Obj.style.position = "absolute";
+			Obj.style.left = FindX(thisObjArray[i][0]) + "px";
+			Obj.style.top = FindY(thisObjArray[i][0]) + "px";
 			Obj.style.filter = "alpha(opacity=50)";
+			thisObjArray[i][0] = Obj.id = thisObjArray[i][0] + "_Ghost";
 			document.body.appendChild(Obj);
-			Obj.style.left = FindX(Obj.id)+"px";
-			Obj.style.top = yPos+"px";//FindY(Obj.id)+"px";
 			thisObjArray.Ghosts[thisObjArray.Ghosts.length] = i;
 		}
 		else
@@ -51,10 +52,10 @@ function ShiftObj()
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 	yPos = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-	
 	deltaX = xPos - thisObjArray.CursorStartX;
 	deltaY = yPos - thisObjArray.CursorStartY;
 	
+	thisObjArray.HasMoved = true;
 	ShiftObjects(thisObjArray, deltaX, deltaY);
 	window.event.cancelBubble = true;
 	window.event.returnValue = false;
@@ -157,30 +158,43 @@ function SetShiftWithInitials(objects)
 }
 function ShiftStop()
 {
-	var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
-	DroppedX = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
-	DroppedY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-	for(var i=0; i<NOLOHCatchers.length; i++)
-		if(IsAvailable(NOLOHCatchers[i]))
-		{
-			Catcher = document.getElementById(NOLOHCatchers[i]);
-			CatcherX = FindX(NOLOHCatchers[i]);
-			CatcherY = FindY(NOLOHCatchers[i]);
-			if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
-				for(j=0; j<thisObjArray.length; j++)
-					if(4 <= thisObjArray[j][1] && thisObjArray[j][1] <= 6 && NOLOHCatchers[i]!=thisObjArray[j][0].replace("_Ghost",""))
-						NOLOHCaught.push(thisObjArray[j][0].replace("_Ghost",""));
-			if(NOLOHCaught.length != 0)
+	if(thisObjArray.HasMoved)
+	{
+		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
+		DroppedX = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+		DroppedY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+		for(var i=0; i<NOLOHCatchers.length; i++)
+			if(IsAvailable(NOLOHCatchers[i]))
 			{
-				Catcher.DragCatch.call();
-				NOLOHCaught = Array();
+				Catcher = document.getElementById(NOLOHCatchers[i]);
+				CatcherX = FindX(NOLOHCatchers[i]);
+				CatcherY = FindY(NOLOHCatchers[i]);
+				if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
+					for(j=0; j<thisObjArray.length; j++)
+						if(4 <= thisObjArray[j][1] && thisObjArray[j][1] <= 6 && NOLOHCatchers[i]!=thisObjArray[j][0].replace("_Ghost",""))
+							NOLOHCaught.push(thisObjArray[j][0].replace("_Ghost",""));
+				if(NOLOHCaught.length != 0)
+				{
+					Catcher.DragCatch.call();
+					NOLOHCaught = Array();
+				}
 			}
-		}
+	}
 	for(i=0; i<thisObjArray.Ghosts.length; i++)
 	{
 		j = thisObjArray.Ghosts[i];
 		document.body.removeChild(document.getElementById(thisObjArray[j][0]));
 		thisObjArray[j][0] = thisObjArray[j][0].replace("_Ghost", "");
+	}
+	if(!thisObjArray.HasMoved)
+	{
+		var obj;
+		for(i=0; i<thisObjArray.length; i++)
+		{
+			obj = document.getElementById(thisObjArray[i][0]);
+			if(obj.onclick != null)
+				obj.onclick.call(obj, event);
+		}
 	}
 	thisObjArray = null;
 	document.detachEvent("onmousemove", ShiftObj);
