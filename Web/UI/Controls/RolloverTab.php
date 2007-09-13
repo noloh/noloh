@@ -14,19 +14,16 @@ class RolloverTab extends Panel
 	public $TextObject;
 	public $TabPageId;
 	
+	
 	function RolloverTab($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::Auto, $height = null)
 	{
-		parent::Panel($left, $top, $width, $height);
+		parent::Panel($left, $top, null, null);
 		if($text != null)
 		{
 			if(is_string($text))
 			{
-				$auto = ($width == System::AutoHtmlTrim)?System::AutoHtmlTrim:System::Auto;
-				$this->TextObject = new Label($text, 0, 0, $auto, $auto);
-				if($width == System::Auto || $width == System::AutoHtmlTrim)
-					$this->SetWidth($this->TextObject->Width + 10);
+				$this->TextObject = new Label($text, 0, 0, null, null);
 				$this->TextObject->CSSClass = 'NRollTab';
-				//$this->TextObject->Align = "Center";
 			}
 			else
 			{
@@ -46,26 +43,34 @@ class RolloverTab extends Panel
 			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontMiddle.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontRight.gif'));
 		else
 			$this->SetSelectedTab($selectedTab);
-		if($height == null)
-			$this->SetHeight($this->OutTab->Height);
-		$this->Cursor = 'pointer';
-		
+		$this->Cursor = Cursor::Arrow;
+		$this->SetWidth($width);
+		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
+		
 	}
 	function SetWidth($width)
 	{
+		if($width == System::Auto || $width == System::AutoHtmlTrim)
+		{
+			if($this->TextObject != null)
+			{
+				$this->TextObject->SetWidth($width);
+				$width = $this->TextObject->GetWidth() + 10;
+				$this->TextObject->SetWidth($width);
+			}
+		}	
 		parent::SetWidth($width);
 		if($this->OutTab != null)
-			$this->OutTab->Width = $width;
+			$this->OutTab->SetWidth($width);
 		if($this->OverTab != null)
-			$this->OverTab->Width = $width;
+			$this->OverTab->SetWidth($width);
 		if($this->DownTab != null)
-			$this->DownTab->Width = $width;
+			$this->DownTab->SetWidth($width);
 		if($this->SelectedTab != null)
-			$this->SelectedTab->Width = $width;
-		if($this->TextObject != null)
-			$this->TextObject->Width = $width;
+			$this->SelectedTab->SetWidth($width);
+		
 	}
 	function GetText()	{return $this->TextObject->Text;}
 	function SetText($text)

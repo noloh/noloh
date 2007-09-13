@@ -12,12 +12,14 @@ class EmbedObject extends Control
 	
 	public function EmbedObject($data = null, $left = 0, $top = 0, $width = 100, $height = 100)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::Control($left, $top, null, null);
+		$this->SetWidth($width);
+		$this->SetHeight($height);
 		$this->Parameters = new ImplicitArrayList($this, "AddParameter"/*, "RemoveParam", "ClearParam"*/);
 		$this->InnerEmbedObjects = new ArrayList();
 		$this->InnerEmbedObjects->ParentId = $this->Id;
 		$this->SetData($data);
-		$this->BackColor = "white";
+		$this->BackColor = 'white';
 	}
 	function GetData()
 	{
@@ -65,13 +67,13 @@ class EmbedObject extends Control
 	}
 	function SetWidth($width)
 	{
-		$this->Width = $width;
+		parent::SetWidth($width);
 		QueueClientFunction($this, "NOLOHChange", array("'".$this->Id . "I'", "'style.width'", "'".$width ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}
 	function SetHeight($height)
 	{
-		$this->Height = $height;
+		parent::SetHeight($height);
 		QueueClientFunction($this, "NOLOHChange", array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}

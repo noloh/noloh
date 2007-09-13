@@ -8,7 +8,7 @@ class Tab extends Panel
 	public $MainImage;
 	public $RightImage;
 	
-	function Tab($leftImageSrc="", $mainImageSrc="", $rightImageSrc="")
+	function Tab($leftImageSrc='', $mainImageSrc='', $rightImageSrc='')
 	{
 		$this->LeftImage = new Image($leftImageSrc);
 		$this->MainImage = new Image($mainImageSrc);
