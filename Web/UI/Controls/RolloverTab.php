@@ -58,7 +58,6 @@ class RolloverTab extends Panel
 			{
 				$this->TextObject->SetWidth($width);
 				$width = $this->TextObject->GetWidth() + 10;
-				$this->TextObject->SetWidth($width);
 			}
 		}	
 		parent::SetWidth($width);
@@ -70,7 +69,7 @@ class RolloverTab extends Panel
 			$this->DownTab->SetWidth($width);
 		if($this->SelectedTab != null)
 			$this->SelectedTab->SetWidth($width);
-		
+		$this->TextObject->SetWidth($width);
 	}
 	function GetText()	{return $this->TextObject->Text;}
 	function SetText($text)
