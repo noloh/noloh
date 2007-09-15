@@ -196,6 +196,9 @@ class WebPage extends Component
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
 		//	(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
+		//if(GetBrowser()=='sa')
+		//	AddNolohScriptSrc('/Standard/SAClientViewState.js');
+		//else
 		AddNolohScriptSrc('ClientViewState.js', true);
 		AddNolohScriptSrc('GeneralFunctions.js');
 		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')

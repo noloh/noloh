@@ -57,11 +57,13 @@ class DatePicker extends Panel
 		$ar = new ArrayList();
 		$this->DatePickerCombo = new ComboBox(0,0,$width,20);
 		$this->DatePickerCalendar = new Calendar(0, 21, 217, 200);
+		$this->DatePickerCalendar->Buoyant = true;
+		$this->DatePickerCalendar->Visible = System::Vacuous;
 		$this->SetFormat('l, F d, Y');
 		if(GetBrowser() == 'ie')
-			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->Id}')");
+			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}')");
 		else 
-			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->Id}', '{$this->DatePickerCombo->Id}')");
+			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}', '{$this->DatePickerCombo->Id}')");
 		$this->Controls->Add($this->DatePickerCombo);
 		$this->Controls->Add($this->DatePickerCalendar);
 	}

@@ -181,6 +181,7 @@ class Control extends Component
 	* @var String
 	*/
 	private $Text;
+	private $Buoyant;
 	/**
 	*	An array that holds the different Shift information on this Control.
 	*	This allows a Control to manipulate itself and any other control in multiple ways
@@ -411,10 +412,10 @@ class Control extends Component
 		return $this->Enabled === null;
 	}
 	
-	function SetEnabled($whatBool)
+	function SetEnabled($bool)
 	{
-		$this->Enabled = $whatBool ? null : false;
-		NolohInternal::SetProperty('disabled', !$whatBool, $this);
+		$this->Enabled = $bool ? null : false;
+		NolohInternal::SetProperty('disabled', !$bool, $this);
 	}
 	
 	function GetClientVisible()
@@ -448,10 +449,10 @@ class Control extends Component
 		if(is_bool($visibility))
 		{
 			NolohInternal::SetProperty('style.display', '', $this);
-			if($newVisibility)
+			if($visibility)
 			{
 				$this->Visible = null;
-				NolohInternal::SetProperty('style.visibility', 'inherit', $this);
+				NolohInternal::SetProperty('style.visibility', 'visible', $this);
 			}
 			else 
 			{
@@ -519,6 +520,30 @@ class Control extends Component
 	{
 		$this->ToolTip = $newToolTip;
 		NolohInternal::SetProperty('title', $newToolTip, $this);
+	}
+	
+	function GetBuoyant()
+	{
+		return $this->Buoyant !== null;
+	}
+	
+	function SetBuoyant($bool)
+	{
+		if($bool)
+		{
+			$this->Buoyant = true;
+			QueueClientFunction($this, "document.getElementById('$this->Id').style.zIndex=9999;void", array(0));
+		}
+		else 
+		{
+			$this->Buoyant = false;
+			QueueClientFunction($this, "document.getElementById('$this->Id').style.zIndex=$this->ZIndex;void", array(0));
+		}
+		if($this->GetShowStatus()===1)
+		{
+			NolohInternal::Bury($this);
+			NolohInternal::Resurrect($this);
+		}
 	}
 	
 	function Set_NText($text)
@@ -637,7 +662,7 @@ class Control extends Component
 	{
 		//$shiftCount = $this->Shifts->Count;
 		//for($i=0; $i<$shiftCount; ++$i)
-		Alert($shift[0]);
+
 		foreach($this->Shifts as $i => $val)
 			if($this->Shifts[$i][0] == $shift[0])
 			{

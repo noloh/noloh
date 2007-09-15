@@ -193,6 +193,6 @@ function GetDateString(calid, dateStr)
 function TogglePull(calid)
 {
 	var Obj=document.getElementById(calid);
-	Obj.style.height = (Obj.style.height == "21px" ? "240px" : "21px");
+	Obj.style.display = Obj.style.display == '' ? 'none' : '';
 	document.body.focus();	
 }

@@ -59,7 +59,7 @@ final class NolohInternal
 			$initialProperties .= ',' . $propertiesString;
 			
 		if($addTo == null)
-			$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
+			$addTo = $obj->GetBuoyant() ? 'N1' : ($parent ? $parent->GetAddId($obj) : $obj->GetParentId());
 		if(isset($_SESSION['NOLOHControlInserts'][$obj->Id]))
 		{
 			AddScript("_NAdd('$addTo','$tag',Array($initialProperties),'".$_SESSION['NOLOHControlInserts'][$obj->Id]."')", Priority::High);
@@ -76,7 +76,7 @@ final class NolohInternal
 	
 	public static function Resurrect($obj)
 	{
-		AddScript("_NRes('$obj->Id','".$obj->GetParent()->GetAddId()."')", Priority::High);
+		AddScript("_NRes('$obj->Id','".($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId())."')", Priority::High);
 	}
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
