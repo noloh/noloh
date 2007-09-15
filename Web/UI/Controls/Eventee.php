@@ -38,9 +38,15 @@ class Eventee extends MarkupItem
 	/**
 	 * @ignore
 	 */
-	function Eventee($id, $keyword, $value, $panelId)
+	private $ATag;
+	/**
+	 * @ignore
+	 */
+	function Eventee($id, $tag, $keyword, $value, $panelId)
 	{
 		parent::MarkupItem($id, $keyword, $value, $panelId);
+		if($tag == 'a' || $tag == 'A')
+			$this->ATag = true;
 	}
 	/**
 	 * Gets the Event associated with clicking on the Eventee. This entails pressing the left mouse button down and then releasing it over the Eventee. 
@@ -56,7 +62,10 @@ class Eventee extends MarkupItem
 	 */
 	function SetClick($newClick)
 	{
-		GetComponentById($this->PanelId)->SetEvent($newClick, 'Click', $this->Id);
+		$panel = GetComponentById($this->PanelId);
+		$panel->SetEvent($newClick, 'Click', $this->Id);
+		if($this->ATag)
+			NolohInternal::SetProperty('href', '#', $this->Id);
 	}
 	/**
 	 * Gets the Event associated with double-clicking on the Eventee

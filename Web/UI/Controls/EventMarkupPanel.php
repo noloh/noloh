@@ -54,23 +54,22 @@ class EventMarkupPanel extends MarkupPanel
 //            	array($this, 'MarkupReplace'), $text, -1, $count);
 //  		}while ($count);
   		return $text;
-	}/*
+	}
 	private function MarkupReplace($matches)
 	{
-		static $id;
-		$Id = $this->Id . "i" . ++$id;
-		$keyval = explode(':', $matches[4]);
+		$id = $this->Id . 'i' . ++$this->ItemCount;
+		$keyval = explode(':', $matches[4], 2);
 		if(strtolower($matches[1]) == 'component')
 		{
-			$this->Larvae[$Id] = array($keyval[0], $keyval[1]);
-			return "<div id=<NQt2>$Id<NQt2>$matches[2]$matches[5]>$matches[6]</div>";
+			$this->Larvae[$id] = array($keyval[0], $keyval[1]);
+			return "<div id=<NQt2>$id<NQt2>$matches[2]$matches[5]>$matches[6]</div>";
 		}
 		else 
 		{
-			$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1]$matches[2] id=<NQt2>$Id<NQt2>$matches[5]>$matches[6]</$matches[7]>";
+			$this->Eventees[$id] = array($matches[1], $keyval[0], $keyval[1]);
+			return "<$matches[1]$matches[2] id=<NQt2>$id<NQt2>$matches[5]>$matches[6]</$matches[7]>";
 		}
-	}*/
+	}/*
 	private function MarkupReplace($matches)
 	{
 	    
@@ -110,7 +109,7 @@ class EventMarkupPanel extends MarkupPanel
 			//	Alert("Blah2: " . $this->Eventees[$id][2]);
 			return "<$matches[1]$matches[2] id=\"$id\"$matches[5]>$matches[6]</$matches[7]>";
 		}
-	}
+	}*/
 	
 	// Temporary one.
 	/*private function MarkupReplace($matches)
@@ -159,12 +158,12 @@ class EventMarkupPanel extends MarkupPanel
 			{
 //				if($info[1] == "tools_services")
 //					Alert("Blah: " . $this->Eventees["N30i1"][2]);
-				$eventees[] = new Eventee($id, $info[1], $info[2], $this->Id);
+				$eventees[] = new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
 			}
 		else 
 			foreach($this->Eventees as $id => $info)
 				if($info[1] == $byValue)
-					$eventees[] = new Eventee($id, $info[1], $info[2], $this->Id);
+					$eventees[] = new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
 		return $eventees;
 	}
 	public function GetLarvae($byValue=null)

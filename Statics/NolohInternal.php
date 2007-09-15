@@ -127,8 +127,8 @@ final class NolohInternal
 				if($markupPanel!=null && $markupPanel->GetShowStatus())
 				{
 					$nameValPairsString = '';
-					foreach($nameValPairs as $name => $eventType)
-						$nameValPairsString .= "'$name','".$markupPanel->GetEventString($eventType, $objId)."',";
+					foreach($nameValPairs as $name => $val)
+						$nameValPairsString .= "'$name','".($name=='href'?$val:$markupPanel->GetEventString($val, $objId))."',";
 					AddScript("_NSetPEvtee('$objId',Array(".rtrim($nameValPairsString,",").'))');
 				}
 			}
