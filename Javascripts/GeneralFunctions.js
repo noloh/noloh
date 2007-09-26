@@ -60,6 +60,14 @@ function FindY(objId)
 	return curtop;
 }
 
+function IsAvailable(objId)
+{
+	var obj = document.getElementById(objId);
+	if(obj.style.display == "none" || obj.style.visibility == "hidden" || obj.disabled == true)
+		return false;
+	return obj.parentNode.id ? IsAvailable(obj.parentNode.id) : true;
+}
+
 function _NAWH(id)
 {
 	var ele = document.getElementById(id);
@@ -67,12 +75,42 @@ function _NAWH(id)
 	_NSave(id, "CachedHeight", ele.offsetHeight);
 }
 
-function IsAvailable(objId)
+function StartBuoyant(id, parentId)
 {
-	var obj = document.getElementById(objId);
-	if(obj.style.display == "none" || obj.style.visibility == "hidden" || obj.disabled == true)
-		return false;
-	return obj.parentNode.id ? IsAvailable(obj.parentNode.id) : true;
+	var obj = document.getElementById(id);
+	var parent = document.getElementById(parentId);
+	obj.BuoyantParentId = parentId;
+	obj.BuoyantLeft = parseInt(obj.style.left);
+	obj.BuoyantTop = parseInt(obj.style.top);
+	obj.BuoyantZIndex = obj.style.zIndex;
+	obj.style.zIndex = 9999;
+	do
+	{
+		if(parent.BuoyantChildren == null)
+			parent.BuoyantChildren = Array();
+		parent.BuoyantChildren.push(id);
+		parent = parent.offsetParent;
+	}while (obj.offsetParent && obj.offsetParent.id);
+	MoveBuoyant(id);
+}
+
+function StopBuoyant(id)
+{
+	var obj = document.getElementById(id);
+	obj.style.left = obj.BuoyantLeft + "px";
+	obj.style.top = obj.BuoyantTop + "px";
+	obj.style.zIndex = obj.BuoyantZIndex;
+	obj.BuoyantParentId = null;
+	obj.BuoyantLeft = null;
+	obj.BuoyantTop = null;
+	obj.BuoyantZIndex = null;
+}
+
+function MoveBuoyant(id)
+{
+	var obj = document.getElementById(id);
+	obj.style.left = FindX(obj.BuoyantParentId) + obj.BuoyantLeft + "px";
+	obj.style.top = FindY(obj.BuoyantParentId) + obj.BuoyantTop + "px";
 }
 
 function _NRemStyle(remPath, nPath)

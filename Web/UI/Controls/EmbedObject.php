@@ -32,7 +32,8 @@ class EmbedObject extends Control
 		if($data == null)
 			return;
 		$this->Data = $data;
-		$splitString = explode('.', $data);
+		$splitString = explode('?', $data, 2);
+		$splitString = explode('.', $splitString[0]);
 		$extension = $splitString[count($splitString)-1];
 		if($extension == "swf")
 		{

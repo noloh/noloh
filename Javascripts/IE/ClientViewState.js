@@ -249,6 +249,36 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				HighestZIndex = newValue;
 			if(newValue < LowestZIndex)
 				LowestZIndex = newValue;
+			obj.style.zIndex = obj.BuoyantParentId == null ? newValue : newValue + 9999;
+			break;
+		case "style.left":
+			if(obj.BuoyantParentId == null)
+			{
+				obj.style.left = newValue;
+				if(obj.BuoyantChildren != null)
+					for(var i=0; i<obj.BuoyantChildren.length; ++i)
+						MoveBuoyant(obj.BuoyantChildren[i]);
+			}
+			else
+			{
+				obj.BuoyantLeft = parseInt(newValue);
+				MoveBuoyant(obj.id);
+			}
+			break;
+		case "style.top":
+			if(obj.BuoyantParentId == null)
+			{
+				obj.style.top = newValue;
+				if(obj.BuoyantChildren != null)
+					for(var i=0; i<obj.BuoyantChildren.length; ++i)
+						MoveBuoyant(obj.BuoyantChildren[i]);
+			}
+			else
+			{
+				obj.BuoyantTop = parseInt(newValue);
+				MoveBuoyant(obj.id);
+			}
+			break;
 		default:
 			eval("obj." + propertyString + " = newValue;");
 	}

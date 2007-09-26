@@ -59,7 +59,14 @@ final class NolohInternal
 			$initialProperties .= ',' . $propertiesString;
 			
 		if($addTo == null)
-			$addTo = $obj->GetBuoyant() ? 'N1' : ($parent ? $parent->GetAddId($obj) : $obj->GetParentId());
+			if($obj->GetBuoyant())
+			{
+				$addTo = 'N1';
+				AddScript("StartBuoyant('$obj->Id','{$obj->GetParentId()}')");
+				unset($_SESSION['NOLOHFunctionQueue'][$objId]['StopBuoyant']);
+			}
+			else 
+				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
 		if(isset($_SESSION['NOLOHControlInserts'][$obj->Id]))
 		{
 			AddScript("_NAdd('$addTo','$tag',Array($initialProperties),'".$_SESSION['NOLOHControlInserts'][$obj->Id]."')", Priority::High);

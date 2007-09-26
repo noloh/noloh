@@ -530,20 +530,22 @@ class Control extends Component
 	function SetBuoyant($bool)
 	{
 		if($bool)
-		{
 			$this->Buoyant = true;
-			QueueClientFunction($this, "document.getElementById('$this->Id').style.zIndex=9999;void", array(0));
-		}
 		else 
 		{
-			$this->Buoyant = false;
-			QueueClientFunction($this, "document.getElementById('$this->Id').style.zIndex=$this->ZIndex;void", array(0));
+			$this->Buoyant = null;
+			QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
 		}
 		if($this->GetShowStatus()===1)
 		{
 			NolohInternal::Bury($this);
 			NolohInternal::Resurrect($this);
 		}
+	}
+	
+	function BuoyantHelper()
+	{
+		
 	}
 	
 	function Set_NText($text)
