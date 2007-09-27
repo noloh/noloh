@@ -89,8 +89,8 @@ function StartBuoyant(id, parentId)
 		if(parent.BuoyantChildren == null)
 			parent.BuoyantChildren = Array();
 		parent.BuoyantChildren.push(id);
-		parent = parent.offsetParent;
-	}while (obj.offsetParent && obj.offsetParent.id);
+		parent = parent.parentNode;
+	}while (parent && parent.id);
 	MoveBuoyant(id);
 }
 

@@ -401,6 +401,9 @@ function _NRem(id)
 	var ele = document.getElementById(id);
 	ele.parentNode.removeChild(ele);
 	document.getElementById("Graveyard").appendChild(ele);
+    if(ele.BuoyantChildren != null)
+    	for(var i=0; i<ele.BuoyantChildren.length; ++i)
+			_NRem(ele.BuoyantChildren[i]);
 }
 
 function _NRes(id, parentId)
@@ -408,13 +411,21 @@ function _NRes(id, parentId)
 	var ele = document.getElementById(id);
 	document.getElementById("Graveyard").removeChild(ele);
 	document.getElementById(parentId).appendChild(ele);
+    if(ele.BuoyantChildren != null)
+    	for(var i=0; i<ele.BuoyantChildren.length; ++i)
+			_NRes(ele.BuoyantChildren[i], parentId);
 }
 
 function _NAsc(id)
 {
 	var ele = document.getElementById(id);
 	if(ele)
+    {
 		ele.parentNode.removeChild(ele);
+        if(ele.BuoyantChildren != null)
+        	for(var i=0; i<ele.BuoyantChildren.length; ++i)
+    			_NAsc(ele.BuoyantChildren[i]);
+    }
 }
 
 function GetChanges()
