@@ -6,23 +6,30 @@
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800)
+function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
 {
-	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
+	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 }
 
 /**
  * @ignore
  */
-/*function NOLOHErrorHandler($errno, $errstr)
+function _NErrorHandler($errno, $errstr, $errfile, $errline)
 {
+    if(defined('FORCE_GZIP'))
+		ob_start('ob_gzhandler');
 	//print("var err=document.createElement('DIV'); err.innerHTML='$errstr'; err.style.zdocument.body.appendChild(err);");
 	//if($errnor == 1 || $errno == 4 || $errno == 16 || $errno == 64 || $errno == 256)
 	//{
-		print("alert('Errorno $errno : $errstr');");
+		//print("alert('Error# $errno : ".addslashes($errstr)." in $errfile on line $errline');");
 		//die();
 	//}
-}*/
+    print("ERR");
+	global $OmniscientBeing;
+	$_SESSION['NOLOHScript'] = array('', '', '');
+	$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+    ob_end_flush();
+}
 
 /**
 * @ignore
@@ -31,9 +38,9 @@ final class Application
 {
 	private $WebPage;
 	
-	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800)
+	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
 	{
-		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
+		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 	}
 	
 	/**
@@ -57,8 +64,8 @@ final class Application
 			print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = '.$url.'; frm.method = "post"; document.body.appendChild(frm); frm.submit();');
 		die();
 	}
-	
-	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration)
+
+	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
 		session_start();
@@ -78,7 +85,7 @@ final class Application
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset(false, false);
 				self::UnsetNolohSessionVars();
-				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration);
+				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 				return;
 			}
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
@@ -89,8 +96,13 @@ final class Application
 				$_SESSION['NOLOHScriptSrcs'] = $srcs;
 				AddScript('NOLOHVisit=-1', Priority::High);
 			}
-			//set_error_handler('NOLOHErrorHandler');
-			//set_exception_handler('NOLOHErrorHandler');
+			if(!$debugMode)
+			{
+				set_error_handler('_NErrorHandler');
+				set_exception_handler('_NErrorHandler');
+                if($_SESSION['NOLOHVisit']==-1)
+                    AddScript('_NDebugMode=false;');
+			}
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
@@ -260,7 +272,10 @@ final class Application
 		$splitEvent = explode('@', $_POST['NOLOHServerEvent']);
 		$obj = GetComponentById($splitEvent[1]);
 		if($obj != null)
-			return $obj->{$splitEvent[0]}->Exec($execClientEvents=false);
+        {
+            $execClientEvents = false;
+			return $obj->{$splitEvent[0]}->Exec($execClientEvents);
+        }
 		else 
 		{
 			$splitStr = explode('i', $splitEvent[1], 2);

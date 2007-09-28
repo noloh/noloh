@@ -8,7 +8,7 @@ class Object
 	/**
 	* @ignore
 	*/
-	function &__get($nm)
+	function __get($nm)
 	{
 		$func = 'Get' . $nm;
 		if(method_exists($this, $func))

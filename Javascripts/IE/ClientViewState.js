@@ -468,21 +468,29 @@ function processReqChange()
    		}
   		catch(err)
    		{
-   			var errsplit = req.responseText.split("<br />");
-			var errdiv = document.createElement("DIV");
-			if(errsplit.length == 1)
-				errdiv.innerHTML = "<P style='color:red; font-size:18px; cursor:pointer;'>" + err.name + ": " + err.description + "<BR><BR>Click here to restart the application.</P>";
-			else
-				errdiv.innerHTML = errsplit[errsplit.length-1];
-			errdiv.onclick = function() {location.reload(true);}
-			document.body.innerHTML = "";
-			document.body.appendChild(errdiv);
-   			return;
+            if(typeof _NDebugMode == "undefined")
+            {
+       			var errsplit = req.responseText.split("<br />");
+    			var errdiv = document.createElement("DIV");
+    			if(errsplit.length == 1)
+    				errdiv.innerHTML = "<P style='color:red; font-size:18px; cursor:pointer;'>" + err.name + ": " + err.description + "<BR><BR>Click here to restart the application.</P>";
+    			else
+    				errdiv.innerHTML = errsplit[errsplit.length-1];
+    			errdiv.onclick = function() {location.reload(true);}
+    			document.body.innerHTML = "";
+    			document.body.appendChild(errdiv);
+       			return;
+            }
+            else
+                alert("An application error has occurred.");
    		}
-		document.getElementById(_NLoadImg).style.visibility = "hidden";
-		document.getElementById(_NLoadLbl).style.visibility = "hidden";
-		document.body.NOLOHPostingBack = false;
-		_NURLCheck = setInterval('CheckURL()', 500);
+        finally
+        {
+    		document.getElementById(_NLoadImg).style.visibility = "hidden";
+    		document.getElementById(_NLoadLbl).style.visibility = "hidden";
+    		document.body.NOLOHPostingBack = false;
+    		_NURLCheck = setInterval('CheckURL()', 500);
+        }
 	}
 }
 
