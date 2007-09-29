@@ -4,32 +4,40 @@
  */
 class AccordionPart extends Panel
 {
-	private $TopPart;
+	private $TitlePanel;
 	private $BottomPart;
 	
-	function AccordionPart($topPartHeight = 15)
+	function AccordionPart($title, $titleHeight = 28)
 	{
-		parent::Panel();
-		$this->TopPart = new Panel();
-		$this->TopPart->SetHeight($topPartHeight);
-		$this->BottomPart = new Panel();
-		$this->BottomPart->SetTop($this->TopPart->Bottom);
-		$this->Controls->Add($this->TopPart);
-		$this->Controls->Add($this->BottomPart);
+		
+		parent::Panel(0, 0, null, null);
+		$this->PositionType = 1;
+		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
+		$this->TitlePanel->CSSClass = 'NAccordionTitle';
+		$tmpGlossy = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/glossy.png', 0, 0, '100%', $titleHeight);
+		$tmpTitleLabel = new Label($title, 0, 0, null, null);
+		$tmpTitleLabel->CSSClass = 'NAccordionText';
+		$this->TitlePanel->Controls->AddRange($tmpGlossy, $tmpTitleLabel);
+		$this->TitlePanel->ParentId = $this->Id;
+		$this->TitlePanel->PositionType = 1;
+		//$this->TopPart->SetHeight($topPartHeight);
+		$this->BottomPart = new Panel(0, 0, '100%', 50);
+		$this->BottomPart->ParentId = $this->Id; 
+		$this->BottomPart->PositionType = 1;
+		//$this->BottomPart->SetTop($this->TopPart->Bottom);
+		$this->SetWidth('100%');
+		$this->Controls = &$this->BottomPart->Controls;
+		/*$this->Controls->Add($this->TopPart);
+		$this->Controls->Add($this->BottomPart);*/
 	}	
-	function GetTopPart()
+	function GetTitlePanel()
 	{
-		return $this->TopPart;
-	}
-	function GetBottomPart()
-	{
-		return $this->BottomPart;
+		return $this->TitlePanel;
 	}
 	function SetWidth($width)
 	{
 		parent::SetWidth($width);
-		$this->TopPart->Width = $width - 2;
-		$this->BottomPart->Width = $width - 2;
+		$this->TitlePanel->SetWidth($width);
 	}
 	function SetTopPartHeight($topPartHeight)
 	{
@@ -38,10 +46,8 @@ class AccordionPart extends Panel
 	function Show()
 	{
 		parent::Show();
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/Accordion.js");
 		AddNolohScriptSrc('Accordion.js');
-		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TopPart->Id}'", "'{$this->BottomPart->Id}'"));
-		//AddScript("SetAccordionPart('$this->Id', '{$this->TopPart->Id}', '{$this->BottomPart->Id}')", Priority::High);
+		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TitlePanel->Id}'", "'{$this->BottomPart->Id}'"));
 	}
 }
 ?>

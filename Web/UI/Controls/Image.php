@@ -113,7 +113,7 @@ class Image extends Control
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
 	*@param integer $Width
 	*/
-	function SetWidth($width)
+	function SetWidth($width, $unit='px')
 	{
 		$tmpWidth = $width;
 		if(!is_numeric($tmpWidth))
@@ -121,7 +121,7 @@ class Image extends Control
 			$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
 			if($tmpWidth == System::Auto)
 				$tmpWidth = $tmpImageSize[0];
-			else
+			elseif($unit != 'px')
 			{
 				$tmpWidth = intval($tmpWidth)/100;
 				$tmpWidth = round($tmpWidth * $tmpImageSize[0]);

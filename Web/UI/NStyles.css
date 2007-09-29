@@ -1,3 +1,15 @@
+.NAccordionTitle
+{
+	background-color:#001e42;
+}
+.NAccordionText
+{
+	color:white;
+	font-family:sans-serif;
+	font-weight:bold;
+	padding-left:10px;
+	padding-top:5px;
+}
 .NCalCell
 {
 	cursor:pointer;
