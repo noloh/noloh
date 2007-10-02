@@ -10,7 +10,7 @@ function ShiftStart(objArray)
 
 	thisObjArray.CursorStartX = xPos;
 	thisObjArray.CursorStartY = yPos;
-	
+
 	for(var i=0; i<thisObjArray.length; i++)
 	{
 		if(thisObjArray[i][2] == 1)
@@ -64,7 +64,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 {
 	var tempFinalHor;
 	var tempFinalVer;
-	
+
 	for(var i=0; i<objects.length; i++)
 	{
 		if(objects[i][1] == 1 || objects[i][1] == 3)
@@ -96,7 +96,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 			}
 			else if(objects[i][5] != null)
 				ChangeAndSave(objects[i][0], "style.height", (tempFinalVer >= objects[i][5]) ? tempFinalVer  + "px" : objects[i][5] + "px");
-			elseW
+			else
 				ChangeAndSave(objects[i][0], "style.height", (tempFinalVer <= objects[i][6]) ? tempFinalVer  + "px" : objects[i][6] + "px");		
 		}
 		if(objects[i][1] == 4 || objects[i][1] == 6)
@@ -136,7 +136,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 		}
 		var tmpObj = document.getElementById(objects[i][0]);
 		if(tmpObj.ShiftsWith != null)
-			ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY);
+			ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY);     
 	}
 }
 function SetShiftWithInitials(objects)
