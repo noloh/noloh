@@ -19,10 +19,21 @@ class ListViewItem extends Object //extends Component
 	{
 		$this->SubItems->Add((is_string($objOrText) || $objOrText == null)?$objOrText = new Label($objOrText, null, null, "100%"):$objOrText, true, true);
 		$objOrText->SetCSSClass("NLVItem");	
+		$objOrText->Width = '100%';
 		/*$objOrText->CSSFloat = 'left';
 		$objOrText->PositionType = 1;*/
 		if($this->ListViewId != null)
 			GetComponentById($this->ListViewId)->Update($this);
+	}
+	function SetBackColor($color)
+	{
+		foreach($this->SubItems as $subItem)
+			$subItem->BackColor = $color;
+	}
+	function SetColor($color)
+	{
+		foreach($this->SubItems as $subItem)
+			$subItem->Color = $color;
 	}
 }		
 ?>
