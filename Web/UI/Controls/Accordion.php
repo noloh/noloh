@@ -28,23 +28,19 @@ class Accordion extends Panel
 	function AddAccordionPart($accordionPart)
 	{
 		$tmpCount = $this->AccordionParts->Count();
-//		if($tmpCount > 0)
-//			$tmpPart = $this->AccordionParts->Item[$tmpCount - 1];
-		//$tmpTop = ($tmpCount > 0)?$tmpPart->GetTop() + $tmpPart->TopPart->GetBottom():0;
-		//$accordionPart->SetTop($tmpTop);
-		//$accordionPart->SetWidth($this->GetWidth());
+		if(is_string($accordionPart))
+			$accordionPart = new AccordionPart($accordionPart);
 		$accordionPart->TitlePanel->Click = new ClientEvent("ExpandAccordionPart('$this->Id', '$accordionPart->Id')");
-		//$accordionPart->SetHeight($this->GetHeight() - $tmpTop);
 		$this->AccordionParts->Add($accordionPart, true, true);
 		QueueClientFunction($this, "AddAccordionPart", array("'$this->Id'", "'{$accordionPart->Id}'"), false);
 		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
-		//AddScript("AddAccordionPart('$this->Id', '{$accordionPart->Id}')");
-		//AddScript("ExpandAccordionPart('$this->Id', '{$accordionPart->Id}', '{$accordionPart->BottomPart->Id}')");
 	}
 	function InsertAccordionPart($accordionPart, $index)
 	{
 		$tmpCount = $this->AccordionParts->Count();
+		if(is_string($accordionPart))
+			$accordionPart = new AccordionPart($accordionPart);
 		$accordionPart->TitlePanel->Click = new ClientEvent("ExpandAccordionPart('$this->Id', '$accordionPart->Id')");
 		$this->AccordionParts->Insert($accordionPart, $index);
 		QueueClientFunction($this, "AddAccordionPart", array("'$this->Id'", "'{$accordionPart->Id}'"), false);

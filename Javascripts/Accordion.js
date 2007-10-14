@@ -44,3 +44,10 @@ function SetAccordionPart(accordionPart, topPart, bottomPart)
 	tmpAccordionPart.TopPart = topPart;
 	tmpAccordionPart.BottomPart = bottomPart;
 }
+function N_ScrollCheck(bodyId)
+{
+	var body = document.getElementById(bodyId);
+	if(body.scrollTop == (body.scrollHeight - body.clientHeight) && body.parentNode.DataBind != null)
+//	if(listView.scrollTop == (listView.scrollHeight - listView.clientHeight) && listView.DataBind != null)
+		body.parentNode.DataBind.call();
+}

@@ -5,34 +5,53 @@
 class AccordionPart extends Panel
 {
 	private $TitlePanel;
-	private $BottomPart;
+	private $BodyPanel;
 	
 	function AccordionPart($title, $titleHeight = 28)
 	{
-		
+		$this->BodyPanel = new Panel(0, 0, '100%', 50);
 		parent::Panel(0, 0, null, null);
 		$this->PositionType = 1;
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
 		$this->TitlePanel->CSSClass = 'NAccordionTitle';
-		$tmpGlossy = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/glossy.png', 0, 0, '100%', $titleHeight);
+//		$tmpGlossy = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/glossy.png', 0, 0, '100%', $titleHeight);
+		$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/AcBlue.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/AcOrange.gif', 0, 0, '100%', $titleHeight);
 		$tmpTitleLabel = new Label($title, 0, 0, null, null);
 		$tmpTitleLabel->CSSClass = 'NAccordionText';
-		$this->TitlePanel->Controls->AddRange($tmpGlossy, $tmpTitleLabel);
+		$this->TitlePanel->Controls['Glossy'] = $tmpGlossy;
+		$this->TitlePanel->Controls['Text'] = $tmpTitleLabel;
+		//$this->TitlePanel->Controls->AddRange($tmpGlossy, $tmpTitleLabel);
 		$this->TitlePanel->ParentId = $this->Id;
 		$this->TitlePanel->PositionType = 1;
-		//$this->TopPart->SetHeight($topPartHeight);
-		$this->BottomPart = new Panel(0, 0, '100%', 50);
-		$this->BottomPart->ParentId = $this->Id; 
-		$this->BottomPart->PositionType = 1;
-		//$this->BottomPart->SetTop($this->TopPart->Bottom);
+		$this->BodyPanel->ParentId = $this->Id; 
+		$this->BodyPanel->PositionType = 1;
 		$this->SetWidth('100%');
-		$this->Controls = &$this->BottomPart->Controls;
-		/*$this->Controls->Add($this->TopPart);
-		$this->Controls->Add($this->BottomPart);*/
+		$this->Controls = &$this->BodyPanel->Controls;
 	}	
+	function SetText($text)
+	{
+		$this->TitlePanel->Controls['Text']->SetText($text);
+	}
+	function GetText()
+	{
+		return $this->TitlePanel->Controls['Text']->GetText();
+	}
 	function GetTitlePanel()
 	{
 		return $this->TitlePanel;
+	}
+	function GetDataBind()
+	{
+		return $this->GetEvent('DataBind');
+	}
+	function SetDataBind($newEvent)
+	{
+		$this->SetEvent($newEvent, 'DataBind');
+		$this->BodyPanel->Scroll = new ClientEvent("N_ScrollCheck('{$this->BodyPanel->Id}');");
+	}
+	function SetScrolling($scrollType)
+	{
+		$this->BodyPanel->SetScrolling($scrollType);
 	}
 	function SetWidth($width)
 	{
@@ -47,7 +66,7 @@ class AccordionPart extends Panel
 	{
 		parent::Show();
 		AddNolohScriptSrc('Accordion.js');
-		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TitlePanel->Id}'", "'{$this->BottomPart->Id}'"));
+		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TitlePanel->Id}'", "'{$this->BodyPanel->Id}'"));
 	}
 }
 ?>
