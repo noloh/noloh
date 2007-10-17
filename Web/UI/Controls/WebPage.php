@@ -168,19 +168,57 @@ class WebPage extends Component
   </HEAD>".(GetBrowser()=='ie'?"
   <BODY>
     <DIV id='N1'></DIV>
-    <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>
-  </BODY>":"
+    <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>":"
   <BODY id='N1'>
-  </BODY>")."
+  ")."
+  </BODY>
 </HTML>
 
-<SCRIPT type='text/javascript'>
-  var head= document.getElementById('NHead');
-  var script= document.createElement('SCRIPT');
+<SCRIPT type='text/javascript'>".(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') === false ? "
+  var head = document.getElementById('NHead');
+  var script = document.createElement('SCRIPT');
   script.type = 'text/javascript';
-  script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&') 
+  script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
                + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
+  head.appendChild(script);"
+
+  :/*"
+  var head = document.getElementById('NHead');
+  var script = document.createElement('SCRIPT');
+  script.setAttribute('id', 'InitScript');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src',(document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
+               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
+  script.onreadystatechange = function()
+  {
+    var initScript = document.getElementById('InitScript');
+  	if(initScript.readyState == 'loaded');
+  		alert(initScript.outerHTML);
+  }
   head.appendChild(script);
+  "*/
+  
+  "
+  function _NIe6InitIframeLoad()
+  {
+  	if (req.readyState==4)
+  	{
+	    var head = document.getElementById('NHead');
+	    var script = document.createElement('SCRIPT');
+	    script.type = 'text/javascript';
+	    script.text = req.responseText;
+	    head.appendChild(script);
+  	}
+  }
+  
+  req = new ActiveXObject('Microsoft.XMLHTTP');
+  req.onreadystatechange = _NIe6InitIframeLoad;
+  req.open('POST', (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
+               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+  req.send('');
+  
+  "
+  )."
 </SCRIPT>");
 	}
 	
