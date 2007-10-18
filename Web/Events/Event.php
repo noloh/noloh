@@ -74,6 +74,7 @@ class Event extends Object implements ArrayAccess
 		'Click' => 'onclick',
 		'DoubleClick' => 'ondblclick',
 		'DragCatch' => 'DragCatch',
+		'Focus' => 'onfocus',
 		'KeyPress' => 'KeyPress',
 		'LoseFocus' => 'onblur',
 		'MouseDown' => 'onmousedown',
@@ -115,7 +116,8 @@ class Event extends Object implements ArrayAccess
 		if($this->GetEnabled())
 		{
 			$onlyClientEvents = true;
-			$info = $this->GetInfo($arr = array('',array()), $onlyClientEvents);
+            $arr = array('',array());
+			$info = $this->GetInfo($arr, $onlyClientEvents);
 			$ret = '';
 			if($info[0] != '')
 				$ret .= ClientEvent::GenerateString($info[0]);

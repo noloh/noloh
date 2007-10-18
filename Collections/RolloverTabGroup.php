@@ -28,7 +28,7 @@ class RolloverTabGroup extends RolloverGroup
 		$numArgs = func_num_args();
 		for($i = 0; $i < $numArgs; $i++)
 		{
-			$object = &func_get_arg($i);
+			$object = func_get_arg($i);
 			if(!($object instanceof RolloverTab))
 				BloodyMurder("Non-RolloverTab added to a RolloverTabGroup.");
 			$object->GroupName = $this->Id;

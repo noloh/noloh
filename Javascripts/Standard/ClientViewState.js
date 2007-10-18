@@ -152,6 +152,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "onchange":
 		case "onclick":
 		case "ondblclick":
+		case "onfocus":
 		case "onelapsed":
 		case "oninput":
 		case "onmouseout":

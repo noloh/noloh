@@ -17,7 +17,14 @@ function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Displ
 function _NErrorHandler($errno, $errstr, $errfile, $errline)
 {
     if(defined('FORCE_GZIP'))
-		ob_start('ob_gzhandler');
+    {
+        $handlers = ob_list_handlers();
+        if($handlers[0] != 'ob_gzhandler')
+        {
+    		ob_start('ob_gzhandler');
+            ++$_SESSION['NOLOHVisit'];
+        }
+    }
 	//print("var err=document.createElement('DIV'); err.innerHTML='$errstr'; err.style.zdocument.body.appendChild(err);");
 	//if($errnor == 1 || $errno == 4 || $errno == 16 || $errno == 64 || $errno == 256)
 	//{
@@ -29,6 +36,7 @@ function _NErrorHandler($errno, $errstr, $errfile, $errline)
 	$_SESSION['NOLOHScript'] = array('', '', '');
 	$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
     ob_end_flush();
+    exit();
 }
 
 /**
@@ -62,7 +70,7 @@ final class Application
 			print('/*~NScript~*/location.replace('.$url.');');
 		else
 			print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = '.$url.'; frm.method = "post"; document.body.appendChild(frm); frm.submit();');
-		die();
+		exit();
 	}
 
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
@@ -80,7 +88,7 @@ final class Application
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
 			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
-			  ((!isset($_POST['NOLOHVisit']) || /*!isset($_POST['NOLOHServerEvent']) || */!isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
+			  ((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset(false, false);
@@ -98,7 +106,7 @@ final class Application
 			}
 			if(!$debugMode)
 			{
-				set_error_handler('_NErrorHandler');
+				set_error_handler('_NErrorHandler', error_reporting());
 				set_exception_handler('_NErrorHandler');
                 if($_SESSION['NOLOHVisit']==-1)
                     AddScript('_NDebugMode=false;');

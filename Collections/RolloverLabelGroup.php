@@ -27,7 +27,7 @@ class RolloverLabelGroup extends RolloverGroup
 		$numArgs = func_num_args();
 		for($i = 0; $i < $numArgs; $i++)
 		{
-			$whatObject = &func_get_arg($i);
+			$whatObject = func_get_arg($i);
 			if(!($whatObject instanceof RolloverLabel))
 				BloodyMurder("Non-RolloverLabel added to a RolloverLabelGroup.");
 			$whatObject->GroupName = $this->Id;
