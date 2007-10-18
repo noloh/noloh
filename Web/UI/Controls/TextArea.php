@@ -30,7 +30,8 @@ class TextArea extends Control
 		parent::SetText($newText);
 		QueueClientFunction($this, 'SetTextAreaText', array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($newText))."'"));
 	}
-	
+	function GetScroll()							{return $this->GetEvent('Scroll');}
+	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)

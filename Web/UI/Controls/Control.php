@@ -562,6 +562,8 @@ class Control extends Component
 	function SetDoubleClick($newDoubleClick)		{$this->SetEvent($newDoubleClick, 'DoubleClick');}
 	function GetDragCatch()							{return $this->GetEvent('DragCatch');}
 	function SetDragCatch($newDragCatch)			{$this->SetEvent($newDragCatch, 'DragCatch');}
+	function GetFocus()								{return $this->GetEvent('Focus');}
+	function SetFocus($newFocus)					{$this->SetEvent($newFocus, 'Focus');}
 	function GetKeyPress()							{return $this->GetEvent('KeyPress');}
 	function SetKeyPress($newKeyPress)				{$this->SetEvent($newKeyPress, 'KeyPress');}
 	function GetLoseFocus()							{return $this->GetEvent('LoseFocus');}
@@ -578,10 +580,8 @@ class Control extends Component
 	function SetReturnKey($newReturnKey)			{$this->SetEvent($newReturnKey, 'ReturnKey');}
 	function GetRightClick()						{return $this->GetEvent('RightClick');}
 	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, 'RightClick');}
-	function GetLoad()								{return $this->GetEvent('Load');}
-	function SetLoad($newLoad)						{$this->SetEvent($newLoad, 'Load');}
-	function GetScroll()							{return $this->GetEvent('Scroll');}
-	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
+//	function GetScroll()							{return $this->GetEvent('Scroll');}
+//	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
 	function GetTypePause()							{return $this->GetEvent('TypePause');}
 	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
 	

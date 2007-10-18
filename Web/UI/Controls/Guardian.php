@@ -43,12 +43,12 @@
 		 * ScrollLeft of the component
 		 * @var integer
 		 */
-		public $ScrollLeft;
+		private $ScrollLeft;
 		/**
 		 * ScrollTop of the component
 		 * @var integer
 		 */
-		public $ScrollTop;
+		private $ScrollTop;
 
 		/**
 		* Constructor.
@@ -72,16 +72,15 @@
 				$this->Controls = new ImplicitArrayList($implicitObject);
 			$this->Controls->ParentId = $this->Id;
 		}
-
-		function Show()
-		{
-			$parentShow = parent::Show();
-			if($this->ScrollLeft != null)
-				AddScript("document.getElementById('$this->Id').scrollLeft = $this->ScrollLeft;");
-			if($this->ScrollTop != null)
-				AddScript("document.getElementById('$this->Id').scrollTop = $this->ScrollTop;");
-
-			return $parentShow;
-		}
+		function GetScroll()							{return $this->GetEvent('Scroll');}
+		function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
+        function SetScrollLeft($scrollLeft)
+        {
+            NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
+        }
+        function SetScrollTop($scrollTop)
+        {
+            NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        }
 	}
 ?>

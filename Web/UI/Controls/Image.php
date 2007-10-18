@@ -32,7 +32,7 @@ class Image extends Control
 	* @var string
 	*/
 	private $Src;
-	private $AltLoad;
+    private $Magician;
 	
 	/**
 	* Constructor.
@@ -76,12 +76,7 @@ class Image extends Control
 	function SetSrc($newSrc, $adjustSize=false)
 	{
 		$this->Src = $newSrc;
-		$load = $this->GetLoad();
-		if($load instanceof ServerEvent)
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
-				get_class(GetComponentById($load->ObjsId))."&Function={$load->ExecuteFunction}", $this);
-		else 
-			NolohInternal::SetProperty('src', $newSrc, $this);
+        NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF']."?NOLOHImage=$this->Src&Class={$this->Magician[0]}&Function={$this->Magician[1]}"), $this);
 		if($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
@@ -169,23 +164,12 @@ class Image extends Control
 		}
 		parent::SetHeight($tmpHeight);
 	}
-	/**
-	 * @ignore
-	 */
-	function SetLoad($newLoad)
-	{
-		$this->AltLoad = $newLoad;
-		if($newLoad instanceof ServerEvent)
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF']."?NOLOHImage={$this->Src}&Class=" .
-				(is_object($newLoad->Source)?get_class($newLoad->Source->Dereference()):$newLoad->Src)."&Function={$newLoad->ExecuteFunction}", $this);
-	}
-	/**
-	 * @ignore
-	 */
-	function GetLoad()
-	{
-		return $this->AltLoad;
-	}
+
+    function Conjure($className, $functionName)
+    {
+        NolohInternal::SetProperty('src', $_SERVER['PHP_SELF']."?NOLOHImage=$this->Src&Class=$className&Function=$functionName", $this);
+        $this->Magician = array($className, $functionName);
+    }
 	/**
 	* @ignore
 	*/
