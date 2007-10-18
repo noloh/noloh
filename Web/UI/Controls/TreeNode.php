@@ -226,6 +226,11 @@ class TreeNode extends Panel
 			$this->NodeElement->SetText($text);
 	}
 	
+	function GetValue()
+	{
+		return $this->NodeItem ? $this->NodeItem->Value : $this->Text;
+	}
+	
 	function GetLeafSrc()
 	{
 		return $this->LeafSrc;

@@ -62,7 +62,7 @@ final class NolohInternal
 			if($obj->GetBuoyant())
 			{
 				$addTo = 'N1';
-				AddScript("StartBuoyant('$obj->Id','{$obj->GetParentId()}')");
+				AddScript("StartBuoyant('$obj->Id','{$parent->GetAddId($obj)}')");
 				unset($_SESSION['NOLOHFunctionQueue'][$objId]['StopBuoyant']);
 			}
 			else 
