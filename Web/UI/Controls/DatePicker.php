@@ -60,10 +60,17 @@ class DatePicker extends Panel
 		$this->DatePickerCalendar->Buoyant = true;
 		$this->DatePickerCalendar->Visible = System::Vacuous;
 		$this->SetFormat('l, F d, Y');
-		if(GetBrowser() == 'ie')
-			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}')");
-		else 
-			$this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}', '{$this->DatePickerCombo->Id}')");
+        switch(GetBrowser())
+        {
+            case 'ie':
+                $this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}')");
+                break;
+            case 'sa':
+                $this->DatePickerCombo->MouseDown = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}', '{$this->DatePickerCombo->Id}'); return false;");
+                break;
+            default:
+                $this->DatePickerCombo->Click = new ClientEvent("TogglePull('{$this->DatePickerCalendar->Id}', '{$this->DatePickerCombo->Id}')");
+        }
 		$this->Controls->Add($this->DatePickerCombo);
 		$this->Controls->Add($this->DatePickerCalendar);
 	}
@@ -112,7 +119,7 @@ class DatePicker extends Panel
 	function SetFormat($format)
 	{
 		$this->Format = $format;
-		$this->DatePickerCalendar->Change = new ClientEvent('var calObj = document.getElementById("' . $this->DatePickerCalendar->Id . '"); var ds = GetDateString(calObj.id,"'.$format.'"); document.getElementById("' . $this->DatePickerCombo->Id . '").options[0] = new Option(ds,ds); document.getElementById("' . $this->Id . '").style.height="21px";');
+		$this->DatePickerCalendar->Change = new ClientEvent('PickerSelectDate("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$this->Format.'")');
 	}
 	/**
 	* @ignore
@@ -121,7 +128,7 @@ class DatePicker extends Panel
 	{
 		parent::Show();
 		if($this->DatePickerCombo->Items->Count()==0)
-			AddScript('ShowDatePicker("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$this->Format.'")'/*, Priority::High*/);
+			AddScript('ShowDatePicker("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$this->Format.'")');
 	}
 }
 

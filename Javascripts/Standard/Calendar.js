@@ -42,6 +42,12 @@ function CalSelectDate(event, calid)
 		cal.onchange.call();
 }
 
+function PickerSelectDate(calid, comboid, format)
+{
+    ShowDatePicker(calid, comboid, format);
+	document.getElementById(calid).style.display = 'none';
+}
+
 function ShowDatePicker(calid, comboid, format)
 {
 	var ds = GetDateString(calid,format);
@@ -194,5 +200,5 @@ function TogglePull(calId, comboId)
 {
 	var Obj=document.getElementById(calId);
 	Obj.style.display = Obj.style.display == '' ? 'none' : '';
-	document.getElementById(comboId).blur();	
+    document.getElementById(comboId).blur();
 }
