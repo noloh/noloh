@@ -2,7 +2,7 @@
 /**
  * @package Web.UI.Controls
  */
-class MenuItem extends Container
+class MenuItem extends Panel
 {
 	//public $RolloverImage;
 	//public $Checked;
@@ -12,20 +12,23 @@ class MenuItem extends Container
 	private $TextLabel;
 	private $Icon;
 	
-	function MenuItem($textOrControl, $icon=null, $checked=false)
+	function MenuItem($textOrControl, $height=18)
 	{
-		parent::Container();
+		parent::Panel(null, null, null, $height);
 		if($textOrControl instanceof Control)
 			$this->TextLabel = $textOrControl;
 		else
 			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 18);
+		$this->SetWidth($this->TextLabel->GetWidth());
 		//$this->TextLabel->Font = "11px Tahoma";
 		$this->TextLabel->Cursor = Cursor::Arrow;
-		$this->MainMenuPanel = new Panel($this->TextLabel->GetRight(), $this->TextLabel->GetTop(), 0, 0, $this);
+		$this->MainMenuPanel = new Panel($this->GetRight(), $this->TextLabel->GetTop(), 0, 0, $this);
+		$this->MainMenuPanel->Buoyant = true;
 		$this->MainMenuPanel->Scrolling = System::Full;
 		$this->MainMenuPanel->Border = '1px solid black';
 		$this->MainMenuPanel->BackColor = 'white';
 		$this->MainMenuPanel->ClientVisible = false;
+//		$this->MainMenuPanel->Visible = System::Vacuous;
 		$this->MenuItems = &$this->MainMenuPanel->Controls;
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		$this->SetOutBackColor();
@@ -34,7 +37,9 @@ class MenuItem extends Container
 		$this->SetOverTextColor();
 		//New Way
 		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false);");
-		$this->Controls->AddRange($this->TextLabel, $this->MainMenuPanel);
+		$this->TextLabel->ParentId = $this->Id;
+		$this->MainMenuPanel->ParentId = $this->Id;
+		//$this->Controls->AddRange($this->TextLabel, $this->MainMenuPanel);
 	}
 	function AddMenuItem(MenuItem $menuItem)
 	{
@@ -92,7 +97,7 @@ class MenuItem extends Container
 	function GetLeft()		{return $this->TextLabel->GetLeft();}
 	function SetLeft($left)
 	{
-		$this->TextLabel->SetLeft($left);
+		//$this->TextLabel->SetLeft($left);
 		if(!($this->Parent instanceof MainMenu))
 			$this->MainMenuPanel->SetLeft($this->GetLeft() + $this->GetWidth());
 	}
@@ -100,7 +105,10 @@ class MenuItem extends Container
 	function SetTop($top)	{$this->TextLabel->SetTop($top);}
 	function GetHeight()	{return $this->TextLabel->GetHeight();}
 	function GetWidth()		{return $this->TextLabel->GetWidth();}
-	function SetWidth($newWidth)			{$this->TextLabel->SetWidth($newWidth);}
+	function SetWidth($newWidth)			
+	{
+		$this->TextLabel->SetWidth($newWidth);
+	}
 	function SetBackColor($backColor)		{$this->TextLabel->SetBackColor($backColor);}
 	function GetMouseOver()	{return $this->TextLabel->MouseOver;}
 	function GetMouseOut()	{return $this->TextLabel->MouseOut;}
@@ -131,6 +139,12 @@ class MenuItem extends Container
 	{
 		AddNolohScriptSrc('MenuItem.js', true);
 		parent::Show();	
+	}
+	function Hide()
+	{
+		parent::Hide();
+		$this->TextLabel->Hide();
+		$this->MainMenuPanel->Hide();
 	}
 }
 ?>
