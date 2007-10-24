@@ -11,9 +11,15 @@ class AccordionPart extends Panel
 	{
 		$this->BodyPanel = new Panel(0, 0, '100%', 50);
 		parent::Panel(0, 0, null, null);
+//		if($_SESSION['NOLOHIE6'])
+//			$this->CSSMargin_Bottom = '-20px';
+		//$this->CSSClass = 'NAccordTest';
+//		$this->CSSMargin = '0px';
+//		$this->CSSMargin_Top = '20px;';
+//		$this->CSSPadding = '0px;';
 		$this->PositionType = 1;
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
-		$this->TitlePanel->CSSClass = 'NAccordionTitle';
+//		$this->TitlePanel->CSSClass = 'NAccordionTitle';
 //		$tmpGlossy = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/glossy.png', 0, 0, '100%', $titleHeight);
 		$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/AcBlue.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/AcOrange.gif', 0, 0, '100%', $titleHeight);
 		$tmpTitleLabel = new Label($title, 0, 0, null, null);
@@ -23,6 +29,9 @@ class AccordionPart extends Panel
 		//$this->TitlePanel->Controls->AddRange($tmpGlossy, $tmpTitleLabel);
 		$this->TitlePanel->ParentId = $this->Id;
 		$this->TitlePanel->PositionType = 1;
+		//$this->BodyPanel->CSSMargin = '0px';
+		//$this->BodyPanel->CSSPadding = '0px';
+		
 		$this->BodyPanel->ParentId = $this->Id; 
 		$this->BodyPanel->PositionType = 1;
 		$this->SetWidth('100%');
