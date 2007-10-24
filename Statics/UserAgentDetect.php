@@ -44,6 +44,7 @@ final class UserAgentDetect
         {
         	$_SESSION['NOLOHBrowser'] = 'ie';
         	$_SESSION['NOLOHIsIE'] = true;
+        	$_SESSION['NOLOHIE6'] = strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false;
         }
         else
         	$_SESSION['NOLOHBrowser'] = 'other';

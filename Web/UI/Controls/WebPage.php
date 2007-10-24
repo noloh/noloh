@@ -174,30 +174,7 @@ class WebPage extends Component
   </BODY>
 </HTML>
 
-<SCRIPT type='text/javascript'>".(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') === false ? "
-  var head = document.getElementById('NHead');
-  var script = document.createElement('SCRIPT');
-  script.type = 'text/javascript';
-  script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
-  head.appendChild(script);"
-
-  :/*"
-  var head = document.getElementById('NHead');
-  var script = document.createElement('SCRIPT');
-  script.setAttribute('id', 'InitScript');
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src',(document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
-  script.onreadystatechange = function()
-  {
-    var initScript = document.getElementById('InitScript');
-  	if(initScript.readyState == 'loaded');
-  		alert(initScript.outerHTML);
-  }
-  head.appendChild(script);
-  "*/
-  
+<SCRIPT type='text/javascript'>".($_SESSION['NOLOHIE6'] ? 
   "
   function _NIe6InitIframeLoad()
   {
@@ -218,6 +195,30 @@ class WebPage extends Component
   req.send('');
   
   "
+  :
+  "
+  var head = document.getElementById('NHead');
+  var script = document.createElement('SCRIPT');
+  script.type = 'text/javascript';
+  script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
+               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
+  head.appendChild(script);"
+
+  /*"
+  var head = document.getElementById('NHead');
+  var script = document.createElement('SCRIPT');
+  script.setAttribute('id', 'InitScript');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src',(document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
+               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
+  script.onreadystatechange = function()
+  {
+    var initScript = document.getElementById('InitScript');
+  	if(initScript.readyState == 'loaded');
+  		alert(initScript.outerHTML);
+  }
+  head.appendChild(script);
+  "*/
   )."
 </SCRIPT>");
 	}

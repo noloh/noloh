@@ -21,13 +21,17 @@ function ChangeLabelText(id, text)
 function ToggleVisibility(whatobjid)
 {
 	var toggleObj = document.getElementById(whatobjid);
-	if(toggleObj.style.visibility == "hidden")
+	if(toggleObj.style.visibility == "hidden" || toggleObj.style.display == "none")
 	{
 		BringToFront(whatobjid);
 		ChangeAndSave(whatobjid, "style.visibility", "inherit");
+		ChangeAndSave(whatobjid, "style.display", "");
 	}
 	else
-		ChangeAndSave(whatobjid, "style.visibility", "hidden");
+	{
+		ChangeAndSave(whatobjid, "style.display", "none");
+		//ChangeAndSave(whatobjid, "style.visibility", "hidden");
+	}
 }
 
 function FindX(objId)
