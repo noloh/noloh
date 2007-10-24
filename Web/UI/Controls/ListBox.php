@@ -68,6 +68,19 @@ class ListBox extends ListControl
 		return $this->SelectedIndices;
 	}
 	/**
+	 * Returns an array of all the values of the selected Items
+	 * @return array
+	 */
+	function GetSelectedValues()
+	{
+		$selectedArray = array();
+		$selectedIndices = $this->GetSelectedIndices();
+		//Alert(count($this->SelectedIndices) . ' is the number of selected indices');
+		foreach($selectedIndices as $idx)
+			$selectedArray[] = $this->Items->Item[$idx]->Value;
+		return $selectedArray;
+	}
+	/**
 	 * Selects those and only those Items whose index in the Items ArrayList is an elements of the specified array.
 	 * @param array|ArrayList $selectedIndices
 	 */
@@ -108,9 +121,9 @@ class ListBox extends ListControl
 	/**
 	 * @ignore
 	 */
-	function Set_NSelectedIndices($selectedIndices)
+	function Set_NSelectedIndices($indicesString)
 	{
-		$this->SelectedIndices = explode('~d2~', $indicesString);
+		$this->SelectedIndices = $indicesString ? explode('~d2~', $indicesString) : array();
 	}
 	/**
 	 * @ignore
