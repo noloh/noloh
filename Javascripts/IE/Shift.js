@@ -1,16 +1,18 @@
 function ShiftStart(objArray)
 {
-	var xPos, yPos, obj;
+	var xPos, yPos, obj, deltaZIndex;
 	thisObjArray = objArray;
 	thisObjArray.Ghosts = Array();
 	thisObjArray.HasMoved = false;
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 	yPos = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-
 	thisObjArray.CursorStartX = xPos;
 	thisObjArray.CursorStartY = yPos;
+	
 	var tmpCount = thisObjArray.length;
+	if(tmpCount > 0)
+		deltaZIndex = ++HighestZIndex + tmpCount - document.getElementById(thisObjArray[0][0]).style.zIndex;
 	for(var i=0; i<tmpCount; ++i)
 	{
 		if(thisObjArray[i][2] == 1)
@@ -28,8 +30,8 @@ function ShiftStart(objArray)
 			obj = document.getElementById(thisObjArray[i][0]);
 		_NShiftInitObject(thisObjArray[i], obj);
 		SetShiftWithInitials(obj);
-//		BringToFront(thisObjArray[i][0]);
-		BringToFront(obj.id);
+		//BringToFront(obj.id);
+		ChangeAndSave(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
 	}
 	document.attachEvent("onmousemove", ShiftObj);
 	document.attachEvent("onmouseup",   ShiftStop);
@@ -38,10 +40,14 @@ function ShiftStart(objArray)
 }
 function _NShiftInitObject(info, obj)
 {
-	info.StartWidth = obj.offsetWidth;
+	info.StartWidth = parseInt(obj.style.width);
+	info.StartHeight = parseInt(obj.style.height);
+	info.StartLeft = parseInt(obj.style.left);
+	info.StartTop = parseInt(obj.style.top);
+	/*info.StartWidth = obj.offsetWidth;
 	info.StartHeight = obj.offsetHeight;
 	info.StartLeft = obj.offsetLeft;
-	info.StartTop = obj.offsetTop;
+	info.StartTop = obj.offsetTop;*/
 	if(isNaN(info.StartHeight))
 		info.StartHeight = 20;
 	if(isNaN(info.StartTop))
@@ -84,16 +90,16 @@ function ShiftObjects(objects, deltaX, deltaY)
 		if(objects[i][1] <= 3)
 		{
 			if(objects[i][1] != 1)
-				ShiftObject(objects[i], "style.height", objects[i].StartHeight, deltaY , objects[i][5], objects[i][6]);
+				ShiftObject(objects[i], "style.height", objects[i].StartHeight, deltaY, objects[i][6], objects[i][7]);
 			if(objects[i][1] != 2)	
-				ShiftObject(objects[i], "style.width", objects[i].StartWidth, deltaX , objects[i][3], objects[i][4]);
+				ShiftObject(objects[i], "style.width", objects[i].StartWidth, deltaX, objects[i][4], objects[i][5]);
 		}
 		else
 		{
 			if(objects[i][1] != 4)
-				ShiftObject(objects[i], "style.top", objects[i].StartTop, deltaY , objects[i][5], objects[i][6]);
+				ShiftObject(objects[i], "style.top", objects[i].StartTop, deltaY, objects[i][6], objects[i][7]);
 			if(objects[i][1] != 5)
-				ShiftObject(objects[i], "style.left", objects[i].StartLeft, deltaX , objects[i][3], objects[i][4]);
+				ShiftObject(objects[i], "style.left", objects[i].StartLeft, deltaX, objects[i][4], objects[i][5]);
 		}
 		var tmpObj = document.getElementById(objects[i][0]);
 		if(tmpObj.ShiftsWith != null)
@@ -102,7 +108,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 }
 function ShiftObject(object, property, start, delta, minBound, maxBound)
 {
-	var finalCoord = Math.round(start + delta * object[7]);
+	var finalCoord = Math.round(start + delta * object[3]);
 	ChangeAndSave(object[0], property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");	
 }
 function ShiftStop()
@@ -157,9 +163,9 @@ function AddShiftWith(objectId, info)
 {
 	var tmpObj = document.getElementById(objectId);
 	if(tmpObj.ShiftsWith == null)
-		tmpObj.ShiftsWith = new Array(info);
+		tmpObj.ShiftsWith = Array(info);
 	else	
-		tmpObj.ShiftsWith[tmpObj.ShiftsWith.length] = info;
+		tmpObj.ShiftsWith.push(info);
 }
 function ChangeShiftType(objectId, index, newType)
 {
