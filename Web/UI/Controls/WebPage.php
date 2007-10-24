@@ -103,7 +103,7 @@ class WebPage extends Component
 	function SetTitle($title)
 	{
 		$this->Title = $title;
-		AddScript("document.title='$title'");
+		AddScript('document.title="'.addslashes($title).'"');
 	}
 	
 	function GetWidth()

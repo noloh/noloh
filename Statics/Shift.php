@@ -97,5 +97,4 @@ class Shift
 		return array($object->Id, 7, "$shiftType,0,$ratio,$min,$max)");
 	}
 }
-
 ?>

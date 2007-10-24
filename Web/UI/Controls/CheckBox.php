@@ -49,7 +49,7 @@ class CheckBox extends GroupedInputControl
 	function GetEventString($eventTypeAsString)
 	{
 		$preStr = '';
-		if($eventTypeAsString == 'Click')
+		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change')
 			$preStr = "_NSave(\"$this->Id\",\"checked\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
@@ -62,7 +62,7 @@ class CheckBox extends GroupedInputControl
 		$initialProperties .= ",'type','checkbox'";
 		$initialProperties .= parent::GetEventString(null);
 		NolohInternal::Show('INPUT', $initialProperties, $this);
-		return $initialProperties;
+		//return $initialProperties;
 	}
 }	
 ?>
