@@ -108,18 +108,21 @@ class Image extends Control
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
 	*@param integer $Width
 	*/
-	function SetWidth($width, $unit='px')
+	function SetWidth($width)
 	{
 		$tmpWidth = $width;
 		if(!is_numeric($tmpWidth))
 		{
-			$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
-			if($tmpWidth == System::Auto)
-				$tmpWidth = $tmpImageSize[0];
-			elseif($unit != 'px')
+			if(substr($width, -1) != '%')
 			{
-				$tmpWidth = intval($tmpWidth)/100;
-				$tmpWidth = round($tmpWidth * $tmpImageSize[0]);
+				$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
+				if($tmpWidth == System::Auto)
+					$tmpWidth = $tmpImageSize[0];
+				else
+				{
+					$tmpWidth = intval($tmpWidth)/100;
+					$tmpWidth = round($tmpWidth * $tmpImageSize[0]);
+				}
 			}
 		}
 		parent::SetWidth($tmpWidth);
@@ -153,13 +156,16 @@ class Image extends Control
 		$tmpHeight = $height;
 		if(!is_numeric($tmpHeight))
 		{
-			$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
-			if($tmpHeight == System::Auto)
-				$tmpHeight = $tmpImageSize[1];
-			else
+			if(substr($width, -1) != '%')
 			{
-				$tmpHeight = intval($tmpHeight)/100;
-				$tmpHeight = round($tmpHeight * $tmpImageSize[1]);
+				$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
+				if($tmpHeight == System::Auto)
+					$tmpHeight = $tmpImageSize[1];
+				else
+				{
+					$tmpHeight = intval($tmpHeight)/100;
+					$tmpHeight = round($tmpHeight * $tmpImageSize[1]);
+				}
 			}
 		}
 		parent::SetHeight($tmpHeight);
