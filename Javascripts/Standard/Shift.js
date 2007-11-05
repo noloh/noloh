@@ -1,3 +1,4 @@
+thisObjArray = null;
 function ShiftStart(event, objArray)
 {
 	var xPos, yPos, obj, deltaZIndex, tempBorder;
