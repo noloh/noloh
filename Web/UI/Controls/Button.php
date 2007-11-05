@@ -89,9 +89,9 @@
 		*/
 		function Show()
 		{
-			$initialProperties = parent::Show();
+			//$initialProperties = parent::Show();
 			//$initialProperties .= ",'type','$this->Type'";
-			NolohInternal::Show('INPUT', $initialProperties, $this);
+			NolohInternal::Show('INPUT', parent::Show(), $this);
 		}
 	}
 ?>

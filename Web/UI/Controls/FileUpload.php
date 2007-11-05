@@ -6,15 +6,15 @@ class FileUpload extends Control
 {
 	public $File;
 
-	function FileUpload($whatLeft = 0, $whatTop = 0, $whatWidth = 300, $whatHeight = 24)  
+	function FileUpload($left = 0, $top = 0, $width = 300, $height = 24)  
 	{
-		parent::Control($whatLeft, $whatTop, $whatWidth, $whatHeight);
+		parent::Control($left, $top, $width, $height);
 		$this->SetCSSClass();
 	}
 	
 	function SetCSSClass($cssClass=null)
 	{
-		parent::SetCSSClass("NFileUpload ".$cssClass);
+		parent::SetCSSClass('NFileUpload'.$cssClass);
 	}
 	/*
 	function SetWidth($newWidth)
@@ -33,7 +33,7 @@ class FileUpload extends Control
 	{
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'marginWidth',0,'marginHeight',0,'frameBorder',0,'scrolling','no','name','$this->Id','src','".$_SERVER['PHP_SELF']."?NOLOHFileUpload={$this->Id}&Width={$this->GetWidth()}&Height={$this->GetHeight()}'";
-		NolohInternal::Show("IFRAME", $initialProperties, $this);
+		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
 	
 	static function ShowInside($id, $width, $height)

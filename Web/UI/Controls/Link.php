@@ -31,7 +31,7 @@ class Link extends Label
 	* Href, The Href of this Link, the Default is ""
 	* @var string
 	*/
-	const Blank = "_blank", Self = "_self";
+	const Blank = '_blank', Self = '_self';
 	
 	private $Destination;
 	private $Target;
@@ -48,7 +48,7 @@ class Link extends Label
 	* @param integer|optional
 	* @param integer|optional
 	*/
-	function Link($destination="", $text="", $left = 0, $top = 0, $width = 83, $height = 20)  
+	function Link($destination='', $text='', $left = 0, $top = 0, $width = 83, $height = 20)  
 	{
 		parent::Label($text, $left, $top, $width, $height);
 		//$this->SetText($text);
@@ -63,13 +63,13 @@ class Link extends Label
 	function SetDestination($newDestination)
 	{
 		$this->Destination = $newDestination;
-		NolohInternal::SetProperty("href", $newDestination, $this);
+		NolohInternal::SetProperty('href', $newDestination, $this);
 	}
 	function GetTarget()	{return ($this->Target === null)?self::Self:$this->Target;}
 	function SetTarget($targetType)
 	{
 		$this->Target = ($targetType == self::Self)?null:$targetType;
-		NolohInternal::SetProperty("target", $targetType, $this);
+		NolohInternal::SetProperty('target', $targetType, $this);
 	}
 	/*function SetText($newText)
 	{
@@ -81,9 +81,9 @@ class Link extends Label
 	*/	
 	function Show()
 	{
-		$initialProperties = Control::Show();
+		//$initialProperties = Control::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
-		NolohInternal::Show("A", $initialProperties, $this);
+		NolohInternal::Show('A', Control::Show(), $this);
 	}
 }
 ?>

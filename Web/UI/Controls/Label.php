@@ -30,9 +30,6 @@ class Label extends Control
 	function SetText($text)
 	{
 		parent::SetText($text);
-		//$width = parent::GetWidth();
-		//$height = parent::GetHeight();
-		//$this->AutoWidthHeight();
 		$this->ResetCache();
 		NolohInternal::SetProperty('innerHTML', preg_replace('(\r\n|\n|\r)', '<BR>', $text), $this);
 		//QueueClientFunction($this, "SetLabelText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
@@ -130,9 +127,9 @@ class Label extends Control
 		return $this->Bold == null ? false : true;
 	}
 	
-	function SetBold($whatBool)
+	function SetBold($bool)
 	{
-		if($whatBool)
+		if($bool)
 		{
 			$this->Bold = true;
 			NolohInternal::SetProperty('style.fontWeight', 'bold', $this);
@@ -241,10 +238,10 @@ class Label extends Control
 	
 	function Show()
 	{
-		$initialProperties = parent::Show();
+		//$initialProperties = parent::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
-		NolohInternal::Show('DIV', $initialProperties, $this);
-		return $initialProperties;
+		NolohInternal::Show('DIV', parent::Show(), $this);
+		//return $initialProperties;
 	}
 }
 ?>

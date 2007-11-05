@@ -21,7 +21,7 @@ class AccordionPart extends Panel
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
 //		$this->TitlePanel->CSSClass = 'NAccordionTitle';
 //		$tmpGlossy = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/glossy.png', 0, 0, '100%', $titleHeight);
-		$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/AcBlue.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/AcOrange.gif', 0, 0, '100%', $titleHeight);
+		$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/HeadBlue.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/HeadOrange.gif', 0, 0, '100%', $titleHeight);
 		$tmpTitleLabel = new Label($title, 0, 0, null, null);
 		$tmpTitleLabel->CSSClass = 'NAccordionText';
 		$this->TitlePanel->Controls['Glossy'] = $tmpGlossy;
