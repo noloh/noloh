@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @package Web.UI.Controls
  */
@@ -11,13 +11,13 @@ class GroupedInputControl extends Control
 	
 	function GroupedInputControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		$this->Caption = new Label(null);
-		parent::Control($left, $top, $width, $height);
+        parent::Control($left, $top, $width, $height);
+		$this->Caption = is_object($text) ? $text : new Label(null, 23, 0, null, null);
+		//parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
 		$this->SetText($text);
-		//$this->Caption->Click = new ClientEvent("document.getElementById('$this->Id').click()");
-		//$this->Caption->Click = new ClientEvent("var obj=document.getElementById('$this->Id');var val=obj.checked;obj.click();if(val!=obj.checked&&obj.onchange!=null) obj.onchange.call();");
-		$this->Caption->Click = new ClientEvent("CaptionClick('$this->Id')");
+		$this->Caption->Click = new ClientEvent('_NGIClick("'.$this->Id.'I")');
+        $this->Caption->SetParentId($this->Id);
 		$this->GroupName = $this->Id;
 	}
 	function GetText()
@@ -27,7 +27,7 @@ class GroupedInputControl extends Control
 	function SetText($newText)
 	{
 		if($newText instanceof Item)
-		{ 
+		{
 			$this->SetValue($newText->Value);
 			$newText = $newText->Text;
 		}
@@ -35,7 +35,7 @@ class GroupedInputControl extends Control
 	}
 	function GetValue()
 	{
-		return ($this->Value != null)? $this->Value: $this->Text;
+		return ($this->Value != null)? $this->Value : $this->Text;
 	}
 	function SetValue($value)
 	{
@@ -48,12 +48,14 @@ class GroupedInputControl extends Control
 	function SetGroupName($newGroupName)
 	{
 		$this->GroupName = $newGroupName;
-		NolohInternal::SetProperty('name', $newGroupName, $this);
+        if($this->GetShowStatus !== 0)
+            QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
+		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
 	}
 	function GetChecked()
 	{
-		return $this->Checked == null ? false : true;
+		return $this->Checked != null;
 	}
 	function SetChecked($bool)
 	{
@@ -68,11 +70,14 @@ class GroupedInputControl extends Control
 					$group->RadioButtons[$selectedIndex]->SetChecked(false);
 			}
 			$this->Checked = $newChecked;
-			NolohInternal::SetProperty('checked', $bool, $this);
+			//NolohInternal::SetProperty('checked', $bool, $this);
+			if($this->GetShowStatus !== 0)
+				QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool));
+
 			if(!$this->Change->Blank())
 				$this->Change->Exec();
 		}
-	}
+	} /*
 	function SetLeft($newLeft)
 	{
 		parent::SetLeft($newLeft);
@@ -105,7 +110,7 @@ class GroupedInputControl extends Control
 	{
 		parent::SetParentId($newParent);
 		$this->Caption->SetParentId($newParent);
-	}
+	}    */
 //	function SetCSSClass($className)
 //	{
 //		$this->Caption->CSSClass = $className;
@@ -118,15 +123,12 @@ class GroupedInputControl extends Control
 	}
 	function Show()
 	{
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/GroupedInputControl.js");
 		AddNolohScriptSrc('GroupedInputControl.js');
-		if(GetBrowser()=='ie')
-			NolohInternal::SetProperty('defaultChecked', $this->Checked, $this);
-		$parentShow = parent::Show();
-		$this->Caption->Show();
-		return $parentShow;
+        NolohInternal::Show('DIV', parent::Show().",'style.overflow','hidden'"/*.self::GetEventString(null)*/, $this);
+		//$this->Caption->Show();
+		//return $parentShow;
 	}
-	function Bury()
+	/*function Bury()
 	{
 		$this->Caption->Bury();
 		parent::Bury();
@@ -135,7 +137,7 @@ class GroupedInputControl extends Control
 	{
 		$this->Caption->Resurrect();
 		parent::Resurrect();
-	}
+	}*/
 	function SearchEngineShow()
 	{
 		$this->Caption->SearchEngineShow();
