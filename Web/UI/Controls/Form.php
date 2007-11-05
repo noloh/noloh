@@ -4,54 +4,48 @@
  */	
 class Form extends Guardian 
 {
+	
+	const Post = 'POST', Get='GET';
 	private $Action;
 	private $Method;
 	private $EncType;
 	
-	function Form($action = "", $left = 0, $top = 0, $width = 800, $height = 600, $method = "POST" )  
+	function Form($action = '', $left = 0, $top = 0, $width = 600, $height = 600, $method = 'POST' )  
 	{
 		parent::Guardian($left, $top, $width, $height);
 		$this->Method = $method;
 		$this->Action = $action;
 	}
-	
 	function GetAction()
 	{
 		return $this->Action;
 	}
-	
-	function SetAction($newAction)
+	function SetAction($action)
 	{
-		$this->Action = $newAction;
-		NolohInternal::SetProperty("action", $newAction, $this);
+		$this->Action = $action;
+		NolohInternal::SetProperty('action', $action, $this);
 	}
-	
 	function GetMethod()
 	{
 		return $this->Method;
 	}
-	
-	function SetMethod($newMethod)
+	function SetMethod($method)
 	{
-		$this->Method = $newMethod;
-		NolohInternal::SetProperty("method", $newMethod, $this);
+		$this->Method = $method;
+		NolohInternal::SetProperty('method', $method, $this);
 	}
-	
 	function GetEncType()
 	{
 		return $this->EncType;
 	}
-	
-	function SetEncType($newEncType)
+	function SetEncType($encType)
 	{
-		$this->EncType = $newEncType;
-		NolohInternal::SetProperty("enctype", $newEncType, $this);
+		$this->EncType = $encType;
+		NolohInternal::SetProperty('enctype', $encType, $this);
 	}
-	
 	function Show()
 	{
-		$initialProperties = parent::Show();
-		NolohInternal::Show("FORM", $initialProperties, $this);
+		NolohInternal::Show('FORM', parent::Show(), $this);
 	}
 }
 ?>
