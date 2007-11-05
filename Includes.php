@@ -51,11 +51,11 @@ require('Web/UI/Controls/WebPage.php');
 require('Web/UI/Controls/Label.php');
 require('Web/UI/Controls/Panel.php');
 //require('Web/UI/Controls/GroupBox.php');
-require('Web/UI/Controls/MarkupPanel.php');
+require('Web/UI/Controls/MarkupRegion.php');
 require('Web/UI/Controls/MarkupItem.php');
 require('Web/UI/Controls/Eventee.php');
 require('Web/UI/Controls/Larva.php');
-require('Web/UI/Controls/EventMarkupPanel.php');
+require('Web/UI/Controls/RichMarkupRegion.php');
 require('Web/UI/Controls/Image.php');
 require('Web/UI/Controls/RolloverImage.php');
 require('Web/UI/Controls/RolloverLabel.php');
@@ -102,5 +102,6 @@ require('Statics/Shift.php');
 require('Statics/System.php');
 require('Statics/UserAgentDetect.php');
 require('Statics/URL.php');
+require('Statics/Layout.php');
 
 ?>
