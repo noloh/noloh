@@ -72,7 +72,7 @@ class GroupedInputControl extends Control
 			$this->Checked = $newChecked;
 			//NolohInternal::SetProperty('checked', $bool, $this);
 			if($this->GetShowStatus !== 0)
-				QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool));
+				QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
 
 			if(!$this->Change->Blank())
 				$this->Change->Exec();

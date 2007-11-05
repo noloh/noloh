@@ -10,7 +10,8 @@ class RadioButton extends GroupedInputControl
 	}
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString == 'Click')
+//		if($eventTypeAsString == 'Click')
+		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change')
 			return '_NRBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
