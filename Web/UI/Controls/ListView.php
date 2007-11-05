@@ -4,29 +4,39 @@
  */
 class ListView extends Panel
 {
+	const Ascending = true, Descending = false;
 	public $ListViewItems;
 	public $Columns;
-	private $ColumnsPanel;
-	private $LVItemsQueue = array();
-	//Temporary Workaround, made this public, should be private - 
-	public $BodyPanelsHolder;
-	protected $BodyPanels;
+	protected $ColumnsPanel;
+	protected $LVItemsQueue = array();
+	protected $InnerPanel;
+	protected $Line;
+	private $BodyPanelsHolder;
 	
 	function GetColumnPanel(){return $this->ColumnsPanel;}
 	function ListView($left, $top, $width, $height)
 	{
 		parent::Panel($left, $top, $width, $height)/*, $this)*/;
-		$this->ColumnsPanel = new Panel(0, 0, $width, 20, $this);
-		$this->ColumnsPanel->CSSBackground_Image = "url(". NOLOHConfig::GetNOLOHPath() . "Web/UI/Controls/Images/Win/DataGridColumnHeaderBack.gif)";
+		$this->ColumnsPanel = new Panel(0, 0, $width, 28, $this);
+		$this->ColumnsPanel->CSSBackground_Image = "url(". NOLOHConfig::GetNOLOHPath() . "Web/UI/Controls/Images/Std/HeadBlue.gif)";
+		$this->ColumnsPanel->CSSBackground_Repeat = "repeat-x";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;
-		$this->ListViewItems = new ImplicitArrayList($this, 'AddListViewItem', '', 'ClearListViewItems');
-		$this->ListViewItems->InsertFunctionName = "InsertListViewItem";
-		$this->ListViewItems->ParentId = $this->Id;
 		$this->BodyPanelsHolder = new Panel(0, $this->ColumnsPanel->Bottom, $width, $height - $this->ColumnsPanel->Height);
-		$this->BodyPanels = &$this->BodyPanelsHolder->Controls;
 		$this->BodyPanelsHolder->Scrolling = System::Auto;
-		$this->Controls->AddRange($this->ColumnsPanel, $this->BodyPanelsHolder);
+		$this->InnerPanel = new Panel(0, 0, null, 'auto', $this);
+		$this->InnerPanel->LayoutType = Layout::Web;
+		$this->BodyPanelsHolder->Scrolling = System::Auto;
+		$this->ListViewItems = &$this->InnerPanel->Controls;
+		$this->ListViewItems->AddFunctionName = 'AddListViewItem';
+		$this->ListViewItems->ClearFunctionName = 'ClearListViewItems';
+		$this->ListViewItems->InsertFunctionName = 'InsertListViewItem';
+		$this->BodyPanelsHolder->Controls->Add($this->InnerPanel);
+		$this->Line = new Label('', 0, 0, 3, '100%');
+		$this->Line->Visible = false;
+		$this->Line->BackColor = '#808080';
+		$this->Line->ParentId = $this->Id;
+		$this->Controls->AddRange($this->ColumnsPanel, /*$this->InnerPanel*/ $this->BodyPanelsHolder);
 		$this->ModifyScroll();
 	}
 	//function GetColumns(){return $this->Columns;}
@@ -34,53 +44,37 @@ class ListView extends Panel
 	{
 		$tmpCount = $this->Columns->Count();
 		if(is_string($text))
-			$this->Columns->Add($tmpColumn = &new ColumnHeader($text, ($tmpCount > 0)?$this->Columns[$tmpCount-1]->GetRight():0, $width), true, true);
+			$this->Columns->Add($tmpColumn = &new ColumnHeader($text, ($tmpCount > 0)?$this->Columns[$tmpCount-1]->GetRight():0, $width, $this->ColumnsPanel->GetHeight()), true, true);
 		elseif($text instanceof ColumnHeader)
 		{
-			$this->Columns->Add($tmpColumn = &$text);
+			$this->Columns->Add($tmpColumn = &$text, true, true);
 			if($text->GetLeft() == System::Auto)
 				$text->SetLeft($tmpCount > 0?$this->Columns[$tmpCount-1]->GetRight():0);
 		}
-		$this->BodyPanels->Add($tmpPanel = new Panel($tmpColumn->GetLeft(), 0, $tmpColumn->GetWidth(), null));
-		$tmpPanel->Scrolling = System::Full;
-		//$tmpColumn->SizeHandle->Shifts[] = Shift::Width($tmpPanel);
-		$tmpColumn->Shifts[] = Shift::Width($tmpPanel);
-		//$tmpColumn->SizeHandle->Shifts[] = Shift::Left($tmpColumn->SizeHandle);
-		$tmpColumn->Shifts[] = Shift::Left($tmpColumn->SizeHandle);
-		//$tmpColumn->SizeHandle->Shifts[] = Shift::Width($tmpColumn);
-		$tmpColumn->Shifts[] = Shift::Width($tmpColumn);
-		$tmpColumn->Shifts[] = Shift::Width($this->ColumnsPanel);
-		if($tmpCount > 0)
-		{
-//			$tmpColumn->Shifts[] = Shift::With($this->Columns[$tmpCount -1],Shift::Width, Shift::Mirror, 1, null, -1);
-			$tmpColumn->Shifts[] = Shift::With($this->Columns[$tmpCount -1], Shift::Left);
-			$tmpPanel->Shifts[] = Shift::With($this->BodyPanels[$tmpCount -1], Shift::Left);
-		}
+		if(($tmpRight = $tmpColumn->GetRight()) > $this->GetWidth())
+			$this->InnerPanel->SetWidth($tmpRight);
+
+		$this->MakeColumnShift($tmpColumn);
+		$tmpColumn->SetListView($this->Id);
 		$this->ColumnsPanel->BringToFront();
+		$tmpColumn->SizeHandle->MouseDown[] = new ClientEvent("_N_LV_ResizeStart('{$this->Line->Id}', '$tmpColumn->Id', '{$this->InnerPanel->Id}');");
+		$this->Line->Shifts[] = Shift::With($tmpColumn->SizeHandle, Shift::Left);
+		
 		foreach($this->LVItemsQueue as $key => $tmpListViewItem)
 			if($this->Update($tmpListViewItem))
 				unset($this->LVItemsQueue[$key]);
 	}
+	protected function MakeColumnShift($tmpColumn)
+	{
+		if(($tmpCount = $this->Columns->Count) > 1)
+			$tmpColumn->Shifts[] = Shift::With($this->Columns[$tmpCount - 2], Shift::Left);//, Shift::Mirror, 1, null, -1);
+		$tmpColumn->SizeHandle->Shifts[] = Shift::Left($tmpColumn->SizeHandle);
+		$tmpColumn->SizeHandle->Shifts[] = Shift::Width($tmpColumn);
+	}
 	function AddListViewItem(ListViewItem $listViewItem)
 	{
 		$this->ListViewItems->Add($listViewItem, true, true);
-		$tmpSubItemCount = $listViewItem->SubItems->Count();
-		$tmpColCount = $this->Columns->Count();
-		$listViewItem->SetListView($this);
-		for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
-		{
-			if($listViewItem->SubItems->Item[$i] !== null)
-			{
-				$tmpBodyControls = &$this->BodyPanels[$i]->Controls;
-				if($i == 0)
-					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop = ((($tmpBodyCount = $tmpBodyControls->Count) > 0)?$tmpBodyControls[$tmpBodyCount-1]->GetBottom():0));
-				else
-					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop);
-				$tmpBodyControls->Add($listViewItem->SubItems[$i]);
-//				$listViewItem->SubItems->Item[$i]->Left = 0;
-			}
-			//}
-		}
+		$this->SetItemProperties($listViewItem);
 		/*
 		if($tmpSubItemCount > $tmpColCount)
 			if(empty($this->LVItemsQueue["{$listViewItem->Id}"])) 
@@ -89,35 +83,12 @@ class ListView extends Panel
 	function InsertListViewItem($listViewItem, $idx)
 	{
 		$this->ListViewItems->Insert($listViewItem, $idx, true);
-		$tmpSubItemCount = $listViewItem->SubItems->Count();
-		$tmpColCount = $this->Columns->Count();
-		$listViewItem->SetListView($this);
-		if($tmpColCount > 0 && $tmpSubItemCount > 0)
-		{
-			$tmpTop = (($tmpBodyCount = $this->BodyPanels->Item[0]->Controls->Count()) > 0)?$this->BodyPanels->Item[0]->Controls[$tmpBodyCount-1]->GetBottom():0;
-			for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
-			{
-				if($listViewItem->SubItems->Item[$i] !== null)
-				{
-					$tmpBodyControls = &$this->BodyPanels->Item[$i]->Controls;
-					$listViewItem->SubItems->Item[$i]->SetTop($tmpTop);
-					$tmpBodyControls->Add($listViewItem->SubItems[$i]);
-					$listViewItem->SubItems->Item[$i]->Left = 0;
-				}	
-			}
-			/*$tmpHeight = $listViewItem->SubItems->Item[0]->GetHeight();
-			if(is_int($idx && $idx < $this->ListViewItems->Count -1))
-			{
-				$tmpCount = $this->ListViewItems->Count();
-				for($i=$idx; $i < $tmpCount; ++$i)
-					$this->ListView
-					
-			}*/
-		}
+		$this->SetItemProperties($listViewItem);
 	}
 	function Update(ListViewItem $listViewItem=null, $startColumn=null/*, $addToQueue=true*/)
 	{
-		//Need to change this function to allow for more optimized adding of subcolumns,
+		return true;
+		/*//Need to change this function to allow for more optimized adding of subcolumns,
 		//Currently it iterates throught all subcolumns, but should only iterate through NEW subcolumns
 		$tmpColCount = $this->Columns->Count();
 		$tmpIndex = $this->ListViewItems->IndexOf($listViewItem);
@@ -126,80 +97,92 @@ class ListView extends Panel
 			$tmpSubItemCount = $listViewItem->SubItems->Count();
 			for($i=0; ($i<$tmpSubItemCount && $i < $tmpColCount); ++$i)
 			{
-				if(!isset($this->BodyPanels[$i]->Controls[$tmpIndex]))
-				{
-					$this->BodyPanels[$i]->Controls[$tmpIndex] = $listViewItem->SubItems[$i];
-					$this->BodyPanels[$i]->Controls[$tmpIndex]->SetLeft(0);
+				$this->BodyPanels[$i]->Controls[$tmpIndex] = $listViewItem->SubItems[$i];
+				$this->BodyPanels[$i]->Controls[$tmpIndex]->SetLeft(0);
 				}
 			}
 			if($tmpSubItemCount <= $tmpColCount)
 				return true;
 		}
-		return false;
+		return false;*/
 	}
 	//Function will Consolidate adding parts of Update() and AddListViewItem()
-	private function AddListViewItemToBodyPanel($bodyPanel, ListViewItem $listViewItem)
+	private function SetItemProperties(ListViewItem $listViewItem)
 	{
-		
+		$tmpSubItemCount = $listViewItem->SubItems->Count();
+		$tmpColCount = $this->Columns->Count();
+		$listViewItem->SetListView($this);
+		if($tmpColCount > 0 && $tmpSubItemCount > 0)
+		{
+			for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
+			{
+				if($listViewItem->SubItems->Item[$i] !== null)
+				{
+					$listViewItem->SubItems->Item[$i]->SetLeft($this->Columns->Item[$i]->GetLeft());
+					$listViewItem->SubItems->Item[$i]->SetWidth($this->Columns->Item[$i]->GetWidth());
+				}
+			}
+		}
 	}
 	private function ModifyScroll()
 	{
-		$this->BodyPanelsHolder->Scroll = new ClientEvent("Noloh_UI_ListView_ScrollColumnPanel('{$this->BodyPanelsHolder->Id}', '{$this->ColumnPanel->Id}')");
+		$this->BodyPanelsHolder->Scroll = new ClientEvent("_N_LV_ModScroll('{$this->BodyPanelsHolder->Id}', '{$this->ColumnPanel->Id}');");
 	}
-	public function ClearListViewItems($clearBodyPanels=true)
+	public function ClearListViewItems(/*$clearBodyPanels=true*/)
 	{
 		$this->ListViewItems->Clear(true);
-		if($clearBodyPanels)
-		{
-			$bodyPanelsCount = $this->BodyPanels->Count;
-			for($i=0; $i<$bodyPanelsCount; ++$i)
-				$this->BodyPanels[$i]->Controls->Clear();
-		}
 		$this->LVItemsQueue = array();
 	}
 	public function Clear()
 	{
 		$this->ClearListViewItems(false);
 		$this->Columns->Clear();
-		$this->BodyPanels->Clear();
 	}
 	function GetDataBind()
 	{
+		$this->SetCursor($this->BodyPanelsHolder->GetCursor());
 		return $this->GetEvent('DataBind');
-	}
-	
+	}	
 	function SetDataBind($newEvent)
 	{
 		$this->SetEvent($newEvent, 'DataBind');
 	}
 	function Show()
 	{
-		AddNolohScriptSrc('ListView.js');
+		AddNolohScriptSrc('ListView.js', true);
 		parent::Show();
 	}
+	public function Sort($column, $order=true)
+	{
+		if($column instanceof ColumnHeader)
+			$tmpIndex = $this->Columns->IndexOf($column);
+		elseif(is_int($column))
+			$tmpIndex = $column;
+		else return;
+		$tmpCount = $this->Columns->Count;
+		for($i=0; $i < $tmpCount; ++$i)
+		{
+			if($this->Columns[$i]->OrderArrow != null)
+				$this->Columns[$i]->OrderArrow->SetVisible(false);
+		}
+		$tmpArray = array();
+		$tmpCount = $this->ListViewItems->Count();
+		foreach($this->ListViewItems->Item as $key => $listViewItem)
+			$tmpArray[$key] = $listViewItem->SubItems[$tmpIndex]->GetText();	
+		if(!$order)
+			asort($tmpArray);
+		else
+			arsort($tmpArray);
+		
+		$tmpNewArray = array();
+		$clientArray = 'Array(';
+		foreach($tmpArray as $key => $val)
+		{
+			$tmpNewArray[$key] = &$this->ListViewItems->Item[$key];
+			$clientArray .= '\'' . $tmpNewArray[$key]->Id .'\',';
+		}
+		$clientArray = rtrim($clientArray, ',') . ')';
+		QueueClientFunction($this, '_N_LV_Sort', array('"'.$this->InnerPanel->Id.'",'.$clientArray));
+	}
 }
-//	public function Sort($whatColumn, $whatOrder)
-//	{
-//		if($whatColumn instanceof ColumnHeader)
-//			$tempIndex = $this->Columns->IndexOf($whatColumn);
-//		else if(is_int($whatColumn))
-//			$tempIndex = $whatColumn;
-//		else return;
-//		$tempArray = array();
-//		$tempRows = array();
-//		$tmpCount = $this->DataTable->Rows->Count();
-//		for($i=0; $i < $tmpCount; $i++)
-//		{
-//			$tempArray[] = $this->DataTable->Rows->Item[$i]->Columns->Item[$tempIndex]->Control->Text;
-//			$tempRows[] = $this->DataTable->Rows->Item[$i];
-//		}
-//		if($whatOrder == 0)
-//			asort($tempArray);
-//		else
-//			arsort($tempArray);
-//		$tempArrayKeys = array_keys($tempArray);
-//		$tmpCount = count($tempArrayKeys);
-//		for($i=0; $i< $tmpCount; $i++)
-//			$this->DataTable->Rows[$i] = $tempRows[$tempArrayKeys[$i]];
-//	}
 ?>
