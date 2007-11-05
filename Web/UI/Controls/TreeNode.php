@@ -34,11 +34,11 @@ class TreeNode extends Panel
 	{
 		parent::Panel(20, 0, 0, null);
 		$this->SetScrolling(System::Full);
-		$this->SetPositionType(1);
+		$this->SetLayoutType(1);
 		if(GetBrowser() == 'ie')
 			NolohInternal::SetProperty('style.marginTop','6px',$this);
 		$this->PlusMinus = new PlusMinusSwitch(0, 0);
-		$this->PlusMinus->SetPositionType(1);
+		$this->PlusMinus->SetLayoutType(1);
 		$this->PlusMinus->SetClientVisible(false);
 		if(is_object($element))
 		{
@@ -58,10 +58,10 @@ class TreeNode extends Panel
 		$this->NodeElement->SetCursor(Cursor::Hand);
 		$this->NodeElement->SetLeft(40);
 		$this->NodeIcon = new Image(TreeNode::GetDefaultLeafSrc(), 8, 3, 16, 15);
-		$this->NodeIcon->SetPositionType(1);
+		$this->NodeIcon->SetLayoutType(1);
 		$this->NodePanel = new Panel(25, 20, null, null, $this);
 		$this->NodePanel->SetScrolling(System::Full);
-		$this->NodePanel->SetPositionType(2);
+		$this->NodePanel->SetLayoutType(2);
 		$this->NodePanel->SetVisible(0);
 		$this->Nodes = &$this->NodePanel->Controls;
 		$this->Nodes->AddFunctionName = 'AddNode';

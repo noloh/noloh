@@ -9,7 +9,7 @@ class TableColumn extends Panel
 	{
 		Panel::Panel(null, null, $width, $height, $this);
 		$this->Controls->AddFunctionName = "AddControl";
-		$this->PositionType = 1;
+		$this->LayoutType = 1;
 		//$this->Border = "1px solid black";
 		$this->SetControl($object);
 	}
@@ -17,7 +17,7 @@ class TableColumn extends Panel
 	{
 		//if(func_num_args()==1)
 		$this->Controls->Add($control, true, true);
-		$control->PositionType = 1;
+		$control->LayoutType = 1;
 	}
 	public function GetControl()
 	{

@@ -25,7 +25,7 @@ class ListViewItem extends Panel //extends Component
 		$objOrText->SetCSSClass("NLVItem");	
 		//$objOrText->Width = '100%';
 		/*$objOrText->CSSFloat = 'left';
-		$objOrText->PositionType = 1;*/
+		$objOrText->LayoutType = 1;*/
 		if($this->ListViewId != null)
 			GetComponentById($this->ListViewId)->Update($this);
 		if(($tmpHeight = $objOrText->GetHeight()) > $this->GetHeight())
