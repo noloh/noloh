@@ -107,7 +107,6 @@ class IFrame extends Control
 			$tmpScroll = 'no';
 		elseif($scrollType === null)
 			$tmpScroll = '';
-		//Alert($tmpScroll);
 		NolohInternal::SetProperty('scrolling', $tmpScroll, $this);
 	}
 	function GetScrolling(){return $this->Scrolling;}

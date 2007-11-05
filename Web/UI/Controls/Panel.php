@@ -23,6 +23,10 @@ class Panel extends Guardian
 	{
 		AddScript("var oldNode = document.getElementById('$this->Id'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
 	}
+	function GetScrolling()
+	{
+		return $this->Scrolling;
+	}
 	function SetScrolling($scrollType)
 	{
 		$this->Scrolling = $scrollType;
@@ -111,10 +115,11 @@ class Panel extends Guardian
 		
 	function Show()
 	{
+        NolohInternal::Show('DIV', parent::Show(), $this);
 		//$initialProperties = $this->GetStyleString();
-		$initialProperties = parent::Show();
-		NolohInternal::Show('DIV', $initialProperties, $this);
-		
+		//$initialProperties = parent::Show();
+		//NolohInternal::Show('DIV', $initialProperties, $this);
+
 //			if(false && $this->SelectFix && (GetBrowser() == "ie"))
 //			{
 //				$initialProperties = "'id','{$this->Id}IFRAME','style.position','absolute','style.left','{$this->Left}px','style.top','{$this->Top}px','style.width','{$this->Width}px','style.height','{$this->Height}px','src','javascript:false','scrolling','no','frameborder','0'";
@@ -147,7 +152,7 @@ class Panel extends Guardian
 		//if($showIFrame)
 		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 
-		return $initialProperties;
+		//return $initialProperties;
 	}
 	
 	function SearchEngineShow()

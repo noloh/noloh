@@ -5,6 +5,7 @@
 class TextArea extends Control 
 {
 	private $MaxLength;
+	private $Scrolling;
 	
 	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = -1)  
 	{
@@ -48,7 +49,27 @@ class TextArea extends Control
 			$preStr = "_NSave(\"$this->Id\",\"value\");";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
-	
+	function GetScrolling()
+	{
+		return $this->Scrolling;
+	}
+	function SetScrolling($scrollType)
+	{
+		$this->Scrolling = $scrollType;
+		$tmpScroll = null;
+		if($scrollType == System::Auto)
+			$tmpScroll = 'auto';
+		elseif($scrollType == System::Full)
+			$tmpScroll = 'visible';
+		elseif($scrollType === null)
+			$tmpScroll = '';
+		elseif($scrollType)
+			$tmpScroll = 'scroll';
+		else//if(!$scrollType)
+			$tmpScroll = 'hidden';
+		//Alert($tmpScroll);
+		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
+	}
 	function Show()
 	{
 		$initialProperties = parent::Show();
