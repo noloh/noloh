@@ -54,6 +54,7 @@ function _N_LV_ResizeEnd()
 		var tmpInnPnl = document.getElementById(tmpLVInfo.InnPnl);
 		var tmpCount = tmpInnPnl.childNodes.length;
 		var tmpInnPnlChildren;
+		ChangeAndSave(tmpInnPnl.id, 'style.width', parseInt(tmpInnPnl.style.width) + changeX + 'px');
 		for(i=0; i<tmpCount;++i)
 		{
 			tmpInnPnlChildren = tmpInnPnl.childNodes[i];
