@@ -80,8 +80,8 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	 */
 	protected function PreAdd($element)
 	{
-		if($element instanceof Control && $element->GetZIndex() == null)
-			$element->_NSetZIndex(++$_SESSION['HighestZIndex']);
+		/*if($element instanceof Control && $element->GetZIndex() == null)
+			$element->_NSetZIndex(++$_SESSION['HighestZIndex']);*/
 		if($this->ParentId != null && $element instanceof Component)
 			$element->SetParentId($this->ParentId);
 	}
