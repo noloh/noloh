@@ -48,20 +48,26 @@ class CheckBox extends GroupedInputControl
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		$preStr = '';
 		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change')
-			$preStr = "_NSave(\"$this->Id\",\"checked\");";
-		return $preStr . parent::GetEventString($eventTypeAsString);
+           return '_NCBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
+		return parent::GetEventString($eventTypeAsString);
 	}
 	/**
 	 * @ignore
 	 */
 	function Show()
 	{
+        parent::Show();
+		$initialProperties = "'id','".$this->Id."I','type','checkbox','defaultChecked',".($this->Checked?'true':'false').parent::GetEventString(null);
+        if($this->GroupName != null)
+            $initialProperties .= ",'name','$this->GroupName'";
+		NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
+
+        /*
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'type','checkbox'";
 		$initialProperties .= parent::GetEventString(null);
-		NolohInternal::Show('INPUT', $initialProperties, $this);
+		NolohInternal::Show('INPUT', $initialProperties, $this);    */
 		//return $initialProperties;
 	}
 }	

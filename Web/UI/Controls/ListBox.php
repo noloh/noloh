@@ -123,7 +123,7 @@ class ListBox extends ListControl
 	 */
 	function Set_NSelectedIndices($indicesString)
 	{
-		$this->SelectedIndices = $indicesString ? explode('~d2~', $indicesString) : array();
+		$this->SelectedIndices = $indicesString!=='' ? explode('~d2~', $indicesString) : array();
 	}
 	/**
 	 * @ignore

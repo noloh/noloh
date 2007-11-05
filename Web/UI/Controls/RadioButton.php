@@ -10,21 +10,22 @@ class RadioButton extends GroupedInputControl
 	}
 	function GetEventString($eventTypeAsString)
 	{
-		$preStr = '';
 		if($eventTypeAsString == 'Click')
-			$preStr = "RadioButtonSave(\\\"$this->Id\\\");";
-		return $preStr . parent::GetEventString($eventTypeAsString);
+			return '_NRBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
+		return parent::GetEventString($eventTypeAsString);
 	}
 	function Show()
 	{
-		$initialProperties = parent::Show();
-		$initialProperties .= ",'type','radio'";
-		$initialProperties .= parent::GetEventString(null);
+        parent::Show();
+		$initialProperties = "'id','".$this->Id."I','type','radio','defaultChecked',".($this->Checked?'true':'false').parent::GetEventString(null);
 		if(GetBrowser()=='ie')
-			NolohInternal::Show("<INPUT name=\"$this->GroupName\">", $initialProperties, $this);
+			NolohInternal::Show('<INPUT name="$this->GroupName">', $initialProperties, $this, $this->Id);
 		else
-			NolohInternal::Show("INPUT", $initialProperties, $this);
-		return $initialProperties;
+        {
+            if($this->GroupName != null)
+                $initialProperties .= ",'name','$this->GroupName'";
+			NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
+        }
 	}
 }
 	
