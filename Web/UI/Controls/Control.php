@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Control Class File
  * @package Web.UI.Controls
@@ -108,11 +108,12 @@ class Control extends Component
 	*/
 	protected $CSSPropertyArray;
 	/**
-	*PositionType, Gets or sets the PositionType of this Control
-	*Default is 0, which is absolute, 1 is relative.
+	*LayoutType, Gets or sets the PositionType of this Control
+	*Default is Layout::Absolute, possible values are Layout::Absolute, 
+	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
 	*@var integer
 	*/
-	private $PositionType;
+	private $LayoutType;
 	/**
 	*	Enabled, Gets or sets whether this control is Enabled, when Enabled is false, the Control takes on a Disabled look
 	* @var boolean
@@ -224,7 +225,7 @@ class Control extends Component
 		if($height !== null)
 			$this->SetHeight($height);
 	}
-	
+
 	function Bury()
 	{
 		NolohInternal::Bury($this);
@@ -236,37 +237,37 @@ class Control extends Component
 		NolohInternal::Resurrect($this);
 		parent::Resurrect();
 	}
-	
+
 	function GetCSSClass()
 	{
 		return $this->CSSClass;
 	}
-	
+
 	function SetCSSClass($newClass)
 	{
 		$this->CSSClass = $newClass;
 		NolohInternal::SetProperty('className', $newClass, $this);
 	}
-	
+
 	function GetOpacity()
 	{
 		return $this->Opacity;
 	}
-	
+
 	function SetOpacity($newOpacity)
 	{
 		$this->Opacity = $newOpacity;
 		if(UserAgentDetect::GetBrowser()=='ie')
 			NolohInternal::SetProperty('style.filter', "alpha(opacity=$newOpacity)", $this);
-		else 
+		else
 			NolohInternal::SetProperty('style.opacity', $newOpacity/100, $this);
 	}
-	
+
 	function GetZIndex()
 	{
 		return $this->ZIndex;
 	}
-	
+
 	function SetZIndex($newZIndex)
 	{
 		if($newZIndex > $_SESSION['HighestZIndex'])
@@ -275,17 +276,17 @@ class Control extends Component
 			$_SESSION['LowestZIndex'] = $newZIndex;
 		$this->_NSetZIndex($newZIndex);
 	}
-	
+
 	function _NSetZIndex($newZIndex)
 	{
 		$this->ZIndex = $newZIndex;
 		NolohInternal::SetProperty('style.zIndex', $newZIndex, $this);
 	}
-	
+
 	/**
 	* @ignore
 	*/
-	function GetText() 
+	function GetText()
 	{
 		return ($this->Text == null?'':$this->Text);
 	}
@@ -311,7 +312,7 @@ class Control extends Component
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
 	* @param string|Src
 	*/
-	function SetWidth($newWidth) 
+	function SetWidth($newWidth)
 	{
 		$this->Width = $newWidth;
 		if(is_numeric($newWidth))
@@ -330,7 +331,7 @@ class Control extends Component
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
 	* @param string|Src
 	*/
-	function SetHeight($newHeight) 
+	function SetHeight($newHeight)
 	{
 		$this->Height = $newHeight;
 		if(is_numeric($newHeight))
@@ -341,7 +342,7 @@ class Control extends Component
 	//
 	function GetLeft() {return $this->Left;}
 	//
-	function SetLeft($newLeft) 
+	function SetLeft($newLeft)
 	{
 		$this->Left = $newLeft;
 		if(is_numeric($newLeft))
@@ -352,7 +353,7 @@ class Control extends Component
 	//
 	function GetTop() {return $this->Top;}
 	//
-	function SetTop($newTop) 
+	function SetTop($newTop)
 	{
 		$this->Top = $newTop;
 		if(is_numeric($newTop))
@@ -378,51 +379,54 @@ class Control extends Component
 	{
 		return $this->GetLeft() + $this->GetWidth();
 	}
-	
-	function GetPositionType()
+	function GetLayoutType()
 	{
-		return $this->PositionType === null ? 0 : $this->PositionType;
+		return $this->LayoutType === null ? 0 : $this->LayoutType;
 	}
-	
-	function SetPositionType($newPositionType)
+	/**
+	*LayoutType, Gets or sets the LayoutType of this Control
+	*Default is Layout::Absolute, possible values are Layout::Absolute, 
+	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
+	*@var integer
+	*/
+	function SetLayoutType($layoutType)
 	{
-		if($newPositionType < 3)
+		if(is_numeric($layoutType))
 		{
-			switch($newPositionType)
+			switch($layoutType)
 			{
 				case 0: $printAs = 'absolute'; break;
 				case 1: $printAs = 'relative'; break;
 				case 2: $printAs = 'static';
 			}
 			NolohInternal::SetProperty('style.position', $printAs, $this);
-			if($this->PositionType == 3)
+			if(is_string($this->LayoutType))
 				NolohInternal::SetProperty('style.float', '', $this);
 		}
-		else 
+		else
 		{
-			NolohInternal::SetProperty('style.float', 'left', $this);
-			if($this->PositionType < 3)
-				NolohInternal::SetProperty('style.position', 'static', $this);
+			NolohInternal::SetProperty('style.float', $layoutType, $this);
+			if(is_numeric($this->GetLayoutType()))
+				NolohInternal::SetProperty('style.position', 'relative', $this);
 		}
-		$this->PositionType = $newPositionType === 0 ? null : $newPositionType;
+		$this->LayoutType = $layoutType === 0 ? null : $layoutType;
 	}
-	
 	function GetEnabled()
 	{
 		return $this->Enabled === null;
 	}
-	
+
 	function SetEnabled($bool)
 	{
 		$this->Enabled = $bool ? null : false;
 		NolohInternal::SetProperty('disabled', !$bool, $this);
 	}
-	
+
 	function GetClientVisible()
 	{
 		return $this->Visible === null ? true : $this->Visible;
 	}
-	
+
 	function SetClientVisible($newVisibility)
 	{
 		if(is_string($newVisibility))
@@ -431,19 +435,19 @@ class Control extends Component
 			NolohInternal::SetProperty('style.display', 'none', $this);
 			NolohInternal::SetProperty('style.visibility', 'inherit', $this);
 		}
-		else 
+		else
 		{
 			$this->Visible = $newVisibility ? null : false;
 			NolohInternal::SetProperty('style.display', '', $this);
 			NolohInternal::SetProperty('style.visibility', $newVisibility?'inherit':'hidden', $this);
 		}
 	}
-	
+
 	function GetVisible()
 	{
 		return $this->Visible === null ? true : $this->Visible;
 	}
-	
+
 	function SetVisible($visibility)
 	{
 		if(is_bool($visibility))
@@ -454,84 +458,84 @@ class Control extends Component
 				$this->Visible = null;
 				NolohInternal::SetProperty('style.visibility', 'visible', $this);
 			}
-			else 
+			else
 			{
 				$this->Visible = false;
 				NolohInternal::SetProperty('style.visibility', 'hidden', $this);
 			}
 		}
-		else 
+		else
 		{
 			$this->Visible = 0;
 			NolohInternal::SetProperty('style.display', 'none', $this);
 		}
 	}
-	
+
 	function GetBorder()
 	{
 		return $this->Border;
 	}
-	
+
 	function SetBorder($newBorder)
 	{
 		$this->Border = $newBorder;
-		NolohInternal::SetProperty('style.border', $newBorder, $this);
+		NolohInternal::SetProperty('style.border', is_numeric($newBorder)?($newBorder.'px solid black'):$newBorder, $this);
 	}
-	
+
 	function GetBackColor()
 	{
 		return $this->BackColor;
 	}
-	
+
 	function SetBackColor($newBackColor)
 	{
 		$this->BackColor = $newBackColor;
 		NolohInternal::SetProperty('style.background', $newBackColor, $this);
 	}
-	
+
 	function GetColor()
 	{
 		return $this->Color;
 	}
-	
+
 	function SetColor($newColor)
 	{
 		$this->Color = $newColor;
-		NolohInternal::SetProperty('style.color', $newColor, $this);			
+		NolohInternal::SetProperty('style.color', $newColor, $this);
 	}
-	
+
 	function GetCursor()
 	{
 		return $this->Cursor == null ? Cursor::Arrow : $this->Cursor;
 	}
-	
+
 	function SetCursor($newCursor)
 	{
 		$this->Cursor = $newCursor == Cursor::Arrow ? null : $newCursor;
 		NolohInternal::SetProperty('style.cursor', $newCursor, $this);
 	}
-	
+
 	function GetToolTip()
 	{
 		return $this->ToolTip;
 	}
-	
+
 	function SetToolTip($newToolTip)
 	{
 		$this->ToolTip = $newToolTip;
 		NolohInternal::SetProperty('title', $newToolTip, $this);
 	}
-	
+
 	function GetBuoyant()
 	{
 		return $this->Buoyant !== null;
 	}
-	
+
 	function SetBuoyant($bool)
 	{
 		if($bool)
 			$this->Buoyant = true;
-		else 
+		else
 		{
 			$this->Buoyant = null;
 			QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
@@ -542,17 +546,24 @@ class Control extends Component
 			NolohInternal::Resurrect($this);
 		}
 	}
-	
+
 	function BuoyantHelper()
 	{
-		
+
 	}
-	
+
 	function Set_NText($text)
 	{
 		$this->Text = str_replace('~da~', '&', $text);
 	}
-	
+
+    function SetParentId($id)
+    {
+        parent::SetParentId($id);
+        if($this->ZIndex == null)
+            $this->_NSetZIndex(++$_SESSION['HighestZIndex']);
+    }
+
 	//Event Functions
 	function GetChange()							{return $this->GetEvent('Change');}
 	function SetChange($newChange)					{$this->SetEvent($newChange, 'Change');}
@@ -703,7 +714,7 @@ class Control extends Component
 		$this->Shifts->Item[$arrayIndex] = $tmp;
 		QueueClientFunction($this, 'ChangeShiftType', array("'$this->Id'", $arrayIndex, $newType));
 	}
-	
+
 	function ClearShift()
 	{
 		NolohInternal::SetProperty('Shifts', 'Array()', $this);
@@ -768,5 +779,9 @@ class Control extends Component
 		}
 		return $val;
 	}
+	/*function __toString()
+	{
+		return $this->GetText();
+	}*/
 }
 ?>
