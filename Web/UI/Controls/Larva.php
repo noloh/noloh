@@ -5,16 +5,16 @@
 
 /**
  * A Larva is a MarkupItem that is capable of turning into Components.<br>
- * This is used only in connection with EventMarkupPanel.<br>
- * This class should never be instantiated by the developer. Use only the Larva objects that EventMarkupPanel::GetLarvae() returns.<br>
- * See {@see EventMarkupPanel} and {@see EventMarkupPanel::GetLarvae()} for more information.<br>
+ * This is used only in connection with RichMarkupRegion.<br>
+ * This class should never be instantiated by the developer. Use only the Larva objects that RichMarkupRegion::GetLarvae() returns.<br>
+ * See {@see RichMarkupRegion} and {@see RichMarkupRegion::GetLarvae()} for more information.<br>
  *  
  * <code>
- * // A function which takes an EventMarkupPanel object that we'll locally name $eventMarkupPanel
- * function MakeLarvaeButtons(EventMarkupPanel $eventMarkupPanel)
+ * // A function which takes an RichMarkupRegion object that we'll locally name $eventMarkupRegion
+ * function MakeLarvaeButtons(RichMarkupRegion $eventMarkupRegion)
  * {
- * 	// Iterates through all Larvae of $eventMarkupPanel
- * 	foreach($eventMarkupPanel->GetLarvae() as $larva)
+ * 	// Iterates through all Larvae of $eventMarkupRegion
+ * 	foreach($eventMarkupRegion->GetLarvae() as $larva)
  * 		// Morphs each Larva intoa Button whose Text is that Larva's value
  * 		$larva->Morph(new Button($eventee->Value));
  * }

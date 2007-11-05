@@ -5,9 +5,9 @@
 
 /**
  * An Eventee is a MarkupItem that is capable of recieving events.<br>
- * This is used only in connection with EventMarkupPanel.<br>
- * This class should never be instantiated by the developer. Use only the Eventee objects that EventMarkupPanel::GetEventees() returns.<br>
- * See {@see EventMarkupPanel} and {@see EventMarkupPanel::GetEventees()} for more information.<br>
+ * This is used only in connection with RichMarkupRegion.<br>
+ * This class should never be instantiated by the developer. Use only the Eventee objects that RichMarkupRegion::GetEventees() returns.<br>
+ * See {@see RichMarkupRegion} and {@see RichMarkupRegion::GetEventees()} for more information.<br>
  * 
  * The possible events are:
  * 	Click
@@ -19,11 +19,11 @@
  * 	RightClick
  * 
  * <code>
- * // A function which takes an EventMarkupPanel object that we'll locally name $eventMarkupPanel
- * function SetEventeeClicks(EventMarkupPanel $eventMarkupPanel)
+ * // A function which takes an RichMarkupRegion object that we'll locally name $eventMarkupRegion
+ * function SetEventeeClicks(RichMarkupRegion $eventMarkupRegion)
  * {
- * 	// Iterates through all Eventees of $eventMarkupPanel
- * 	foreach($eventMarkupPanel->GetEventees() as $eventee)
+ * 	// Iterates through all Eventees of $eventMarkupRegion
+ * 	foreach($eventMarkupRegion->GetEventees() as $eventee)
  * 		// Gives each Eventee a Click ServerEvent which calls AlertValue and passes in that Eventee's value as a parameter
  * 		$eventee->Click = new ServerEvent($this, "AlertValue", $eventee->Value);
  * }

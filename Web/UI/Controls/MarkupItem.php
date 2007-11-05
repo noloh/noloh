@@ -18,7 +18,7 @@
  * A Larva is a MarkupItem whose tag name is n:component. Any other tag is an eventee.
  * 
  * For more information, please see
- * @see EventMarkupPanel
+ * @see RichMarkupRegion
  */
 abstract class MarkupItem extends Object
 {
@@ -31,7 +31,7 @@ abstract class MarkupItem extends Object
 	private $Keyword;
 	private $Value;
 	/**
-	 * The Id of the EventMarkupPanel from which the MarkupItem was parsed
+	 * The Id of the RichMarkupRegion from which the MarkupItem was parsed
 	 * @access protected
 	 * @var string
 	 */
