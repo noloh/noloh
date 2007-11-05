@@ -115,6 +115,11 @@ class WindowPanel extends Panel
 		$this->WindowPanelComponents->Add($this->BodyPanel);
 		$this->WindowPanelComponents->Add($this->ResizeImage);
 	}
+	function SetText($text)
+	{
+		$this->TitleBar->SetText($text);
+	}
+	function GetText(){return $this->TitleBar->GetText();}
 	
 	function GetMenu()
 	{
