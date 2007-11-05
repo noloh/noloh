@@ -16,7 +16,7 @@ class ColumnHeader extends Panel
 		$this->Caption = new Label($text, 0, 0, $width, $height);
 		parent::Panel($left, 0, ($width == System::Auto || $width == System::AutoHtmlTrim)?$this->Caption->GetWidth() + 25:$width, $height);
 		$this->CSSBackground_Repeat = "repeat-x";
-		$this->SizeHandle = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/ColSep.gif', $this->Width - 1, 4);
+		$this->SizeHandle = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/ColSep.gif', $this->Width - 3, 6);
 		$this->Caption->CSSClass = 'NColHead';
 		$this->SizeHandle->Cursor = Cursor::WestResize;
 		$this->Caption->ParentId = $this->Id;
