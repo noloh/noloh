@@ -48,7 +48,7 @@ class GroupedInputControl extends Control
 	function SetGroupName($newGroupName)
 	{
 		$this->GroupName = $newGroupName;
-        if($this->GetShowStatus !== 0)
+        //if($this->GetShowStatus !== 0)
             QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
 		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
