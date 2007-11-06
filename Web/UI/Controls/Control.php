@@ -14,8 +14,8 @@
  *  @property string $CSS_________ Allows for the ability to
  *  set ANY CSS property on the fly. Just prepend the style with CSS,
  *  and change dash to underscore. ex. CSSBorder_Bottom = "1px solid black";
- *  @property integer PositionType
- * - <b>PositionType</b>, integer,
+ *  @property integer LayoutType
+ * - <b>LayoutType</b>, integer,
  *   <br>Sets whether the position is absolute, relative, or static
  * - <b>Enabled</b>, boolean
  *   <br>Gets or sets whether the Control is Enabled
@@ -108,7 +108,7 @@ class Control extends Component
 	*/
 	protected $CSSPropertyArray;
 	/**
-	*LayoutType, Gets or sets the PositionType of this Control
+	*LayoutType, Gets or sets the LayoutType of this Control
 	*Default is Layout::Absolute, possible values are Layout::Absolute, 
 	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
 	*@var integer
