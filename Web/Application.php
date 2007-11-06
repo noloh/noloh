@@ -110,7 +110,7 @@ final class Application
 				set_exception_handler('_NErrorHandler');
                 if($_SESSION['NOLOHVisit']==-1)
                     AddScript('_NDebugMode=false;');
-			}
+			}                                   
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
@@ -197,11 +197,11 @@ final class Application
 		$_SESSION['NOLOHGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);
 	}
-	
+
 	private function HandleClientChanges()
 	{
 		$GLOBALS['PropertyQueueDisabled'] = true;
-		$componentChanges = explode('~d0~', $_POST['NOLOHClientChanges']);
+		$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
 		$numComponents = count($componentChanges);
 		for($i = 0; $i < $numComponents; ++$i)
 		{
@@ -211,60 +211,6 @@ final class Application
 			$j = 0;
 			while(++$j < $changeCount)
 				$component->{$changes[$j]} = $changes[++$j];
-			
-			//	switch($changes[++$j])
-			//	{
-					// Strings
-					/*case "ViewMonth":
-					case "ViewYear":
-					case "Date":
-					case "Month":
-					case "Year":
-					case "Text":
-					case "Src":
-					case "BackColor":
-					case "Color":
-					case "ZIndex":
-					case "SelectedTab":
-						GetComponentById($splitChange[0])->{$splitChange[1]} = $splitChange[2];
-						//$runThisString .= $splitChange[1] . ' = "' . $splitChange[2] . '";';
-						break;*/
-					// Functions
-					/*case "KillLater":
-						if(GetComponentById($splitChange[0]) != null)
-							GetComponentById($splitChange[0])->Close();
-							/*$runThisString .= 'Close();';
-						else
-							$runThisString = "";
-						break;*/
-					//case "SelectedTab":
-					//	$runThisString .= 'SelectedIndex = GetComponentById($splitChange[0])->TabControlBar->Controls->IndexOf(GetComponentById($splitChange[2]));';
-						//break;
-					// Booleans
-					//case "Checked":
-					//case "ClientVisible":
-						//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
-						//break;
-					// Explode string to array
-				//	case 'Items':
-				//		$component->Items = self::ExplodeItems($changes[++$j]);
-				//		break;
-				//	case 'SelectedIndices':					
-				//		$component->SelectedIndices = self::ExplodeSelectedIndices($changes[++$j]);
-				//		break;
-						//$tmp = strpos($splitChange[1], "->");
-						//$runThisString = 'GetComponentById($splitChange[0])->';
-						//$runThisString .= $splitChange[1] . ' = $this->Explode' . ($tmp===false?$splitChange[1]:substr($splitChange[1], 0, $tmp)) . '("' . $splitChange[2] . '");';
-						//break;
-				//	case 'Text':
-				//		$component->Text = str_replace('~da~', '&', $changes[++$j]);
-				//		break;
-				//	default:
-						//$runThisString .= $splitChange[1] . ' = ' . $splitChange[2] . ';';
-				//		$component->{$changes[$j]} = $changes[++$j];
-				//}
-			//echo $runThisString;
-			//eval($runThisString);
 		}
 		unset($GLOBALS['PropertyQueueDisabled']);
 	}
