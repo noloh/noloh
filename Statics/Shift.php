@@ -45,9 +45,9 @@ class Shift
 		$id = $control->Id;
 		$shiftStr = 'Array("'.$id.'",4,'.$type.','.$ratio;
 		if($max !== null)
-			$shiftStr .= ($min === null ? 'null' : $min) . ',' . $max;
+			$shiftStr .= ',' . ($min === null ? 'null' : $min) . ',' . $max;
 		elseif($min !== null)
-			$shiftStr .= $min;
+			$shiftStr .= ',' . $min;
         return array($id,4,$shiftStr.')');
 	}
 	
@@ -56,35 +56,35 @@ class Shift
 		$id = $control->Id;
 		$shiftStr = 'Array("'.$id.'",5,'.$type.','.$ratio;
 		if($max !== null)
-			$shiftStr .= ($min === null ? 'null' : $min) . ',' . $max;
+			$shiftStr .= ',' . ($min === null ? 'null' : $min) . ',' . $max;
 		elseif($min !== null)
-			$shiftStr .= $min;
+			$shiftStr .= ',' . $min;
         return array($id,5,$shiftStr.')');
 	}
-	
+
 	static function Location($control, $minLeft=null, $maxLeft=null, $minTop=null, $maxTop=null, $type=self::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		$shiftStr = 'Array("'.$id.'",6,'.$type.','.$ratio;
 		if($maxTop !== null)
-			$shiftStr .= 
+			$shiftStr .= ',' .
 				($minLeft === null ? 'null' : $minLeft) . ',' .
 				($maxLeft === null ? 'null' : $maxLeft) . ',' .
 				($minTop === null ? 'null' : $minTop) . ',' .
 				$maxTop;
 		elseif($minTop !== null)
-			$shiftStr .= 
+			$shiftStr .= ',' .
 				($minLeft === null ? 'null' : $minLeft) . ',' .
 				($maxLeft === null ? 'null' : $maxLeft) . ',' .
 				$minTop;
 		elseif($maxLeft !== null)
-			$shiftStr .= 
+			$shiftStr .= ',' .
 				($minLeft === null ? 'null' : $minLeft) . ',' .
 				$maxLeft;
 		elseif($minLeft !== null)
-			$shiftStr .= 
+			$shiftStr .= ',' .
 				$minLeft;
-		
+
 		return array($id,6,$shiftStr.')');
 	}
 	
