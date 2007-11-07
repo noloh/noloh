@@ -11,7 +11,7 @@ function _NRBSave(id)
 	{
         divId = radioGroup[i].id.replace("I", '');
 		NOLOHChangeInit(divId, "checked");
-        if(radioGroup[i].checked != (NOLOHChanges[divId]["checked"][0] != null ? NOLOHChanges[divId]["checked"][0] : SavedControls[divId].checked) && document.getElementById(divId).onchange!=null);
+        if(radioGroup[i].checked != (NOLOHChanges[divId]["checked"][0] != null ? NOLOHChanges[divId]["checked"][0] : SavedControls[divId].checked) && document.getElementById(divId).onchange!=null)
             changeArr.push(divId);
         _NSave(divId, "checked", divId == id);
 	}
