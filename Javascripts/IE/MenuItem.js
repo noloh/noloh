@@ -1,44 +1,44 @@
-menuWasDeactivated = false;
+mnuDeactivated = false;
 
-function ToggleSubMenuItems(whatMenuItemId, whatSubMenuItemsId, IsClick)
+function ToggleSubMenuItems(mnuItmId, txtLblId, sbMenuId, isClk)
 {
-	if(menuWasDeactivated == true)
+	if(mnuDeactivated == true)
 	{
-		menuWasDeactivated = false;
+		mnuDeactivated = false;
 		return;
 	}
-	var thisMenu = document.getElementById(whatMenuItemId);
-	var tempParent = document.getElementById(thisMenu.MenuPanelParentId);
+	var menu = document.getElementById(mnuItmId);
+	var subMenu =  document.getElementById(sbMenuId);
+	var label =  document.getElementById(txtLblId);
+	var tmpParent = document.getElementById(label.MenuPanelParentId)
 	
-	if(thisMenu.IsSelected == null || thisMenu.IsMainMenu != null)
+	if(label.IsSelected == null || label.IsMainMenu != null)
 	{
-		if(thisMenu.IsMainMenu != null)
+		if(label.IsMainMenu != null)
 		{
-			if(IsClick == true)
-				if(tempParent.IsClicked != true)
-					tempParent.IsClicked = true;
-			if(tempParent.IsClicked != true)
+			if(isClk == true)
+				if(tmpParent.IsClicked != true)
+					tmpParent.IsClicked = true;
+			if(tmpParent.IsClicked != true)
 				return;
-			thisMenu.setActive();
-			thisMenu.detachEvent("ondeactivate", HideAllMainMenuChildren);
-			thisMenu.attachEvent("ondeactivate", HideAllMainMenuChildren);
+			label.setActive();
+			label.detachEvent("ondeactivate", HideAllMainMenuChildren);
+			label.attachEvent("ondeactivate", HideAllMainMenuChildren);
 		}
-		if(tempParent.SelectedMenuItemId != null)
+		if(tmpParent.SelectedMenuItemId != null)
 		{
-			if(thisMenu.IsMainMenu != null)
-				HideAllMenuItemChildren(tempParent.SelectedMenuItemId, false, false);
+			if(label.IsMainMenu != null)
+				HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, false);
 			else
-				HideAllMenuItemChildren(tempParent.SelectedMenuItemId, false, true);
+				HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, true);
 		}
-		tempParent.SelectedMenuItemId = whatMenuItemId;
-		
-		thisMenu.IsSelected = true;
+		tmpParent.SelectedMenuItemId = label.id;
+		label.IsSelected = true;
 	
-		if((document.getElementById(whatSubMenuItemsId).ChildrenArray) != null)
+		if((document.getElementById(sbMenuId).ChildrenArray) != null)
 		{
-			thisMenu.ChildMenuId = whatSubMenuItemsId;
-			//alert("I got you, you snake in the grass");
-			ToggleVisibility(whatSubMenuItemsId);
+			label.ChildMenuId = sbMenuId;
+			ToggleVisibility(sbMenuId);
 		}
 	}
 }
@@ -46,20 +46,20 @@ function HideAllMainMenuChildren()
 {
 	if(window.event.toElement.id != "")
 	{
-		var temp = document.getElementById(window.event.toElement.id);
-		if(temp != null)
+		var tmp = document.getElementById(window.event.toElement.id);
+		if(tmp != null)
 		{
-			if(temp.MenuPanelParentId != null)
+			if(tmp.MenuPanelParentId != null)
 			{
-				var tempGrandParent = document.getElementById(temp.MenuPanelParentId);
+				var tempGrandParent = document.getElementById(tmp.MenuPanelParentId);
 				if(tempGrandParent.IsClicked == true)
-					menuWasDeactivated = true;
+					mnuDeactivated = true;
 				document.getElementById(window.event.srcElement.MenuPanelParentId).IsClicked = false;
-				if(temp.IsMainMenu == null)
-					if(temp.onclick != null)
-						temp.onclick.call();
+				if(tmp.IsMainMenu == null)
+					if(tmp.onclick != null)
+						tmp.onclick.call();
 			}
-			if(temp.MenuPanelParentId == null)
+			if(tmp.MenuPanelParentId == null)
 				document.getElementById(window.event.srcElement.MenuPanelParentId).IsClicked = false;
 		}
 	}
@@ -68,24 +68,24 @@ function HideAllMainMenuChildren()
 	crappyglobal = window.event.srcElement.id;
 	HideAllMenuItemChildren(crappyglobal, true, true);
 }
-function HideAllMenuItemChildren(whatMenuItemId, IsClick, changeColor)
+function HideAllMenuItemChildren(mnuItmId, isClick, changeColor)
 {
-	var OpenMenuItem = document.getElementById(whatMenuItemId);
+	var OpenMenuItem = document.getElementById(mnuItmId);
 	
 	if(OpenMenuItem.ChildMenuId != null)
 	{
 		var ChildMenu = document.getElementById(OpenMenuItem.ChildMenuId);
 		
 		for(var i=0; i < ChildMenu.ChildrenArray.length; ++i)
-			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], IsClick, changeColor);
+			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], isClick, changeColor);
 		OpenMenuItem.IsSelected = null;
-		/*if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && menuWasDeactivated != true && changeColor == true))
-			ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");*/
-		ChangeAndSave(ChildMenu.id, "style.visibility", "hidden");
+		if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && mnuDeactivated != true && changeColor == true))
+			OpenMenuItem.onmouseout.call();
+		//ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");
+		ChangeAndSave(ChildMenu.id, "style.display", "none"); 
 	}
 	OpenMenuItem.IsSelected = null;
-	
-	if(IsClick == true)
+	if(isClick)
 		if(OpenMenuItem.IsMainMenu != null)
 			document.getElementById(OpenMenuItem.MenuPanelParentId).detachEvent("ondeactivate", HideAllMainMenuChildren);
 	if(window.event != null)

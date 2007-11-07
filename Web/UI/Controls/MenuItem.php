@@ -19,16 +19,17 @@ class MenuItem extends Panel
 			$this->TextLabel = $textOrControl;
 		else
 			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 18);
-		$this->SetWidth($this->TextLabel->GetWidth());
-		//$this->TextLabel->Font = "11px Tahoma";
+		///$this->Width = ''
+		$this->SetWidth($this->TextLabel->GetWidth() + 15);
+		$this->TextLabel->SetWidth('100%');
+		
 		$this->TextLabel->Cursor = Cursor::Arrow;
-		$this->MainMenuPanel = new Panel($this->GetRight(), $this->TextLabel->GetTop(), 0, 0, $this);
+		$this->MainMenuPanel = new Panel($this->GetRight(), 0, null, null, $this);
 		$this->MainMenuPanel->Buoyant = true;
 		$this->MainMenuPanel->Scrolling = System::Full;
 		$this->MainMenuPanel->Border = '1px solid black';
 		$this->MainMenuPanel->BackColor = 'white';
-		$this->MainMenuPanel->ClientVisible = false;
-//		$this->MainMenuPanel->Visible = System::Vacuous;
+		$this->MainMenuPanel->Visible = System::Vacuous;
 		$this->MenuItems = &$this->MainMenuPanel->Controls;
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		$this->SetOutBackColor();
@@ -36,14 +37,15 @@ class MenuItem extends Panel
 		$this->SetOverBackColor();
 		$this->SetOverTextColor();
 		//New Way
-		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false);");
+		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->Id}', '{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false);");
 		$this->TextLabel->ParentId = $this->Id;
 		$this->MainMenuPanel->ParentId = $this->Id;
+		//$this->LayoutType = 1;
 		//$this->Controls->AddRange($this->TextLabel, $this->MainMenuPanel);
 	}
 	function AddMenuItem(MenuItem $menuItem)
 	{
-		if($this->MainMenuPanel->Controls->Count() > 0)
+		/*if($this->MainMenuPanel->Controls->Count() > 0)
 		{
 			$menuItem->Top = $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->GetTop() + $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->GetHeight();
 			$menuItem->MainMenuPanel->SetTop($menuItem->GetTop());
@@ -55,7 +57,11 @@ class MenuItem extends Panel
 			//NolohInternal::SetProperty("HasChildren", "true", $this->TextLabel);
 			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MainMenuPanel);
 			//AddScript("document.getElementById('{$this->TextLabel->Id}').HasChildren = true; document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray = new Array();");
-		}
+		}*/
+		if($this->MainMenuPanel->Controls->Count() == 0)
+			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MainMenuPanel);
+//		$this->TextLabel->SetWidth('100%');
+		$menuItem->LayoutType = Layout::Relative;
 		if($this->MainMenuPanel->GetWidth() < $menuItem->GetWidth())
 		{
 			$this->MainMenuPanel->Width = $menuItem->Width;
@@ -67,7 +73,6 @@ class MenuItem extends Panel
 			$menuItem->Width = $this->MainMenuPanel->Width;
 		$this->MainMenuPanel->Height += $menuItem->Height;
 		$this->MainMenuPanel->Controls->Add($menuItem, true, true);
-		//QueueClientFunction($this, "document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray.push", array("'{$menuItem->TextLabel->Id}'"));
 		$tmpId = $this->MainMenuPanel->Id;
 		$fncStr = "document.getElementById('$tmpId').ChildrenArray.splice";
 		if(isset($_SESSION['NOLOHFunctionQueue'][$tmpId]) && isset($_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr]))
@@ -94,21 +99,22 @@ class MenuItem extends Panel
 	}
 	function GetText()		{return $this->TextLabel->GetText();}
 	function SetText($text)	{$this->TextLabel->SetText($text);}
-	function GetLeft()		{return $this->TextLabel->GetLeft();}
+	//function GetLeft()		{return $this->TextLabel->GetLeft();}
 	function SetLeft($left)
 	{
-		//$this->TextLabel->SetLeft($left);
-		if(!($this->Parent instanceof MainMenu))
-			$this->MainMenuPanel->SetLeft($this->GetLeft() + $this->GetWidth());
+		parent::SetLeft($left);
+		//$this->SetLeft($left);
+		//if(!($this->Parent instanceof MainMenu))
+			//$this->MainMenuPanel->SetLeft($this->GetRight());//GetLeft() + $this->GetWidth());
 	}
 	function GetTop()		{return $this->TextLabel->GetTop();}
 	function SetTop($top)	{$this->TextLabel->SetTop($top);}
 	function GetHeight()	{return $this->TextLabel->GetHeight();}
-	function GetWidth()		{return $this->TextLabel->GetWidth();}
-	function SetWidth($newWidth)			
-	{
-		$this->TextLabel->SetWidth($newWidth);
-	}
+//	function GetWidth()		{return $this->TextLabel->GetWidth();}
+//	function SetWidth($newWidth)			
+//	{
+//		$this->TextLabel->SetWidth($newWidth);
+//	}
 	function SetBackColor($backColor)		{$this->TextLabel->SetBackColor($backColor);}
 	function GetMouseOver()	{return $this->TextLabel->MouseOver;}
 	function GetMouseOut()	{return $this->TextLabel->MouseOut;}
@@ -116,24 +122,24 @@ class MenuItem extends Panel
 	function SetMouseOver($event)	{$this->TextLabel->SetMouseOver($event);}
 	function SetMouseOut($event)	{$this->TextLabel->SetMouseOut($event);}
 	function SetClick($event)		{$this->TextLabel->SetClick($event);}
-	function SetPositionType($positionType)		{$this->TextLabel->SetPositionType($positionType);}
+	//function SetLayoutType($layoutType)		{$this->TextLabel->SetLayoutType($layoutType);}
 	function SetOutTextColor($color='#000000')	
 	{
 		$this->TextLabel->SetColor($color);
-		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+		$this->MouseOut = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
 	}
 	function SetOverTextColor($color='#FFFFFF')
 	{
-		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+		$this->MouseOver = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
 	}
 	function SetOutBackColor($color='transparent')	
 	{
 		$this->TextLabel->SetBackColor($color);
-		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+		$this->MouseOut = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
 	}
 	function SetOverBackColor($color='#316AC5')
 	{
-		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+		$this->MouseOver = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
 	}
 	function Show()
 	{

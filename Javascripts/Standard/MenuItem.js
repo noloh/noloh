@@ -1,80 +1,81 @@
-menuWasDeactivated = false;
+mnuDeactivated = false;
 
-function ToggleSubMenuItems(whatMenuItemId, whatSubMenuItemsId, IsClick)
+function ToggleSubMenuItems(mnuItmId, txtLblId, sbMenuId, isClk)
 {
-	if(menuWasDeactivated == true)
+	if(mnuDeactivated == true)
 	{
-		menuWasDeactivated = false;
+		mnuDeactivated = false;
 		return;
 	}
-	var thisMenu = document.getElementById(whatMenuItemId);
-	var tempParent = document.getElementById(thisMenu.MenuPanelParentId);
+	var menu = document.getElementById(mnuItmId);
+	var subMenu =  document.getElementById(sbMenuId);
+	var label =  document.getElementById(txtLblId);
+	var tmpParent = document.getElementById(label.MenuPanelParentId)
+	//ChangeAndSave(subMenu.id, 'style.top', menu.offsetTop + 'px');
 	
-	if(thisMenu.IsSelected == null || thisMenu.IsMainMenu != null)
+//	var tmpParent = 
+//	var label = document.getElementById(txtLblId);
+//	var tmpParent = document.getElementById(label.MenuPanelParentId);
+	if(label.IsSelected == null || label.IsMainMenu != null)
 	{
-		if(thisMenu.IsMainMenu != null)
+		if(label.IsMainMenu != null)
 		{
-			//alert("I'm a MainMenu");
-			if(IsClick == true)
-				if(tempParent.IsClicked != true)
-					tempParent.IsClicked = true;
-//			if(tempParent.IsClicked != true)
-//				alert("Not Clicked");
-//			else
-//				alert("Is Clicked");
-			if(tempParent.IsClicked != true)
+			if(isClk == true)
+				if(tmpParent.IsClicked != true)
+					tmpParent.IsClicked = true;
+			if(tmpParent.IsClicked != true)
 				return;
-			MainMenuItemPanelGlobal = thisMenu.id;
+			MainMenuItemPanelGlobal = label.id;
 			document.body.addEventListener("click", HideAllMainMenuChildren, true);
 		}
-//		alert(tempParent.id + 'is the parentId');
-//		alert(tempParent.SelectedMenuItemId + 'is not null');
-		if(tempParent.SelectedMenuItemId != null)
+		if(tmpParent.SelectedMenuItemId != null)
 		{
-			//alert('I do go here');
-			if(thisMenu.IsMainMenu != null)
+			if(label.IsMainMenu != null)
 			{
-				if(tempParent.SelectedMenuItemId != whatMenuItemId)
+				if(tmpParent.SelectedMenuItemId != label.id)
 				{
-					var tmpBool = menuWasDeactivated;
-					menuWasDeactivated = false;
-					HideAllMenuItemChildren(tempParent.SelectedMenuItemId, false, true);
+					var tmpBool = mnuDeactivated;
+					mnuDeactivated = false;
+					HideAllMenuItemChildren(tmpParent, SelectedMenuItemId, false, true);
 					menuWasDeactiveted = tmpBool;
 				}
 				else
-					HideAllMenuItemChildren(tempParent.SelectedMenuItemId, false, false);
+					HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, false);
 			}
 			else
-				HideAllMenuItemChildren(tempParent.SelectedMenuItemId, false, true);
+				HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, true);
 		}
-		tempParent.SelectedMenuItemId = whatMenuItemId;
-		//alert(tempParent.SelectedMenuItemId + " is the selected MenuItemId");
-		thisMenu.IsSelected = true;
+		tmpParent.SelectedMenuItemId = label.id;
+		label.IsSelected = true;
 	
-		if((document.getElementById(whatSubMenuItemsId).ChildrenArray) != null)
+		if((document.getElementById(sbMenuId).ChildrenArray) != null)
 		{
-			thisMenu.ChildMenuId = whatSubMenuItemsId;
-			//alert("I got you, you snake in the grass");
-			ToggleVisibility(whatSubMenuItemsId);
+			label.ChildMenuId = sbMenuId;
+			ToggleVisibility(sbMenuId);
 		}
 	}
 }
 function HideAllMainMenuChildren(event)
 {
+	//return;
 	if(event.target.id != null)
 	{
-		var temp = document.getElementById(event.target.id);
-		if(temp != null)
+		var tmp = document.getElementById(event.target.id);
+		if(tmp != null)
 		{
-			if(temp.MenuPanelParentId != null)
+			if(tmp.MenuPanelParentId != null)
 			{
-				var tempGrandParent = document.getElementById(temp.MenuPanelParentId);
+				var tempGrandParent = document.getElementById(tmp.MenuPanelParentId);
 				if(tempGrandParent.IsClicked == true)
-					menuWasDeactivated = true;
+					mnuDeactivated = true;
 				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
 			}
-			if(temp.MenuPanelParentId == null)
-				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
+			if(tmp.MenuPanelParentId == null)
+			{
+//				alert(MainMenuItemPanelGlobal);
+//				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
+//				alert(document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId));//.IsClicked = false;
+			}
 		}
 		else
 			document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;	
@@ -85,24 +86,24 @@ function HideAllMainMenuChildren(event)
 	HideAllMenuItemChildren(MainMenuItemPanelGlobal, true, true);
 	document.body.removeEventListener("click", HideAllMainMenuChildren, true);
 }
-function HideAllMenuItemChildren(whatMenuItemId, IsClick, changeColor)
+function HideAllMenuItemChildren(mnuItmId, isClick, changeColor)
 {
-	var OpenMenuItem = document.getElementById(whatMenuItemId);
+	var OpenMenuItem = document.getElementById(mnuItmId);
 	
 	if(OpenMenuItem.ChildMenuId != null)
 	{
 		var ChildMenu = document.getElementById(OpenMenuItem.ChildMenuId);
 		
 		for(var i=0; i < ChildMenu.ChildrenArray.length; ++i)
-			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], IsClick, changeColor);
+			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], isClick, changeColor);
 		OpenMenuItem.IsSelected = null;
-	/*	if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && menuWasDeactivated != true && changeColor == true))
-			ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");*/
-		ChangeAndSave(ChildMenu.id, "style.visibility", "hidden"); 
+		if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && mnuDeactivated != true && changeColor == true))
+			OpenMenuItem.onmouseout.call();
+		//ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");
+		ChangeAndSave(ChildMenu.id, "style.display", "none"); 
 	}
 	OpenMenuItem.IsSelected = null;
-	
-	if(IsClick == true)
+	if(isClick)
 		if(OpenMenuItem.IsMainMenu != null)
 			document.body.removeEventListener("click", HideAllMainMenuChildren, true);
 }
