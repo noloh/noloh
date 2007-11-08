@@ -12,7 +12,11 @@ class GroupedInputControl extends Control
 	function GroupedInputControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
         parent::Control($left, $top, $width, $height);
-		$this->Caption = is_object($text) ? $text : new Label(null, 23, 0, null, null);
+		//$this->Caption = is_object($text) ? $text : new Label(null, 23, 0, null, null);
+		if(is_object($text) && !($text instanceof Item))
+			$this->Caption = $text;
+		else
+			$this->Caption = new Label(null, 23, 0, null, null);
 		//parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
 		$this->SetText($text);
