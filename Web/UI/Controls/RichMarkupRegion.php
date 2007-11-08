@@ -28,7 +28,7 @@ class RichMarkupRegion extends MarkupRegion
         Control::SetText($markupStringOrFile);
 		$text = is_file($markupStringOrFile)?file_get_contents($markupStringOrFile):$markupStringOrFile;
 		$tmpFullString = $this->ParseItems($text);
-		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString );
+		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
 //		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
@@ -63,12 +63,12 @@ class RichMarkupRegion extends MarkupRegion
 		if(strtolower($matches[1]) == 'larva')
 		{
 			$this->Larvae[$id] = array($keyval[0], $keyval[1]);
-			return "<div id=<NQt2>$id<NQt2>$matches[2]$matches[5]>$matches[6]</div>";
+			return '<div id=<NQt2>' . $id . '<NQt2>' . $matches[2].$matches[5].'>'.$matches[6].'</div>';
 		}
 		else 
 		{
 			$this->Eventees[$id] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1]$matches[2] id=<NQt2>$id<NQt2>$matches[5]>$matches[6]</$matches[7]>";
+			return '<'.$matches[1].$matches[2]. 'id=<NQt2>'.$id.'<NQt2>'.$matches[5].'>'.$matches[6].'</'.$matches[7].'>';
 		}
 	}/*
 	private function MarkupReplace($matches)
