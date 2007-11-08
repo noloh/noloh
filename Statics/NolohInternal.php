@@ -144,9 +144,9 @@ final class NolohInternal
 	
 	public static function SetProperty($name, $value, $obj)
 	{
-		if(!isset($GLOBALS['PropertyQueueDisabled']))
+        $objId = is_object($obj) ? $obj->Id : $obj;
+		if($GLOBALS['_NQueueDisabled'] != $objId)
 		{
-			$objId = is_object($obj) ? $obj->Id : $obj;
 			if(!isset($_SESSION['NOLOHPropertyQueue'][$objId]))
 				$_SESSION['NOLOHPropertyQueue'][$objId] = array();
 			$_SESSION['NOLOHPropertyQueue'][$objId][$name] = $value;

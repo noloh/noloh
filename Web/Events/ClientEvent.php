@@ -92,7 +92,7 @@ class ClientEvent extends Event
 	 */
 	function Exec(&$execClientEvents=true)
 	{
-		if(!isset($GLOBALS['PropertyQueueDisabled']) && $execClientEvents && $this->Enabled===null)
+		if(!$GLOBALS['_NQueueDisabled'] && $execClientEvents && $this->Enabled===null)
 			AddScript($this->ExecuteFunction);
 	}
 }

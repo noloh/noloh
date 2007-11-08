@@ -136,7 +136,7 @@ class ServerEvent extends Event
 	 */
 	function Exec(&$execClientEvents=true)
 	{
-		if(isset($GLOBALS['PropertyQueueDisabled']) || $this->Enabled===false)
+		if($GLOBALS['_NQueueDisabled'] || $this->Enabled===false)
 			return;
 		$execClientEvents = true;		
 		

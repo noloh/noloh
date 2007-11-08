@@ -5,7 +5,6 @@
 class Calendar extends Panel 
 {
 	public $MonthYearLabel;
-	public $CalendarTable;
 	private $ViewMonth;
 	private $ViewYear;
 	private $Date;
@@ -29,7 +28,7 @@ class Calendar extends Panel
 		$leftMonth->Click = new ClientEvent("LastMonth('$this->Id')");
 		$rightMonth = new Button('>', $width-50, 0, 25, 25);
 		$rightMonth->Click = new ClientEvent("NextMonth('$this->Id')");
-		$this->Controls->AddRange($this->MonthYearLabel, $leftYear, $rightYear, $leftMonth, $rightMonth/*, $this->CalendarTable*/);
+		$this->Controls->AddRange($this->MonthYearLabel, $leftYear, $rightYear, $leftMonth, $rightMonth);
 		for($i=6; $i>=0; --$i)
 		{
 			$this->Controls->Add($lbl = &new Label($daysOfWeek[$i], $i*31, 33, 31));
@@ -44,72 +43,72 @@ class Calendar extends Panel
 			}
 		$this->SetTimestamp($timestampTime);
 	}
-	
+
 	function GetViewMonth()
 	{
 		return $this->ViewMonth;
 	}
-	
+
 	function SetViewMonth($newViewMonth)
 	{
 		$this->ViewMonth = $newViewMonth;
 		$this->UpdateClient();
 	}
-	
+
 	function GetViewYear()
 	{
 		return $this->ViewYear;
 	}
-	
+
 	function SetViewYear($newViewYear)
 	{
 		$this->ViewYear = $newViewYear;
 		$this->UpdateClient();
 	}
-	
+
 	function GetDate()
 	{
 		return $this->Date;
 	}
-	
+
 	function SetDate($newDate)
 	{
 		$this->Date = $newDate;
 		$this->UpdateClient();
 	}
-	
+
 	function GetMonth()
 	{
 		return $this->Month;
 	}
-	
+
 	function SetMonth($newMonth)
 	{
 		$this->Month = $newMonth;
 		$this->UpdateClient();
 	}
-	
+
 	function GetYear()
 	{
 		return $this->Year;
 	}
-	
+
 	function SetYear($newYear)
 	{
 		$this->Year = $newYear;
 		$this->UpdateClient();
-	}	
-	
+	}
+
 	function GetTimestamp()
 	{
 		return mktime(0, 0, 0, $this->Month+1, $this->Date, $this->Year);
 	}
-	
+
 	function SetTimestamp($timestampTime)
 	{
 		if($timestampTime==null)
 			$timestampTime = date('U');
-	
+
 		$dateM = date('n', $timestampTime)-1;
 		$dateY = date('Y', $timestampTime);
 		$this->ViewMonth = $dateM;
@@ -119,14 +118,30 @@ class Calendar extends Panel
 		$this->Year = $dateY;
 		$this->UpdateClient();
 	}
-	
+
 	function GetFullDate()
 	{
 		$Timestamp = $this->GetTimestamp();
 		$date = getdate($Timestamp);
 		return $date['weekday'].', '.$date['month'].' '.$date['mday'].', '.$date['year'];
 	}
-	
+
+    function SetWidth($width)
+    {
+        parent::SetWidth($width);
+        if($this->MonthYearLabel)
+        {
+            $this->MonthYearLabel->SetWidth($width);
+            $this->Controls->Item[2]->SetLeft($width - 25);
+            $this->Controls->Item[4]->SetLeft($width - 50);
+        }
+    }
+                   /*
+    function SetHeight($height)
+    {
+        parent::SetHeight($height);
+    }                */
+
 	function UpdateClient()
 	{
 		//QueueClientFunction($this, "ShowCalendar", "'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year);

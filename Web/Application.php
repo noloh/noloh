@@ -115,6 +115,7 @@ final class Application
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
 				$this->HandleClientChanges();
+            $GLOBALS['_NQueueDisabled'] = null;
 			if(!empty($_POST['NOLOHFileUploadId']))
 				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
 			foreach($_SESSION['NOLOHFiles'] as $key => $val)
@@ -200,19 +201,18 @@ final class Application
 
 	private function HandleClientChanges()
 	{
-		$GLOBALS['PropertyQueueDisabled'] = true;
 		$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
 		$numComponents = count($componentChanges);
 		for($i = 0; $i < $numComponents; ++$i)
 		{
 			$changes = explode('~d1~', $componentChanges[$i]);
+            $GLOBALS['_NQueueDisabled'] = $changes[0];
 			$component = &GetComponentById($changes[0]);
 			$changeCount = count($changes);
 			$j = 0;
 			while(++$j < $changeCount)
 				$component->{$changes[$j]} = $changes[++$j];
 		}
-		unset($GLOBALS['PropertyQueueDisabled']);
 	}
 	
 	private function HandleServerEvent()
