@@ -106,7 +106,6 @@ class MarkupRegion extends Control
 //	}
 	function Show()
 	{
-		parent::Show();
         NolohInternal::Show('DIV', parent::Show(), $this);
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupRegionScript.js");
 		AddNolohScriptSrc('MarkupRegion.js');
