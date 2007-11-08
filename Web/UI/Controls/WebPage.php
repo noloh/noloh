@@ -226,6 +226,7 @@ class WebPage extends Component
 	function Show()
 	{
 		parent::Show();
+        //Alert('PLEASE NOTE: You are using the Dev build of NOLOH and RadioButtons and CheckBoxes are in the middle of being completely overhauled. Check back later or use the Stable build, otherwise unexpected behaivor may occur. -Phill.');
 		//Alert($this->Width);
 		/*if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false)
 			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/IE6clientviewstate.js");

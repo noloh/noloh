@@ -6,12 +6,13 @@ class MarkupRegion extends Control
 {
 	private $CachedWidth;
 	private $CachedHeight;
+    private $Scrolling;
 	//private $FontSize;
-	
+
 	function MarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
 		parent::Control($left, $top, $width, $height);
-		$this->Scrolling = System::Auto;
+		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;
 		$this->SetText($markupStringOrFile);
 	}
@@ -34,6 +35,27 @@ class MarkupRegion extends Control
 	{
 		$Height = parent::GetHeight();
 		return ($Height == System::Auto || $Height == System::AutoHtmlTrim)? $this->CachedHeight : $Height;
+	}
+    function GetScrolling()
+	{
+		return $this->Scrolling;
+	}
+	function SetScrolling($scrollType)
+	{
+		$this->Scrolling = $scrollType;
+		$tmpScroll = null;
+		if($scrollType == System::Auto)
+			$tmpScroll = 'auto';
+		elseif($scrollType == System::Full)
+			$tmpScroll = 'visible';
+		elseif($scrollType === null)
+			$tmpScroll = '';
+		elseif($scrollType)
+			$tmpScroll = 'scroll';
+		else//if(!$scrollType)
+			$tmpScroll = 'hidden';
+		//Alert($tmpScroll);
+		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
 	//function GetMarkupString()
 	//{
