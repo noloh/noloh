@@ -126,20 +126,20 @@ class MenuItem extends Panel
 	function SetOutTextColor($color='#000000')	
 	{
 		$this->TextLabel->SetColor($color);
-		$this->MouseOut = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
 	}
 	function SetOverTextColor($color='#FFFFFF')
 	{
-		$this->MouseOver = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
 	}
 	function SetOutBackColor($color='transparent')	
 	{
 		$this->TextLabel->SetBackColor($color);
-		$this->MouseOut = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
 	}
 	function SetOverBackColor($color='#316AC5')
 	{
-		$this->MouseOver = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
 	}
 	function Show()
 	{

@@ -36,7 +36,7 @@ function ToggleSubMenuItems(mnuItmId, txtLblId, sbMenuId, isClk)
 				{
 					var tmpBool = mnuDeactivated;
 					mnuDeactivated = false;
-					HideAllMenuItemChildren(tmpParent, SelectedMenuItemId, false, true);
+					HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, true);
 					menuWasDeactiveted = tmpBool;
 				}
 				else
@@ -71,11 +71,7 @@ function HideAllMainMenuChildren(event)
 				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
 			}
 			if(tmp.MenuPanelParentId == null)
-			{
-//				alert(MainMenuItemPanelGlobal);
-//				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
-//				alert(document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId));//.IsClicked = false;
-			}
+				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
 		}
 		else
 			document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;	

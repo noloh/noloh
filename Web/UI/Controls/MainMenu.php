@@ -22,14 +22,14 @@ class MainMenu extends Panel
 			$menuItem->SetLeft($this->MenuItems->Item[$tempCount -1]->GetRight());
 		else
 			$menuItem->SetLeft(0);
-		$menuItem->MainMenuPanel->SetLeft($menuItem->GetLeft());
-		$menuItem->MainMenuPanel->SetTop($menuItem->GetTop() + $menuItem->GetHeight());
+		$menuItem->MainMenuPanel->SetLeft(0);//$menuItem->GetLeft());
+		$menuItem->MainMenuPanel->SetTop($menuItem->GetBottom());//GetTop() + $menuItem->GetHeight());
 		if($this->MenuType == 'Click')
 		{
 			$menuItem->Click = new ClientEvent("ToggleSubMenuItems('{$menuItem->Id}','{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}', true);");
-			$menuItem->MouseOver = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','#316AC5', '#FFFFFF');");
-			$menuItem->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$menuItem->Id}', '{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}'), false;");
-			$menuItem->MouseOut = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','{$menuItem->OutBackColor}', '{$menuItem->OutTextColor}');");
+			//$menuItem->MouseOver = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','#316AC5', '#FFFFFF');");
+			//$menuItem->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$menuItem->Id}', '{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}', false);");
+			//$menuItem->MouseOut = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','{$menuItem->OutBackColor}', '{$menuItem->OutTextColor}');");
 		}
 		$this->MenuItems->Add($menuItem, true, true);
 		NolohInternal::SetProperty("IsMainMenu","true", $menuItem->TextLabel);
