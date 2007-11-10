@@ -83,7 +83,7 @@ final class NolohInternal
 	
 	public static function Resurrect($obj)
 	{
-		AddScript("_NRes('$obj->Id','".($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId())."')", Priority::High);
+		AddScript("_NRes('$obj->Id','".($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId($obj))."')", Priority::High);
 	}
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
