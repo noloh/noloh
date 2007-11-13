@@ -62,15 +62,21 @@ class TextBox extends Control
 		parent::SetText($newText);
 		NolohInternal::SetProperty('value', $newText, $this);
 	}
-	
+
+    function GetSelectedText()
+    {
+        return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
+    }
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString('Change')."'";
+			return ",'onchange','".$this->GetEventString('Change')."','onfocus','".$this->GetEventString('Focus')."'";
 
 		$preStr = '';
 		if($eventTypeAsString == 'Change')
 			$preStr = "_NSave(\"$this->Id\",\"value\");";
+        elseif($eventTypeAsString == 'Focus')
+            $preStr = "_NFocus=\"$this->Id\";";
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 		
