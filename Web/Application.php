@@ -110,7 +110,7 @@ final class Application
 				set_exception_handler('_NErrorHandler');
                 if($_SESSION['NOLOHVisit']==-1)
                     AddScript('_NDebugMode=false;');
-			}                                   
+			}
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
@@ -221,6 +221,11 @@ final class Application
 			Event::$Key = $_POST['NOLOHKey'];
 		if(isset($_POST['NOLOHCaught']))
 			Event::$Caught = $this->ExplodeDragCatch($_POST['NOLOHCaught']);
+        if(isset($_POST['NOLOHFocus']))
+        {
+			Event::$FocusedComponent = $_POST['NOLOHFocus'];
+            Event::$SelectedText = $_POST['NOLOHSelectedText'];
+        }
 		Event::$MouseX = $_POST['NOLOHMouseX'];
 		Event::$MouseY = $_POST['NOLOHMouseY'];
 		$splitEvent = explode('@', $_POST['NOLOHServerEvent']);

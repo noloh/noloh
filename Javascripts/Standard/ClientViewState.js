@@ -2,6 +2,7 @@ SavedControls = new Array();
 NOLOHChanges = new Object();
 NOLOHKey = null;
 NOLOHCaught = new Array();
+_NFocus = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -401,6 +402,8 @@ function processReqChange()
 	if (ready==4)
 	{
    		var response = req.responseText.split("/*~NScript~*/", 2);
+        var tmpLoadImg = _NLoadImg;
+        var tmpLoadLbl = _NLoadLbl;
    		try
    		{
 	   		if(response[0] != "")
@@ -433,6 +436,8 @@ function processReqChange()
    		}
         finally
         {
+            _NLoadImg = tmpLoadImg;
+            _NLoadLbl = tmpLoadLbl;
     		document.getElementById(_NLoadImg).style.visibility = "hidden";
     		document.getElementById(_NLoadLbl).style.visibility = "hidden";
     		document.body.NOLOHPostingBack = false;
@@ -455,6 +460,11 @@ function PostBack(EventType, ID, event)
 		}
 		if(NOLOHCaught.length != 0)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
+        if(_NFocus != null)
+        {
+            var obj = document.getElementById(_NFocus);
+            str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+obj.value.substring(obj.selectionStart, obj.selectionEnd);
+        }
 	    req = new XMLHttpRequest();
 		document.getElementById(_NLoadImg).style.visibility = "visible";
 		document.getElementById(_NLoadLbl).style.visibility = "visible";

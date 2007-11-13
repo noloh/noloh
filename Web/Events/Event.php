@@ -4,7 +4,7 @@
  */
 
 /**
- * The Event class serves several purposes. 
+ * The Event class serves several purposes.
  * 
  * First of all, it is the parent class of {@see ServerEvent} and {@see ClientEvent} and allows them to have some common functionality, 
  * for instance the Enabled property, and using the [] notation to chain events. 
@@ -44,7 +44,12 @@ class Event extends Object implements ArrayAccess
 	 * @ignore
 	 */
 	protected $Enabled;
-	
+
+    /**
+	 * When relevant, the id of the component that was focused {@see Control::Focus}
+	 * @var string
+	 */
+    public static $FocusedComponent;
 	/**
 	 * When relevant, the ASCII value of the keyboard key at the time the event triggered. {@see Control::KeyPress}
 	 * @var integer
@@ -65,6 +70,10 @@ class Event extends Object implements ArrayAccess
 	 * @var integer
 	 */
 	public static $MouseY;
+    /**
+     * When relevant, the text of the focused component.
+     */
+    public static $SelectedText;
 	
 	/**
 	 * @ignore

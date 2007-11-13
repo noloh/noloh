@@ -2,6 +2,7 @@ SavedControls = new Array();
 NOLOHChanges = new Object();
 NOLOHKey = null;
 NOLOHCaught = new Array();
+_NFocus = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -512,6 +513,8 @@ function PostBack(EventType, ID)
 		}
 		if(NOLOHCaught.length != 0)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
+        if(_NFocus != null)
+            str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+document.selection.createRange().text;
 	    //req = new XMLHttpRequest();
 	    req = new ActiveXObject("Microsoft.XMLHTTP");
 		document.getElementById(_NLoadImg).style.visibility = "visible";

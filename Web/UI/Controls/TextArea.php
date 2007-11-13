@@ -36,8 +36,8 @@ class TextArea extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString('Change')."'" .
-				(GetBrowser()=='ie' 
+			return ",'onchange','".$this->GetEventString('Change')."','onfocus','".$this->GetEventString('Focus')/*."','onblur','".$this->GetEventString('LoseFocus')*/."'" .
+				(GetBrowser()=='ie'
 				?
 					",'onkeypress','doKeyPress(\"$this->Id\",this.MaxLength);'" .
 					",'onpaste','doPaste(\"$this->Id\",this.MaxLength);'"
@@ -45,8 +45,18 @@ class TextArea extends Control
 					",'onkeypress','doKeyPress(event);'");
 
 		$preStr = '';
-		if($eventTypeAsString == 'Change')
-			$preStr = "_NSave(\"$this->Id\",\"value\");";
+        switch($eventTypeAsString)
+        {
+            case 'Change':
+                $preStr = "_NSave(\"$this->Id\",\"value\");";
+                break;
+            case 'Focus':
+                $preStr = "_NFocus=\"$this->Id\";";
+                break;
+            /*case 'LoseFocus':
+                $preStr = "_NFocus=null;";
+                break;*/
+        }
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	function GetScrolling()
@@ -70,6 +80,10 @@ class TextArea extends Control
 		//Alert($tmpScroll);
 		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
+    function GetSelectedText()
+    {
+        return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
+    }
 	function Show()
 	{
 		$initialProperties = parent::Show();
