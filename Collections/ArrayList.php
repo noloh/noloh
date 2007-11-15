@@ -150,11 +150,11 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldItems[$index]->Id;
 		if(is_numeric($index))
 		{
-			$this->Item = array_slice($this->Item, 0, $index);
+			$this->Item = array_slice($oldItems, 0, $index);
 			$this->Add($element, true, true);
 			$this->Item = array_merge($this->Item, array_slice($oldItems, $index));
 		}
-		elseif(is_string($index)) 
+		elseif(is_string($index))
 		{
 			$this->PreAdd($element);
 			$this->InsertIntoStringHelper($element, $index);
@@ -164,12 +164,21 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	/**
 	 * @ignore
 	 */
-	function InsertIntoStringHelper($element, $index)
+	private function InsertIntoStringHelper($element, $index)
 	{
 		if(isset($this->Item[$index]))
-			$this->InsertIntoStringHelper($this->Item[$index], $index . "'");
+			$this->InsertIntoStringHelper($this->Item[$index], $index . '\'');
 		$this->Item[$index] = &$element;
 	}
+
+    function InsertIndexPosition($element, $index, $position)
+    {
+		$oldItems = $this->Item;
+    	$this->Item = array_slice($oldItems, 0, $position);
+    	$this->Insert($element, $index, true);
+    	$this->Item = array_merge($this->Item, array_slice($oldItems, $position));
+        return $element;
+    }
 	/**
 	 * Removes an element at a particular index. 
 	 * If the index is an integer, the ArrayList is reindexed to fill in the gap.

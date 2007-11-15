@@ -109,6 +109,16 @@ class ImplicitArrayList extends ArrayList
 		else
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $index);
 	}
+
+    function InsertIndexPosition($object, $index, $position, $onlyInsert = false)
+    {
+		if($this->InsertFunctionName=='' || $onlyInsert)
+			return parent::InsertIndexPosition($object, $index, $position);
+		elseif(is_object($this->Source))
+			return $this->Source->{$this->InsertFunctionName}($object, $position);
+		else
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $position);
+    }
 	/**
 	 * Removes a particular element of the ArrayList.
 	 * @param mixed $element The element to be removed
