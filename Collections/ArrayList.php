@@ -171,11 +171,13 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 		$this->Item[$index] = &$element;
 	}
 
-    function InsertIndexPosition($element, $index, $position)
+    function PositionalInsert($element, $index, $position)
     {
 		$oldItems = $this->Item;
+   		if($this->ParentId != null && $element instanceof Component && isset($oldItems[$position]) && $oldItems[$position] instanceof Component)
+			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldItems[$position]->Id;
     	$this->Item = array_slice($oldItems, 0, $position);
-    	$this->Insert($element, $index, true);
+        $this->Insert($element, $index, true);
     	$this->Item = array_merge($this->Item, array_slice($oldItems, $position));
         return $element;
     }

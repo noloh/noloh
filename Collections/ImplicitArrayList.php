@@ -110,10 +110,10 @@ class ImplicitArrayList extends ArrayList
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $index);
 	}
 
-    function InsertIndexPosition($object, $index, $position, $onlyInsert = false)
+    function PositionalInsert($object, $index, $position, $onlyInsert = false)
     {
 		if($this->InsertFunctionName=='' || $onlyInsert)
-			return parent::InsertIndexPosition($object, $index, $position);
+			return parent::PositionalInsert($object, $index, $position);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->InsertFunctionName}($object, $position);
 		else
