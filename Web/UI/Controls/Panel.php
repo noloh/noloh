@@ -46,72 +46,8 @@ class Panel extends Guardian
 	}
 	function GetStyleString()
 	{
-		$parentShow = parent::Show();
-		//if ($parentShow == false)
-		//	return false;
-			
-		/*if(is_string($this->Scrollable))
-		{
-			if($this->Scrollable == "Visible")
-				$parentShow .= ",'style.overflow','visible'";
-		}
-		else
-		{
-			if(($this->Scrollable == true) && ($this->AutoScroll == false))
-				$parentShow .= ",'style.overflow','scroll'";
-			else
-				$parentShow .=  ",'style.overflow','" . ($this->AutoScroll == true ? "auto" : "hidden") . "'";
-		}*/
-		/*if($this->Border != null);
-			//$parentShow .=" border:" . $this->Border . ";";
-		else 
-			$parentShow .=" border:0px;";
-		*/
-		////$parentShow .= ",'style.padding','0px'"; -  Only line that was left pre style sheet
-		
-		return $parentShow;
+		return parent::Show();
 	}
-	
-	/*function Show($IndentLevel = 0)
-	{
-		$parentShow = parent::Show();
-		if ($parentShow == false)
-			return false;
-		
-		print(str_repeat("  ", $IndentLevel) . "<DIV " . $parentShow);
-		if(($this->Scrollable == true) && ($this->AutoScroll == false))
-			print(" overflow:scroll;");	//print(" overflow:scroll;");
-		else if($this->AutoScroll == true)
-			print(" overflow:auto;");
-		else if($this->Scrollable == "Visible")
-			print(" overflow:visible;");
-		else
-			print(" overflow:hidden;");
-			
-		if($this->Border != null)
-			print(" border:" . $this->Border . ";");
-		else 
-			print(" border:0px;");
-		print(" padding:0px;'>\n");
-		/*$ControlCount = $this->Controls->Count();
-		for($i=0; $i<$ControlCount; $i++)
-		{		
-			if($this->Controls->Item[$i]->Overlap == false)
-				for($j=0; $j<$i; $j++)
-				{
-					if($this->Controls->Item[$i]->Left >= $this->Controls->Item[$j]->Left &&
-					 $this->Controls->Item[$i]->Left <= $this->Controls->Item[$j]->Left + $this->Controls->Item[$j]->Width &&
-					 $this->Controls->Item[$i]->Top >= $this->Controls->Item[$j]->Top &&
-					 $this->Controls->Item[$i]->Top <= $this->Controls->Item[$j]->Top + $this->Controls->Item[$j]->Top)
-					 	$this->Controls->Item[$i]->Left = $this->Controls->Item[$j]->Left + $this->Controls->Item[$j]->Width;
-				}
-				$this->Controls->Item[$i]->Show($IndentLevel+1);
-		}*/
-		/*$this->IterateThroughAllControls();
-		print(str_repeat("  ", $IndentLevel) . "</DIV>\n");
-		unset($parentShow, $ControlCount);
-		return true;
-	}*/
 		
 	function Show()
 	{

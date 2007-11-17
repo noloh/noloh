@@ -179,17 +179,18 @@ class WindowPanel extends Panel
 		$this->MinimizeImage->SetLeft($newWidth - 67);
 		$this->RestoreImage->SetLeft($newWidth - 45);
 		$this->CloseImage->SetLeft($newWidth - 23);
-		$this->ResizeImage->SetLeft($newWidth - 17); 
+		$this->ResizeImage->SetLeft($newWidth - 17);
 	}
-	
+
 	function GetAddId($obj)
 	{
 		return in_array($obj, $this->WindowPanelComponents->Item) ? $this->Id : $this->BodyPanel->Id;
 	}
-	
+
 	function Show()
 	{
-		$initialProperties = $this->GetStyleString();
+        parent::Show();
+		//$initialProperties = $this->GetStyleString();
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/WindowPanelScripts.js");
 		AddNolohScriptSrc('WindowPanel.js');
 		//if($this->DropShadow == true)
@@ -197,7 +198,7 @@ class WindowPanel extends Panel
 		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->Id}DS' style='POSITION:absolute; LEFT:".($this->Left + 10)."px; TOP:".($this->Top+10)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background-color:black; filter:alpha(opacity=100)'></DIV>\n");
 		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
 		//}
-		NolohInternal::Show('DIV', $initialProperties, $this);
+		//NolohInternal::Show('DIV', $this->GetStyleString(), $this);
 	}
 }
 

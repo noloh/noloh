@@ -342,6 +342,13 @@ function _NAdd(addTo, tag, nameValuePairs, beforeId)
 	SaveControl(elt.id);
 }
 
+function _NAdopt(id, parentId)
+{
+    var ele = document.getElementById(id);
+    ele.parentNode.removeChild(ele);
+    document.getElementById(parentId).appendChild(ele);
+}
+
 function _NRem(id)
 {
 	var ele = document.getElementById(id);

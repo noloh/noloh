@@ -146,7 +146,7 @@ abstract class Component extends Object
 	 * Overriding this function allows you to have code execute when the Component is first shown on the client.
 	 */
 	function Show()
-	{	
+	{
 		$this->ShowStatus = null;
 		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
 			unset($_SESSION['NOLOHControlQueue'][$this->Id]);

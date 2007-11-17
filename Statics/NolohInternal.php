@@ -8,11 +8,12 @@ final class NolohInternal
 	private function NolohInternal(){}
 
 	public static function ShowQueue()
-	{
-		foreach($_SESSION['NOLOHControlQueue'] as $objId => $bool)
+	{   
+		//foreach($_SESSION['NOLOHControlQueue'] as $objId => $bool)
+        while (list($objId, $bool) = each($_SESSION['NOLOHControlQueue']))
 			self::ShowControl(GetComponentById($objId), $bool);
 	}
-	
+
 	public static function ShowControl($control, $bool)
 	{
 		//if(isset($control))
@@ -34,6 +35,11 @@ final class NolohInternal
 				{
 					if($control->GetShowStatus()===0)
 						$control->Show();
+                    elseif($control->GetShowStatus()===1)
+                    {
+                        //Alert('Commence adoption of unwanted baby');
+                        self::Adoption($control, $parent);
+                    }
 					elseif($control->GetShowStatus()===2)
 						$control->Resurrect();
 				}
@@ -85,6 +91,12 @@ final class NolohInternal
 	{
 		AddScript("_NRes('$obj->Id','".($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId($obj))."')", Priority::High);
 	}
+
+    public static function Adoption($obj, $parent)
+    {
+        if(!$obj->GetBuoyant())
+            AddScript("_NAdopt('$obj->Id','" . $parent->GetAddId($obj) . "')", Priority::High);
+    }
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
 	{
