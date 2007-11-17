@@ -18,9 +18,9 @@ class CheckListView extends ListView
 		parent::AddListViewItem($listViewItem);
 		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
-	public function InsertListViewItem(ListViewItem $listViewItem)
+	public function InsertListViewItem(ListViewItem $listViewItem, $idx)
 	{
-		parent::InsertListViewItem($listViewItem);
+		parent::InsertListViewItem($listViewItem, $idx);
 		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
 	function AddColumn($text, $width = System::Auto)
