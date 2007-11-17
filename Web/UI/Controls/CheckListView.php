@@ -4,78 +4,56 @@
  */
 class CheckListView extends ListView
 {
-	function CheckListView($whatLeft, $whatTop, $whatWidth, $whatHeight)
+	private $CheckColumn;
+	
+	function CheckListView($left, $top, $width, $height)
 	{
-		parent::ListView($whatLeft, $whatTop, $whatWidth, $whatHeight);
+		parent::ListView($left, $top, $width, $height);
+		$this->CheckColumn = new ColumnHeader(null, 0, 25, $this->ColumnsPanel->GetHeight());
+		$this->CheckColumn->Click = null;
+		$this->CheckColumn->ParentId = $this->ColumnsPanel->Id;
 	}
-	public function AddItem(ListViewItem $whatListViewItem)
+	public function AddListViewItem(ListViewItem $listViewItem)
 	{
-		if($whatListViewItem != null)
-		{
-			$tempRow = new TableRow();
-			//$tempSubItemCount = $whatListViewItem->SubItems->Count();
-			for($i = 0; $i<$this->Columns->Count(); $i++)
-			{
-				$tmpColumn = &new TableColumn(null, $this->Columns->Item[$i]->Width + $this->SpacerWidth);
-				$this->ResizeImages->Item[$i]->Shifts[] = Shift::Width($tmpColumn);
-				$this->ResizeImages->Item[$i]->Shifts[] = "Array(\"INNERCOLUMN{$tmpColumn->Id}\",1,0,1,null,null,null,1)";
-				//$this->ResizeImages->Item[$i]->Shifts[] = Shift::Width($tmpColumn);
-				$tempRow->Columns->Add($tmpColumn);
-			}
-			for($i = 0; ($i < $whatListViewItem->SubItems->Count() && $i < $this->Columns->Count()); $i++)
-			{
-				$tmpItem = &$whatListViewItem->SubItems->Item[$i];
-				if($tmpItem instanceof Label || $tmpItem instanceof Link)
-				{
-					if(/*$this->Checkable == true &&*/ $i == 0)
-						$tempRow->Columns->Item[$i]->Control = new CheckBox($whatListViewItem->SubItems[$i]->Text, 0, 0, System::Auto);
-					else
-						$tempRow->Columns->Item[$i]->Control = $tmpItem;
-				}
-				else
-				{
-					if(/*$this->Checkable == true &&*/ $i == 0)
-						$tempRow->Columns->Item[$i]->Control = new CheckBox($whatListViewItem->SubItems[$i], 0, 0, System::Auto);
-					else
-						$tempRow->Columns->Item[$i]->Control = new Label($whatListViewItem->SubItems[$i], 0, 0, System::Auto);
-				}
-			}
-			$tmpDiff = $i;
-			$whatListViewItem->ListView = $this;
-			$this->DataTable->Rows->Add($tempRow);
-			$this->ListViewItems->Add($whatListViewItem);
-			$this->Relationships[$whatListViewItem->Id] = array('TableIndex' => $this->DataTable->Rows->Count() - 1, 'ColumnCount' => $tmpDiff);
-		}
+		parent::AddListViewItem($listViewItem);
+		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
-	function Update(ListViewItem $whatListViewItem = null)
+	public function InsertListViewItem(ListViewItem $listViewItem)
 	{
-		if($whatListViewItem != null)
+		parent::InsertListViewItem($listViewItem);
+		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
+	}
+	function AddColumn($text, $width = System::Auto)
+	{
+		$tmpCount = $this->Columns->Count();
+		$tmpRight = ($tmpCount > 0)?$this->Columns[$tmpCount-1]->GetRight():$this->CheckColumn->GetRight();
+		if(is_string($text))
+			$this->Columns->Add($tmpColumn = &new ColumnHeader($text, $tmpRight, $width, $this->ColumnsPanel->GetHeight()), true, true);
+		elseif($text instanceof ColumnHeader)
 		{
-			$tmpRelationship = &$this->Relationships[$whatListViewItem->Id];
-			$tmpRow = $this->DataTable->Rows->Item[$tmpRelationship['TableIndex']];
-			$tmpSubItemCount = $whatListViewItem->SubItems->Count();
-			if($tmpSubItemCount > $tmpRelationship['ColumnCount'] &&  $tmpRelationship['ColumnCount'] < $this->Columns->Count())
-			{
-				$tmpItem = $whatListViewItem->SubItems[$tmpRelationship['ColumnCount']];
-				if($tmpItem instanceof Label || $tmpItem instanceof Link)
-					$tmpRow->Columns->Item[$tmpRelationship['ColumnCount']]->Control = $tmpItem;
-				elseif($tmpSubItemCount == 1)
-					$tmpRow->Columns->Item[$tmpRelationship['ColumnCount']]->Control = new CheckBox($whatListViewItem->SubItems[$tmpRelationship['ColumnCount']],  0, 0, System::Auto);
-				else
-					$tmpRow->Columns->Item[$tmpRelationship['ColumnCount']]->Control = new Label($whatListViewItem->SubItems[$tmpRelationship['ColumnCount']],  0, 0, System::Auto);
-				//$tmpRow->Columns->Item[$tmpSubItemCount - 1]->Control = new Label($whatListViewItem->SubItems[$tmpSubItemCount - 1],  0, 0, System::Auto);
-				$tmpRelationship['ColumnCount']++;
-			}
+			$this->Columns->Add($tmpColumn = &$text, true, true);
+			if($text->GetLeft() == System::Auto)
+				$text->SetLeft($tmpRight);
 		}
+		if(($tmpRight = $tmpColumn->GetRight()) > $this->GetWidth())
+			$this->InnerPanel->SetWidth($tmpRight);
+		$this->MakeColumnShift($tmpColumn);
+		$tmpColumn->SetListView($this->Id);
+		$this->ColumnsPanel->BringToFront();
+		$tmpColumn->SizeHandle->MouseDown[] = new ClientEvent("_N_LV_ResizeStart('{$this->Line->Id}', '$tmpColumn->Id', '{$this->InnerPanel->Id}');");
+		$this->Line->Shifts[] = Shift::With($tmpColumn->SizeHandle, Shift::Left);
+		/*foreach($this->LVItemsQueue as $key => $tmpListViewItem)
+			if($this->Update($tmpListViewItem))
+				unset($this->LVItemsQueue[$key]);*/
 	}
 	function GetCheckedListViewItems()
 	{
 		$tmpCheckItems = array();
 		$tmpCount = $this->ListViewItems->Count();
-		for($i=0; $i < $tmpCount; $i++)
+		for($i=0; $i < $tmpCount; ++$i)
 		{
-			$tmpCheckBox = &$this->DataTable->Rows->Item[$i]->Columns->Item[0]->Controls->Item[0];
-			if($tmpCheckBox->Checked == true)
+			$tmpCheckBox = $this->ListViewItems->SubItems['Check'];
+			if($tmpCheckBox->Checked)
 				$tmpCheckItems[] = $this->ListViewItems[$i];
 		}
 		return $tmpCheckItems;
