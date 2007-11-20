@@ -36,10 +36,7 @@ final class NolohInternal
 					if($control->GetShowStatus()===0)
 						$control->Show();
                     elseif($control->GetShowStatus()===1)
-                    {
-                        //Alert('Commence adoption of unwanted baby');
                         self::Adoption($control, $parent);
-                    }
 					elseif($control->GetShowStatus()===2)
 						$control->Resurrect();
 				}
@@ -71,7 +68,7 @@ final class NolohInternal
 				AddScript("StartBuoyant('$obj->Id','{$parent->GetAddId($obj)}')");
 				unset($_SESSION['NOLOHFunctionQueue'][$objId]['StopBuoyant']);
 			}
-			else 
+			else
 				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
 		if(isset($_SESSION['NOLOHControlInserts'][$obj->Id]))
 		{
@@ -96,6 +93,7 @@ final class NolohInternal
     {
         if(!$obj->GetBuoyant())
             AddScript("_NAdopt('$obj->Id','" . $parent->GetAddId($obj) . "')", Priority::High);
+        unset($_SESSION['NOLOHControlQueue'][$obj->Id]);
     }
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
