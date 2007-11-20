@@ -8,7 +8,7 @@ final class NolohInternal
 	private function NolohInternal(){}
 
 	public static function ShowQueue()
-	{   
+	{
 		//foreach($_SESSION['NOLOHControlQueue'] as $objId => $bool)
         while (list($objId, $bool) = each($_SESSION['NOLOHControlQueue']))
 			self::ShowControl(GetComponentById($objId), $bool);

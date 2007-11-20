@@ -470,7 +470,14 @@ function PostBack(EventType, ID, event)
         if(_NFocus != null)
         {
             var obj = document.getElementById(_NFocus);
-            str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+obj.value.substring(obj.selectionStart, obj.selectionEnd);
+            var parent = obj;
+            do{
+                parent = parent.parentNode;
+            }while(parent.id != "N1" && parent.id != 'Graveyard');
+            if(parent.id != "Graveyard")
+                str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+obj.value.substring(obj.selectionStart, obj.selectionEnd);
+            else
+                _NFocus = null;
         }
 	    req = new XMLHttpRequest();
 		document.getElementById(_NLoadImg).style.visibility = "visible";
