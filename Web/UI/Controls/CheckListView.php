@@ -16,12 +16,14 @@ class CheckListView extends ListView
 	public function AddListViewItem(ListViewItem $listViewItem)
 	{
 		parent::AddListViewItem($listViewItem);
-		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
+		$listViewItem->SubItems->PositionalInsert($tmpCheck = new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
 	public function InsertListViewItem(ListViewItem $listViewItem, $idx)
 	{
 		parent::InsertListViewItem($listViewItem, $idx);
-		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
+		$listViewItem->SubItems->PositionalInsert($tmpCheck = new CheckBox(null, 0, 0, 25), 'Check', 0);
+//		$tmpCheck->Click[] = new ClientEvent('event.cancelBubble=true;event.stopPropagation();');
+		$tmpCheck->Click[] = new ClientEvent(UserAgentDetect::IsIE()?'window.event.cancelBubble=true;':'event.cancelBubble=true;event.stopPropagation();');
 	}
 	function AddColumn($text, $width = System::Auto)
 	{
@@ -49,12 +51,11 @@ class CheckListView extends ListView
 	function GetCheckedListViewItems()
 	{
 		$tmpCheckItems = array();
-		$tmpCount = $this->ListViewItems->Count();
-		for($i=0; $i < $tmpCount; ++$i)
+		foreach($this->ListViewItems as $listViewItem)
 		{
-			$tmpCheckBox = $this->ListViewItems->SubItems['Check'];
+			$tmpCheckBox = &$listViewItem->SubItems['Check'];
 			if($tmpCheckBox->Checked)
-				$tmpCheckItems[] = $this->ListViewItems[$i];
+				$tmpCheckItems[] = $listViewItem;
 		}
 		return $tmpCheckItems;
 	}
