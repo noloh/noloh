@@ -162,6 +162,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "onload":
 		case "onpaste":
 		case "onscroll":
+        case "onunload":
 			eval("obj." + propertyString + " = function(event) {" + newValue + ";}");
 			break;
 		case "oncontextmenu":
@@ -482,7 +483,8 @@ function PostBack(EventType, ID, event)
 	    req = new XMLHttpRequest();
 		document.getElementById(_NLoadImg).style.visibility = "visible";
 		document.getElementById(_NLoadLbl).style.visibility = "visible";
-	    req.onreadystatechange = processReqChange;
+        if(EventType != "Unload")
+    	    req.onreadystatechange = processReqChange;
 	    req.open("POST", window.location.href, true);
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');

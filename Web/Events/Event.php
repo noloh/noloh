@@ -94,7 +94,8 @@ class Event extends Object implements ArrayAccess
 		'RightClick' => 'oncontextmenu',
 		'Load' => 'onload',
 		'Scroll' => 'onscroll',
-		'TypePause' => 'TypePause'
+		'TypePause' => 'TypePause',
+        'Unload' => 'onunload'
 	);
 	/**
 	 * Constructor.

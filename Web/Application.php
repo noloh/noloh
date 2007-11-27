@@ -58,6 +58,13 @@ final class Application
 	 */
 	public static function Reset($clearURLTokens = true, $clearSessionVariables = true)
 	{
+        print('/*~NScript~*/');
+        $webPage = GetComponentById('N1');
+        if(!$webPage->Unload->Blank())
+        {
+            print('window.onunload=null;');
+            $webPage->Unload->Exec();
+        }
 		if($clearSessionVariables)
 		{
 			session_destroy();
@@ -67,9 +74,9 @@ final class Application
 			self::UnsetNolohSessionVars();
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
 		if(GetBrowser()=='ie')
-			print('/*~NScript~*/location.replace('.$url.');');
+			print('location.replace('.$url.');');
 		else
-			print('/*~NScript~*/var frm = document.createElement("FORM"); frm.action = '.$url.'; frm.method = "post"; document.body.appendChild(frm); frm.submit();');
+			print('var frm=document.createElement("FORM");frm.action='.$url.';frm.method="post";document.body.appendChild(frm);frm.submit();');
 		exit();
 	}
 

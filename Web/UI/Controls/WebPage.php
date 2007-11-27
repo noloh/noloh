@@ -12,6 +12,7 @@ class WebPage extends Component
 	private $Width;
 	private $Height;
 	private $BackColor;
+    private $Unload;
 	//var $MetaInformation;
 	//var $JSIframe;
 	/**
@@ -124,7 +125,7 @@ class WebPage extends Component
 	function SetBackColor($newBackColor)
 	{
 		$this->BackColor = $newBackColor;
-		QueueClientFunction($this, "document.bgColor='$newBackColor'; void", array(0));
+		QueueClientFunction($this, "document.bgColor='$newBackColor';void", array(0));
 	}
 	
 	function SetScrollLeft($scrollLeft)
@@ -137,6 +138,45 @@ class WebPage extends Component
 	{
 		QueueClientFunction($this, "document.documentElement.scrollTop=$scrollTop;BodyScrollState", array());
 		//NolohInternal::SetProperty("scrollTop", $scrollTop, $this);
+	}
+
+    function GetUnload()
+    {
+        return $this->GetEvent('Unload');
+    }
+
+    function SetUnload($unloadEvent)
+    {
+        $this->SetEvent($unloadEvent, 'Unload');
+    }
+
+    function GetEvent($eventType)
+	{
+		return isset($this->$eventType)
+			? $this->$eventType
+			: new Event(array(), array(array($this->Id, $eventType)));
+	}
+
+	function SetEvent($eventObj, $eventType)
+	{
+		$this->$eventType = $eventObj;
+		$pair = array($this->Id, $eventType);
+		if($eventObj != null && !in_array($pair, $eventObj->Handles))
+			$eventObj->Handles[] = $pair;
+		$this->UpdateEvent($eventType);
+	}
+
+	function UpdateEvent($eventType)
+	{
+        QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEventString($eventType).'\''));
+		//NolohInternal::SetProperty($eventType, array($eventType, null), 'window');
+	}
+
+	function GetEventString($eventType)
+	{
+		return isset($this->$eventType)
+			? $this->$eventType->GetEventString($eventType, $this->Id)
+			: '';
 	}
 	
 	static function SkeletalShow($unsupportedURL)
@@ -278,7 +318,7 @@ class WebPage extends Component
 		print("</HTML>\n$ScriptTags\n");
 		*/
 	}
-	
+
 	function SearchEngineShow()
 	{
 		print($this->Title . ' ');
