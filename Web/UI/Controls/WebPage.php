@@ -152,7 +152,7 @@ class WebPage extends Component
 
     function GetEvent($eventType)
 	{
-		return isset($this->$eventType)
+		return $this->$eventType != null
 			? $this->$eventType
 			: new Event(array(), array(array($this->Id, $eventType)));
 	}
@@ -174,7 +174,7 @@ class WebPage extends Component
 
 	function GetEventString($eventType)
 	{
-		return isset($this->$eventType)
+		return $this->$eventType != null
 			? $this->$eventType->GetEventString($eventType, $this->Id)
 			: '';
 	}

@@ -31,7 +31,7 @@ function _NErrorHandler($errno, $errstr, $errfile, $errline)
 		//print("alert('Error# $errno : ".addslashes($errstr)." in $errfile on line $errline');");
 		//die();
 	//}
-    print("ERR");
+    print('ERR');
 	global $OmniscientBeing;
 	$_SESSION['NOLOHScript'] = array('', '', '');
 	$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
@@ -45,7 +45,7 @@ function _NErrorHandler($errno, $errstr, $errfile, $errline)
 final class Application
 {
 	private $WebPage;
-	
+
 	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
 	{
 		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
