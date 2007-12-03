@@ -116,7 +116,7 @@ class IFrame extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		$initialProperties .= ",'frameborder','no'";
+		$initialProperties .= ",'frameBorder','no'";
 		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
 }
