@@ -248,7 +248,7 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	 */
 	function __get($nm)
 	{
-		if($nm == "Count")
+		if($nm == 'Count')
 			return count($this->Item);
 		return null;
 	}

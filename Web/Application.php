@@ -60,7 +60,7 @@ final class Application
 	{
         print('/*~NScript~*/');
         $webPage = GetComponentById('N1');
-        if(!$webPage->Unload->Blank())
+        if($webPage != null && !$webPage->GetUnload()->Blank())
         {
             print('window.onunload=null;');
             $webPage->Unload->Exec();
@@ -99,6 +99,9 @@ final class Application
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
 					self::Reset(false, false);
+                $webPage = GetComponentById('N1');
+                if($webPage && !$webPage->GetUnload()->Blank())
+                    $webPage->Unload->Exec();
 				self::UnsetNolohSessionVars();
 				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 				return;
