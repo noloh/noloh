@@ -61,13 +61,15 @@ class TabControl extends Panel
 			//Need to address the following line, currenty it breaks TabControl - Asher
 			//$this->TabControlBar->Controls->Item[$whatSelectedIndex]->SetSelected(true);
 			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent
-			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$selectedIndex]->Id}'"), Priority::Low);
+			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$selectedIndex]->Id}'", "0"), Priority::Low);
+			if(!$this->Change->Blank())
+				$this->Change->Exec();
 		}
 	}
 	public function AddTabPage($tabPage)
 	{	
 		$temp = $tabPage->GetRolloverTab();
-		$temp->Click = new ClientEvent("SetTabPage('{$this->Id}','{$temp->Id}','{$tabPage->Id}');");
+		$temp->Click = new ClientEvent("SetTabPage('{$this->Id}','{$temp->Id}','{$tabPage->Id}', 1);");
 		$temp->TabPageId = $tabPage->Id;
 		if($this->TabControlBar->Controls->Count < 1)
 		{
