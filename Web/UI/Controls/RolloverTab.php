@@ -36,13 +36,13 @@ class RolloverTab extends Panel
 			}
 		}
 		if($outTab == null)
-//			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabBackLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabBackMiddle.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabBackRight.gif'));
-			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabInARndLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabInACenter.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabInARndRight.gif'));
+			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabBackLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabBackMiddle.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabBackRight.gif'));
+//			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabInARndLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabInACenter.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabInARndRight.gif'));
 		else 	
 			$this->SetOutTab($outTab);
 		if($selectedTab == null)
-//			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontMiddle.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontRight.gif'));
-			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabActRndLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabActCenter.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabActRndRight.gif'));
+			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontMiddle.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Win/TabFrontRight.gif'));
+//			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabActRndLeft.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabActCenter.gif', NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/TabActRndRight.gif'));
 		else
 			$this->SetSelectedTab($selectedTab);
 		$this->Cursor = Cursor::Arrow;
