@@ -97,14 +97,24 @@ final class Application
 			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
 			  ((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 			{
-				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
-					self::Reset(false, false);
-                $webPage = GetComponentById('N1');
-                if($webPage && !$webPage->GetUnload()->Blank())
-                    $webPage->Unload->Exec();
-				self::UnsetNolohSessionVars();
-				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
-				return;
+                if(isset($_SESSION['_NReset']))
+                {
+                    unset($_SESSION['_NReset']);
+                    $_SESSION['NOLOHVisit'] = $_POST['NOLOHVisit'];
+                }
+                elseif(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != 'Unload@N1')
+                {
+    		   		if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
+    					self::Reset(false, false);
+                    $webPage = GetComponentById('N1');
+                    if($webPage != null && !$webPage->GetUnload()->Blank())
+                        $webPage->Unload->Exec();
+    				self::UnsetNolohSessionVars();
+    				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
+    			    return;
+                }
+                else
+                    $_SESSION['_NReset'] = true;
 			}
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 			{
@@ -310,7 +320,7 @@ final class Application
 		global $OmniscientBeing;
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
-			
+
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
 			$this->HandleTokens();
