@@ -176,6 +176,10 @@ class Control extends Component
 	* @ignore
 	*/
 	private $ToolTip;
+    /**
+    * @ignore
+    */
+    private $ContextMenu;
 	/**
 	*Text, Gets or sets  the Text of this Control
 	*<b>Note:</b>Different Controls use this differently
@@ -526,6 +530,16 @@ class Control extends Component
 		NolohInternal::SetProperty('title', $newToolTip, $this);
 	}
 
+    function GetContextMenu()
+    {
+        return $this->ContextMenu;
+    }
+
+    function SetContextMenu($contextMenu)
+    {
+        
+    }
+
 	function GetBuoyant()
 	{
 		return $this->Buoyant !== null;
@@ -547,14 +561,10 @@ class Control extends Component
 		}
 	}
 
-	function BuoyantHelper()
-	{
-
-	}
-
 	function Set_NText($text)
 	{
-		$this->Text = str_replace('~da~', '&', $text);
+		$this->Text = str_replace(array('~da~','~dp~'), array('&','+'), $text);
+		//$this->Text = str_replace('~da~', '&', $text);
 	}
 
     function SetParentId($id)
