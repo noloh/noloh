@@ -73,7 +73,7 @@ class TextBox extends Control
 			return ",'onchange','".$this->GetEventString('Change')."','onfocus','".$this->GetEventString('Focus')."'";
 
 		$preStr = '';
-		if($eventTypeAsString == 'Change')
+		if($eventTypeAsString == 'Change' || $eventTypeAsString == 'LoseFocus')
 			$preStr = "_NSave(\"$this->Id\",\"value\");";
         elseif($eventTypeAsString == 'Focus')
             $preStr = "_NFocus=\"$this->Id\";";

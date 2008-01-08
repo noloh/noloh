@@ -48,6 +48,7 @@ class TextArea extends Control
         switch($eventTypeAsString)
         {
             case 'Change':
+			case 'LoseFocus':
                 $preStr = "_NSave(\"$this->Id\",\"value\");";
                 break;
             case 'Focus':
