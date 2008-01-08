@@ -88,7 +88,7 @@ function AddScriptSrc($path)
 {
 	if(!isset($_SESSION['NOLOHScriptSrcs'][$path]))
 	{
-		print(file_get_contents($path));
+		$_SESSION['_NScriptSrc'] .= (file_get_contents($path));
 		$_SESSION['NOLOHScriptSrcs'][$path] = true;
 	}
 }
@@ -103,7 +103,7 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
 		if($browserSpecific)
 			$path .= $_SESSION['NOLOHIsIE'] ? 'IE/' : 'Standard/';
 		$path .= $src;
-		print(file_get_contents($path));
+		$_SESSION['_NScriptSrc'] .= file_get_contents($path);
 		$_SESSION['NOLOHScriptSrcs'][$src] = true;
 	}
 }

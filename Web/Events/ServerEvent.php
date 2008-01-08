@@ -48,7 +48,7 @@ class ServerEvent extends Event
 	/**
 	 * @ignore
 	 */
-	public $Source;
+	private $Owner;
 	/**
 	 * An ArrayList holding the FileUpload objects that the Event will upload when launched from the client
 	 * @access public
@@ -79,7 +79,7 @@ class ServerEvent extends Event
 	function ServerEvent($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
 	{
 		parent::Event($functionAsString);
-		$this->Source = is_object($objOrClassName) && $objOrClassName instanceof Component
+		$this->Owner = is_object($objOrClassName) && $objOrClassName instanceof Component
 			? new Pointer($objOrClassName)
 			: $objOrClassName;
 		$this->Uploads = new ArrayList();
@@ -140,13 +140,13 @@ class ServerEvent extends Event
 			return;
 		$execClientEvents = true;		
 		
-		if(is_object($this->Source))
-			if($this->Source instanceof Pointer)
-				$runThisString = '$this->Source->Dereference()->';
+		if(is_object($this->Owner))
+			if($this->Owner instanceof Pointer)
+				$runThisString = '$this->Owner->Dereference()->';
 			else 
-				$runThisString = '$this->Source->';
+				$runThisString = '$this->Owner->';
 		else 
-			$runThisString = $this->Source . '::';
+			$runThisString = $this->Owner . '::';
 		$runThisString .= $this->ExecuteFunction;
 		
 		if(strpos($this->ExecuteFunction,'(') === false)
@@ -159,7 +159,18 @@ class ServerEvent extends Event
 		}
 		else 
 			$runThisString .= ';';
+		
+		$source = Event::$Source;
+		if(count($this->Handles) == 1)
+			Event::$Source = &GetComponentById($this->Handles[0][0]);
+		else
+		{
+			Event::$Source = array();
+			foreach($this->Handles as $pair)
+				Event::$Source[] = GetComponentById($pair[0]);
+		}
 		eval($runThisString);
+		Event::$Source = &$source;
 	}
 	/**
 	 * @ignore

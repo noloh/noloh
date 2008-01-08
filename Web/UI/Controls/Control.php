@@ -177,8 +177,8 @@ class Control extends Component
 	*/
 	private $ToolTip;
     /**
-    * @ignore
-    */
+	* @ignore
+	*/
     private $ContextMenu;
 	/**
 	*Text, Gets or sets  the Text of this Control
@@ -535,9 +535,12 @@ class Control extends Component
         return $this->ContextMenu;
     }
 
-    function SetContextMenu($contextMenu)
+    function SetContextMenu(ContextMenu $contextMenu)
     {
-        
+		$this->ContextMenu = &$contextMenu;
+        $contextMenu->SetParentId('N1');
+		NolohInternal::SetProperty('ContextMenu', $contextMenu->Id, $this);
+		//$this->UpdateEvent('RightClick');
     }
 
 	function GetBuoyant()
@@ -601,8 +604,8 @@ class Control extends Component
 	function SetReturnKey($newReturnKey)			{$this->SetEvent($newReturnKey, 'ReturnKey');}
 	function GetRightClick()						{return $this->GetEvent('RightClick');}
 	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, 'RightClick');}
-//	function GetScroll()							{return $this->GetEvent('Scroll');}
-//	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
+//	function GetScroll()									{return $this->GetEvent('Scroll');}
+//	function SetScroll($newScroll)							{$this->SetEvent($newScroll, 'Scroll');}
 	function GetTypePause()							{return $this->GetEvent('TypePause');}
 	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
 	
@@ -646,7 +649,8 @@ class Control extends Component
 			$this->Shifts->RemoveFunctionName = 'RemoveShift';
 			$this->Shifts->InsertFunctionName = 'InsertShift';
 			NolohInternal::SetProperty('Shifts', 'Array()', $this);
-			$this->UpdateEvent('MouseDown');
+
+			//$this->UpdateEvent('MouseDown');
 		}
 		return $this->Shifts;
 	}

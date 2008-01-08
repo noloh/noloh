@@ -3,6 +3,7 @@ NOLOHChanges = new Object();
 NOLOHKey = null;
 NOLOHCaught = new Array();
 _NFocus = null;
+_NContextMenuSource = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -154,13 +155,13 @@ function NOLOHChangeInit(id, propertyString)
 		NOLOHChanges[id][propertyString] = new Object();
 }
 
-function NOLOHChange(distinctId, propertyString, newValue)
+function NOLOHChange(id, propertyString, newValue)
 {
 	var tempObj;
 	if(propertyString != "timer")
-		tempObj = document.getElementById(distinctId);
+		tempObj = document.getElementById(id);
 	else
-		eval("tempObj = window." + distinctId + ";");
+		eval("tempObj = window." + id + ";");
 	NOLOHChangeByObj(tempObj, propertyString, newValue);
 }
 
@@ -180,7 +181,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "KeyPress":
 		case "ReturnKey":
 		case "TypePause":
-			obj.onkeypress = function(event) 
+			obj.onkeypress = function(event)
 			{
 				_NSave(obj.id,'value',obj.value);
 				if(obj.ReturnKey != null && window.event.keyCode == 13)
@@ -221,7 +222,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			eval("obj." + propertyString + " = function(event) {" + newValue + ";}");
 			break;
 		case "oncontextmenu":
-			eval("obj.oncontextmenu = function(event) {" + newValue + "; return false;}");
+			eval("obj.oncontextmenu = function(event) {" + newValue + "; if(obj.ContextMenu!=null) ShowContextMenu(obj); return false;}");
 			break;
 		case "onmousedown":
 			eval("obj.onmousedown = function(event) {" + newValue + "; if(obj.Shifts!=null) ShiftStart(obj.Shifts);}");
@@ -244,6 +245,8 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			obj.href = newValue=="#" ? "javascript:void(0);" : newValue;
 			break;
 		case "Shifts":
+			if(obj.onmousedown == null)
+				NOLOHChangeByObj(obj, "onmousedown", "");
 		case "ChildrenArray":
 			eval("obj." + propertyString + " = " + newValue + ";");
 			break;
@@ -282,6 +285,9 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				MoveBuoyant(obj.id);
 			}
 			break;
+		case "ContextMenu":
+			if(obj.oncontextmenu == null)
+				NOLOHChangeByObj(obj, "oncontextmenu", "");
 		default:
 			eval("obj." + propertyString + " = newValue;");
 	}
@@ -366,7 +372,7 @@ function _NSetP(id, nameValuePairs)
 	while(i<nameValuePairs.length)
 	{
 		NOLOHChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
-		SavedControls[id][nameValuePairs[i++]] = nameValuePairs[i++]; 
+		SavedControls[id][nameValuePairs[i++]] = nameValuePairs[i++];
 	}
 }
 
@@ -458,49 +464,65 @@ function GetChanges()
 	return changes.substring(0,changes.length-4);
 }
 
-function processReqChange()
+function ExecReqResponse(response)
+{
+	if(response[0] != "")
+	{
+		var s = document.createElement("SCRIPT");
+		s.type = "text/javascript";
+		s.text = response[0];
+		document.getElementsByTagName('head')[0].appendChild(s);
+	}
+	eval(response[1]);
+}
+
+function CompleteReqResponse()
+{
+	document.getElementById(_NLoadImg).style.visibility = "hidden";
+	document.getElementById(_NLoadLbl).style.visibility = "hidden";
+	document.body.NOLOHPostingBack = false;
+	_NURLCheck = setInterval('CheckURL()', 500);
+}
+
+function ProcessReqChange()
 {
 	var ready=req.readyState;
 	var data=null;
 	if (ready==4)
 	{
    		var response = req.responseText.split("/*~NScript~*/", 2);
-   		try
-   		{
-	   		if(response[0] != "")
+   		if(typeof _NDebugMode == "undefined")
+		{
+			ExecReqResponse(response);
+			CompleteReqResponse();
+		}
+		else
+		{
+	   		try
 	   		{
-		   		var s = document.createElement("SCRIPT");
-				s.type = "text/javascript";
-				s.text = response[0];
-				document.getElementsByTagName('head')[0].appendChild(s);
+				ExecReqResponse(response);
 	   		}
-			eval(response[1]);
-   		}
-  		catch(err)
-   		{
-            if(typeof _NDebugMode == "undefined")
-            {
-       			var errsplit = req.responseText.split("<br />");
-    			var errdiv = document.createElement("DIV");
-    			if(errsplit.length == 1)
-    				errdiv.innerHTML = "<P style='color:red; font-size:18px; cursor:pointer;'>" + err.name + ": " + err.description + "<BR><BR>Click here to restart the application.</P>";
-    			else
-    				errdiv.innerHTML = errsplit[errsplit.length-1];
-    			errdiv.onclick = function() {location.reload(true);}
-    			document.body.innerHTML = "";
-    			document.body.appendChild(errdiv);
-       			return;
-            }
-            else
-                alert("An application error has occurred.");
-   		}
-        finally
-        {
-    		document.getElementById(_NLoadImg).style.visibility = "hidden";
-    		document.getElementById(_NLoadLbl).style.visibility = "hidden";
-    		document.body.NOLOHPostingBack = false;
-    		_NURLCheck = setInterval('CheckURL()', 500);
-        }
+	   		catch(err)
+	   		{
+				if(_NDebugMode)
+				{	
+					var errLocation = req.responseText.indexOf("~ERR~");
+					if(errLocation == -1)
+						alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description);
+					else
+					{
+						var splitErr = req.responseText.substring(errLocation).split("~");
+						alert("A server error has occurred:\n\n" + splitErr[2] + "\nin " + splitErr[3] + "\non line " + splitErr[4]);
+					}
+				}
+				else
+					alert("An application error has occurred.");
+	   		}
+	        finally
+	        {
+				CompleteReqResponse();
+	        }
+		}
 	}
 }
 
@@ -523,12 +545,14 @@ function PostBack(EventType, ID)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
         if(_NFocus != null)
             str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+document.selection.createRange().text;
+		if(_NContextMenuSource != null)
+			str += "&NOLOHContextMenuSource="+_NContextMenuSource.id;
 	    //req = new XMLHttpRequest();
 	    req = new ActiveXObject("Microsoft.XMLHTTP");
 		document.getElementById(_NLoadImg).style.visibility = "visible";
 		document.getElementById(_NLoadLbl).style.visibility = "visible";
         if(EventType != "Unload")
-	        req.onreadystatechange = processReqChange;
+	        req.onreadystatechange = ProcessReqChange;
 	    req.open("POST", document.URL.split("#", 1)[0], true);
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');

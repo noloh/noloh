@@ -76,7 +76,7 @@ class Image extends Control
 	function SetSrc($newSrc, $adjustSize=false)
 	{
 		$this->Src = $newSrc;
-        NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF']."?NOLOHImage=$this->Src&Class={$this->Magician[0]}&Function={$this->Magician[1]}"), $this);
+        NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.$this->Src.'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
 		if($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
@@ -171,23 +171,23 @@ class Image extends Control
 		parent::SetHeight($tmpHeight);
 	}
 
-    function Conjure($className, $functionName)
+    function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
-        NolohInternal::SetProperty('src', $_SERVER['PHP_SELF']."?NOLOHImage=$this->Src&Class=$className&Function=$functionName", $this);
-        $this->Magician = array($className, $functionName);
+		$this->Magician = func_get_args();
+        NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.$this->Src.'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
+        //$this->Magician = array($className, $functionName);
     }
 	/**
 	* @ignore
 	*/
 	function Show()
 	{
-		$initialProperties = parent::Show();
-		NolohInternal::Show('IMG', $initialProperties, $this);
+		NolohInternal::Show('IMG', parent::Show(), $this);
 	}
 	/**
 	 *@ignore 
 	*/
-	static function MagicGeneration($src, $class, $function)
+	static function MagicGeneration($src, $class, $function, $params)
 	{
 		$splitString = explode('.', $src);
 		$extension = $splitString[count($splitString)-1];
@@ -199,7 +199,7 @@ class Image extends Control
 			
 		eval('if(imagetypes() & IMG_'.strtoupper($extension).') {' .
 			'$im = imagecreatefrom'.$extension.'($src);' .
-			$class.'::'.$function.'($im);' .
+			$class.'::'.$function.'($im'.($params?','.$params:'').');' .
 			'header("Content-type: image/'.$extension.'");' . 
 			'image'.$extension.'($im); }');
 			

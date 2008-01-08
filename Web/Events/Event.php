@@ -45,6 +45,10 @@ class Event extends Object implements ArrayAccess
 	 */
 	protected $Enabled;
 
+	/**
+	* When relevant, the object on which the event is happening
+	*/
+	public static $Source;
     /**
 	 * When relevant, the id of the component that was focused {@see Control::Focus}
 	 * @var string
@@ -71,8 +75,9 @@ class Event extends Object implements ArrayAccess
 	 */
 	public static $MouseY;
     /**
-     * When relevant, the text of the focused component.
-     */
+	* When relevant, the text of the focused component.
+	* @var string
+	*/
     public static $SelectedText;
 	
 	/**

@@ -3,6 +3,7 @@ NOLOHChanges = new Object();
 NOLOHKey = null;
 NOLOHCaught = new Array();
 _NFocus = null;
+_NContextMenuSource = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -10,13 +11,13 @@ ConversionArray["style.width"] = "Width";
 ConversionArray["style.height"] = "Height";
 ConversionArray["style.zIndex"] = "ZIndex";
 ConversionArray["style.background"] = "BackColor";
-ConversionArray["style.color"] = "Color"; 
+ConversionArray["style.color"] = "Color";
 ConversionArray["style.opacity"] = "Opacity";
 ConversionArray["style.filter"] = "Opacity";
 ConversionArray["value"] = "_NText";
 ConversionArray["newText"] = "_NText";
-ConversionArray["selectedIndex"] = "SelectedIndex"; 
-ConversionArray["selectedTab"] = "SelectedTab"; 
+ConversionArray["selectedIndex"] = "SelectedIndex";
+ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
 ConversionArray["killlater"] = "KillLater";
 ConversionArray["src"] = "Src";
@@ -166,7 +167,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			eval("obj." + propertyString + " = function(event) {" + newValue + ";}");
 			break;
 		case "oncontextmenu":
-			eval("obj.oncontextmenu = function(event) {" + newValue + "; return false;}");
+			eval("obj.oncontextmenu = function(event) {" + newValue + "; if(obj.ContextMenu!=null) ShowContextMenu(event, obj); return false;}");
 			break;
 		case "onmousedown":
 			eval("obj.onmousedown = function(event) {" + newValue + "; if(obj.Shifts!=null && thisObjArray==null) ShiftStart(event, obj.Shifts);}");
@@ -189,8 +190,15 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			obj.href = newValue=="#" ? "javascript:void(0);" : newValue;
 			break;
 		case "Shifts":
+			if(obj.onmousedown == null)
+				NOLOHChangeByObj(obj, "onmousedown", "");
 		case "ChildrenArray":
 			eval("obj." + propertyString + " = " + newValue + ";");
+			break;
+		case "ContextMenu":
+			if(obj.oncontextmenu == null)
+				NOLOHChangeByObj(obj, "oncontextmenu", "");
+				obj.ContextMenu = newValue;
 			break;
 		case "style.zIndex":
 			if(newValue > HighestZIndex)
@@ -395,7 +403,7 @@ function GetChanges()
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
 				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + NOLOHChanges[distinctId][property][0];
 //				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + SavedControls[distinctId][property];
-			
+
 			}
 		changes += "~d0~";
 	}
@@ -403,7 +411,29 @@ function GetChanges()
 	return changes.substring(0,changes.length-4);
 }
 
-function processReqChange()
+function ExecReqResponse(response)
+{
+	if(response[0] != "")
+	{
+		var s = document.createElement("SCRIPT");
+		s.type = "text/javascript";
+		s.innerHTML = response[0];
+		document.getElementsByTagName('head')[0].appendChild(s);
+		eval(response[0]);
+	}
+	eval(response[1]);
+}
+
+function CompleteReqResponse(tmpLoadImg, tmpLoadLbl)
+{
+	_NLoadImg = tmpLoadImg;
+	_NLoadLbl = tmpLoadLbl;
+	document.getElementById(_NLoadImg).style.visibility = "hidden";
+	document.getElementById(_NLoadLbl).style.visibility = "hidden";
+	document.body.NOLOHPostingBack = false;
+}
+
+function ProcessReqChange()
 {
 	var ready=req.readyState;
 	var data=null;
@@ -412,44 +442,36 @@ function processReqChange()
    		var response = req.responseText.split("/*~NScript~*/", 2);
         var tmpLoadImg = _NLoadImg;
         var tmpLoadLbl = _NLoadLbl;
-   		try
-   		{
-	   		if(response[0] != "")
+		if(typeof _NDebugMode == "undefined")
+		{
+			ExecReqResponse(response);
+			CompleteReqResponse(tmpLoadImg, tmpLoadLbl);
+		}
+		else
+	   		try
 	   		{
-		   		var s = document.createElement("SCRIPT");
-				s.type = "text/javascript";
-				s.innerHTML = response[0];
-				document.getElementsByTagName('head')[0].appendChild(s);
-				eval(response[0]);
+				ExecReqResponse(response);
 	   		}
-			eval(response[1]);
-   		}
-   		catch(err)
-   		{
-            if(typeof _NDebugMode == "undefined")
-            {
-       			var errsplit = req.responseText.split("<br />");
-    			var errdiv = document.createElement("DIV");
-    			if(errsplit.length == 1)
-    				errdiv.innerHTML = "<P style='color:red; font-size:18px; cursor:pointer;'>" + err + "<BR><BR>Click here to restart the application.</P>";
-    			else
-    				errdiv.innerHTML = errsplit[errsplit.length-1];
-    			errdiv.onclick = function() {location.reload(true);}
-    			document.body.innerHTML = "";
-    			document.body.appendChild(errdiv);
-       			return;
-            }
-            else
-                alert("An application error has occurred.");
-   		}
-        finally
-        {
-            _NLoadImg = tmpLoadImg;
-            _NLoadLbl = tmpLoadLbl;
-    		document.getElementById(_NLoadImg).style.visibility = "hidden";
-    		document.getElementById(_NLoadLbl).style.visibility = "hidden";
-    		document.body.NOLOHPostingBack = false;
-        }
+	   		catch(err)
+	   		{
+				if(_NDebugMode)
+				{	
+					var errLocation = req.responseText.indexOf("~ERR~");
+					if(errLocation == -1)
+						alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description);
+					else
+					{
+						var splitErr = req.responseText.substring(errLocation).split("~");
+						alert("A server error has occurred:\n\n" + splitErr[2] + "\nin " + splitErr[3] + "\non line " + splitErr[4]);
+					}
+				}
+				else
+					alert("An application error has occurred.");
+	   		}
+	        finally
+	        {
+				CompleteReqResponse(tmpLoadImg, tmpLoadLbl);
+	        }
 	}
 }
 
@@ -480,11 +502,13 @@ function PostBack(EventType, ID, event)
                 _NFocus = null;        
             }
         }
+		if(_NContextMenuSource != null)
+			str += "&NOLOHContextMenuSource="+_NContextMenuSource.id;
 	    req = new XMLHttpRequest();
 		document.getElementById(_NLoadImg).style.visibility = "visible";
 		document.getElementById(_NLoadLbl).style.visibility = "visible";
         if(EventType != "Unload")
-    	    req.onreadystatechange = processReqChange;
+    	    req.onreadystatechange = ProcessReqChange;
 	    req.open("POST", window.location.href, true);
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');

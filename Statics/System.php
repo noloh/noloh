@@ -24,7 +24,7 @@ final class System
 	 * Alert($lbl->Width);
 	 * </code>
 	 */
-	const Auto = "Auto";
+	const Auto = 'Auto';
 	/**
 	 * System::AutoHtmlTrim is used to indicate that various properties should figured out their values automatically
 	 * and any HTML in them should be trimmed out.
@@ -37,7 +37,7 @@ final class System
 	 * Alert($lbl->Width);
 	 * </code>
 	 */
-	const AutoHtmlTrim = "HtmlTrim";
+	const AutoHtmlTrim = 'HtmlTrim';
 	/**
 	 * System::Full is used to indicate that various properties should expand to accomodate the full control.
 	 * For example:
@@ -48,7 +48,7 @@ final class System
 	 * $pnl->Scrolling = System::Full;
 	 * </code>
 	 */
-	const Full = "Full";
+	const Full = 'Full';
 	/**
 	 * System::Vacuous is used in connection with {@link Control::SetVisible()} to indicate that the control will not
 	 * take up space. This is similar to false except that if either static or relative PositionType is used, the
@@ -66,6 +66,11 @@ final class System
 	 * </code>
 	 */
 	const Vacuous = 0;
+	/**
+	* System::Unhandled is used in connection with {@link SetStartUpPage} as the fifth, $debugMode, parameter to 
+	* indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.
+	*/
+	const Unhandled = 'Unhandled';
 }
 
 ?>

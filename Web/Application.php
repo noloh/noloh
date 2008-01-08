@@ -12,26 +12,34 @@ function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Displ
 }
 
 /**
+* @ignore
+*/
+function _NOBErrorHandler($buffer)
+{
+	if(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
+		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
+}
+
+/**
  * @ignore
  */
-function _NErrorHandler($errno, $errstr, $errfile, $errline)
+function _NErrorHandler($number, $string, $file, $line)
 {
-    if(defined('FORCE_GZIP'))
-    {
-        $handlers = ob_list_handlers();
-        if($handlers[0] != 'ob_gzhandler')
-        {
-    		ob_start('ob_gzhandler');
-            ++$_SESSION['NOLOHVisit'];
-        }
-    }
-	//print("var err=document.createElement('DIV'); err.innerHTML='$errstr'; err.style.zdocument.body.appendChild(err);");
-	//if($errnor == 1 || $errno == 4 || $errno == 16 || $errno == 64 || $errno == 256)
-	//{
-		//print("alert('Error# $errno : ".addslashes($errstr)." in $errfile on line $errline');");
-		//die();
-	//}
-    print('ERR');
+	ob_end_clean();
+	if(strpos($string, '~OB~')===0)
+	{
+		$splitStr = explode('~', $string);
+		//$number = $splitStr[2];
+		$string = $splitStr[3];
+		$file = $splitStr[4];
+		$line = $splitStr[5];
+	}
+	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers()))
+	{
+		ob_start('ob_gzhandler');
+		++$_SESSION['NOLOHVisit'];
+	}
+	print('/*~NScript~*/~ERR~'.$string.'~'.$file.'~'.$line);
 	global $OmniscientBeing;
 	$_SESSION['NOLOHScript'] = array('', '', '');
 	$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
@@ -87,7 +95,7 @@ final class Application
 		$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['NOLOHTokenTrailsExpiration'] = $tokenTrailsExpiration;
 		if(isset($_GET['NOLOHImage']))
-			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function']);
+			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params']);
 		elseif(isset($_GET['NOLOHFileUpload']))
 			FileUpload::ShowInside($_GET['NOLOHFileUpload'], $_GET['Width'], $_GET['Height']);
 		elseif(isset($_GET['NOLOHFileRequest']))
@@ -124,12 +132,14 @@ final class Application
 				$_SESSION['NOLOHScriptSrcs'] = $srcs;
 				AddScript('NOLOHVisit=-1', Priority::High);
 			}
-			if(!$debugMode)
+			if($debugMode !== 'Unhandled')
 			{
+				ini_set('html_errors', false);
 				set_error_handler('_NErrorHandler', error_reporting());
 				set_exception_handler('_NErrorHandler');
+				ob_start('_NOBErrorHandler');
                 if($_SESSION['NOLOHVisit']==-1)
-                    AddScript('_NDebugMode=false;');
+                    AddScript('_NDebugMode='.($debugMode?'true;':'false;'));
 			}
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
@@ -164,6 +174,7 @@ final class Application
 			$_SESSION['NOLOHFunctionQueue'],
 			$_SESSION['NOLOHPropertyQueue'],
 			$_SESSION['NOLOHScript'],
+			$_SESSION['_NScriptSrc'],
 			$_SESSION['NOLOHScriptSrcs'],
 			$_SESSION['NOLOHGlobals'],
 			$_SESSION['NOLOHFiles'],
@@ -185,6 +196,7 @@ final class Application
 		$_SESSION['NOLOHFunctionQueue'] = array();
 		$_SESSION['NOLOHPropertyQueue'] = array();
 		$_SESSION['NOLOHScript'] = array('', '', '');
+		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['NOLOHScriptSrcs'] = array();
 		$_SESSION['NOLOHGlobals'] = array();
 		$_SESSION['NOLOHFiles'] = array();
@@ -246,6 +258,8 @@ final class Application
 			Event::$FocusedComponent = $_POST['NOLOHFocus'];
             Event::$SelectedText = $_POST['NOLOHSelectedText'];
         }
+		if(isset($_POST['NOLOHContextMenuSource']))
+			ContextMenu::$Source = GetComponentById($_POST['NOLOHContextMenuSource']);
 		Event::$MouseX = $_POST['NOLOHMouseX'];
 		Event::$MouseY = $_POST['NOLOHMouseY'];
 		$splitEvent = explode('@', $_POST['NOLOHServerEvent']);
@@ -318,9 +332,6 @@ final class Application
 	private function Run()
 	{
 		global $OmniscientBeing;
-		if(defined('FORCE_GZIP'))
-			ob_start('ob_gzhandler');
-
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
 			$this->HandleTokens();
@@ -334,8 +345,11 @@ final class Application
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
-		$sendStr = '/*~NScript~*/' . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2];
-		print($sendStr);
+		ob_end_clean();
+		if(defined('FORCE_GZIP'))
+			ob_start('ob_gzhandler');
+		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2]);
+		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['NOLOHScript'] = array('', '', '');
 		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
 		$GLOBALS['NOLOHGarbage'] = true;
