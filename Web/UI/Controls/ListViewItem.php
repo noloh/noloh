@@ -11,12 +11,17 @@ class ListViewItem extends Panel //extends Component
 	function ListViewItem($objOrText = null)
 	{
 		parent::Panel(null, null, '100%', 20, $this);
-		$this->Scrolling = System::Full;
+//		$this->Scrolling = System::Full;
 		$this->LayoutType = Layout::Relative;
 		$this->SubItems = &$this->Controls;//new ImplicitArrayList($this, "AddSubItem");
 		$this->SubItems->AddFunctionName = 'AddSubItem';
 		if($objOrText != null)
 			$this->AddSubItem($objOrText);
+	}
+	function GetListView()
+	{
+		if($this->ListViewId != null)
+			return GetComponentById($this->ListViewId);
 	}
 	function SetListView($listView)	{$this->ListViewId = $listView->Id;}
 	function AddSubItem($objOrText=null)
@@ -30,6 +35,10 @@ class ListViewItem extends Panel //extends Component
 			GetComponentById($this->ListViewId)->Update($this);
 		if(($tmpHeight = $objOrText->GetHeight()) > $this->GetHeight())
 			$this->SetHeight($tmpHeight);
+	}
+	function Remove()
+	{
+		$this->GetListView()->ListViewItems->Remove($this);
 	}
 }		
 ?>
