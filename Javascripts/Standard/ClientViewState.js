@@ -454,19 +454,7 @@ function ProcessReqChange()
 	   		}
 	   		catch(err)
 	   		{
-				if(_NDebugMode)
-				{	
-					var errLocation = req.responseText.indexOf("~ERR~");
-					if(errLocation == -1)
-						alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description);
-					else
-					{
-						var splitErr = req.responseText.substring(errLocation).split("~");
-						alert("A server error has occurred:\n\n" + splitErr[2] + "\nin " + splitErr[3] + "\non line " + splitErr[4]);
-					}
-				}
-				else
-					alert("An application error has occurred.");
+				alert(_NDebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
 	   		}
 	        finally
 	        {

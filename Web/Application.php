@@ -39,9 +39,11 @@ function _NErrorHandler($number, $string, $file, $line)
 		ob_start('ob_gzhandler');
 		++$_SESSION['NOLOHVisit'];
 	}
-	print('/*~NScript~*/~ERR~'.$string.'~'.$file.'~'.$line);
+	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$string\\nin $file\\non line $line" : 'An application error has occurred.') . '");');
+	//print('/*~NScript~*/~ERR~'.$string.'~'.$file.'~'.$line);
 	global $OmniscientBeing;
 	$_SESSION['NOLOHScript'] = array('', '', '');
+	$_SESSION['_NScriptSrc'] = '';
 	$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
     ob_end_flush();
     exit();
@@ -104,43 +106,11 @@ final class Application
 		{
 			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
 			  ((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
-			{
-                if(isset($_SESSION['_NReset']))
-                {
-                    unset($_SESSION['_NReset']);
-                    $_SESSION['NOLOHVisit'] = $_POST['NOLOHVisit'];
-                }
-                elseif(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != 'Unload@N1')
-                {
-    		   		if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
-    					self::Reset(false, false);
-                    $webPage = GetComponentById('N1');
-                    if($webPage != null && !$webPage->GetUnload()->Blank())
-                        $webPage->Unload->Exec();
-    				self::UnsetNolohSessionVars();
-    				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
-    			    return;
-                }
-                else
-                    $_SESSION['_NReset'] = true;
-			}
+					if($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
+						return;
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
-			{
-				$srcs = $_SESSION['NOLOHScriptSrcs'];
-				self::UnsetNolohSessionVars();
-				$this->HandleFirstRun($className, $unsupportedURL, false);
-				$_SESSION['NOLOHScriptSrcs'] = $srcs;
-				AddScript('NOLOHVisit=-1', Priority::High);
-			}
-			if($debugMode !== 'Unhandled')
-			{
-				ini_set('html_errors', false);
-				set_error_handler('_NErrorHandler', error_reporting());
-				set_exception_handler('_NErrorHandler');
-				ob_start('_NOBErrorHandler');
-                if($_SESSION['NOLOHVisit']==-1)
-                    AddScript('_NDebugMode='.($debugMode?'true;':'false;'));
-			}
+				$this->HandleIENavigation($className, $unsupportedURL);
+			$this->HandleDebugMode($debugMode);
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
@@ -213,6 +183,52 @@ final class Application
 				$this->SearchEngineRun();
 			else 
 				WebPage::SkeletalShow($unsupportedURL);
+	}
+	
+	private function HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
+	{
+		if(isset($_SESSION['_NReset']))
+		{
+			unset($_SESSION['_NReset']);
+			$_SESSION['NOLOHVisit'] = $_POST['NOLOHVisit'];
+		}
+		elseif(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != 'Unload@N1')
+		{
+			if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
+				self::Reset(false, false);
+			$webPage = GetComponentById('N1');
+			if($webPage != null && !$webPage->GetUnload()->Blank())
+				$webPage->Unload->Exec();
+			self::UnsetNolohSessionVars();
+			self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
+			return true;
+		}
+		else
+			$_SESSION['_NReset'] = true;
+		return false;
+	}
+	
+	private function HandleIENavigation($className, $unsupportedURL)
+	{
+		$srcs = $_SESSION['NOLOHScriptSrcs'];
+		self::UnsetNolohSessionVars();
+		$this->HandleFirstRun($className, $unsupportedURL, false);
+		$_SESSION['NOLOHScriptSrcs'] = $srcs;
+		AddScript('NOLOHVisit=-1', Priority::High);
+	}
+	
+	private function HandleDebugMode($debugMode)
+	{
+		if($debugMode !== 'Unhandled')
+		{
+			$GLOBALS['_NDebugMode'] = $debugMode;
+			ini_set('html_errors', false);
+			set_error_handler('_NErrorHandler', error_reporting());
+			set_exception_handler('_NErrorHandler');
+			ob_start('_NOBErrorHandler');
+			if($_SESSION['NOLOHVisit']==-1)
+				AddScript('_NDebugMode='.($debugMode?'true;':'false;'));
+		}
 	}
 	
 	private function TheComingOfTheOmniscientBeing()
@@ -360,7 +376,7 @@ final class Application
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
-		$file = getcwd()."/NOLOHSearchTrails.dat";
+		$file = getcwd().'/NOLOHSearchTrails.dat';
 		if(file_exists($file))
 		{
 			$tokenString = URL::TokenString($_SESSION['NOLOHTokens']);
