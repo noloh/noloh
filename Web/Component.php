@@ -125,11 +125,12 @@ abstract class Component extends Object
 		}
 		elseif(is_array($generation))
 		{
+			$parent = GetComponentById($this->ParentId);
 			$count = count($generation);
 			for($i=0; $i<$count; $i++)
-				if($this instanceof $generation[$i])
-					return $this;
-			return GetComponentById($this->ParentId)->GetParent($generation);
+				if($parent instanceof $generation[$i])
+					return $parent;
+			return $parent->GetParent($generation);
 		}
 		return null;
 	}
