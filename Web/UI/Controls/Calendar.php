@@ -10,6 +10,7 @@ class Calendar extends Panel
 	private $Date;
 	private $Month;
 	private $Year;
+	private $Format;
 	
 	function Calendar($left=0, $top=0, $width=215, $height=200, $timestampTime=null)
 	{
@@ -21,13 +22,13 @@ class Calendar extends Panel
 		$this->MonthYearLabel = new Label('Out of Service', 0, 0, $width, 25);
 		$this->MonthYearLabel->SetCSSClass('NCalHead');
 		$leftYear = new Button('<<', 0, 0, 25, 25);
-		$leftYear->Click = new ClientEvent("LastYear('$this->Id')");
+		$leftYear->Click = new ClientEvent('LastYear(\''.$this->Id.'\')');
 		$rightYear = new Button('>>', $width-25, 0, 25, 25);
-		$rightYear->Click = new ClientEvent("NextYear('$this->Id')");
+		$rightYear->Click = new ClientEvent('NextYear(\''.$this->Id.'\')');
 		$leftMonth = new Button('<', 25, 0, 25, 25);
-		$leftMonth->Click = new ClientEvent("LastMonth('$this->Id')");
+		$leftMonth->Click = new ClientEvent('LastMonth(\''.$this->Id.'\')');
 		$rightMonth = new Button('>', $width-50, 0, 25, 25);
-		$rightMonth->Click = new ClientEvent("NextMonth('$this->Id')");
+		$rightMonth->Click = new ClientEvent('NextMonth(\''.$this->Id.'\')');
 		$this->Controls->AddRange($this->MonthYearLabel, $leftYear, $rightYear, $leftMonth, $rightMonth);
 		for($i=6; $i>=0; --$i)
 		{
@@ -39,7 +40,7 @@ class Calendar extends Panel
 			{
 				$this->Controls->Add($lbl = &new Label('', $j*31, 33+23*$i, 31));
 				$lbl->SetCSSClass('NCalCell');
-				$lbl->SetMouseUp(new ClientEvent("CalSelectDate(event,'$this->Id')"));
+				$lbl->SetMouseUp(new ClientEvent('CalSelectDate(event,\''.$this->Id.'\')'));
 			}
 		$this->SetTimestamp($timestampTime);
 	}
@@ -98,32 +99,39 @@ class Calendar extends Panel
 		$this->Year = $newYear;
 		$this->UpdateClient();
 	}
+	
+	function GetFormat()
+	{
+		return $this->Format == null ? 'l, F d, Y' : $this->Format;
+	}
+	
+	function SetFormat($format)
+	{
+		$this->Format = $format == 'l, F d, Y' ? null : $format;
+	}
 
 	function GetTimestamp()
 	{
 		return mktime(0, 0, 0, $this->Month+1, $this->Date, $this->Year);
 	}
 
-	function SetTimestamp($timestampTime)
+	function SetTimestamp($timestamp)
 	{
-		if($timestampTime==null)
-			$timestampTime = date('U');
+		if($timestamp==null)
+			$timestamp = date('U');
 
-		$dateM = date('n', $timestampTime)-1;
-		$dateY = date('Y', $timestampTime);
-		$this->ViewMonth = $dateM;
-		$this->ViewYear = $dateY;
-		$this->Date = date('d', $timestampTime);
-		$this->Month = $dateM;
-		$this->Year = $dateY;
+		$this->Date = date('d', $timestamp);
+		$this->Month = $this->ViewMonth = date('n', $timestamp)-1;
+		$this->Year = $this->ViewYear = date('Y', $timestamp);
 		$this->UpdateClient();
 	}
 
 	function GetFullDate()
 	{
-		$Timestamp = $this->GetTimestamp();
-		$date = getdate($Timestamp);
-		return $date['weekday'].', '.$date['month'].' '.$date['mday'].', '.$date['year'];
+		return date($this->GetFormat(), $this->GetTimestamp());
+		//$timestamp = $this->GetTimestamp();
+		//$date = getdate($timestamp);
+		//return $date['weekday'].', '.$date['month'].' '.$date['mday'].', '.$date['year'];
 	}
 
     function SetWidth($width)
@@ -145,7 +153,7 @@ class Calendar extends Panel
 	function UpdateClient()
 	{
 		//QueueClientFunction($this, "ShowCalendar", "'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year);
-		QueueClientFunction($this, 'ShowCalendar', array("'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
+		QueueClientFunction($this, 'ShowCalendar', array('\''.$this->Id.'\'', $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
 		/*if($this->HasShown())
 			AddScript('ShowCalendar("' . $this->Id . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
 				$this->Date . ', ' . $this->Month . ', ' . $this->Year . ');'/*, Priority::High);*/

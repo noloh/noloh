@@ -196,9 +196,22 @@ function GetDateString(calid, dateStr)
 	return finalStr;
 }
 
-function TogglePull(calid)
+function TogglePull(calId)
 {
-	var Obj=document.getElementById(calid);
-	Obj.style.display = Obj.style.display == '' ? 'none' : '';
-	document.body.focus();	
+	var Obj=document.getElementById(calId);
+	if(Obj.style.display == 'none')
+	{
+		Obj.style.display = '';
+		_NOpenedCalendar = calId;
+		document.attachEvent("onclick", CalendarClickOff);
+		window.event.cancelBubble = true;
+	}
+	document.body.focus();
+}
+
+function CalendarClickOff()
+{
+	document.getElementById(_NOpenedCalendar).style.display = 'none';
+	_NOpenedCalendar = null;
+	document.detachEvent("onclick", CalendarClickOff);
 }
