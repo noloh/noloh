@@ -113,7 +113,7 @@ class TreeNode extends Panel
 	}
 	function RemoveNodeAt($idx)
 	{
-		$this->NodePanel->Controls->Items[$idx]->Remove();
+		$this->NodePanel->Controls->Item[$idx]->Remove();
 	}
 	function Remove()
 	{
