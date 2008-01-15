@@ -18,20 +18,17 @@ function ChangeLabelText(id, text)
 	ChangeAndSave(id, "innerHTML", text);
 }
 
-function ToggleVisibility(whatobjid)
+function ToggleVisibility(id)
 {
-	var toggleObj = document.getElementById(whatobjid);
+	var toggleObj = document.getElementById(id);
 	if(toggleObj.style.visibility == "hidden" || toggleObj.style.display == "none")
 	{
-		BringToFront(whatobjid);
-		ChangeAndSave(whatobjid, "style.visibility", "inherit");
-		ChangeAndSave(whatobjid, "style.display", "");
+		BringToFront(id);
+		ChangeAndSave(id, "style.visibility", "inherit");
+		ChangeAndSave(id, "style.display", "");
 	}
 	else
-	{
-		ChangeAndSave(whatobjid, "style.display", "none");
-		//ChangeAndSave(whatobjid, "style.visibility", "hidden");
-	}
+		ChangeAndSave(id, "style.display", "none");
 }
 
 function FindX(objId)
