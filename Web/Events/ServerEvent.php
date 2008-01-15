@@ -161,14 +161,13 @@ class ServerEvent extends Event
 			$runThisString .= ';';
 		
 		$source = Event::$Source;
-		if(count($this->Handles) == 1)
-			Event::$Source = &GetComponentById($this->Handles[0][0]);
+		$handles = array();
+		$this->GetDeepHandles($handles);
+		//Alert(count($handles));
+		if(count($handles) == 1)
+			Event::$Source = &$handles[0];
 		else
-		{
-			Event::$Source = array();
-			foreach($this->Handles as $pair)
-				Event::$Source[] = GetComponentById($pair[0]);
-		}
+			Event::$Source = $handles;
 		eval($runThisString);
 		Event::$Source = &$source;
 	}

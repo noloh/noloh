@@ -202,6 +202,19 @@ class Event extends Object implements ArrayAccess
 	/**
 	 * @ignore
 	 */
+	function GetDeepHandles(&$arr)
+	{
+		foreach($this->Handles as $pair)
+			if(is_string($pair[0]))
+				$arr[] = GetComponentById($pair[0]);
+			elseif(is_object($pair[0])) 
+				$pair[0]->GetDeepHandles($arr);
+			else 
+				$arr[] = GetComponentById($pair[0][0]);
+	}
+	/**
+	 * @ignore
+	 */
 	function offsetExists($index)
 	{
 		return(is_array($this->ExecuteFunction) && isset($this->ExecuteFunction[$index]));
@@ -222,6 +235,7 @@ class Event extends Object implements ArrayAccess
 			if($index !== null)
 			{
 				$this->ExecuteFunction[$index] = $val;
+				$val->Handles[] = array($this);
 				if(count($this->ExecuteFunction)==1)
 					foreach($this->Handles as $pair)
 						if(is_string($pair[0]))
@@ -243,6 +257,7 @@ class Event extends Object implements ArrayAccess
 				else 
 				{
 					$this->ExecuteFunction[] = $val;
+					$val->Handles[] = array($this);
 					$this->UpdateClient();
 				}
 		else
