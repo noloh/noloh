@@ -10,9 +10,13 @@
  */
 function BloodyMurder($message)
 {
-	session_destroy();
-	session_unset(); 
-	die($message);
+	$backtrace = debug_backtrace();
+	$backtraceCount = count($backtrace);
+	$nolohPath = realpath(dirname(__FILE__).'/../');
+	for($i=0; $i<$backtraceCount; ++$i)
+		if(strpos($backtrace[$i]['file'], $nolohPath) === false)
+			_NErrorHandler(0, $message, $backtrace[$i]['file'], $backtrace[$i]['line']);
+	_NErrorHandler(0, $message, '?', '?');
 }
 /**
 * Gets the size of the application on the server's hard disk in bytes

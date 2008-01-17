@@ -39,8 +39,7 @@ function _NErrorHandler($number, $string, $file, $line)
 		ob_start('ob_gzhandler');
 		++$_SESSION['NOLOHVisit'];
 	}
-	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$string\\nin $file\\non line $line" : 'An application error has occurred.') . '");');
-	//print('/*~NScript~*/~ERR~'.$string.'~'.$file.'~'.$line);
+	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? ("A server error has occurred:\\n\\n".str_replace('"','\"',$string)."\\nin $file\\non line $line") : 'An application error has occurred.') . '");');
 	global $OmniscientBeing;
 	$_SESSION['NOLOHScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
@@ -224,7 +223,6 @@ final class Application
 			$GLOBALS['_NDebugMode'] = $debugMode;
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting());
-			set_exception_handler('_NErrorHandler');
 			ob_start('_NOBErrorHandler');
 			if($_SESSION['NOLOHVisit']==-1)
 				AddScript('_NDebugMode='.($debugMode?'true;':'false;'));
