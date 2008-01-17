@@ -119,6 +119,11 @@ class IFrame extends Control
 		$initialProperties .= ",'frameBorder','no'";
 		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
+	
+	function SearchEngineShow()
+	{
+		print('<A href="'.$this->Src.'">'.$this->Src.'</A> ');
+	}
 }
 	
 ?>

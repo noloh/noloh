@@ -8,11 +8,14 @@ class WebPage extends Component
 	public $AlternativePath;
 	public $ReflectOS;
 	public $Controls;
+	public $Keywords;
+	public $Description;
 	private $Title;
 	private $Width;
 	private $Height;
 	private $BackColor;
     private $Unload;
+
 	//var $MetaInformation;
 	//var $JSIframe;
 	/**
@@ -28,7 +31,7 @@ class WebPage extends Component
 	protected $LoadImg;
 	protected $LoadLbl;
 	
-	function WebPage($title = 'Unititled Document')
+	function WebPage($title = 'Unititled Document', $keywords = '', $description = '')
 	{
 		parent::Component();
 		if(isset($_GET['NWidth']))
@@ -39,6 +42,8 @@ class WebPage extends Component
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->SetTitle($title);
+		$this->Keywords = $keywords;
+		$this->Description = $description;
 		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
 		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Web/UI/NStyles.css');
@@ -319,11 +324,15 @@ class WebPage extends Component
 		*/
 	}
 
-	function SearchEngineShow()
+	function SearchEngineShow($tokenLinks)
 	{
-		print($this->Title . ' ');
+		print('<HTML><HEAD><TITLE>'.$this->Title.'</TITLE>' .
+			'<META name="keywords" content="' . (is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords) . '"></META>' .
+			'<META name="description" content="' . (is_file($this->Description)?file_get_contents($this->Description):$this->Description) . 
+			'"></META></HEAD><BODY>' . $tokenLinks . ' ');
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
+		print(' <A href="http://www.noloh.com">Powered by NOLOH</A> </BODY></HTML>');
 	}
 	
 	function GetAddId()

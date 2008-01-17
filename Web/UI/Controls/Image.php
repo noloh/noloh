@@ -184,6 +184,12 @@ class Image extends Control
 	{
 		NolohInternal::Show('IMG', parent::Show(), $this);
 	}
+	
+	function SearchEngineShow()
+	{
+		print('<IMG src="'.$this->Src.'"' . ($this->ToolTip==null?'':(' alt="'.$this->ToolTip.'"')) . '></IMG> ');
+	}
+	
 	/**
 	 *@ignore 
 	*/

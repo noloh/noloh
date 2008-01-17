@@ -178,7 +178,8 @@ final class Application
 		$_SESSION['LowestZIndex'] = 0;
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
-			if(/*true || */($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other'))
+			if($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other')
+			//if(true)
 				$this->SearchEngineRun();
 			else 
 				WebPage::SkeletalShow($unsupportedURL);
@@ -374,6 +375,7 @@ final class Application
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
+		$tokenLinks = '';
 		$file = getcwd().'/NOLOHSearchTrails.dat';
 		if(file_exists($file))
 		{
@@ -381,12 +383,12 @@ final class Application
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $nothing)
-					print('<a href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ');
+					$tokenLinks .= '<A href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ';
 		}
 		$className = $_SESSION['NOLOHStartUpPageClass'];
 		$this->WebPage = new $className();
 		$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
-		$this->WebPage->SearchEngineShow();
+		$this->WebPage->SearchEngineShow($tokenLinks);
 		session_destroy();
 		session_unset();
 	}
