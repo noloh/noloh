@@ -36,7 +36,7 @@ require_once("Button.php");
 require_once("TransferPane.php");
 require_once("WindowPanel.php");
 require_once("IFrame.php");
-require_once("MainMenu.php");
+require_once("Menu.php");
 require_once("MenuItem.php");
 require_once("GroupedInputControl.php");
 require_once("CheckBox.php");

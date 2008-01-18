@@ -2,7 +2,7 @@
 /**
  * @package Web.UI.Controls
  */
-class RolloverTab extends Panel
+class RolloverTab extends Panel implements Groupable
 {	
 	private $OutTab;
 	private $OverTab;
@@ -10,7 +10,7 @@ class RolloverTab extends Panel
 	private $SelectedTab;
 	private $Selected;
 	
-	public $GroupName;
+	private $GroupName;
 	public $TextObject;
 	public $TabPageId;
 	
@@ -98,13 +98,7 @@ class RolloverTab extends Panel
 	function GetOverTab()								{return $this->OverTab;}
 	function GetDownTab()								{return $this->DownTab;}
 	function GetSelectedTab()							{return $this->SelectedTab;}
-	function GetSelected()								{return $this->Selected;}
-	function GetSelect()								{return $this->GetEvent('Select');/*$this->Select;*/}
-	function SetSelect($newSelect)
-	{
-		$this->SetEvent($newSelect, 'Select');
-		//$this->Select = $newSelect;
-	}
+	
 	function SetOutTab($outTab)
 	{
 		if($this->OutTab == null)
@@ -116,7 +110,7 @@ class RolloverTab extends Panel
 			$this->OutTab = $outTab;
 		$this->OutTab->SetWidth($this->Width);
 		if(!empty($outTab))
-			$this->MouseOut = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OutTab->Id}');");
+			$this->MouseOut['Out'] = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OutTab->Id}');");
 	}
 	function SetOverTab($overTab)
 	{
@@ -130,7 +124,7 @@ class RolloverTab extends Panel
 		$this->OverTab->SetWidth($this->Width);
 		$this->OverTab->ClientVisible = false;
 		if(!empty($overTab))
-			$this->MouseOver = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OverTab->Id}');");
+			$this->MouseOver['Over'] = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OverTab->Id}');");
 	}
 	function SetDownTab($downTab)
 	{
@@ -144,7 +138,7 @@ class RolloverTab extends Panel
 		$this->DownTab->SetWidth($this->Width);
 		$this->OverTab->ClientVisible = false;
 		if(!empty($downTab))
-			$this->MouseDown = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->DownTab->Id}');");
+			$this->MouseDown['Down'] = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->DownTab->Id}');");
 	}
 	function SetSelectedTab($selectedTab)
 	{
@@ -156,54 +150,47 @@ class RolloverTab extends Panel
 		else
 			$this->SelectedTab = $selectedTab;
 		$this->SelectedTab->SetWidth($this->Width);
-		//if($this->ClientSide == true)
-			$this->SelectedTab->ClientVisible = false;
-		//else
-			//$this->SelectedTab->ServerVisible = false;
-		//if(!empty($whatSelectedTab) && $this->ClientSide != true)
-		/*	if(empty($this->Click))
-				$this->Click = new ServerEvent($this, 'SetSelected', true);
-			else */
-				$this->Click[] = new ServerEvent($this, 'SetSelected', true);
+		$this->SelectedTab->Visible = false;
+		if($selectedTab && $this->Click['Select'] == null)
+			$this->Click['Select'] = new ServerEvent($this, 'SetSelected', true);
 	}
-	function SetSelected($bool, $fireEvents = true)
-	{
-		if(isset($this->GroupName) && $bool)
+	//Select Event Functions
+	function GetSelect()				{return $this->GetEvent('Select');}
+	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
+	//Groupable Functions
+	function GetGroupName()				{return $this->GroupName;}
+	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
+	function GetSelected()				{return $this->Selected != null;}
+	function SetSelected($bool)
+	{			
+		$selected = $bool ? true : null;
+		if($this->Selected != $selected)
 		{
-			//Alert("Inner being called");
-			$tempGroup = GetComponentById($this->GroupName);
-			$tmpSelectedTab = $tempGroup->SelectedRolloverTab;
-			if($tmpSelectedTab === $this)
-				return;
-			if($tmpSelectedTab != null)
+			$this->MouseOut['Out']->Enabled = !$bool;
+			if($this->MouseDown['Over'])
+				$this->MouseOver['Over']->Enabled = !$bool;
+			if($this->MouseDown['Down'])
+				$this->MouseDown['Down']->Enabled = !$bool;
+			if($this->SelectSrc)
+				$this->Click['Select']->Enabled = !$bool;
+			//Trigger Select Event if $bool is true, i.e. Selected
+			if($bool && $this->GroupName != null)
 			{
-				//Alert("I'm unselecting");
-//				Alert($tmpSelectedTab->Id . " & " . $this->Id);
-					$tempGroup->SelectedRolloverTab->SetSelected(false);
-//				}
-//				$tempGroup->SetSelectedRolloverTab($this);
-//				//elseif($tempGroup->GetSelectedIndex() == -1)
-//			}
+				GetComponentById($this->GroupName)->Deselect();
+				//GetComponentById($this->GroupName)->SetSelectedElement($this);
+				$sel = $this->GetSelect();
+				if(!$sel->Blank())
+					$sel->Exec();
 			}
+			$this->Selected = $selected;
+			$this->OutTab->Visible = $this->OverTab->Visible = $this->DownTab->Visible = !$bool;
+			$this->SelectedTab->Visible = $bool;
 		}
-		if($bool)
-		{
-			$sel = $this->GetEvent('Select');
-			if(!$sel->Blank()) // && $fireEvents && $this->Click != null)
-				$sel->Exec();
-		}
-		$this->Selected = $bool;
-		$notBool = !$bool;
-		$this->MouseOut->Enabled = $this->MouseOver->Enabled = $this->Click->Enabled = $notBool;
-		$this->OutTab->ClientVisible = $this->OverTab->ClientVisible = $this->DownTab->ClientVisible = $notBool;
-		$this->SelectedTab->ClientVisible = $bool;
 	}
 	function Show()
 	{
 		$this->TextObject->BringToFront();
 		AddNolohScriptSrc('RolloverTab.js');
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/RolloverTab.js");
-		//AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')", Priority::High);
 //		QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->OutTab->Id'", "'$this->SelectedTab->Id'");
 		AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')");
 		//Should it be?

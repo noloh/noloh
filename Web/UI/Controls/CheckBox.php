@@ -22,7 +22,7 @@
  * </code>
  * 
  */
-class CheckBox extends GroupedInputControl
+class CheckBox extends GroupedInputControl implements MultiGroupable
 {
     /**
      *Constructor.

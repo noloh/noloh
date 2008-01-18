@@ -2,7 +2,7 @@
 /**
  * @package Web.UI.Controls
  */
-class RadioButton extends GroupedInputControl
+class RadioButton extends GroupedInputControl implements Groupable 
 {
 	function RadioButton($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
