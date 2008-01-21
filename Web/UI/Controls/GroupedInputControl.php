@@ -22,7 +22,7 @@ class GroupedInputControl extends Control
 		$this->SetText($text);
 		$this->Caption->Click = new ClientEvent('_NGIClick("'.$this->Id.'I")');
         $this->Caption->SetParentId($this->Id);
-		$this->GroupName = $this->Id;
+//		$this->GroupName = $this->Id;
 	}
 	function GetText()
 	{

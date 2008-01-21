@@ -19,8 +19,8 @@ class RadioButton extends GroupedInputControl implements Groupable
 	{
         parent::Show();
 		$initialProperties = "'id','".$this->Id."I','type','radio','defaultChecked',".($this->Checked?'true':'false').parent::GetEventString(null);
-        if(GetBrowser()=='ie')
-			NolohInternal::Show('<INPUT name="'.$this->GroupName.'">', $initialProperties, $this, $this->Id);
+		if(GetBrowser()=='ie')
+			NolohInternal::Show('<INPUT name="'.($this->GroupName != null?$this->GroupName:$this->Id).'">', $initialProperties, $this, $this->Id);
 		else
         {
             if($this->GroupName != null)
