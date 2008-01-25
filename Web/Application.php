@@ -67,6 +67,8 @@ final class Application
 	 */
 	public static function Reset($clearURLTokens = true, $clearSessionVariables = true)
 	{
+		if(isset(Event::$MouseX))
+			ob_end_clean();
         print('/*~NScript~*/');
         $webPage = GetComponentById('N1');
         if($webPage != null && !$webPage->GetUnload()->Blank())
@@ -82,7 +84,8 @@ final class Application
 		else
 			self::UnsetNolohSessionVars();
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
-		if(GetBrowser()=='ie')
+		$browser = GetBrowser();
+		if($browser=='ie' || $browser=='ff')
 			print('location.replace('.$url.');');
 		else
 			print('var frm=document.createElement("FORM");frm.action='.$url.';frm.method="post";document.body.appendChild(frm);frm.submit();');
@@ -114,7 +117,6 @@ final class Application
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['NOLOHClientChanges']))
 				$this->HandleClientChanges();
-            $GLOBALS['_NQueueDisabled'] = null;
 			if(!empty($_POST['NOLOHFileUploadId']))
 				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
 			foreach($_SESSION['NOLOHFiles'] as $key => $val)
@@ -260,6 +262,7 @@ final class Application
 			while(++$j < $changeCount)
 				$component->{$changes[$j]} = $changes[++$j];
 		}
+		$GLOBALS['_NQueueDisabled'] = null;
 	}
 	
 	private function HandleServerEvent()

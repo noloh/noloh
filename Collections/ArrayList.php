@@ -54,7 +54,7 @@
  * @property-read integer $Count The length of the ArrayList
  * 
  */
-class ArrayList implements ArrayAccess, Countable, Iterator
+class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 {
 	/**
 	 * The underlying array of the ArrayList.
@@ -246,11 +246,9 @@ class ArrayList implements ArrayAccess, Countable, Iterator
 	/**
 	 * @ignore
 	 */
-	function __get($nm)
+	function GetCount()
 	{
-		if($nm == 'Count')
-			return count($this->Item);
-		return null;
+		return count($this->Item);
 	}
 	/**
 	 * @ignore
