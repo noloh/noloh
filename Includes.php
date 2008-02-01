@@ -22,7 +22,10 @@ require('Collections/Group.php');
 require('Collections/Groupable.php');
 require('Collections/ImplicitArrayList.php');
 require('Collections/Item.php');
+require('Collections/Container.php');
+require('Collections/ObjectPair.php');
 require('Collections/File.php');
+require('Collections/Multiple.php');
 
 // Data
 // **********************************************************************
@@ -36,7 +39,6 @@ require('Data/MySqlDataReader.php');
 // Web UI Controls
 // **********************************************************************
 require('Web/UI/Controls/Control.php');
-require('Web/UI/Controls/Container.php');
 require('Web/UI/Controls/EmbedObject.php');
 require('Web/UI/Controls/ListControl.php');
 require('Web/UI/Controls/ComboBox.php');
