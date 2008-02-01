@@ -93,7 +93,7 @@ function CheckURL()
 			req = new ActiveXObject("Microsoft.XMLHTTP");
 			document.getElementById(_NLoadImg).style.visibility = "visible";
 			document.getElementById(_NLoadLbl).style.visibility = "visible";
-			req.onreadystatechange = processReqChange;
+			req.onreadystatechange = ProcessReqChange;
 			req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
                + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
 			location = inner;
