@@ -329,10 +329,10 @@ class WebPage extends Component
 		print('<HTML><HEAD><TITLE>'.$this->Title.'</TITLE>' .
 			'<META name="keywords" content="' . (is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords) . '"></META>' .
 			'<META name="description" content="' . (is_file($this->Description)?file_get_contents($this->Description):$this->Description) . 
-			'"></META></HEAD><BODY>' . $tokenLinks . ' ');
+			'"></META></HEAD><BODY>');
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
-		print(' <A href="http://www.noloh.com">Powered by NOLOH</A> </BODY></HTML>');
+		print(' ' . $tokenLinks . ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>');
 	}
 	
 	function GetAddId()
