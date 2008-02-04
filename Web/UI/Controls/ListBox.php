@@ -68,6 +68,16 @@ class ListBox extends ListControl
 		return $this->SelectedIndices;
 	}
 	/**
+	 * Selects those and only those Items whose index in the Items ArrayList is an element of the specified array.
+	 * @param array|ArrayList $selectedIndices
+	 */
+	function SetSelectedIndices($selectedIndices)
+	{
+		$this->SelectedIndices = array();
+		foreach($selectedIndices as $idx)
+			$this->SetSelectedIndex($idx);
+	}
+	/**
 	 * Returns an array of all the values of the selected Items
 	 * @return array
 	 */
@@ -81,14 +91,14 @@ class ListBox extends ListControl
 		return $selectedArray;
 	}
 	/**
-	 * Selects those and only those Items whose index in the Items ArrayList is an elements of the specified array.
+	 * Selects those and only those Items whose value in the Items ArrayList is an element of the specified array.
 	 * @param array|ArrayList $selectedIndices
 	 */
-	function SetSelectedIndices($selectedIndices)
+	function SetSelectedValues($selectedValues)
 	{
 		$this->SelectedIndices = array();
-		foreach($selectedIndices as $idx)
-			$this->SetSelectedIndex($idx);
+		foreach($selectedValues as $value)
+			$this->SetSelectedValue($value);
 	}
 	/**
 	 * Selects or deselects an Item whose index in the Items ArrayList matches the parameter
