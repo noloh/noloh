@@ -26,15 +26,15 @@
 class DatePicker extends Panel
 {
 	/**
- 	* DatePickerCombo, the ComboBox of the DatePicker for pulling down the Calendar
+ 	* PullDown, the ComboBox of the DatePicker for pulling down the Calendar
  	* @var ComboBox
  	*/
-	public $DatePickerCombo;
+	public $PullDown;
 	/**
- 	* DatePickerCalendar, the Calendar of the DatePicker
+ 	* Calendar, the Calendar of the DatePicker
  	* @var Calendar
  	*/
-	public $DatePickerCalendar;
+	public $Calendar;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends DatePicker
@@ -48,27 +48,27 @@ class DatePicker extends Panel
 	function DatePicker($left = 0, $top = 0, $width = 219, $height = 21)
 	{
 		parent::Panel($left, $top, $width, $height);
-		$this->DatePickerCombo = new ComboBox(0, 0, $width, 20);
-		$this->DatePickerCalendar = new Calendar(0, 21, 217, 200);
-		$this->DatePickerCalendar->Buoyant = true;
-		$this->DatePickerCalendar->Visible = System::Vacuous;
+		$this->PullDown = new ComboBox(0, 0, $width, 20);
+		$this->Calendar = new Calendar(0, 21, 217, 200);
+		$this->Calendar->Buoyant = true;
+		$this->Calendar->Visible = System::Vacuous;
 		$this->SetFormat('l, F d, Y');
         switch(GetBrowser())
         {
             case 'ie':
-                $this->DatePickerCombo->Click = new ClientEvent('TogglePull(\''.$this->DatePickerCalendar->Id.'\')');
-                $this->DatePickerCalendar->Click = new ClientEvent('window.event.cancelBubble=true');
+                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\')');
+                $this->Calendar->Click = new ClientEvent('window.event.cancelBubble=true');
                 break;
             case 'sa':
-                $this->DatePickerCombo->MouseDown = new ClientEvent('TogglePull(\''.$this->DatePickerCalendar->Id.'\',\''.$this->DatePickerCombo->Id.'\',event);return false');
-                $this->DatePickerCalendar->MouseDown = new ClientEvent('event.stopPropagation()');
+                $this->PullDown->MouseDown = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);return false');
+                $this->Calendar->MouseDown = new ClientEvent('event.stopPropagation()');
                 break;
             default:
-                $this->DatePickerCombo->Click = new ClientEvent('TogglePull(\''.$this->DatePickerCalendar->Id.'\',\''.$this->DatePickerCombo->Id.'\',event)');
-                $this->DatePickerCalendar->Click = new ClientEvent('event.stopPropagation()');
+                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event)');
+                $this->Calendar->Click = new ClientEvent('event.stopPropagation()');
         }
-		$this->Controls->Add($this->DatePickerCombo);
-		$this->Controls->Add($this->DatePickerCalendar);
+		$this->Controls->Add($this->PullDown);
+		$this->Controls->Add($this->Calendar);
 	}
 	/**
 	 * Returns the the selected day as formatted according to the Format property.
@@ -76,7 +76,7 @@ class DatePicker extends Panel
 	 */
 	function GetFullDate()
 	{
-		return $this->DatePickerCalendar->GetFullDate();
+		return $this->Calendar->GetFullDate();
 		//return date($this->Format, $this->GetTimestamp());
 	}
 	/**
@@ -85,7 +85,7 @@ class DatePicker extends Panel
 	 */
 	function GetTimestamp()
 	{
-		return $this->DatePickerCalendar->GetTimestamp();
+		return $this->Calendar->GetTimestamp();
 	}
 	/**
 	 * Sets the current day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
@@ -97,8 +97,8 @@ class DatePicker extends Panel
 	 */
 	function SetTimestamp($timestamp)
 	{
-		$this->DatePickerCalendar->SetTimestamp($timestamp);
-		QueueClientFunction($this, 'document.getElementById(\''.$this->DatePickerCalendar->Id.'\').onchange.call', array());
+		$this->Calendar->SetTimestamp($timestamp);
+		QueueClientFunction($this, 'document.getElementById(\''.$this->Calendar->Id.'\').onchange.call', array());
 	}
 	/**
 	 * Returns the currently used format of the display of the DatePicker
@@ -107,7 +107,7 @@ class DatePicker extends Panel
 	 */
 	function GetFormat()									
 	{
-		return $this->DatePickerCalendar->GetFormat();
+		return $this->Calendar->GetFormat();
 	}
 	/**
 	 * Sets the format of the display of the DatePicker.
@@ -115,8 +115,8 @@ class DatePicker extends Panel
 	 */
 	function SetFormat($format)
 	{
-		$this->DatePickerCalendar->SetFormat($format);
-		$this->DatePickerCalendar->Change = new ClientEvent('PickerSelectDate("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$format.'")');
+		$this->Calendar->SetFormat($format);
+		$this->Calendar->Change = new ClientEvent('PickerSelectDate("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$format.'")');
 	}
 	/**
 	* @ignore
@@ -124,8 +124,8 @@ class DatePicker extends Panel
 	function Show()
 	{
 		parent::Show();
-		if($this->DatePickerCombo->Items->Count()==0)
-			AddScript('ShowDatePicker("'.$this->DatePickerCalendar->Id.'","'.$this->DatePickerCombo->Id.'","'.$this->DatePickerCalendar->GetFormat().'")');
+		if($this->PullDown->Items->Count()==0)
+			AddScript('ShowDatePicker("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$this->Calendar->GetFormat().'")');
 	}
 }
 

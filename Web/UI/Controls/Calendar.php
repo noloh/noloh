@@ -4,7 +4,7 @@
  */
 class Calendar extends Panel 
 {
-	public $MonthYearLabel;
+	public $DateDisplay;
 	private $ViewMonth;
 	private $ViewYear;
 	private $Date;
@@ -19,8 +19,8 @@ class Calendar extends Panel
 		$this->Border = '1px solid #000000';
 		$this->BackColor = '#FFFFCC';
 		$daysOfWeek = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
-		$this->MonthYearLabel = new Label('Out of Service', 0, 0, $width, 25);
-		$this->MonthYearLabel->SetCSSClass('NCalHead');
+		$this->DateDisplay = new Label('Out of Service', 0, 0, $width, 25);
+		$this->DateDisplay->SetCSSClass('NCalHead');
 		$leftYear = new Button('<<', 0, 0, 25, 25);
 		$leftYear->Click = new ClientEvent('LastYear(\''.$this->Id.'\')');
 		$rightYear = new Button('>>', $width-25, 0, 25, 25);
@@ -29,7 +29,7 @@ class Calendar extends Panel
 		$leftMonth->Click = new ClientEvent('LastMonth(\''.$this->Id.'\')');
 		$rightMonth = new Button('>', $width-50, 0, 25, 25);
 		$rightMonth->Click = new ClientEvent('NextMonth(\''.$this->Id.'\')');
-		$this->Controls->AddRange($this->MonthYearLabel, $leftYear, $rightYear, $leftMonth, $rightMonth);
+		$this->Controls->AddRange($this->DateDisplay, $leftYear, $rightYear, $leftMonth, $rightMonth);
 		for($i=6; $i>=0; --$i)
 		{
 			$this->Controls->Add($lbl = &new Label($daysOfWeek[$i], $i*31, 33, 31));
@@ -137,9 +137,9 @@ class Calendar extends Panel
     function SetWidth($width)
     {
         parent::SetWidth($width);
-        if($this->MonthYearLabel)
+        if($this->DateDisplay)
         {
-            $this->MonthYearLabel->SetWidth($width);
+            $this->DateDisplay->SetWidth($width);
             $this->Controls->Item[2]->SetLeft($width - 25);
             $this->Controls->Item[4]->SetLeft($width - 50);
         }
