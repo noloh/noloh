@@ -182,7 +182,7 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function offsetUnset($index)
 	{
-		$this->Remove($this->Item[$index]);
+		$this->Remove($this->Elements[$index]);
 		//$this->RemveAt($index);
 	}
 }

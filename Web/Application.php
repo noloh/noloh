@@ -16,7 +16,9 @@ function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Displ
 */
 function _NOBErrorHandler($buffer)
 {
-	if(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
+	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
+		trigger_error('~INFO~'.$buffer);
+	elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
 		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
 }
 
@@ -34,6 +36,8 @@ function _NErrorHandler($number, $string, $file, $line)
 		$file = $splitStr[4];
 		$line = $splitStr[5];
 	}
+	elseif(strpos($string, '~INFO~')===0)
+		_NPHPInfo(substr($string, 6));
 	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers()))
 	{
 		ob_start('ob_gzhandler');
@@ -47,7 +51,25 @@ function _NErrorHandler($number, $string, $file, $line)
     ob_end_flush();
     exit();
 }
-
+/**
+ * @ignore
+ */
+function _NPHPInfo($info)
+{
+	$info = str_replace(array("\n", "\r", "'"), array('','',"\'"), $info);
+	$loc = strpos($info, '</table>');
+	$first = substr($info, 0, $loc);
+	$last = substr($info, $loc+8);
+	$middle = '<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="http://www.noloh.com/Images/NOLOHLogo.gif" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version 1.4.8</h1></td></tr></table><div id="N2"></div><div id="N3"></div>';
+	if(UserAgentDetect::IsIE())
+		print('/*~NScript~*/document.write(\'' . $first . $middle . $last . '\');window.onscroll=null;');
+	else 
+		print('/*~NScript~*/document.body.innerHTML=\'' . $first . $middle . $last . '\';window.onscroll=null;');
+	ob_end_flush();
+	session_destroy();
+	session_unset();
+	exit();
+}
 /**
 * @ignore
 */
@@ -250,23 +272,6 @@ final class Application
 
 	private function HandleClientChanges()
 	{
-		$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
-		$numComponents = count($componentChanges);
-		for($i = 0; $i < $numComponents; ++$i)
-		{
-			$changes = explode('~d1~', $componentChanges[$i]);
-            $GLOBALS['_NQueueDisabled'] = $changes[0];
-			$component = &GetComponentById($changes[0]);
-			$changeCount = count($changes);
-			$j = 0;
-			while(++$j < $changeCount)
-				$component->{$changes[$j]} = $changes[++$j];
-		}
-		$GLOBALS['_NQueueDisabled'] = null;
-	}
-	
-	private function HandleServerEvent()
-	{
 		if(isset($_POST['NOLOHKey']))
 			Event::$Key = $_POST['NOLOHKey'];
 		if(isset($_POST['NOLOHCaught']))
@@ -280,6 +285,23 @@ final class Application
 			ContextMenu::$Source = GetComponentById($_POST['NOLOHContextMenuSource']);
 		Event::$MouseX = $_POST['NOLOHMouseX'];
 		Event::$MouseY = $_POST['NOLOHMouseY'];
+		$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
+		$numComponents = count($componentChanges);
+		for($i = 0; $i < $numComponents; ++$i)
+		{
+			$changes = explode('~d1~', $componentChanges[$i]);
+			$GLOBALS['_NQueueDisabled'] = $changes[0];
+			$component = &GetComponentById($changes[0]);
+			$changeCount = count($changes);
+			$j = 0;
+			while(++$j < $changeCount)
+				$component->{$changes[$j]} = $changes[++$j];
+		}
+		$GLOBALS['_NQueueDisabled'] = null;
+	}
+	
+	private function HandleServerEvent()
+	{
 		$splitEvent = explode('@', $_POST['NOLOHServerEvent']);
 		$obj = GetComponentById($splitEvent[1]);
 		if($obj != null)
@@ -352,6 +374,8 @@ final class Application
 		global $OmniscientBeing;
 		if(++$_SESSION['NOLOHVisit']==0)
 		{
+			$GLOBALS['_NWidth'] = $_GET['NWidth'];
+			$GLOBALS['_NHeight'] = $_GET['NHeight'];
 			$this->HandleTokens();
 			$className = $_SESSION['NOLOHStartUpPageClass'];
 			$this->WebPage = new $className();

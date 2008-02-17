@@ -1,41 +1,40 @@
-thisObjArray = null;
+_NShiftObjArray = null;
 function ShiftStart(event, objArray)
 {
 	var xPos, yPos, obj, deltaZIndex, tempBorder;
-	thisObjArray = objArray;
-	thisObjArray.Ghosts = Array();
-	thisObjArray.HasMoved = false;
+	_NShiftObjArray = objArray;
+	_NShiftObjArray.Ghosts = Array();
+	_NShiftObjArray.HasMoved = false;
 	
 	xPos = event.clientX + window.scrollX;
 	yPos = event.clientY + window.scrollY;
-	thisObjArray.CursorStartX = xPos;
-	thisObjArray.CursorStartY = yPos;
+	_NShiftObjArray.CursorStartX = xPos;
+	_NShiftObjArray.CursorStartY = yPos;
 	
-	var tmpCount = thisObjArray.length;
+	var tmpCount = _NShiftObjArray.length;
 	if(tmpCount > 0)
-		deltaZIndex = ++HighestZIndex + tmpCount - document.getElementById(thisObjArray[0][0]).style.zIndex;
+		deltaZIndex = ++HighestZIndex + tmpCount - document.getElementById(_NShiftObjArray[0][0]).style.zIndex;
 	for(var i=0; i<tmpCount; ++i)
 	{
-		if(thisObjArray[i][2] == 1)
+		if(_NShiftObjArray[i][2] == 1)
 		{
-			obj = document.getElementById(thisObjArray[i][0]).cloneNode(true);
+			obj = document.getElementById(_NShiftObjArray[i][0]).cloneNode(true);
 			obj.style.position = "absolute";
-			obj.style.left = FindX(thisObjArray[i][0]) + "px";
-			obj.style.top = FindY(thisObjArray[i][0]) + "px";
+			obj.style.left = FindX(_NShiftObjArray[i][0]) + "px";
+			obj.style.top = FindY(_NShiftObjArray[i][0]) + "px";
 			obj.style.opacity = ".5";
-			thisObjArray[i][0] = obj.id = thisObjArray[i][0] + "_Ghost";
+			_NShiftObjArray[i][0] = obj.id = _NShiftObjArray[i][0] + "_Ghost";
 			document.body.appendChild(obj);
-			thisObjArray.Ghosts[thisObjArray.Ghosts.length] = i;
+			_NShiftObjArray.Ghosts[_NShiftObjArray.Ghosts.length] = i;
 		}
 		else
-			obj = document.getElementById(thisObjArray[i][0]);
-		_NShiftInitObject(thisObjArray[i], obj);
+			obj = document.getElementById(_NShiftObjArray[i][0]);
+		_NShiftInitObject(_NShiftObjArray[i], obj);
 		SetShiftWithInitials(obj);
-		//BringToFront(obj.id);
 		ChangeAndSave(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
 	}
-	document.addEventListener("mousemove", ShiftObj, true);
-    document.addEventListener("mouseup",   ShiftStop, true);
+	document.addEventListener("mousemove", ShiftGo, true);
+    document.addEventListener("mouseup", ShiftStop, true);
     event.preventDefault();
 }
 function _NShiftInitObject(info, obj)
@@ -44,10 +43,6 @@ function _NShiftInitObject(info, obj)
 	info.StartHeight = parseInt(obj.style.height);
 	info.StartLeft = parseInt(obj.style.left);
 	info.StartTop = parseInt(obj.style.top);
-	/*info.StartWidth = obj.offsetWidth;
-	info.StartHeight = obj.offsetHeight;
-	info.StartLeft = obj.offsetLeft;
-	info.StartTop = obj.offsetTop;*/
 	if(isNaN(info.StartHeight))
 		info.StartHeight = 20;
 	if(isNaN(info.StartTop))
@@ -67,53 +62,53 @@ function SetShiftWithInitials(obj)
 		}
 	}
 }
-function ShiftObj(event)
+function ShiftGo(event)
 {
 	var xPos, yPos;
 	var deltaX, deltaY;
 
 	xPos = event.clientX + window.scrollX;
     yPos = event.clientY + window.scrollY;
-	deltaX = xPos - thisObjArray.CursorStartX;
-	deltaY = yPos - thisObjArray.CursorStartY;
+	deltaX = xPos - _NShiftObjArray.CursorStartX;
+	deltaY = yPos - _NShiftObjArray.CursorStartY;
 	
-	thisObjArray.HasMoved = true;
-	ShiftObjects(thisObjArray, deltaX, deltaY);
+	_NShiftObjArray.HasMoved = true;
+	ShiftObjects(_NShiftObjArray, deltaX, deltaY);
 	event.preventDefault();
 }
 function ShiftObjects(objects, deltaX, deltaY)
 {
-	var tmpCount = objects.length;
+	var tmpObj, tmpCount = objects.length;
 	for(var i=0; i<tmpCount; ++i)
 	{
-		if(objects[i][1] <= 3)
+		if(objects[i][1] > 3)
 		{
-			if(objects[i][1] != 1)
-				ShiftObject(objects[i], "style.height", objects[i].StartHeight, deltaY, objects[i][6], objects[i][7]);
-			if(objects[i][1] != 2)
-				ShiftObject(objects[i], "style.width", objects[i].StartWidth, deltaX, objects[i][4], objects[i][5]);
+			if(objects[i][1] != 4)
+				ShiftObject(objects[i][0], "style.top", objects[i].StartTop, deltaY, objects[i][3], objects[i][6], objects[i][7]);
+			if(objects[i][1] != 5)
+				ShiftObject(objects[i][0], "style.left", objects[i].StartLeft, deltaX, objects[i][3], objects[i][4], objects[i][5]);
 		}
 		else
 		{
-			if(objects[i][1] != 4)
-				ShiftObject(objects[i], "style.top", objects[i].StartTop, deltaY, objects[i][6], objects[i][7]);
-			if(objects[i][1] != 5)
-				ShiftObject(objects[i], "style.left", objects[i].StartLeft, deltaX, objects[i][4], objects[i][5]);
+			if(objects[i][1] != 1)
+				ShiftObject(objects[i][0], "style.height", objects[i].StartHeight, deltaY, objects[i][3], objects[i][6], objects[i][7]);
+			if(objects[i][1] != 2)
+				ShiftObject(objects[i][0], "style.width", objects[i].StartWidth, deltaX, objects[i][3], objects[i][4], objects[i][5]);
 		}
-		var tmpObj = document.getElementById(objects[i][0]);
+		tmpObj = document.getElementById(objects[i][0]);
 		if(tmpObj.ShiftsWith != null)
 			ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY);
 	}
 }
-function ShiftObject(object, property, start, delta, minBound, maxBound)
+function ShiftObject(id, property, start, delta, ratio, minBound, maxBound)
 {
-	var finalCoord = Math.round(start + delta * object[3]);
-	ChangeAndSave(object[0], property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");
+	var finalCoord = Math.round(start + delta * ratio);
+	ChangeAndSave(id, property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");
 }
 function ShiftStop(event)
 {
 	var tmpCount;
-	if(thisObjArray.HasMoved)
+	if(_NShiftObjArray.HasMoved)
 	{
 		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
 		DroppedX = event.clientX + window.scrollX;
@@ -126,9 +121,9 @@ function ShiftStop(event)
 				CatcherX = FindX(NOLOHCatchers[i]);
 				CatcherY = FindY(NOLOHCatchers[i]);
 				if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
-					for(j=0; j<thisObjArray.length; ++j)
-						if(4 <= thisObjArray[j][1] && thisObjArray[j][1] <= 6 && NOLOHCatchers[i]!=thisObjArray[j][0].replace("_Ghost",""))
-							NOLOHCaught.push(thisObjArray[j][0].replace("_Ghost",""));
+					for(j=0; j<_NShiftObjArray.length; ++j)
+						if(4 <= _NShiftObjArray[j][1] && _NShiftObjArray[j][1] <= 6 && NOLOHCatchers[i]!=_NShiftObjArray[j][0].replace("_Ghost",""))
+							NOLOHCaught.push(_NShiftObjArray[j][0].replace("_Ghost",""));
 				if(NOLOHCaught.length != 0)
 				{
 					Catcher.DragCatch.call();
@@ -136,26 +131,26 @@ function ShiftStop(event)
 				}
 			}
 	}
-	tmpCount = thisObjArray.Ghosts.length;
+	tmpCount = _NShiftObjArray.Ghosts.length;
 	for(i=0; i<tmpCount; ++i)
 	{
-		j = thisObjArray.Ghosts[i];
-		document.body.removeChild(document.getElementById(thisObjArray[j][0]));
-		thisObjArray[j][0] = thisObjArray[j][0].replace("_Ghost", "");
+		j = _NShiftObjArray.Ghosts[i];
+		document.body.removeChild(document.getElementById(_NShiftObjArray[j][0]));
+		_NShiftObjArray[j][0] = _NShiftObjArray[j][0].replace("_Ghost", "");
 	}
-	if(!thisObjArray.HasMoved)
+	if(!_NShiftObjArray.HasMoved)
 	{
 		var obj;
-		tmpCount = thisObjArray.length;
+		tmpCount = _NShiftObjArray.length;
 		for(i=0; i<tmpCount; ++i)
 		{
-			obj = document.getElementById(thisObjArray[i][0]);
+			obj = document.getElementById(_NShiftObjArray[i][0]);
 			if(obj.onclick != null)
 				obj.onclick.call(obj, event);
 		}
 	}
-	thisObjArray = null;
-	document.removeEventListener("mousemove", ShiftObj, true);
+	_NShiftObjArray = null;
+	document.removeEventListener("mousemove", ShiftGo, true);
 	document.removeEventListener("mouseup", ShiftStop, true);
 }
 function AddShiftWith(objectId, info)

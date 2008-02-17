@@ -1,40 +1,39 @@
 function ShiftStart(objArray)
 {
 	var xPos, yPos, obj, deltaZIndex;
-	thisObjArray = objArray;
-	thisObjArray.Ghosts = Array();
-	thisObjArray.HasMoved = false;
+	_NShiftObjArray = objArray;
+	_NShiftObjArray.Ghosts = Array();
+	_NShiftObjArray.HasMoved = false;
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 	yPos = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-	thisObjArray.CursorStartX = xPos;
-	thisObjArray.CursorStartY = yPos;
+	_NShiftObjArray.CursorStartX = xPos;
+	_NShiftObjArray.CursorStartY = yPos;
 	
-	var tmpCount = thisObjArray.length;
+	var tmpCount = _NShiftObjArray.length;
 	if(tmpCount > 0)
-		deltaZIndex = ++HighestZIndex + tmpCount - document.getElementById(thisObjArray[0][0]).style.zIndex;
+		deltaZIndex = ++HighestZIndex + tmpCount - document.getElementById(_NShiftObjArray[0][0]).style.zIndex;
 	for(var i=0; i<tmpCount; ++i)
 	{
-		if(thisObjArray[i][2] == 1)
+		if(_NShiftObjArray[i][2] == 1)
 		{
-			obj = document.getElementById(thisObjArray[i][0]).cloneNode(true);
+			obj = document.getElementById(_NShiftObjArray[i][0]).cloneNode(true);
 			obj.style.position = "absolute";
-			obj.style.left = FindX(thisObjArray[i][0]) + "px";
-			obj.style.top = FindY(thisObjArray[i][0]) + "px";
+			obj.style.left = FindX(_NShiftObjArray[i][0]) + "px";
+			obj.style.top = FindY(_NShiftObjArray[i][0]) + "px";
 			obj.style.filter = "alpha(opacity=50)";
-			thisObjArray[i][0] = obj.id = thisObjArray[i][0] + "_Ghost";
+			_NShiftObjArray[i][0] = obj.id = _NShiftObjArray[i][0] + "_Ghost";
 			document.body.appendChild(obj);
-			thisObjArray.Ghosts[thisObjArray.Ghosts.length] = i;
+			_NShiftObjArray.Ghosts[_NShiftObjArray.Ghosts.length] = i;
 		}
 		else
-			obj = document.getElementById(thisObjArray[i][0]);
-		_NShiftInitObject(thisObjArray[i], obj);
+			obj = document.getElementById(_NShiftObjArray[i][0]);
+		_NShiftInitObject(_NShiftObjArray[i], obj);
 		SetShiftWithInitials(obj);
-		//BringToFront(obj.id);
 		ChangeAndSave(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
 	}
-	document.attachEvent("onmousemove", ShiftObj);
-	document.attachEvent("onmouseup",   ShiftStop);
+	document.attachEvent("onmousemove", ShiftGo);
+	document.attachEvent("onmouseup", ShiftStop);
 	window.event.cancelBubble = true;
 	window.event.returnValue = false;
 }
@@ -44,10 +43,6 @@ function _NShiftInitObject(info, obj)
 	info.StartHeight = parseInt(obj.style.height);
 	info.StartLeft = parseInt(obj.style.left);
 	info.StartTop = parseInt(obj.style.top);
-	/*info.StartWidth = obj.offsetWidth;
-	info.StartHeight = obj.offsetHeight;
-	info.StartLeft = obj.offsetLeft;
-	info.StartTop = obj.offsetTop;*/
 	if(isNaN(info.StartHeight))
 		info.StartHeight = 20;
 	if(isNaN(info.StartTop))
@@ -67,18 +62,18 @@ function SetShiftWithInitials(obj)
 		}
 	}
 }
-function ShiftObj()
+function ShiftGo()
 {
 	var xPos, yPos;
 	var deltaX, deltaY;
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 	yPos = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-	deltaX = xPos - thisObjArray.CursorStartX;
-	deltaY = yPos - thisObjArray.CursorStartY;
+	deltaX = xPos - _NShiftObjArray.CursorStartX;
+	deltaY = yPos - _NShiftObjArray.CursorStartY;
 	
-	thisObjArray.HasMoved = true;
-	ShiftObjects(thisObjArray, deltaX, deltaY);
+	_NShiftObjArray.HasMoved = true;
+	ShiftObjects(_NShiftObjArray, deltaX, deltaY);
 	window.event.cancelBubble = true;
 	window.event.returnValue = false;
 }
@@ -114,7 +109,7 @@ function ShiftObject(object, property, start, delta, minBound, maxBound)
 function ShiftStop()
 {
 	var tmpCount;
-	if(thisObjArray.HasMoved)
+	if(_NShiftObjArray.HasMoved)
 	{
 		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
 		DroppedX = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
@@ -127,9 +122,9 @@ function ShiftStop()
 				CatcherX = FindX(NOLOHCatchers[i]);
 				CatcherY = FindY(NOLOHCatchers[i]);
 				if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
-					for(j=0; j<thisObjArray.length; ++j)
-						if(4 <= thisObjArray[j][1] && thisObjArray[j][1] <= 6 && NOLOHCatchers[i]!=thisObjArray[j][0].replace("_Ghost",""))
-							NOLOHCaught.push(thisObjArray[j][0].replace("_Ghost",""));
+					for(j=0; j<_NShiftObjArray.length; ++j)
+						if(4 <= _NShiftObjArray[j][1] && _NShiftObjArray[j][1] <= 6 && NOLOHCatchers[i]!=_NShiftObjArray[j][0].replace("_Ghost",""))
+							NOLOHCaught.push(_NShiftObjArray[j][0].replace("_Ghost",""));
 				if(NOLOHCaught.length != 0)
 				{
 					Catcher.DragCatch.call();
@@ -137,26 +132,26 @@ function ShiftStop()
 				}
 			}
 	}
-	tmpCount = thisObjArray.Ghosts.length;
+	tmpCount = _NShiftObjArray.Ghosts.length;
 	for(i=0; i<tmpCount; ++i)
 	{
-		j = thisObjArray.Ghosts[i];
-		document.body.removeChild(document.getElementById(thisObjArray[j][0]));
-		thisObjArray[j][0] = thisObjArray[j][0].replace("_Ghost", "");
+		j = _NShiftObjArray.Ghosts[i];
+		document.body.removeChild(document.getElementById(_NShiftObjArray[j][0]));
+		_NShiftObjArray[j][0] = _NShiftObjArray[j][0].replace("_Ghost", "");
 	}
-	if(!thisObjArray.HasMoved)
+	if(!_NShiftObjArray.HasMoved)
 	{
 		var obj;
-		tmpCount = thisObjArray.length;
+		tmpCount = _NShiftObjArray.length;
 		for(i=0; i<tmpCount; ++i)
 		{
-			obj = document.getElementById(thisObjArray[i][0]);
+			obj = document.getElementById(_NShiftObjArray[i][0]);
 			if(obj.onclick != null)
 				obj.onclick.call(obj, event);
 		}
 	}
-	thisObjArray = null;
-	document.detachEvent("onmousemove", ShiftObj);
+	_NShiftObjArray = null;
+	document.detachEvent("onmousemove", ShiftGo);
 	document.detachEvent("onmouseup", ShiftStop);
 }
 function AddShiftWith(objectId, info)

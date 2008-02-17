@@ -2,8 +2,42 @@
 /**
  * @package Web.UI.Controls
  */
+ 
+/**
+* Calendar class
+* 
+* A Calendar is a Panel which shows the days of the year sorted by month in a table where
+* the columns correspond to days of the week, as in a conventional calendar. Furthermore,
+* the user can scroll between months and years, as well as select a date.
+* 
+* <code>
+* // Instantiates a new Calendar object
+* $calendar = new Calendar();
+* // Adds it to the Controls ArrayList
+* $this->Controls->Add($calendar);
+* </code>
+* 
+* One may also set a Change Event on the calendar. This Event will be triggered when any
+* date is selected.
+* 
+* <code>
+* // Sets the Calendar object's Change Event to call the AlertDate function with itself as a parameter
+* $calendar->Change = new ServerEvent($this, 'AlertDate', $calendar);
+* // A function which will alert a Calendar's FullDate
+* function AlertDate($calendar)
+* {
+* 	Alert($calendar->FullDate);
+* }
+* // Thus, when a new date is selected on the Calendar, that date will be Alerted
+* </code>
+* 
+*/
 class Calendar extends Panel 
 {
+	/**
+	 * The Label which displays the Date, at the top of the Calendar
+	 * @var Label
+	 */
 	public $DateDisplay;
 	private $ViewMonth;
 	private $ViewYear;
@@ -11,11 +45,21 @@ class Calendar extends Panel
 	private $Month;
 	private $Year;
 	private $Format;
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Calendar
+	 *	<code> $cal = new Calendar(0, 0, 80, 24, 1000000);</code>
+	 *
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @param integer $timestampTime The selected date, given in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
+	 * @return Calendar
+	 */
 	function Calendar($left=0, $top=0, $width=215, $height=200, $timestampTime=null)
 	{
 		parent::Panel($left, $top, $width, $height);
-		//$this->SelectFix = true;
 		$this->Border = '1px solid #000000';
 		$this->BackColor = '#FFFFCC';
 		$daysOfWeek = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
@@ -44,37 +88,52 @@ class Calendar extends Panel
 			}
 		$this->SetTimestamp($timestampTime);
 	}
-
+	/**
+	 * Returns the month that is currently being viewed, which is not necessarily the same as the one that is selected. Returned as an integer from 0 to 11.
+	 * @return integer
+	 */
 	function GetViewMonth()
 	{
 		return $this->ViewMonth;
 	}
-
-	function SetViewMonth($newViewMonth)
+	/**
+	 * Sets the month that is currently being viewed, which is not necessarily the same as the one that is selected. Must be an integer from 0 to 11.
+	 * @param integer $viewMonth
+	 */
+	function SetViewMonth($viewMonth)
 	{
-		$this->ViewMonth = $newViewMonth;
+		$this->ViewMonth = $viewMonth;
 		$this->UpdateClient();
 	}
-
+	/**
+	 * Returns the year that is currently being viewed, which is not necessarily the same as the one that is selected.
+	 * @return integer
+	 */
 	function GetViewYear()
 	{
 		return $this->ViewYear;
 	}
-
-	function SetViewYear($newViewYear)
+	/**
+	 * Sets the year that is currently being viewed, which is not necessarily the same as the one that is selected.
+	 * @param integer $viewYear
+	 */
+	function SetViewYear($viewYear)
 	{
-		$this->ViewYear = $newViewYear;
+		$this->ViewYear = $viewYear;
 		$this->UpdateClient();
 	}
-
+	/**
+	 * Returns the selected date
+	 * @return integer
+	 */
 	function GetDate()
 	{
 		return $this->Date;
 	}
 
-	function SetDate($newDate)
+	function SetDate($date)
 	{
-		$this->Date = $newDate;
+		$this->Date = $date;
 		$this->UpdateClient();
 	}
 
@@ -85,7 +144,7 @@ class Calendar extends Panel
 
 	function SetMonth($newMonth)
 	{
-		$this->Month = $newMonth;
+		$this->Month = $this->ViewMonth = $newMonth;
 		$this->UpdateClient();
 	}
 
@@ -96,7 +155,7 @@ class Calendar extends Panel
 
 	function SetYear($newYear)
 	{
-		$this->Year = $newYear;
+		$this->Year = $this->ViewYear = $newYear;
 		$this->UpdateClient();
 	}
 	
@@ -115,7 +174,7 @@ class Calendar extends Panel
 		return mktime(0, 0, 0, $this->Month+1, $this->Date, $this->Year);
 	}
 
-	function SetTimestamp($timestamp)
+	function SetTimestamp($timestamp=null)
 	{
 		if($timestamp==null)
 			$timestamp = date('U');
@@ -129,40 +188,33 @@ class Calendar extends Panel
 	function GetFullDate()
 	{
 		return date($this->GetFormat(), $this->GetTimestamp());
-		//$timestamp = $this->GetTimestamp();
-		//$date = getdate($timestamp);
-		//return $date['weekday'].', '.$date['month'].' '.$date['mday'].', '.$date['year'];
 	}
-
+	/**
+	 * @ignore
+	 */
     function SetWidth($width)
     {
         parent::SetWidth($width);
         if($this->DateDisplay)
         {
             $this->DateDisplay->SetWidth($width);
-            $this->Controls->Item[2]->SetLeft($width - 25);
-            $this->Controls->Item[4]->SetLeft($width - 50);
+            $this->Controls->Elements[2]->SetLeft($width - 25);
+            $this->Controls->Elements[4]->SetLeft($width - 50);
         }
     }
-                   /*
-    function SetHeight($height)
-    {
-        parent::SetHeight($height);
-    }                */
-
+	/**
+	 * @ignore
+	 */
 	function UpdateClient()
 	{
-		//QueueClientFunction($this, "ShowCalendar", "'$this->Id'", $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year);
 		QueueClientFunction($this, 'ShowCalendar', array('\''.$this->Id.'\'', $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
-		/*if($this->HasShown())
-			AddScript('ShowCalendar("' . $this->Id . '", ' . $this->ViewMonth . ', ' . $this->ViewYear . ', ' .
-				$this->Date . ', ' . $this->Month . ', ' . $this->Year . ');'/*, Priority::High);*/
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/".(GetBrowser() == "ie"?"IE":"Mozilla")."CalendarScript.js");
 		AddNolohScriptSrc('Calendar.js', true);
 		$this->UpdateClient();
 	}

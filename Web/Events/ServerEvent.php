@@ -4,6 +4,8 @@
  */
 
 /**
+ * ServerEvent class
+ *
  * A ServerEvent is a kind of Event that is executed on the server. This is probably one of the most-used classes in an application.
  * They are capable of calling a function on a particular object with particular parameters, or alternatively, a static function of
  * a class with particular parameters.

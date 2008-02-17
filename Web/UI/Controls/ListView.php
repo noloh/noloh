@@ -116,10 +116,10 @@ class ListView extends Panel
 		{
 			for($i=0;$i<$tmpSubItemCount && $i < $tmpColCount;++$i)
 			{
-				if($listViewItem->SubItems->Item[$i] !== null)
+				if($listViewItem->SubItems->Elements[$i] !== null)
 				{
-					$listViewItem->SubItems->Item[$i]->SetLeft($this->Columns->Item[$i]->GetLeft());
-					$listViewItem->SubItems->Item[$i]->SetWidth($this->Columns->Item[$i]->GetWidth());
+					$listViewItem->SubItems->Elements[$i]->SetLeft($this->Columns->Elements[$i]->GetLeft());
+					$listViewItem->SubItems->Elements[$i]->SetWidth($this->Columns->Elements[$i]->GetWidth());
 				}
 			}
 		}
@@ -178,7 +178,7 @@ class ListView extends Panel
 		$clientArray = 'Array(';
 		foreach($tmpArray as $key => $val)
 		{
-			$tmpNewArray[$key] = &$this->ListViewItems->Item[$key];
+			$tmpNewArray[$key] = &$this->ListViewItems->Elements[$key];
 			$clientArray .= '\'' . $tmpNewArray[$key]->Id .'\',';
 		}
 		$clientArray = rtrim($clientArray, ',') . ')';

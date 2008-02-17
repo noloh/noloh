@@ -66,7 +66,7 @@ function SetGlobal($name, $value)
 */
 function Alert($msg)
 {
-	AddScript('alert(\'' . str_replace(array("\n","\r"),array('\n','\r'),$msg) . '\')');
+	AddScript('alert("' . str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$msg) . '")');
 }
 /**
 * Adds Javascript code to be run immediately on the client.<br>
@@ -171,7 +171,7 @@ function &GetComponentById($id)
 */
 function isArray($x)
 {
-   return (bool)($x instanceof ArrayList || is_array($x) || $x instanceof ArrayObject);
+	return $x instanceof ArrayList || is_array($x) || $x instanceof ArrayObject;
 }
 /**
 * Determines the width and height in pixels of a string
@@ -188,9 +188,9 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
 	{
 		$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf', 
 			$str);
-		$retArray[0] = $bbox[4]-$bbox[6];
+		$retArray[0] = $bbox[4]-$bbox[6] + 1;
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
-			$retArray[1] = $bbox[1]-$bbox[7] + 7;
+			$retArray[1] = $bbox[1]-$bbox[7] + 5;
 	}
 	elseif($height == System::Auto || $height == System::AutoHtmlTrim)
 	{
@@ -205,18 +205,24 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
 			{
 				$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf', 
 					$nline.$word);
-				if($bbox[4]-$bbox[6] > $width)
+				if($bbox[4]-$bbox[6]+1 > $width)
 				{
-					$ntext .= $nline . "\n";
-					$nline = $word;
+					if($nline == '')
+						$ntext .= $word . "\n";
+					else 
+					{
+						$ntext .= $nline . "\n";
+						$nline = $word;
+					}
 				}
 				else 
 					$nline .= $word.' ';
 			}
 		}
+		$ntext .= $nline;
 		$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf', 
-			$ntext==null?$str:$ntext);
-		$retArray[1] = $bbox[1]-$bbox[7] + 7;
+			$ntext==''?$str:$ntext);
+		$retArray[1] = $bbox[1]-$bbox[7] + 5;
 	}
 	return $retArray;
 }

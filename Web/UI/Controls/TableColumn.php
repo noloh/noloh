@@ -22,14 +22,14 @@ class TableColumn extends Panel
 	public function GetControl()
 	{
 		if($this->Controls->Count() > 0)
-			return $this->Controls->Item[0];
+			return $this->Controls->Elements[0];
 		return null;
 	}
 	public function SetControl($object=null)
 	{
 		if($object != null)
 			if($this->Controls->Count() > 0)
-				$this->Controls->Item[0] = $object;
+				$this->Controls->Elements[0] = $object;
 			else
 				$this->Controls->Add($object);
 	}

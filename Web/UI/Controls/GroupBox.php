@@ -59,16 +59,16 @@ class GroupBox extends Guardian
 		$ControlCount = $this->Controls->Count();
 		for($i=0; $i<$ControlCount; $i++)
 		{
-			if($this->Controls->Item[$i]->Overlap === false)
+			if($this->Controls->Elements[$i]->Overlap === false)
 				for($j=0; $j<$i; $j++)
 				{
-					if($this->Controls->Item[$i]->Left >= $this->Controls->Item[$j]->Left &&
-					 $this->Controls->Item[$i]->Left < $this->Controls->Item[$j]->Left + $this->Controls->Item[$j]->Width &&
-					 $this->Controls->Item[$i]->Top >= $this->Controls->Item[$j]->Top &&
-					 $this->Controls->Item[$i]->Top < $this->Controls->Item[$j]->Top + $this->Controls->Item[$j]->Height)
-					 	$this->Controls->Item[$i]->Left = $this->Controls->Item[$j]->Left + $this->Controls->Item[$j]->Width;
+					if($this->Controls->Elements[$i]->Left >= $this->Controls->Elements[$j]->Left &&
+					 $this->Controls->Elements[$i]->Left < $this->Controls->Elements[$j]->Left + $this->Controls->Elements[$j]->Width &&
+					 $this->Controls->Elements[$i]->Top >= $this->Controls->Elements[$j]->Top &&
+					 $this->Controls->Elements[$i]->Top < $this->Controls->Elements[$j]->Top + $this->Controls->Elements[$j]->Height)
+					 	$this->Controls->Elements[$i]->Left = $this->Controls->Elements[$j]->Left + $this->Controls->Elements[$j]->Width;
 				}
-				$this->Controls->Item[$i]->Show($IndentLevel+1);
+				$this->Controls->Elements[$i]->Show($IndentLevel+1);
 		}
 	}
 }

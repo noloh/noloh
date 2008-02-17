@@ -2,17 +2,20 @@
 /**
  * @package Web.UI.Controls
  */	
-class Form extends Guardian 
+class Form extends Control 
 {
-	
 	const Post = 'POST', Get='GET';
+	
+	public $Controls;
 	private $Action;
 	private $Method;
 	private $EncType;
 	
-	function Form($action = '', $left = 0, $top = 0, $width = 600, $height = 600, $method = 'POST' )  
+	function Form($action = '', $left = 0, $top = 0, $width = 600, $height = 600, $method = 'POST')  
 	{
-		parent::Guardian($left, $top, $width, $height);
+		parent::Control($left, $top, $width, $height);
+		$this->Controls = new ArrayList();
+		$this->Controls->ParentId = $this->Id;
 		$this->Method = $method;
 		$this->Action = $action;
 	}

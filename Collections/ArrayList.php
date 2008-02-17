@@ -60,20 +60,20 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 * The underlying array of the ArrayList.
 	 * @var array
 	 */ 
-	public $Item;
+	public $Elements;
 	/**
-	 * The Id of the Component that will represent the Parent of the items to be added.
+	 * The Id of the Component that will represent the Parent of the elements to be added.
 	 * @var string
 	 */ 
 	public $ParentId;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends ArrayList.
-	 * @param array An array representing the initial items. Note that the Parents of these items will not be changed.
+	 * @param array An array representing the initial elements. Note that the Parents of these elements will not be changed.
 	 */ 
 	function ArrayList($elements=array())
 	{
-		$this->Item = $elements;
+		$this->Elements = $elements;
 	}
 	/**
 	 * @ignore
@@ -95,9 +95,9 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	{
 		$this->PreAdd($element);
 		if($setsByReference)
-			$this->Item[] = &$element;
+			$this->Elements[] = &$element;
 		else 
-			$this->Item[] = $element;
+			$this->Elements[] = $element;
 		return $element;
 	}
 	/**
@@ -145,14 +145,14 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function Insert($element, $index)
 	{
-		$oldItems = $this->Item;
-		if($this->ParentId != null && $element instanceof Component && isset($oldItems[$index]) && $oldItems[$index] instanceof Component)
-			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldItems[$index]->Id;
+		$oldElements = $this->Elements;
+		if($this->ParentId != null && $element instanceof Component && isset($oldElements[$index]) && $oldElements[$index] instanceof Component)
+			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldElements[$index]->Id;
 		if(is_numeric($index))
 		{
-			$this->Item = array_slice($oldItems, 0, $index);
+			$this->Elements = array_slice($oldElements, 0, $index);
 			$this->Add($element, true, true);
-			$this->Item = array_merge($this->Item, array_slice($oldItems, $index));
+			$this->Elements = array_merge($this->Elements, array_slice($oldElements, $index));
 		}
 		elseif(is_string($index))
 		{
@@ -166,19 +166,19 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	private function InsertIntoStringHelper($element, $index)
 	{
-		if(isset($this->Item[$index]))
-			$this->InsertIntoStringHelper($this->Item[$index], $index . '\'');
-		$this->Item[$index] = &$element;
+		if(isset($this->Elements[$index]))
+			$this->InsertIntoStringHelper($this->Elements[$index], $index . '\'');
+		$this->Elements[$index] = &$element;
 	}
 
     function PositionalInsert($element, $index, $position)
     {
-		$oldItems = $this->Item;
-   		if($this->ParentId != null && $element instanceof Component && isset($oldItems[$position]) && $oldItems[$position] instanceof Component)
-			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldItems[$position]->Id;
-    	$this->Item = array_slice($oldItems, 0, $position);
+		$oldElements = $this->Elements;
+   		if($this->ParentId != null && $element instanceof Component && isset($oldElements[$position]) && $oldElements[$position] instanceof Component)
+			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldElements[$position]->Id;
+    	$this->Elements = array_slice($oldElements, 0, $position);
         $this->Insert($element, $index, true);
-    	$this->Item = array_merge($this->Item, array_slice($oldItems, $position));
+    	$this->Elements = array_merge($this->Elements, array_slice($oldElements, $position));
         return $element;
     }
 	/**
@@ -188,12 +188,12 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function RemoveAt($index)
 	{
-		if(isset($this->Item[$index]) && $this->Item[$index] instanceof Component && $this->Item[$index]->ParentId == $this->ParentId)
-			$this->Item[$index]->SetParentId(null);
+		if(isset($this->Elements[$index]) && $this->Elements[$index] instanceof Component && $this->Elements[$index]->ParentId == $this->ParentId)
+			$this->Elements[$index]->SetParentId(null);
 		if(is_numeric($index))
-			array_splice($this->Item, $index, 1);
+			array_splice($this->Elements, $index, 1);
 		else 
-			unset($this->Item[$index]);
+			unset($this->Elements[$index]);
 	}
 	/**
 	 * Removes the first occurrence of a particular element from the ArrayList.
@@ -220,7 +220,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function IndexOf($element)
 	{
-		$idx = array_search($element, $this->Item, true);
+		$idx = array_search($element, $this->Elements, true);
 		return $idx===false ? -1 : $idx;
 	}
 	/**
@@ -228,10 +228,10 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function Clear()
 	{
-		foreach($this->Item as $val)
+		foreach($this->Elements as $val)
 			if($val instanceof Component && $val->GetParentId()==$this->ParentId)
 				$val->SetParentId(null);
-		$this->Item = array();
+		$this->Elements = array();
 	}
 	/**
 	 * The length of the ArrayList.
@@ -241,42 +241,42 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function Count()
 	{
-		return count($this->Item);
+		return count($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
 	function GetCount()
 	{
-		return count($this->Item);
+		return count($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
 	public function rewind() 
 	{
-		reset($this->Item);
+		reset($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
 	public function current() 
 	{
-		return current($this->Item);
+		return current($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
 	public function key() 
 	{
-		return key($this->Item);
+		return key($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
 	public function next() 
 	{
-		return next($this->Item);
+		return next($this->Elements);
 	}
 	/**
 	 * @ignore
@@ -290,14 +290,14 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function offsetExists($key)
 	{
-		return(array_key_exists($key, $this->Item));
+		return(array_key_exists($key, $this->Elements));
 	}
 	/**
 	 * @ignore
 	 */
 	function offsetGet($index)
 	{
-		return $this->Item[$index];
+		return $this->Elements[$index];
 	}
 	/**
 	 * @ignore
@@ -310,7 +310,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		{
 			$this->PreAdd($val);
 			$this->RemoveAt($index);
-			$this->Item[$index] = &$val;
+			$this->Elements[$index] = &$val;
 		}
 	}
 	/**

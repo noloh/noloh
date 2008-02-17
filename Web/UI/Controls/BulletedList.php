@@ -34,7 +34,7 @@ class BulletedList extends Control
 		$ItemsCount = $this->ListItems->Count();
 		for($i = 0; $i < $ItemsCount; $i++)
 		{
-			$IthItem = &$this->ListItems->Item[$i];
+			$IthItem = &$this->ListItems->Elements[$i];
 			if(!is_object($IthItem))
 				$dispStr .= str_repeat("  ", $IndentLevel+1) . "<LI>" . $IthItem . "</LI>";
 			elseif(get_class($IthItem) == "BulletedList")

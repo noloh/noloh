@@ -43,17 +43,17 @@ class ComboBox extends ListControl
 	{
 		return ($this->SelectedIndex === null)?-1:$this->SelectedIndex;
 	}
-	function SetSelectedIndex($newIndex)
+	function SetSelectedIndex($index)
 	{
-		if($this->GetSelectedIndex() != $newIndex)
+		if($this->GetSelectedIndex() != $index)
 		{
-			$this->SelectedIndex = $newIndex;
-			parent::SetSelectedIndex($newIndex);
+			$this->SelectedIndex = $index;
+			parent::SetSelectedIndex($index);
 		}
 	}
 	function GetSelectedItem()
 	{
-		return $this->SelectedIndex != -1 ? $this->Items->Item[$this->SelectedIndex] : null;
+		return $this->SelectedIndex != -1 ? $this->Items->Elements[$this->SelectedIndex] : null;
 	}
 	function GetEventString($eventTypeAsString)
 	{

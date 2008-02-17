@@ -46,6 +46,7 @@ function _NInit(loadLblId, loadImgId)
 	document.body.NOLOHPostingBack = false;
 	NOLOHCatchers = Array();
 	window.onscroll = BodyScrollState;
+	window.onresize = BodySizeState;
 	_NLoadLbl = loadLblId;
 	_NLoadImg = loadImgId;
 	var Graveyard = document.createElement("DIV");
@@ -349,6 +350,12 @@ function BodyScrollState()
 	var loadLbl = document.getElementById(_NLoadLbl);
 	loadLbl.style.left = X+30+"px";
 	loadLbl.style.top = Y+3+"px";
+}
+
+function BodySizeState()
+{
+	ChangeAndSave("N1", "Width", document.documentElement.clientWidth);
+	ChangeAndSave("N1", "Height", document.documentElement.clientHeight);
 }
 
 function AddOptionAndSave(id, option)

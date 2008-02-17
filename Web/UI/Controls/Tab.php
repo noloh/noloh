@@ -13,25 +13,24 @@ class Tab extends Panel
 		$this->LeftImage = new Image($leftImageSrc);
 		$this->MainImage = new Image($mainImageSrc);
 		$this->RightImage = new Image($rightImageSrc);
-		parent::Panel(0,0,$this->LeftImage->Width + $this->MainImage->Width + $this->RightImage->Width, $this->LeftImage->Height);
-		
+		parent::Panel(0,0,$this->LeftImage->Width + $this->MainImage->Width + $this->RightImage->Width, $this->LeftImage->Height);		
 //		$this->SetWidth($this->LeftImage->Width + $this->MainImage->Width + $this->RightImage->Width);
 //		$this->SetHeight($this->LeftImage->Height);
 		$this->Controls->AddRange($this->LeftImage, $this->MainImage, $this->RightImage);	
 	}	
-	function SetWidth($whatWidth)
+	function SetWidth($width)
 	{
-		parent::SetWidth($whatWidth);	
-		$this->MainImage->Width = $whatWidth - $this->LeftImage->Width - $this->RightImage->Width;
+		parent::SetWidth($width);	
+		$this->MainImage->Width = $width - $this->LeftImage->Width - $this->RightImage->Width;
 		$this->MainImage->Left = $this->LeftImage->Right;
 		$this->RightImage->Left = $this->MainImage->Right;
 	}
-	function SetHeight($whatHeight)
+	function SetHeight($height)
 	{
-		parent::SetHeight($whatHeight);
-		$this->LeftImage->Height = $whatHeight;
-		$this->MainImage->Height = $whatHeight;
-		$this->RightImage->Height = $whatHeight;
+		parent::SetHeight($height);
+		$this->LeftImage->Height = $height;
+		$this->MainImage->Height = $height;
+		$this->RightImage->Height = $height;
 	}
 }
 ?>

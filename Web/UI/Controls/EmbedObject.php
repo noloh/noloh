@@ -98,7 +98,7 @@ class EmbedObject extends Control
 			$tmpStr .= "<EMBED type=\"$this->Type\" src=\"$this->Data\" width=\"$this->Width\" height=\"$this->Height\"></EMBED>";	
 //		$InnerEmbedObjectsCount = $this->InnerEmbedObjects->Count();
 //		for($i=0; $i < $InnerEmbedObjectsCount; $i++)
-//			$this->InnerEmbedObjects->Item[$i]->Show($this->IndentLevel + 1);	
+//			$this->InnerEmbedObjects->Elements[$i]->Show($this->IndentLevel + 1);	
 		//print(str_repeat("  ", $IndentLevel) . "</OBJECT></DIV>\n");
 		
 		$tmpStr .= '</OBJECT>';

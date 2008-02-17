@@ -44,7 +44,7 @@ class TabControl extends Panel
 	{
 		return $this->SelectedIndex;
 	}
-	public function GetSelectedTab()	{return $this->TabPages->Item[$this->SelectedIndex];}
+	public function GetSelectedTab()	{return $this->TabPages->Elements[$this->SelectedIndex];}
 	public function SetSelectedTab($tabPage)
 	{
 		if(is_string($tabPage))
@@ -59,9 +59,9 @@ class TabControl extends Panel
 			$this->SelectedIndex = $selectedIndex;
 			
 			//Need to address the following line, currenty it breaks TabControl - Asher
-			//$this->TabControlBar->Controls->Item[$whatSelectedIndex]->SetSelected(true);
+			//$this->TabControlBar->Controls->Elements[$whatSelectedIndex]->SetSelected(true);
 			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent
-			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Item[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Item[$selectedIndex]->Id}'", "0"), Priority::Low);
+			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Elements[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Elements[$selectedIndex]->Id}'", "0"), Priority::Low);
 			if(!$this->Change->Blank())
 				$this->Change->Exec();
 		}
@@ -76,7 +76,7 @@ class TabControl extends Panel
 			$this->TabControlBar->Height = $temp->Height;
 			$this->TabPagesPanel->Height = ($this->Height - $this->TabControlBar->Height);
 		}
-		$temp->Left = (($tmpCount = $this->TabControlBar->Controls->Count()) > 0)?$this->TabControlBar->Controls->Item[$tmpCount -1]->Right:0;
+		$temp->Left = (($tmpCount = $this->TabControlBar->Controls->Count()) > 0)?$this->TabControlBar->Controls->Elements[$tmpCount -1]->Right:0;
 		$this->TabControlBar->Controls->Add($temp);
 		$this->TabPagesPanel->Controls->Add($tabPage, true, true);
 		if($this->TabPages->Count() == 1)

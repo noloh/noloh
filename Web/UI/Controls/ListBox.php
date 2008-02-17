@@ -87,7 +87,7 @@ class ListBox extends ListControl
 		$selectedIndices = $this->GetSelectedIndices();
 		//Alert(count($this->SelectedIndices) . ' is the number of selected indices');
 		foreach($selectedIndices as $idx)
-			$selectedArray[] = $this->Items->Item[$idx]->Value;
+			$selectedArray[] = $this->Items->Elements[$idx]->Value;
 		return $selectedArray;
 	}
 	/**

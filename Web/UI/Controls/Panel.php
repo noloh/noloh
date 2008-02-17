@@ -2,19 +2,60 @@
 /**
  * @package Web.UI.Controls
  */
-class Panel extends Guardian
+class Panel extends Control
 {
+	/**
+	* Controls, An ArrayList to hold this Control's Controls
+	* @var ArrayList
+	*/
+	public $Controls;
+	/**
+	 * ScrollLeft of the component
+	 * @var integer
+	 */
+	private $ScrollLeft;
+	/**
+	 * ScrollTop of the component
+	 * @var integer
+	 */
+	private $ScrollTop;
 	private $Scrolling;
 	public $SelectFix;
 	//public $DropShadow;
 	
 	function Panel($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
 	{
-		parent::Guardian($left, $top, $width, $height, $implicitObject);
+		parent::Control($left, $top, $width, $height);
+		if($implicitObject == null)
+			$this->Controls = new ArrayList();
+		elseif($implicitObject == $this)
+			$this->Controls = new ImplicitArrayList();
+		else 
+			$this->Controls = new ImplicitArrayList($implicitObject);
+		$this->Controls->ParentId = $this->Id;
 		$this->SetScrolling(($width === null || $height === null)?null:false);
 		$this->SetCSSClass();
-		//$this->SetScrolling(false);
 	}
+	function GetScroll()							{return $this->GetEvent('Scroll');}
+	function SetScroll($scroll)						{$this->SetEvent($scroll, 'Scroll');}
+	function GetScrollLeft()
+	{
+		return $this->ScrollLeft;
+	}
+    function SetScrollLeft($scrollLeft)
+    {
+        NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
+        $this->ScrollLeft = $scrollLeft;
+    }
+    function GetScrollTop()
+    {
+    	return $this->ScrollTop;
+    }
+    function SetScrollTop($scrollTop)
+    {
+        NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        $this->ScrollTop = $scrollTop;
+    }
 	function SetCSSClass($cssClass=null)
 	{
 		parent::SetCSSClass('NPanel '.$cssClass);

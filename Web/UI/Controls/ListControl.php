@@ -62,7 +62,7 @@ abstract class ListControl extends Control
 	{
 		$selectedIndex = $this->SelectedIndex;
 		if($selectedIndex >= 0)
-			return $this->Items->Item[$selectedIndex]->Value;
+			return $this->Items->Elements[$selectedIndex]->Value;
 		return null;
 	}
 	/**
@@ -77,7 +77,7 @@ abstract class ListControl extends Control
 	{
 		$itemCount = $this->Items->Count();
 		for($i=0; $i<$itemCount; $i++)
-			if($this->Items->Item[$i]->Value == $value)
+			if($this->Items->Elements[$i]->Value == $value)
 			{
 				$this->SetSelectedIndex($i);
 				return $i;
@@ -94,7 +94,7 @@ abstract class ListControl extends Control
 	{
 		$selectedIndex = $this->SelectedIndex;
 		if($selectedIndex >= 0)
-			return $this->Items->Item[$selectedIndex]->Text;
+			return $this->Items->Elements[$selectedIndex]->Text;
 		return null;
 	}
 	/**
@@ -109,7 +109,7 @@ abstract class ListControl extends Control
 	{
 		$itemCount = $this->Items->Count();
 		for($i=0; $i<$itemCount; $i++)
-			if($this->Items->Item[$i]->Text == $text)
+			if($this->Items->Elements[$i]->Text == $text)
 			{
 				$this->SetSelectedIndex($i);
 				return $i;

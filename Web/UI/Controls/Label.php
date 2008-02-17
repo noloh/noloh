@@ -234,6 +234,7 @@ class Label extends Control
 			$this->CachedHeight = $widthHeight[1];
 			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
+		unset($_SESSION['NOLOHFunctionQueue'][$this->Id]['_NAWH']);
 	}
 	
 	function Show()

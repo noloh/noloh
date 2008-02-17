@@ -34,11 +34,8 @@ class WebPage extends Component
 	function WebPage($title = 'Unititled Document', $keywords = '', $description = '')
 	{
 		parent::Component();
-		if(isset($_GET['NWidth']))
-		{
-			$this->Width = $_GET['NWidth'];
-			$this->Height = $_GET['NHeight'];
-		}
+		$this->Width = $GLOBALS['_NWidth'];
+		$this->Height = $GLOBALS['_NHeight'];
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->SetTitle($title);
@@ -79,7 +76,7 @@ class WebPage extends Component
 	
 	function AddCSSFile($path)
 	{
-		$initialProperties = "'id','".hash('md5',$path)."','rel','stylesheet','type','text/css','href','$path'";
+		$initialProperties = '\'id\',\''.hash('md5',$path).'\',\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
 		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead');
 		$this->CSSFiles->Add($path, true, true);
 	}
@@ -90,7 +87,7 @@ class WebPage extends Component
 		{
 			$path = $this->CSSFiles[$index];
 			$this->CSSFiles->RemoveAt($index, true);
-			AddScript("_NRemStyle('".hash('md5',$path)."','".NOLOHConfig::GetNOLOHPath()."')");
+			AddScript('_NRemStyle(\''.hash('md5',$path).'\',\''.NOLOHConfig::GetNOLOHPath().'\')');
 		}
 	}
 	
@@ -117,9 +114,21 @@ class WebPage extends Component
 		return $this->Width;
 	}
 	
+	function SetWidth($width)
+	{
+		$this->Width = $width;
+		QueueClientFunction($this, 'resizeTo', array($this->Width, $this->Height));
+	}
+	
 	function GetHeight()
 	{
 		return $this->Height;
+	}
+	
+	function SetHeight($height)
+	{
+		$this->Height = $height;
+		QueueClientFunction($this, 'resizeTo', array($this->Width, $this->Height));
 	}
 	
 	function GetBackColor()
@@ -127,22 +136,20 @@ class WebPage extends Component
 		return $this->BackColor;
 	}
 	
-	function SetBackColor($newBackColor)
+	function SetBackColor($backColor)
 	{
 		$this->BackColor = $newBackColor;
-		QueueClientFunction($this, "document.bgColor='$newBackColor';void", array(0));
+		QueueClientFunction($this, 'document.bgColor=\''.$backColor.'\';void', array(0));
 	}
 	
 	function SetScrollLeft($scrollLeft)
 	{
-		//NolohInternal::SetProperty("scrollLeft", $scrollLeft, $this);
-		QueueClientFunction($this, "document.documentElement.scrollLeft=$scrollLeft;BodyScrollState", array());
+		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';BodyScrollState', array());
 	}
 	
 	function SetScrollTop($scrollTop)
 	{
-		QueueClientFunction($this, "document.documentElement.scrollTop=$scrollTop;BodyScrollState", array());
-		//NolohInternal::SetProperty("scrollTop", $scrollTop, $this);
+		QueueClientFunction($this, 'document.documentElement.scrollTop='.$scrollTop.';BodyScrollState', array());
 	}
 
     function GetUnload()
@@ -174,7 +181,6 @@ class WebPage extends Component
 	function UpdateEvent($eventType)
 	{
         QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEventString($eventType).'\''));
-		//NolohInternal::SetProperty($eventType, array($eventType, null), 'window');
 	}
 
 	function GetEventString($eventType)
@@ -248,22 +254,6 @@ class WebPage extends Component
   script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
                + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
   head.appendChild(script);"
-
-  /*"
-  var head = document.getElementById('NHead');
-  var script = document.createElement('SCRIPT');
-  script.setAttribute('id', 'InitScript');
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src',(document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
-  script.onreadystatechange = function()
-  {
-    var initScript = document.getElementById('InitScript');
-  	if(initScript.readyState == 'loaded');
-  		alert(initScript.outerHTML);
-  }
-  head.appendChild(script);
-  "*/
   )."
 </SCRIPT>");
 	}
@@ -271,57 +261,11 @@ class WebPage extends Component
 	function Show()
 	{
 		parent::Show();
-        //Alert('PLEASE NOTE: You are using the Dev build of NOLOH and RadioButtons and CheckBoxes are in the middle of being completely overhauled. Check back later or use the Stable build, otherwise unexpected behaivor may occur. -Phill.');
-		//Alert($this->Width);
-		/*if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false)
-			AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/IE6clientviewstate.js");
-		else*/
-			//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
-			//	(GetBrowser() == "ie" ? "IEclientviewstate.js" : "Mozillaclientviewstate.js"));
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
-		//	(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
-		//if(GetBrowser()=='sa')
-		//	AddNolohScriptSrc('/Standard/SAClientViewState.js');
-		//else
 		AddNolohScriptSrc('ClientViewState.js', true);
 		AddNolohScriptSrc('GeneralFunctions.js');
 		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')
-			AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
-		//elseif(!isset($_POST['NoSkeleton']))
-		//	AddScript("if(!_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')) {return;}", Priority::High);
-		AddScript("SaveControl('$this->Id')");
-		/*
-		parent::Show();
-		print(stripslashes("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n<HTML>\n<!-- Powered by NOLOH Alpha3 -->\n<!--      www.noloh.com      -->\n<HEAD id='NHead'>\n  <META HTTP-EQUIV='Pragma' CONTENT='no-cache'>\n  <TITLE>$this->Title</TITLE>\n"));
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
-			(GetBrowser() == "ie" ? "IEclientviewstate.js" : "Mozillaclientviewstate.js"));
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/generalfunctions.js");
-		AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/" . 
-			(GetBrowser() == "ie" ? "IEShift.js" : "MozillaShift.js"));
-		$ScriptTags = "<SCRIPT type='text/javascript' src='".$_SERVER["PHP_SELF"].(GetBrowser()=="op"?"?":"")."'></SCRIPT>";
-		if(isset($_SESSION['UnlockNOLOHDebug']) && $_SESSION['UnlockNOLOHDebug'] == 'mddevmddev')
-		{
-			print("  <SCRIPT type='text/javascript'>\n".$_SESSION["NOLOHSrcScript"]."\n  </SCRIPT>\n");
-			$_SESSION['NOLOHSrcScript'] = "";
-		}
-		print("  <NOSCRIPT><META http-equiv='refresh' content='0;url=".(empty($this->AlternativePath)?
-			"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html":"$this->AlternativePath")."'></NOSCRIPT>\n</HEAD>\n<BODY ID='$this->Id'>\n");
-		print("  <DIV id='NOLOHCSSFiles'></DIV>\n");
-		AddScript("_NInit('{$this->LoadLbl->Id}','{$this->LoadImg->Id}')", Priority::High);
-		AddScript("SaveControl('$this->Id')");
-		print("</BODY>\n");
-		if(isset($_SESSION['UnlockNOLOHDebug']) && $_SESSION['UnlockNOLOHDebug'] == 'mddevmddev')
-		{
-			NolohInternal::ShowQueue();
-			NolohInternal::FunctionQueue();
-			NolohInternal::SetPropertyQueue();
-			print("<SCRIPT type='text/javascript'>".$_SESSION["NOLOHSrcScript"].$_SESSION['NOLOHScript'][0].$_SESSION['NOLOHScript'][1].$_SESSION['NOLOHScript'][2].";</SCRIPT>\n$ScriptTags\n");
-			$_SESSION['NOLOHSrcScript'] = "";
-			$_SESSION['NOLOHScript'] = array("", "", "");
-		}
-		print("</HTML>\n$ScriptTags\n");
-		*/
+			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);
+		AddScript('SaveControl(\''.$this->Id.'\')');
 	}
 
 	function SearchEngineShow($tokenLinks)

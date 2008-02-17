@@ -720,12 +720,11 @@ class Control extends Component
 				return;
 			}
 	}
-	
 	private function ChangeShiftType($arrayIndex, $newType)
 	{
 		$tmp = $this->Shifts[$arrayIndex];
 		$tmp[1] = $newType;
-		$this->Shifts->Item[$arrayIndex] = $tmp;
+		$this->Shifts->Elements[$arrayIndex] = $tmp;
 		QueueClientFunction($this, 'ChangeShiftType', array("'$this->Id'", $arrayIndex, $newType));
 	}
 

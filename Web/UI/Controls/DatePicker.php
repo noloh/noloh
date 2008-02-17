@@ -7,7 +7,7 @@
 /**
  * DatePicker class
  *
- * DatePicker is a Panel with a Calendar that can be pulled up and down via a drop-down, and keeps track of the date selected.
+ * DatePicker is a Panel with a {@see Calendar} that can be pulled up and down via a drop-down, and keeps track of the date selected.
  *
  * For example:
  * <code>
@@ -38,7 +38,6 @@ class DatePicker extends Panel
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends DatePicker
- 	* Example
  	*	<code> $tempVar = new DatePicker(15, 15, 219, 21);</code>
 	* @param integer $left
 	* @param integer $top
@@ -77,7 +76,6 @@ class DatePicker extends Panel
 	function GetFullDate()
 	{
 		return $this->Calendar->GetFullDate();
-		//return date($this->Format, $this->GetTimestamp());
 	}
 	/**
 	 * Gets the currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT

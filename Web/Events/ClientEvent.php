@@ -1,10 +1,11 @@
 <?php
 /**
  * @package Web.Events
- * ClientEvent class file.
  */
 
 /**
+ * ClientEvent class
+ *
  * A ClientEvent is a kind of Event that is executed on the client without communicating with the server.<br>
  * As a ClientEvent is more responsive than a {@see ServerEvent}, they are useful for running events that make the simplest changes<br>
  * to the visual aspects of an application. In order to enable client viewstate with your own ClientEvents, however, requires calling<br>

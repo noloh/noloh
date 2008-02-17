@@ -119,7 +119,7 @@ class DataConnection extends Object
 			$resultOption = $resultType;
 			$sql = $args[1];
 		}
-		$dbCmd = new PGSqlCommand($this, $sql);
+		$dbCmd = new DataCommand($this, $sql);
 		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 		$dbCmd->Connection->Close();
 		return $tmpReturn;

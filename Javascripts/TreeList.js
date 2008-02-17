@@ -4,22 +4,35 @@ function InitTreeList(id)
 	tree.SelectedElements = Array();
 	tree.SelectedNodes = "";
 }
-
 function SelectNode(nodeId, elementId, event)
 {
 	var node = document.getElementById(nodeId);
 	var tree = document.getElementById(node.ListId);
-	/*if(event.shiftKey)
-	{
-		
-	}
-	else */
+
+	if (document.selection && document.selection.createRange().text != "")
+		document.selection.empty();
+	else if (window.getSelection)
+		window.getSelection().removeAllRanges();
+	
 	if(event.ctrlKey)
 	{
+		var elementsLength = tree.SelectedElements.length;
+		for(var i=0; i<elementsLength; ++i)
+			if(tree.SelectedElements[i] == elementId)
+			{
+				tree.SelectedElements.splice(i, 1);
+				tree.SelectedNodes = tree.SelectedNodes.replace(i==0
+					? (elementsLength==1?nodeId:(nodeId+"~d2~"))
+					: ("~d2~"+nodeId), "");
+				_NSave(tree.id, "_NSelectedNodes", tree.SelectedNodes);
+				ChangeAndSave(elementId, "style.background", "transparent");
+				ChangeAndSave(elementId, "style.color", "#000000");
+				return;
+			}
 		tree.SelectedElements.push(elementId);
 		if(tree.SelectedNodes != "")
 			tree.SelectedNodes += "~d2~";
-		tree.SelectedNodes += elementId;
+		tree.SelectedNodes += nodeId;
 	}
 	else
 	{
@@ -35,7 +48,6 @@ function SelectNode(nodeId, elementId, event)
 	ChangeAndSave(elementId, "style.background", "#316AC5");
 	ChangeAndSave(elementId, "style.color", "#FFFFFF");
 }
-
 function PlusMinusChange(panelId, iconId, nodeId)
 {
 	var Node = document.getElementById(nodeId);

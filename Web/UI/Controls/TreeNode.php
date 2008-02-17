@@ -4,18 +4,17 @@
  */
 class TreeNode extends Panel
 {
+	public $TreeNodes;
 	public $PlusMinus;
-	public $Nodes;
-	public $NodeElement;
-	public $NodeItem;
-	public $NodeIcon;
-	public $NodePanel;
-	public $NodeString;
+	public $Icon;
+	public $ChildrenPanel;
+	private $Element;
 	private $LeafSrc;
 	private $CloseSrc;
 	private $OpenSrc;
 	private $ParentNodeId;
 	private $Selected;
+	private $Value;
 	
 	public static function GetDefaultLeafSrc()
 	{
@@ -37,41 +36,23 @@ class TreeNode extends Panel
 		$this->SetLayoutType(1);
 		if(GetBrowser() == 'ie')
 			NolohInternal::SetProperty('style.marginTop','6px',$this);
-		$this->PlusMinus = new PlusMinusSwitch(0, 0);
-		$this->PlusMinus->SetLayoutType(1);
+		$this->PlusMinus = new PlusMinusSwitch(0, 3);
 		$this->PlusMinus->SetClientVisible(false);
-		if(is_object($element))
-		{
-			if($element instanceof Control)
-				$this->NodeElement = &GetComponentById($element->Id);
-			elseif($element instanceof Item)
-			{
-				$this->NodeItem = &$element;
-				$this->NodeElement = new Label($element->Text, 0, 0, System::Auto, 18);
-			}
-		}
-		else
-		{
-			$this->NodeString = $element;
-			$this->NodeElement = new Label($element, 0, 0, System::Auto, 15);
-		}
-		$this->NodeElement->SetCursor(Cursor::Hand);
-		$this->NodeElement->SetLeft(40);
-		$this->NodeIcon = new Image(TreeNode::GetDefaultLeafSrc(), 8, 3, 16, 15);
-		$this->NodeIcon->SetLayoutType(1);
-		$this->NodePanel = new Panel(25, 20, null, null, $this);
-		$this->NodePanel->SetScrolling(System::Full);
-		$this->NodePanel->SetLayoutType(2);
-		$this->NodePanel->SetVisible(0);
-		$this->Nodes = &$this->NodePanel->Controls;
-		$this->Nodes->AddFunctionName = 'AddNode';
-		$this->Nodes->InsertFunctionName = 'InsertNode';
-		$this->Nodes->RemoveAtFunctionName = 'RemoveNodeAt';
-		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->NodePanel->Id.'","'.$this->NodeIcon->Id.'","' . $this->Id . '")');
+		$this->SetElement($element);
+		$this->Icon = new Image(TreeNode::GetDefaultLeafSrc(), 17, 0, 16, 15);
+		$this->ChildrenPanel = new Panel(25, 20, null, null, $this);
+		$this->ChildrenPanel->SetScrolling(System::Full);
+		$this->ChildrenPanel->SetLayoutType(2);
+		$this->ChildrenPanel->SetVisible(0);
+		$this->TreeNodes = &$this->ChildrenPanel->Controls;
+		$this->TreeNodes->AddFunctionName = 'AddTreeNode';
+		$this->TreeNodes->InsertFunctionName = 'InsertTreeNode';
+		$this->TreeNodes->RemoveAtFunctionName = 'RemoveTreeNodeAt';
+		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->ChildrenPanel->Id.'","'.$this->Icon->Id.'","' . $this->Id . '")');
 		$this->Controls->Add($this->PlusMinus);
-		$this->Controls->Add($this->NodeElement);
-		$this->Controls->Add($this->NodeIcon);
-		$this->Controls->Add($this->NodePanel);
+		$this->Controls->Add($this->Icon);
+		$this->Controls->Add($this->Element);
+		$this->Controls->Add($this->ChildrenPanel);
 	}
 	private function AddNodeHelper($node, $lastNodeId=null)
 	{
@@ -82,38 +63,38 @@ class TreeNode extends Panel
 			$node->ParentNodeId = $this->Id;
 			$node->TellChildren($this->TreeListId);
 		}
-		if($this->NodePanel->Controls->Count() == 0)
+		if($this->ChildrenPanel->Controls->Count() == 0)
 		{
 			$this->PlusMinus->ClientVisible = true;
-			if($this->NodePanel->ClientVisible === true)
-				$this->NodeIcon->Src = $this->OpenSrc!=null ? $this->OpenSrc : TreeNode::GetDefaultOpenSrc();
+			if($this->ChildrenPanel->ClientVisible === true)
+				$this->Icon->Src = $this->OpenSrc!=null ? $this->OpenSrc : TreeNode::GetDefaultOpenSrc();
 			else 
-				$this->NodeIcon->Src = $this->CloseSrc!=null ? $this->CloseSrc : TreeNode::GetDefaultCloseSrc();
+				$this->Icon->Src = $this->CloseSrc!=null ? $this->CloseSrc : TreeNode::GetDefaultCloseSrc();
 		}
 	}
-	function AddNode(TreeNode $node)
+	function AddTreeNode(TreeNode $node)
 	{
 		$this->AddNodeHelper($node);
-		$this->NodePanel->Controls->Add($node, true, true);
+		$this->ChildrenPanel->Controls->Add($node, true, true);
 		return $node;
 	}
-	function InsertNode(TreeNode $node, $index)
+	function InsertTreeNode(TreeNode $node, $index)
 	{
-		if(isset($this->NodePanel->Controls->Item[$index]))
+		if(isset($this->ChildrenPanel->Controls->Elements[$index]))
 		{
 			$this->AddNodeHelper($node);
-			$this->NodePanel->Controls->Insert($node, $index, true);
+			$this->ChildrenPanel->Controls->Insert($node, $index, true);
 		}
 		else
 		{
 			$this->AddNodeHelper($node);
-			$this->NodePanel->Controls->Add($node, true, true);
+			$this->ChildrenPanel->Controls->Add($node, true, true);
 		}
 		return $node;
 	}
-	function RemoveNodeAt($idx)
+	function RemoveTreeNodeAt($idx)
 	{
-		$this->NodePanel->Controls->Item[$idx]->Remove();
+		$this->ChildrenPanel->Controls->Elements[$idx]->Remove();
 	}
 	function Remove()
 	{
@@ -121,24 +102,24 @@ class TreeNode extends Panel
 		if($this->ParentNodeId != null)
 		{
 			$parentNode = $this->GetParentNode();
-			$parentNode->NodePanel->Controls->Remove($this, true);
-			if($parentNode->NodePanel->Controls->Count() == 0)
+			$parentNode->ChildrenPanel->Controls->Remove($this, true);
+			if($parentNode->ChildrenPanel->Controls->Count() == 0)
 			{
 				$parentNode->PlusMinus->ClientVisible = false;
-				$parentNode->NodeIcon->Src = TreeNode::GetDefaultLeafSrc();
+				$parentNode->Icon->Src = TreeNode::GetDefaultLeafSrc();
 			}
 		}
 		else 
-			$tList->Nodes->Remove($this, true);
+			$tList->TreeNodes->Remove($this, true);
 		$this->ForgetListDeeply();
 	}
 
 	function TellChildren($treeListId)
 	{
-		$nodesCount = $this->Nodes->Count();
+		$nodesCount = $this->TreeNodes->Count();
 		for($i=0; $i<$nodesCount; ++$i)
 		{
-			$node = &$this->Nodes[$i];
+			$node = &$this->TreeNodes[$i];
 			$node->SetTreeListId($treeListId);
 		}
 	}
@@ -146,12 +127,44 @@ class TreeNode extends Panel
 	private function ForgetListDeeply()
 	{
 		$this->SetTreeListId(null);
-		$controlCount = $this->NodePanel->Controls->Count();
-		$item = $this->NodePanel->Controls->Item;
+		$controlCount = $this->ChildrenPanel->Controls->Count();
+		$elements = $this->ChildrenPanel->Controls->Elements;
 		for($i=0; $i<$controlCount; ++$i)
-			$item[$i]->ForgetListDeeply();
+			$elements[$i]->ForgetListDeeply();
 	}
 
+	function GetElement()
+	{
+		return $this->Element;
+	}
+	
+	function SetElement($element)
+	{
+		if(is_object($element))
+		{
+			if($element instanceof Control)
+			{
+				$this->Element = &GetComponentById($element->Id);
+				$this->Element->SetLeft(40);
+				$this->Element->SetTop(-1);
+			}
+			elseif($element instanceof Item)
+			{
+				$this->Value = $element->Value;
+				$this->Element = new Label($element->Text, 40, -1, System::Auto, 18);
+			}
+		}
+		else
+			$this->Element = new Label($element, 40, -1, System::Auto, 18);
+		if(GetBrowser() != 'ie')
+		{
+			$this->Element->CSSMargin = '5px';
+			$this->Element->CSSMarginLeft = '0px';
+		}
+		$this->Element->SetLayoutType(1);
+		$this->Element->SetCursor(Cursor::Hand);
+	}
+	
 	function GetParentNode()
 	{
 		return GetComponentById($this->ParentNodeId);
@@ -159,8 +172,8 @@ class TreeNode extends Panel
 
 	function GetRightBottomChildId()
 	{
-		if($this->NodePanel->Controls->Count() > 0)
-			return $this->NodePanel->Controls->Item[$this->NodePanel->Controls->Count() -1]->GetRightBottomChildId();
+		if($this->ChildrenPanel->Controls->Count() > 0)
+			return $this->ChildrenPanel->Controls->Elements[$this->ChildrenPanel->Controls->Count() -1]->GetRightBottomChildId();
 		else 
 			return $this->Id;
 	}
@@ -168,21 +181,21 @@ class TreeNode extends Panel
 	function GetLegacyLength()
 	{
 		$legacyLength = 0;
-		$nodePanelCount = $this->NodePanel->Controls->Count();
-		for($i=0; $i<$nodePanelCount; $i++)
-			$legacyLength += $this->NodePanel->Controls->Item[$i]->GetLegacyLength();
-		return $legacyLength + $nodePanelCount;
+		$childCount = $this->ChildrenPanel->Controls->Count();
+		for($i=0; $i<$childCount; $i++)
+			$legacyLength += $this->ChildrenPanel->Controls->Elements[$i]->GetLegacyLength();
+		return $legacyLength + $childCount;
 	}
 
 	function Expand($deep = false)
 	{
 		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/minus.gif';
-		$this->NodePanel->ClientVisible = true;
+		$this->ChildrenPanel->ClientVisible = true;
 		if($deep)
 		{
-			$NodeCount = $this->NodePanel->Controls->Count();
-			for($i=0; $i<$NodeCount; $i++)
-				$this->NodePanel->Controls->Item[$i]->Expand(true);
+			$NodeCount = $this->ChildrenPanel->Controls->Count();
+			for($i=0; $i<$NodeCount; ++$i)
+				$this->ChildrenPanel->Controls->Elements[$i]->Expand(true);
 		}
 	}
 	
@@ -195,40 +208,45 @@ class TreeNode extends Panel
 	{
 		$this->TreeListId = $newId;
 		NolohInternal::SetProperty('ListId', $newId, $this);
-		$this->NodeElement->Click['_N'] = new ClientEvent("SelectNode('$this->Id','".$this->NodeElement->Id."',".(GetBrowser()=='ie'?'window.':'').'event);');
+		$this->Element->Click['_N'] = new ClientEvent('SelectNode("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
 	}
 
 	function GetClick()
 	{
-		$click = $this->NodeElement->Click;
+		$click = $this->Element->Click;
 		if(!isset($click['_N']))
 			$click['_N'] = new ClientEvent('');
-		return $this->NodeElement->Click;
+		return $this->Element->Click;
 	}
 
 	function SetClick($newClick)
 	{
-		$this->NodeElement->Click = new Event(array(), array(array($this->NodeElement->Id,'Click')));
-		$this->NodeElement->Click['_N'] = $this->TreeListId==null 
-			? new ClientEvent("")
-			: new ClientEvent("SelectNode('$this->Id','".$this->NodeElement->Id."',".(GetBrowser()=='ie'?'window.':'').'event);');
-		$this->NodeElement->Click[] = $newClick;
+		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
+		$this->Element->Click['_N'] = $this->TreeListId==null 
+			? new ClientEvent('')
+			: new ClientEvent('SelectNode("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
+		$this->Element->Click[] = $newClick;
 	}
 	
 	function GetText()
 	{
-		return $this->NodeElement == null ? null : $this->NodeElement->GetText();
+		return $this->Element ? $this->Element->GetText() : null;
 	}
 	
 	function SetText($text)
 	{
-		if($this->NodeElement != null)
-			$this->NodeElement->SetText($text);
+		if($this->Element != null)
+			$this->Element->SetText($text);
 	}
 	
 	function GetValue()
 	{
-		return $this->NodeItem ? $this->NodeItem->Value : $this->Text;
+		return $this->Value ? $this->Value : $this->Text;
+	}
+	
+	function SetValue($value)
+	{
+		$this->Value = $value;
 	}
 	
 	function GetLeafSrc()
@@ -241,8 +259,8 @@ class TreeNode extends Panel
 		if($newSrc == null)
 			$newSrc = TreeNode::GetDefaultLeafSrc();
 		$this->LeafSrc = $newSrc;
-		if($this->NodePanel->Controls->Count() == 0)
-			$this->NodeIcon->Src = $newSrc;
+		if($this->ChildrenPanel->Controls->Count() == 0)
+			$this->Icon->Src = $newSrc;
 	}
 	
 	function GetCloseSrc()
@@ -256,8 +274,8 @@ class TreeNode extends Panel
 			$newSrc = TreeNode::GetDefaultCloseSrc();
 		$this->CloseSrc = $newSrc;
 		NolohInternal::SetProperty('CloseSrc', $newSrc, $this);
-		if($this->NodePanel->Controls->Count() != 0 && $this->NodePanel->ClientVisible !== true)
-			$this->NodeIcon->SetSrc($newSrc);
+		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->ClientVisible !== true)
+			$this->Icon->SetSrc($newSrc);
 	}
 	
 	function GetOpenSrc()
@@ -271,13 +289,13 @@ class TreeNode extends Panel
 			$newSrc = TreeNode::GetDefaultOpenSrc();
 		$this->OpenSrc = $newSrc;
 		NolohInternal::SetProperty('OpenSrc', $newSrc, $this);
-		if($this->NodePanel->Controls->Count() != 0 && $this->NodePanel->ClientVisible === true)
-			$this->NodeIcon->SetSrc($newSrc);
+		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->ClientVisible === true)
+			$this->Icon->SetSrc($newSrc);
 	}
 	
 	function AddShift($shift)
 	{
-		$this->MouseDown[] = new ClientEvent("document.getElementById('{$this->NodeElement->Id}').onclick.call(" . (GetBrowser()=='ie'?'':'this, event') . ')');
+		$this->MouseDown[] = new ClientEvent('document.getElementById(\''.$this->Element->Id.'\').onclick.call(' . (GetBrowser()=='ie'?'':'this, event') . ')');
 		parent::AddShift($shift);
 	}
 }

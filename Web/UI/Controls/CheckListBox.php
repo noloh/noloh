@@ -54,7 +54,7 @@ class CheckListBox extends ListControl
 	 */
 	function AddItem($item)
 	{
-		$whatTop = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes->Item[$this->CheckBoxes->Count()-1]->Bottom;
+		$whatTop = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes->Elements[$this->CheckBoxes->Count()-1]->Bottom;
 			
 		if(is_string($item))
 		{
@@ -89,9 +89,9 @@ class CheckListBox extends ListControl
 		$this->Items->RemoveAt($index, true);
 		$this->CheckBoxes->RemoveAt($index);
 		$checkBoxCount = $this->CheckBoxes->Count();
-		$this->CheckBoxes->Item[$index]->Top = $index == 0 ? 0 : $this->CheckBoxes->Item[$index-1]->Bottom;
+		$this->CheckBoxes->Elements[$index]->Top = $index == 0 ? 0 : $this->CheckBoxes->Elements[$index-1]->Bottom;
 		for($i=$index+1; $i<$checkBoxCount; ++$i)
-			$this->CheckBoxes->Item[$i]->Top = $this->CheckBoxes->Item[$i-1]->Bottom;
+			$this->CheckBoxes->Elements[$i]->Top = $this->CheckBoxes->Elements[$i-1]->Bottom;
 	}
 	/**
 	 * Clears the Items ArrayList. 
@@ -112,7 +112,7 @@ class CheckListBox extends ListControl
 	{
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->CheckBoxes->Item[$i]->Checked)
+			if($this->CheckBoxes->Elements[$i]->Checked)
 				return $i;
 		return -1;
 	}
@@ -123,7 +123,7 @@ class CheckListBox extends ListControl
 	 */
 	function SetSelectedIndex($idx, $select=true)
 	{
-		$this->CheckBoxes->Item[$idx]->Checked = $select;
+		$this->CheckBoxes->Elements[$idx]->Checked = $select;
 	}
 	/**
 	 * Returns an array of all the indices of the selected Items
@@ -134,7 +134,7 @@ class CheckListBox extends ListControl
 		$checkedArray = array();
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->CheckBoxes->Item[$i]->Checked)
+			if($this->CheckBoxes->Elements[$i]->Checked)
 				$checkedArray[] = $i;
 		return $checkedArray;
 	}
@@ -155,7 +155,7 @@ class CheckListBox extends ListControl
 	function GetSelectedValue()
 	{
 		$selIdx = $this->GetSelectedIndex();
-		return $selIdx != -1 ? $this->Items->Item[$selIdx]->Value : '';
+		return $selIdx != -1 ? $this->Items->Elements[$selIdx]->Value : '';
 	}
 	/**
 	 * Selects an item whose Value matches the value passed in
@@ -170,9 +170,9 @@ class CheckListBox extends ListControl
 	{
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->Items->Item[$i]->Value == $val)
+			if($this->Items->Elements[$i]->Value == $val)
 			{
-				$this->CheckBoxes->Item[$i]->Checked = $bool;
+				$this->CheckBoxes->Elements[$i]->Checked = $bool;
 				return $val;
 			}
 		return null;
@@ -186,7 +186,7 @@ class CheckListBox extends ListControl
 		$checkedArray = array();
 		$selectedIndices = $this->GetSelectedIndices();
 		foreach($selectedIndices as $idx)
-			$checkedArray[] = $this->Items->Item[$idx]->Value;
+			$checkedArray[] = $this->Items->Elements[$idx]->Value;
 		return $checkedArray;
 	}
 	/**

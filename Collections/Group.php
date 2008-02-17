@@ -5,20 +5,20 @@
  */
 class Group extends Component implements ArrayAccess, Countable, Iterator
 {
-	private $Elements;
+	private $Groupees;
 	
 	function Group()
 	{
 		parent::Component();
-		$this->Elements = new ArrayList();
-		$this->Elements->ParentId = $this->Id;
+		$this->Groupees = new ArrayList();
+		$this->Groupees->ParentId = $this->Id;
 	}
 	function Add($element, $setByReference = true)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
-		$this->Elements->Add($element, $passByReference);
+		$this->Groupees->Add($element, $passByReference);
 	}
 	function AddRange($dotDotDot)
 	{
@@ -31,35 +31,35 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
-		$this->Elements->Insert($element, $index);
+		$this->Groupees->Insert($element, $index);
 	}
 	function Remove($element)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName(null);
-		$this->Elements->Remove($element);		
+		$this->Groupees->Remove($element);		
 	}
 	function RemoveAt($index)
 	{
-		$this->Remove($this->Elements->Item[$index]);
+		$this->Remove($this->Groupees->Elements[$index]);
 	}
 	function Clear()
 	{
-		foreach($this->Elements as $element)
-			$element->SetGroupName(null);
-		$this->Elements->Clear();
+		foreach($this->Groupees as $groupee)
+			$groupee->SetGroupName(null);
+		$this->Groupees->Clear();
 	}
 	function GetSelectedIndex()
 	{
-		foreach($this->Elements as $index => $element)
-			if($element->GetSelected())
+		foreach($this->Groupees as $index => $groupee)
+			if($groupee->GetSelected())
 				return $index;
 		return -1;
 	}
 	function SetSelectedIndex($index)
 	{
-		$this->SetSelectedElement($this->Elements[$index]);
+		$this->SetSelectedElement($this->Groupees[$index]);
 	}
 	function GetSelectedValue()
 	{
@@ -70,10 +70,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	function SetSelectedValue($value)
 	{
-		foreach($this->Elements as $element)
-			if($element->GetValue() == $value)
+		foreach($this->Groupees as $groupee)
+			if($groupee->GetValue() == $value)
 			{
-				$this->SetSelectedElement($element);
+				$this->SetSelectedElement($groupee);
 				return;
 			}
 	}
@@ -89,7 +89,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function GetSelectedElement()
 	{
 		$tmpIndex = $this->GetSelectedIndex();
-		return $tmpIndex != -1?$this->Elements->Item[$tmpIndex]:null;
+		return $tmpIndex != -1?$this->Groupees->Elements[$tmpIndex]:null;
 	}
 	function SetSelectedElement($element)
 	{
@@ -109,10 +109,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	function SetSelectedText()
 	{
-		foreach($this->Elements as $element)
-			if($element->GetText() == $value)
+		foreach($this->Groupees as $groupee)
+			if($groupee->GetText() == $value)
 			{
-				$this->SetSelectedElement($element);
+				$this->SetSelectedElement($groupee);
 				return;
 			}		
 	}
@@ -123,59 +123,59 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	{
 		$RadioButtonsCount = $this->RadioButtons->Count();
 		for($i = 0; $i < $RadioButtonsCount; $i++)
-			$this->RadioButtons->Item[$i]->Bury();
+			$this->RadioButtons->Elements[$i]->Bury();
 		parent::Bury();
 	}
 	/**
 	 * @ignore
 	 */	
-	function Count()						{return $this->Elements->Count();}
+	function Count()						{return $this->Groupees->Count();}
 	/**
 	 * @ignore
 	 */
-	function GetCount()						{return $this->Elements->Count();}
+	function GetCount()						{return $this->Groupees->Count();}
 	/**
 	 * @ignore
 	 */
-	public function rewind() 				{$this->Elements->rewind();}
+	public function rewind() 				{$this->Groupees->rewind();}
 	/**
 	 * @ignore
 	 */
-	public function current() 				{return $this->Elements->current();}
+	public function current() 				{return $this->Groupees->current();}
 	/**
 	 * @ignore
 	 */
-	public function key() 					{return $this->Elements->key();}
+	public function key() 					{return $this->Groupees->key();}
 	/**
 	 * @ignore
 	 */
-	public function next() 					{return $this->Elements->next();}
+	public function next() 					{return $this->Groupees->next();}
 	/**
 	 * @ignore
 	 */
-	public function valid() 				{return $this->Elements->valid();}
+	public function valid() 				{return $this->Groupees->valid();}
 	/**
 	 * @ignore
 	 */
-	function offsetExists($key)				{return $this->Elements->offsetExists($key);}
+	function offsetExists($key)				{return $this->Groupees->offsetExists($key);}
 	/**
 	 * @ignore
 	 */
-	function offsetGet($index)				{return $this->Elements->offsetGet($index);}
+	function offsetGet($index)				{return $this->Groupees->offsetGet($index);}
 	/**
 	 * @ignore
 	 */
-	function offsetSet($index, $val)		{$this->Elements->offsetSet($index, $val);}
+	function offsetSet($index, $val)		{$this->Groupees->offsetSet($index, $val);}
 	/**
 	 * @ignore
 	 */
-	function offsetUnset($index)			{$this->Elements->offsetUnset($index);}
+	function offsetUnset($index)			{$this->Groupees->offsetUnset($index);}
 	/**
 	 * @ignore
 	 */	
 	function __call($function, $args)
 	{
-		call_user_method_array($function, $this->Elements, $args);
+		call_user_method_array($function, $this->Groupees, $args);
 	}
 }
 

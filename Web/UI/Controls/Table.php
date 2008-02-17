@@ -23,10 +23,10 @@ class Table extends Control
 			$this->Rows->Add(new TableRow());
 			for($j = 0; $j < $numCols; ++$j)
 			{
-				eval('$this->Rows->Item[$i]->Columns->Add(new TableColumn(new '.$typeAsString.'(' . $params . ')));');
-				$this->BuiltMatrix[$i][$j] = &$this->Rows->Item[$i]->Columns->Item[$j];
+				eval('$this->Rows->Elements[$i]->Columns->Add(new TableColumn(new '.$typeAsString.'(' . $params . ')));');
+				$this->BuiltMatrix[$i][$j] = &$this->Rows->Elements[$i]->Columns->Elements[$j];
 				// Added This Line To Make Default Control Width Equal to Column Width
-				$this->BuiltMatrix[$i][$j]->Controls->Item[0]->SetWidth($this->BuiltMatrix[$i][$j]->GetWidth());
+				$this->BuiltMatrix[$i][$j]->Controls->Elements[0]->SetWidth($this->BuiltMatrix[$i][$j]->GetWidth());
 			}
 		}
 	}

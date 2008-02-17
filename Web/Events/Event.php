@@ -4,6 +4,8 @@
  */
 
 /**
+ * Event class
+ *
  * The Event class serves several purposes.
  * 
  * First of all, it is the parent class of {@see ServerEvent} and {@see ClientEvent} and allows them to have some common functionality, 
@@ -105,12 +107,12 @@ class Event extends Object implements ArrayAccess
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Event.
-	 * @param array $eventarray An array of events that this multiple event will hold
+	 * @param array $eventArray An array of events that this multiple event will hold
 	 * @return Event
 	 */
-	function Event($eventarray=array(), $handles=array())
+	function Event($eventArray=array(), $handles=array())
 	{
-		$this->ExecuteFunction = $eventarray;
+		$this->ExecuteFunction = $eventArray;
 		$this->Handles = $handles;
 	}
 	/**
