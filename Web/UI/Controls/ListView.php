@@ -167,7 +167,7 @@ class ListView extends Panel
 		}
 		$tmpArray = array();
 		$tmpCount = $this->ListViewItems->Count();
-		foreach($this->ListViewItems->Item as $key => $listViewItem)
+		foreach($this->ListViewItems->Elements as $key => $listViewItem)
 			$tmpArray[$key] = $listViewItem->SubItems[$tmpIndex]->GetText();	
 		if(!$order)
 			asort($tmpArray);
