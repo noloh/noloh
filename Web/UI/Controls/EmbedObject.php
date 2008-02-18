@@ -39,8 +39,8 @@ class EmbedObject extends Control
 		{
 			$this->SetType('application/x-shockwave-flash');
 			//$this->SetClassId('clsid:D27CDB6E-AE6D-11cf-96B8-444553540000');
-			$this->Parameters->Add (new Item('transparent', 'wmode'));
-			$this->Parameters->Add(new Item($this->Data, 'movie'));
+			$this->Parameters->Add (new Item('wmode', 'transparent'));
+			$this->Parameters->Add(new Item('movie', $this->Data));
 		}
 		//NolohInternal::SetProperty('data', $data, $this);
 		NolohInternal::SetProperty('innerHTML', $this, $this);
