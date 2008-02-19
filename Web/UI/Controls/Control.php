@@ -650,7 +650,6 @@ class Control extends Component
 			$this->Shifts->InsertFunctionName = 'InsertShift';
 			NolohInternal::SetProperty('Shifts', 'Array()', $this);
 
-			//$this->UpdateEvent('MouseDown');
 		}
 		return $this->Shifts;
 	}

@@ -4,6 +4,7 @@ NOLOHKey = null;
 NOLOHCaught = new Array();
 _NFocus = null;
 _NContextMenuSource = null;
+_NShiftObjArray = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -171,7 +172,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			eval("obj.oncontextmenu = function(event) {" + newValue + "; if(obj.ContextMenu!=null) ShowContextMenu(event, obj); return false;}");
 			break;
 		case "onmousedown":
-			eval("obj.onmousedown = function(event) {" + newValue + "; if(obj.Shifts!=null && _NShiftObjArray==null) ShiftStart(event, obj.Shifts);}");
+			eval("obj.onmousedown = function(event) {" + newValue + "; if(obj.Shifts!=null && obj.Shifts.length!=0 && _NShiftObjArray==null) ShiftStart(event, obj.Shifts);}");
 			break;
 		case "DragCatch":
 			if(newValue == "")

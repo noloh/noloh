@@ -93,7 +93,7 @@ class Shift
 		if($min === null)
 			$min = 1;
 		if($max === null)
-			$max = "null";
+			$max = 'null';
 		return array($object->Id, 7, "$shiftType,0,$ratio,$min,$max)");
 	}
 }

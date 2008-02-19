@@ -84,13 +84,13 @@ class TextBox extends Control
 	{
 		$initialProperties = parent::Show();
 			
-		$initialProperties .= ",'type','";
-		if($this->Password == true)
-			$initialProperties .= "password'";
-		elseif($this->Hidden == true)
-			$initialProperties .= "hidden'";
+		$initialProperties .= ',\'type\',\'';
+		if($this->Password)
+			$initialProperties .= 'password\'';
+		elseif($this->Hidden)
+			$initialProperties .= 'hidden\'';
 		else
-			$initialProperties .= "text'";
+			$initialProperties .= 'text\'';
 		
 		//$tempStr = str_repeat("  ", $IndentLevel) . "<INPUT "  . $parentShow . "' ";
 		//if(!is_null($this->Text))
