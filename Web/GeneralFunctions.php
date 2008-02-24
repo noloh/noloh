@@ -184,44 +184,41 @@ function isArray($x)
 function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontSize=12)
 {
 	$retArray = array($width, $height);
+	$fontPath = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf';
 	if($width == System::Auto || $width == System::AutoHtmlTrim)
 	{
-		$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf', 
-			$str);
+		$bbox = imagettfbbox($fontSize, 0, $fontPath, $str);
 		$retArray[0] = $bbox[4]-$bbox[6] + 1;
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
 			$retArray[1] = $bbox[1]-$bbox[7] + 5;
 	}
 	elseif($height == System::Auto || $height == System::AutoHtmlTrim)
 	{
-		$str = str_replace("\r", '', $str);
-		$lines = explode("\n", $str);
+		$lines = explode("\n", str_replace("\r", '', $str));
 		$ntext = '';
-		foreach($lines as $line)
+		$lineCount = count($lines);
+		for($i=0; $i<$lineCount; ++$i)
 		{
-			$words = explode(' ', $line);
 			$nline = '';
-			foreach($words as $word)
+			$words = explode(' ', $lines[$i]);
+			$wordCount = count($words);
+			for($j=0; $j<$wordCount; ++$j)
 			{
-				$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf', 
-					$nline.$word);
+				$bbox = imagettfbbox($fontSize, 0, $fontPath, $nline.$words[$j]);
 				if($bbox[4]-$bbox[6]+1 > $width)
-				{
 					if($nline == '')
-						$ntext .= $word . "\n";
+						$ntext .= $words[$j] . "\n";
 					else 
 					{
 						$ntext .= $nline . "\n";
-						$nline = $word;
+						$nline = $words[$j];
 					}
-				}
 				else 
-					$nline .= $word.' ';
+					$nline .= $words[$j].' ';
 			}
+			$ntext .= $nline . "\n";
 		}
-		$ntext .= $nline;
-		$bbox = imagettfbbox($fontSize, 0, NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf', 
-			$ntext==''?$str:$ntext);
+		$bbox = imagettfbbox($fontSize, 0, $fontPath, $ntext);
 		$retArray[1] = $bbox[1]-$bbox[7] + 5;
 	}
 	return $retArray;

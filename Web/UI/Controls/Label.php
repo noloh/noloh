@@ -21,10 +21,8 @@ class Label extends Control
 		parent::Control($left, $top, null, null);
 		parent::SetWidth($width);
 		parent::SetHeight($height);
-		parent::SetText($text);
-		NolohInternal::SetProperty('innerHTML', preg_replace('(\r\n|\n|\r)', '<BR>', $text), $this);
+		$this->SetText($text);
 		$this->SetCSSClass();
-		$this->ResetCache();
 	}
 	
 	function SetText($text)
@@ -48,8 +46,8 @@ class Label extends Control
 	function SetFontSize($newSize)
 	{
 		$this->FontSize = $newSize;
-		$this->AutoWidthHeight();
-		NolohInternal::SetProperty('style.fontSize', $this->FontSize.'px', $this);
+		$this->ResetCache();
+		NolohInternal::SetProperty('style.fontSize', $newSize.'pt', $this);
 	}
 	
 	function GetWidth()
@@ -165,7 +163,7 @@ class Label extends Control
 	
 	function GetOverflow()
 	{
-		return $this->Overflow == null ? false : true;
+		return $this->Overflow != null;
 	}
 	
 	function SetOverflow($bool)
@@ -184,7 +182,7 @@ class Label extends Control
 	
 	function GetEditInPlace()
 	{
-		return $this->EditInPlace == null ? false : true;
+		return $this->EditInPlace != null;
 	}
 	
 	function SetEditInPlace($bool)
@@ -234,7 +232,8 @@ class Label extends Control
 			$this->CachedHeight = $widthHeight[1];
 			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
-		unset($_SESSION['NOLOHFunctionQueue'][$this->Id]['_NAWH']);
+		if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]))
+			unset($_SESSION['NOLOHFunctionQueue'][$this->Id]['_NAWH']);
 	}
 	
 	function Show()

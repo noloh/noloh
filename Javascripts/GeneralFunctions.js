@@ -72,8 +72,22 @@ function IsAvailable(objId)
 function _NAWH(id)
 {
 	var ele = document.getElementById(id);
-	_NSave(id, "CachedWidth", ele.offsetWidth);
-	_NSave(id, "CachedHeight", ele.offsetHeight);
+	var awh = document.getElementById("NAWH");
+	awh.style.fontSize = ele.style.fontSize;
+	awh.style.width = ele.style.width;
+	awh.style.height = ele.style.height;
+	awh.innerHTML = ele.innerHTML;
+	if(ele.style.width == "")
+	{
+		ele.style.width = awh.offsetWidth + "px";
+		_NSave(id, "CachedWidth", awh.offsetWidth);
+		
+	}
+	if(ele.style.height == "")
+	{
+		ele.style.height = awh.offsetHeight + "px";
+		_NSave(id, "CachedHeight", awh.offsetHeight);
+	}
 }
 
 function StartBuoyant(id, parentId)

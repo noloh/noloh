@@ -222,6 +222,7 @@ class WebPage extends Component
     <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>":"
   <BODY id='N1'>
   ")."
+    <DIV id='NAWH' style='position:absolute; visibility:hidden;'></DIV>
   </BODY>
 </HTML>
 
