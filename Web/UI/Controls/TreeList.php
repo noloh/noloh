@@ -58,12 +58,12 @@ class TreeList extends Panel
 	}
 	function GetSelectedValue()
 	{
-		$selectedNode = $this->GetSelectedNode();
+		$selectedNode = $this->GetSelectedTreeNode();
 		return $selectedNode ? $selectedNode->GetValue() : null;
 	}
 	function GetSelectedText()
 	{
-		$selectedNode = $this->GetSelectedNode();
+		$selectedNode = $this->GetSelectedTreeNode();
 		return $selectedNode ? $selectedNode->GetText() : null;
 	}
 	function SetOpenSrc($openSrc)

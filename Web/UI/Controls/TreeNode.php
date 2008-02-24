@@ -151,11 +151,11 @@ class TreeNode extends Panel
 			elseif($element instanceof Item)
 			{
 				$this->Value = $element->Value;
-				$this->Element = new Label($element->Text, 40, -1, System::Auto, 18);
+				$this->Element = new Label($element->Text, 40, -1, System::Auto, System::Auto);
 			}
 		}
 		else
-			$this->Element = new Label($element, 40, -1, System::Auto, 18);
+			$this->Element = new Label($element, 40, -1, System::Auto, System::Auto);
 		if(GetBrowser() != 'ie')
 		{
 			$this->Element->CSSMargin = '5px';
