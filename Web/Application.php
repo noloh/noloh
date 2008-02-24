@@ -60,7 +60,7 @@ function _NPHPInfo($info)
 	$loc = strpos($info, '</table>');
 	$first = substr($info, 0, $loc);
 	$last = substr($info, $loc+8);
-	$middle = '<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="http://www.noloh.com/Images/NOLOHLogo.gif" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version 1.4.8</h1></td></tr></table><div id="N2"></div><div id="N3"></div>';
+	$middle = '<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="http://www.noloh.com/Images/NOLOHLogo.gif" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>';
 	if(UserAgentDetect::IsIE())
 		print('/*~NScript~*/document.write(\'' . $first . $middle . $last . '\');window.onscroll=null;');
 	else 
