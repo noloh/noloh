@@ -79,8 +79,9 @@
 .NWinPanelTitle
 {
 	color:white;
+	padding-top:5px;
 	padding-left:5px;
-	background-color:/*#0055ea;*/#ea9c38;
+	/*background-color:*//*#0055ea;*//*#ea9c38;*/
 	font-weight:bold;
 	font-family:Arial, sans-serif;
 }
