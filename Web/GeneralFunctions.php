@@ -227,9 +227,6 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
  * Gets the current version of NOLOH
  * @return string
  */
-function GetNOLOHVersion()
-{
-	return '1.6.03';
-}
+function GetNOLOHVersion() {return '1.6.0';}
 
 ?>
