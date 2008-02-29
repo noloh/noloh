@@ -108,7 +108,29 @@ final class URL
 				$trails[$initialURLString] = array();
 			}
 			$trails[$initialURLString][$tokenString] = true;
-			@file_put_contents($file, base64_encode(serialize($trails)));
+			if(is_writable($file))
+				file_put_contents($file, base64_encode(serialize($trails)));
+		}
+	}
+	
+	static function Redirect($url)
+	{
+		AddScript('location="'.$url.'";');
+	}
+	
+	static function OpenInNewWindow($url, $newBrowserNotPanel = true)
+	{
+		if($newBrowserNotPanel)
+			AddScript('window.open("' . $url . '");');
+		else 
+		{
+			$wp = new WindowPanel($url, 0, 0, 500, 300);
+			$wp->Controls->Add($iframe = new IFrame($url, 0, 0, 490, 250));
+			$wp->Controls->Add($timer = new Timer(5000, true));
+			//$iframe->SetEvent(new ClientEvent('alert("hey!");'), 'onreadystatechange');
+			AddScript('document.getElementById("'.$iframe->Id.'").src = "'.$url.'";', Priority::Low);
+			$iframe->Shifts[] = Shift::With($wp->ResizeImage, Shift::Size);
+			GetComponentById('N1')->Controls->Add($wp);
 		}
 	}
 }
