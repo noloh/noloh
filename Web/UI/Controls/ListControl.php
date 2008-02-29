@@ -76,7 +76,7 @@ abstract class ListControl extends Control
 	function SetSelectedValue($value)
 	{
 		$itemCount = $this->Items->Count();
-		for($i=0; $i<$itemCount; $i++)
+		for($i=0; $i<$itemCount; ++$i)
 			if($this->Items->Elements[$i]->Value == $value)
 			{
 				$this->SetSelectedIndex($i);
@@ -108,7 +108,7 @@ abstract class ListControl extends Control
 	function SetSelectedText($text)
 	{
 		$itemCount = $this->Items->Count();
-		for($i=0; $i<$itemCount; $i++)
+		for($i=0; $i<$itemCount; ++$i)
 			if($this->Items->Elements[$i]->Text == $text)
 			{
 				$this->SetSelectedIndex($i);

@@ -39,7 +39,7 @@ class File
 			unset($_SESSION['NOLOHFileSend'][$fileName]);
 		}
 		else 
-			print("You do not have permission to access that file!");
+			BloodyMurder("You do not have permission to access that file!");
 	}
 	
 	function File($whatFile = null)
