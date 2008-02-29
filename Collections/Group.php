@@ -59,7 +59,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	function SetSelectedIndex($index)
 	{
-		$this->SetSelectedElement($this->Groupees[$index]);
+		if($index == -1 || $index == null)
+			$this->Deselect(true);
+		else
+			$this->SetSelectedElement($this->Groupees[$index]);
 	}
 	function GetSelectedValue()
 	{
