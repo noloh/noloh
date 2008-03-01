@@ -263,6 +263,12 @@ class WebPage extends Component
 	{
 		parent::Show();
 		AddNolohScriptSrc('ClientViewState.js', true);
+		switch(GetBrowser())
+		{
+			case 'ie': case 'sa': 			AddNolohScriptSrc('FindPositionIESa.js'); break;
+			case 'ff': 						AddNolohScriptSrc('FindPositionFF.js'); break;
+			case 'op': 						AddNolohScriptSrc('FindPositionOp.js');
+		}
 		AddNolohScriptSrc('GeneralFunctions.js');
 		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')
 			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);

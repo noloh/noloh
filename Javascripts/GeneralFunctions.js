@@ -31,36 +31,6 @@ function ToggleVisibility(id)
 		ChangeAndSave(id, "style.display", "none");
 }
 
-function FindX(objId)
-{
-	var curleft = 0;
-	var obj = document.getElementById(objId);
-	if (obj.offsetParent)
-		while (obj.offsetParent)
-		{
-			curleft += obj.offsetLeft;
-			obj = obj.offsetParent;
-		}
-	else if (obj.x)
-		curleft += obj.x;
-	return curleft;
-}
-
-function FindY(objId)
-{
-	var curtop = 0;
-	var obj = document.getElementById(objId);
-	if (obj.offsetParent)
-		while (obj.offsetParent)
-		{
-			curtop += obj.offsetTop;
-			obj = obj.offsetParent;
-		}
-	else if (obj.y)
-		curtop += obj.y;
-	return curtop;
-}
-
 function IsAvailable(objId)
 {
 	var obj = document.getElementById(objId);
@@ -124,8 +94,9 @@ function StopBuoyant(id)
 function MoveBuoyant(id)
 {
 	var obj = document.getElementById(id);
-	obj.style.left = FindX(obj.BuoyantParentId) + obj.BuoyantLeft + "px";
-	obj.style.top = FindY(obj.BuoyantParentId) + obj.BuoyantTop + "px";
+	var parent = document.getElementById(obj.BuoyantParentId);
+	obj.style.left = FindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
+	obj.style.top = FindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
 }
 
 function _NRemStyle(remPath, nPath)
