@@ -57,14 +57,19 @@ function _NErrorHandler($number, $string, $file, $line)
 function _NPHPInfo($info)
 {
 	$info = str_replace(array("\n", "\r", "'"), array('','',"\'"), $info);
-	$loc = strpos($info, '</table>');
+	$loc = strpos($info, '</table>') + 8;
 	$first = substr($info, 0, $loc);
-	$last = substr($info, $loc+8);
-	$middle = '<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . NOLOHConfig::GetNOLOHPath() . 'Web/UI/Controls/Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>';
-	if(UserAgentDetect::IsIE())
-		print('/*~NScript~*/document.write(\'' . $first . $middle . $last . '\');window.onscroll=null;');
-	else 
-		print('/*~NScript~*/document.body.innerHTML=\'' . $first . $middle . $last . '\';window.onscroll=null;');
+	$last = substr($info, $loc);
+	$middle = '<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . NOLOHConfig::GetNOLOHPath() . 'Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>';
+	switch(GetBrowser())
+	{
+		case 'ie':
+		case 'sa':
+			print('/*~NScript~*/document.write(\'' . $first . $middle . $last . '\');window.onscroll=null;');
+			break;
+		default:
+			print('/*~NScript~*/document.body.innerHTML=\'' . $first . $middle . $last . '\';window.onscroll=null;');
+	}
 	ob_end_flush();
 	session_destroy();
 	session_unset();
