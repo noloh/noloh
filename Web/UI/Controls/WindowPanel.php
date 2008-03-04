@@ -23,7 +23,7 @@ class WindowPanel extends Panel
 	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200, $reflectStyle = true)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
-		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/';
+		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
 		if(!$_SESSION['NOLOHIE6'])
 		{
 			$imagesDir = $imagesRoot .'Std/';
@@ -73,9 +73,9 @@ class WindowPanel extends Panel
 		
 		$this->CloseImage->Click['Hide'] = new ClientEvent("NOLOHChange('$this->Id', 'style.visibility', 'hidden');");
 		$this->CloseImage->Click[] = new ServerEvent($this, 'Close');
-		$this->BodyPanel->CSSBorder_Bottom = '4px solid #07254a';
-		$this->BodyPanel->CSSBorder_Left = '4px solid #07254a';
-		$this->BodyPanel->CSSBorder_Right = '4px solid #07254a';
+		$this->BodyPanel->CSSBorder_Bottom = $border . 'px solid #07254a';
+		$this->BodyPanel->CSSBorder_Left = $border . 'px solid #07254a';
+		$this->BodyPanel->CSSBorder_Right = $border . 'px solid #07254a';
 		/*
 		$closeE = new Event();
 		$closeE["Hide"] = new ClientEvent("document.getElementById('$this->Id').style.visibility='hidden'");
@@ -121,7 +121,7 @@ class WindowPanel extends Panel
 //			$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("alert('{$this->BodyPanel->Id}');");//SwapWindowPanelShade(' . $this->BodyPanel->Id . ');');
 			if(!isset($this->TitleBar->DoubleClick['WinShade']))
 				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("SwapWindowPanelShade('{$this->Id}','{$this->TitleBar->Id}');");//SwapWindowPanelShade(' . $this->BodyPanel->Id . ');');
-			NolohInternal::SetProperty('WinHght', "{$this->GetHeight()}", $this->BodyPanel);
+			NolohInternal::SetProperty('WinHght', "{$this->GetHeight()}", $this->Id);
 		}
 		else
 			$this->TitleBar->DoubleClick['WinShade'] = null;
@@ -141,6 +141,7 @@ class WindowPanel extends Panel
 		$this->ResizeImage->Shifts[] = Shift::Width($this->Menu);
 		$this->BodyPanel->Top = $this->Menu->Bottom;
 		$this->WindowPanelComponents->Add($mainMenu);
+		$this->BodyPanel->Height -= $mainMenu->Height;
 	}
 	function Close()
 	{

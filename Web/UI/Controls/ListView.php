@@ -18,7 +18,7 @@ class ListView extends Panel
 	{
 		parent::Panel($left, $top, $width, $height)/*, $this)*/;
 		$this->ColumnsPanel = new Panel(0, 0, $width, 28, $this);
-		$this->ColumnsPanel->CSSBackground_Image = "url(". NOLOHConfig::GetNOLOHPath() . "Web/UI/Controls/Images/Std/HeadBlue.gif)";
+		$this->ColumnsPanel->CSSBackground_Image = "url(". NOLOHConfig::GetNOLOHPath() . "Images/Std/HeadBlue.gif)";
 		$this->ColumnsPanel->CSSBackground_Repeat = "repeat-x";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;

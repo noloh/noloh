@@ -19,13 +19,8 @@ class TabControl extends Panel
 		$this->TabPagesPanel = new Panel(0, $this->TabControlBar->GetHeight(), null, ($height - $this->TabControlBar->GetHeight()), $this);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
-		//$this->TabPagesPanel->CSSLeft_Border = "1px solid #91a7b7";
-		//Added this line to Make the TabControl the TabPages Parent;
-		//$this->TabPagesPanel->Controls->ParentId = $this->Id;
 		$this->TabPages = &$this->TabPagesPanel->Controls;
-		//$this->TabPages->SpecialFunction = "AddTabPage";
 		$this->TabPages->AddFunctionName = 'AddTabPage';
-		//$this->TabPages->SpecialObjectId = $this->Id;
 		$this->Controls->Add($this->TabControlBar);
 		$this->Controls->Add($this->TabPagesPanel);
 	}
@@ -54,10 +49,11 @@ class TabControl extends Panel
 	}
 	public function SetSelectedIndex($selectedIndex)
 	{
+		//Alert($this->SelectedIndex);
 		if($selectedIndex != $this->SelectedIndex)
 		{
 			$this->SelectedIndex = $selectedIndex;
-			
+			//Alert('Im going here');
 			//Need to address the following line, currenty it breaks TabControl - Asher
 			//$this->TabControlBar->Controls->Elements[$whatSelectedIndex]->SetSelected(true);
 			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent

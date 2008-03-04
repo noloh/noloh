@@ -6,7 +6,7 @@ class PlusMinusSwitch extends Image
 {	
 	function PlusMinusSwitch($left=0, $top=0, $width=9, $height=9)
 	{
-		parent::Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/plus.gif', $left, $top, $width, $height);
+		parent::Image(NOLOHConfig::GetNOLOHPath().'Images/plus.gif', $left, $top, $width, $height);
 		//$this->BackColor = "#FFFFFF";
 		//$this->Border = "1px solid #000000";
 		//$this->Click = new ClientEvent("var Obj=document.getElementById(" . $this->Id  . "); Obj.checked = !Obj.checked;");

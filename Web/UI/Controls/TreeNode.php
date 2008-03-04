@@ -18,15 +18,15 @@ class TreeNode extends Panel
 	
 	public static function GetDefaultLeafSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/document.gif';
+		return NOLOHConfig::GetNOLOHPath().'Images/document.gif';
 	}
 	public static function GetDefaultCloseSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/folder_close.gif';
+		return NOLOHConfig::GetNOLOHPath().'Images/folder_close.gif';
 	}
 	public static function GetDefaultOpenSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/folder_open.gif';
+		return NOLOHConfig::GetNOLOHPath().'Images/folder_open.gif';
 	}
 	
 	function TreeNode($element)
@@ -189,7 +189,7 @@ class TreeNode extends Panel
 
 	function Expand($deep = false)
 	{
-		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/minus.gif';
+		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath().'Images/minus.gif';
 		$this->ChildrenPanel->ClientVisible = true;
 		if($deep)
 		{

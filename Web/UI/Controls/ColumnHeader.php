@@ -16,13 +16,13 @@ class ColumnHeader extends Panel
 		$this->Caption = new Label($text, 0, 0, $width, $height);
 		parent::Panel($left, 0, ($width == System::Auto || $width == System::AutoHtmlTrim)?$this->Caption->GetWidth() + 25:$width, $height);
 		$this->CSSBackground_Repeat = "repeat-x";
-		$this->SizeHandle = new Image(NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/ColSep.gif', $this->Width - 3, 6);
+		$this->SizeHandle = new Image(NOLOHConfig::GetNOLOHPath().'Images/Std/ColSep.gif', $this->Width - 3, 6);
 		$this->Caption->CSSClass = 'NColHead';
 		$this->SizeHandle->Cursor = Cursor::WestResize;
 		$this->Caption->ParentId = $this->Id;
 		$this->SizeHandle->ParentId = $this->Id;
 		$this->Cursor = Cursor::Arrow;
-		$this->MouseOver = new ClientEvent("this.style.background = 'url(". NOLOHConfig::GetNOLOHPath() . 'Web/UI/Controls/Images/Std/HeadOrange.gif)' . '\';');
+		$this->MouseOver = new ClientEvent("this.style.background = 'url(". NOLOHConfig::GetNOLOHPath() . 'Images/Std/HeadOrange.gif)' . '\';');
 		$this->MouseOut = new ClientEvent("this.style.background = '';");
 		$this->Click = new ClientEvent("if(tmpMouseUp!=null) {tmpMouseUp=null;return;} this.parentNode.parentNode.style.cursor = 'wait';");
 		$this->Click[] = new ServerEvent($this, 'Sort');
@@ -37,7 +37,7 @@ class ColumnHeader extends Panel
 	{
 		$tmpListView = $this->GetListView();
 		$tmpListView->Sort($this, $this->Order);
-		$tmpSrc = NOLOHConfig::GetNOLOHPath().'Web/UI/Controls/Images/Std/' . (($this->Order)?'ArrDwn.gif':'ArrUp.gif');
+		$tmpSrc = NOLOHConfig::GetNOLOHPath().'Images/Std/' . (($this->Order)?'ArrDwn.gif':'ArrUp.gif');
 		if($this->OrderArrow == null)
 		{
 			$this->OrderArrow = new Image($tmpSrc, $this->GetWidth() - 17, 12);
