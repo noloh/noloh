@@ -30,8 +30,8 @@ require('Collections/Multiple.php');
 // Data
 // **********************************************************************
 require('Data/Data.php');
-require('Data/DataCommand.php');
 require('Data/DataConnection.php');
+require('Data/DataCommand.php');
 require('Data/DataReader.php');
 
 // Web UI Controls

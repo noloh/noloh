@@ -4,20 +4,23 @@
  */
 class DataCommand extends Object
 {
-	public $Connection;
-	public $SqlStatement;
+	private $Connection;
+	private $SqlStatement;
 	
-	function DataCommand($connection = null, $sqlStament = '')
+	function DataCommand($connection = null, $sql = '')
 	{
 		$this->Connection = $connection;
-		$this->SqlStatement = $sqlStament;
+		$this->SqlStatement = $sql;
 	}
+	function GetConnection()			{return $this->Connection;}
+	function SetConnection($connection)	{$this->Connection = $connection;}
+	function GetSqlStatement()			{return $this->SqlStatement;}
+	function SetSqlStatement($sql)		{$this->SqlStatement = $sql;}
 	function Execute($resultType = Data::Both)
 	{
 		if($this->Connection != null && $this->SqlStatement != null)
 		{
 			$type = $this->Connection->GetType();
-		
 			if($type == Data::Postgres)
 				$tmpResource = pg_query($this->Connection->Connect(), $this->SqlStatement);
 			elseif($type == Data::MySQL)
