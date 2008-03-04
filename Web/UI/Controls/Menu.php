@@ -4,42 +4,34 @@
  */
 class Menu extends Panel
 {
+	const Click = 'Click', MouseOver = 'Over';
 	public $MenuItems;
-	public $MenuType = "Click";
+	public $Type = 'Click';
 	
 	function Menu($left = 0, $top = 0, $width = 0)
 	{
 		parent::Panel($left, $top, $width, 18, $this);
-		$this->BackColor = "#f1f1ed";
+		$this->BackColor = '#F1F1ED';
 		$this->MenuItems = &$this->Controls;
-		$this->MenuItems->AddFunctionName = "AddMenuItem";
+		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		$this->Scrolling = System::Full;
 	}
 	function AddMenuItem(MenuItem $menuItem)
 	{
-		$tempCount = $this->MenuItems->Count();
-		if($tempCount > 0)
-			$menuItem->SetLeft($this->MenuItems->Item[$tempCount -1]->GetRight());
+		$tmpCount = $this->MenuItems->Count();
+		if($tmpCount > 0)
+			$menuItem->SetLeft($this->MenuItems->Elements[$tmpCount -1]->GetRight());
 		else
 			$menuItem->SetLeft(0);
-		$menuItem->MainMenuPanel->SetLeft(0);//$menuItem->GetLeft());
-		$menuItem->MainMenuPanel->SetTop($menuItem->GetBottom());//GetTop() + $menuItem->GetHeight());
-		if($this->MenuType == 'Click')
-		{
-			$menuItem->Click = new ClientEvent("ToggleSubMenuItems('{$menuItem->Id}','{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}', true);");
-			//$menuItem->MouseOver = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','#316AC5', '#FFFFFF');");
-			//$menuItem->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$menuItem->Id}', '{$menuItem->TextLabel->Id}','{$menuItem->MainMenuPanel->Id}', false);");
-			//$menuItem->MouseOut = new ClientEvent("ChangeMenuOutColors('{$menuItem->TextLabel->Id}','{$menuItem->OutBackColor}', '{$menuItem->OutTextColor}');");
-		}
+		$menuItem->MenuItemsPanel->SetLeft(0);
+		$menuItem->MenuItemsPanel->SetTop($menuItem->GetBottom());
+		$menuItem->CSSText_Align = 'center';
+		$menuItem->MenuItemsPanel->Buoyant = true;
 		$this->MenuItems->Add($menuItem, true, true);
-		NolohInternal::SetProperty("IsMainMenu","true", $menuItem->TextLabel);
-		NolohInternal::SetProperty("MenuPanelParentId", $this->Id, $menuItem->TextLabel);
-		//QueueClientFunction($this, "document.getElementById('{$menuItem->TextLabel->Id}').IsMainMenu = true;");
-		//AddScript("document.getElementById('{$menuItem->TextLabel->Id}').IsMainMenu = true; document.getElementById('{$menuItem->TextLabel->Id}').MenuPanelParentId = '{$this->Id}';");
-	}
-	function Clear()
-	{
-		$this->Controls->Clear();
+		$menuItem->SetWidth($menuItem->GetWidth());
+		
+		NolohInternal::SetProperty('IsMnu','true', $menuItem);
+		return $menuItem;
 	}
 }
 ?>

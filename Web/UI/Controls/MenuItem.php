@@ -7,10 +7,11 @@ class MenuItem extends Panel
 	//public $RolloverImage;
 	//public $Checked;
 	public $DefaultItem;
-	public $MainMenuPanel;
+	public $MenuItemsPanel;
 	public $MenuItems;
 	private $TextLabel;
 	private $Icon;
+	private $Arrow;
 	
 	function MenuItem($textOrControl, $height=18)
 	{
@@ -18,71 +19,93 @@ class MenuItem extends Panel
 		if($textOrControl instanceof Control)
 			$this->TextLabel = $textOrControl;
 		else
-			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 18);
-		///$this->Width = ''
+		{
+			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 20);
+			$this->TextLabel->CSSClass = 'NMnuItm';
+		}
 		$this->SetWidth($this->TextLabel->GetWidth() + 15);
 		$this->TextLabel->SetWidth('100%');
-		
 		$this->TextLabel->Cursor = Cursor::Arrow;
-		$this->MainMenuPanel = new Panel($this->GetRight(), 0, null, null, $this);
-		$this->MainMenuPanel->Buoyant = true;
-		$this->MainMenuPanel->Scrolling = System::Full;
-		$this->MainMenuPanel->Border = '1px solid black';
-		$this->MainMenuPanel->BackColor = 'white';
-		$this->MainMenuPanel->Visible = System::Vacuous;
-		$this->MenuItems = &$this->MainMenuPanel->Controls;
+		$this->MenuItemsPanel = new Panel($this->GetRight(), 0, 0, 0, $this);
+//		$this->MenuItemsPanel->Buoyant = true;
+		$this->MenuItemsPanel->Scrolling = System::Full;
+		//$this->MenuItemsPanel->Border = '1px solid black';
+		$this->MenuItemsPanel->Border = '1px solid #B3B9C7';
+		$this->MenuItemsPanel->BackColor = 'white';
+		$this->MenuItemsPanel->Visible = System::Vacuous;
+		//Alert($this->MenuItemsPanel->Id);
+		$this->MenuItems = &$this->MenuItemsPanel->Controls;
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		$this->SetOutBackColor();
 		$this->SetOutTextColor();
 		$this->SetOverBackColor();
 		$this->SetOverTextColor();
 		//New Way
-		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->Id}', '{$this->TextLabel->Id}','{$this->MainMenuPanel->Id}', false);");
+//		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->Id}', '{$this->TextLabel->Id}','{$this->MenuItemsPanel->Id}', false);");
+//		$this->TextLabel->MouseOver['Toggle'] = new ClientEvent("_NTglSubMnuItms('{$this->Id}', false);");
+		$this->MouseOver['Toggle'] = new ClientEvent("_NTglSubMnuItms('{$this->Id}', false);");
+		NolohInternal::SetProperty('TxtLbl', "{$this->TextLabel->Id}", $this);
 		$this->TextLabel->ParentId = $this->Id;
-		$this->MainMenuPanel->ParentId = $this->Id;
+		$this->MenuItemsPanel->ParentId = $this->Id;
 		//$this->LayoutType = 1;
-		//$this->Controls->AddRange($this->TextLabel, $this->MainMenuPanel);
+		//$this->Controls->AddRange($this->TextLabel, $this->MenuItemsPanel);
 	}
 	function AddMenuItem(MenuItem $menuItem)
 	{
-		/*if($this->MainMenuPanel->Controls->Count() > 0)
+		//Alert($menuItem->Text);
+		//$menuItem->Buoyant = true;
+		//$menuItem->MouseOver[] = new ClientEvent("alert('test');");
+		
+		if(($tmpCount = $this->MenuItemsPanel->Controls->Count()) > 0)
 		{
-			$menuItem->Top = $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->GetTop() + $this->MainMenuPanel->Controls->Item[$this->MainMenuPanel->Controls->Count()-1]->GetHeight();
-			$menuItem->MainMenuPanel->SetTop($menuItem->GetTop());
+			//Alert($tmpCount);
+			$menuItem->SetTop($this->MenuItemsPanel->Controls->Elements[$tmpCount-1]->GetBottom());
+			//$menuItem->MenuItemsPanel->SetTop($menuItem->GetTop());
 		}
-		else
+		/*else
 		{
-			//$tempImage = new Image(NOLOHConfig::GetNOLOHPath()."Web/UI/Controls/Images/MenuItemArrow.gif", $menuItem->Width - 5, 3);
+			//$tempImage = new Image(NOLOHConfig::GetNOLOHPath()."Images/MenuItemArrow.gif", $menuItem->Width - 5, 3);
 			//$this->Controls->Add($tempImage);
 			//NolohInternal::SetProperty("HasChildren", "true", $this->TextLabel);
-			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MainMenuPanel);
-			//AddScript("document.getElementById('{$this->TextLabel->Id}').HasChildren = true; document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray = new Array();");
+			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MenuItemsPanel);
+			//AddScript("document.getElementById('{$this->TextLabel->Id}').HasChildren = true; document.getElementById('{$this->MenuItemsPanel->Id}').ChildrenArray = new Array();");
 		}*/
-		if($this->MainMenuPanel->Controls->Count() == 0)
-			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MainMenuPanel);
-//		$this->TextLabel->SetWidth('100%');
-		$menuItem->LayoutType = Layout::Relative;
-		if($this->MainMenuPanel->GetWidth() < $menuItem->GetWidth())
+		else
 		{
-			$this->MainMenuPanel->Width = $menuItem->Width;
-			$tmpCount = $this->MainMenuPanel->Controls->Count();
+//			$this->MenuItemsPanel = new Panel($this->GetRight(), $this->GetTop(), 100, 100);
+			//Alert($this->MenuItemsPanel->Id);
+			NolohInternal::SetProperty('ItmsPnl', "{$this->MenuItemsPanel->Id}", $this);
+//			NolohInternal::SetProperty('ItmsPnl', 'test', $this);
+//			Alert($this->Id . 'la');
+			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MenuItemsPanel);
+			$menuItem->SetTop(0);
+			//$menuItem->MenuItemsPanel->SetTop($menuItem->GetTop());
+		}
+		//$menuItem->LayoutType = Layout::Relative;
+		//$menuItem->SetWidth('100%');
+		//Alert($this->MenuItemsPanel->GetWidth() . ' | ' . $menuItem->GetWidth());
+		if($this->MenuItemsPanel->GetWidth() < ($tmpWidth = $menuItem->GetWidth()))
+		{
+			$this->MenuItemsPanel->SetWidth($tmpWidth);
+			//Alert($this->MenuItemsPanel->GetWidth());
+			$tmpCount = $this->MenuItemsPanel->Controls->Count();
 			for($i=0; $i<$tmpCount; ++$i)
-				$this->MainMenuPanel->Controls->Item[$i]->Width = $menuItem->Width; 
+				$this->MenuItemsPanel->Controls->Elements[$i]->SetWidth($menuItem->Width); 
+			$menuItem->MenuItemsPanel->SetLeft($menuItem->GetWidth());
 		}
 		else
-			$menuItem->Width = $this->MainMenuPanel->Width;
-		$this->MainMenuPanel->Height += $menuItem->Height;
-		$this->MainMenuPanel->Controls->Add($menuItem, true, true);
-		$tmpId = $this->MainMenuPanel->Id;
-		$fncStr = "document.getElementById('$tmpId').ChildrenArray.splice";
+			$menuItem->SetWidth($this->MenuItemsPanel->Width);
+		$this->MenuItemsPanel->Height += $menuItem->GetHeight();
+		$this->MenuItemsPanel->Controls->Add($menuItem, true, true);
+		$tmpId = $this->MenuItemsPanel->Id;
+		$fncStr = 'document.getElementById(\''.$tmpId .'\').ChildrenArray.splice';
 		if(isset($_SESSION['NOLOHFunctionQueue'][$tmpId]) && isset($_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr]))
-			$_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->TextLabel->Id}'";
+			$_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->Id}'";
 		else 
-			QueueClientFunction($this->MainMenuPanel, $fncStr, array(-1, 0, "'{$menuItem->TextLabel->Id}'"));
-		NolohInternal::SetProperty('MenuPanelParentId', $tmpId, $menuItem->TextLabel);
-		//AddScript("document.getElementById('{$this->MainMenuPanel->Id}').ChildrenArray.push('{$menuItem->TextLabel->Id}'); document.getElementById('{$menuItem->TextLabel->Id}').MenuPanelParentId = '{$this->MainMenuPanel->Id}';");
-		if(!$this->Parent instanceof MainMenu)
-			$this->TextLabel->MouseOut->Enabled = false;
+			QueueClientFunction($this->MenuItemsPanel, $fncStr, array(-1, 0, "'{$menuItem->Id}'"));
+		//NolohInternal::SetProperty('ItmsPnl', $tmpId, $menuItem->TextLabel);
+//		if(!$this->Parent instanceof MainMenu)
+//			$this->TextLabel->MouseOut->Enabled = false;
 		return $menuItem;
 	}
 	function GetTextLabel()	{return $this->TextLabel;}
@@ -99,47 +122,48 @@ class MenuItem extends Panel
 	}
 	function GetText()		{return $this->TextLabel->GetText();}
 	function SetText($text)	{$this->TextLabel->SetText($text);}
-	//function GetLeft()		{return $this->TextLabel->GetLeft();}
-	function SetLeft($left)
-	{
-		parent::SetLeft($left);
-		//$this->SetLeft($left);
-		//if(!($this->Parent instanceof MainMenu))
-			//$this->MainMenuPanel->SetLeft($this->GetRight());//GetLeft() + $this->GetWidth());
-	}
-	function GetTop()		{return $this->TextLabel->GetTop();}
-	function SetTop($top)	{$this->TextLabel->SetTop($top);}
 	function GetHeight()	{return $this->TextLabel->GetHeight();}
-//	function GetWidth()		{return $this->TextLabel->GetWidth();}
-//	function SetWidth($newWidth)			
-//	{
-//		$this->TextLabel->SetWidth($newWidth);
-//	}
+	function SetWidth($width)			
+	{
+		parent::SetWidth($width);
+		$tmpParent = $this->GetParent();
+		if($tmpParent != null && $tmpParent instanceof Menu)
+		{
+			if($this->MenuItemsPanel->GetWidth() < $width)
+			{
+				$this->MenuItemsPanel->SetWidth($width);
+				foreach($this->MenuItems as $menuItem)
+					$menuItem->SetWidth($width);
+			}
+		}
+		elseif($this->MenuItemsPanel != null)
+			$this->MenuItemsPanel->SetLeft($this->GetRight());
+	}
 	function SetBackColor($backColor)		{$this->TextLabel->SetBackColor($backColor);}
-	function GetMouseOver()	{return $this->TextLabel->MouseOver;}
-	function GetMouseOut()	{return $this->TextLabel->MouseOut;}
-	function GetClick()		{return $this->TextLabel->Click;}
-	function SetMouseOver($event)	{$this->TextLabel->SetMouseOver($event);}
-	function SetMouseOut($event)	{$this->TextLabel->SetMouseOut($event);}
-	function SetClick($event)		{$this->TextLabel->SetClick($event);}
+	function GetMouseOver()					{return $this->TextLabel->MouseOver;}
+	function GetMouseOut()					{return $this->TextLabel->MouseOut;}
+	function GetClick()						{return $this->TextLabel->Click;}
+	function SetMouseOver($event)			{$this->TextLabel->SetMouseOver($event);}
+	function SetMouseOut($event)			{$this->TextLabel->SetMouseOut($event);}
+	function SetClick($event)				{$this->TextLabel->SetClick($event);}
 	//function SetLayoutType($layoutType)		{$this->TextLabel->SetLayoutType($layoutType);}
-	function SetOutTextColor($color='#000000')	
+	function SetOutTextColor($color='#001E42')	
 	{
 		$this->TextLabel->SetColor($color);
-		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+		NolohInternal::SetProperty('OtTxtClr', "$color", $this->TextLabel);
 	}
 	function SetOverTextColor($color='#FFFFFF')
 	{
-		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.color', '$color');");
+		NolohInternal::SetProperty('OvTxtClr', "$color", $this->TextLabel);
 	}
 	function SetOutBackColor($color='transparent')	
 	{
 		$this->TextLabel->SetBackColor($color);
-		$this->MouseOut[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+		NolohInternal::SetProperty('OtBckClr', "$color", $this->TextLabel);
 	}
-	function SetOverBackColor($color='#316AC5')
+	function SetOverBackColor($color='#07254A')
 	{
-		$this->MouseOver[] = new ClientEvent("NOLOHChange('{$this->TextLabel->Id}', 'style.background', '$color');");
+		NolohInternal::SetProperty('OvBckClr', "$color", $this->TextLabel);
 	}
 	function Show()
 	{
@@ -150,7 +174,7 @@ class MenuItem extends Panel
 	{
 		parent::Hide();
 		$this->TextLabel->Hide();
-		$this->MainMenuPanel->Hide();
+		$this->MenuItemsPanel->Hide();
 	}
 }
 ?>

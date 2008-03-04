@@ -1,102 +1,78 @@
-mnuDeactivated = false;
-
-function ToggleSubMenuItems(mnuItmId, txtLblId, sbMenuId, isClk)
+function _NTglSubMnuItms(mnuItmId)
 {
-	if(mnuDeactivated == true)
-	{
-		mnuDeactivated = false;
-		return;
-	}
 	var menu = document.getElementById(mnuItmId);
-	var subMenu =  document.getElementById(sbMenuId);
-	var label =  document.getElementById(txtLblId);
-	var tmpParent = document.getElementById(label.MenuPanelParentId)
-	
-	if(label.IsSelected == null || label.IsMainMenu != null)
+	var subMenu =  (menu.ItmsPnl != null)?document.getElementById(menu.ItmsPnl):null;
+	var tmpParent = menu.parentNode;
+	if(menu.IsSlct == null)
 	{
-		if(label.IsMainMenu != null)
+		if(menu.IsMnu != null)
 		{
-			if(isClk == true)
-				if(tmpParent.IsClicked != true)
-					tmpParent.IsClicked = true;
-			if(tmpParent.IsClicked != true)
-				return;
-			label.setActive();
-			label.detachEvent("ondeactivate", HideAllMainMenuChildren);
-			label.attachEvent("ondeactivate", HideAllMainMenuChildren);
+			MnuItmGlobal = menu.id;
+			document.attachEvent("onclick", _NHideMnuChldrn);
 		}
-		if(tmpParent.SelectedMenuItemId != null)
-		{
-			if(label.IsMainMenu != null)
-				HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, false);
-			else
-				HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, true);
-		}
-		tmpParent.SelectedMenuItemId = label.id;
-		label.IsSelected = true;
-	
-		if((document.getElementById(sbMenuId).ChildrenArray) != null)
-		{
-			label.ChildMenuId = sbMenuId;
-			ToggleVisibility(sbMenuId);
-		}
-	}
-}
-function HideAllMainMenuChildren()
-{
-	if(window.event.toElement.id != "")
-	{
-		var tmp = document.getElementById(window.event.toElement.id);
-		if(tmp != null)
-		{
-			if(tmp.MenuPanelParentId != null)
-			{
-				var tempGrandParent = document.getElementById(tmp.MenuPanelParentId);
-				if(tempGrandParent.IsClicked == true)
-					mnuDeactivated = true;
-				document.getElementById(window.event.srcElement.MenuPanelParentId).IsClicked = false;
-				if(tmp.IsMainMenu == null)
-					if(tmp.onclick != null)
-						tmp.onclick.call();
-			}
-			if(tmp.MenuPanelParentId == null)
-				document.getElementById(window.event.srcElement.MenuPanelParentId).IsClicked = false;
-		}
+		if(tmpParent.SlctMnuItm != null)
+			_NHideChldrn(tmpParent.SlctMnuItm, true, false);
+		menu.attachEvent("onmouseout", _NTglMnuOut);
+		tmpParent.SlctMnuItm = menu.id;
+		ChangeMenuOutColors(menu.TxtLbl, false)
+		menu.IsSlct = true;
+		if(subMenu != null && subMenu.ChildrenArray != null)
+			ToggleVisibility(subMenu.id);
 	}
 	else
-		document.getElementById(window.event.srcElement.MenuPanelParentId).IsClicked = false;
-	crappyglobal = window.event.srcElement.id;
-	HideAllMenuItemChildren(crappyglobal, true, true);
+		_NHideChldrn(tmpParent.SlctMnuItm, false, false);
 }
-function HideAllMenuItemChildren(mnuItmId, isClick, changeColor)
+function _NTglMnuOut(event)
 {
-	var OpenMenuItem = document.getElementById(mnuItmId);
-	
-	if(OpenMenuItem.ChildMenuId != null)
+	var mnuItmLbl = document.getElementById(event.srcElement.id);
+	var mnuItm = mnuItmLbl.parentNode;
+	var outObj = document.getElementById(event.toElement.id);
+	//alert(mnuItmLbl.id + ' ' + mnuItm.id + ' ' + outObj.id);
+	if(mnuItm.ItmsPnl != null && (outObj.parentNode.parentNode.id == mnuItm.ItmsPnl || outObj.id == mnuItm.ItmsPnl))
+		return;
+	else
 	{
-		var ChildMenu = document.getElementById(OpenMenuItem.ChildMenuId);
-		
-		for(var i=0; i < ChildMenu.ChildrenArray.length; ++i)
-			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], isClick, changeColor);
-		OpenMenuItem.IsSelected = null;
-		if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && mnuDeactivated != true && changeColor == true))
-			OpenMenuItem.onmouseout.call();
-		//ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");
-		ChangeAndSave(ChildMenu.id, "style.display", "none"); 
+		var mnuId = (mnuItmLbl.SlctMnuItm != null)?mnuItmLbl.SlctMnuItm:mnuItm.id;
+		_NHideChldrn(mnuId, true, false);
+		//mnuItm.removeEventListener("mouseout", _NTglMnuOut, true);
 	}
-	OpenMenuItem.IsSelected = null;
-	if(isClick)
-		if(OpenMenuItem.IsMainMenu != null)
-			document.getElementById(OpenMenuItem.MenuPanelParentId).detachEvent("ondeactivate", HideAllMainMenuChildren);
-	if(window.event != null)
-		window.event.returnValue = false;
 }
-function ChangeMenuOutColors(menuItemId, outBackColor, outTextColor)
+function _NHideMnuChldrn(event)
 {
-	var tmpMenuItem = document.getElementById(menuItemId);
-	if(tmpMenuItem.IsSelected == null)
+	document.getElementById(MnuItmGlobal).parentNode.IsClk = false;
+	_NHideChldrn(MnuItmGlobal, true, true);
+	document.detachEvent("onclick", _NHideMnuChldrn, true);
+}
+function _NHideChldrn(mnuItmId, topLvl, rmEvt)
+{
+	var opnMnu = document.getElementById(mnuItmId);
+	if(opnMnu.ItmsPnl != null)
 	{
-		ChangeAndSave(tmpMenuItem.id, "style.background", outBackColor);
-		ChangeAndSave(tmpMenuItem.id, "style.color", outTextColor);
+		var chldMnu = document.getElementById(opnMnu.ItmsPnl);
+		for(var i=0; i < chldMnu.ChildrenArray.length; ++i)
+			_NHideChldrn(chldMnu.ChildrenArray[i], true, false);
+		if(topLvl)
+			ChangeAndSave(opnMnu.ItmsPnl, 'style.display', 'none'); 
+	}
+	if(topLvl)
+	{
+		ChangeMenuOutColors(opnMnu.TxtLbl, true);
+		opnMnu.IsSlct = null;
+	}
+	if(rmEvt)
+		document.detachEvent("onclick", _NHideMnuChldrn, true);
+}
+function ChangeMenuOutColors(mnuItmId, isOut)
+{
+	var tmpMnuItm = document.getElementById(mnuItmId);
+	if(isOut)
+	{
+		ChangeAndSave(mnuItmId, "style.background", tmpMnuItm.OtBckClr);
+		ChangeAndSave(mnuItmId, "style.color", tmpMnuItm.OtTxtClr);
+	}
+	else
+	{
+		ChangeAndSave(mnuItmId, "style.background", tmpMnuItm.OvBckClr);
+		ChangeAndSave(mnuItmId, "style.color", tmpMnuItm.OvTxtClr);
 	}
 }

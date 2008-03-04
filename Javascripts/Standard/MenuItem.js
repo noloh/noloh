@@ -1,114 +1,78 @@
-mnuDeactivated = false;
-
-function ToggleSubMenuItems(mnuItmId, txtLblId, sbMenuId, isClk)
+function _NTglSubMnuItms(mnuItmId)
 {
-	if(mnuDeactivated == true)
-	{
-		mnuDeactivated = false;
-		return;
-	}
 	var menu = document.getElementById(mnuItmId);
-	var subMenu =  document.getElementById(sbMenuId);
-	var label =  document.getElementById(txtLblId);
-	var tmpParent = document.getElementById(label.MenuPanelParentId)
-	//ChangeAndSave(subMenu.id, 'style.top', menu.offsetTop + 'px');
-	
-//	var tmpParent = 
-//	var label = document.getElementById(txtLblId);
-//	var tmpParent = document.getElementById(label.MenuPanelParentId);
-	if(label.IsSelected == null || label.IsMainMenu != null)
+	var subMenu =  (menu.ItmsPnl != null)?document.getElementById(menu.ItmsPnl):null;
+	var tmpParent = menu.parentNode;
+	if(menu.IsSlct == null)
 	{
-		if(label.IsMainMenu != null)
+		if(menu.IsMnu != null)
 		{
-			if(isClk == true)
-				if(tmpParent.IsClicked != true)
-					tmpParent.IsClicked = true;
-			if(tmpParent.IsClicked != true)
-				return;
-			MainMenuItemPanelGlobal = label.id;
-			document.body.addEventListener("click", HideAllMainMenuChildren, true);
+			MnuItmGlobal = menu.id;
+			document.addEventListener("click", _NHideMnuChldrn, true);
 		}
-		if(tmpParent.SelectedMenuItemId != null)
-		{
-			if(label.IsMainMenu != null)
-			{
-				if(tmpParent.SelectedMenuItemId != label.id)
-				{
-					var tmpBool = mnuDeactivated;
-					mnuDeactivated = false;
-					HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, true);
-					menuWasDeactiveted = tmpBool;
-				}
-				else
-					HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, false);
-			}
-			else
-				HideAllMenuItemChildren(tmpParent.SelectedMenuItemId, false, true);
-		}
-		tmpParent.SelectedMenuItemId = label.id;
-		label.IsSelected = true;
-	
-		if((document.getElementById(sbMenuId).ChildrenArray) != null)
-		{
-			label.ChildMenuId = sbMenuId;
-			ToggleVisibility(sbMenuId);
-		}
-	}
-}
-function HideAllMainMenuChildren(event)
-{
-	//return;
-	if(event.target.id != null)
-	{
-		var tmp = document.getElementById(event.target.id);
-		if(tmp != null)
-		{
-			if(tmp.MenuPanelParentId != null)
-			{
-				var tempGrandParent = document.getElementById(tmp.MenuPanelParentId);
-				if(tempGrandParent.IsClicked == true)
-					mnuDeactivated = true;
-				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
-			}
-			if(tmp.MenuPanelParentId == null)
-				document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
-		}
-		else
-			document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;	
+		if(tmpParent.SlctMnuItm != null)
+			_NHideChldrn(tmpParent.SlctMnuItm, true, false);
+		menu.addEventListener("mouseout", _NTglMnuOut, true);
+		tmpParent.SlctMnuItm = menu.id;
+		ChangeMenuOutColors(menu.TxtLbl, false)
+		menu.IsSlct = true;
+		if(subMenu != null && subMenu.ChildrenArray != null)
+			ToggleVisibility(subMenu.id);
 	}
 	else
-		document.getElementById(document.getElementById(MainMenuItemPanelGlobal).MenuPanelParentId).IsClicked = false;
-		
-	HideAllMenuItemChildren(MainMenuItemPanelGlobal, true, true);
-	document.body.removeEventListener("click", HideAllMainMenuChildren, true);
+		_NHideChldrn(tmpParent.SlctMnuItm, false, false);
 }
-function HideAllMenuItemChildren(mnuItmId, isClick, changeColor)
+function _NTglMnuOut(event)
 {
-	var OpenMenuItem = document.getElementById(mnuItmId);
-	
-	if(OpenMenuItem.ChildMenuId != null)
+	var mnuItmLbl = document.getElementById(event.target.id);
+	var mnuItm = mnuItmLbl.parentNode;
+	var outObj = document.getElementById(event.relatedTarget.id);
+	//alert(mnuItmLbl.id + ' ' + mnuItm.id + ' ' + outObj.id);
+	if(mnuItm.ItmsPnl != null && (outObj.parentNode.parentNode.id == mnuItm.ItmsPnl || outObj.id == mnuItm.ItmsPnl))
+		return;
+	else
 	{
-		var ChildMenu = document.getElementById(OpenMenuItem.ChildMenuId);
-		
-		for(var i=0; i < ChildMenu.ChildrenArray.length; ++i)
-			HideAllMenuItemChildren(ChildMenu.ChildrenArray[i], isClick, changeColor);
-		OpenMenuItem.IsSelected = null;
-		if(OpenMenuItem.IsMainMenu == null || (OpenMenuItem.IsMainMenu != null && mnuDeactivated != true && changeColor == true))
-			OpenMenuItem.onmouseout.call();
-		//ChangeMenuOutColors(OpenMenuItem.id, "transparent", "#000000");
-		ChangeAndSave(ChildMenu.id, "style.display", "none"); 
+		var mnuId = (mnuItmLbl.SlctMnuItm != null)?mnuItmLbl.SlctMnuItm:mnuItm.id;
+		_NHideChldrn(mnuId, true, false);
+		//mnuItm.removeEventListener("mouseout", _NTglMnuOut, true);
 	}
-	OpenMenuItem.IsSelected = null;
-	if(isClick)
-		if(OpenMenuItem.IsMainMenu != null)
-			document.body.removeEventListener("click", HideAllMainMenuChildren, true);
 }
-function ChangeMenuOutColors(menuItemId, outBackColor, outTextColor)
+function _NHideMnuChldrn(event)
 {
-	var tmpMenuItem = document.getElementById(menuItemId);
-	if(tmpMenuItem.IsSelected == null)
+	document.getElementById(MnuItmGlobal).parentNode.IsClk = false;
+	_NHideChldrn(MnuItmGlobal, true, true);
+	document.removeEventListener("click", _NHideMnuChldrn, true);
+}
+function _NHideChldrn(mnuItmId, topLvl, rmEvt)
+{
+	var opnMnu = document.getElementById(mnuItmId);
+	if(opnMnu.ItmsPnl != null)
 	{
-		ChangeAndSave(tmpMenuItem.id, "style.background", outBackColor);
-		ChangeAndSave(tmpMenuItem.id, "style.color", outTextColor);
+		var chldMnu = document.getElementById(opnMnu.ItmsPnl);
+		for(var i=0; i < chldMnu.ChildrenArray.length; ++i)
+			_NHideChldrn(chldMnu.ChildrenArray[i], true, false);
+		if(topLvl)
+			ChangeAndSave(opnMnu.ItmsPnl, 'style.display', 'none'); 
+	}
+	if(topLvl)
+	{
+		ChangeMenuOutColors(opnMnu.TxtLbl, true);
+		opnMnu.IsSlct = null;
+	}
+	if(rmEvt)
+		document.removeEventListener("click", _NHideMnuChldrn, true);
+}
+function ChangeMenuOutColors(mnuItmId, isOut)
+{
+	var tmpMnuItm = document.getElementById(mnuItmId);
+	if(isOut)
+	{
+		ChangeAndSave(mnuItmId, "style.background", tmpMnuItm.OtBckClr);
+		ChangeAndSave(mnuItmId, "style.color", tmpMnuItm.OtTxtClr);
+	}
+	else
+	{
+		ChangeAndSave(mnuItmId, "style.background", tmpMnuItm.OvBckClr);
+		ChangeAndSave(mnuItmId, "style.color", tmpMnuItm.OvTxtClr);
 	}
 }
