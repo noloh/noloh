@@ -265,13 +265,16 @@ final class Application
 		global $OmniscientBeing;
 		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['NOLOHOmniscientBeing']) : $_SESSION['NOLOHOmniscientBeing']);
 		unset($_SESSION['NOLOHOmniscientBeing']);
+		$idArrayStr = '';
 		foreach($_SESSION['NOLOHGarbage'] as $id => $nothing)
 		{
 			$control = &$GLOBALS['OmniscientBeing'][$id];
 			if(!isset($_SESSION['NOLOHGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
-				AddScript("_NAsc('$id')", Priority::Low);
+				$idArrayStr .= '\'' . $id . '\',';
 			unset($OmniscientBeing[$id]);
 		}
+		if($idArrayStr != '')
+			AddScript('_NGCAsc(Array(' . rtrim($idArrayStr, ',') . '))', Priority::Low);
 		$_SESSION['NOLOHGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);
 	}

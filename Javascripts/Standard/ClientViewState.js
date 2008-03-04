@@ -398,6 +398,13 @@ function _NAsc(id)
     }
 }
 
+function _NGCAsc(idArr)
+{
+	var arrLength = idArr.length;
+	for(var i=0; i<arrLength; ++i)
+		_NAsc(idArr[i]);
+}
+
 function GetChanges()
 {
 	var changes = "", distinctId, property;
