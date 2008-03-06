@@ -143,8 +143,7 @@ final class Application
 			$this->HandleDebugMode($debugMode);
 			if(isset($_SESSION['NOLOHOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
-			if(!empty($_POST['NOLOHClientChanges']))
-				$this->HandleClientChanges();
+			$this->HandleClientChanges();
 			if(!empty($_POST['NOLOHFileUploadId']))
 				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
 			foreach($_SESSION['NOLOHFiles'] as $key => $val)
@@ -292,21 +291,27 @@ final class Application
         }
 		if(isset($_POST['NOLOHContextMenuSource']))
 			ContextMenu::$Source = GetComponentById($_POST['NOLOHContextMenuSource']);
-		Event::$MouseX = $_POST['NOLOHMouseX'];
-		Event::$MouseY = $_POST['NOLOHMouseY'];
-		$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
-		$numComponents = count($componentChanges);
-		for($i = 0; $i < $numComponents; ++$i)
+		if(isset($_POST['NOLOHMouseX']))
 		{
-			$changes = explode('~d1~', $componentChanges[$i]);
-			$GLOBALS['_NQueueDisabled'] = $changes[0];
-			$component = &GetComponentById($changes[0]);
-			$changeCount = count($changes);
-			$j = 0;
-			while(++$j < $changeCount)
-				$component->{$changes[$j]} = $changes[++$j];
+			Event::$MouseX = $_POST['NOLOHMouseX'];
+			Event::$MouseY = $_POST['NOLOHMouseY'];
 		}
-		$GLOBALS['_NQueueDisabled'] = null;
+		if(!empty($_POST['NOLOHClientChanges']))
+		{
+			$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
+			$numComponents = count($componentChanges);
+			for($i = 0; $i < $numComponents; ++$i)
+			{
+				$changes = explode('~d1~', $componentChanges[$i]);
+				$GLOBALS['_NQueueDisabled'] = $changes[0];
+				$component = &GetComponentById($changes[0]);
+				$changeCount = count($changes);
+				$j = 0;
+				while(++$j < $changeCount)
+					$component->{$changes[$j]} = $changes[++$j];
+			}
+			$GLOBALS['_NQueueDisabled'] = null;
+		}
 	}
 	
 	private function HandleServerEvent()
