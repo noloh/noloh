@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package Data
+ */
+
+/**
+ * Data class
+ * 
+ * This class is for data
+ */
 final class Data
 {	
 	const Postgres = 'postgres';
@@ -6,12 +15,12 @@ final class Data
 	const MSSQL = 'mssql';
 	const ODBC = 'odbc';
 	
-	const Assoc = 1, Num = 2, Both = 3;
+	const Assoc = 1;
+	const Num = 2;
+	const Both = 3;
 	
 	static $Links;		
-	/**
-	 * @ignore
-	 */
+
 	function __get($name)
 	{
 		if(isset($_SESSION['_NDataLinks']) && isset($_SESSION['_NDataLinks'][$name]))
@@ -23,5 +32,6 @@ final class Data
 		return $_SESSION['_NDataLinks'][$name] = $value;
 	}
 }
+
 Data::$Links = new Data();
 ?>

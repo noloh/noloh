@@ -15,7 +15,7 @@ class Table extends Control
 		$this->Rows = new ArrayList();
 		$this->Rows->ParentId = $this->Id;
 	}
-	function BuildTable($numRows, $numCols, $typeAsString, $params="")
+	function BuildTable($numRows, $numCols, $typeAsString, $params='')
 	{
 		$this->BuiltMatrix = array(array());
 		for($i = 0; $i < $numRows; ++$i)

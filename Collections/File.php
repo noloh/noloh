@@ -4,10 +4,10 @@
  */
 class File
 {
-	const Read = "r";
-	const ReadWrite = "r+";
-	const Write = "w";
-	const Append = "a+";
+	const Read = 'r';
+	const ReadWrite = 'r+';
+	const Write = 'w';
+	const Append = 'a+';
 	
 	private $Filename;
 	private $File;
@@ -39,7 +39,7 @@ class File
 			unset($_SESSION['NOLOHFileSend'][$fileName]);
 		}
 		else 
-			BloodyMurder("You do not have permission to access that file!");
+			BloodyMurder('You do not have permission to access that file!');
 	}
 	
 	function File($whatFile = null)
@@ -61,25 +61,25 @@ class File
 		}
 	}
 	
-	function Open($whatMode = self::ReadWrite, $autoSave = true)
+	function Open($whatMode = File::ReadWrite, $autoSave = true)
 	{
-		if($autoSave == false)
+		if(!$autoSave)
 		{
 			$this->AutoSave = false;
 			$this->PointerToFile = tmpfile();
-			fputs($this->PointerToFile, fread(fopen($this->File, "r"), filesize($this->Filename)));
+			fputs($this->PointerToFile, fread(fopen($this->File, 'r'), filesize($this->Filename)));
 		}
 		$this->PointerToFile = fopen(realpath($this->Filename), $whatMode);
 	}
 	
-	function Write($whatWrite="")
+	function Write($whatWrite='')
 	{
 		fwrite($this->PointerToFile, $whatWrite);
 	}
 	
 	Function Read()
 	{
-		$str = "";
+		$str = '';
 		while(!feof($this->PointerToFile))
 			$str .= fgets($this->PointerToFile);
 			
@@ -91,15 +91,15 @@ class File
 		fclose($this->PointerToFile);
 	}
 	
-	function SaveAs($folder = "", $filename = null)
+	function SaveAs($folder = '', $filename = null)
 	{
-		$tempString = "";
+		$tempString = '';
 //		$tempString = "/";
 		if(!empty($folder))
 		{
 			$tempString .= $folder;
-			if(substr($folder, -1, 1) != "/")
-				$tempString .= "/";
+			if(substr($folder, -1, 1) != '/')
+				$tempString .= '/';
 		}
 		$tempString .= is_null($filename)?$this->Filename:$filename;
 		//$tempString = $this->GetFullPath() . $tempString;
@@ -138,9 +138,9 @@ class File
 	
 	function GetFullPath()
 	{
-		$relativePath = explode("/", $_SERVER['PHP_SELF']);
+		$relativePath = explode('/', $_SERVER['PHP_SELF']);
 		array_pop($relativePath);
-		$relativePath = implode("/", $relativePath);
+		$relativePath = implode('/', $relativePath);
 		return($_SERVER['DOCUMENT_ROOT'] . $relativePath);
 	}
 }

@@ -11,7 +11,7 @@ class RolloverLabel extends Label implements Groupable
 	private $Selected;
 	private $GroupName;
 	
-	function RolloverLabel($text, $outColor="#000000", $overColor="#FFFFFF", $selectedColor="#FFFFFF", $whatLeft = 0, $whatTop = 0, $whatWidth = System::Auto, $whatHeight = 18)
+	function RolloverLabel($text, $outColor='#000000', $overColor='#FFFFFF', $selectedColor='#FFFFFF', $whatLeft = 0, $whatTop = 0, $whatWidth = System::Auto, $whatHeight = 18)
 	{
 		parent::Label($text, $whatLeft, $whatTop, $whatWidth, $whatHeight);
 		$this->SetOutColor($outColor);

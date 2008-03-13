@@ -14,7 +14,7 @@ class Shift
 	const Location = 6;
 	const Mirror = 7;
 
-	static function Width($control, $min=1, $max=null, $type=self::Normal, $ratio=1)
+	static function Width($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		return array($id,1,'Array("'.$id.'",1,'.$type.','.$ratio.','.
@@ -22,7 +22,7 @@ class Shift
         	($max===null ? ')' : (','.$max.')')));
 	}
 
-	static function Height($control, $min=1, $max=null, $type=self::Normal, $ratio=1)
+	static function Height($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		return array($id,2,'Array("'.$id.'",2,'.$type.','.$ratio.','.
@@ -30,7 +30,7 @@ class Shift
         	($max===null ? ')' : (','.$max.')')));
 	}
 
-	static function Size($control, $minWidth=1, $maxWidth=null, $minHeight=1, $maxHeight=null, $type=self::Normal, $ratio=1)
+	static function Size($control, $minWidth=1, $maxWidth=null, $minHeight=1, $maxHeight=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		return array($id,3,'Array("'.$id.'",3,'.$type.','.$ratio.','.
@@ -40,7 +40,7 @@ class Shift
         	($maxHeight===null ? ')' : (','.$maxheight.')')));
 	}
 
-	static function Left($control, $min=null, $max=null, $type=self::Normal, $ratio=1)
+	static function Left($control, $min=null, $max=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		$shiftStr = 'Array("'.$id.'",4,'.$type.','.$ratio;
@@ -51,7 +51,7 @@ class Shift
         return array($id,4,$shiftStr.')');
 	}
 	
-	static function Top($control, $min=null, $max=null, $type=self::Normal, $ratio=1)
+	static function Top($control, $min=null, $max=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		$shiftStr = 'Array("'.$id.'",5,'.$type.','.$ratio;
@@ -62,7 +62,7 @@ class Shift
         return array($id,5,$shiftStr.')');
 	}
 
-	static function Location($control, $minLeft=null, $maxLeft=null, $minTop=null, $maxTop=null, $type=self::Normal, $ratio=1)
+	static function Location($control, $minLeft=null, $maxLeft=null, $minTop=null, $maxTop=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
 		$shiftStr = 'Array("'.$id.'",6,'.$type.','.$ratio;

@@ -2,9 +2,13 @@
 /**
  * @package Web.UI.Controls
  */
+
+/**
+ * @ignore
+ */
 class GroupBox extends Guardian
 {	
-	function GroupBox($whatCaption ="", $whatLeft = 0, $whatTop = 0, $whatWidth = 100, $whatHeight = 100)  
+	function GroupBox($whatCaption ='', $whatLeft = 0, $whatTop = 0, $whatWidth = 100, $whatHeight = 100)  
 	{
 		parent::Guardian($whatLeft, $whatTop, $whatWidth, $whatHeight);
 		$this->Text = $whatCaption;
