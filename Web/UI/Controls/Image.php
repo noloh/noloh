@@ -76,7 +76,7 @@ class Image extends Control
 	function SetSrc($newSrc, $adjustSize=false)
 	{
 		$this->Src = $newSrc;
-        NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.$this->Src.'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
+        NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
 		if($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
@@ -174,7 +174,7 @@ class Image extends Control
     function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
 		$this->Magician = func_get_args();
-        NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.$this->Src.'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
+        NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
         //$this->Magician = array($className, $functionName);
     }
 	/**

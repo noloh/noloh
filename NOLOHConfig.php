@@ -6,7 +6,7 @@ class NOLOHConfig
 {	
 	static function GetNOLOHPath()
 	{
-		return "/Projects/NOLOH/";
+		return '/Projects/NOLOH/';
 	}
 	static function GetBaseDirectory()
 	{
