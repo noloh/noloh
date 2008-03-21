@@ -95,7 +95,7 @@ class Label extends Control
 		$width = parent::GetWidth();
 		$height = parent::GetHeight();
 		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
-			QueueClientFunction($this, '_NAWH', array("'$this->Id'"));
+			QueueClientFunction($this, '_NAWH', array('\''.$this->Id.'\''));
 	}
 	
 	function GetAlign()
@@ -225,15 +225,15 @@ class Label extends Control
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
 		{
 			$this->CachedWidth = $widthHeight[0];
-			NolohInternal::SetProperty('style.width', $this->CachedWidth.'px', $this);
+			//NolohInternal::SetProperty('style.width', $this->CachedWidth.'px', $this);
 		}
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
 		{
 			$this->CachedHeight = $widthHeight[1];
-			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
+			//NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
-		if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]))
-			unset($_SESSION['NOLOHFunctionQueue'][$this->Id]['_NAWH']);
+		//if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]))
+		//	unset($_SESSION['NOLOHFunctionQueue'][$this->Id]['_NAWH']);
 	}
 	
 	function Show()
