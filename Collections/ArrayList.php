@@ -69,11 +69,19 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends ArrayList.
-	 * @param array An array representing the initial elements. Note that the Parents of these elements will not be changed.
+	 * @param array An array representing the initial elements.
 	 */ 
-	function ArrayList($elements=array())
+	function ArrayList($elements=null)
 	{
-		$this->Elements = $elements;
+		if($elements == null)
+			$this->Elements = array();
+		elseif(is_array($elements))
+		{
+			$elementsCount = count($elements);
+			for($i=0; $i<$elementsCount; ++$i)
+				$this->PreAdd($elements[$i];
+			$this->Elements = $elements;
+		}
 	}
 	/**
 	 * @ignore
