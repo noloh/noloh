@@ -79,7 +79,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		{
 			$elementsCount = count($elements);
 			for($i=0; $i<$elementsCount; ++$i)
-				$this->PreAdd($elements[$i];
+				$this->PreAdd($elements[$i]);
 			$this->Elements = $elements;
 		}
 	}
