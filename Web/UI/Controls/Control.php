@@ -323,6 +323,8 @@ class Control extends Component
 			NolohInternal::SetProperty('style.width', $newWidth.'px', $this);
 		elseif(is_numeric(rtrim($newWidth, '%')))
 			NolohInternal::SetProperty('style.width', $newWidth, $this);
+		elseif(is_null($newWidth))
+			NolohInternal::SetProperty('style.width', '', $this);
 	}
 	/**
 	* @ignore
@@ -342,6 +344,8 @@ class Control extends Component
 			NolohInternal::SetProperty('style.height', $newHeight.'px', $this);
 		elseif(is_numeric(rtrim($newHeight, '%')))
 			NolohInternal::SetProperty('style.height', $newHeight, $this);
+		elseif(is_null($newHeight))
+			NolohInternal::SetProperty('style.height', '', $this);
 	}
 	//
 	function GetLeft() {return $this->Left;}
@@ -353,6 +357,8 @@ class Control extends Component
 			NolohInternal::SetProperty('style.left', $newLeft.'px', $this);
 		elseif(is_numeric(rtrim($newLeft, '%')))
 			NolohInternal::SetProperty('style.left', $newLeft, $this);
+		elseif(is_null($newLeft))
+			NolohInternal::SetProperty('style.left', '', $this);
 	}
 	//
 	function GetTop() {return $this->Top;}
@@ -364,6 +370,8 @@ class Control extends Component
 			NolohInternal::SetProperty('style.top', $newTop.'px', $this);
 		elseif(is_numeric(rtrim($newTop, '%')))
 			NolohInternal::SetProperty('style.top', $newTop, $this);
+		elseif(is_null($newTop))
+			NolohInternal::SetProperty('style.top', '', $this);
 	}
 	/**
 	*<b>Note:</b>Can also be called as a property.
