@@ -72,14 +72,18 @@ class TreeNode extends Panel
 				$this->Icon->Src = $this->CloseSrc!=null ? $this->CloseSrc : TreeNode::GetDefaultCloseSrc();
 		}
 	}
-	function AddTreeNode(TreeNode $node)
+	function AddTreeNode($node)
 	{
+		if(!($node instanceof TreeNode))
+			$node = new TreeNode($node);
 		$this->AddNodeHelper($node);
 		$this->ChildrenPanel->Controls->Add($node, true, true);
 		return $node;
 	}
-	function InsertTreeNode(TreeNode $node, $index)
+	function InsertTreeNode($node, $index)
 	{
+		if(!($node instanceof TreeNode))
+			$node = new TreeNode($node);
 		if(isset($this->ChildrenPanel->Controls->Elements[$index]))
 		{
 			$this->AddNodeHelper($node);

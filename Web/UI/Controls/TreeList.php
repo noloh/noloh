@@ -20,16 +20,20 @@ class TreeList extends Panel
 		NolohInternal::SetProperty('OpenSrc', TreeNode::GetDefaultOpenSrc(), $this);
 		NolohInternal::SetProperty('CloseSrc', TreeNode::GetDefaultCloseSrc(), $this);
 	}
-	function AddTreeNode(TreeNode $node)
+	function AddTreeNode($node)
 	{
+		if(!($node instanceof TreeNode))
+			$node = new TreeNode($node);
 		$node->SetWidth($this->Width-20);
 		$this->Controls->Add($node, true, true);
 		$node->SetTreeListId($this->Id);
 		$node->TellChildren($this->Id);
 		return $node;
 	}
-	function InsertTreeNode(TreeNode $node, $index)
+	function InsertTreeNode($node, $index)
 	{
+		if(!($node instanceof TreeNode))
+			$node = new TreeNode($node);
 		$node->SetWidth($this->Width-20);
 		$this->Controls->Insert($node, $index, true);
 		$node->SetTreeListId($this->Id);
