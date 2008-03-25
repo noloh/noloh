@@ -28,7 +28,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			}
 			else
 				$this->Data = pg_fetch_all($resource);
-		
+			
 		}
 		elseif($type == Data::MySQL)
 		{
@@ -43,6 +43,8 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			for ($i=0; $i < $numRows; $i++)
 				$this->Data[] =  mysql_fetch_array($mytempExecCommand, $i, $resultType);	
 		}
+		if(!$this->Data)
+			$this->Data = array();
 	}
 	function Count()
 	{
