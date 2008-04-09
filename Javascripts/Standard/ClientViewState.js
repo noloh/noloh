@@ -20,17 +20,17 @@ ConversionArray["newText"] = "_NText";
 ConversionArray["selectedIndex"] = "SelectedIndex";
 ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
-ConversionArray["killlater"] = "KillLater";
+//ConversionArray["killlater"] = "KillLater";
 ConversionArray["src"] = "Src";
 ConversionArray["scrollLeft"] = "ScrollLeft";
 ConversionArray["scrollTop"] = "ScrollTop";
-ConversionArray["style.visibility"] = "Visible";
-ConversionArray["style.display"] = "Visible";
+//ConversionArray["style.visibility"] = "Visible";
+//ConversionArray["style.display"] = "Visible";
 ConversionArray["options"] = "_NItems";
 ConversionArray["selectedIndices"] = "_NSelectedIndices";
-ConversionArray["timer"] = "ServerVisible";
-ConversionArray["CachedWidth"] = "CachedWidth";
-ConversionArray["CachedHeight"] = "CachedHeight";
+//ConversionArray["timer"] = "ServerVisible";
+//ConversionArray["CachedWidth"] = "CachedWidth";
+//ConversionArray["CachedHeight"] = "CachedHeight";
 ConversionArray["calViewDate.setMonth"] = "ViewMonth";
 ConversionArray["calViewDate.setFullYear"] = "ViewYear";
 ConversionArray["calSelectDate.setDate"] = "Date";
@@ -112,12 +112,11 @@ function NOLOHChangeInit(id, propertyString)
 
 function NOLOHChange(id, propertyString, newValue)
 {
-	var tempObj;
-	if(propertyString != "timer")
-		tempObj = document.getElementById(id);
-	else
-		eval("tempObj = window." + id + ";");
-	NOLOHChangeByObj(tempObj, propertyString, newValue);
+	var obj;
+	obj = document.getElementById(id);
+	if(!obj)
+		obj = window[id];
+	NOLOHChangeByObj(obj, propertyString, newValue);
 }
 
 function NOLOHChangeByObj(obj, propertyString, newValue)
@@ -202,6 +201,18 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				NOLOHChangeByObj(obj, "oncontextmenu", "");
 				obj.ContextMenu = newValue;
 			break;
+		case "Group":
+			obj.Group = window[newValue];
+			obj.Group.Elements.push(obj.Id);
+			break;
+		case "Select":
+			if(obj.Select != newValue)
+			{
+				obj.Select = newValue;
+				if(obj.Group!=null && obj.Group.onchange!=null)
+					obj.Group.onchange.call();
+			}
+			break;
 		case "style.zIndex":
 			if(newValue > HighestZIndex)
 				HighestZIndex = newValue;
@@ -245,9 +256,7 @@ function _NSave(id, propertyString, newValue)
 {
 	if(id.indexOf("_") >= 0)
 		return;
-	NOLOHChangeInit(id, propertyString);
 	var tempObj;
-	//var propertyStringLower = propertyString.toLowerCase();
 	if(propertyString != "timer")
 		tempObj = document.getElementById(id);
 	else
@@ -257,26 +266,25 @@ function _NSave(id, propertyString, newValue)
 	switch(propertyString)
 	{
 		case "value":
+			NOLOHChangeInit(id, "value");
 			NOLOHChanges[id][propertyString][0] = (typeof newValue == "string" ? newValue.replace(/&/g, "~da~").replace(/\+/g, "~dp~") : newValue);
 			break;
 		case "style.left":
 		case "style.top":
 		case "style.width":
 		case "style.height":
-		//case "style.zIndex":
+			NOLOHChangeInit(id, propertyString);
 			NOLOHChanges[id][propertyString][0] = parseInt(newValue);
 			break;
 		case "style.visibility":
-			NOLOHChanges[id][propertyString][0] = (newValue == "visible");
-			break;
 		case "style.display":
-			NOLOHChanges[id][propertyString][0] = newValue == "" ? true : "System::Vacuous";
-			break;
-		case "checked":
-			NOLOHChanges[id][propertyString][0] = newValue ? 1 : 0;
+			NOLOHChangeInit(id, "Visible");
+			var obj = document.getElementById(id);
+			NOLOHChanges[id]["Visible"][0] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
 			break;
 		default:
-			NOLOHChanges[id][propertyString][0] = newValue;
+			NOLOHChangeInit(id, propertyString);
+			NOLOHChanges[id][propertyString][0] = typeof newValue == "boolean" ? (newValue ? 1 : 0) : newValue;
 	}
 }
 

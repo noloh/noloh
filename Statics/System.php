@@ -65,7 +65,7 @@ final class System
 	 * // Now $btn2 will be on the left side of the screen, not to the right of an invisible object
 	 * </code>
 	 */
-	const Vacuous = 0;
+	const Vacuous = null;
 	/**
 	* System::Unhandled is used in connection with {@link SetStartUpPage} as the fifth, $debugMode, parameter to 
 	* indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.

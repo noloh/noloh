@@ -462,10 +462,15 @@ class Control extends Component
 
 	function SetVisible($visibility)
 	{
-		if(is_bool($visibility))
+		if($visibility === null || $visibility === "null")
+		{
+			$this->Visible = 0;
+			NolohInternal::SetProperty('style.display', 'none', $this);
+		}
+		else//if(is_bool($visibility))
 		{
 			NolohInternal::SetProperty('style.display', '', $this);
-			if($visibility)
+			if($visibility===true || $visibility==="true")
 			{
 				$this->Visible = null;
 				NolohInternal::SetProperty('style.visibility', 'visible', $this);
@@ -475,11 +480,6 @@ class Control extends Component
 				$this->Visible = false;
 				NolohInternal::SetProperty('style.visibility', 'hidden', $this);
 			}
-		}
-		else
-		{
-			$this->Visible = 0;
-			NolohInternal::SetProperty('style.display', 'none', $this);
 		}
 	}
 
@@ -548,7 +548,6 @@ class Control extends Component
 		$this->ContextMenu = &$contextMenu;
         $contextMenu->SetParentId('N1');
 		NolohInternal::SetProperty('ContextMenu', $contextMenu->Id, $this);
-		//$this->UpdateEvent('RightClick');
     }
 
 	function GetBuoyant()
@@ -571,7 +570,9 @@ class Control extends Component
 			NolohInternal::Resurrect($this);
 		}
 	}
-
+	/**
+	 * @ignore
+	 */
 	function Set_NText($text)
 	{
 		$this->Text = str_replace(array('~da~','~dp~'), array('&','+'), $text);
@@ -612,8 +613,6 @@ class Control extends Component
 	function SetReturnKey($newReturnKey)			{$this->SetEvent($newReturnKey, 'ReturnKey');}
 	function GetRightClick()						{return $this->GetEvent('RightClick');}
 	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, 'RightClick');}
-//	function GetScroll()									{return $this->GetEvent('Scroll');}
-//	function SetScroll($newScroll)							{$this->SetEvent($newScroll, 'Scroll');}
 	function GetTypePause()							{return $this->GetEvent('TypePause');}
 	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
 	
@@ -636,12 +635,15 @@ class Control extends Component
 			$eventObj->Handles[] = $pair;
 		$this->UpdateEvent($eventType);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function UpdateEvent($eventType)
 	{
-		NolohInternal::SetProperty(Event::ConvertToJS($eventType), array($eventType, null), $this);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventType)
 	{
 		return isset($this->EventSpace[$eventType])
@@ -661,7 +663,9 @@ class Control extends Component
 		}
 		return $this->Shifts;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	private function AddShiftHelper($shift)
 	{
 		if($shift[1]==7)
@@ -691,12 +695,12 @@ class Control extends Component
 		$this->AddShiftHelper($shift);
 		$this->Shifts->Insert($shift, $index, true);
 	}
-	
+	/**
+	 * Removes the 
+	 * @param mixed $shift
+	 */
 	function RemoveShift($shift)
 	{
-		//$shiftCount = $this->Shifts->Count;
-		//for($i=0; $i<$shiftCount; ++$i)
-
 		foreach($this->Shifts as $i => $val)
 			if($this->Shifts[$i][0] == $shift[0])
 			{
@@ -727,6 +731,9 @@ class Control extends Component
 				return;
 			}
 	}
+	/**
+	 * @ignore
+	 */
 	private function ChangeShiftType($arrayIndex, $newType)
 	{
 		$tmp = $this->Shifts[$arrayIndex];
@@ -734,7 +741,9 @@ class Control extends Component
 		$this->Shifts->Elements[$arrayIndex] = $tmp;
 		QueueClientFunction($this, 'ChangeShiftType', array("'$this->Id'", $arrayIndex, $newType));
 	}
-
+	/**
+	 * Removes all Shift on this Control
+	 */
 	function ClearShift()
 	{
 		NolohInternal::SetProperty('Shifts', 'Array()', $this);
@@ -755,17 +764,23 @@ class Control extends Component
 	{
 		$this->_NSetZIndex(--$_SESSION['LowestZIndex']);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetAddId()
 	{
 		return $this->Id;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		print($this->Text . ' ');
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function &__get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
@@ -783,7 +798,9 @@ class Control extends Component
 			$ret = parent::__get($nm);
 		return $ret;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function __set($nm, $val)
 	{
 		parent::__set($nm, $val);
@@ -799,9 +816,5 @@ class Control extends Component
 		}
 		return $val;
 	}
-	/*function __toString()
-	{
-		return $this->GetText();
-	}*/
 }
 ?>
