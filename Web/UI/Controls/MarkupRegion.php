@@ -110,6 +110,10 @@ class MarkupRegion extends Control
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupRegionScript.js");
 		AddNolohScriptSrc('MarkupRegion.js');
 	}
+	static function StyleText($text, $class)
+	{
+		return '<span class=\''.$class.'\'>'.$text.'</span>';
+	}
 	function SearchEngineShow()
 	{
 		print(((is_file($this->Text))?file_get_contents($this->Text):$this->Text).' ');
