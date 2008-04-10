@@ -230,7 +230,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "DragCatch":
 			if(newValue == "")
 			{
-				for(var i=0; i<NOLOHCatchers.length; i++)
+				for(var i=0; i<NOLOHCatchers.length; ++i)
 					if(NOLOHCatchers[i] == obj.id)
 					{
 						NOLOHCatchers.splice(i, 1);
@@ -252,13 +252,13 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			break;
 		case "Group":
 			obj.Group = window[newValue];
-			obj.Group.Elements.push(obj.Id);
+			obj.Group.Elements.push(obj.id);
 			break;
-		case "Select":
-			if(obj.Select != newValue)
+		case "Selected":
+			if(obj.Selected != newValue)
 			{
-				obj.Select = newValue;
-				if(obj.Group!=null && obj.Group.onchange!=null)
+				obj.Selected = newValue;
+				if(obj.Group!=null && obj.Group.onchange!=null && !document.body.NOLOHPostingBack)
 					obj.Group.onchange.call();
 			}
 			break;

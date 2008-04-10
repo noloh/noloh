@@ -1,7 +1,6 @@
 <?
 /**
  * @ignore 
- *
  */
 class Group extends Component implements ArrayAccess, Countable, Iterator
 {
@@ -18,7 +17,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
-		$this->Groupees->Add($element, $passByReference);
+		NolohInternal::SetProperty('Group', $this->Id, $element);
+		$this->Groupees->Add($element, $setByReference);
 	}
 	function AddRange($dotDotDot)
 	{
@@ -31,6 +31,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
+		NolohInternal::SetProperty('Group', $this->Id, $element);
 		$this->Groupees->Insert($element, $index);
 	}
 	function Remove($element)
@@ -38,6 +39,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName(null);
+		NolohInternal::SetProperty('Group', '', $element);
 		$this->Groupees->Remove($element);		
 	}
 	function RemoveAt($index)
@@ -75,10 +77,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	{
 		foreach($this->Groupees as $groupee)
 			if($groupee->GetValue() == $value)
-			{
-				$this->SetSelectedElement($groupee);
-				return;
-			}
+				return $this->SetSelectedElement($groupee);
 	}
 	function Deselect($deselectMultiGroupables = false)
 	{
@@ -114,20 +113,31 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	{
 		foreach($this->Groupees as $groupee)
 			if($groupee->GetText() == $value)
-			{
-				$this->SetSelectedElement($groupee);
-				return;
-			}		
+				return $this->SetSelectedElement($groupee);
+	}
+	function Show()
+	{
+		parent::Show();
+		AddNolohScriptSrc('Group.js');
+		AddScript('window.'.$this->Id.'=new Group();', Priority::High);
 	}
 	/**
 	 * @ignore
 	 */
 	function Bury()
 	{
-		$RadioButtonsCount = $this->RadioButtons->Count();
-		for($i = 0; $i < $RadioButtonsCount; $i++)
-			$this->RadioButtons->Elements[$i]->Bury();
+		foreach($this->Groupees as $groupee)
+			$groupee->Bury();
 		parent::Bury();
+	}
+	/**
+	* @ignore
+	*/
+	function Resurrect()
+	{
+		foreach($this->Groupees as $groupee)
+			$groupee->Resurrect();
+		parent::Resurrect();	
 	}
 	/**
 	 * @ignore
