@@ -187,6 +187,9 @@ abstract class Component extends Object
 	*/
 	function __sleep()
 	{
+		/*if(isset($GLOBALS['_NChunking']))
+			$GLOBALS['_NControlChunk'][$this->Id] = &$this;*/
+			
 		$vars = (array)$this;
 		//global $OmniscientBeing;
 		foreach ($vars as $key => $val)
@@ -199,6 +202,18 @@ abstract class Component extends Object
 					$this->$key = new Pointer($val);*/
         //}
 		return array_keys($vars);
+	}
+	/**
+	 * @ignore
+	 *
+	function GetChunk()
+	{
+		$GLOBALS['_NChunking'] = true;
+		$GLOBALS['_NControlChunk'] = array();
+		serialize($this);
+		$arr = $GLOBALS['_NControlChunk'];
+		unset($GLOBALS['_NChunking'], $GLOBALS['_NControlChunk']);
+		return $arr;
 	}
 	/**
 	* @ignore
@@ -218,7 +233,7 @@ abstract class Component extends Object
 			unset($_SESSION['NOLOHControlQueue'][$id],
 				$_SESSION['NOLOHFunctionQueue'][$id],
 				$_SESSION['NOLOHPropertyQueue'][$id]);
-			$_SESSION['NOLOHGarbage'][$id] = '';
+			$_SESSION['NOLOHGarbage'][$id] = true;
 		}
 	}
 }

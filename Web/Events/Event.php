@@ -299,6 +299,21 @@ class Event extends Object implements ArrayAccess
 		else 
 			return parent::__get($nm);
 	}
+	/**
+	 * @ignore
+	 *
+	function __sleep()
+	{
+		if(isset($GLOBALS['_NChunking']))
+			foreach($this->Handles as $pair)
+				if(is_string($pair[0]))
+					$GLOBALS['_NControlChunk'][$pair[0]] = GetComponentById($pair[0]);
+				//elseif(is_object($pair[0]))
+				//	$pair[0]->UpdateClient();
+				elseif(is_array($pair[0]))
+					$GLOBALS['_NControlChunk'][$pair[0][0]] = GetComponentById($pair[0][0]);
+		return array_keys((array)$this);
+	}*/
 }
 
 ?>
