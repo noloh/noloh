@@ -51,8 +51,8 @@ class RichMarkupRegion extends MarkupRegion
 	private function ParseItems($text)
 	{
 		//return;
-		do
-		{
+//		do
+//		{
 /*        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
            	array($this, 'MarkupReplace'), $text, -1, $count);*/
 //        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
@@ -64,7 +64,7 @@ class RichMarkupRegion extends MarkupRegion
           
 //            $text = preg_replace_callback('/\s\s+/',
 //            	array($this, 'MarkupReplace'), $text, -1, $count);
-  		}while ($count);
+//  		}while ($count);
   		return $text;
 	}
 	private function MarkupReplace($matches)
