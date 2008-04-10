@@ -43,7 +43,7 @@ class TreeNode extends Panel
 		$this->ChildrenPanel = new Panel(25, 20, null, null, $this);
 		$this->ChildrenPanel->SetScrolling(System::Full);
 		$this->ChildrenPanel->SetLayoutType(2);
-		$this->ChildrenPanel->SetVisible(0);
+		$this->ChildrenPanel->SetVisible(null);
 		$this->TreeNodes = &$this->ChildrenPanel->Controls;
 		$this->TreeNodes->AddFunctionName = 'AddTreeNode';
 		$this->TreeNodes->InsertFunctionName = 'InsertTreeNode';
