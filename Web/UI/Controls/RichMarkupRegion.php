@@ -4,10 +4,11 @@
  */
 class RichMarkupRegion extends MarkupRegion
 {
+	public $ComponentSpace;
+	
 	private $Eventees;
 	private $EventSpace;
 	private $Larvae;
-	public $ComponentSpace;
 	private $TempString;
 	private $ItemCount;
 	
@@ -33,7 +34,7 @@ class RichMarkupRegion extends MarkupRegion
 			else
 				$text = $markupStringOrFile;
 			$tmpFullString = $this->ParseItems($text);
-			$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
         }
 		/*$text = preg_replace  ("/\r\n/", '<Nendl>', $tmpFullString); 
 		$text = preg_replace  ("/\n/", '<Nendl>', $text); 
@@ -57,7 +58,8 @@ class RichMarkupRegion extends MarkupRegion
 /*        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
            	array($this, 'MarkupReplace'), $text, -1, $count);*/
 //        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
-        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([\w]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
+//        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([\w]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
+          $tmpText = &preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])(\w+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
 //        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([\w]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:(\1)>!is',
            	array($this, 'MarkupReplace'), $text, -1, $count);
 //           $text = preg_replace('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is', "<replacement></replacement>", $text);
@@ -66,7 +68,7 @@ class RichMarkupRegion extends MarkupRegion
 //            $text = preg_replace_callback('/\s\s+/',
 //            	array($this, 'MarkupReplace'), $text, -1, $count);
 //  		}while ($count);
-  		return $text;
+  		return $tmpText;
 	}
 	private function MarkupReplace($matches)
 	{
