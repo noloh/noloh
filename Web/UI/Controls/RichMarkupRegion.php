@@ -26,14 +26,15 @@ class RichMarkupRegion extends MarkupRegion
 		$this->ComponentSpace = array();
 		//$this->MarkupString = $markupStringOrFile;
         Control::SetText($markupStringOrFile);
-        if($markupStringOrFile == null)
-        	return;
-        if(is_file($markupStringOrFile))
-			$text = file_get_contents($markupStringOrFile);
-		else
-			$text = $markupStringOrFile;
-		$tmpFullString = $this->ParseItems($text);
-		$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+        if($markupStringOrFile != null)
+        {
+	        if(is_file($markupStringOrFile))
+				$text = file_get_contents($markupStringOrFile);
+			else
+				$text = $markupStringOrFile;
+			$tmpFullString = $this->ParseItems($text);
+			$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+        }
 		/*$text = preg_replace  ("/\r\n/", '<Nendl>', $tmpFullString); 
 		$text = preg_replace  ("/\n/", '<Nendl>', $text); 
 		$text = preg_replace  ("/\r/", '<Nendl>', $text); 
@@ -69,7 +70,9 @@ class RichMarkupRegion extends MarkupRegion
 	}
 	private function MarkupReplace($matches)
 	{
-		$id = $this->Id . 'i' . ++$this->ItemCount;
+		++$this->ItemCount;
+		$id = $this->Id . 'i' . $this->ItemCount;
+		//if($matches[1] == 'larva')
 		if(strtolower($matches[1]) == 'larva')
 		{
 			$this->Larvae[$id] = array($matches[4], $matches[5]);
