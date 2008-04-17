@@ -1,4 +1,4 @@
-/* Copyright (c) 2005 - 2008 NOLOH, LLC. All rights reserved */
+/*! Copyright (c) 2005 - 2008 NOLOH, LLC. All rights reserved */
 
 SavedControls = new Array();
 NOLOHChanges = new Object();
