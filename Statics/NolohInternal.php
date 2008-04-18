@@ -65,65 +65,64 @@ final class NolohInternal
 			if($obj->GetBuoyant())
 			{
 				$addTo = 'N1';
-				AddScript("StartBuoyant('$obj->Id','{$parent->GetAddId($obj)}')");
+				AddScript('StartBuoyant(\''.$obj->Id.'\',\''.$parent->GetAddId($obj).'\')');
 				unset($_SESSION['NOLOHFunctionQueue'][$objId]['StopBuoyant']);
 			}
 			else
 				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
 		if(isset($_SESSION['NOLOHControlInserts'][$obj->Id]))
 		{
-			AddScript("_NAdd('$addTo','$tag',Array($initialProperties),'".$_SESSION['NOLOHControlInserts'][$obj->Id]."')", Priority::High);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'),\''.$_SESSION['NOLOHControlInserts'][$obj->Id].'\')', Priority::High);
 			unset($_SESSION['NOLOHControlInserts'][$obj->Id]);
 		}
 		else
-			AddScript("_NAdd('$addTo','$tag',Array($initialProperties))", Priority::High);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'))', Priority::High);
 	}
 	
 	public static function Bury($obj)
 	{
-		AddScript("_NRem('$obj->Id')", Priority::High);
+		AddScript('_NRem(\''.$obj->Id.'\')', Priority::High);
 	}
 	
 	public static function Resurrect($obj)
 	{
-		AddScript("_NRes('$obj->Id','".($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId($obj))."')", Priority::High);
+		AddScript('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId($obj)).'\')', Priority::High);
 	}
 
     public static function Adoption($obj, $parent)
     {
         if(!$obj->GetBuoyant())
-            AddScript("_NAdopt('$obj->Id','" . $parent->GetAddId($obj) . "')", Priority::High);
+            AddScript('_NAdopt(\''.$obj->Id.'\',\'' . $parent->GetAddId($obj) . '\')', Priority::High);
         unset($_SESSION['NOLOHControlQueue'][$obj->Id]);
     }
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
 	{
-		//$obj = GetComponentById($objId);
 		$nameValPairsString = '';
 		if(count($nameValPairs) == 0 && isset($_SESSION['NOLOHPropertyQueue'][$objId]))
 			$nameValPairs = $_SESSION['NOLOHPropertyQueue'][$objId];
 		foreach($nameValPairs as $name => $val)
 		{
 			if(is_string($val))
-				$nameValPairsString .= "'$name','".addslashes($val)."',";
+				$nameValPairsString .= '\''.$name.'\',\''.addslashes($val).'\',';
 			elseif(is_numeric($val))
-				$nameValPairsString .= "'$name',".$val.",";
+				$nameValPairsString .= '\''.$name.'\','.$val.',';
 			elseif(is_array($val))									// EVENTS!
 			{
 				if(isset(Event::$Conversion[$name]))
-					$nameValPairsString .= "'".Event::$Conversion[$name]."','".GetComponentById($objId)->GetEventString($val[0])."',";
+					$nameValPairsString .= '\''.Event::$Conversion[$name].'\',\''.GetComponentById($objId)->GetEventString($val[0]).'\',';
 				else 
-					$nameValPairsString .= "'$name'," . "function(event) {" . stripslashes(GetComponentById($objId)->GetEventString($val[0])) . "},";
+					$nameValPairsString .= '\''.$name.'\',' . 'function(event) {' . stripslashes(GetComponentById($objId)->GetEventString($val[0])) . '},';
 			}
 			elseif(is_bool($val))
-				$nameValPairsString .= "'$name',".($val?'true':'false').',';
+				$nameValPairsString .= '\''.$name.'\','.($val?'true':'false').',';
 			elseif($val === null)
 			{
 				$splitStr = explode(' ', $name);
-				$nameValPairsString .= "'{$splitStr[0]}','',";
+				$nameValPairsString .= '\''.$splitStr[0].'\',\'\',';
 			}
 			elseif(is_object($val))									// EMBEDS!
-				$nameValPairsString .= "'$name','".$val->GetInnerString()."',";
+				$nameValPairsString .= '\''.$name.'\',\''.$val->GetInnerString().'\',';
 		}
 		unset($_SESSION['NOLOHPropertyQueue'][$objId]);
 		return rtrim($nameValPairsString, ',');
@@ -136,7 +135,7 @@ final class NolohInternal
 		{
 			$obj = &GetComponentById($objId);
 			if($obj!=null && $obj->GetShowStatus())
-				AddScript("_NSetP('$objId',Array(".self::GetPropertiesString($objId, $nameValPairs).'))');
+				AddScript('_NSetP(\''.$objId.'\',Array('.self::GetPropertiesString($objId, $nameValPairs).'))');
 			else 
 			{
 				$splitStr = explode('i', $objId, 2);
@@ -145,8 +144,8 @@ final class NolohInternal
 				{
 					$nameValPairsString = '';
 					foreach($nameValPairs as $name => $val)
-						$nameValPairsString .= "'$name','".($name=='href'?$val:$markupPanel->GetEventString($val, $objId))."',";
-					AddScript("_NSetPEvtee('$objId',Array(".rtrim($nameValPairsString,",").'))');
+						$nameValPairsString .= '\''.$name.'\',\''.($name=='href'?$val:$markupPanel->GetEventString($val, $objId)).'\',';
+					AddScript('_NSetPEvtee(\''.$objId.'\',Array('.rtrim($nameValPairsString,',').'))');
 				}
 			}
 		}
