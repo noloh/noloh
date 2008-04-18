@@ -190,6 +190,11 @@ class WebPage extends Component
 			: '';
 	}
 	
+	static function That()
+	{
+		return GetComponentById($_SESSION['NOLOHStartUpPageId']);
+	}
+	
 	static function SkeletalShow($unsupportedURL)
 	{
 		// Unsupported Browser Handling
