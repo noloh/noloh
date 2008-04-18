@@ -76,7 +76,11 @@ class Image extends Control
 	function SetSrc($newSrc, $adjustSize=false)
 	{
 		$this->Src = $newSrc;
-        NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
+		if($this->Magician == null)
+			NolohInternal::SetProperty('src', $newSrc, $this);
+		else
+			$this->SetMagicianSrc();
+        //NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
 		if($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
@@ -125,6 +129,8 @@ class Image extends Control
 				}
 			}
 		}
+		if($this->Magician != null)
+			$this->SetMagicianSrc();
 		parent::SetWidth($tmpWidth);
 	}
 	/**
@@ -168,15 +174,28 @@ class Image extends Control
 				}
 			}
 		}
+		if($this->Magician != null)
+			$this->SetMagicianSrc();
 		parent::SetHeight($tmpHeight);
 	}
 
     function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
 		$this->Magician = func_get_args();
-        NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
+		$this->SetMagicianSrc();
+        //NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
         //$this->Magician = array($className, $functionName);
     }
+	/**
+	* @ignore
+	*/
+	private function SetMagicianSrc()
+	{
+		if($this->Src)
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
+		else
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)).'&Width='.($this->GetWidth()|300).'&Height='.($this->GetHeight()|200), $this);
+	}
 	/**
 	* @ignore
 	*/
@@ -193,23 +212,33 @@ class Image extends Control
 	/**
 	 *@ignore 
 	*/
-	static function MagicGeneration($src, $class, $function, $params)
+	static function MagicGeneration($src, $class, $function, $params, $width=null, $height=null)
 	{
-		$splitString = explode('.', $src);
-		$extension = $splitString[count($splitString)-1];
-		$imgtypes = imagetypes();
-		if($extension == 'jpg')
-			$extension = 'jpeg';
-		if($extension == 'bmp')
-			$extension = 'wbmp';
-			
-		eval('if(imagetypes() & IMG_'.strtoupper($extension).') {' .
-			'$im = imagecreatefrom'.$extension.'($src);' .
-			$class.'::'.$function.'($im'.($params?','.$params:'').');' .
-			'header("Content-type: image/'.$extension.'");' . 
-			'image'.$extension.'($im); }');
-			
-		imagedestroy($im);
+		if($src != '')
+		{
+			$splitString = explode('.', $src);
+			$extension = $splitString[count($splitString)-1];
+			if($extension == 'jpg')
+				$extension = 'jpeg';
+			elseif($extension == 'bmp')
+				$extension = 'wbmp';
+			eval('if(imagetypes() & IMG_'.strtoupper($extension).')' .
+				'$im = imagecreatefrom'.$extension.'($src);');
+		}
+		else
+		{
+			$extension = 'png';
+			$im = imagecreatetruecolor($width, $height);
+			$white = imagecolorallocate($im, 255, 255, 255);
+			imagefill($im, 0, 0, $white);
+		}
+		if($im)
+		{
+			call_user_func_array(array($class, $function), array_merge(array($im), explode(',', $params)));
+			header('Content-type: image/'.$extension);
+			call_user_func('image'.$extension, $im);
+			imagedestroy($im);
+		}
 	}
 }
 ?>

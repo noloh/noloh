@@ -127,7 +127,10 @@ final class Application
 		$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['NOLOHTokenTrailsExpiration'] = $tokenTrailsExpiration;
 		if(isset($_GET['NOLOHImage']))
-			Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params']);
+			if(isset($_GET['Width']))
+				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params'], $_GET['Width'], $_GET['Height']);
+			else
+				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params']);
 		elseif(isset($_GET['NOLOHFileUpload']))
 			FileUpload::ShowInside($_GET['NOLOHFileUpload'], $_GET['Width'], $_GET['Height']);
 		elseif(isset($_GET['NOLOHFileRequest']))
