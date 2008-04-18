@@ -17,7 +17,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
-		NolohInternal::SetProperty('Group', $this->Id, $element);
+		if($this->GetShowStatus())
+			NolohInternal::SetProperty('Group', $this->Id, $element);
 		$this->Groupees->Add($element, $setByReference);
 	}
 	function AddRange($dotDotDot)
@@ -120,6 +121,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		parent::Show();
 		AddNolohScriptSrc('Group.js');
 		AddScript('window.'.$this->Id.'=new Group();', Priority::High);
+		foreach($this->Groupees as $groupee)
+			NolohInternal::SetProperty('Group', $this->Id, $groupee);
 	}
 	/**
 	 * @ignore
