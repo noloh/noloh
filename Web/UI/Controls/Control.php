@@ -570,6 +570,18 @@ class Control extends Component
 			NolohInternal::Resurrect($this);
 		}
 	}
+	
+	function SetSelected($bool)
+	{
+		if(!($this instanceof Groupable || $this instanceof MultiGroupable))
+			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
+		if($bool != $this->GetSelected())
+		{
+			if($bool && $this->GroupName != null)
+				GetComponentById($this->GroupName)->Deselect();
+			NolohInternal::SetProperty('Selected', $bool, $this);
+		}
+	}
 	/**
 	 * @ignore
 	 */
