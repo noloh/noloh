@@ -55,9 +55,10 @@ final class NolohInternal
 	
 	public static function Show($tag, $initialProperties, $obj, $addTo = null)
 	{
+		$objId = $obj->Id;
 		$parent = $obj->GetParent();
 
-		$propertiesString = self::GetPropertiesString($obj->Id);
+		$propertiesString = self::GetPropertiesString($objId);
 		if($propertiesString != '')
 			$initialProperties .= ',' . $propertiesString;
 			
@@ -65,15 +66,15 @@ final class NolohInternal
 			if($obj->GetBuoyant())
 			{
 				$addTo = 'N1';
-				AddScript('StartBuoyant(\''.$obj->Id.'\',\''.$parent->GetAddId($obj).'\')');
+				AddScript('StartBuoyant(\''.$objId.'\',\''.$parent->GetAddId($obj).'\')');
 				unset($_SESSION['NOLOHFunctionQueue'][$objId]['StopBuoyant']);
 			}
 			else
 				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
-		if(isset($_SESSION['NOLOHControlInserts'][$obj->Id]))
+		if(isset($_SESSION['NOLOHControlInserts'][$objId]))
 		{
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'),\''.$_SESSION['NOLOHControlInserts'][$obj->Id].'\')', Priority::High);
-			unset($_SESSION['NOLOHControlInserts'][$obj->Id]);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'),\''.$_SESSION['NOLOHControlInserts'][$objId].'\')', Priority::High);
+			unset($_SESSION['NOLOHControlInserts'][$objId]);
 		}
 		else
 			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'))', Priority::High);

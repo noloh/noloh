@@ -71,7 +71,8 @@ abstract class Component extends Object
 		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
 		{
 			$this->ParentId = null;
-			unset($_SESSION['NOLOHControlQueue'][$id]);
+			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+			//unset($_SESSION['NOLOHControlQueue'][$id]);
 		}
 	}
 	/**

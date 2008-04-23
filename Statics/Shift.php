@@ -37,7 +37,7 @@ class Shift
 			($minWidth===null ? 1 : $minWidth).
         	($maxWidth===null ? ',null,' : (','.$maxWidth.',')).
         	($minHeight===null ? 1 : $minHeight).
-        	($maxHeight===null ? ')' : (','.$maxheight.')')));
+        	($maxHeight===null ? ')' : (','.$maxHeight.')')));
 	}
 
 	static function Left($control, $min=null, $max=null, $type=Shift::Normal, $ratio=1)

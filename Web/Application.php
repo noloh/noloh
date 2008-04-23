@@ -56,7 +56,7 @@ function _NErrorHandler($number, $string, $file, $line)
  */
 function _NPHPInfo($info)
 {
-	$info = str_replace(array("\n", "\r", "'"), array('','',"\'"), $info);
+	$info = str_replace(array("\n", "\r", "'"), array('','',"\\'"), $info);
 	$loc = strpos($info, '</table>') + 8;
 	$first = substr($info, 0, $loc);
 	$last = substr($info, $loc);
@@ -313,8 +313,8 @@ final class Application
 				while(++$j < $changeCount)
 					$component->{$changes[$j]} = $changes[++$j];
 			}
-			$GLOBALS['_NQueueDisabled'] = null;
 		}
+		$GLOBALS['_NQueueDisabled'] = null;
 	}
 	
 	private function HandleServerEvent()
@@ -404,7 +404,7 @@ final class Application
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
-		ob_end_clean();
+		@ob_end_clean();
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2]);

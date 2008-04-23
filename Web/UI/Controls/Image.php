@@ -162,7 +162,7 @@ class Image extends Control
 		$tmpHeight = $height;
 		if(!is_numeric($tmpHeight))
 		{
-			if(substr($width, -1) != '%')
+			if(substr($height, -1) != '%')
 			{
 				$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
 				if($tmpHeight == System::Auto)

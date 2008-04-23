@@ -138,7 +138,7 @@ class WebPage extends Component
 	
 	function SetBackColor($backColor)
 	{
-		$this->BackColor = $newBackColor;
+		$this->BackColor = $backColor;
 		QueueClientFunction($this, 'document.bgColor=\''.$backColor.'\';void', array(0));
 	}
 	

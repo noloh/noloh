@@ -54,7 +54,7 @@ class TreeNode extends Panel
 		$this->Controls->Add($this->Element);
 		$this->Controls->Add($this->ChildrenPanel);
 	}
-	private function AddNodeHelper($node, $lastNodeId=null)
+	private function AddNodeHelper($node)
 	{
 		$node->SetWidth($this->Width-20);
 		if($this->TreeListId != null)

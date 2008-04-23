@@ -20,7 +20,7 @@ class WindowPanel extends Panel
 	private $RightTitle;
 	private $OldHeight;
 	
-	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200, $reflectStyle = true)
+	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
 		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';

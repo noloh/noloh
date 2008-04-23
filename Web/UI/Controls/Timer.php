@@ -133,7 +133,7 @@ class Timer extends Component
 	{
 		parent::Show();
 		$ref = "window.$this->Id";
-		AddScript("$ref = new Object(); $ref.timer = set" . ($this->Repeat?'Interval':'Timeout')
+		AddScript("$ref=new Object();$ref.timer=set" . ($this->Repeat?'Interval':'Timeout')
 			. "('if($ref.onelapsed!=null) $ref.onelapsed.call();'," . $this->Interval . ');');
 	}
 	/**

@@ -110,10 +110,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	{
 		return ($element = $this->GetSelectedElement()) != null ? $element->GetText() : '';
 	}
-	function SetSelectedText()
+	function SetSelectedText($text)
 	{
 		foreach($this->Groupees as $groupee)
-			if($groupee->GetText() == $value)
+			if($groupee->GetText() == $text)
 				return $this->SetSelectedElement($groupee);
 	}
 	function Show()

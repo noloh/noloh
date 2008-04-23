@@ -90,7 +90,7 @@ class TreeList extends Panel
 		NolohInternal::SetProperty('CloseSrc', $closeSrc, $this);
 		$nodeCount = $this->TreeNodes->Count;
 		for($i=0; $i<$nodeCount; ++$i)
-			self::CloseSrcHelper($openSrc, $this->TreeNodes[$i]);
+			self::CloseSrcHelper($closeSrc, $this->TreeNodes[$i]);
 	}
 	static function CloseSrcHelper($closeSrc, $node)
 	{
