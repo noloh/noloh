@@ -32,10 +32,12 @@ class RichMarkupRegion extends MarkupRegion
 	        if(is_file($markupStringOrFile))
 				$text = file_get_contents($markupStringOrFile);
 			else
-				$text = $markupStringOrFile;
-			$tmpFullString = $this->ParseItems($text);
+				$text = &$markupStringOrFile;
+			$tmpFullString = &$this->ParseItems($text);
 			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
         }
+        else
+        	$text = '';
 		/*$text = preg_replace  ("/\r\n/", '<Nendl>', $tmpFullString); 
 		$text = preg_replace  ("/\n/", '<Nendl>', $text); 
 		$text = preg_replace  ("/\r/", '<Nendl>', $text); 
@@ -44,9 +46,11 @@ class RichMarkupRegion extends MarkupRegion
 		//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
-			AddScript("SetMarkupString('$this->Id', '$text')", Priority::High);
+			AddScript('SetMarkupString(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
 		else
 			$this->TempString = $text;
+//		file_put_contents('/tmp/snakeinthegrass2', var_export($this->Eventees, true));
+		
 	}
 	// New one's. Has issues.
 	
@@ -174,8 +178,11 @@ class RichMarkupRegion extends MarkupRegion
 			{
 //				if($info[1] == "tools_services")
 //					Alert("Blah: " . $this->Eventees["N30i1"][2]);
-				$eventees[] = new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
-			}
+				if(isset($info[0]))
+					$eventees[] = new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
+//				else
+//					file_put_contents('/tmp/snakeinthegrass', var_export($info, true), FILE_APPEND);
+			}	
 		else 
 			foreach($this->Eventees as $id => $info)
 				if($info[1] == $byValue)
