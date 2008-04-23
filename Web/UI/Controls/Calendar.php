@@ -50,14 +50,14 @@ class Calendar extends Panel
 	 * Be sure to call this from the constructor of any class that extends Calendar
 	 *	<code> $cal = new Calendar(0, 0, 80, 24, 1000000);</code>
 	 *
-	 * @param integer $left The left coordinate of this element
-	 * @param integer $top The top coordinate of this element
-	 * @param integer $width The width of this element
-	 * @param integer $height The height of this element
-	 * @param integer $timestampTime The selected date, given in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
+	 * @param integer $left The left coordinate of this Control
+	 * @param integer $top The top coordinate of this Control
+	 * @param integer $width The width of this Control
+	 * @param integer $height The height of this Control
+	 * @param integer $timestamp The selected date, given in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
 	 * @return Calendar
 	 */
-	function Calendar($left=0, $top=0, $width=215, $height=200, $timestampTime=null)
+	function Calendar($left=0, $top=0, $width=215, $height=200, $timestamp=null)
 	{
 		parent::Panel($left, $top, $width, $height);
 		$this->Border = '1px solid #000000';
@@ -86,7 +86,7 @@ class Calendar extends Panel
 				$lbl->SetCSSClass('NCalCell');
 				$lbl->SetMouseUp(new ClientEvent('CalSelectDate(event,\''.$this->Id.'\')'));
 			}
-		$this->SetTimestamp($timestampTime);
+		$this->SetTimestamp($timestamp);
 	}
 	/**
 	 * Returns the month that is currently being viewed, which is not necessarily the same as the one that is selected. Returned as an integer from 0 to 11.
@@ -130,50 +130,77 @@ class Calendar extends Panel
 	{
 		return $this->Date;
 	}
-
+	/**
+	 * Sets the selected date
+	 * @param integer $date
+	 */
 	function SetDate($date)
 	{
 		$this->Date = $date;
 		$this->UpdateClient();
 	}
-
+	/**
+	 * Returns the selected month, from 0 to 11
+	 * @return integer
+	 */
 	function GetMonth()
 	{
 		return $this->Month;
 	}
-
-	function SetMonth($newMonth)
+	/**
+	 * Sets the selected month, from 0 to 11
+	 * @param integer $month
+	 */
+	function SetMonth($month)
 	{
-		$this->Month = $this->ViewMonth = $newMonth;
+		$this->Month = $this->ViewMonth = $month;
 		$this->UpdateClient();
 	}
-
+	/**
+	 * Returns the selected year
+	 * @return integer
+	 */
 	function GetYear()
 	{
 		return $this->Year;
 	}
-
-	function SetYear($newYear)
+	/**
+	 * Sets the selected year
+	 * @param integer $year
+	 */
+	function SetYear($year)
 	{
-		$this->Year = $this->ViewYear = $newYear;
+		$this->Year = $this->ViewYear = $year;
 		$this->UpdateClient();
 	}
-	
+	/**
+	 * Returns the format in which dates will be displayed, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function.
+	 * @return string
+	 */
 	function GetFormat()
 	{
 		return $this->Format == null ? 'l, F d, Y' : $this->Format;
 	}
-	
+	/**
+	 * Sets the format in which dates will be displayed, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function.
+	 * @param string $format
+	 */
 	function SetFormat($format)
 	{
 		$this->Format = $format == 'l, F d, Y' ? null : $format;
 	}
-
+	/**
+	 * Gets the Calendar's currently selected day, in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
+	 * @return integer
+	 */
 	function GetTimestamp()
 	{
 		return mktime(0, 0, 0, $this->Month+1, $this->Date, $this->Year);
 	}
-
+	/**
+	 * Sets the Calendar's currently selected day, in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
+	 * @param integer $timestamp
+	 */
 	function SetTimestamp($timestamp=null)
 	{
 		if($timestamp==null)
@@ -184,7 +211,10 @@ class Calendar extends Panel
 		$this->Year = $this->ViewYear = date('Y', $timestamp);
 		$this->UpdateClient();
 	}
-
+	/**
+	 * Returns the the selected day as formatted according to the Format property.
+	 * @return string 
+	 */
 	function GetFullDate()
 	{
 		return date($this->GetFormat(), $this->GetTimestamp());

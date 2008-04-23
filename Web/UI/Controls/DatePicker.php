@@ -22,7 +22,6 @@
  * @property string $Format The format of the DatePicker display, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function. 
  * NOLOH's default is 'l, F d, Y' which means that a typical date will look like 'Tuesday, August 14, 2007'
  */
-
 class DatePicker extends Panel
 {
 	/**
@@ -39,10 +38,10 @@ class DatePicker extends Panel
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends DatePicker
  	*	<code> $tempVar = new DatePicker(15, 15, 219, 21);</code>
-	* @param integer $left
-	* @param integer $top
-	* @param integer $width
-	* @param integer $height
+	* @param integer $left The left coordinate of this Control
+	* @param integer $top The top coordinate of this Control
+	* @param integer $width The width of this Control
+	* @param integer $height The height of this Control
 	*/
 	function DatePicker($left = 0, $top = 0, $width = 219, $height = 21)
 	{
@@ -86,7 +85,7 @@ class DatePicker extends Panel
 		return $this->Calendar->GetTimestamp();
 	}
 	/**
-	 * Sets the current day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
+	 * Sets the current day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
 	 * @param integer $TimestampTime
 	 * <code>
 	 * // Sets the $datePicker to Monday, January 12, 1970
@@ -109,7 +108,7 @@ class DatePicker extends Panel
 	}
 	/**
 	 * Sets the format of the display of the DatePicker.
-	 * @param string $format This expects the same kind of format as PHP's native date() function
+	 * @param string $format This expects the same kind of format as PHP's native date() {@link PHP_Manual#date} function
 	 */
 	function SetFormat($format)
 	{

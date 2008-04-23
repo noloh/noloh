@@ -29,13 +29,18 @@ class FileUpload extends Control
 		//NolohInternal::SetProperty("contentWindow.document.body.frm.NOLOHFile.style.height", $newHeight."px", $this);
 	}
 	*/
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'marginWidth',0,'marginHeight',0,'frameBorder',0,'scrolling','no','name','$this->Id','src','".$_SERVER['PHP_SELF']."?NOLOHFileUpload={$this->Id}&Width={$this->GetWidth()}&Height={$this->GetHeight()}'";
 		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	static function ShowInside($id, $width, $height)
 	{
 		print("
