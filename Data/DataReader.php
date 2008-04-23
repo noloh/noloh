@@ -41,7 +41,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		
 			$numRows = mysql_num_rows($resource);
 			for ($i=0; $i < $numRows; $i++)
-				$this->Data[] =  mysql_fetch_array($mytempExecCommand, $i, $resultType);	
+				$this->Data[] =  mysql_fetch_array($resource, $i, $resultType);	
 		}
 		if(!$this->Data)
 			$this->Data = array();

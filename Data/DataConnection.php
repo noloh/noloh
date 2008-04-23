@@ -24,17 +24,17 @@ class DataConnection extends Object
 	function Connect()
 	{
 		$tmpConnectString = "dbname = $this->DatabaseName user=$this->Username host = $this->Host port = $this->Port password = $this->Password";
-		if($this->Type = Data::Postgres)
+		if($this->Type == Data::Postgres)
 			$this->ActiveConnection = pg_connect($tmpConnectString);
-		elseif($this->Type = Data::MySQL)
+		elseif($this->Type == Data::MySQL)
 			$this->ActiveConnection = mysql_connect($tmpConnectString);
 		return $this->ActiveConnection;
 	}
 	function Close()
 	{
-		if($this->Type = Data::Postgres)
+		if($this->Type == Data::Postgres)
 			$status = pg_close($this->ActiveConnection);
-		elseif($this->Type = Data::MySQL)
+		elseif($this->Type == Data::MySQL)
 			$status = mysql_close($this->ActiveConnection);
 		return $status;
 	}
