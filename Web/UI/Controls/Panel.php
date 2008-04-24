@@ -44,7 +44,10 @@ class Panel extends Control
 	}
     function SetScrollLeft($scrollLeft)
     {
-        NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
+        if($_SESSION['NOLOHIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollLeft = $scrollLeft;
     }
     function GetScrollTop()
@@ -53,7 +56,10 @@ class Panel extends Control
     }
     function SetScrollTop($scrollTop)
     {
-        NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+    	if($_SESSION['NOLOHIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
     }
 	function SetCSSClass($cssClass=null)

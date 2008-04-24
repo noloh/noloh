@@ -7,6 +7,8 @@ class MarkupRegion extends Control
 	private $CachedWidth;
 	private $CachedHeight;
     private $Scrolling;
+    private $ScrollLeft;
+	private $ScrollTop;
 	//private $FontSize;
 
 	function MarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
@@ -57,6 +59,30 @@ class MarkupRegion extends Control
 		//Alert($tmpScroll);
 		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
+	function GetScrollLeft()
+	{
+		return $this->ScrollLeft;
+	}
+    function SetScrollLeft($scrollLeft)
+    {
+        if($_SESSION['NOLOHIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        $this->ScrollLeft = $scrollLeft;
+    }
+    function GetScrollTop()
+    {
+    	return $this->ScrollTop;
+    }
+    function SetScrollTop($scrollTop)
+    {
+    	if($_SESSION['NOLOHIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        $this->ScrollTop = $scrollTop;
+    }
 	//function GetMarkupString()
 	//{
 	//	return $this->MarkupString;
