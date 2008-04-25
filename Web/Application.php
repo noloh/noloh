@@ -137,10 +137,8 @@ final class Application
 			File::SendRequestedFile($_GET['NOLOHFileRequest']);
 		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if(!isset($_SESSION['NOLOHVisit']) || (isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
-			  ((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
-					if($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
-						return;
+			if($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
+				return;
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 				$this->HandleIENavigation($className, $unsupportedURL);
 			$this->HandleDebugMode($debugMode);
@@ -219,24 +217,23 @@ final class Application
 	
 	private function HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
-		if(isset($_SESSION['_NReset']))
+		if(!isset($_SESSION['NOLOHVisit']) || 
+			(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
+			((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 		{
-			unset($_SESSION['_NReset']);
-			$_SESSION['NOLOHVisit'] = $_POST['NOLOHVisit'];
-		}
-		elseif(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != 'Unload@N1')
-		{
-			if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
-				self::Reset(false, false);
-			$webPage = GetComponentById('N1');
-			if($webPage != null && !$webPage->GetUnload()->Blank())
-				$webPage->Unload->Exec();
-			self::UnsetNolohSessionVars();
-			self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
+			if(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != ('Unload@'.$_SESSION['NOLOHStartUpPageId']))
+			{
+				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
+					self::Reset(false, false);
+				$this->TheComingOfTheOmniscientBeing();
+				$webPage = WebPage::That();
+				if($webPage != null && !$webPage->GetUnload()->Blank())
+					$webPage->Unload->Exec();
+				self::UnsetNolohSessionVars();
+				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
+			}
 			return true;
 		}
-		else
-			$_SESSION['_NReset'] = true;
 		return false;
 	}
 	
