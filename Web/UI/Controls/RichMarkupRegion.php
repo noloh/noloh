@@ -29,6 +29,7 @@ class RichMarkupRegion extends MarkupRegion
         Control::SetText($markupStringOrFile);
         if($markupStringOrFile != null)
         {
+        	//file_put_contents('/tmp/WeirdString', $markupStringOrFile);
 	        if(is_file($markupStringOrFile))
 				$text = file_get_contents($markupStringOrFile);
 			else
@@ -38,11 +39,6 @@ class RichMarkupRegion extends MarkupRegion
         }
         else
         	$text = '';
-		/*$text = preg_replace  ("/\r\n/", '<Nendl>', $tmpFullString); 
-		$text = preg_replace  ("/\n/", '<Nendl>', $text); 
-		$text = preg_replace  ("/\r/", '<Nendl>', $text); 
-		$text = preg_replace  ("/\"/", '<NQt2>', $text); 
-		$text = preg_replace  ("/'/", '<NQt1>', $text); */
 		//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
@@ -56,29 +52,18 @@ class RichMarkupRegion extends MarkupRegion
 	
 	private function ParseItems($text)
 	{
-		//return;
 //		do
 //		{
-/*        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
-           	array($this, 'MarkupReplace'), $text, -1, $count);*/
-//        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\w+)>!is',
-//        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([\w]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
-          $tmpText = &preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])(\w+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
-//        $text = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*?descriptor\s*?=\s*?([”"\'])([\w]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:(\1)>!is',
-           	array($this, 'MarkupReplace'), $text, -1, $count);
-//           $text = preg_replace('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^”"\']+)\3(.*?)>(.*?)</n:(\1)>!is', "<replacement></replacement>", $text);
-//           	array($this, 'MarkupReplace'), $text, 1, $count);  	
-          
-//            $text = preg_replace_callback('/\s\s+/',
-//            	array($this, 'MarkupReplace'), $text, -1, $count);
-//  		}while ($count);
+        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([\w\s?_-]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
+        	array($this, 'MarkupReplace'), $text, -1, $count);
+//  	}while ($count);
   		return $tmpText;
 	}
 	private function MarkupReplace($matches)
 	{
 		++$this->ItemCount;
 		$id = $this->Id . 'i' . $this->ItemCount;
-		//if($matches[1] == 'larva')
+	
 		if(strtolower($matches[1]) == 'larva')
 		{
 			$this->Larvae[$id] = array($matches[4], $matches[5]);
@@ -89,87 +74,7 @@ class RichMarkupRegion extends MarkupRegion
 			$this->Eventees[$id] = array($matches[1], $matches[4], $matches[5]);
 			return '<'.$matches[1].$matches[2]. 'id=<NQt2>'.$id.'<NQt2>'.$matches[6].'>'.$matches[7].'</'.$matches[1].'>';
 		}
-	}/*
-	private function MarkupReplace($matches)
-	{
-	    
-//	    print_r($matches);
-//	    Alert(serialize($matches));
-//	    return "<replacement></replacement>";
-		//static $count = 1;
-		//$id = $this->Id . 'i' . ++$count;
-		$id = $this->Id . 'i' . ++$this->ItemCount;
-		//return;
-//		$tmp2 = explode(':', $matches[4]);
-//		return "<$matches[1]$matches[2] id=\"$id\"$matches[5]>$matches[6]</$matches[7]>";
-		$keyval = explode(':', $matches[4], 2);
-//		$keyval = array();
-//		$pos = strpos($matches[4], ':');
-//		if($pos === false)
-//		{
-//			$keyval[0] = $matches[4];
-//			$keyval[1] = "";
-//		}
-//		else 
-//		{
-//			$keyval[0] = substr($matches[4], 0, $pos);
-//			$keyval[1] = substr($matches[4], $pos+1, strlen($matches[4])-$pos-1);
-//		}
-		//return;
-		if(strtolower($matches[1]) == 'component')
-		{
-			$this->Larvae[$id] = array($keyval[0], $keyval[1]);
-			return "<div id=\"$id\"$matches[2]$matches[5]>$matches[6]</div>";
-		}
-		else 
-		{
-			$this->Eventees[$id] = array($matches[1], $keyval[0], $keyval[1]);
-//			if($this->Eventees[$id][1] == "tools_services")
-//				Alert("Blah: " . $this->Eventees["N30i1"][2]);
-			//	Alert("Blah2: " . $this->Eventees[$id][2]);
-			return "<$matches[1]$matches[2] id=\"$id\"$matches[5]>$matches[6]</$matches[7]>";
-		}
-	}*/
-	
-	// Temporary one.
-	/*private function MarkupReplace($matches)
-	{
-		static $id;
-		$Id = $this->Id . "e" . ++$id;
-		$keyval = explode(':', $matches[3]);
-		if(strtolower($matches[1]) == 'component')
-		{
-			$this->Larvae[$Id] = array($keyval[0], $keyval[1]);
-			return "<div id=\"$Id\">$matches[4]</div>";
-		}
-		else 
-		{
-			$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
-			return "<$matches[1] id=\"$Id\">$matches[4]</$matches[5]>";
-		}
-	}*/
-	// Old one's. No Larvae.
-	/*private function ParseItems($text)
-	{
-		$this->Eventees = array();
-		$this->Larvae = array();
-		do 
-		{
-			$text = preg_replace_callback('!<n:(.*?)\s+descriptor\s*=\s*([”"\'])([^”"\']+)\2.*?>(.*?)</n:(\w+)>!is', array($this,'MarkupReplace'), $text, -1, $count);
-  		}while ($count);
-  		return $text;
 	}
-	/*
-	private function MarkupReplace($matches)
-	{
-		//global $lookup;
-		static $id;
-		$Id = $this->Id . "e" . ++$id;
-		$keyval = explode(':', $matches[3]);
-		$this->Eventees[$Id] = array($matches[1], $keyval[0], $keyval[1]);
-		return "<$matches[1] id=\"$Id\">$matches[4]</$matches[5]>";
-	}
-	*/
 	public function GetEventees($byValue=null)
 	{
 		$eventees = array();
@@ -192,7 +97,7 @@ class RichMarkupRegion extends MarkupRegion
 	public function GetLarvae($byValue=null)
 	{
 		$larvae = array();
-//		return $larvae;
+
 		if($byValue===null)
 			foreach($this->Larvae as $id => $info)
 				$larvae[] = new Larva($id, $info[0], $info[1], $this->Id);
