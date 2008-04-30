@@ -48,7 +48,7 @@ abstract class ListControl extends Control
 		//NolohInternal::SetProperty("options[$whatIndex].selected", true, $this);
 		//$tmpIndex = $index == "first"?0:$index;	
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
-		QueueClientFunction($this, '_NListSel', array("'$this->Id'", $index), false);
+		QueueClientFunction($this, '_NListSel', array('\''.$this->Id.'\'', $index), false);
 		if(/*$this->GetSelectedIndex() !== $index && */!$this->Change->Blank() /*&& $index != "first"*/)
 			$this->Change->Exec();
 	}
@@ -130,7 +130,7 @@ abstract class ListControl extends Control
 			$item = new Item($item, $item);
 		$this->Items->Add($item, true, true);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
-		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'".addslashes($item->Text)."'", "'".$item->Value."'"), false);
+		QueueClientFunction($this, '_NListAdd', array('\''.$this->Id.'\'', '\''.addslashes($item->Text).'\'', '\''.$item->Value.'\''), false);
 		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	/**
@@ -143,7 +143,7 @@ abstract class ListControl extends Control
 	{
 		$this->Items->Insert($item, $index, true);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
-		QueueClientFunction($this, '_NListAdd', array("'$this->Id'", "'$item->Text'", "'$item->Value'", is_numeric($index)?$index:"'$index'"), false);
+		QueueClientFunction($this, '_NListAdd', array('\''.$this->Id.'\'', '\''.$item->Text.'\'', '\''.$item->Value.'\'', is_numeric($index)?$index:('\''.$index.'\'')), false);
 		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
 	/**
@@ -158,7 +158,7 @@ abstract class ListControl extends Control
 		//if(func_num_args()==1)
 			$this->Items->RemoveAt($index, true);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.remove", array($index), false);
-		QueueClientFunction($this, '_NListRem', array("'$this->Id'", is_numeric($index)?$index:"'$index'"), false);
+		QueueClientFunction($this, '_NListRem', array('\''.$this->Id.'\'', is_numeric($index)?$index:('\''.$index.'\'')), false);
 		//AddScript("document.getElementById('$this->Id').remove($index)");
 	}
 	/**
@@ -175,7 +175,7 @@ abstract class ListControl extends Control
 		//Changed previos line to SetProperty
 		//NolohInternal::SetProperty("options.length", 0, $this);
 		//QueueClientFunction($this, "document.getElementById('$this->Id').options.length=0;void", array(0), false);
-		QueueClientFunction($this, '_NListClr', array("'$this->Id'"), false);
+		QueueClientFunction($this, '_NListClr', array('\''.$this->Id.'\''), false);
 	}
 	/**
 	 * @ignore
@@ -183,7 +183,7 @@ abstract class ListControl extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString('Change')."'";
+			return ',\'onchange\',\''.$this->GetEventString('Change').'\'';
 		return parent::GetEventString($eventTypeAsString);
 	}
 	/**
@@ -194,7 +194,7 @@ abstract class ListControl extends Control
 		$this->Items = new ArrayList();
 		$optionsArray = explode('~d3~', $items);
 		$optionsCount = count($optionsArray);
-		for($i=0; $i<$optionsCount; $i++)
+		for($i=0; $i<$optionsCount; ++$i)
 		{
 			$option = explode('~d2~', $optionsArray[$i]);
 			$this->Items->Add(new Item($option[0], $option[1]));

@@ -73,9 +73,10 @@ class ListBox extends ListControl
 	 */
 	function SetSelectedIndices($selectedIndices)
 	{
-		$this->SelectedIndices = array();
-		foreach($selectedIndices as $idx)
-			$this->SetSelectedIndex($idx);
+		$this->ClearSelected();
+		if(is_array($selectedIndices))
+			foreach($selectedIndices as $idx)
+				$this->SetSelectedIndex($idx);
 	}
 	/**
 	 * Returns an array of all the values of the selected Items
@@ -96,9 +97,10 @@ class ListBox extends ListControl
 	 */
 	function SetSelectedValues($selectedValues)
 	{
-		$this->SelectedIndices = array();
-		foreach($selectedValues as $value)
-			$this->SetSelectedValue($value);
+		$this->ClearSelected();
+		if(is_array($selectedValues))
+			foreach($selectedValues as $value)
+				$this->SetSelectedValue($value);
 	}
 	/**
 	 * Selects or deselects an Item whose index in the Items ArrayList matches the parameter
@@ -113,19 +115,24 @@ class ListBox extends ListControl
 		{
 			//NolohInternal::SetProperty("options[$whatIndex].selected", false, $this);
 			//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=false;void", array(0));
-			QueueClientFunction($this, '_NListDesel', array("'$this->Id'", $index), false);
+			QueueClientFunction($this, '_NListDesel', array('\''.$this->Id.'\'', $index), false);
 			//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=false");
 			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
 		}
+	}
+	function ClearSelected()
+	{
+		$this->SelectedIndices = array();
+		QueueClientFunction($this, '_NListClrSel', array('\''.$this->Id.'\''), false);
 	}
 	/**
 	 * @ignore
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		$preStr = "";
+		$preStr = '';
 		if($eventTypeAsString == 'Change')
-			$preStr = "_NSave(\"$this->Id\",\"selectedIndices\",ImplodeSelectedIndices(this.options));";
+			$preStr = '_NSave("'.$this->Id.'","selectedIndices",ImplodeSelectedIndices(this.options));';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	/**
@@ -143,7 +150,7 @@ class ListBox extends ListControl
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
 		AddNolohScriptSrc('ListControl.js');
 		$initialProperties = parent::Show();
-		$initialProperties .= ",'multiple','true'";
+		$initialProperties .= ',\'multiple\',\'true\'';
 		$initialProperties .= $this->GetEventString(null);
 		NolohInternal::Show('SELECT', $initialProperties, $this);
 	}

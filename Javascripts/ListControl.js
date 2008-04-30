@@ -6,6 +6,13 @@ function _NListDesel(id,idx)
 {
 	document.getElementById(id).options[idx].selected=false;
 }
+function _NListClrSel(id)
+{
+	var opts = document.getElementById(id).options;
+	var length = opts.length;
+	for(var i=0; i<length; ++i)
+		opts[i].selected=false;
+}
 function _NListAdd(id,text,val,idx)
 {
 	var opts = document.getElementById(id).options;
