@@ -217,13 +217,15 @@ class Image extends Control
 		if($src != '')
 		{
 			$splitString = explode('.', $src);
-			$extension = $splitString[count($splitString)-1];
+			$extension = strtolower($splitString[count($splitString)-1]);
 			if($extension == 'jpg')
 				$extension = 'jpeg';
 			elseif($extension == 'bmp')
 				$extension = 'wbmp';
-			eval('if(imagetypes() & IMG_'.strtoupper($extension).')' .
-				'$im = imagecreatefrom'.$extension.'($src);');
+			//eval('if(imagetypes() & IMG_'.strtoupper($extension).')' .
+			//	'$im = imagecreatefrom'.$extension.'($src);');
+			if(imagetypes() & constant('IMG_'.strtoupper($extension)))
+				$im = call_user_func('imagecreatefrom'.$extension, $src);
 		}
 		else
 		{
