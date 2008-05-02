@@ -70,13 +70,13 @@ class TextBox extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString('Change')."','onfocus','".$this->GetEventString('Focus')."'";
+			return ',\'onchange\',\''.$this->GetEventString('Change').'\',\'onfocus\',\''.$this->GetEventString('Focus').'\'';
 
 		$preStr = '';
-		if($eventTypeAsString == 'Change' || $eventTypeAsString == 'LoseFocus')
-			$preStr = "_NSave(\"$this->Id\",\"value\");";
+		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change' || $eventTypeAsString == 'DoubleClick' || $eventTypeAsString == 'LoseFocus')
+			$preStr = '_NSave("'.$this->Id.'","value");';
         elseif($eventTypeAsString == 'Focus')
-            $preStr = "_NFocus=\"$this->Id\";";
+            $preStr = '_NFocus="'.$this->Id.'";';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 		

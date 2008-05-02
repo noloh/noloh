@@ -29,30 +29,32 @@ class TextArea extends Control
 	function SetText($newText)
 	{
 		parent::SetText($newText);
-		QueueClientFunction($this, 'SetTextAreaText', array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($newText))."'"));
+		QueueClientFunction($this, 'SetTextAreaText', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($newText)).'\''));
 	}
 	function GetScroll()							{return $this->GetEvent('Scroll');}
 	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onchange','".$this->GetEventString('Change')."','onfocus','".$this->GetEventString('Focus')/*."','onblur','".$this->GetEventString('LoseFocus')*/."'" .
+			return ',\'onchange\',\''.$this->GetEventString('Change').'\',\'onfocus\',\''.$this->GetEventString('Focus')/*."','onblur','".$this->GetEventString('LoseFocus')*/."'" .
 				(GetBrowser()=='ie'
 				?
-					",'onkeypress','doKeyPress(\"$this->Id\",this.MaxLength);'" .
-					",'onpaste','doPaste(\"$this->Id\",this.MaxLength);'"
+					',\'onkeypress\',\'doKeyPress("'.$this->Id.'",this.MaxLength);\'' .
+					',\'onpaste\',\'doPaste("'.$this->Id.'",this.MaxLength);\''
 				:
-					",'onkeypress','doKeyPress(event);'");
+					',\'onkeypress\',\'doKeyPress(event);\'');
 
 		$preStr = '';
         switch($eventTypeAsString)
         {
+			case 'Click':
             case 'Change':
+			case 'DoubleClick':
 			case 'LoseFocus':
-                $preStr = "_NSave(\"$this->Id\",\"value\");";
+                $preStr = '_NSave("'.$this->Id.'","value");';
                 break;
             case 'Focus':
-                $preStr = "_NFocus=\"$this->Id\";";
+                $preStr = '_NFocus="'.$this->Id.'";';
                 break;
             /*case 'LoseFocus':
                 $preStr = "_NFocus=null;";
@@ -93,7 +95,7 @@ class TextArea extends Control
 		AddNolohScriptSrc('TextArea.js', true);
 		NolohInternal::Show('TEXTAREA', $initialProperties, $this);
 		if(GetBrowser() != 'ie')
-			AddScript("document.getElementById('$this->Id').addEventListener('input',doInput,false)");
+			AddScript('document.getElementById(\''.$this->Id.'\').addEventListener(\'input\',doInput,false)');
 	}
 }
 
