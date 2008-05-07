@@ -45,7 +45,7 @@ abstract class Component extends Object
 	{
 		$this->ShowStatus = 0;
 		global $OmniscientBeing;
-		$OmniscientBeing[$this->Id = 'N' . ++$_SESSION['NOLOHNumberOfComponents']] = &$this;
+		$OmniscientBeing[$this->Id = 'N' . ++$_SESSION['_NNumberOfComponents']] = &$this;
 	}
 	/**
 	 * Whether the component has never been shown, has been shown, or has been shown and removed
@@ -71,8 +71,8 @@ abstract class Component extends Object
 		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
 		{
 			$this->ParentId = null;
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
-			//unset($_SESSION['NOLOHControlQueue'][$id]);
+			unset($_SESSION['_NControlQueue'][$this->Id]);
+			//unset($_SESSION['_NControlQueue'][$id]);
 		}
 	}
 	/**
@@ -93,7 +93,7 @@ abstract class Component extends Object
 		$bool = $parentId != null;
 		if($bool)
 			$this->ParentId = $parentId;
-		$_SESSION['NOLOHControlQueue'][$this->Id] = $bool;
+		$_SESSION['_NControlQueue'][$this->Id] = $bool;
 	}
 	/**
 	 * Gets Parent of this Component, or Parent based on the $generation paramater as follows:<br>
@@ -150,8 +150,8 @@ abstract class Component extends Object
 	function Show()
 	{
 		$this->ShowStatus = null;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+		if(isset($_SESSION['_NControlQueue'][$this->Id]))
+			unset($_SESSION['_NControlQueue'][$this->Id]);
 		return "'id','$this->Id'";
 	}
 	/**
@@ -162,9 +162,9 @@ abstract class Component extends Object
 	function Bury()
 	{
 		$this->ShowStatus = 2;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
+		if(isset($_SESSION['_NControlQueue'][$this->Id]))
 		{
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+			unset($_SESSION['_NControlQueue'][$this->Id]);
 			$this->ParentId = null;
 		}
 	}
@@ -176,8 +176,8 @@ abstract class Component extends Object
 	function Resurrect()
 	{
 		$this->ShowStatus = null;
-		if(isset($_SESSION['NOLOHControlQueue'][$this->Id]))
-			unset($_SESSION['NOLOHControlQueue'][$this->Id]);
+		if(isset($_SESSION['_NControlQueue'][$this->Id]))
+			unset($_SESSION['_NControlQueue'][$this->Id]);
 	}
 	/**
 	 * @ignore
@@ -228,13 +228,13 @@ abstract class Component extends Object
 	*/
 	function __destruct()
 	{
-		if(isset($GLOBALS['NOLOHGarbage']))
+		if(isset($GLOBALS['_NGarbage']))
 		{
 			$id = $this->Id;
-			unset($_SESSION['NOLOHControlQueue'][$id],
-				$_SESSION['NOLOHFunctionQueue'][$id],
-				$_SESSION['NOLOHPropertyQueue'][$id]);
-			$_SESSION['NOLOHGarbage'][$id] = true;
+			unset($_SESSION['_NControlQueue'][$id],
+				$_SESSION['_NFunctionQueue'][$id],
+				$_SESSION['_NPropertyQueue'][$id]);
+			$_SESSION['_NGarbage'][$id] = true;
 		}
 	}
 }

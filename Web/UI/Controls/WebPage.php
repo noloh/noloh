@@ -52,7 +52,7 @@ class WebPage extends Component
 		$this->LoadLbl->SetParentId($this->Id);
 		$this->LoadLbl->Opacity = 70;
 		$this->LoadLbl->CSSClass = 'NLoad NLoadLbl';
-		unset($_SESSION['NOLOHPropertyQueue'][$this->LoadLbl->Id]['style.zIndex'],$_SESSION['NOLOHPropertyQueue'][$this->LoadImg->Id]['style.zIndex']);
+		unset($_SESSION['_NPropertyQueue'][$this->LoadLbl->Id]['style.zIndex'],$_SESSION['_NPropertyQueue'][$this->LoadImg->Id]['style.zIndex']);
 		//$this->LoadImg->ZIndex = $this->LoadLbl->ZIndex = null;
 		//AddScript("document.getElementById('{$this->LoadLbl->Id}').style.zIndex=document.getElementById('{$this->LoadImg->Id}').style.zIndex=999999");
 		//require_once($_SERVER['DOCUMENT_ROOT'] ."/NOLOH/Javascripts/GetBrowserAndOs.php");
@@ -192,7 +192,7 @@ class WebPage extends Component
 	
 	static function That()
 	{
-		return GetComponentById($_SESSION['NOLOHStartUpPageId']);
+		return GetComponentById($_SESSION['_NStartUpPageId']);
 	}
 	
 	static function SkeletalShow($unsupportedURL)
@@ -231,7 +231,7 @@ class WebPage extends Component
   </BODY>
 </HTML>
 
-<SCRIPT type='text/javascript'>".($_SESSION['NOLOHIE6'] ? 
+<SCRIPT type='text/javascript'>".($_SESSION['_NIE6'] ? 
   "
   function _NIe6InitIframeLoad()
   {

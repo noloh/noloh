@@ -18,13 +18,13 @@ class RadioButton extends GroupedInputControl implements Groupable
 	function Show()
 	{
         parent::Show();
-		$initialProperties = "'id','".$this->Id."I','type','radio','defaultChecked',".($this->Checked?'true':'false').parent::GetEventString(null);
-		if(GetBrowser()=='ie')
+		$initialProperties = '\'id\',\''.$this->Id.'I\',\'type\',\'radio\',\'defaultChecked\','.($this->Checked?'true':'false').parent::GetEventString(null);
+		if($_SESSION['_NIsIE'])
 			NolohInternal::Show('<INPUT name="'.($this->GroupName != null?$this->GroupName:$this->Id).'">', $initialProperties, $this, $this->Id);
 		else
         {
             if($this->GroupName != null)
-                $initialProperties .= ",'name','$this->GroupName'";
+                $initialProperties .= ',\'name\',\''.$this->GroupName.'\'';
 			NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
         }
 	}

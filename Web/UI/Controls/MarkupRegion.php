@@ -2,6 +2,11 @@
 /**
  * @package Web.UI.Controls
  */
+/**
+ * MarkupRegion class
+ *
+ * A MarkupRegion is a Control that is capable of displaying a string or file containing mark-up.
+ */
 class MarkupRegion extends Control
 {
 	private $CachedWidth;
@@ -65,7 +70,7 @@ class MarkupRegion extends Control
 	}
     function SetScrollLeft($scrollLeft)
     {
-        if($_SESSION['NOLOHIsIE'])
+        if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
@@ -77,7 +82,7 @@ class MarkupRegion extends Control
     }
     function SetScrollTop($scrollTop)
     {
-    	if($_SESSION['NOLOHIsIE'])
+    	if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
@@ -121,7 +126,7 @@ class MarkupRegion extends Control
 //		{
 			$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
 			$this->AutoWidthHeight($tmpFullString);
-			QueueClientFunction($this, 'SetMarkupString', array("'$this->Id'", "'$markupStringOrFile'"));
+			QueueClientFunction($this, 'SetMarkupString', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 //		}
 //		else
 //			NolohInternal::SetProperty("innerHTML", $whatMarkupStringOrFile, $this);

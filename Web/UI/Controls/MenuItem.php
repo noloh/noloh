@@ -99,8 +99,8 @@ class MenuItem extends Panel
 		$this->MenuItemsPanel->Controls->Add($menuItem, true, true);
 		$tmpId = $this->MenuItemsPanel->Id;
 		$fncStr = 'document.getElementById(\''.$tmpId .'\').ChildrenArray.splice';
-		if(isset($_SESSION['NOLOHFunctionQueue'][$tmpId]) && isset($_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr]))
-			$_SESSION['NOLOHFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->Id}'";
+		if(isset($_SESSION['_NFunctionQueue'][$tmpId]) && isset($_SESSION['_NFunctionQueue'][$tmpId][$fncStr]))
+			$_SESSION['_NFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->Id}'";
 		else 
 			QueueClientFunction($this->MenuItemsPanel, $fncStr, array(-1, 0, "'{$menuItem->Id}'"));
 		//NolohInternal::SetProperty('ItmsPnl', $tmpId, $menuItem->TextLabel);

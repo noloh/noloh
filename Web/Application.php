@@ -41,13 +41,13 @@ function _NErrorHandler($number, $string, $file, $line)
 	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers()))
 	{
 		ob_start('ob_gzhandler');
-		++$_SESSION['NOLOHVisit'];
+		++$_SESSION['_NVisit'];
 	}
 	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? ("A server error has occurred:\\n\\n".str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line") : 'An application error has occurred.') . '");');
 	global $OmniscientBeing;
-	$_SESSION['NOLOHScript'] = array('', '', '');
+	$_SESSION['_NScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
-	$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+	$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
     ob_end_flush();
     exit();
 }
@@ -124,38 +124,38 @@ final class Application
 	{
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
 		session_start();
-		$GLOBALS['NOLOHURLTokenMode'] = $urlTokenMode;
-		$GLOBALS['NOLOHTokenTrailsExpiration'] = $tokenTrailsExpiration;
+		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
+		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
 		if(isset($_GET['NOLOHImage']))
-			if(isset($_GET['Width']))
-				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params'], $_GET['Width'], $_GET['Height']);
-			else
+			if(empty($_GET['Width']))
 				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params']);
+			else
+				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params'], $_GET['Width'], $_GET['Height']);
 		elseif(isset($_GET['NOLOHFileUpload']))
 			FileUpload::ShowInside($_GET['NOLOHFileUpload'], $_GET['Width'], $_GET['Height']);
 		elseif(isset($_GET['NOLOHFileRequest']))
 			File::SendRequestedFile($_GET['NOLOHFileRequest']);
-		elseif(isset($_SESSION['NOLOHVisit']) || isset($_POST['NOLOHVisit']))
+		elseif(isset($_SESSION['_NVisit']) || isset($_POST['NOLOHVisit']))
 		{
 			if($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
 				return;
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 				$this->HandleIENavigation($className, $unsupportedURL);
 			$this->HandleDebugMode($debugMode);
-			if(isset($_SESSION['NOLOHOmniscientBeing']))
+			if(isset($_SESSION['_NOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			$this->HandleClientChanges();
 			if(!empty($_POST['NOLOHFileUploadId']))
 				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
-			foreach($_SESSION['NOLOHFiles'] as $key => $val)
+			foreach($_SESSION['_NFiles'] as $key => $val)
 				GetComponentById($key)->File = new File($val);
 			if(!empty($_POST['NOLOHServerEvent']))
 				$this->HandleServerEvent();
-			foreach($_SESSION['NOLOHFiles'] as $key => $val)
+			foreach($_SESSION['_NFiles'] as $key => $val)
 			{
-				unlink($_SESSION['NOLOHFiles'][$key]['tmp_name']);
+				unlink($_SESSION['_NFiles'][$key]['tmp_name']);
 				GetComponentById($key)->File = null;
-				unset($_SESSION['NOLOHFiles'][$key]);
+				unset($_SESSION['_NFiles'][$key]);
 			}
 			$this->Run();
 		}
@@ -165,50 +165,50 @@ final class Application
 	
 	static function UnsetNolohSessionVars()
 	{
-		unset($_SESSION['NOLOHVisit'],
-			$_SESSION['NOLOHNumberOfComponents'],
-			$_SESSION['NOLOHOmniscientBeing'],
-			$_SESSION['NOLOHControlQueue'],
-			$_SESSION['NOLOHControlInserts'],
-			$_SESSION['NOLOHFunctionQueue'],
-			$_SESSION['NOLOHPropertyQueue'],
-			$_SESSION['NOLOHScript'],
+		unset($_SESSION['_NVisit'],
+			$_SESSION['_NNumberOfComponents'],
+			$_SESSION['_NOmniscientBeing'],
+			$_SESSION['_NControlQueue'],
+			$_SESSION['_NControlInserts'],
+			$_SESSION['_NFunctionQueue'],
+			$_SESSION['_NPropertyQueue'],
+			$_SESSION['_NScript'],
 			$_SESSION['_NScriptSrc'],
-			$_SESSION['NOLOHScriptSrcs'],
-			$_SESSION['NOLOHGlobals'],
-			$_SESSION['NOLOHFiles'],
-			$_SESSION['NOLOHFileSend'],
-			$_SESSION['NOLOHGarbage'],
-			$_SESSION['NOLOHStartUpPageClass'],
-			$_SESSION['NOLOHURL'],
-			$_SESSION['NOLOHTokens'],
+			$_SESSION['_NScriptSrcs'],
+			$_SESSION['_NGlobals'],
+			$_SESSION['_NFiles'],
+			$_SESSION['_NFileSend'],
+			$_SESSION['_NGarbage'],
+			$_SESSION['_NStartUpPageClass'],
+			$_SESSION['_NURL'],
+			$_SESSION['_NTokens'],
 			$_SESSION['HighestZIndex'],
 			$_SESSION['LowestZIndex']);
 	}
 	
 	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
 	{
-		$_SESSION['NOLOHVisit'] = -1;
-		$_SESSION['NOLOHNumberOfComponents'] = 0;
-		$_SESSION['NOLOHControlQueue'] = array();
-		$_SESSION['NOLOHControlInserts'] = array();
-		$_SESSION['NOLOHFunctionQueue'] = array();
-		$_SESSION['NOLOHPropertyQueue'] = array();
-		$_SESSION['NOLOHScript'] = array('', '', '');
+		$_SESSION['_NVisit'] = -1;
+		$_SESSION['_NNumberOfComponents'] = 0;
+		$_SESSION['_NControlQueue'] = array();
+		$_SESSION['_NControlInserts'] = array();
+		$_SESSION['_NFunctionQueue'] = array();
+		$_SESSION['_NPropertyQueue'] = array();
+		$_SESSION['_NScript'] = array('', '', '');
 		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['NOLOHScriptSrcs'] = array();
-		$_SESSION['NOLOHGlobals'] = array();
-		$_SESSION['NOLOHFiles'] = array();
-		$_SESSION['NOLOHFileSend'] = array();
-		$_SESSION['NOLOHGarbage'] = array();
-		$_SESSION['NOLOHStartUpPageClass'] = $className;
-		$_SESSION['NOLOHURL'] = $_SERVER['PHP_SELF'];
-		$_SESSION['NOLOHTokens'] = array();
+		$_SESSION['_NScriptSrcs'] = array();
+		$_SESSION['_NGlobals'] = array();
+		$_SESSION['_NFiles'] = array();
+		$_SESSION['_NFileSend'] = array();
+		$_SESSION['_NGarbage'] = array();
+		$_SESSION['_NStartUpPageClass'] = $className;
+		$_SESSION['_NURL'] = $_SERVER['PHP_SELF'];
+		$_SESSION['_NTokens'] = array();
 		$_SESSION['HighestZIndex'] = 0;
 		$_SESSION['LowestZIndex'] = 0;
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
-			if($_SESSION['NOLOHBrowser'] == 'other' && $_SESSION['NOLOHOS'] == 'other')
+			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')
 			//if(true)
 				$this->SearchEngineRun();
 			else 
@@ -217,13 +217,13 @@ final class Application
 	
 	private function HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
-		if(!isset($_SESSION['NOLOHVisit']) || 
-			(isset($_POST['NOLOHVisit']) && $_SESSION['NOLOHVisit'] != $_POST['NOLOHVisit']) ||
-			((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['NOLOHVisit']>=0 && !isset($_GET['NOLOHVisit'])))
+		if(!isset($_SESSION['_NVisit']) || 
+			(isset($_POST['NOLOHVisit']) && $_SESSION['_NVisit'] != $_POST['NOLOHVisit']) ||
+			((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['NOLOHVisit'])))
 		{
-			if(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != ('Unload@'.$_SESSION['NOLOHStartUpPageId']))
+			if(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
-				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['NOLOHVisit']) || isset($_GET['NWidth']))
+				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['_NVisit']) || isset($_GET['NWidth']))
 					self::Reset(false, false);
 				$this->TheComingOfTheOmniscientBeing();
 				$webPage = WebPage::That();
@@ -239,10 +239,10 @@ final class Application
 	
 	private function HandleIENavigation($className, $unsupportedURL)
 	{
-		$srcs = $_SESSION['NOLOHScriptSrcs'];
+		$srcs = $_SESSION['_NScriptSrcs'];
 		self::UnsetNolohSessionVars();
 		$this->HandleFirstRun($className, $unsupportedURL, false);
-		$_SESSION['NOLOHScriptSrcs'] = $srcs;
+		$_SESSION['_NScriptSrcs'] = $srcs;
 		AddScript('NOLOHVisit=-1', Priority::High);
 	}
 	
@@ -254,7 +254,7 @@ final class Application
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting());
 			ob_start('_NOBErrorHandler');
-			if($_SESSION['NOLOHVisit']==-1)
+			if($_SESSION['_NVisit']==-1)
 				AddScript('_NDebugMode='.($debugMode?'true;':'false;'));
 		}
 	}
@@ -262,20 +262,20 @@ final class Application
 	private function TheComingOfTheOmniscientBeing()
 	{
 		global $OmniscientBeing;
-		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['NOLOHOmniscientBeing']) : $_SESSION['NOLOHOmniscientBeing']);
-		unset($_SESSION['NOLOHOmniscientBeing']);
+		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['_NOmniscientBeing']) : $_SESSION['_NOmniscientBeing']);
+		unset($_SESSION['_NOmniscientBeing']);
 		$idArrayStr = '';
-		foreach($_SESSION['NOLOHGarbage'] as $id => $nothing)
+		foreach($_SESSION['_NGarbage'] as $id => $nothing)
 		{
 			$control = &$GLOBALS['OmniscientBeing'][$id];
-			if(!isset($_SESSION['NOLOHGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
+			if(!isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
 				$idArrayStr .= '\'' . $id . '\',';
 			unset($OmniscientBeing[$id]);
 		}
 		if($idArrayStr != '')
 			AddScript('_NGCAsc(Array(' . rtrim($idArrayStr, ',') . '))', Priority::Low);
-		$_SESSION['NOLOHGarbage'] = array();
-		$this->WebPage = GetComponentById($_SESSION['NOLOHStartUpPageId']);
+		$_SESSION['_NGarbage'] = array();
+		$this->WebPage = GetComponentById($_SESSION['_NStartUpPageId']);
 	}
 
 	private function HandleClientChanges()
@@ -332,19 +332,19 @@ final class Application
 
 	private function HandleTokens()
 	{
-		if($GLOBALS['NOLOHURLTokenMode'] == 0)
+		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
 		unset($_GET['NOLOHVisit'], $_GET['NWidth'], $_GET['NHeight']);
-		if($GLOBALS['NOLOHURLTokenMode'] == 1)
-			$_SESSION['NOLOHTokens'] = $_GET;
-		if($GLOBALS['NOLOHURLTokenMode'] == 2)
+		if($GLOBALS['_NURLTokenMode'] == 1)
+			$_SESSION['_NTokens'] = $_GET;
+		if($GLOBALS['_NURLTokenMode'] == 2)
 		{
 			$keys = array_keys($_GET);
 			$ubound = count($keys) - 1;
 			for($i=0; $i<$ubound; ++$i)
-				$_SESSION['NOLOHTokens'][$keys[$i]] = $_GET[$keys[$i]];
+				$_SESSION['_NTokens'][$keys[$i]] = $_GET[$keys[$i]];
 			if($_GET[$keys[$ubound]] != '')
-				$_SESSION['NOLOHTokens'][$keys[$ubound]] = $_GET[$keys[$ubound]];
+				$_SESSION['_NTokens'][$keys[$ubound]] = $_GET[$keys[$ubound]];
 			else
 			{
 				$split = explode('&', base64_decode($keys[$ubound]));
@@ -352,7 +352,7 @@ final class Application
 				for($i=0; $i<$count; ++$i)
 				{
 					$split2 = explode('=', $split[$i].'=');
-					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+					$_SESSION['_NTokens'][$split2[0]] = $split2[1];
 				}
 			}
 		}
@@ -365,11 +365,11 @@ final class Application
 			for($i=0; $i<$ubound; ++$i)
 			{
 				$split2 = explode('=', $split[$i]);
-				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+				$_SESSION['_NTokens'][$split2[0]] = $split2[1];
 			}
 			$split2 = explode('=', $split[$ubound]);
-			if($GLOBALS['NOLOHURLTokenMode'] == 1 || $split2[1] != '')
-				$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+			if($GLOBALS['_NURLTokenMode'] == 1 || $split2[1] != '')
+				$_SESSION['_NTokens'][$split2[0]] = $split2[1];
 			else 
 			{
 				$split = explode('&', base64_decode($split2[0]));
@@ -377,7 +377,7 @@ final class Application
 				for($i=0; $i<$count; ++$i)
 				{
 					$split2 = explode('=', $split[$i].'=');
-					$_SESSION['NOLOHTokens'][$split2[0]] = $split2[1];
+					$_SESSION['_NTokens'][$split2[0]] = $split2[1];
 				}
 			}
 		}
@@ -386,17 +386,17 @@ final class Application
 	private function Run()
 	{
 		global $OmniscientBeing;
-		if(++$_SESSION['NOLOHVisit']==0)
+		if(++$_SESSION['_NVisit']==0)
 		{
 			$GLOBALS['_NWidth'] = $_GET['NWidth'];
 			$GLOBALS['_NHeight'] = $_GET['NHeight'];
 			$this->HandleTokens();
-			$className = $_SESSION['NOLOHStartUpPageClass'];
+			$className = $_SESSION['_NStartUpPageClass'];
 			$this->WebPage = new $className();
-			$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
+			$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 			$this->WebPage->Show();
 		}
-		if(isset($GLOBALS['NOLOHTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
+		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
 			URL::UpdateTokens();
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
@@ -404,13 +404,13 @@ final class Application
 		@ob_end_clean();
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
-		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['NOLOHScript'][0] . $_SESSION['NOLOHScript'][1] . $_SESSION['NOLOHScript'][2]);
+		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['_NScript'][0] . $_SESSION['_NScript'][1] . $_SESSION['_NScript'][2]);
 		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['NOLOHScript'] = array('', '', '');
-		$_SESSION['NOLOHOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-		$GLOBALS['NOLOHGarbage'] = true;
+		$_SESSION['_NScript'] = array('', '', '');
+		$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+		$GLOBALS['_NGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
-		unset($GLOBALS['NOLOHGarbage']);
+		unset($GLOBALS['_NGarbage']);
 	}
 	
 	private function SearchEngineRun()
@@ -420,15 +420,15 @@ final class Application
 		$file = getcwd().'/NOLOHSearchTrails.dat';
 		if(file_exists($file))
 		{
-			$tokenString = URL::TokenString($_SESSION['NOLOHTokens']);
+			$tokenString = URL::TokenString($_SESSION['_NTokens']);
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $nothing)
 					$tokenLinks .= '<A href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ';
 		}
-		$className = $_SESSION['NOLOHStartUpPageClass'];
+		$className = $_SESSION['_NStartUpPageClass'];
 		$this->WebPage = new $className();
-		$_SESSION['NOLOHStartUpPageId'] = $this->WebPage->Id;
+		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		session_destroy();
 		session_unset();

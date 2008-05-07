@@ -2,16 +2,44 @@
 /**
  * @package Web.UI.Controls
  */
+/**
+ * FileUpload class
+ *
+ * A FileUpload is a Control that enables a user to upload a file to the server.
+ * 
+ * <code>
+ * // Instantiate a new FileUpload and add it
+ * $this->Controls->Add($fileUpload = new FileUpload());
+ * // Instantiate a new Button and add it
+ * $this->Controls->Add($button = new Button('Submit', 50);
+ * // Say that clicking on the Button will upload the selected file to the server
+ * $button->Click->Uploads->Add($fileUpload);
+ * </code>
+ */
 class FileUpload extends Control
 {
+	/**
+	 * After a file has been successfully uploaded, this property will contain a File object corresponding to the uploaded, temporary file. If it is not saved, it will be automatically deleted. 
+	 * @var File
+	 */
 	public $File;
-
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends FileUpload
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @return FileUpload
+	 */
 	function FileUpload($left = 0, $top = 0, $width = 300, $height = 24)  
 	{
 		parent::Control($left, $top, $width, $height);
 		$this->SetCSSClass();
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetCSSClass($cssClass=null)
 	{
 		parent::SetCSSClass('NFileUpload'.$cssClass);
@@ -53,8 +81,8 @@ class FileUpload extends Control
 		if(isset($_FILES['NOLOHFile']) && $_FILES['NOLOHFile']['tmp_name']!='')
 		{
 			rename($_FILES['NOLOHFile']['tmp_name'], $_FILES['NOLOHFile']['tmp_name'].'N');
-			$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']] = $_FILES['NOLOHFile'];
-			$_SESSION['NOLOHFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
+			$_SESSION['_NFiles'][$_GET['NOLOHFileUpload']] = $_FILES['NOLOHFile'];
+			$_SESSION['_NFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
 		}
 	}
 }

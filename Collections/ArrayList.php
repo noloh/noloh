@@ -1,11 +1,9 @@
 <?php
 /**
- * ArrayList class file
+ * @package Collections
  */
 
 /**
- * @package Collections
- * 
  * ArrayList class
  * 
  * An ArrayList is an array with additional functionality. 
@@ -155,7 +153,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	{
 		$oldElements = $this->Elements;
 		if($this->ParentId != null && $element instanceof Component && isset($oldElements[$index]) && $oldElements[$index] instanceof Component)
-			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldElements[$index]->Id;
+			$_SESSION['_NControlInserts'][$element->Id] = $oldElements[$index]->Id;
 		if(is_numeric($index))
 		{
 			$this->Elements = array_slice($oldElements, 0, $index);
@@ -183,7 +181,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
     {
 		$oldElements = $this->Elements;
    		if($this->ParentId != null && $element instanceof Component && isset($oldElements[$position]) && $oldElements[$position] instanceof Component)
-			$_SESSION['NOLOHControlInserts'][$element->Id] = $oldElements[$position]->Id;
+			$_SESSION['_NControlInserts'][$element->Id] = $oldElements[$position]->Id;
     	$this->Elements = array_slice($oldElements, 0, $position);
         $this->Insert($element, $index, true);
     	$this->Elements = array_merge($this->Elements, array_slice($oldElements, $position));

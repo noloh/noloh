@@ -48,7 +48,7 @@ function GetAbsolutePath($path)
 */
 function GetGlobal($name)
 {
-	return isset($_SESSION['NOLOHGlobals'][$name]) ? $_SESSION['NOLOHGlobals'][$name] : null;
+	return isset($_SESSION['_NGlobals'][$name]) ? $_SESSION['_NGlobals'][$name] : null;
 }
 /**
 * Gets a global that lasts as long as the application does, as opposed to PHP's globals that are forgotten as soon as the server is left.
@@ -57,7 +57,7 @@ function GetGlobal($name)
 */
 function SetGlobal($name, $value)
 {
-	$_SESSION['NOLOHGlobals'][$name] = &$value;
+	$_SESSION['_NGlobals'][$name] = &$value;
 }
 /**
 * Alert a string specified by the $msg variable.
@@ -77,10 +77,10 @@ function Alert($msg)
 function AddScript($script, $priority=Priority::Medium)
 {
 	//if(isset($_SESSION['UnlockNOLOHDebug']) && $_SESSION['UnlockNOLOHDebug'] == 'mddevmddev')
-	//	$_SESSION['NOLOHScript'] .= $script . ";";
+	//	$_SESSION['_NScript'] .= $script . ";";
 	//else
-		/*$_SESSION['NOLOHScript'] .= str_replace('"','\"',str_replace("'","\'",str_replace("\n","",$script))) . ';';*/
-		$_SESSION['NOLOHScript'][$priority] .= $script . ';';
+		/*$_SESSION['_NScript'] .= str_replace('"','\"',str_replace("'","\'",str_replace("\n","",$script))) . ';';*/
+		$_SESSION['_NScript'][$priority] .= $script . ';';
 }
 /**
 * Adds a Javascript script file to be run immediately on the client <br>
@@ -90,10 +90,10 @@ function AddScript($script, $priority=Priority::Medium)
 */
 function AddScriptSrc($path)
 {
-	if(!isset($_SESSION['NOLOHScriptSrcs'][$path]))
+	if(!isset($_SESSION['_NScriptSrcs'][$path]))
 	{
 		$_SESSION['_NScriptSrc'] .= (file_get_contents($path));
-		$_SESSION['NOLOHScriptSrcs'][$path] = true;
+		$_SESSION['_NScriptSrcs'][$path] = true;
 	}
 }
 /**
@@ -101,14 +101,14 @@ function AddScriptSrc($path)
 */
 function AddNolohScriptSrc($src, $browserSpecific = false)
 {
-	if(!isset($_SESSION['NOLOHScriptSrcs'][$src]))
+	if(!isset($_SESSION['_NScriptSrcs'][$src]))
 	{
 		$path = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Javascripts/';
 		if($browserSpecific)
-			$path .= $_SESSION['NOLOHIsIE'] ? 'IE/' : 'Standard/';
+			$path .= $_SESSION['_NIsIE'] ? 'IE/' : 'Standard/';
 		$path .= $src;
 		$_SESSION['_NScriptSrc'] .= file_get_contents($path);
-		$_SESSION['NOLOHScriptSrcs'][$src] = true;
+		$_SESSION['_NScriptSrcs'][$src] = true;
 	}
 }
 /**
@@ -129,12 +129,12 @@ function QueueClientFunction(Component $component, $functionName, $paramsArray, 
     $objId = $component->Id;
 	if($GLOBALS['_NQueueDisabled'] != $objId)
 	{
-		if(!isset($_SESSION['NOLOHFunctionQueue'][$objId]))
-			$_SESSION['NOLOHFunctionQueue'][$objId] = array();
+		if(!isset($_SESSION['_NFunctionQueue'][$objId]))
+			$_SESSION['_NFunctionQueue'][$objId] = array();
 		if($replace)
-			$_SESSION['NOLOHFunctionQueue'][$objId][$functionName] = array($paramsArray, $priority);
+			$_SESSION['_NFunctionQueue'][$objId][$functionName] = array($paramsArray, $priority);
 		else
-			$_SESSION['NOLOHFunctionQueue'][$objId][] = array($functionName, $paramsArray, $priority);			
+			$_SESSION['_NFunctionQueue'][$objId][] = array($functionName, $paramsArray, $priority);			
 	}
 }
 /**
@@ -142,7 +142,7 @@ function QueueClientFunction(Component $component, $functionName, $paramsArray, 
 */
 function GetBrowser()
 {
-	return $_SESSION['NOLOHBrowser'];
+	return $_SESSION['_NBrowser'];
 }
 /**
 * @ignore

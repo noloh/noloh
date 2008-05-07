@@ -52,7 +52,7 @@ final class URL
 	 */
 	static function GetToken($tokenName, $defaultValue=null)
 	{
-		return isset($_SESSION['NOLOHTokens'][$tokenName]) && $GLOBALS['NOLOHURLTokenMode'] ? $_SESSION['NOLOHTokens'][$tokenName] : $defaultValue;
+		return isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] ? $_SESSION['_NTokens'][$tokenName] : $defaultValue;
 	}
 	/**
 	 * Sets the value of a particular URL token
@@ -61,15 +61,15 @@ final class URL
 	 */
 	static function SetToken($tokenName, $tokenValue)
 	{
-		if($GLOBALS['NOLOHURLTokenMode'] && (!isset($_SESSION['NOLOHTokens'][$tokenName]) || $_SESSION['NOLOHTokens'][$tokenName]!=$tokenValue))
+		if($GLOBALS['_NURLTokenMode'] && (!isset($_SESSION['_NTokens'][$tokenName]) || $_SESSION['_NTokens'][$tokenName]!=$tokenValue))
 		{
-			if(!isset($GLOBALS['NOLOHTokenUpdate']))
+			if(!isset($GLOBALS['_NTokenUpdate']))
 			{
-				$GLOBALS['NOLOHTokenUpdate'] = true;
-				if($GLOBALS['NOLOHTokenTrailsExpiration'])
-					$GLOBALS['NOLOHInitialURLTokens'] = self::TokenString($_SESSION['NOLOHTokens']);
+				$GLOBALS['_NTokenUpdate'] = true;
+				if($GLOBALS['_NTokenTrailsExpiration'])
+					$GLOBALS['_NInitialURLTokens'] = self::TokenString($_SESSION['_NTokens']);
 			}
-			$_SESSION['NOLOHTokens'][$tokenName] = $tokenValue;
+			$_SESSION['_NTokens'][$tokenName] = $tokenValue;
 		}
 	}
 	/**
@@ -81,20 +81,20 @@ final class URL
 		foreach($keyValuePairs as $key => $val)
 			$str .= $key . '=' . $val . '&';
 		$str = rtrim($str, '&');
-		return $GLOBALS['NOLOHURLTokenMode'] == 2 ? base64_encode($str) : $str;
+		return $GLOBALS['_NURLTokenMode'] == 2 ? base64_encode($str) : $str;
 	}
 	/**
 	 * @ignore
 	 */
 	static function UpdateTokens()
 	{
-		$tokenString = self::TokenString($_SESSION['NOLOHTokens']);
+		$tokenString = self::TokenString($_SESSION['_NTokens']);
 		AddScript("_NSetURL('$tokenString')", Priority::Low);
-		if($GLOBALS['NOLOHTokenTrailsExpiration'])
+		if($GLOBALS['_NTokenTrailsExpiration'])
 		{
-			$initialURLString = $GLOBALS['NOLOHInitialURLTokens'];
+			$initialURLString = $GLOBALS['_NInitialURLTokens'];
 			$file = getcwd()."/NOLOHSearchTrails.dat";
-			if(file_exists($file) && time()-filemtime($file)<$GLOBALS['NOLOHTokenTrailsExpiration'])
+			if(file_exists($file) && time()-filemtime($file)<$GLOBALS['_NTokenTrailsExpiration'])
 			{
 				$trails = unserialize(base64_decode(file_get_contents($file)));
 				if($trails === false)

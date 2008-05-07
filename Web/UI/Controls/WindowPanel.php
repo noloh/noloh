@@ -24,7 +24,7 @@ class WindowPanel extends Panel
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
 		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
-		if(!$_SESSION['NOLOHIE6'])
+		if(!$_SESSION['_NIE6'])
 		{
 			$imagesDir = $imagesRoot .'Std/';
 			$format = '.png';

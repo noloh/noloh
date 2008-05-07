@@ -685,8 +685,8 @@ class Control extends Component
 		else
 		{
 			$fncStr = "document.getElementById('$this->Id').Shifts.splice";
-			if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]) && isset($_SESSION['NOLOHFunctionQueue'][$this->Id][$fncStr]))
-				$_SESSION['NOLOHFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
+			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id][$fncStr]))
+				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
 			else 
 			{
 				AddNolohScriptSrc('Shift.js', true);

@@ -2,7 +2,13 @@
 /**
  * @package Collections
  */
-class File
+/**
+ * File class
+ *
+ * A File is an Object representing a file on the server. It contains various methods that have to do with reading, writing, or even
+ * sending files to a client.
+ */
+class File extends Object
 {
 	const Read = 'r';
 	const ReadWrite = 'r+';
@@ -21,14 +27,14 @@ class File
 	static function Send($fileName)
 	{
 		AddScript('_NRequestFile("' . $_SERVER['PHP_SELF'] . '?NOLOHFileRequest=' . $fileName . '")');
-		$_SESSION['NOLOHFileSend'][$fileName] = true;
+		$_SESSION['_NFileSend'][$fileName] = true;
 		//$webPage = GetComponentById('N1');
 		//$webPage->Controls->Add($iframe = new IFrame($_SERVER['PHP_SELF'].'?NOLOHFileRequest='.$fileName));
 	}
 	
 	static function SendRequestedFile($fileName, $contentType='application/octet-stream')
 	{
-		if(isset($_SESSION['NOLOHFileSend'][$fileName]))
+		if(isset($_SESSION['_NFileSend'][$fileName]))
 		{
 		    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		    header('Content-Description: File Transfer');
@@ -36,7 +42,7 @@ class File
 		    header('Content-Length: ' . filesize($fileName));
 	    	header('Content-Disposition: attachment; filename=' . basename($fileName));
 			readfile($fileName);
-			unset($_SESSION['NOLOHFileSend'][$fileName]);
+			unset($_SESSION['_NFileSend'][$fileName]);
 		}
 		else 
 			BloodyMurder('You do not have permission to access that file!');

@@ -194,7 +194,7 @@ class Image extends Control
 		if($this->Src)
 			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
 		else
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)).'&Width='.($this->GetWidth()|300).'&Height='.($this->GetHeight()|200), $this);
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)).'&Width='.$this->GetWidth().'&Height='.$this->GetHeight(), $this);
 	}
 	/**
 	* @ignore
@@ -212,7 +212,7 @@ class Image extends Control
 	/**
 	 *@ignore 
 	*/
-	static function MagicGeneration($src, $class, $function, $params, $width=null, $height=null)
+	static function MagicGeneration($src, $class, $function, $params, $width=300, $height=200)
 	{
 		if($src != '')
 		{

@@ -33,32 +33,32 @@ final class UserAgentDetect
 		   )
 		*/
 		   
-		$_SESSION['NOLOHIsIE'] = false;
+		$_SESSION['_NIsIE'] = false;
         if(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
-        	$_SESSION['NOLOHBrowser'] = 'sa';
+        	$_SESSION['_NBrowser'] = 'sa';
         elseif(strpos($agt, 'gecko') !== false && strpos($agt, 'firefox') !== false)
-        	$_SESSION['NOLOHBrowser'] = 'ff';
+        	$_SESSION['_NBrowser'] = 'ff';
         elseif(strpos($agt, 'opera') !== false)
-        	$_SESSION['NOLOHBrowser'] = 'op';
+        	$_SESSION['_NBrowser'] = 'op';
         elseif(strpos($agt, 'msie') !== false)
         {
-        	$_SESSION['NOLOHBrowser'] = 'ie';
-        	$_SESSION['NOLOHIsIE'] = true;
-        	$_SESSION['NOLOHIE6'] = strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false;
+        	$_SESSION['_NBrowser'] = 'ie';
+        	$_SESSION['_NIsIE'] = true;
+        	$_SESSION['_NIE6'] = strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false;
         }
         else
-        	$_SESSION['NOLOHBrowser'] = 'other';
+        	$_SESSION['_NBrowser'] = 'other';
         
         if(strpos($agt, 'win') !== false || strpos($agt, '16bit') !== false)
-        	$_SESSION['NOLOHOS'] = 'win';
+        	$_SESSION['_NOS'] = 'win';
         elseif(strpos($agt, 'mac') !== false)
-        	$_SESSION['NOLOHOS'] = 'mac';
+        	$_SESSION['_NOS'] = 'mac';
         elseif(strpos($agt, 'inux') !== false)
-        	$_SESSION['NOLOHOS'] = 'lin';
+        	$_SESSION['_NOS'] = 'lin';
         elseif(strpos($agt, 'unix') !== false)
-        	$_SESSION['NOLOHOS'] = 'unix';
+        	$_SESSION['_NOS'] = 'unix';
         else
-        	$_SESSION['NOLOHOS'] = 'other';
+        	$_SESSION['_NOS'] = 'other';
 	}
 	
 	/**
@@ -67,7 +67,7 @@ final class UserAgentDetect
 	 */
 	public static function GetBrowser()
 	{
-		return $_SESSION['NOLOHBrowser'];
+		return $_SESSION['_NBrowser'];
 	}
 	/**
 	 * Returns whether or not the user is using internet explorer as their browser.<br>
@@ -77,7 +77,7 @@ final class UserAgentDetect
 	 */
 	public static function IsIE()
 	{
-		return $_SESSION['NOLOHIsIE'];
+		return $_SESSION['_NIsIE'];
 	}
 	/**
 	* Gets operating system that user is using in shorthand (e.g., win, mac, lin, ...)
@@ -85,7 +85,7 @@ final class UserAgentDetect
 	*/
 	public static function GetOperatingSystem()
 	{
-		return $_SESSION['NOLOHOS'];
+		return $_SESSION['_NOS'];
 	}
 	
 	/*
