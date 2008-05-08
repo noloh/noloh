@@ -442,7 +442,7 @@ function ExecReqResponse(response)
 	{
 		var s = document.createElement("SCRIPT");
 		s.type = "text/javascript";
-		s.innerHTML = response[0];
+		s.text = response[0];
 		document.getElementsByTagName('head')[0].appendChild(s);
 		eval(response[0]);
 	}
