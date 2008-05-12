@@ -192,9 +192,9 @@ class Image extends Control
 	private function SetMagicianSrc()
 	{
 		if($this->Src)
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.urlencode(implode(',', array_slice($this->Magician, 2))), $this);
 		else
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2)).'&Width='.$this->GetWidth().'&Height='.$this->GetHeight(), $this);
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.urlencode(implode(',', array_slice($this->Magician, 2))).'&Width='.$this->GetWidth().'&Height='.$this->GetHeight(), $this);
 	}
 	/**
 	* @ignore
@@ -236,7 +236,7 @@ class Image extends Control
 		}
 		if($im)
 		{
-			call_user_func_array(array($class, $function), array_merge(array($im), explode(',', $params)));
+			call_user_func_array(array($class, $function), array_merge(array($im), explode(',', urldecode($params))));
 			header('Content-type: image/'.$extension);
 			call_user_func('image'.$extension, $im);
 			imagedestroy($im);
