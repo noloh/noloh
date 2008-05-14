@@ -23,7 +23,7 @@ require('Collections/Groupable.php');
 require('Collections/ImplicitArrayList.php');
 require('Collections/Item.php');
 require('Collections/Container.php');
-require('Collections/ObjectPair.php');
+require('Collections/ControlPair.php');
 require('Collections/File.php');
 require('Collections/Multiple.php');
 
