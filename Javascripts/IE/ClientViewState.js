@@ -582,6 +582,8 @@ function ReadyBox(id)
 			if(document.getElementById(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
 				return;
 		PostBack(NOLOHUpload.EventType, NOLOHUpload.ID);
+		NOLOHUpload = new Object();
+		NOLOHUpload.FileUploadObjIds = new Array();
 	}
 }
 

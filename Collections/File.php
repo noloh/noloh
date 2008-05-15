@@ -58,7 +58,7 @@ class File extends Object
 			$this->Size = $this->File['size'];
 			$this->TempFilename = $this->File['tmp_name'];
 		}
-		else if(is_file($whatFile))
+		elseif(is_file($whatFile))
 		{
 			$this->File = $whatFile;
 			$this->Filename = $whatFile;
