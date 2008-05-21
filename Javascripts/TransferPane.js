@@ -1,7 +1,7 @@
 function TransferPaneAdd(objFrom, objTo)
 {
-	FromPane = document.getElementById(objFrom);
-	ToPane = document.getElementById(objTo);
+	FromPane = _N(objFrom);
+	ToPane = _N(objTo);
 	while(FromPane.selectedIndex >= 0)
 	{
 		AddOptionAndSave(objTo, new Option(FromPane.options[FromPane.selectedIndex].text, FromPane.options[FromPane.selectedIndex].value));

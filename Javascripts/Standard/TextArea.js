@@ -21,6 +21,6 @@ function doInput(event)
 function SetTextAreaText(id, text)
 {
 	var newText = text.replace(/<Nendl>/g,"\n");
-	document.getElementById(id).value = newText;
+	_N(id).value = newText;
 	SavedControls[id]["value"] = newText;
 }

@@ -1,21 +1,21 @@
 function _NListSel(id,idx)
 {
-	document.getElementById(id).options[idx].selected=true;
+	_N(id).options[idx].selected=true;
 }
 function _NListDesel(id,idx)
 {
-	document.getElementById(id).options[idx].selected=false;
+	_N(id).options[idx].selected=false;
 }
 function _NListClrSel(id)
 {
-	var opts = document.getElementById(id).options;
+	var opts = _N(id).options;
 	var length = opts.length;
 	for(var i=0; i<length; ++i)
 		opts[i].selected=false;
 }
 function _NListAdd(id,text,val,idx)
 {
-	var opts = document.getElementById(id).options;
+	var opts = _N(id).options;
 	if(typeof idx == "undefined")
 		opts[opts.length] = new Option(text,val);
 	else
@@ -29,9 +29,9 @@ function _NListAdd(id,text,val,idx)
 }
 function _NListRem(id,idx)
 {
-	document.getElementById(id).remove(idx);
+	_N(id).remove(idx);
 }
 function _NListClr(id)
 {
-	document.getElementById(id).options.length=0;
+	_N(id).options.length=0;
 }

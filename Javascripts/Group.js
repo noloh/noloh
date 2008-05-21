@@ -2,7 +2,7 @@ function _NGetGroupSelectedIndex()
 {
 	var elementsLength = this.Elements.length;
 	for(var i=0; i<elementsLength; ++i)
-		if(document.getElementById(this.Elements[i]).Selected)
+		if(_N(this.Elements[i]).Selected)
 			return i;
 	return -1;
 }

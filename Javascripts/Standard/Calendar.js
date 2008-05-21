@@ -1,42 +1,42 @@
 function LastMonth(id)
 {
-	var calObj = document.getElementById(id);
-	ChangeAndSave(id, "calViewDate.setMonth", calObj.calViewDate.getMonth()-1);
-	ChangeAndSave(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
+	var calObj = _N(id);
+	_NSetProperty(id, "calViewDate.setMonth", calObj.calViewDate.getMonth()-1);
+	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
 	PrintCal(id);
 }
 
 function NextMonth(id)
 {
-	var calObj = document.getElementById(id);
-	ChangeAndSave(id, "calViewDate.setMonth", calObj.calViewDate.getMonth()+1);
-	ChangeAndSave(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
+	var calObj = _N(id);
+	_NSetProperty(id, "calViewDate.setMonth", calObj.calViewDate.getMonth()+1);
+	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
 	PrintCal(id);
 }
 
 function LastYear(id)
 {
-	var calObj = document.getElementById(id);
-	ChangeAndSave(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()-1);
+	var calObj = _N(id);
+	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()-1);
 	PrintCal(id);
 }
 
 function NextYear(id)
 {
-	var calObj = document.getElementById(id);
-	ChangeAndSave(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()+1);
+	var calObj = _N(id);
+	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()+1);
 	PrintCal(id);
 }
 
 function CalSelectDate(event, calid)
 {
-	var cal = document.getElementById(calid);
+	var cal = _N(calid);
 	var lab = event.target;
-	document.getElementById(cal.SelectedLabelId).style.fontWeight = "normal";
+	_N(cal.SelectedLabelId).style.fontWeight = "normal";
 	cal.SelectedLabelId = lab.id;
-	ChangeAndSave(calid, "calSelectDate.setDate", lab.innerHTML);
-	ChangeAndSave(calid, "calSelectDate.setMonth", cal.calViewDate.getMonth());
-	ChangeAndSave(calid, "calSelectDate.setFullYear", cal.calViewDate.getFullYear());
+	_NSetProperty(calid, "calSelectDate.setDate", lab.innerHTML);
+	_NSetProperty(calid, "calSelectDate.setMonth", cal.calViewDate.getMonth());
+	_NSetProperty(calid, "calSelectDate.setFullYear", cal.calViewDate.getFullYear());
 	lab.style.fontWeight = "bold";
 	if(cal.onchange != null)
 		cal.onchange.call();
@@ -45,18 +45,18 @@ function CalSelectDate(event, calid)
 function PickerSelectDate(calid, comboid, format)
 {
     ShowDatePicker(calid, comboid, format);
-	document.getElementById(calid).style.display = 'none';
+	_N(calid).style.display = 'none';
 }
 
 function ShowDatePicker(calid, comboid, format)
 {
 	var ds = GetDateString(calid,format);
-	document.getElementById(comboid).options[0] = new Option(ds,ds);
+	_N(comboid).options[0] = new Option(ds,ds);
 }
 
 function ShowCalendar(id, ViewMonth, ViewYear, SelectDate, SelectMonth, SelectYear)
 {
-	var calObj = document.getElementById(id);
+	var calObj = _N(id);
 	calObj.calSelectDate = new Date();
 	calObj.calViewDate = new Date();
 	calObj.calViewDate.setFullYear(ViewYear, ViewMonth, 1);
@@ -68,23 +68,23 @@ function ShowCalendar(id, ViewMonth, ViewYear, SelectDate, SelectMonth, SelectYe
 function PrintCal(id)
 {
 	var ubound, date, i, Obj;
-	var cal = document.getElementById(id);
+	var cal = _N(id);
 	var Month = cal.calViewDate.getMonth();
 	var Year = cal.calViewDate.getFullYear();
 	id = parseInt(id.replace("N", ""));
 	var Offset = id + 13;
 	cal.calViewDate.setDate(1);
-	document.getElementById("N" + (id+1)).innerHTML = GetShortMonth(cal.calViewDate) + " " + cal.calViewDate.getFullYear();
+	_N("N" + (id+1)).innerHTML = GetShortMonth(cal.calViewDate) + " " + cal.calViewDate.getFullYear();
 	ubound = cal.calViewDate.getDay()+Offset;
 	for(i = Offset; i < ubound; i++)
 	{
-		Obj = document.getElementById("N" + i);
+		Obj = _N("N" + i);
 		Obj.innerHTML = "";
 	}
 	ubound = Offset+42;
 	for(i = cal.calViewDate.getDay() + Offset; i < ubound; i++)
 	{
-		Obj = document.getElementById("N" + i);
+		Obj = _N("N" + i);
 		if(Month == cal.calViewDate.getMonth())
 		{
 			Obj.innerHTML = cal.calViewDate.getDate();
@@ -189,7 +189,7 @@ function ChangeDateLetter(letter, theDate)
 
 function GetDateString(calid, dateStr)
 {
-	var d = document.getElementById(calid).calSelectDate;
+	var d = _N(calid).calSelectDate;
 	var finalStr = "";
 	for(var i = 0; i < dateStr.length; i++)
 		finalStr += ChangeDateLetter(dateStr.substring(i, i+1), d);
@@ -200,7 +200,7 @@ _NOpenedCalendar = null;
 
 function TogglePull(calId, comboId, event)
 {
-	var Obj=document.getElementById(calId);
+	var Obj=_N(calId);
 	if(Obj.style.display == 'none')
 	{
 		Obj.style.display = '';
@@ -208,12 +208,12 @@ function TogglePull(calId, comboId, event)
 		window.addEventListener("click", CalendarClickOff, false);
 		event.stopPropagation();
 	}
-	document.getElementById(comboId).blur();
+	_N(comboId).blur();
 }
 
 function CalendarClickOff()
 {
-	document.getElementById(_NOpenedCalendar).style.display = 'none';
+	_N(_NOpenedCalendar).style.display = 'none';
 	_NOpenedCalendar = null;
 	window.removeEventListener("click", CalendarClickOff, false);
 }

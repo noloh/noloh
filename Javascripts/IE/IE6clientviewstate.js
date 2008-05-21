@@ -54,7 +54,7 @@ function _NInit(loadLblId, loadImgId)
 		location = location + "#/";
 	_NHash = location.hash;
 	_NURL = location.toString();
-	var d=document.getElementById('NBackButton').contentWindow.document;
+	var d=_N('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.toString());
 	d.close();
@@ -63,7 +63,7 @@ function _NInit(loadLblId, loadImgId)
 
 function CheckURL()
 {
-	var inner = document.getElementById('NBackButton').contentWindow.document.body.innerHTML;
+	var inner = _N('NBackButton').contentWindow.document.body.innerHTML;
 	//alert(inner);
 	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner/* && _NHash.charAt(1)=="/" && _NInnerHas.charAt(1)=="/"*/))
 		//if(/*document.body.NOLOHPostingBack && */location.toString().indexOf('#')==location.toString().length-1)
@@ -79,8 +79,8 @@ function CheckURL()
 			var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
 			//req = new XMLHttpRequest();
 			req = new ActiveXObject("Microsoft.XMLHTTP");
-			document.getElementById(_NLoadImg).style.visibility = "visible";
-			document.getElementById(_NLoadLbl).style.visibility = "visible";
+			_N(_NLoadImg).style.visibility = "visible";
+			_N(_NLoadLbl).style.visibility = "visible";
 			req.onreadystatechange = processReqChange;
 			req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
                + 'NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
@@ -90,7 +90,7 @@ function CheckURL()
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 			req.send(str);
-			document.getElementById("N1").innerHTML = "";
+			_N("N1").innerHTML = "";
 			/*
 			location.replace(inner);
 			location.reload(false);
@@ -103,7 +103,7 @@ function _NSetURL(hash)
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 	_NURL=location.toString();
-	var d=document.getElementById('NBackButton').contentWindow.document;
+	var d=_N('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.toString());
 	d.close();
@@ -131,17 +131,17 @@ function AddSelectFix(obj, objstyle)
 	//document.body.appendChild(iFrame);
 	//BringToFront(obj.id);
 	//obj.parentNode.appendChild(iFrame);
-	obj.SelectFix = document.getElementById(obj.id+"_SF");
+	obj.SelectFix = _N(obj.id+"_SF");
 	//BringToFront(obj.id);
 	//obj.style.zIndex += 1;
 	//obj.insertAdjacentHTML("beforeBegin", "<IFRAME id='"+obj.id+"_SF' style='position:absolute; left:"+objstyle.left+"; top:"+objstyle.top+"; width:"+objstyle.width+"; height:"+objstyle.height+/*"; z-index:"+(objstyle.zIndex-1)+*/";' scrolling='no' frameborder='0'></IFRAME>");
-	//obj.SelectFix = document.getElementById(obj.id+"_SF");
+	//obj.SelectFix = _N(obj.id+"_SF");
 	//BringToFront(obj.id);
 }
 
 function SaveControl(id)
 {
-	var temp = document.getElementById(id);
+	var temp = _N(id);
 	SavedControls[id] = temp.cloneNode(false);
 	SavedControls[id].selectedIndex = temp.selectedIndex;
 	SavedControls[id].checked = temp.checked;
@@ -158,7 +158,11 @@ function SaveControl(id)
 		SavedControls[id].calSelectDate.setYear = temp.calSelectDate.getYear();
 	}
 }
-
+function _NSetProperty(id, property, value)
+{
+	NOLOHChange(id, property, value);
+	_NSave(id, property, value);
+}
 function ChangeAndSave(id, propertyString, newValue)
 {
 	NOLOHChange(id, propertyString, newValue);
@@ -177,7 +181,7 @@ function NOLOHChange(distinctId, propertyString, newValue)
 {
 	var tempObj;
 	if(propertyString != "timer")
-		tempObj = document.getElementById(distinctId);
+		tempObj = _N(distinctId);
 	else
 		eval("tempObj = window." + distinctId + ";");
 	NOLOHChangeByObj(tempObj, propertyString, newValue);
@@ -212,7 +216,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				if(obj.TypePause != null/* && (window.event.keyCode < 37 || window.event.keyCode > 40)*/)
 				{
 					clearTimeout(obj.TypePauseTimeout);
-					obj.TypePauseTimeout = setTimeout("var obj = document.getElementById('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
+					obj.TypePauseTimeout = setTimeout("var obj = _N('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
 				}
 			}
 		case "onblur":
@@ -311,7 +315,7 @@ function _NSave(id, propertyString, newValue)
 	var tempObj;
 	//var propertyStringLower = propertyString.toLowerCase();
 	if(propertyString != "timer")
-		tempObj = document.getElementById(id);
+		tempObj = _N(id);
 	else
 		eval("tempObj = window." + id + ";");
 	if(typeof newValue == "undefined")
@@ -341,40 +345,40 @@ function _NSave(id, propertyString, newValue)
 
 function ScrollState(id)
 {
-	var obj = document.getElementById(id);
-	ChangeAndSave(id,"scrollLeft",obj.scrollLeft);
-	ChangeAndSave(id,"scrollTop",obj.scrollTop);
+	var obj = _N(id);
+	_NSetProperty(id,"scrollLeft",obj.scrollLeft);
+	_NSetProperty(id,"scrollTop",obj.scrollTop);
 }
 
 function BodyScrollState()
 {
 	var X = document.documentElement.scrollLeft+1;
 	var Y = document.documentElement.scrollTop+1;
-	var loadImg = document.getElementById(_NLoadImg);
+	var loadImg = _N(_NLoadImg);
 	loadImg.style.left = X+"px";
 	loadImg.style.top = Y+"px";	
-	var loadLbl = document.getElementById(_NLoadLbl);
+	var loadLbl = _N(_NLoadLbl);
 	loadLbl.style.left = X+30+"px";
 	loadLbl.style.top = Y+3+"px";
 }
 
 function AddOptionAndSave(id, option)
 {
-	var tempObj = document.getElementById(id);
+	var tempObj = _N(id);
 	tempObj.options.add(option);
 	_NSave(id, "options", ImplodeOptions(tempObj.options));
 }
 
 function RemoveOptionAndSave(id, index)
 {
-	var tempObj = document.getElementById(id);
+	var tempObj = _N(id);
 	tempObj.remove(index);
 	_NSave(id, "options", ImplodeOptions(tempObj.options));
 }
 
 function RadioButtonSave(id)
 {
-	var radio = document.getElementById(id);
+	var radio = _N(id);
 	var radioGroup = document.getElementsByName(radio.name);
 	for(var i=0; i < radioGroup.length; i++)
 		_NSave(radioGroup[i].id, "checked", radioGroup[i].id == id);
@@ -383,7 +387,7 @@ function RadioButtonSave(id)
 function _NSetP(id, nameValuePairs)
 {
 	var i = 0;
-	var obj = document.getElementById(id);
+	var obj = _N(id);
 	while(i<nameValuePairs.length)
 		NOLOHChangeByObj(obj, nameValuePairs[i++], nameValuePairs[i++]);
 }
@@ -398,7 +402,7 @@ function _NAdd(addTo, tag, nameValuePairs)
 	var eltstyle = elt.style;
 	/*if(eltstyle.background != "" && (eltstyle.filter == "" || eltstyle.filter == "alpha(opacity=100)"))
 		AddSelectFix(elt, eltstyle);*/
-	document.getElementById(addTo).appendChild(elt);
+	_N(addTo).appendChild(elt);
 	if(eltstyle.background != "" && (eltstyle.filter == "" || eltstyle.filter == "alpha(opacity=100)"))
 		AddSelectFix(elt, eltstyle);
 	SaveControl(elt.id);
@@ -406,25 +410,25 @@ function _NAdd(addTo, tag, nameValuePairs)
 
 function _NRem(id)
 {
-	var ele = document.getElementById(id);
+	var ele = _N(id);
 	ele.parentNode.removeChild(ele);
-	document.getElementById("Graveyard").appendChild(ele);
+	_N("Graveyard").appendChild(ele);
 	if(ele.SelectFix != null)
 		_NRem(id+"_SF");
 }
 
 function _NRes(id, parentId)
 {
-	var ele = document.getElementById(id);
-	document.getElementById("Graveyard").removeChild(ele);
-	document.getElementById(parentId).appendChild(ele);
+	var ele = _N(id);
+	_N("Graveyard").removeChild(ele);
+	_N(parentId).appendChild(ele);
 	if(ele.SelectFix != null)
 		_NRes(id+"_SF", "N1");
 }
 
 function _NAsc(id)
 {
-	var ele = document.getElementById(id);
+	var ele = _N(id);
 	ele.parentNode.removeChild(ele);
 	if(ele.SelectFix != null)
 		_NAsc(id+"_SF");
@@ -472,8 +476,8 @@ function processReqChange()
    			document.body.appendChild(err);
    			return;
    		}
-		document.getElementById(_NLoadImg).style.visibility = "hidden";
-		document.getElementById(_NLoadLbl).style.visibility = "hidden";
+		_N(_NLoadImg).style.visibility = "hidden";
+		_N(_NLoadLbl).style.visibility = "hidden";
 		document.body.NOLOHPostingBack = false;
 		_NURLCheck = setInterval('CheckURL()', 500);
 	}
@@ -497,8 +501,8 @@ function PostBack(EventType, ID)
 		if(NOLOHCaught.length != 0)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
 	    req = new ActiveXObject("Microsoft.XMLHTTP");
-		document.getElementById(_NLoadImg).style.visibility = "visible";
-		document.getElementById(_NLoadLbl).style.visibility = "visible";
+		_N(_NLoadImg).style.visibility = "visible";
+		_N(_NLoadLbl).style.visibility = "visible";
 	    req.onreadystatechange = processReqChange;
 	    req.open("POST", document.URL.split("#", 1)[0], true);
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -511,9 +515,9 @@ function ReadyBox(id)
 {
 	if(NOLOHUpload.FileUploadObjIds.length > 0)
 	{
-		document.getElementById(id).UploadComplete = true;
+		_N(id).UploadComplete = true;
 		for(var i=0; i<NOLOHUpload.FileUploadObjIds.length; i++)
-			if(document.getElementById(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
+			if(_N(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
 				return;
 		PostBack(NOLOHUpload.EventType, NOLOHUpload.ID);
 	}
@@ -527,9 +531,9 @@ function PostBackWithUpload(EventType, ID, FileUploadObjIds)
 	NOLOHUpload.FileUploadObjIds = FileUploadObjIds;
 	for(var i=0; i<FileUploadObjIds.length; i++)
 	{
-		iFrame = document.getElementById(FileUploadObjIds[i]);
+		iFrame = _N(FileUploadObjIds[i]);
 		iFrame.UploadComplete = false;
-		iFrame.contentWindow.document.getElementById("frm").submit();
+		iFrame.contentWindow._N("frm").submit();
 	}
 }
 

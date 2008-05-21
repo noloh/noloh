@@ -80,7 +80,7 @@ function _NSetURL(hash)
 
 function SaveControl(id)
 {
-	var temp = document.getElementById(id);
+	var temp = _N(id);
 	SavedControls[id] = temp.cloneNode(false);
 	SavedControls[id].selectedIndex = temp.selectedIndex;
 	SavedControls[id].checked = temp.checked;
@@ -97,7 +97,11 @@ function SaveControl(id)
 		SavedControls[id].calSelectDate.setYear = temp.calSelectDate.getYear();
 	}
 }
-
+function _NSetProperty(id, property, value)
+{
+	NOLOHChange(id, property, value);
+	_NSave(id, property, value);
+}
 function ChangeAndSave(id, propertyString, newValue)
 {
 	NOLOHChange(id, propertyString, newValue);
@@ -115,7 +119,7 @@ function NOLOHChangeInit(id, propertyString)
 function NOLOHChange(id, propertyString, newValue)
 {
 	var obj;
-	obj = document.getElementById(id);
+	obj = _N(id);
 	if(!obj)
 		obj = window[id];
 	NOLOHChangeByObj(obj, propertyString, newValue);
@@ -150,7 +154,7 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				if(obj.TypePause != null && (event.keyCode < 37 || event.keyCode > 40))
 				{
 					clearTimeout(obj.TypePauseTimeout);
-					obj.TypePauseTimeout = setTimeout("var obj = document.getElementById('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
+					obj.TypePauseTimeout = setTimeout("var obj = _N('"+obj.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause.call();", 500);
 				}
 			}
 		case "onblur":
@@ -261,7 +265,7 @@ function _NSave(id, propertyString, newValue)
 		return;
 	var tempObj;
 	if(propertyString != "timer")
-		tempObj = document.getElementById(id);
+		tempObj = _N(id);
 	else
 		eval("tempObj = window." + id + ";");
 	if(typeof newValue == "undefined")
@@ -282,7 +286,7 @@ function _NSave(id, propertyString, newValue)
 		case "style.visibility":
 		case "style.display":
 			NOLOHChangeInit(id, "Visible");
-			var obj = document.getElementById(id);
+			var obj = _N(id);
 			NOLOHChanges[id]["Visible"][0] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
 			break;
 		default:
@@ -293,39 +297,39 @@ function _NSave(id, propertyString, newValue)
 
 function ScrollState(id)
 {
-	var obj = document.getElementById(id);
-	ChangeAndSave(id,"scrollLeft",obj.scrollLeft);
-	ChangeAndSave(id,"scrollTop",obj.scrollTop);
+	var obj = _N(id);
+	_NSetProperty(id,"scrollLeft",obj.scrollLeft);
+	_NSetProperty(id,"scrollTop",obj.scrollTop);
 }
 
 function BodyScrollState()
 {
 	var X = Math.max(document.body.scrollLeft, document.documentElement.scrollLeft)+1;
 	var Y = Math.max(document.body.scrollTop, document.documentElement.scrollTop)+1;
-	var loadImg = document.getElementById(_NLoadImg);
+	var loadImg = _N(_NLoadImg);
 	loadImg.style.left = X+"px";
 	loadImg.style.top = Y+"px";	
-	var loadLbl = document.getElementById(_NLoadLbl);
+	var loadLbl = _N(_NLoadLbl);
 	loadLbl.style.left = X+30+"px";
 	loadLbl.style.top = Y+3+"px";
 }
 
 function BodySizeState()
 {
-	ChangeAndSave("N1", "Width", document.documentElement.clientWidth);
-	ChangeAndSave("N1", "Height", document.documentElement.clientHeight);
+	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
+	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 }
 
 function AddOptionAndSave(id, option)
 {
-	var tempObj = document.getElementById(id);
+	var tempObj = _N(id);
 	tempObj.options.add(option);
 	_NSave(id, "options", ImplodeOptions(tempObj.options));
 }
 
 function RemoveOptionAndSave(id, index)
 {
-	var tempObj = document.getElementById(id);
+	var tempObj = _N(id);
 	tempObj.remove(index);
 	_NSave(id, "options", ImplodeOptions(tempObj.options));
 }
@@ -333,7 +337,7 @@ function RemoveOptionAndSave(id, index)
 function _NSetP(id, nameValuePairs)
 {
 	var i = 0;
-	var obj = document.getElementById(id);
+	var obj = _N(id);
 	while(i<nameValuePairs.length)
 	{
 		NOLOHChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
@@ -344,7 +348,7 @@ function _NSetP(id, nameValuePairs)
 function _NSetPEvtee(id, nameValuePairs)
 {
 	var i = 0;
-	var obj = document.getElementById(id);
+	var obj = _N(id);
 	while(i<nameValuePairs.length)
 		NOLOHChangeByObj(obj, nameValuePairs[i++], nameValuePairs[i++]);
 }
@@ -356,12 +360,12 @@ function _NAdd(addTo, tag, nameValuePairs, beforeId)
 	var i = 0;
 	while(i<nameValuePairs.length)
 		NOLOHChangeByObj(elt, nameValuePairs[i++], nameValuePairs[i++]);
-	addTo = document.getElementById(addTo);
+	addTo = _N(addTo);
 	if(typeof beforeId == "undefined")
 		addTo.appendChild(elt);
 	else
 	{
-		var before = document.getElementById(beforeId);
+		var before = _N(beforeId);
 		if(before && before.parentNode == addTo)
 			addTo.insertBefore(elt, before);
 		else
@@ -372,16 +376,16 @@ function _NAdd(addTo, tag, nameValuePairs, beforeId)
 
 function _NAdopt(id, parentId)
 {
-    var ele = document.getElementById(id);
+    var ele = _N(id);
     ele.parentNode.removeChild(ele);
-    document.getElementById(parentId).appendChild(ele);
+    _N(parentId).appendChild(ele);
 }
 
 function _NRem(id)
 {
-	var ele = document.getElementById(id);
+	var ele = _N(id);
 	ele.parentNode.removeChild(ele);
-	document.getElementById("Graveyard").appendChild(ele);
+	_N("Graveyard").appendChild(ele);
     if(ele.BuoyantChildren != null)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRem(ele.BuoyantChildren[i]);
@@ -389,9 +393,9 @@ function _NRem(id)
 
 function _NRes(id, parentId)
 {
-	var ele = document.getElementById(id);
-	document.getElementById("Graveyard").removeChild(ele);
-	document.getElementById(parentId).appendChild(ele);
+	var ele = _N(id);
+	_N("Graveyard").removeChild(ele);
+	_N(parentId).appendChild(ele);
     if(ele.BuoyantChildren != null)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRes(ele.BuoyantChildren[i], parentId);
@@ -399,7 +403,7 @@ function _NRes(id, parentId)
 
 function _NAsc(id)
 {
-	var ele = document.getElementById(id);
+	var ele = _N(id);
 	if(ele)
     {
 		ele.parentNode.removeChild(ele);
@@ -453,8 +457,8 @@ function CompleteReqResponse(tmpLoadImg, tmpLoadLbl)
 {
 	_NLoadImg = tmpLoadImg;
 	_NLoadLbl = tmpLoadLbl;
-	document.getElementById(_NLoadImg).style.visibility = "hidden";
-	document.getElementById(_NLoadLbl).style.visibility = "hidden";
+	_N(_NLoadImg).style.visibility = "hidden";
+	_N(_NLoadLbl).style.visibility = "hidden";
 	document.body.NOLOHPostingBack = false;
 }
 
@@ -505,7 +509,7 @@ function PostBack(EventType, ID, event)
 			str += "&NOLOHCaught="+NOLOHCaught.join(",");
         if(_NFocus != null)
         {
-            var obj = document.getElementById(_NFocus);
+            var obj = _N(_NFocus);
             try
             {
                 str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+obj.value.substring(obj.selectionStart, obj.selectionEnd);
@@ -518,8 +522,8 @@ function PostBack(EventType, ID, event)
 		if(_NContextMenuSource != null)
 			str += "&NOLOHContextMenuSource="+_NContextMenuSource.id;
 	    req = new XMLHttpRequest();
-		document.getElementById(_NLoadImg).style.visibility = "visible";
-		document.getElementById(_NLoadLbl).style.visibility = "visible";
+		_N(_NLoadImg).style.visibility = "visible";
+		_N(_NLoadLbl).style.visibility = "visible";
         if(EventType != "Unload")
     	    req.onreadystatechange = ProcessReqChange;
 	    req.open("POST", window.location.href, true);
@@ -533,9 +537,9 @@ function ReadyBox(id)
 {
 	if(NOLOHUpload.FileUploadObjIds.length > 0)
 	{
-		document.getElementById(id).UploadComplete = true;
+		_N(id).UploadComplete = true;
 		for(var i=0; i<NOLOHUpload.FileUploadObjIds.length; i++)
-			if(document.getElementById(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
+			if(_N(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
 				return;
 		PostBack(NOLOHUpload.EventType, NOLOHUpload.ID, NOLOHUpload.event);
 		NOLOHUpload = new Object();
@@ -551,9 +555,9 @@ function PostBackWithUpload(EventType, ID, FileUploadObjIds, event)
 	NOLOHUpload.event = event;
 	for(var i=0; i<FileUploadObjIds.length; i++)
 	{
-		iFrame = document.getElementById(FileUploadObjIds[i]);
+		iFrame = _N(FileUploadObjIds[i]);
 		iFrame.UploadComplete = false;
-		iFrame.contentWindow.document.getElementById("frm").submit();
+		iFrame.contentWindow._N("frm").submit();
 	}
 }
 

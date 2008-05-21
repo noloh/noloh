@@ -1,7 +1,7 @@
 function _NTglSubMnuItms(mnuItmId)
 {
-	var menu = document.getElementById(mnuItmId);
-	var subMenu =  (menu.ItmsPnl != null)?document.getElementById(menu.ItmsPnl):null;
+	var menu = _N(mnuItmId);
+	var subMenu =  (menu.ItmsPnl != null)?_N(menu.ItmsPnl):null;
 	var tmpParent = menu.parentNode;
 	if(menu.IsSlct == null)
 	{
@@ -24,9 +24,9 @@ function _NTglSubMnuItms(mnuItmId)
 }
 function _NTglMnuOut(event)
 {
-	var mnuItmLbl = document.getElementById(event.target.id);
+	var mnuItmLbl = _N(event.target.id);
 	var mnuItm = mnuItmLbl.parentNode;
-	var outObj = document.getElementById(event.relatedTarget.id);
+	var outObj = _N(event.relatedTarget.id);
 	//alert(mnuItmLbl.id + ' ' + mnuItm.id + ' ' + outObj.id);
 	if(mnuItm.ItmsPnl != null && (outObj.parentNode.parentNode.id == mnuItm.ItmsPnl || outObj.id == mnuItm.ItmsPnl))
 		return;
@@ -39,20 +39,20 @@ function _NTglMnuOut(event)
 }
 function _NHideMnuChldrn(event)
 {
-	document.getElementById(MnuItmGlobal).parentNode.IsClk = false;
+	_N(MnuItmGlobal).parentNode.IsClk = false;
 	_NHideChldrn(MnuItmGlobal, true, true);
 	document.removeEventListener("click", _NHideMnuChldrn, true);
 }
 function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 {
-	var opnMnu = document.getElementById(mnuItmId);
+	var opnMnu = _N(mnuItmId);
 	if(opnMnu.ItmsPnl != null)
 	{
-		var chldMnu = document.getElementById(opnMnu.ItmsPnl);
+		var chldMnu = _N(opnMnu.ItmsPnl);
 		for(var i=0; i < chldMnu.ChildrenArray.length; ++i)
 			_NHideChldrn(chldMnu.ChildrenArray[i], true, false);
 		if(topLvl)
-			ChangeAndSave(opnMnu.ItmsPnl, 'style.display', 'none'); 
+			_NSetProperty(opnMnu.ItmsPnl, 'style.display', 'none'); 
 	}
 	if(topLvl)
 	{
@@ -64,15 +64,15 @@ function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 }
 function ChangeMenuOutColors(mnuItmId, isOut)
 {
-	var tmpMnuItm = document.getElementById(mnuItmId);
+	var tmpMnuItm = _N(mnuItmId);
 	if(isOut)
 	{
-		ChangeAndSave(mnuItmId, "style.background", tmpMnuItm.OtBckClr);
-		ChangeAndSave(mnuItmId, "style.color", tmpMnuItm.OtTxtClr);
+		_NSetProperty(mnuItmId, "style.background", tmpMnuItm.OtBckClr);
+		_NSetProperty(mnuItmId, "style.color", tmpMnuItm.OtTxtClr);
 	}
 	else
 	{
-		ChangeAndSave(mnuItmId, "style.background", tmpMnuItm.OvBckClr);
-		ChangeAndSave(mnuItmId, "style.color", tmpMnuItm.OvTxtClr);
+		_NSetProperty(mnuItmId, "style.background", tmpMnuItm.OvBckClr);
+		_NSetProperty(mnuItmId, "style.color", tmpMnuItm.OvTxtClr);
 	}
 }

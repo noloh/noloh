@@ -13,12 +13,12 @@ function ShiftStart(event, objArray)
 	
 	var tmpCount = _NShiftObjArray.length;
 	if(tmpCount > 0)
-		deltaZIndex = ++HighestZIndex + tmpCount - document.getElementById(_NShiftObjArray[0][0]).style.zIndex;
+		deltaZIndex = ++HighestZIndex + tmpCount - _N(_NShiftObjArray[0][0]).style.zIndex;
 	for(var i=0; i<tmpCount; ++i)
 	{
 		if(_NShiftObjArray[i][2] == 1)
 		{
-			obj = document.getElementById(_NShiftObjArray[i][0]).cloneNode(true);
+			obj = _N(_NShiftObjArray[i][0]).cloneNode(true);
 			obj.style.position = "absolute";
 			obj.style.left = FindX(_NShiftObjArray[i][0]) + "px";
 			obj.style.top = FindY(_NShiftObjArray[i][0]) + "px";
@@ -28,10 +28,10 @@ function ShiftStart(event, objArray)
 			_NShiftObjArray.Ghosts[_NShiftObjArray.Ghosts.length] = i;
 		}
 		else
-			obj = document.getElementById(_NShiftObjArray[i][0]);
+			obj = _N(_NShiftObjArray[i][0]);
 		_NShiftInitObject(_NShiftObjArray[i], obj);
 		SetShiftWithInitials(obj);
-		ChangeAndSave(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
+		_NSetProperty(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
 	}
 	document.addEventListener("mousemove", ShiftGo, true);
     document.addEventListener("mouseup", ShiftStop, true);
@@ -56,7 +56,7 @@ function SetShiftWithInitials(obj)
 		var subObject;
 		for(var j=0; j<tmpCount; ++j)
 		{
-			subObject = document.getElementById(obj.ShiftsWith[j][0]);
+			subObject = _N(obj.ShiftsWith[j][0]);
 			_NShiftInitObject(obj.ShiftsWith[j], subObject);
 			SetShiftWithInitials(subObject);
 		}
@@ -95,7 +95,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 			if(objects[i][1] != 2)
 				ShiftObject(objects[i][0], "style.width", objects[i].StartWidth, deltaX, objects[i][3], objects[i][4], objects[i][5]);
 		}
-		tmpObj = document.getElementById(objects[i][0]);
+		tmpObj = _N(objects[i][0]);
 		if(tmpObj.ShiftsWith != null)
 			ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY);
 	}
@@ -103,7 +103,7 @@ function ShiftObjects(objects, deltaX, deltaY)
 function ShiftObject(id, property, start, delta, ratio, minBound, maxBound)
 {
 	var finalCoord = Math.round(start + delta * ratio);
-	ChangeAndSave(id, property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");
+	_NSetProperty(id, property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");
 }
 function ShiftStop(event)
 {
@@ -117,7 +117,7 @@ function ShiftStop(event)
 		for(var i=0; i<tmpCount; ++i)
 			if(IsAvailable(NOLOHCatchers[i]))
 			{
-				Catcher = document.getElementById(NOLOHCatchers[i]);
+				Catcher = _N(NOLOHCatchers[i]);
 				CatcherX = FindX(NOLOHCatchers[i]);
 				CatcherY = FindY(NOLOHCatchers[i]);
 				if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
@@ -135,7 +135,7 @@ function ShiftStop(event)
 	for(i=0; i<tmpCount; ++i)
 	{
 		j = _NShiftObjArray.Ghosts[i];
-		document.body.removeChild(document.getElementById(_NShiftObjArray[j][0]));
+		document.body.removeChild(_N(_NShiftObjArray[j][0]));
 		_NShiftObjArray[j][0] = _NShiftObjArray[j][0].replace("_Ghost", "");
 	}
 	if(!_NShiftObjArray.HasMoved)
@@ -144,7 +144,7 @@ function ShiftStop(event)
 		tmpCount = _NShiftObjArray.length;
 		for(i=0; i<tmpCount; ++i)
 		{
-			obj = document.getElementById(_NShiftObjArray[i][0]);
+			obj = _N(_NShiftObjArray[i][0]);
 			if(obj.onclick != null)
 				obj.onclick.call(obj, event);
 		}
@@ -155,7 +155,7 @@ function ShiftStop(event)
 }
 function AddShiftWith(objectId, info)
 {
-	var tmpObj = document.getElementById(objectId);
+	var tmpObj = _N(objectId);
 	if(tmpObj.ShiftsWith == null)
 		tmpObj.ShiftsWith = Array(info);
 	else	
@@ -163,5 +163,5 @@ function AddShiftWith(objectId, info)
 }
 function ChangeShiftType(objectId, index, newType)
 {
-	document.getElementById(objectId).Shifts[index][1] = newType;
+	_N(objectId).Shifts[index][1] = newType;
 }

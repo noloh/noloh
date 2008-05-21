@@ -1,6 +1,6 @@
 function doKeyPress(whatObjectId, maxLength)
 {
-	var Obj = document.getElementById(whatObjectId);
+	var Obj = _N(whatObjectId);
 	var oTR =  document.selection.createRange();
 	if(maxLength > -1 && Obj.value.length - oTR.text.length >= maxLength)
 		event.returnValue = false;
@@ -8,7 +8,7 @@ function doKeyPress(whatObjectId, maxLength)
 		        
 function doPaste(whatObjectId, maxLength)
 {
-	var Obj = document.getElementById(whatObjectId);
+	var Obj = _N(whatObjectId);
     if(maxLength > -1)
 	{
 		var oTR =  document.selection.createRange();
@@ -22,6 +22,6 @@ function doPaste(whatObjectId, maxLength)
 function SetTextAreaText(id, text)
 {
 	var newText = text.replace(/<Nendl>/g,"\n");
-	document.getElementById(id).value = newText;
+	_N(id).value = newText;
 	SavedControls[id]["value"] = newText;
 }

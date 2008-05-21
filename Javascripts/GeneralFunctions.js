@@ -1,39 +1,41 @@
+function _N(id){return document.getElementById(id);}
+
 function BringToFront(id)
 {
-	ChangeAndSave(id, "style.zIndex", ++HighestZIndex);
+	_NSetProperty(id, "style.zIndex", ++HighestZIndex);
 }
 
 function SendToBack(id)
 {
-	ChangeAndSave(id, "style.zIndex", --LowestZIndex);
+	_NSetProperty(id, "style.zIndex", --LowestZIndex);
 }
 
 function ChangeImage(id, src)
 {
-	ChangeAndSave(id, "src", src);
+	_NSetProperty(id, "src", src);
 }
 
 function ChangeLabelText(id, text)
 {
-	ChangeAndSave(id, "innerHTML", text);
+	_NSetProperty(id, "innerHTML", text);
 }
 
 function ToggleVisibility(id)
 {
-	var toggleObj = document.getElementById(id);
+	var toggleObj = _N(id);
 	if(toggleObj.style.visibility == "hidden" || toggleObj.style.display == "none")
 	{
 		BringToFront(id);
-		ChangeAndSave(id, "style.visibility", "inherit");
-		ChangeAndSave(id, "style.display", "");
+		_NSetProperty(id, "style.visibility", "inherit");
+		_NSetProperty(id, "style.display", "");
 	}
 	else
-		ChangeAndSave(id, "style.display", "none");
+		_NSetProperty(id, "style.display", "none");
 }
 
 function IsAvailable(objId)
 {
-	var obj = document.getElementById(objId);
+	var obj = _N(objId);
 	if(obj.style.display == "none" || obj.style.visibility == "hidden" || obj.disabled == true)
 		return false;
 	return obj.parentNode.id ? IsAvailable(obj.parentNode.id) : true;
@@ -41,8 +43,8 @@ function IsAvailable(objId)
 
 function _NAWH(id)
 {
-	var ele = document.getElementById(id);
-	var awh = document.getElementById("NAWH");
+	var ele = _N(id);
+	var awh = _N("NAWH");
 	awh.style.fontSize = ele.style.fontSize;
 	awh.style.width = ele.style.width;
 	awh.style.height = ele.style.height;
@@ -62,8 +64,8 @@ function _NAWH(id)
 
 function StartBuoyant(id, parentId)
 {
-	var obj = document.getElementById(id);
-	var parent = document.getElementById(parentId);
+	var obj = _N(id);
+	var parent = _N(parentId);
 	obj.BuoyantParentId = parentId;
 	obj.BuoyantLeft = parseInt(obj.style.left);
 	obj.BuoyantTop = parseInt(obj.style.top);
@@ -81,7 +83,7 @@ function StartBuoyant(id, parentId)
 
 function StopBuoyant(id)
 {
-	var obj = document.getElementById(id);
+	var obj = _N(id);
 	obj.style.left = obj.BuoyantLeft + "px";
 	obj.style.top = obj.BuoyantTop + "px";
 	obj.style.zIndex = obj.BuoyantZIndex;
@@ -93,21 +95,21 @@ function StopBuoyant(id)
 
 function MoveBuoyant(id)
 {
-	var obj = document.getElementById(id);
-	var parent = document.getElementById(obj.BuoyantParentId);
+	var obj = _N(id);
+	var parent = _N(obj.BuoyantParentId);
 	obj.style.left = FindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
 	obj.style.top = FindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
 }
 
 function _NRemStyle(remPath, nPath)
 {
-	document.getElementById('NHead').removeChild(document.getElementById(remPath));
+	_N('NHead').removeChild(_N(remPath));
 	var blankStyle = document.createElement("LINK");
 	blankStyle.rel = "stylesheet";
 	blankStyle.type = "text/css";
 	blankStyle.href = nPath+"Web/UI/Blank.css";
-	document.getElementById('NHead').appendChild(blankStyle);
-	document.getElementById('NHead').removeChild(blankStyle);
+	_N('NHead').appendChild(blankStyle);
+	_N('NHead').removeChild(blankStyle);
 }
 
 function _NRequestFile(iSrc)
@@ -117,5 +119,5 @@ function _NRequestFile(iSrc)
 	iframe.src = iSrc;
 	iframe.style.display = "none";
 	document.body.appendChild(iframe);
-	window.setTimeout('document.body.removeChild(document.getElementById("' + iSrc + '"))', 5000);
+	window.setTimeout('document.body.removeChild(_N("' + iSrc + '"))', 5000);
 }

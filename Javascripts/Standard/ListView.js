@@ -3,10 +3,10 @@ tmpLVInfo=null;
 
 function _N_LV_ModScroll(listViewId, columnPanelId)
 {
-	var listView = document.getElementById(listViewId);
-	var columnPanel = document.getElementById(columnPanelId);
-	ChangeAndSave(columnPanelId, 'style.left', -(parseInt(listView.scrollLeft)) + "px");
-	ChangeAndSave(columnPanelId, 'style.width', (parseInt(columnPanel.style.width) + (parseInt(listView.scrollLeft))) + "px");
+	var listView = _N(listViewId);
+	var columnPanel = _N(columnPanelId);
+	_NSetProperty(columnPanelId, 'style.left', -(parseInt(listView.scrollLeft)) + "px");
+	_NSetProperty(columnPanelId, 'style.width', (parseInt(columnPanel.style.width) + (parseInt(listView.scrollLeft))) + "px");
 	if(listView.scrollTop == (listView.scrollHeight - listView.clientHeight) && listView.parentNode.DataBind != null)
 	{
 //	if(listView.scrollTop == (listView.scrollHeight - listView.clientHeight) && listView.DataBind != null)
@@ -16,30 +16,30 @@ function _N_LV_ModScroll(listViewId, columnPanelId)
 }
 function _N_LV_Sort(id, arr)
 {
-	var tmpPnl = document.getElementById(id);
+	var tmpPnl = _N(id);
 	for(i=0;i<arr.length;++i)
-		tmpPnl.appendChild(tmpPnl.removeChild(document.getElementById(arr[i])));
+		tmpPnl.appendChild(tmpPnl.removeChild(_N(arr[i])));
 }
 function _N_LV_ResizeStart(line, clmn, innrPnl)
 {
 	ToggleVisibility(line);
 	BringToFront(line);
-	var tmpClmn = document.getElementById(clmn);
-	ChangeAndSave(line, 'style.left', parseInt(tmpClmn.style.left) + parseInt(tmpClmn.style.width) + parseInt(tmpClmn.parentNode.style.left) + 'px');
+	var tmpClmn = _N(clmn);
+	_NSetProperty(line, 'style.left', parseInt(tmpClmn.style.left) + parseInt(tmpClmn.style.width) + parseInt(tmpClmn.parentNode.style.left) + 'px');
 	document.body.addEventListener("mouseup", _N_LV_ResizeEnd, true);
 	tmpLVInfo = new Object;
 	tmpLVInfo.Line = line;
-	tmpLVInfo.LnStart = document.getElementById(line).style.left;
+	tmpLVInfo.LnStart = _N(line).style.left;
 	tmpLVInfo.Clmn = clmn;
 	tmpLVInfo.InnPnl = innrPnl;
 }
 function _N_LV_ResizeEnd()
 {
 	document.body.removeEventListener("mouseup", _N_LV_ResizeEnd, true);
-	var tmpLn = document.getElementById(tmpLVInfo.Line);
+	var tmpLn = _N(tmpLVInfo.Line);
 	ToggleVisibility(tmpLVInfo.Line);
 	var tmpIndex;
-	var tmpClmn = document.getElementById(tmpLVInfo.Clmn);
+	var tmpClmn = _N(tmpLVInfo.Clmn);
 	var tmpParent = tmpClmn.parentNode;
 	var changeX =  parseInt(tmpLn.style.left) - parseInt(tmpLVInfo.LnStart);
 	if(changeX != 0)
@@ -51,10 +51,10 @@ function _N_LV_ResizeEnd()
 				tmpIndex = i;
 				break;
 			}
-		var tmpInnPnl = document.getElementById(tmpLVInfo.InnPnl);
+		var tmpInnPnl = _N(tmpLVInfo.InnPnl);
 		var tmpCount = tmpInnPnl.childNodes.length;
 		var tmpInnPnlChildren;
-		ChangeAndSave(tmpInnPnl.id, 'style.width', parseInt(tmpInnPnl.style.width) + changeX + 'px');
+		_NSetProperty(tmpInnPnl.id, 'style.width', parseInt(tmpInnPnl.style.width) + changeX + 'px');
 		for(i=0; i<tmpCount;++i)
 		{
 			tmpInnPnlChildren = tmpInnPnl.childNodes[i];
@@ -64,12 +64,12 @@ function _N_LV_ResizeEnd()
 				{
 					if(j == tmpIndex)
 					{
-						ChangeAndSave(tmpInnPnlChildren.childNodes[j].id, 'style.width', 
+						_NSetProperty(tmpInnPnlChildren.childNodes[j].id, 'style.width', 
 							parseInt(tmpInnPnlChildren.childNodes[j].style.width) + changeX + 'px'); 
 					}
 					else
 					{
-						ChangeAndSave(tmpInnPnlChildren.childNodes[j].id, 'style.left', 
+						_NSetProperty(tmpInnPnlChildren.childNodes[j].id, 'style.left', 
 							parseInt(tmpInnPnlChildren.childNodes[j].style.left) + changeX + 'px'); 
 					}
 				}

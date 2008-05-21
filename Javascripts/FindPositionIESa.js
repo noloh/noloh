@@ -1,7 +1,7 @@
 function FindX(objId)
 {
 	var currLeft = 0;
-	var obj = document.getElementById(objId);
+	var obj = _N(objId);
 	if (obj.offsetParent)
 		while (obj.offsetParent)
 		{
@@ -18,7 +18,7 @@ function FindX(objId)
 function FindY(objId)
 {
 	var currTop = 0;
-	var obj = document.getElementById(objId);
+	var obj = _N(objId);
 	if (obj.offsetParent)
 		while (obj.offsetParent)
 		{
