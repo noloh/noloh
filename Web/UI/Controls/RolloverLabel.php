@@ -24,14 +24,14 @@ class RolloverLabel extends Label implements Groupable
 		if(is_array($color))
 		{
 			$this->OutColor = $color;
-			$this->MouseOut['Out'] = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '{$color[0]}');ChangeAndSave('$this->Id', 'style.background', '{$color[1]}');");
+			$this->MouseOut['Out'] = new ClientEvent("_NSetProperty('$this->Id', 'style.color', '{$color[0]}');_NSetProperty('$this->Id', 'style.background', '{$color[1]}');");
 			$this->CSSColor = $color[0];
 			$this->CSSBackground = $color[1];
 		}
 		else
 		{
 			$this->CSSColor = $this->OutColor = $color;
-			$this->MouseOut['Out'] = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '$color');");
+			$this->MouseOut['Out'] = new ClientEvent("_NSetProperty('$this->Id', 'style.color', '$color');");
 		}
 	}
 	function GetDownColor()	{return $this->DownColor;}
@@ -40,12 +40,12 @@ class RolloverLabel extends Label implements Groupable
 		if(is_array($color))
 		{
 			$this->DownColor = $color;
-			$this->MouseDown['Down'] = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '{$color[0]}');ChangeAndSave('$this->Id', 'style.background', '{$color[1]}');");
+			$this->MouseDown['Down'] = new ClientEvent("_NSetProperty('$this->Id', 'style.color', '{$color[0]}');_NSetProperty('$this->Id', 'style.background', '{$color[1]}');");
 		}
 		else
 		{
 			$this->CSSColor = $this->OutColor = $color;
-			$this->MouseDown['Down'] = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '$color');");
+			$this->MouseDown['Down'] = new ClientEvent("_NSetProperty('$this->Id', 'style.color', '$color');");
 		}
 	}
 	function GetOverColor()	{return $this->OverColor;}
@@ -53,9 +53,9 @@ class RolloverLabel extends Label implements Groupable
 	{
 		$this->OverColor = $color;
 		if(is_array($color))
-			$this->MouseOver['Over'] = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '{$color[0]}'); ChangeAndSave('$this->Id', 'style.background', '{$color[1]}');");
+			$this->MouseOver['Over'] = new ClientEvent("_NSetProperty('$this->Id', 'style.color', '{$color[0]}'); _NSetProperty('$this->Id', 'style.background', '{$color[1]}');");
 		else
-			$this->MouseOver['Over'] = new ClientEvent("ChangeAndSave('$this->Id', 'style.color', '$color');");
+			$this->MouseOver['Over'] = new ClientEvent("_NSetProperty('$this->Id', 'style.color', '$color');");
 	}
 	function GetSelectedColor()	{return $this->SelectedColor;}
 	function SetSelectedColor($color)

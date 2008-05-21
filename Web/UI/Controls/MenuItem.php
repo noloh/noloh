@@ -68,7 +68,7 @@ class MenuItem extends Panel
 			//$this->Controls->Add($tempImage);
 			//NolohInternal::SetProperty("HasChildren", "true", $this->TextLabel);
 			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MenuItemsPanel);
-			//AddScript("document.getElementById('{$this->TextLabel->Id}').HasChildren = true; document.getElementById('{$this->MenuItemsPanel->Id}').ChildrenArray = new Array();");
+			//AddScript("_N('{$this->TextLabel->Id}').HasChildren = true; _N('{$this->MenuItemsPanel->Id}').ChildrenArray = new Array();");
 		}*/
 		else
 		{
@@ -98,7 +98,7 @@ class MenuItem extends Panel
 		$this->MenuItemsPanel->Height += $menuItem->GetHeight();
 		$this->MenuItemsPanel->Controls->Add($menuItem, true, true);
 		$tmpId = $this->MenuItemsPanel->Id;
-		$fncStr = 'document.getElementById(\''.$tmpId .'\').ChildrenArray.splice';
+		$fncStr = '_N(\''.$tmpId .'\').ChildrenArray.splice';
 		if(isset($_SESSION['_NFunctionQueue'][$tmpId]) && isset($_SESSION['_NFunctionQueue'][$tmpId][$fncStr]))
 			$_SESSION['_NFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->Id}'";
 		else 

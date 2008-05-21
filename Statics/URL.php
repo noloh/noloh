@@ -127,8 +127,8 @@ final class URL
 			$wp = new WindowPanel($url, 0, 0, 500, 300);
 			$wp->Controls->Add($iframe = new IFrame($url, 0, 0, 490, 250));
 			$wp->Controls->Add(/*$timer = */new Timer(5000, true));
-			//$iframe->SetEvent(new ClientEvent('alert("hey!");'), 'onreadystatechange');
-			AddScript('document.getElementById("'.$iframe->Id.'").src = "'.$url.'";', Priority::Low);
+			//$iframe->SetEvent(new ClientEvent('alert("hey!");'), 'onreadystatechange;');
+			AddScript('_N("'.$iframe->Id.'").src = "'.$url.'";', Priority::Low);
 			$iframe->Shifts[] = Shift::With($wp->ResizeImage, Shift::Size);
 			GetComponentById('N1')->Controls->Add($wp);
 		}

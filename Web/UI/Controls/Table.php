@@ -44,9 +44,9 @@ class Table extends Control
 		$initialProperties = "'id','{$id}InnerTBody', 'style.position','relative'";
 		NolohInternal::Show("TBODY", $initialProperties, $this, $id."InnerTable");
 		if($this->ScrollLeft != null)
-			AddScript("document.getElementById('$this->Id').scrollLeft = $this->ScrollLeft;");
+			AddScript("_N('$this->Id').scrollLeft = $this->ScrollLeft;");
 		if($this->ScrollTop != null)
-			AddScript("document.getElementById('$this->Id').scrollTop = $this->ScrollTop;");
+			AddScript("_N('$this->Id').scrollTop = $this->ScrollTop;");
 	}
 	function SearchEngineShow()
 	{

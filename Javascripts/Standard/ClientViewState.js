@@ -102,11 +102,11 @@ function _NSetProperty(id, property, value)
 	NOLOHChange(id, property, value);
 	_NSave(id, property, value);
 }
-function ChangeAndSave(id, propertyString, newValue)
+/*function ChangeAndSave(id, propertyString, newValue)
 {
 	NOLOHChange(id, propertyString, newValue);
 	_NSave(id, propertyString, newValue);
-}
+}*/
 
 function NOLOHChangeInit(id, propertyString)
 {

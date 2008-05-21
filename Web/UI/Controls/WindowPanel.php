@@ -57,28 +57,28 @@ class WindowPanel extends Panel
 		
 		$this->TitleBar->CSSClass = 'NWinPanelTitle';
 
-//		$this->MinimizeImage->MouseOver = new ClientEvent("this.src='{$imagesDir}WinMinHover$format'");
-//		$this->RestoreImage->MouseOver = new ClientEvent("this.src='{$imagesDir}restoreover.gif'");
+//		$this->MinimizeImage->MouseOver = new ClientEvent("this.src='{$imagesDir}WinMinHover$format';");
+//		$this->RestoreImage->MouseOver = new ClientEvent("this.src='{$imagesDir}restoreover.gif';");
 		$this->CloseImage->MouseOver = new ClientEvent("this.src='{$imagesDir}WinCloseHover$format';");
 		
-//		$this->MinimizeImage->MouseDown = new ClientEvent("this.src='{$imagesDir}minimizedown.gif'");
-//		$this->RestoreImage->MouseDown = new ClientEvent("this.src='{$imagesDir}restoredown.gif'");
-//		$this->CloseImage->MouseDown = new ClientEvent("this.src='{$imagesDir}closedown.gif'");
+//		$this->MinimizeImage->MouseDown = new ClientEvent("this.src='{$imagesDir}minimizedown.gif';");
+//		$this->RestoreImage->MouseDown = new ClientEvent("this.src='{$imagesDir}restoredown.gif';");
+//		$this->CloseImage->MouseDown = new ClientEvent("this.src='{$imagesDir}closedown.gif';");
 		
-//		$this->MinimizeImage->MouseOut = new ClientEvent("this.src='{$imagesDir}WinMin$format'");
-//		$this->RestoreImage->MouseOut = new ClientEvent("this.src='{$imagesDir}restore.gif'");
+//		$this->MinimizeImage->MouseOut = new ClientEvent("this.src='{$imagesDir}WinMin$format';");
+//		$this->RestoreImage->MouseOut = new ClientEvent("this.src='{$imagesDir}restore.gif';");
 		$this->CloseImage->MouseOut = new ClientEvent("this.src='{$imagesDir}WinClose$format';");
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
-		$this->CloseImage->Click['Hide'] = new ClientEvent("NOLOHChange('$this->Id', 'style.visibility', 'hidden');");
+		$this->CloseImage->Click['Hide'] = new ClientEvent('NOLOHChange(\''.$this->Id.'\', \'style.visibility\', \'hidden\');');
 		$this->CloseImage->Click[] = new ServerEvent($this, 'Close');
 		$this->BodyPanel->CSSBorder_Bottom = $border . 'px solid #07254a';
 		$this->BodyPanel->CSSBorder_Left = $border . 'px solid #07254a';
 		$this->BodyPanel->CSSBorder_Right = $border . 'px solid #07254a';
 		/*
 		$closeE = new Event();
-		$closeE["Hide"] = new ClientEvent("document.getElementById('$this->Id').style.visibility='hidden'");
+		$closeE["Hide"] = new ClientEvent("_N('$this->Id').style.visibility='hidden';");
 		$closeE = new ServerEvent($this, "Close");
 		$this->CloseImage->Click = $closeE;
 		*/
