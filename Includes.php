@@ -77,7 +77,6 @@ require('Web/UI/Controls/RadioButton.php');
 require('Web/UI/Controls/FileUpload.php');
 require('Web/UI/Controls/Calendar.php');
 require('Web/UI/Controls/DatePicker.php');
-require('Web/UI/Controls/PlusMinusSwitch.php');
 require('Web/UI/Controls/BulletedList.php');
 require('Web/UI/Controls/TreeList.php');
 require('Web/UI/Controls/TreeNode.php');
@@ -88,6 +87,7 @@ require('Web/UI/Controls/ColumnHeader.php');
 require('Web/UI/Controls/Timer.php');
 require('Web/UI/Controls/CheckListBox.php');
 require('Web/UI/Controls/Accordion.php');
+require('Web/UI/Controls/CollapsePanel.php');
 require('Web/UI/Controls/AccordionPart.php');
 
 // Statics
