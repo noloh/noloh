@@ -2,6 +2,11 @@
 /**
  * @package Web.UI.Controls
  */
+/**
+ * EmbedObject class
+ * 
+ * An EmbedObject is a Control used for showing various multimedia, e.g., Flash animation, etc...  
+ */
 class EmbedObject extends Control
 {
 	private $Data;

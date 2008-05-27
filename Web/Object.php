@@ -1,7 +1,11 @@
 <?php
 /**
  * @package Web
- *
+ */
+/**
+ * Object class
+ * 
+ * An Object is the top-most parent of any NOLOH class.
  */
 class Object
 {

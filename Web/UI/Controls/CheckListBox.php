@@ -3,7 +3,10 @@
  * @package Web.UI.Controls
  */
 	
-/* A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.
+/**
+ * CheckListBox class
+ * 
+ *  A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.
  * 
  * <code>
  * // Instantiates a new CheckListBox
@@ -54,19 +57,19 @@ class CheckListBox extends ListControl
 	 */
 	function AddItem($item)
 	{
-		$whatTop = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes->Elements[$this->CheckBoxes->Count()-1]->Bottom;
+		$top = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes->Elements[$this->CheckBoxes->Count()-1]->Bottom;
 			
 		if(is_string($item))
 		{
 			$checkItem = new Item($item, $item);
-			$newCheckBox = new CheckBox($item, 0, $whatTop, $this->Width);
+			$newCheckBox = new CheckBox($item, 0, $top, $this->Width);
 		}
 		elseif(is_object($item))
 		{
 			if($item instanceof Item)
 			{
 				$checkItem = $item;
-				$newCheckBox = new CheckBox($item->Text, 0, $whatTop, $this->Width);
+				$newCheckBox = new CheckBox($item->Text, 0, $top, $this->Width);
 			}
 			elseif($item instanceof CheckBox)
 			{

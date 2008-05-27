@@ -2,6 +2,11 @@
 /**
  * @package Data
  */
+/**
+ * DataReader class
+ *
+ * This class needs a description...
+ */
 class DataReader extends Object implements ArrayAccess, Countable, Iterator
 {
 	public $Data;

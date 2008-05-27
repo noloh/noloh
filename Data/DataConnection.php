@@ -2,6 +2,11 @@
 /**
  * @package Data
  */
+/**
+ * DataConnection class
+ *
+ * This class needs a description...
+ */
 class DataConnection extends Object
 {
 	public $Username;

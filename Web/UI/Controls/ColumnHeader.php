@@ -2,6 +2,12 @@
 /**
  * @package Web.UI.Controls
  */	
+
+/**
+ * ColumnHeader class
+ *
+ * This class needs a description...
+ */
 class ColumnHeader extends Panel
 {
 	const Ascending = 0, Descending = 1;

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @ignore
  */
 class BulletedList extends Control
 {
@@ -9,9 +9,9 @@ class BulletedList extends Control
 	public $Type;
 	public $Start;
 	
-	function BulletedList($whatLeft=0, $whatTop=0, $whatWidth=83, $whatHeight=50)
+	function BulletedList($left=0, $top=0, $width=83, $height=50)
 	{
-		parent::Control($whatLeft, $whatTop, $whatWidth, $whatHeight);
+		parent::Control($left, $top, $width, $height);
 		$this->ListItems = new ArrayList();
 	}
 	

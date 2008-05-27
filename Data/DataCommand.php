@@ -2,6 +2,11 @@
 /**
  * @package Data
  */
+/**
+ * DataCommand class
+ *
+ * This class needs a description...
+ */
 class DataCommand extends Object
 {
 	private $Connection;

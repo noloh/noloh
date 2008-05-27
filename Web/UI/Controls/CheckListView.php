@@ -2,6 +2,12 @@
 /**
  * @package Web.UI.Controls
  */
+
+/**
+ * CheckListView class
+ * 
+ * This class needs a description...
+ */
 class CheckListView extends ListView
 {
 	private $CheckColumn;
@@ -16,7 +22,7 @@ class CheckListView extends ListView
 	public function AddListViewItem(ListViewItem $listViewItem)
 	{
 		parent::AddListViewItem($listViewItem);
-		$listViewItem->SubItems->PositionalInsert($tmpCheck = new CheckBox(null, 0, 0, 25), 'Check', 0);
+		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
 	public function InsertListViewItem(ListViewItem $listViewItem, $idx)
 	{
