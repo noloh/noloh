@@ -16,11 +16,13 @@ class GroupedInputControl extends Control
 		if(is_object($text) && !($text instanceof Item))
 			$this->Caption = $text;
 		else
+		{
 			$this->Caption = new Label(null, 23, 0, null, null);
+			$this->SetText($text);
+		}
 		//parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
-		$this->SetText($text);
-		$this->Caption->Click = new ClientEvent('_NGIClick("'.$this->Id.'I")');
+		$this->Caption->Click = new ClientEvent('_NGIClick("'.$this->Id.'I");');
         $this->Caption->SetParentId($this->Id);
 //		$this->GroupName = $this->Id;
 	}
@@ -126,13 +128,13 @@ class GroupedInputControl extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-			return ",'onclick','".$this->GetEventString('Click')."this.blur();'";
+			return ',\'onclick\',\''.$this->GetEventString('Click').'this.blur();\'';
 		return parent::GetEventString($eventTypeAsString);
 	}
 	function Show()
 	{
 		AddNolohScriptSrc('GroupedInputControl.js');
-        NolohInternal::Show('DIV', parent::Show().",'style.overflow','hidden'"/*.self::GetEventString(null)*/, $this);
+        NolohInternal::Show('DIV', parent::Show().',\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
 		//$this->Caption->Show();
 		//return $parentShow;
 	}

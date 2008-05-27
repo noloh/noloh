@@ -6,9 +6,9 @@ class Slider extends Panel
 {
 	private $SlidingObject;
 	
-	public function Slider($whatLeft, $whatTop, $whatHeight)
+	public function Slider($left, $top, $height)
 	{
-		parent::Panel($whatLeft, $whatTop, 0, $whatHeight);
+		parent::Panel($left, $top, 0, $height);
 		$tmpArrowUp = new Image(NOLOHConfig::GetNOLOHPath()."Images/Win/VerScrollArrowUp.gif", 0, 0);
 		$tmpArrowDown = new Image(NOLOHConfig::GetNOLOHPath()."Images/Win/VerScrollArrowDown.gif", 0);
 		$tmpArrowDown->Top = $this->Height - $tmpArrowDown->Height;

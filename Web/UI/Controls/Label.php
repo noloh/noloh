@@ -204,11 +204,11 @@ class Label extends Control
 		$txt = new TextBox($this->Left, $this->Top, $this->Width, $this->Height);
 		$txt->Text = $this->Text;
 		$this->ClientVisible = false;
-		$txt->LoseFocus = new ClientEvent("_NSave('$txt->Id','value');");
+		$txt->LoseFocus = new ClientEvent('_NSave(\''.$txt->Id.'\',\'value\');');
 		$txt->LoseFocus[] = new ServerEvent($txt, 'EditComplete', $this->Id);
-		$txt->ReturnKey = new ClientEvent("document.getElementById('$txt->Id').blur()");
+		$txt->ReturnKey = new ClientEvent('_N(\''.$txt->Id.'\').blur();');
 		$this->Parent->Controls->Add($txt);
-		AddScript("document.getElementById('$txt->Id').select();");
+		AddScript('_N(\''.$txt->Id.'\').select();');
 	}
 	
 	private function AutoWidthHeight()
@@ -232,8 +232,8 @@ class Label extends Control
 			$this->CachedHeight = $widthHeight[1];
 			//NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
-		//if(isset($_SESSION['NOLOHFunctionQueue'][$this->Id]))
-		//	unset($_SESSION['NOLOHFunctionQueue'][$this->Id]['_NAWH']);
+		//if(isset($_SESSION['_NFunctionQueue'][$this->Id]))
+		//	unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
 	}
 	
 	function Show()

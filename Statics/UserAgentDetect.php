@@ -247,13 +247,13 @@ final class UserAgentDetect
 	        	return true;
 	    return false;
 	}
-	public static function IsOS($whatOS = null)
+	public static function IsOS($os = null)
 	{
-		$whatOS = strtolower($whatOS);
+		$os = strtolower($os);
 		$tempOSArray = self::GetPlatform();
 		//print_r($tempOSArray);
 		foreach($tempOSArray as $key => $val)
-			if(strpos($key, $whatOS) !== false)
+			if(strpos($key, $os) !== false)
 	        	return true;
 	    return false;
 	}

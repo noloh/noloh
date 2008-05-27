@@ -54,16 +54,16 @@ class DatePicker extends Panel
         switch(GetBrowser())
         {
             case 'ie':
-                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\')');
-                $this->Calendar->Click = new ClientEvent('window.event.cancelBubble=true');
+                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\');');
+                $this->Calendar->Click = new ClientEvent('window.event.cancelBubble=true;');
                 break;
             case 'sa':
-                $this->PullDown->MouseDown = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);return false');
-                $this->Calendar->MouseDown = new ClientEvent('event.stopPropagation()');
+                $this->PullDown->MouseDown = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);return false;');
+                $this->Calendar->MouseDown = new ClientEvent('event.stopPropagation();');
                 break;
             default:
-                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event)');
-                $this->Calendar->Click = new ClientEvent('event.stopPropagation()');
+                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);');
+                $this->Calendar->Click = new ClientEvent('event.stopPropagation();');
         }
 		$this->Controls->Add($this->PullDown);
 		$this->Controls->Add($this->Calendar);
@@ -95,7 +95,7 @@ class DatePicker extends Panel
 	function SetTimestamp($timestamp)
 	{
 		$this->Calendar->SetTimestamp($timestamp);
-		QueueClientFunction($this, 'document.getElementById(\''.$this->Calendar->Id.'\').onchange.call', array());
+		QueueClientFunction($this, '_N(\''.$this->Calendar->Id.'\').onchange.call', array());
 	}
 	/**
 	 * Returns the currently used format of the display of the DatePicker
@@ -113,7 +113,7 @@ class DatePicker extends Panel
 	function SetFormat($format)
 	{
 		$this->Calendar->SetFormat($format);
-		$this->Calendar->Change = new ClientEvent('PickerSelectDate("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$format.'")');
+		$this->Calendar->Change = new ClientEvent('PickerSelectDate("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$format.'");');
 	}
 	/**
 	* @ignore

@@ -113,10 +113,10 @@ class ListBox extends ListControl
 			SetSelectedIndex($index);
 		elseif(in_array($index, $this->SelectedIndices))
 		{
-			//NolohInternal::SetProperty("options[$whatIndex].selected", false, $this);
-			//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=false;void", array(0));
+			//NolohInternal::SetProperty("options[$index].selected", false, $this);
+			//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=false;void", array(0));
 			QueueClientFunction($this, '_NListDesel', array('\''.$this->Id.'\'', $index), false);
-			//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=false");
+			//AddScript("_N('$this->Id').options[$index].selected=false");
 			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
 		}
 	}

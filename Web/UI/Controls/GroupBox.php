@@ -8,15 +8,15 @@
  */
 class GroupBox extends Guardian
 {	
-	function GroupBox($whatCaption ='', $whatLeft = 0, $whatTop = 0, $whatWidth = 100, $whatHeight = 100)  
+	function GroupBox($caption ='', $left = 0, $top = 0, $width = 100, $height = 100)  
 	{
-		parent::Guardian($whatLeft, $whatTop, $whatWidth, $whatHeight);
-		$this->Text = $whatCaption;
+		parent::Guardian($left, $top, $width, $height);
+		$this->Text = $caption;
 	}
 	
 	function OpenPrintableVersion()
 	{
-		AddScript("var oldNode = document.getElementById('" . $this->Id . "'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
+		AddScript("var oldNode = _N('" . $this->Id . "'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);");
 	}
 
 	function GetStyleString()

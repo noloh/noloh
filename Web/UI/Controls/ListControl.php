@@ -44,10 +44,10 @@ abstract class ListControl extends Control
 	 */
 	public function SetSelectedIndex($index)
 	{
-		//AddScript("document.getElementById('$this->Id').options[$whatIndex].selected=true");
-		//NolohInternal::SetProperty("options[$whatIndex].selected", true, $this);
+		//AddScript("_N('$this->Id').options[$index].selected=true");
+		//NolohInternal::SetProperty("options[$index].selected", true, $this);
 		//$tmpIndex = $index == "first"?0:$index;	
-		//QueueClientFunction($this, "document.getElementById('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
+		//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
 		QueueClientFunction($this, '_NListSel', array('\''.$this->Id.'\'', $index), false);
 		if(/*$this->GetSelectedIndex() !== $index && */!$this->Change->Blank() /*&& $index != "first"*/)
 			$this->Change->Exec();
@@ -129,9 +129,9 @@ abstract class ListControl extends Control
 		if(is_string($item))
 			$item = new Item($item, $item);
 		$this->Items->Add($item, true, true);
-		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
+		//QueueClientFunction($this, "_N('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
 		QueueClientFunction($this, '_NListAdd', array('\''.$this->Id.'\'', '\''.addslashes($item->Text).'\'', '\''.$item->Value.'\''), false);
-		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
+		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	/**
 	 * Inserts an Item into a particular index of the Items ArrayList. 
@@ -142,9 +142,9 @@ abstract class ListControl extends Control
 	public function InsertItem($item, $index)
 	{
 		$this->Items->Insert($item, $index, true);
-		//QueueClientFunction($this, "document.getElementById('$this->Id').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
+		//QueueClientFunction($this, "_N('$this->Id').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
 		QueueClientFunction($this, '_NListAdd', array('\''.$this->Id.'\'', '\''.$item->Text.'\'', '\''.$item->Value.'\'', is_numeric($index)?$index:('\''.$index.'\'')), false);
-		//AddScript("document.getElementById('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
+		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
 	/**
 	 * Removes an Item from a particular index of the Items ArrayList. 
@@ -157,9 +157,9 @@ abstract class ListControl extends Control
 		//We should decide whether this should be commented - Asher
 		//if(func_num_args()==1)
 			$this->Items->RemoveAt($index, true);
-		//QueueClientFunction($this, "document.getElementById('$this->Id').options.remove", array($index), false);
+		//QueueClientFunction($this, "_N('$this->Id').options.remove", array($index), false);
 		QueueClientFunction($this, '_NListRem', array('\''.$this->Id.'\'', is_numeric($index)?$index:('\''.$index.'\'')), false);
-		//AddScript("document.getElementById('$this->Id').remove($index)");
+		//AddScript("_N('$this->Id').remove($index)");
 	}
 	/**
 	 * Clears the Items ArrayList. 
@@ -171,10 +171,10 @@ abstract class ListControl extends Control
 	{
 		//if(func_num_args()==0)
 			$this->Items->Clear(true);
-		//AddScript("document.getElementById('$this->Id').options.length=0);");
+		//AddScript("_N('$this->Id').options.length=0);");
 		//Changed previos line to SetProperty
 		//NolohInternal::SetProperty("options.length", 0, $this);
-		//QueueClientFunction($this, "document.getElementById('$this->Id').options.length=0;void", array(0), false);
+		//QueueClientFunction($this, "_N('$this->Id').options.length=0;void", array(0), false);
 		QueueClientFunction($this, '_NListClr', array('\''.$this->Id.'\''), false);
 	}
 	/**

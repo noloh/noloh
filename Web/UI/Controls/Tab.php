@@ -14,8 +14,6 @@ class Tab extends Panel
 		$this->MainImage = new Image($mainImageSrc);
 		$this->RightImage = new Image($rightImageSrc);
 		parent::Panel(0,0,$this->LeftImage->Width + $this->MainImage->Width + $this->RightImage->Width, $this->LeftImage->Height);		
-//		$this->SetWidth($this->LeftImage->Width + $this->MainImage->Width + $this->RightImage->Width);
-//		$this->SetHeight($this->LeftImage->Height);
 		$this->Controls->AddRange($this->LeftImage, $this->MainImage, $this->RightImage);	
 	}	
 	function SetWidth($width)

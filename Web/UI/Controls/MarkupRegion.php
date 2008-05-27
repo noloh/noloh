@@ -120,20 +120,20 @@ class MarkupRegion extends Control
     function SetText($markupStringOrFile)
 	{
 
-		//$this->IsFile = (is_file($whatMarkupStringOrFile))? true : false;
+		//$this->IsFile = (is_file($markupStringOrFile))? true : false;
         parent::SetText($markupStringOrFile);
-//		if(is_file($whatMarkupStringOrFile))
+//		if(is_file($markupStringOrFile))
 //		{
 			$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
 			$this->AutoWidthHeight($tmpFullString);
 			QueueClientFunction($this, 'SetMarkupString', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 //		}
 //		else
-//			NolohInternal::SetProperty("innerHTML", $whatMarkupStringOrFile, $this);
+//			NolohInternal::SetProperty("innerHTML", $markupStringOrFile, $this);
 	}
-		//$this->MarkupString = file_get_contents($whatMarkupStringOrFile);
+		//$this->MarkupString = file_get_contents($markupStringOrFile);
 		//if($this->MarkupString == false)
-			//$this->MarkupString = $whatMarkupStringOrFile;
+			//$this->MarkupString = $markupStringOrFile;
 //	}
 	function Show()
 	{

@@ -14,7 +14,7 @@ class ToolTip extends Control
 		
 	}
 	
-	function SetToolTip($whatControl, $whatText)
+	function SetToolTip($control, $text)
 	{
 		
 	}

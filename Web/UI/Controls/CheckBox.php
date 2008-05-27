@@ -58,9 +58,9 @@ class CheckBox extends GroupedInputControl implements MultiGroupable
 	function Show()
 	{
         parent::Show();
-		$initialProperties = "'id','".$this->Id."I','type','checkbox','defaultChecked',".($this->Checked?'true':'false').parent::GetEventString(null);
+		$initialProperties = '\'id\',\''.$this->Id.'I\',\'type\',\'checkbox\',\'defaultChecked\','.($this->Checked?'true':'false').parent::GetEventString(null);
         if($this->GroupName != null)
-            $initialProperties .= ",'name','$this->GroupName'";
+            $initialProperties .= ',\'name\',\''.$this->GroupName.'\'';
 		NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
 
         /*
