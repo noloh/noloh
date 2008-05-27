@@ -4,7 +4,7 @@
  */
 class TabPage extends Panel 
 {
-	private $MyRolloverTab;
+	private $RolloverTab;
 	
 	function TabPage($tabName='TabPage', $left = 0, $top = 0, $width = null, $height = null)
 	{
@@ -16,8 +16,8 @@ class TabPage extends Panel
 	{
 		if($rolloverTab == null)
 			$rolloverTab = new RolloverTab($this->Text, null, null);
-		$this->MyRolloverTab = $rolloverTab;
+		$this->RolloverTab = $rolloverTab;
 	}
-	public function GetRolloverTab(){return $this->MyRolloverTab;}
+	public function GetRolloverTab(){return $this->RolloverTab;}
 }
 ?>

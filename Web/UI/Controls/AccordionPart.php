@@ -2,7 +2,13 @@
 /**
  * @package Web.UI.Controls
  */
-class AccordionPart extends Panel
+
+/**
+ * AccordianPart class
+ * 
+ * This class needs a description...
+ */
+class AccordionPart extends Panel implements Groupable
 {
 	private $TitlePanel;
 	private $BodyPanel;
@@ -11,12 +17,6 @@ class AccordionPart extends Panel
 	{
 		$this->BodyPanel = new Panel(0, 0, '100%', 50);
 		parent::Panel(0, 0, null, null);
-//		if($_SESSION['NOLOHIE6'])
-//			$this->CSSMargin_Bottom = '-20px';
-		//$this->CSSClass = 'NAccordTest';
-//		$this->CSSMargin = '0px';
-//		$this->CSSMargin_Top = '20px;';
-//		$this->CSSPadding = '0px;';
 		$this->LayoutType = 1;
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
 		$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/Std/HeadBlue.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/HeadOrange.gif', 0, 0, '100%', $titleHeight);
@@ -27,8 +27,6 @@ class AccordionPart extends Panel
 		//$this->TitlePanel->Controls->AddRange($tmpGlossy, $tmpTitleLabel);
 		$this->TitlePanel->ParentId = $this->Id;
 		$this->TitlePanel->LayoutType = 1;
-		//$this->BodyPanel->CSSMargin = '0px';
-		//$this->BodyPanel->CSSPadding = '0px';
 		
 		$this->BodyPanel->ParentId = $this->Id; 
 		$this->BodyPanel->LayoutType = 1;
@@ -54,7 +52,7 @@ class AccordionPart extends Panel
 	function SetDataBind($newEvent)
 	{
 		$this->SetEvent($newEvent, 'DataBind');
-		$this->BodyPanel->Scroll = new ClientEvent("N_ScrollCheck('{$this->BodyPanel->Id}');");
+		$this->BodyPanel->Scroll = new ClientEvent("_NScrollCheck('{$this->BodyPanel->Id}');");
 	}
 	function SetScrolling($scrollType)
 	{
@@ -69,11 +67,25 @@ class AccordionPart extends Panel
 	{
 		$this->TopPart->Height = $topPartHeight;
 	}
+	//Select Event Functions
+	function GetSelect()				{return $this->TitlePanel->Controls['Glossy']->GetSelect();}
+	function SetSelect($newSelect)		{$this->TitlePanel->Controls['Glossy']->SetSelect($newSelect);}
+	//Groupable Functions
+	function GetGroupName()				{return $this->TitlePanel->Controls['Glossy']->GroupName;}
+	function SetGroupName($groupName)	
+	{
+		$this->TitlePanel->Controls['Glossy']->SetGroupName($groupName);
+	}
+	function GetSelected()				{return $this->$this->TitlePanel->Controls['Glossy']->GetSelected();}
+	function SetSelected($bool)
+	{			
+		$this->TitlePanel->Controls['Glossy']->SetSelected($bool);
+	}
 	function Show()
 	{
 		parent::Show();
 		AddNolohScriptSrc('Accordion.js');
-		QueueClientFunction($this, 'SetAccordionPart', array("'$this->Id'", "'{$this->TitlePanel->Id}'", "'{$this->BodyPanel->Id}'"));
+		QueueClientFunction($this, '_NSetAccordPt', array("'$this->Id'", "'{$this->TitlePanel->Id}'", "'{$this->BodyPanel->Id}'"));
 	}
 }
 ?>
