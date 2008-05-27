@@ -85,26 +85,26 @@ function ShiftObjects(objects, deltaX, deltaY)
 		if(objects[i][1] <= 3)
 		{
 			if(objects[i][1] != 1)
-				ShiftObject(objects[i], "style.height", objects[i].StartHeight, deltaY, objects[i][6], objects[i][7]);
+				ShiftObject(objects[i][0], "style.height", objects[i].StartHeight, deltaY, objects[i][3], objects[i][6], objects[i][7]);
 			if(objects[i][1] != 2)	
-				ShiftObject(objects[i], "style.width", objects[i].StartWidth, deltaX, objects[i][4], objects[i][5]);
+				ShiftObject(objects[i][0], "style.width", objects[i].StartWidth, deltaX, objects[i][3], objects[i][4], objects[i][5]);
 		}
 		else
 		{
 			if(objects[i][1] != 4)
-				ShiftObject(objects[i], "style.top", objects[i].StartTop, deltaY, objects[i][6], objects[i][7]);
+				ShiftObject(objects[i][0], "style.top", objects[i].StartTop, deltaY, objects[i][3], objects[i][6], objects[i][7]);
 			if(objects[i][1] != 5)
-				ShiftObject(objects[i], "style.left", objects[i].StartLeft, deltaX, objects[i][4], objects[i][5]);
+				ShiftObject(objects[i][0], "style.left", objects[i].StartLeft, deltaX, objects[i][3], objects[i][4], objects[i][5]);
 		}
 		var tmpObj = _N(objects[i][0]);
 		if(tmpObj.ShiftsWith != null)
 			ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY);
 	}
 }
-function ShiftObject(object, property, start, delta, minBound, maxBound)
+function ShiftObject(id, property, start, delta, ratio, minBound, maxBound)
 {
-	var finalCoord = Math.round(start + delta * object[3]);
-	_NSetProperty(object[0], property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");	
+	var finalCoord = Math.round(start + delta * ratio);
+	_NSetProperty(id, property, (minBound != null && finalCoord <= minBound ? minBound : (maxBound != null && finalCoord >= maxBound ? maxBound : finalCoord))+"px");	
 }
 function ShiftStop()
 {
