@@ -52,6 +52,8 @@ function _NInit(loadLblId, loadImgId)
 	window.onresize = BodySizeState;
 	_NLoadLbl = loadLblId;
 	_NLoadImg = loadImgId;
+	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);
+	_NSetProperty(document.body.id, "Height", document.documentElement.clientHeight);
 	var Graveyard = document.createElement("DIV");
 	Graveyard.id = "Graveyard";
 	Graveyard.style.display = "none";
@@ -212,7 +214,6 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			obj.Group.Elements.push(obj.id);
 			break;
 		case "Selected":
-			alert("Select!");
 			if(obj.Selected != newValue)
 			{
 				obj.Selected = newValue;
@@ -316,8 +317,16 @@ function BodyScrollState()
 
 function BodySizeState()
 {
-	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
-	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
+	var body = document.body;
+	if(body.ShiftsWith != null)
+	{
+		var deltaX = document.documentElement.clientWidth - body.Width;
+		var deltaY = document.documentElement.clientHeight - body.Height;
+		SetShiftWithInitials(body);
+		ShiftObjects(body.ShiftsWith, deltaX, deltaY);
+	}
+	_NSetProperty(body.id, "Width", document.documentElement.clientWidth);
+	_NSetProperty(body.id, "Height", document.documentElement.clientHeight);
 }
 
 function AddOptionAndSave(id, option)

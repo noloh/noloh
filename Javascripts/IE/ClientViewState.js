@@ -51,6 +51,8 @@ function _NInit(loadLblId, loadImgId)
 	window.onresize = BodySizeState;
 	_NLoadLbl = loadLblId;
 	_NLoadImg = loadImgId;
+	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
+	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 	var Graveyard = document.createElement("DIV");
 	Graveyard.id = "Graveyard";
 	Graveyard.style.display = "none";
@@ -370,6 +372,14 @@ function BodyScrollState()
 
 function BodySizeState()
 {
+	var body = _N("N1");
+	if(body.ShiftsWith != null)
+	{
+		var deltaX = document.documentElement.clientWidth - body.Width;
+		var deltaY = document.documentElement.clientHeight - body.Height;
+		SetShiftWithInitials(body);
+		ShiftObjects(body.ShiftsWith, deltaX, deltaY);
+	}
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
 	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 }
