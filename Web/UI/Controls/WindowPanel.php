@@ -19,10 +19,13 @@ class WindowPanel extends Panel
 	private $LeftTitle;
 	private $RightTitle;
 	private $OldHeight;
+	private $ThemeBorder;
+	private $BorderSize;
 	
 	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
+		$this->SetThemeBorder('4px solid #07254a');
 		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
 		if(!$_SESSION['_NIE6'])
 		{
@@ -35,7 +38,7 @@ class WindowPanel extends Panel
 			$format = '.gif';
 		}
 		$tmpTop = 7;
-		$border = 4;
+			
 		$this->LeftTitle = new Image($imagesDir.'WinTL' . $format);
 		$this->RightTitle = new Image($imagesDir.'WinTR' . $format);
 		$this->TitleBar = new Label($title, $this->LeftTitle->Right, 0, null, 34);
@@ -51,37 +54,20 @@ class WindowPanel extends Panel
 		$this->WindowPanelComponents->ParentId = $this->Id;
 		$this->BodyPanel->SetScrolling(System::Auto);
 		$this->TitleBar->SetCursor(Cursor::Arrow);
-		$this->BodyPanel->SetTop($this->TitleBar->GetBottom());
 		$this->SetText($title);
 		$this->SetBackColor('white');
 		
 		$this->TitleBar->CSSClass = 'NWinPanelTitle';
 
-//		$this->MinimizeImage->MouseOver = new ClientEvent("this.src='{$imagesDir}WinMinHover$format';");
-//		$this->RestoreImage->MouseOver = new ClientEvent("this.src='{$imagesDir}restoreover.gif';");
 		$this->CloseImage->MouseOver = new ClientEvent("this.src='{$imagesDir}WinCloseHover$format';");
-		
-//		$this->MinimizeImage->MouseDown = new ClientEvent("this.src='{$imagesDir}minimizedown.gif';");
-//		$this->RestoreImage->MouseDown = new ClientEvent("this.src='{$imagesDir}restoredown.gif';");
-//		$this->CloseImage->MouseDown = new ClientEvent("this.src='{$imagesDir}closedown.gif';");
-		
-//		$this->MinimizeImage->MouseOut = new ClientEvent("this.src='{$imagesDir}WinMin$format';");
-//		$this->RestoreImage->MouseOut = new ClientEvent("this.src='{$imagesDir}restore.gif';");
 		$this->CloseImage->MouseOut = new ClientEvent("this.src='{$imagesDir}WinClose$format';");
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
 		$this->CloseImage->Click['Hide'] = new ClientEvent('NOLOHChange(\''.$this->Id.'\', \'style.visibility\', \'hidden\');');
 		$this->CloseImage->Click[] = new ServerEvent($this, 'Close');
-		$this->BodyPanel->CSSBorder_Bottom = $border . 'px solid #07254a';
-		$this->BodyPanel->CSSBorder_Left = $border . 'px solid #07254a';
-		$this->BodyPanel->CSSBorder_Right = $border . 'px solid #07254a';
-		/*
-		$closeE = new Event();
-		$closeE["Hide"] = new ClientEvent("_N('$this->Id').style.visibility='hidden';");
-		$closeE = new ServerEvent($this, "Close");
-		$this->CloseImage->Click = $closeE;
-		*/
+		$this->SetBodyBorder($this->ThemeBorder);
+		
 		$this->Click = new ClientEvent('BringToFront(\'' . $this->Id . '\');');
 		
 		$this->TitleBar->Shifts[] = Shift::Location($this);
@@ -92,15 +78,6 @@ class WindowPanel extends Panel
 		$this->CloseImage->Shifts[] = Shift::With($this->ResizeImage, Shift::Left);
 		$this->BodyPanel->Shifts[] = Shift::With($this->ResizeImage, Shift::Size);
 		
-		/*$this->ResizeImage->Shifts[] = Shift::Size($this);
-		$this->ResizeImage->Shifts[] = Shift::Width($this->TitleBar);
-//		$this->ResizeImage->Shifts[] = Shift::Left($this->MinimizeImage);
-//		$this->ResizeImage->Shifts[] = Shift::Left($this->RestoreImage);
-		$this->ResizeImage->Shifts[] = Shift::Left($this->RightTitle);
-		$this->ResizeImage->Shifts[] = Shift::Left($this->CloseImage);
-		$this->ResizeImage->Shifts[] = Shift::Size($this->BodyPanel);*/
-		
-		//$this->TitleBar->Shifts[] = Shift::Location($this);
 		$this->WindowPanelComponents->Add($this->TitleBar);
 		//$this->WindowPanelComponents->Add($this->MinimizeImage);
 		//$this->WindowPanelComponents->Add($this->RestoreImage);
@@ -117,29 +94,84 @@ class WindowPanel extends Panel
 		$this->WindowShade = $bool;
 		if($bool)
 		{
-//			$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent('SwapWindowPanelShade(' . $this->BodyPanel->Id . ');');
-//			$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("alert('{$this->BodyPanel->Id}');");//SwapWindowPanelShade(' . $this->BodyPanel->Id . ');');
 			if(!isset($this->TitleBar->DoubleClick['WinShade']))
-				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("SwapWindowPanelShade('{$this->Id}','{$this->TitleBar->Id}');");//SwapWindowPanelShade(' . $this->BodyPanel->Id . ');');
-			NolohInternal::SetProperty('WinHght', "{$this->GetHeight()}", $this->Id);
+				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NTglClpsePanel('{$this->Id}','{$this->TitleBar->Id}', '{$this->BodyPanel->Id}');");
+			NolohInternal::SetProperty('Hgt', "{$this->GetHeight()}", $this->Id);
 		}
 		else
 			$this->TitleBar->DoubleClick['WinShade'] = null;
 	}
-	//function GetWindowShade()	{return $this->WindowShade;}
+	private function SetBodyBorder($border)
+	{
+		$this->BodyPanel->CSSBorder_Bottom = $border;
+		$this->BodyPanel->CSSBorder_Left = $border;
+		$this->BodyPanel->CSSBorder_Right = $border;
+		
+		if($this->Menu != null)
+		{
+			$this->Menu->CSSBorder_Left = $boder;
+			$this->Menu->CSSBorder_Right = $border;
+		}
+	}
+	function Skin($border=null, $corners=null, $buttons=null, $resizeHandle=null)
+	{
+		if($border != null)
+		{
+			$this->SetThemeBorder($border); 
+			$this->SetBodyBorder($border);
+		}
+		if(!empty($corners))
+		{
+			if(isset($corners[0]))
+				$this->LeftTitle->SetSrc($corners[0], true);
+			if(isset($corners[2]))
+				$this->RightTitle->SetSrc($corners[2], true);
+			if(isset($corners[1]))
+			{
+				$this->TitleBar->CSSBackground_Image = 'url('. $corners[1] .')';
+				$this->TitleBar->SetHeight($this->LeftTitle->GetHeight());
+				$this->Menu->SetWidth($this->Width - ($this->BorderSize << 1));
+			}
+		}
+		//TODO maximize, minimize, restore
+		//close, maximize, minimize, restore
+		if(!empty($buttons))
+		{
+			if(isset($buttons[0]))
+			{
+				if($buttons[0] instanceof Image)
+				{
+					$this->CloseImage->SetSrc($buttons[0]->GetSrc(), true);
+					if($buttons[0] instanceof RolloverImage)
+					{
+						$this->CloseImage->SetOverSrc($buttons[0]->GetOverSrc());
+						$this->CloseImage->SetDownSrc($buttons[0]->GetDownSrc());
+						$this->CloseImage->SetSelectSrc($buttons[0]->GetSelectSrc());
+					}
+				}
+				elseif(is_string($buttons[0]))
+					$this->CloseImage->SetSrc($buttons[0], true);
+			}
+		}
+		if($resizeHandle != null)
+			$this->ResizeImage->SetSrc($resizeHandle, true);
+		$this->SetWidth($this->Width);
+		$this->SetHeight($this->Height);
+	}
+	function GetWindowShade()	{return $this->WindowShade;}
 	function SetText($text){$this->TitleBar->SetText($text);}
 	function GetText(){return $this->TitleBar->GetText();}
 	function GetMenu()	{return $this->Menu;}
 	function SetMenu(Menu $mainMenu)
 	{
 		$this->Menu = $mainMenu;
-		$this->Menu->CSSBorder_Left = '4px solid #07254a';
-		$this->Menu->CSSBorder_Right = '4px solid #07254a';
-		$this->Menu->Width = $this->Width - 8;
-		$this->Menu->Left = 0;
-		$this->Menu->Top = $this->TitleBar->Bottom;
+		$this->Menu->CSSBorder_Left = $this->ThemeBorder;
+		$this->Menu->CSSBorder_Right = $this->ThemeBorder;
+		$this->Menu->SetWidth($this->Width - ($this->BorderSize << 1));
+		$this->Menu->SetLeft(0);
+		$this->Menu->SetTop($this->TitleBar->Bottom);
 		$this->ResizeImage->Shifts[] = Shift::Width($this->Menu);
-		$this->BodyPanel->Top = $this->Menu->Bottom;
+		$this->BodyPanel->SetTop($this->Menu->Bottom);
 		$this->WindowPanelComponents->Add($mainMenu);
 		$this->BodyPanel->Height -= $mainMenu->Height;
 	}
@@ -162,37 +194,42 @@ class WindowPanel extends Panel
 		$this->MinimizeBox = $bool ? null : false;
 		$this->MinimizeImage->Visible = $bool;
 	}
-	function SetHeight($newHeight)
+	function SetHeight($height)
 	{
-		parent::SetHeight($newHeight);
-		$this->BodyPanel->SetHeight($newHeight - $this->TitleBar->GetHeight() - 4);
-		$this->ResizeImage->SetTop($newHeight - 20);
+		parent::SetHeight($height);
+		$this->BodyPanel->SetHeight($height - $this->TitleBar->GetHeight() - $this->BorderSize);
+		$this->BodyPanel->SetTop($this->TitleBar->GetBottom());
+		$this->ResizeImage->SetTop($height - $this->BorderSize - 16);
 		if($this->WindowShade)
-			NolohInternal::SetProperty('WinHght', "{$this->GetHeight()}", $this->BodyPanel);
+			NolohInternal::SetProperty('Hgt', '\'' . $this->GetHeight() . '\'', $this);
 	}
-	function SetWidth($newWidth)
+	function SetWidth($width)
 	{
-		parent::SetWidth($newWidth);
-		$this->BodyPanel->SetWidth($newWidth - 8);
-		$this->TitleBar->SetWidth($newWidth - ($this->LeftTitle->GetWidth() << 1));
+		parent::SetWidth($width);
+		
+		$this->BodyPanel->SetWidth($width - ($this->BorderSize << 1));
+		$this->TitleBar->SetWidth($width - ($this->LeftTitle->GetWidth() << 1));
 		$this->RightTitle->Left = $this->TitleBar->Right;
-		$this->MinimizeImage->SetLeft($newWidth - 67);
+		$this->MinimizeImage->SetLeft($width - 67);
 //		$this->RestoreImage->SetLeft($newWidth - 45);
-		$this->CloseImage->SetLeft($newWidth - 33);
-		$this->ResizeImage->SetLeft($newWidth - 22);
+		$this->CloseImage->SetLeft($width - 33);
+		$this->ResizeImage->SetLeft($width - ($this->BorderSize) - 18);
 	}
-	function SetBackColor($color)
+	private function SetThemeBorder($border)
 	{
-		$this->BodyPanel->BackColor = $color;
+		$this->ThemeBorder = $border;
+		if(preg_match('/\A\s*?(\d+)\D*?.*?\z/', $this->ThemeBorder, $values)) 
+			$borderSize = $values[0];
+		else
+			BloodyMurder('Border has no numeric value');
+		$this->BorderSize = $borderSize;
 	}
-	function GetAddId($obj)
-	{
-		return in_array($obj, $this->WindowPanelComponents->Elements) ? $this->Id : $this->BodyPanel->Id;
-	}
+	function SetBackColor($color)	{$this->BodyPanel->SetBackColor($color);}
+	function GetAddId($obj)	{return in_array($obj, $this->WindowPanelComponents->Elements, true) ? $this->Id : $this->BodyPanel->Id;}
 	function Show()
 	{
         parent::Show();
-		AddNolohScriptSrc('WindowPanel.js');
+		AddNolohScriptSrc('CollapsePanel.js');
 	}
 }
 
