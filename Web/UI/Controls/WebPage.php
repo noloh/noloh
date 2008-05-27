@@ -205,7 +205,9 @@ class WebPage extends Component
 		   ($OS == "mac" && ($Browser != "moz")))
 		   		header("Location: ".(empty($this->AlternativePath)?
 				"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html":"$this->AlternativePath"));
-		*/		
+		*/	
+		if(defined('FORCE_GZIP'))
+			ob_start('ob_gzhandler');
 		print(
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">
 
