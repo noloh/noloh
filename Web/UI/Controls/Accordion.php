@@ -2,6 +2,12 @@
 /**
  * @package Web.UI.Controls
  */
+ 
+/**
+ * Accordian class
+ *
+ * This class needs a description...
+ */
 class Accordion extends Panel
 {
 	public $AccordionParts;
@@ -11,14 +17,15 @@ class Accordion extends Panel
 	{
 		parent::Panel($left, $top, $width, $height, $this);
 		$this->AccordionParts = &$this->Controls;
-		$this->AccordionParts->AddFunctionName = "AddAccordionPart";
+		$this->AccordionParts->AddFunctionName = 'AddAccordionPart';
+		$this->AccordionParts->RemoveAtFunctionName = 'RemoveAccordionPartAt';
 	}
-	function SetSelectedIndex($index)
+	function SetSelectedIndex($index, $override=false)
 	{
-		if($this->GetSelectedIndex() != $index)
+		if($this->GetSelectedIndex() != $index || $override)
 		{
 			$this->SelectedIndex = $index;
-			QueueClientFunction($this, "ExpandAccordionPart", array("'$this->Id'",  "'{$this->AccordionParts[$this->SelectedIndex]->Id}'"), true, Priority::Low);
+			QueueClientFunction($this, '_NExpandAccordPt', array("'$this->Id'",  "'{$this->AccordionParts[$this->SelectedIndex]->Id}'"), true, Priority::Low);
 		}
 	}
 	function GetSelectedIndex()
@@ -30,9 +37,9 @@ class Accordion extends Panel
 		$tmpCount = $this->AccordionParts->Count();
 		if(is_string($accordionPart))
 			$accordionPart = new AccordionPart($accordionPart);
-		$accordionPart->TitlePanel->Click = new ClientEvent("ExpandAccordionPart('$this->Id', '$accordionPart->Id')");
+		$accordionPart->TitlePanel->Click = new ClientEvent("_NExpandAccordPt('$this->Id', '$accordionPart->Id');");
 		$this->AccordionParts->Add($accordionPart, true, true);
-		QueueClientFunction($this, "AddAccordionPart", array("'$this->Id'", "'{$accordionPart->Id}'"), false);
+		QueueClientFunction($this, '_NAddAccordPt', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
 		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
 	}
@@ -41,11 +48,18 @@ class Accordion extends Panel
 		$tmpCount = $this->AccordionParts->Count();
 		if(is_string($accordionPart))
 			$accordionPart = new AccordionPart($accordionPart);
-		$accordionPart->TitlePanel->Click = new ClientEvent("ExpandAccordionPart('$this->Id', '$accordionPart->Id')");
+		$accordionPart->TitlePanel->Click = new ClientEvent("_NExpandAccordPt('$this->Id', '$accordionPart->Id');");
 		$this->AccordionParts->Insert($accordionPart, $index);
-		QueueClientFunction($this, "AddAccordionPart", array("'$this->Id'", "'{$accordionPart->Id}'"), false);
+		QueueClientFunction($this, '_NAddAccordPt', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
 		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
+	}
+	function RemoveAccordionPartAt($index)
+	{
+		QueueClientFunction($this, '_NRmAccordPt', array("'$this->Id'", "$index"), false, Priority::High);
+		$this->AccordionParts->RemoveAt($index, true);
+		if($this->SelectedIndex == $index)
+			$this->SetSelectedIndex(0, true);
 	}
 	function Show()
 	{
