@@ -24,23 +24,24 @@ class File extends Object
 	private $TempFilename = null;
 	private $AutoSave = true;
 	
-	static function Send($fileName)
+	static function Send($fileName, $contentType='application/octet-stream', $alias=null)
 	{
 		AddScript('_NRequestFile("' . $_SERVER['PHP_SELF'] . '?NOLOHFileRequest=' . $fileName . '")');
-		$_SESSION['_NFileSend'][$fileName] = true;
+		$_SESSION['_NFileSend'][$fileName] = array($contentType, $alias);
 		//$webPage = GetComponentById('N1');
 		//$webPage->Controls->Add($iframe = new IFrame($_SERVER['PHP_SELF'].'?NOLOHFileRequest='.$fileName));
 	}
 	
-	static function SendRequestedFile($fileName, $contentType='application/octet-stream')
+	static function SendRequestedFile($fileName)
 	{
 		if(isset($_SESSION['_NFileSend'][$fileName]))
 		{
+			$fileInfo = $_SESSION['_NFileSend'][$fileName];
 		    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		    header('Content-Description: File Transfer');
-		    header('Content-Type: ' . $contentType);
+		    header('Content-Type: ' . $fileInfo[0]);
 		    header('Content-Length: ' . filesize($fileName));
-	    	header('Content-Disposition: attachment; filename=' . basename($fileName));
+	    	header('Content-Disposition: attachment; filename=' . basename($fileInfo[1]?$fileInfo[1]:$fileName));
 			readfile($fileName);
 			unset($_SESSION['_NFileSend'][$fileName]);
 		}
@@ -48,26 +49,26 @@ class File extends Object
 			BloodyMurder('You do not have permission to access that file!');
 	}
 	
-	function File($whatFile = null)
+	function File($file = null)
 	{
-		if(is_array($whatFile))
+		if(is_array($file))
 		{
-			$this->File = $whatFile;
+			$this->File = $file;
 			$this->Filename = $this->File['name'];
 			$this->Type = $this->File['type'];
 			$this->Size = $this->File['size'];
 			$this->TempFilename = $this->File['tmp_name'];
 		}
-		elseif(is_file($whatFile))
+		elseif(is_file($file))
 		{
-			$this->File = $whatFile;
-			$this->Filename = $whatFile;
-			$this->Size = filesize($whatFile);
-			$this->Type = filetype($whatFile);
+			$this->File = $file;
+			$this->Filename = $file;
+			$this->Size = filesize($file);
+			$this->Type = filetype($file);
 		}
 	}
 	
-	function Open($whatMode = File::ReadWrite, $autoSave = true)
+	function Open($mode = File::ReadWrite, $autoSave = true)
 	{
 		if(!$autoSave)
 		{
@@ -75,12 +76,12 @@ class File extends Object
 			$this->PointerToFile = tmpfile();
 			fputs($this->PointerToFile, fread(fopen($this->File, 'r'), filesize($this->Filename)));
 		}
-		$this->PointerToFile = fopen(realpath($this->Filename), $whatMode);
+		$this->PointerToFile = fopen(realpath($this->Filename), $mode);
 	}
 	
-	function Write($whatWrite='')
+	function Write($write='')
 	{
-		fwrite($this->PointerToFile, $whatWrite);
+		fwrite($this->PointerToFile, $write);
 	}
 	
 	Function Read()
