@@ -68,7 +68,7 @@ class Panel extends Control
 	}		
 	function OpenPrintableVersion()
 	{
-		AddScript('var oldNode = document.getElementById(\''.$this->Id.'\'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);');
+		AddScript('var oldNode = _N(\''.$this->Id.'\'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);');
 	}
 	function GetScrolling()
 	{
@@ -107,7 +107,7 @@ class Panel extends Control
 //			{
 //				$initialProperties = "'id','{$this->Id}IFRAME','style.position','absolute','style.left','{$this->Left}px','style.top','{$this->Top}px','style.width','{$this->Width}px','style.height','{$this->Height}px','src','javascript:false','scrolling','no','frameborder','0'";
 //				NolohInternal::Show("IFRAME", $initialProperties, $this);
-//				AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
+//				AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 //			}
 		
 		
@@ -117,12 +117,12 @@ class Panel extends Control
 		//if($this->DropShadow == true)
 		//{
 		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->Id}DS' style='POSITION:absolute; LEFT:".($this->Left + 5)."px; TOP:".($this->Top+5)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background:black; filter:alpha(opacity=20)'></DIV>\n");
-		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
+		//	AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
 		//}
 			/*else
 			{
 				print(str_repeat("  ", $IndentLevel) . "<IFRAME ID = '{$this->Id}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; filter: alpha(opacity=0)' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>\n");
-				AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
+				AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 			}*
 		
 		$dispStr .= "<DIV " . $parentShow;
@@ -133,11 +133,17 @@ class Panel extends Control
 		NolohInternal::Show($dispStr, $this);*/
 		//$this->IterateThroughAllControls();
 		//if($showIFrame)
-		//	AddScript("document.getElementById('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
+		//	AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
 
 		//return $initialProperties;
 	}
-	
+	function SetChildLayout($layoutType)
+	{
+		//This needs to be modified to actually set a property, and Controls needs to be Implict so when adding a control it can set the LayoutType right there
+		$childCount = $this->Controls->Count();
+		for($i=0;$i<$childCount;++$i)
+			$this->Controls->Elements[$i]->LayoutType = $layoutType;
+	}
 	function SearchEngineShow()
 	{
 		foreach($this->Controls as $control)
