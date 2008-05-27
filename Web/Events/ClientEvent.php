@@ -15,7 +15,7 @@
  * 	// Instantiates a new Button
  *  $btn = new Button("Click Me");
  * 	// Sets the click of the button to an event which will alert without going to the server.
- * 	$btn->Click = new ClientEvent('alert("I have been clicked")');
+ * 	$btn->Click = new ClientEvent('alert("I have been clicked");');
  * 	// Launches that event. In particular, it will alert.
  *  $btn->Click->Exec();
  * </code>
@@ -31,15 +31,49 @@ class ClientEvent extends Event
 	 */
 	static function GenerateString($str)
 	{
-		return addslashes(str_replace("'", stripslashes("\""), $str));
+		//return addslashes(str_replace("'", stripslashes("\""), $str));
+		return $str;
 	}
 	/**
 	 * Constructor.
 	 * @param string $allCodeAsString The JavaScript code to be executed when 
+	 * @param mixed $params,... the optional params to be passed to your JavaScript function 
 	 */
-	function ClientEvent($allCodeAsString)
+	function ClientEvent($allCodeAsString, $params=null)
 	{
-		parent::Event(str_replace("\n", ' ', $allCodeAsString));
+		if(!preg_match('/(?:;|})\s*?\z/', $allCodeAsString))
+		{
+			$allCodeAsString = trim($allCodeAsString) . '(';
+			$params = func_get_args();
+			$count = count($params);
+			for($i=1;$i<$count;++$i)
+				$allCodeAsString .= self::ClientFormat($params[$i]) .',';
+			$allCodeAsString = rtrim($allCodeAsString, ',') . ');';
+		}
+		parent::Event(str_replace(array("\n", '\''), array(' ', '\\\''), $allCodeAsString));
+	}
+	static private function ClientFormat($param)
+	{
+		if(is_string($param))
+			//return '\''.str_replace('\'', '\\\'', $param).'\'';
+			return '"'.str_replace('"', '\\\\"', $param).'"';
+		elseif(is_int($param) || is_float($param))
+			return $param;
+		elseif(is_bool($param))
+			return ($param?'true':'false');
+		elseif($param === null)
+			return 'null';
+		elseif(is_array($param))
+		{
+			$tmpArr = array();
+			foreach($param as $val)
+				$tmpArr[] = self::ClientFormat($val);
+			return 'Array(' . implode(',', $tmpArr) . ')';
+		}
+		elseif($param instanceof Component)
+			return '\'' . $param->Id . '\'';
+		elseif(is_object($param))
+			BloodyMurder('Objects can not be passed as parameters to ClientEvent');
 	}
 	/**
 	 * @ignore
@@ -73,7 +107,8 @@ class ClientEvent extends Event
 	{
 		//Temporary solution until it parses
 		if(is_string($this->ExecuteFunction))
-			return addslashes(str_replace("'", stripslashes("\""), $this->ExecuteFunction));
+			//return addslashes(str_replace("'", stripslashes("\""), $this->ExecuteFunction));
+			return $this->ExecuteFunction;
 		elseif($this->ExecuteFunction instanceof ArrayList)
 		{ 
 			$Code = '';

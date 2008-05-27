@@ -50,7 +50,7 @@ final class NolohInternal
 			}
 		//}
 		//else
-		//	Alert("whatBool=" . ($whatBool?"TRUE":"FALSE"));
+		//	Alert("whatBool=" . ($bool?"TRUE":"FALSE"));
 	}
 	
 	public static function Show($tag, $initialProperties, $obj, $addTo = null)
@@ -113,7 +113,7 @@ final class NolohInternal
 				if(isset(Event::$Conversion[$name]))
 					$nameValPairsString .= '\''.Event::$Conversion[$name].'\',\''.GetComponentById($objId)->GetEventString($val[0]).'\',';
 				else 
-					$nameValPairsString .= '\''.$name.'\',' . 'function(event) {' . stripslashes(GetComponentById($objId)->GetEventString($val[0])) . '},';
+					$nameValPairsString .= '\''.$name.'\',' . 'function(event) {' . GetComponentById($objId)->GetEventString($val[0]) . '},';
 			}
 			elseif(is_bool($val))
 				$nameValPairsString .= '\''.$name.'\','.($val?'true':'false').',';
