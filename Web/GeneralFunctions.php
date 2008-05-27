@@ -159,8 +159,8 @@ function UnlockNOLOHDebug($password)
 function &GetComponentById($id)
 {
 	global $OmniscientBeing;
-	//if(!isset($OmniscientBeing[$whatId]))
-	//	$OmniscientBeing[$whatId] = unserialize($_SESSION["NOLOH".$whatId]);
+	//if(!isset($OmniscientBeing[$id]))
+	//	$OmniscientBeing[$id] = unserialize($_SESSION["NOLOH".$id]);
 	return $OmniscientBeing[$id];
 }
 /**

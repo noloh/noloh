@@ -10,11 +10,6 @@ function SendToBack(id)
 	_NSetProperty(id, "style.zIndex", --LowestZIndex);
 }
 
-function ChangeImage(id, src)
-{
-	_NSetProperty(id, "src", src);
-}
-
 function ChangeLabelText(id, text)
 {
 	_NSetProperty(id, "innerHTML", text);
