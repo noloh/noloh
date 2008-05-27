@@ -77,7 +77,8 @@ class CollapsePanel extends Panel
 	function SetWidth($width, $toggleMargin = 5)
 	{
 		parent::SetWidth($width);
-		$this->ToggleButton->SetRight($toggleMargin);
+		$this->ToggleButton->SetLeft($toggleMargin);
+		$this->ToggleButton->ReflectAxis('x');
 	}
 	function SetHeight($newHeight)
 	{
