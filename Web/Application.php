@@ -17,7 +17,7 @@ function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Displ
 function _NOBErrorHandler($buffer)
 {
 	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
-		trigger_error('~INFO~'.$buffer);
+		trigger_error('~_NINFO~');
 	elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
 		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
 }
@@ -31,13 +31,15 @@ function _NErrorHandler($number, $string, $file, $line)
 	if(strpos($string, '~OB~')===0)
 	{
 		$splitStr = explode('~', $string);
-		//$number = $splitStr[2];
 		$string = $splitStr[3];
 		$file = $splitStr[4];
 		$line = $splitStr[5];
 	}
-	elseif(strpos($string, '~INFO~')===0)
-		_NPHPInfo(substr($string, 6));
+	elseif($string == '~_NINFO~')
+	{
+		$_SESSION['_NPHPInfo'] = true;
+		Application::Reset(true, false);
+	}
 	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers()))
 	{
 		ob_start('ob_gzhandler');
@@ -58,22 +60,12 @@ function _NPHPInfo($info)
 {
 	$info = str_replace(array("\n", "\r", "'"), array('','',"\\'"), $info);
 	$loc = strpos($info, '</table>') + 8;
-	$first = substr($info, 0, $loc);
-	$last = substr($info, $loc);
-	$middle = '<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . NOLOHConfig::GetNOLOHPath() . 'Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>';
-	switch(GetBrowser())
-	{
-		case 'ie':
-		case 'sa':
-			print('/*~NScript~*/document.write(\'' . $first . $middle . $last . '\');window.onscroll=null;');
-			break;
-		default:
-			print('/*~NScript~*/document.body.innerHTML=\'' . $first . $middle . $last . '\';window.onscroll=null;');
-	}
-	ob_end_flush();
+	$text = substr($info, 0, $loc) .
+		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . NOLOHConfig::GetNOLOHPath() . 'Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
+		substr($info, $loc);
 	session_destroy();
 	session_unset();
-	exit();
+	return $text;
 }
 /**
 * @ignore
@@ -94,7 +86,6 @@ final class Application
 	 */
 	public static function Reset($clearURLTokens = true, $clearSessionVariables = true)
 	{
-		//if(isset(Event::$MouseX))
 		if(isset($GLOBALS['_NDebugMode']))
 			ob_end_clean();
         print('/*~NScript~*/');
@@ -188,6 +179,12 @@ final class Application
 	
 	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
 	{
+		if(isset($_SESSION['_NPHPInfo']))
+		{
+			ob_start('_NPHPInfo');
+			phpinfo();
+			exit();
+		}
 		$_SESSION['_NVisit'] = -1;
 		$_SESSION['_NNumberOfComponents'] = 0;
 		$_SESSION['_NControlQueue'] = array();
@@ -209,7 +206,6 @@ final class Application
 		UserAgentDetect::LoadInformation();
 		if($trulyFirst)
 			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')
-			//if(true)
 				$this->SearchEngineRun();
 			else 
 				WebPage::SkeletalShow($unsupportedURL);
@@ -388,6 +384,7 @@ final class Application
 		global $OmniscientBeing;
 		if(++$_SESSION['_NVisit']==0)
 		{
+			header('Content-Type: text/javascript');
 			$GLOBALS['_NWidth'] = $_GET['NWidth'];
 			$GLOBALS['_NHeight'] = $_GET['NHeight'];
 			$this->HandleTokens();
@@ -401,7 +398,7 @@ final class Application
 		NolohInternal::ShowQueue();
 		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
-		@ob_end_clean();
+		ob_end_clean();
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['_NScript'][0] . $_SESSION['_NScript'][1] . $_SESSION['_NScript'][2]);
@@ -439,29 +436,10 @@ final class Application
 		$objs = array();
 		$objectsIdArray = explode(',', $objectsString);
 		$objectsCount = count($objectsIdArray);
-		for($i=0; $i<$objectsCount; $i++)
+		for($i=0; $i<$objectsCount; ++$i)
 			$objs[] = GetComponentById($objectsIdArray[$i]);
 		return $objs;
 	}
-	/*
-	private function ExplodeItems($optionsString)
-	{
-		$items = new ArrayList();
-		$optionsArray = explode('~d3~', $optionsString);
-		$optionsCount = count($optionsArray);
-		for($i=0; $i<$optionsCount; $i++)
-		{
-			$option = explode('~d2~', $optionsArray[$i]);
-			$items->Add(new Item($option[0], $option[1]));
-		}
-		return $items;
-	}
-	
-	private function ExplodeSelectedIndices($indicesString)
-	{
-		return explode('~d2~', $indicesString);
-	}
-	*/
 }
 
 ?>
