@@ -36,8 +36,12 @@ class TreeNode extends Panel
 		$this->SetLayoutType(1);
 		if(GetBrowser() == 'ie')
 			NolohInternal::SetProperty('style.marginTop','6px',$this);
-		$this->PlusMinus = new PlusMinusSwitch(0, 3);
-		$this->PlusMinus->SetClientVisible(false);
+		//$this->PlusMinus = new PlusMinusSwitch(0, 3);
+		$this->PlusMinus = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/plus.gif', null, 0, 3);
+		$this->PlusMinus->SetSelectSrc(NOLOHConfig::GetNOLOHPath().'Images/minus.gif');
+		$this->PlusMinus->SetTogglesOff(true);
+		
+		$this->PlusMinus->SetVisible(false);
 		$this->SetElement($element);
 		$this->Icon = new Image(TreeNode::GetDefaultLeafSrc(), 17, 0, 16, 15);
 		$this->ChildrenPanel = new Panel(25, 20, null, null, $this);
@@ -48,7 +52,7 @@ class TreeNode extends Panel
 		$this->TreeNodes->AddFunctionName = 'AddTreeNode';
 		$this->TreeNodes->InsertFunctionName = 'InsertTreeNode';
 		$this->TreeNodes->RemoveAtFunctionName = 'RemoveTreeNodeAt';
-		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->ChildrenPanel->Id.'","'.$this->Icon->Id.'","' . $this->Id . '")');
+		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->ChildrenPanel->Id.'","'.$this->Icon->Id.'","' . $this->Id . '");');
 		$this->Controls->Add($this->PlusMinus);
 		$this->Controls->Add($this->Icon);
 		$this->Controls->Add($this->Element);
@@ -299,7 +303,7 @@ class TreeNode extends Panel
 	
 	function AddShift($shift)
 	{
-		$this->MouseDown[] = new ClientEvent('document.getElementById(\''.$this->Element->Id.'\').onclick.call(' . (GetBrowser()=='ie'?'':'this, event') . ')');
+		$this->MouseDown[] = new ClientEvent('_N(\''.$this->Element->Id.'\').onclick.call(' . (GetBrowser()=='ie'?'':'this, event') . ');');
 		parent::AddShift($shift);
 	}
 }
