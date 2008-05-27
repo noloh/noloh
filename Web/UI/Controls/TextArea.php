@@ -5,7 +5,7 @@
 class TextArea extends Control 
 {
 	private $MaxLength;
-	private $Scrolling;
+	private $Scrolling;	
 	
 	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = -1)  
 	{
@@ -31,6 +31,30 @@ class TextArea extends Control
 		parent::SetText($newText);
 		QueueClientFunction($this, 'SetTextAreaText', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($newText)).'\''));
 	}
+	/*function GetScrollLeft()
+	{
+		return $this->ScrollLeft;
+	}*/
+    function SetScrollLeft($scrollLeft)
+    {
+        if($_SESSION['_NIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        $this->ScrollLeft = $scrollLeft;
+    }
+    /*function GetScrollTop()
+    {
+    	return $this->ScrollTop;
+    }*/
+    function SetScrollTop($scrollTop)
+    {
+    	if($_SESSION['_NIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        $this->ScrollTop = $scrollTop;
+    }
 	function GetScroll()							{return $this->GetEvent('Scroll');}
 	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
 	function GetEventString($eventTypeAsString)
@@ -95,7 +119,7 @@ class TextArea extends Control
 		AddNolohScriptSrc('TextArea.js', true);
 		NolohInternal::Show('TEXTAREA', $initialProperties, $this);
 		if(GetBrowser() != 'ie')
-			AddScript('document.getElementById(\''.$this->Id.'\').addEventListener(\'input\',doInput,false)');
+			AddScript('_N(\''.$this->Id.'\').addEventListener(\'input\',doInput,false)');
 	}
 }
 
