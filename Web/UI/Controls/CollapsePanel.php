@@ -34,7 +34,7 @@ class CollapsePanel extends Panel
 		if($rolloverImage->SelectSrc != null)
 		{
 			$this->TitlePanel->Click['Collapse1'] = $rolloverImage->Click['Select'];
-			$rolloverImage->Click['Select'] = null;
+			unset($rolloverImage->Click['Select']);
 		}	
 		$this->ToggleButton = $rolloverImage;
 		$this->ToggleButton->ParentId = $this->TitlePanel->Id;
