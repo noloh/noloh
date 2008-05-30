@@ -76,14 +76,19 @@ class GroupedInputControl extends Control
 		$newChecked = $bool ? true : null;
 		if($this->Checked != $newChecked)
 		{
-			if($bool && $this->GroupName != null)
-				GetComponentById($this->GroupName)->Deselect();
-				//GetComponentById($this->GroupName)->SetSelectedElement($this);
+			if($this->GroupName != null)
+			{
+				$group = GetComponentById($this->GroupName);
+				if($bool)
+					$group->Deselect();
+			}
 			if($this->GetShowStatus !== 0)
 				QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
 			$this->Checked = $newChecked;
 			if(!$this->Change->Blank())
 				$this->Change->Exec();
+			if($group && !$group->Change->Blank())
+				$group->Change->Exec();
 		}
 	}
 	
