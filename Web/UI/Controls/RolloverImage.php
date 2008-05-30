@@ -8,7 +8,7 @@ class RolloverImage extends Image implements Groupable
 	private $OutSrc;
 	private $OverSrc;
 	private $DownSrc;
-	private $SelectSrc;
+	private $SelectedSrc;
 	private $Selected;
 	private $TogglesOff;
 	
@@ -20,7 +20,7 @@ class RolloverImage extends Image implements Groupable
 	function GetOutSrc()								{return $this->Src;}
 	function GetOverSrc()								{return $this->OverSrc;}
 	function GetDownSrc()								{return $this->DownSrc;}
-	function GetSelectSrc()								{return $this->SelectSrc;}
+	function GetSelectedSrc()								{return $this->SelectedSrc;}
 	
 	function SetSrc($outSrc)
 	{
@@ -50,9 +50,9 @@ class RolloverImage extends Image implements Groupable
 			$this->MouseUp['Down'] = new ClientEvent('_NTglRlOvrImg', $this->Id, 'Out');
 		}
 	}
-	function SetSelectSrc($selectSrc)
+	function SetSelectedSrc($selectSrc)
 	{
-		$this->SelectSrc = $selectSrc;
+		$this->SelectedSrc = $selectSrc;
 		NolohInternal::SetProperty('Slct', $selectSrc, $this);
 		if($selectSrc && $this->Click['Select'] == null)
 			$this->Click['Select'] = new ClientEvent('_NTglRlOvrImg', $this->Id, 'Slct');
@@ -63,7 +63,7 @@ class RolloverImage extends Image implements Groupable
 	//Groupable Functions
 	function GetGroupName()				{return $this->GroupName;}
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
-	function GetSelected()				{return $this->Selected != null;}
+	//function GetSelected()				{return $this->Selected != null;}
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
 	function GetTogglesOff($bool)		{return ($this->TogglesOff==true);}
 	function SetSelected($bool)
@@ -72,27 +72,21 @@ class RolloverImage extends Image implements Groupable
 		$selected = $bool ? true : null;
 		if($this->Selected != $selected)
 		{
-			/*if($this->SelectSrc)
-			{
-				$this->MouseOut['Out']->Enabled = !$bool;
-				$this->MouseOver['Over']->Enabled = !$bool;
-				if($this->MouseDown['Down'])
-					$this->MouseDown['Down']->Enabled = !$bool;
-				$this->Click['Select']->Enabled = !$bool;
-			}*/
 			//Trigger Select Event if $bool is true, i.e. Selected
 			if($bool)
 			{
 				NolohInternal::SetProperty('src', $this->SelectSrc, $this->Id);
+				NolohInternal::SetProperty('Cur', 'Slct', $this);
 //				$this->Src = $this->SelectSrc;
 				$sel = $this->GetSelect();
 				if(!$sel->Blank())
 					$sel->Exec();
 			}
 			else
+			{
 				NolohInternal::SetProperty('src', $this->OutSrc, $this->Id);
-//				$this->Src = $this->OutSrc;
-			$this->Selected = $selected;
+				NolohInternal::SetProperty('Cur', 'Out', $this);
+			}
 		}
 	}
 	function Show()

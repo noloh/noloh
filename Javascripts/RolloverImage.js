@@ -5,6 +5,14 @@ function _NTglRlOvrImg(id, state)
 	{
 		if(state == 'Slct')
 		{
+			var prevImg = img.Group.GetSelectedElement();
+			if(prevImg != null)
+			{
+				prevImg = _N(prevImg);
+				prevImg.src = prevImg['Out'];
+				_NSetProperty(prevImg.id, 'Selected', false);
+				prevImg.Cur = 'Out';
+			}
 			_NSetProperty(id, 'Selected', true);
 			if(img.Select != null)
 				img.Select.call();	
