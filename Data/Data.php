@@ -8,7 +8,7 @@
  * 
  * This class is for data
  */
-final class Data
+final class Data extends Object
 {	
 	const Postgres = 'postgres';
 	const MySQL = 'mysql';

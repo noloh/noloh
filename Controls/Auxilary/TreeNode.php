@@ -38,7 +38,7 @@ class TreeNode extends Panel
 			NolohInternal::SetProperty('style.marginTop','6px',$this);
 		//$this->PlusMinus = new PlusMinusSwitch(0, 3);
 		$this->PlusMinus = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/plus.gif', null, 0, 3);
-		$this->PlusMinus->SetSelectSrc(NOLOHConfig::GetNOLOHPath().'Images/minus.gif');
+		$this->PlusMinus->SetSelectedSrc(NOLOHConfig::GetNOLOHPath().'Images/minus.gif');
 		$this->PlusMinus->SetTogglesOff(true);
 		
 		$this->PlusMinus->SetVisible(false);

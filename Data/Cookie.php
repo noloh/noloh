@@ -1,9 +1,0 @@
-<?php
-/**
- * @ignore 
- *
- */
-class Cookie
-{
-
-}

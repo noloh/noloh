@@ -2,8 +2,10 @@
 /**
 * @ignore
 */
-class NOLOHConfig
+final class NOLOHConfig
 {	
+	private function NOLOHConfig(){}
+	
 	static function GetNOLOHPath()
 	{
 		return '/Projects/NOLOH/';

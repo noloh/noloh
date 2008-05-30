@@ -42,7 +42,7 @@ class WebPage extends Component
 		$this->Description = $description;
 		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
-		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Web/UI/NStyles.css');
+		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Controls/NStyles.css');
 		
 		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Images/noloh_ani_small.gif', 1, 1);
 		$this->LoadImg->CSSClass = 'NLoad';

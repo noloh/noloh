@@ -28,10 +28,10 @@ class CollapsePanel extends Panel
 		{
 			$imagePath = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_up.png';
 			$rolloverImage = new RolloverImage($imagePath, $imagePath, null, 6);
-			$rolloverImage->SelectSrc = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_down.png';
+			$rolloverImage->SelectedSrc = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_down.png';
 			$rolloverImage->SetTogglesOff(true);
 		}
-		if($rolloverImage->SelectSrc != null)
+		if($rolloverImage->SelectedSrc != null)
 		{
 			$this->TitlePanel->Click['Collapse1'] = $rolloverImage->Click['Select'];
 			unset($rolloverImage->Click['Select']);

@@ -103,7 +103,7 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
 {
 	if(!isset($_SESSION['_NScriptSrcs'][$src]))
 	{
-		$path = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Javascripts/';
+		$path = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'JavaScript/';
 		if($browserSpecific)
 			$path .= $_SESSION['_NIsIE'] ? 'IE/' : 'Standard/';
 		$path .= $src;

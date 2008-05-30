@@ -18,7 +18,7 @@ function _NChgRlOvrTb(rlOvrTb, state)
 			_N(prevTab.Slct).style.display = 'none';
 			_N(prevTab.Out).style.display = '';
 			_NSetProperty(prevTab.id, 'Selected', false);
-			prevtab.Cur = 'Out';
+			prevTab.Cur = 'Out';
 		}
 		_N(tab.Out).style.display = 'none';
 		_N(tab.Slct).style.display = '';
