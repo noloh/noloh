@@ -1,7 +1,6 @@
 <?php
 /**
- * @package Web.UI.Controls
- * Checkbox class file.
+ * @package Controls/Core
  */
 /**
  * CheckBox class

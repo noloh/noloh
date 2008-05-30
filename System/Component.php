@@ -1,9 +1,7 @@
 <?php
 /**
- * @package Web
- * Component class file.
- */
- 
+ * @package System
+ */ 
 /**
  * Component class
  *

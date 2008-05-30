@@ -1,9 +1,7 @@
 <?php
-
 /**
- * @package Web.UI.Controls
+ * @package Controls/Core
  */
-
 /**
  * ListControl class
  *

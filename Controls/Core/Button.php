@@ -1,8 +1,7 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Core
  */
- 
 /**
  * Button class
  * 

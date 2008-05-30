@@ -2,8 +2,9 @@
 /**
  * @package Statics
  */
-
 /**
+ * UserAgentDetect class
+ *
  * This class has static functions that pertain to retrieving user agent's information, such as browser and operating system.
  */
 final class UserAgentDetect 

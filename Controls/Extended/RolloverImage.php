@@ -1,7 +1,12 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Extended
  */	
+/**
+ * RolloverImage class
+ *
+ * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ */
 class RolloverImage extends Image implements Groupable
 {
 	private $GroupName;

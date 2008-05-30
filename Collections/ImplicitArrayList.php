@@ -2,8 +2,9 @@
 /**
  * @package Collections
  */
-
 /**
+ * ImplicitArrayList class
+ *
  * An ImplicitArrayList is an ArrayList that allows the developer to define functions to be called when elements are added, 
  * inserted, removed, or cleared. Thus, they behave not unlike a {@link ServerEvent} for ArrayList functionality. If you have 
  * defined an Add function and attempt to add an element to the ImplicitArrayList, the function that you defined will be called 

@@ -1,9 +1,10 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Core
  */
-
 /**
+ * Timer class
+ *
  * The Timer Component gives the developer the ability to have events launch after a certain period of time has elapsed.<br>
  * It may either launch the event once, or continue launching it periodically, depending on the value of the $Repeat property.<br>
  * <code>

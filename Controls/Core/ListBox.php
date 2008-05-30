@@ -1,9 +1,10 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Core
  */	
-
 /**
+ * ListBox class
+ *
  * A ListBox is a rectangular ListControl where the user is able to see all the Items and may select several of them at the same time.
  * This differs from a {@see ComboBox} in that a ComboBox must be pulled down in order to view the list of items and only one may be selected.
  * 

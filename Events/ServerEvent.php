@@ -1,8 +1,7 @@
 <?php
 /**
- * @package Web.Events
+ * @package Events
  */
-
 /**
  * ServerEvent class
  *

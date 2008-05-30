@@ -1,9 +1,7 @@
 <?php
 /**
-* @package Web
-* @subpackage GeneralFunctions 
-*/
-
+ * @package System
+ */
 /**
 * Terminates the application {@see PHP_Manual#die} but also destroys the Session
 * @param string $message Specifies an error message.

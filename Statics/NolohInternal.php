@@ -1,7 +1,6 @@
 <?php
 /**
- * @ignore 
- *
+ * @ignore
  */
 final class NolohInternal
 {

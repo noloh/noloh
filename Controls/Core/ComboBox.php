@@ -1,7 +1,6 @@
 <?php
 /**
- * @package Web.UI.Controls
- * ComboBox class file.
+ * @package Controls/Core
  */
 /**
  * ComboBox class

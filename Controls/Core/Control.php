@@ -1,9 +1,10 @@
 <?php
 /**
- * Control Class File
- * @package Web.UI.Controls
+ * @package Controls/Core
  */
 /** 
+ * Control class
+ *
  * Control is the base class for all NOLOH controls.
  * All Custom defined controls must extends Control.
  * <br>

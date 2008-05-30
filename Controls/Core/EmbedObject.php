@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Core
  */
 /**
  * EmbedObject class

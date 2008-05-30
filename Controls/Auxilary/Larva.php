@@ -1,9 +1,10 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Auxilary
  */
-
 /**
+ * Larva class
+ *
  * A Larva is a MarkupItem that is capable of turning into Components.<br>
  * This is used only in connection with RichMarkupRegion.<br>
  * This class should never be instantiated by the developer. Use only the Larva objects that RichMarkupRegion::GetLarvae() returns.<br>

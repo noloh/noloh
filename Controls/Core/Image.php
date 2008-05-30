@@ -1,9 +1,7 @@
 <?php
 /**
-* @package Web.UI.Controls
-* Image class file.
+* @package Controls/Core
 */
-
 /**
  * Image class
  *

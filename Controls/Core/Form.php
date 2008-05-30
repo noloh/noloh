@@ -1,7 +1,12 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Core
  */	
+/**
+ * Form class
+ *
+ * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ */
 class Form extends Control 
 {
 	const Post = 'POST', Get='GET';

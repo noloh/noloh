@@ -2,7 +2,6 @@
 /**
  * @package Collections
  */
-
 /**
  * ArrayList class
  * 

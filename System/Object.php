@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Web
+ * @package System
  */
 /**
  * Object class

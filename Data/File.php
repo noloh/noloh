@@ -1,6 +1,6 @@
 <?php
 /**
- * @package Collections
+ * @package Data
  */
 /**
  * File class

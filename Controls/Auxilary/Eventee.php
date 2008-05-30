@@ -1,9 +1,10 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Auxilary
  */
-
 /**
+ * Eventee class
+ *
  * An Eventee is a MarkupItem that is capable of recieving events.<br>
  * This is used only in connection with RichMarkupRegion.<br>
  * This class should never be instantiated by the developer. Use only the Eventee objects that RichMarkupRegion::GetEventees() returns.<br>

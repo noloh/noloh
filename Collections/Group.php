@@ -1,6 +1,11 @@
 <?
 /**
- * @ignore 
+ * @package Collections 
+ */
+/**
+ * Group class
+ * 
+ * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
  */
 class Group extends Component implements ArrayAccess, Countable, Iterator
 {

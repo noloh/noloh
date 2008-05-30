@@ -2,8 +2,9 @@
 /**
  * @package Statics
  */
-
 /**
+ * URL class
+ *
  * The URL class contains constants and static functions pertaining to tokens in the context of Bookmarks.
  * 
  * For more information, please see

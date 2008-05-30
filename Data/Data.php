@@ -2,7 +2,6 @@
 /**
  * @package Data
  */
-
 /**
  * Data class
  * 

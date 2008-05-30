@@ -1,9 +1,7 @@
 <?php
 /**
- * @package Web.UI.Controls
- * DatePicker class file.
+ * @package Controls/Extended
  */
- 
 /**
  * DatePicker class
  *

@@ -1,9 +1,7 @@
 <?php
 /**
- * @package Web.UI.Controls
- * Link class file.
+ * @package Controls/Core
  */
- 
 /**
  * Link class
  *

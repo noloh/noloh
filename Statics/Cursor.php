@@ -3,6 +3,8 @@
  * @package Statics
  */
 /**
+ * Cursor class
+ *
  * This class contains various constants and static functions relating to the mouse's cursor.
  */
 final class Cursor

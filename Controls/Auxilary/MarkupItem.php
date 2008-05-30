@@ -1,9 +1,10 @@
 <?php
 /**
- * @package Web.UI.Controls
+ * @package Controls/Auxilary
  */
-
 /**
+ * MarkupItem class
+ *
  * A MarkupItem serves as the parent class of both {@see Eventee} and {@see Larva}. It has no purpose other than
  * organization and inheritance. In particular, there is no reason for the developer to extend this themselves.
  * 
