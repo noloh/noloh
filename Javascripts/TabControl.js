@@ -1,23 +1,17 @@
-function SetTabPage(tabControlId, tabId, tabPageId, server)
+function _NStTbPg(tabControl, group)
 {
-	var tmpTabControl = document.getElementById(tabControlId);
-	var tmpTab = document.getElementById(tabId);
-	var tmpTabPage = document.getElementById(tabPageId);
-	if(tmpTabControl.SelectedTabPage == tmpTabPage.id)
-		return;
-	else if(tmpTabControl.SelectedTabPage != null)
+	var grp = window[group];
+	var tab = grp.GetSelectedElement();
+	if(tab != null)
 	{
-		var tmpPreviousTab = document.getElementById(tmpTabControl.SelectedTab);
-		tmpPreviousTab.Selected = false;
-		ChangeRolloverTab(tmpPreviousTab.id, tmpPreviousTab.OutTabId);
-		ChangeAndSave(tmpTabControl.SelectedTabPage, 'style.display', 'none');
+		tab = _N(tab);
+		var tabControl = _N(tabControl);
+		if(tabControl.CurTabPg != null)
+			_NSetProperty(tabControl.CurTabPg, 'style.display', 'none');
+		if(tab.TabPg != null)
+		{
+			_NSetProperty(tab.TabPg, 'style.display', '');
+			tabControl.CurTabPg = tab.TabPg;
+		}
 	}
-	ChangeAndSave(tmpTabControl.id, "SelectedTab", tmpTab.id); //Not Working
-	tmpTabControl.SelectedTabPage = tmpTabPage.id;
-	ChangeRolloverTab(tmpTab.id, tmpTab.SelectedTabId);
-	tmpTab.Selected = true;
-	ChangeAndSave(tmpTabPage.id, 'style.display', '');
-	if(server == 1)
-		if(tmpTabControl.onchange != null)
-			tmpTabControl.onchange.call();
 }

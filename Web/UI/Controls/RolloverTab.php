@@ -8,14 +8,12 @@ class RolloverTab extends Panel implements Groupable
 	private $OverTab;
 	private $DownTab;
 	private $SelectedTab;
-	private $Selected;
+	//private $Selected;
 	
 	private $GroupName;
 	public $TextObject;
-	public $TabPageId;
 	
-	
-	function RolloverTab($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::Auto, $height = null)
+	function RolloverTab($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::AutoHtmlTrim, $height = null)
 	{
 		parent::Panel($left, $top, null, null);
 		if($text != null)
@@ -101,58 +99,58 @@ class RolloverTab extends Panel implements Groupable
 	
 	function SetOutTab($outTab)
 	{
-		if($this->OutTab == null)
+		if(!empty($outTab))
 		{
+			if($this->OutTab != null)
+				$this->Controls->Remove($this->OutTab);
 			$this->OutTab = $outTab;
 			$this->Controls->Add($this->OutTab);
+			NolohInternal::SetProperty('Out', $this->OutTab->Id, $this);
+			$this->OutTab->SetWidth($this->GetWidth());
+			$this->MouseOut['Out'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Out');");
 		}
-		else
-			$this->OutTab = $outTab;
-		$this->OutTab->SetWidth($this->Width);
-		if(!empty($outTab))
-			$this->MouseOut['Out'] = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OutTab->Id}');");
 	}
 	function SetOverTab($overTab)
 	{
-		if($this->OverTab == null)
+		if(!empty($overTab))
 		{
+			if($this->OverTab != null)
+				$this->Controls->Remove($this->OverTab);
 			$this->OverTab = $overTab;
 			$this->Controls->Add($this->OverTab);
+			$this->OverTab->Visible = System::Vacuous;
+			NolohInternal::SetProperty('Ovr', $this->OutTab->Id, $this);
+			$this->OverTab->SetWidth($this->GetWidth());
+			$this->MouseOver['Over'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Ovr');");
 		}
-		else
-			$this->OverTab = $overTab;
-		$this->OverTab->SetWidth($this->Width);
-		$this->OverTab->ClientVisible = false;
-		if(!empty($overTab))
-			$this->MouseOver['Over'] = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->OverTab->Id}');");
 	}
 	function SetDownTab($downTab)
 	{
-		if($this->DownTab == null)
+		if(!empty($downTab))
 		{
+			if($this->DownTab != null)
+				$this->Controls->Remove($this->DownTab);
 			$this->DownTab = $downTab;
 			$this->Controls->Add($this->DownTab);
+			$this->DownTab->Visible = System::Vacuous;
+			NolohInternal::SetProperty('Dwn', $this->DownTab->Id, $this);
+			$this->DownTab->SetWidth($this->GetWidth());
+			$this->MouseDown['Down'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Dwn');");
 		}
-		else
-			$this->DownTab = $downTab;
-		$this->DownTab->SetWidth($this->Width);
-		$this->OverTab->ClientVisible = false;
-		if(!empty($downTab))
-			$this->MouseDown['Down'] = new ClientEvent("ChangeRolloverTab('{$this->Id}','{$this->DownTab->Id}');");
-	}
+	}	
 	function SetSelectedTab($selectedTab)
 	{
-		if($this->SelectedTab == null)
+		if(!empty($selectedTab))
 		{
+			if($this->SelectedTab != null)
+				$this->Controls->Remove($this->SelectedTab);
 			$this->SelectedTab = $selectedTab;
 			$this->Controls->Add($this->SelectedTab);
+			$this->SelectedTab->Visible = System::Vacuous;
+			NolohInternal::SetProperty('Slct', $this->SelectedTab->Id, $this);
+			$this->SelectedTab->SetWidth($this->GetWidth());
+			$this->Click['Select'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Slct');");
 		}
-		else
-			$this->SelectedTab = $selectedTab;
-		$this->SelectedTab->SetWidth($this->Width);
-		$this->SelectedTab->Visible = false;
-		if($selectedTab && $this->Click['Select'] == null)
-			$this->Click['Select'] = new ServerEvent($this, 'SetSelected', true);
 	}
 	//Select Event Functions
 	function GetSelect()				{return $this->GetEvent('Select');}
@@ -160,42 +158,44 @@ class RolloverTab extends Panel implements Groupable
 	//Groupable Functions
 	function GetGroupName()				{return $this->GroupName;}
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
-	function GetSelected()				{return $this->Selected != null;}
+	//function GetSelected()				{return $this->Selected != null;}
 	function SetSelected($bool)
-	{			
+	{
+		parent::SetSelected($bool);
+//		if(is_string($bool))
+//			$bool = $bool == 'true'?true:false;			
 		$selected = $bool ? true : null;
 		if($this->Selected != $selected)
 		{
-			$this->MouseOut['Out']->Enabled = !$bool;
-			if($this->MouseDown['Over'])
-				$this->MouseOver['Over']->Enabled = !$bool;
-			if($this->MouseDown['Down'])
-				$this->MouseDown['Down']->Enabled = !$bool;
-			if($this->SelectSrc)
-				$this->Click['Select']->Enabled = !$bool;
 			//Trigger Select Event if $bool is true, i.e. Selected
 			if($bool && $this->GroupName != null)
 			{
-				GetComponentById($this->GroupName)->Deselect();
-				//GetComponentById($this->GroupName)->SetSelectedElement($this);
+				NolohInternal::SetProperty('Cur', 'Slct', $this);
 				$sel = $this->GetSelect();
 				if(!$sel->Blank())
 					$sel->Exec();
 			}
-			$this->Selected = $selected;
-			$this->OutTab->Visible = $this->OverTab->Visible = $this->DownTab->Visible = !$bool;
-			$this->SelectedTab->Visible = $bool;
+			else
+				NolohInternal::SetProperty('Cur', 'Out', $this);
+			//$this->Selected = $selected;
+			if($selected)
+			{
+				$this->OutTab->Visible = $this->OverTab->Visible = $this->DownTab->Visible = System::Vacuous;
+				$this->SelectedTab->Visible = true;
+			}
+			else
+			{
+				$this->OutTab->Visible = true;
+				$this->SelectedTab->Visible = System::Vacuous;
+			}
 		}
 	}
 	function Show()
 	{
 		$this->TextObject->BringToFront();
-		AddNolohScriptSrc('RolloverTab.js');
-//		QueueClientFunction($this, "SetRolloverTabInitialProperties", "'$this->OutTab->Id'", "'$this->SelectedTab->Id'");
-		AddScript("SetRolloverTabInitialProperties('{$this->Id}', '{$this->OutTab->Id}', '{$this->SelectedTab->Id}')");
-		//Should it be?
-//		QueueClientFunction($this, 'SetRolloverTabInitialProperties', array("'$this->Id'", "'{$this->OutTab->Id}'", "'{$this->SelectedTab->Id}'"));
 		parent::Show();
+		AddNolohScriptSrc('RolloverTab.js');
+		NolohInternal::SetProperty('Cur', 'Out', $this);	
 	}
 }
 ?>

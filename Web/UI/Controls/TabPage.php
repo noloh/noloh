@@ -6,9 +6,9 @@ class TabPage extends Panel
 {
 	private $RolloverTab;
 	
-	function TabPage($tabName='TabPage', $left = 0, $top = 0, $width = null, $height = null)
+	function TabPage($tabName='TabPage')
 	{
-		parent::Panel($left, $top, $width, $height);
+		parent::Panel(null, null, null, null);
 		$this->Text = $tabName;
 		$this->SetRolloverTab();
 	}

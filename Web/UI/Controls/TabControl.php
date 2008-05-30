@@ -6,25 +6,36 @@ class TabControl extends Panel
 {
 	const Top = 'Top';
 	const Bottom = 'Bottom';
+	
+	public $TabBar;
+	public $Body;
 	public $TabPages;
-	public $TabControlBar;
-	public $TabPagesPanel;
+	public $Tabs;
+	
 	private $TabAlignment = 'Top';
 	private $SelectedIndex = -1;
+	
 		
 	function TabControl($left = 0, $top = 0, $width = 500, $height = 500)
 	{
-		parent::Panel($left, $top, null, null);
-		$this->TabControlBar = new Panel(0, 0, null, 24);
-		$this->TabPagesPanel = new Panel(0, $this->TabControlBar->GetHeight(), null, ($height - $this->TabControlBar->GetHeight()), $this);
-		$this->SetWidth($width);
-		$this->SetHeight($height);
-		$this->TabPages = &$this->TabPagesPanel->Controls;
+		parent::Panel($left, $top, $width, $height);
+		$this->Tabs = new Group();
+		$this->Tabs->Change = new ClientEvent('_NStTbPg', $this->Id, $this->Tabs->Id);
+		
+		$this->TabBar = new Panel(0, 0, '100%', 25);
+		$this->Body = new Panel(0, 0, null, 'auto', $this);
+		
+//		$this->SetWidth($width);
+//		$this->SetHeight($height);
+		$this->TabPages = &$this->Body->Controls;
 		$this->TabPages->AddFunctionName = 'AddTabPage';
-		$this->Controls->Add($this->TabControlBar);
-		$this->Controls->Add($this->TabPagesPanel);
+		
+		$this->TabBar->LayoutType = $this->Body->LayoutType = Layout::Relative;
+		$this->Controls->Add($this->TabBar);
+		$this->Controls->Add($this->Body);
+		$this->TabBar->Controls->Add($this->Tabs);
 	}
-	public function SetWidth($newWidth)
+	/*public function SetWidth($newWidth)
 	{
 		parent::SetWidth($newWidth);
 		$this->TabControlBar->SetWidth($newWidth);
@@ -34,10 +45,20 @@ class TabControl extends Panel
 	{
 		parent::SetHeight($newHeight);
 		$this->TabPagesPanel->SetHeight($newHeight - $this->TabControlBar->GetHeight());
-	}
+	}*/
+	/*function GetEventString($eventTypeAsString)
+	{
+		if($eventTypeAsString === null)
+			return ',\'onchange\',\''.$this->GetEventString('Change').'\'';
+		
+		$preStr = '';
+		if($eventTypeAsString == 'Change')
+			$preStr = '_NStTbPg("'.$this->Id.'","' . $this->Tabs->Id . '");';
+		return $preStr . parent::GetEventString($eventTypeAsString);
+	}*/
 	public function GetSelectedIndex()	
 	{
-		return $this->SelectedIndex;
+		return $this->Tabs->GetSelectedIndex();
 	}
 	public function GetSelectedTab()	{return $this->TabPages->Elements[$this->SelectedIndex];}
 	public function SetSelectedTab($tabPage)
@@ -49,36 +70,32 @@ class TabControl extends Panel
 	}
 	public function SetSelectedIndex($selectedIndex)
 	{
-		//Alert($this->SelectedIndex);
-		if($selectedIndex != $this->SelectedIndex)
-		{
-			$this->SelectedIndex = $selectedIndex;
-			//Alert('Im going here');
-			//Need to address the following line, currenty it breaks TabControl - Asher
-			//$this->TabControlBar->Controls->Elements[$whatSelectedIndex]->SetSelected(true);
-			//Why doesn't this work? - Asher, seems to be a priority thing. ---- Urgent
-			QueueClientFunction($this, 'SetTabPage', array("'$this->Id'", "'{$this->TabControlBar->Controls->Elements[$selectedIndex]->Id}'","'{$this->TabPagesPanel->Controls->Elements[$selectedIndex]->Id}'", "0"), Priority::Low);
-			if(!$this->Change->Blank())
-				$this->Change->Exec();
-		}
+		$this->Tabs->SetSelectedIndex($selectedIndex);
 	}
 	public function AddTabPage($tabPage)
 	{	
-		$temp = $tabPage->GetRolloverTab();
-		$temp->Click = new ClientEvent("SetTabPage('{$this->Id}','{$temp->Id}','{$tabPage->Id}', 1);");
-		$temp->TabPageId = $tabPage->Id;
-		if($this->TabControlBar->Controls->Count < 1)
+		$rolloverTab = $tabPage->GetRolloverTab();
+/*		if($this->TabControlBar->Controls->Count < 1)
 		{
 			$this->TabControlBar->Height = $temp->Height;
 			$this->TabPagesPanel->Height = ($this->Height - $this->TabControlBar->Height);
-		}
-		$temp->Left = (($tmpCount = $this->TabControlBar->Controls->Count()) > 0)?$this->TabControlBar->Controls->Elements[$tmpCount -1]->Right:0;
-		$this->TabControlBar->Controls->Add($temp);
-		$this->TabPagesPanel->Controls->Add($tabPage, true, true);
-		if($this->TabPages->Count() == 1)
+		}*/
+		$rolloverTab->Left = (($tmpCount = $this->Tabs->Count()) > 0)?$this->Tabs[$tmpCount - 1]->GetRight():0;
+		$this->Tabs->Add($rolloverTab);
+		$this->Body->Controls->Add($tabPage, true, true);
+		NolohInternal::SetProperty('TabPg', $tabPage->Id, $rolloverTab);
+		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
 		else
 			$tabPage->Visible = System::Vacuous;
+	}
+	public function GetChange()
+	{
+		return $this->Tabs->Change['user'];
+	}
+	public function SetChange($event)
+	{
+		$this->Tabs->Change['user'] = $event;
 	}
 	public function GetTabAlignment(){return $this->TabAlignment;}
 	public function SetTabAlignment($tabAlignment)
@@ -86,20 +103,21 @@ class TabControl extends Panel
 		$this->TabAlignment = $tabAlignment;
 		if($this->TabAlignment == 'Top')
 		{
-			$this->TabControlBar->Left = 0;
-			$this->TabControlBar->Top = 0; 
-			$this->TabPagesPanel->Top = $this->TabControlBar->Height;
+			$this->TabBar->Left = 0;
+			$this->TabBar->Top = 0; 
+			$this->Body->Top = $this->TabControlBar->Height;
 		}
 		else if($this->TabAlignment == 'Bottom')
 		{
-			$this->TabControlBar->Left = 0;
-			$this->TabControlBar->Top = $this->TabPagesPanel->Height;
-			$this->TabPagesPanel->Top = 0;
+			$this->TabBar->Left = 0;
+			$this->TabBar->Top = $this->TabPagesPanel->Height;
+			$this->Body->Top = 0;
 		}
 	}
 	function Show()
 	{
 		AddNolohScriptSrc('TabControl.js');
+		//$initialProperties .= $this->GetEventString(null);
 		parent::Show();
 	}
 }
