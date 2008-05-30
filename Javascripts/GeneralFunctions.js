@@ -1,4 +1,11 @@
-function _N(id){return document.getElementById(id);}
+function _N(id)
+{
+	return document.getElementById(id);
+	/*var obj;
+	if(obj = document.getElementById(id))
+		return obj;
+	return window[id];*/
+}
 
 function BringToFront(id)
 {

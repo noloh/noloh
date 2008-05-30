@@ -20,6 +20,8 @@ abstract class Component extends Object
 	const NotShown = 0;
 	const Shown = 1;
 	const Buried = 2;
+	
+	private $EventSpace;
 	/**
 	 * Id of the component
 	 * @var string
@@ -141,6 +143,42 @@ abstract class Component extends Object
 	function GetAddId($obj)
 	{
 		return $this->GetParent()->GetAddId($obj);
+	}
+	
+	function GetEvent($eventType)
+	{
+		if($this->EventSpace == null)
+			$this->EventSpace = array();
+		return isset($this->EventSpace[$eventType]) 
+			? $this->EventSpace[$eventType]
+			: new Event(array(), array(array($this->Id, $eventType)));
+	}
+	
+	function SetEvent($eventObj, $eventType)
+	{
+		if($this->EventSpace == null)
+			$this->EventSpace = array();
+		$this->EventSpace[$eventType] = $eventObj;
+		$pair = array($this->Id, $eventType);
+		if($eventObj != null && !in_array($pair, $eventObj->Handles))
+			$eventObj->Handles[] = $pair;
+		$this->UpdateEvent($eventType);
+	}
+	/**
+	 * @ignore
+	 */
+	function UpdateEvent($eventType)
+	{
+		NolohInternal::SetProperty($eventType, array($eventType, null), $this);
+	}
+	/**
+	 * @ignore
+	 */
+	function GetEventString($eventType)
+	{
+		return isset($this->EventSpace[$eventType])
+			? $this->EventSpace[$eventType]->GetEventString($eventType, $this->Id)
+			: '';
 	}
 	/**
 	 * Shows the Component.

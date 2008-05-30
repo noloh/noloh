@@ -78,8 +78,6 @@
 
 class Control extends Component
 {
-	//Events
-	private $EventSpace;
 	//Attributes
 	/**
 	* CSSClass, Gets or Sets the CSSClass associated with this object, default is empty
@@ -186,6 +184,10 @@ class Control extends Component
 	* @var String
 	*/
 	private $Text;
+	/**
+	*
+	*/
+	private $Selected;
 	private $Buoyant;
 	/**
 	*	An array that holds the different Shift information on this Control.
@@ -606,15 +608,27 @@ class Control extends Component
 		}
 	}
 	
+	function GetSelected()
+	{
+		return $this->SetSelected !== null;
+	}
+	
 	function SetSelected($bool)
 	{
 		if(!($this instanceof Groupable || $this instanceof MultiGroupable))
 			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
 		if($bool != $this->GetSelected())
 		{
+			NolohInternal::SetProperty('Selected', $bool, $this);
 			if($bool && $this->GroupName != null)
 				GetComponentById($this->GroupName)->Deselect();
-			NolohInternal::SetProperty('Selected', $bool, $this);
+			$this->Selected = $bool ? true : null;
+			if($bool && $this->GroupName != null)
+			{
+				$group = GetComponentById($this->GroupName);
+				if(!$group->Change->Blank())
+					$group->Change->Exec();
+			}
 		}
 	}
 	/**
@@ -663,42 +677,6 @@ class Control extends Component
 	function GetTypePause()							{return $this->GetEvent('TypePause');}
 	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
 	
-	function GetEvent($eventType)
-	{
-		if($this->EventSpace == null)
-			$this->EventSpace = array();
-		return isset($this->EventSpace[$eventType]) 
-			? $this->EventSpace[$eventType]
-			: new Event(array(), array(array($this->Id, $eventType)));
-	}
-	
-	function SetEvent($eventObj, $eventType)
-	{
-		if($this->EventSpace == null)
-			$this->EventSpace = array();
-		$this->EventSpace[$eventType] = $eventObj;
-		$pair = array($this->Id, $eventType);
-		if($eventObj != null && !in_array($pair, $eventObj->Handles))
-			$eventObj->Handles[] = $pair;
-		$this->UpdateEvent($eventType);
-	}
-	/**
-	 * @ignore
-	 */
-	function UpdateEvent($eventType)
-	{
-		NolohInternal::SetProperty($eventType, array($eventType, null), $this);
-	}
-	/**
-	 * @ignore
-	 */
-	function GetEventString($eventType)
-	{
-		return isset($this->EventSpace[$eventType])
-			? $this->EventSpace[$eventType]->GetEventString($eventType, $this->Id)
-			: '';
-	}
-	
 	function GetShifts()
 	{
 		if($this->Shifts == null)
@@ -718,11 +696,11 @@ class Control extends Component
 		if($shift[1]==7)
 		{
 			AddNolohScriptSrc('Shift.js', true);
-			QueueClientFunction($this, 'AddShiftWith', array("'{$shift[0]}'", "Array(\"$this->Id\"," . $shift[2]), false, Priority::High);
+			QueueClientFunction($this, 'AddShiftWith', array('\''.$shift[0].'\'', 'Array(\''.$this->Id.'\',' . $shift[2]), false, Priority::High);
 		}
 		else
 		{
-			$fncStr = "document.getElementById('$this->Id').Shifts.splice";
+			$fncStr = 'document.getElementById(\''.$this->Id.'\').Shifts.splice';
 			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id][$fncStr]))
 				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
 			else 

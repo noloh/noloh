@@ -14,7 +14,6 @@ class WebPage extends Component
 	private $Width;
 	private $Height;
 	private $BackColor;
-    private $Unload;
 
 	//var $MetaInformation;
 	//var $JSIframe;
@@ -161,33 +160,10 @@ class WebPage extends Component
     {
         $this->SetEvent($unloadEvent, 'Unload');
     }
-
-    function GetEvent($eventType)
-	{
-		return $this->$eventType != null
-			? $this->$eventType
-			: new Event(array(), array(array($this->Id, $eventType)));
-	}
-
-	function SetEvent($eventObj, $eventType)
-	{
-		$this->$eventType = $eventObj;
-		$pair = array($this->Id, $eventType);
-		if($eventObj != null && !in_array($pair, $eventObj->Handles))
-			$eventObj->Handles[] = $pair;
-		$this->UpdateEvent($eventType);
-	}
-
+	
 	function UpdateEvent($eventType)
 	{
-        QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEventString($eventType).'\''));
-	}
-
-	function GetEventString($eventType)
-	{
-		return $this->$eventType != null
-			? $this->$eventType->GetEventString($eventType, $this->Id)
-			: '';
+        QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEvent($eventType)->GetEventString($eventType, $this->Id).'\''));
 	}
 	
 	static function That()

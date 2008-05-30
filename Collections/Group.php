@@ -12,6 +12,13 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		$this->Groupees = new ArrayList();
 		$this->Groupees->ParentId = $this->Id;
 	}
+	function GetChange()				{return $this->GetEvent('Change');}
+	function SetChange($change)			{$this->SetEvent($change, 'Change');}
+	function UpdateEvent($eventType)
+	{
+		//QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\''.$eventType.'\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\'onchange\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+	}
 	function Add($element, $setByReference = true)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
@@ -96,7 +103,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	function SetSelectedElement($element)
 	{
-		if(!isset($GLOBALS['_NGroupSelecting'.$this->Id]))
+		if(!isset($GLOBALS['_NGroupSelecting'.$this->Id]) && !$element->GetSelected())
 		{
 			$this->Deselect(!($element instanceof MultiGroupable));
 			$GLOBALS['_NGroupSelecting'.$this->Id] = true;

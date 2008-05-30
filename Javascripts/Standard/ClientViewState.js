@@ -218,7 +218,10 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			{
 				obj.Selected = newValue;
 				if(obj.Group!=null && obj.Group.onchange!=null && !document.body.NOLOHPostingBack)
+				{
+					_NSave(obj.id,'Selected',newValue);
 					obj.Group.onchange.call();
+				}
 			}
 			break;
 		case "style.zIndex":

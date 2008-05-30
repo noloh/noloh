@@ -23,7 +23,7 @@
 class Timer extends Component
 {
 	private $Interval;
-	private $Elapsed;
+	//private $Elapsed;
 	private $Repeat;
 	/**
 	 * Constructor. 
@@ -61,9 +61,7 @@ class Timer extends Component
 	 */
 	function GetElapsed()
 	{
-		if($this->Elapsed == null)
-			$this->Elapsed = new Event(array(), array(array($this->Id, 'Elapsed')));
-		return $this->Elapsed;
+		return $this->GetEvent('Elapsed');
 	}
 	/**
 	 * Sets the Event associated with the Timer elapsing
@@ -71,11 +69,7 @@ class Timer extends Component
 	 */
 	function SetElapsed($newElapsed)
 	{
-		$this->Elapsed = $newElapsed;
-		$pair = array($this->Id, 'Elapsed');
-		if($newElapsed != null && !in_array($pair, $newElapsed->Handles))
-			$newElapsed->Handles[] = $pair;
-		$this->UpdateEvent('Elapsed');
+		$this->SetEvent($newElapsed, 'Elapsed');
 	}
 	/**
 	 * Gets whether or not the Elapsed Event will execute periodically or just once
@@ -100,16 +94,9 @@ class Timer extends Component
 	/**
 	 * @ignore
 	 */
-	function SetEvent($eventObj, $eventType)
-	{
-		$this->SetElapsed($eventObj);
-	}
-	/**
-	 * @ignore
-	 */
 	function UpdateEvent($eventType)
 	{
-		QueueClientFunction($this, 'NOLOHChangeByObj', array("window.$this->Id", "'onelapsed'", "'".$this->Elapsed->GetEventString('Elapsed',$this->Id)."'"));
+		QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\'onelapsed\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
 	}
 	/**
 	 * Stops the timer from running.
@@ -117,7 +104,7 @@ class Timer extends Component
 	function Stop()
 	{
 		if($this->GetShowStatus != 0)
-			AddScript("clear" . ($this->Repeat?'Interval':'Timeout') . "(window.$this->Id.timer)");
+			AddScript('clear' . ($this->Repeat?'Interval':'Timeout') . '(window.'.$this->Id.'.timer)');
 	}
 	/**
 	 * Resets the timer. That is, regardless of how close the timer was to completing its interval, it will start over.
