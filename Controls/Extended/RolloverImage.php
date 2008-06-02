@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Extended
- */	
-/**
  * RolloverImage class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Extended
  */
 class RolloverImage extends Image implements Groupable
 {
@@ -80,9 +79,10 @@ class RolloverImage extends Image implements Groupable
 			//Trigger Select Event if $bool is true, i.e. Selected
 			if($bool)
 			{
-				NolohInternal::SetProperty('src', $this->SelectSrc, $this->Id);
+				$src= $this->SelectedSrc != null?$this->SelectedSrc:$this->OutSrc;
+				NolohInternal::SetProperty('src', $src, $this->Id);
 				NolohInternal::SetProperty('Cur', 'Slct', $this);
-//				$this->Src = $this->SelectSrc;
+			
 				$sel = $this->GetSelect();
 				if(!$sel->Blank())
 					$sel->Exec();

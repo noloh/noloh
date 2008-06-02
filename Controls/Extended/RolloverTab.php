@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * RolloverTab class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Extended
  */
 class RolloverTab extends Panel implements Groupable
 {	
@@ -29,6 +28,7 @@ class RolloverTab extends Panel implements Groupable
 				$this->TextObject->CSSClass = 'NRollTab';
 			}
 			else
+			
 			{
 				$this->TextObject = $text;
 				if($this->TextObject instanceof Label)
@@ -124,7 +124,7 @@ class RolloverTab extends Panel implements Groupable
 			$this->OverTab = $overTab;
 			$this->Controls->Add($this->OverTab);
 			$this->OverTab->Visible = System::Vacuous;
-			NolohInternal::SetProperty('Ovr', $this->OutTab->Id, $this);
+			NolohInternal::SetProperty('Ovr', $this->OverTab->Id, $this);
 			$this->OverTab->SetWidth($this->GetWidth());
 			$this->MouseOver['Over'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Ovr');");
 		}

@@ -3,6 +3,7 @@ function _NTglRlOvrImg(id, state)
 	var img = _N(id);
 	if(img.Cur != state && (img.Selected == null || !img.Selected))
 	{
+		img.Cur = state;
 		if(state == 'Slct')
 		{
 			var group = img.Group;
@@ -24,7 +25,7 @@ function _NTglRlOvrImg(id, state)
 		img.src = img[state];
 		if(img.onchange != null)
 			img.onchange.call();
-		img.Cur = state;
+		
 	}
 	else if(state == 'Slct' && (img.Tgl))
 	{

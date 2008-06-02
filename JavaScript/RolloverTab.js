@@ -25,5 +25,6 @@ function _NChgRlOvrTb(rlOvrTb, state)
 		_NSetProperty(rlOvrTb, 'Selected', true);
 		if(tab.Select != null)
 			tab.Select.call();	
+			
 	}
 }
