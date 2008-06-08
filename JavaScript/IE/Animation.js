@@ -20,8 +20,8 @@ function _NAnimation(id, prpty, from, to, duration, queue, fps)
 	this.ObjId = id;
 	this.Duration = duration;
 //	this.Change =  _NAniLinearCumulativeChange;
-//	this.Change =  _NAniQuadraticCumulativeChange;
-	this.Change =  _NAniCubicCumulativeChange;
+	this.Change =  _NAniQuadraticCumulativeChange;
+//	this.Change =  _NAniCubicCumulativeChange;
 	this.Property = prpty;
 	if(this.Obj.ShiftsWith != null)
 	{
@@ -44,16 +44,15 @@ function StepAllAnims()
 function _NAniStop()
 {
 	//clearInterval(this.Timer);
+	_NAnims[this.Index] = null;
 	if(--_NAnimsCount == 0)
 	{
 		_NAnims = Array();
 		clearInterval(_NAnimTimer);
 		_NAnimTimer = null;
 	}
-	else
-		_NAnims[this.Index] = null;
 	if(this.Property == 'opacity')
-		_NSetProperty(this.ObjId, 'style.opacity', this.Destination/100);
+		_NSetProperty(this.ObjId, 'style.filter', 'alpha(opacity='+this.Destination+')');
 		//_NSetProperty(this.ObjId, 'style.opacity', this.From + delta);
 	else
 	{
@@ -73,7 +72,7 @@ function _NRunStep()
 		delta = this.Change(timePassed, this.Difference, this.Duration);
 		//alert(delta);
 		if(this.Property == 'opacity')
-			_NSetProperty(this.ObjId, 'style.opacity', (this.From + delta)/100);
+			_NSetProperty(this.ObjId, 'style.filter', 'alpha(opacity='+(this.From + delta)+')');
 			//_NSetProperty(this.ObjId, 'style.opacity', this.From + delta);
 		else
 		{
