@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Data
- */
-/**
  * DataCommand class
  *
  * This class needs a description...
+ * 
+ * @package Data
  */
 class DataCommand extends Object
 {
@@ -29,7 +28,13 @@ class DataCommand extends Object
 			if($type == Data::Postgres)
 				$tmpResource = pg_query($this->Connection->Connect(), $this->SqlStatement);
 			elseif($type == Data::MySQL)
-				$tmpResource = mysql_query($this->Connection->Connect(), $this->SqlStatement);
+			{
+//				if(is_resource($this->Connection))
+//					$tmpResource = $this->Connection;
+//				else
+				$tmpResource = $this->Connection->Connect();
+				$tmpResource = mysql_query($this->SqlStatement, $tmpResource);
+			}
 				
 			if(!$tmpResource)
 			{

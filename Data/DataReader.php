@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Data
- */
-/**
  * DataReader class
  *
  * This class needs a description...
+ * 
+ * @package Data
  */
 class DataReader extends Object implements ArrayAccess, Countable, Iterator
 {
@@ -45,8 +44,8 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 				$resultType = MYSQL_NUM;
 		
 			$numRows = mysql_num_rows($resource);
-			for ($i=0; $i < $numRows; $i++)
-				$this->Data[] =  mysql_fetch_array($resource, $i, $resultType);	
+			for ($i=0; $i < $numRows; ++$i)
+				$this->Data[] =  mysql_fetch_array($resource, $resultType);	
 		}
 		if(!$this->Data)
 			$this->Data = array();

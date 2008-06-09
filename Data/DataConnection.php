@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Data
- */
-/**
  * DataConnection class
  *
  * This class needs a description...
+ * 
+ * @package Data
  */
 class DataConnection extends Object
 {
@@ -32,7 +31,10 @@ class DataConnection extends Object
 		if($this->Type == Data::Postgres)
 			$this->ActiveConnection = pg_connect($tmpConnectString);
 		elseif($this->Type == Data::MySQL)
-			$this->ActiveConnection = mysql_connect($tmpConnectString);
+		{
+			$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $this->Password);
+			mysql_select_db($this->DatabaseName, $this->ActiveConnection);
+		}
 		return $this->ActiveConnection;
 	}
 	function Close()
@@ -51,7 +53,11 @@ class DataConnection extends Object
 	{
 		if($spName == null)
 			return null;
-		$query = 'SELECT * FROM '. $spName . '(';
+			
+		$query = 'SELECT ';
+		if($this->Type == Data::Postgres)
+			$query .= ' * FROM ';
+		$query .= $spName . '(';
 		$numArgs = count($paramsArray);
 		if($this->Type == Data::Postgres)
 		{
@@ -63,11 +69,13 @@ class DataConnection extends Object
 		}
 		else
 		{
+			$resource = $this->Connect();
 			for($i = 0; $i < $numArgs; ++$i)
 			{
-				$tmpArg = self::ConvertTypeToMySQL($paramsArray[$i]);
+				$tmpArg = self::ConvertTypeToMySQL($paramsArray[$i], "'", $resource);
 				$query .= $tmpArg . ",";		
 			}
+			$this->Close();
 		}
 		if($numArgs > 0)
 			$query = rtrim($query, ',');
@@ -91,11 +99,11 @@ class DataConnection extends Object
 			$tmpArg = 'null';
 		return $tmpArg;
 	}
-	private static function ConvertTypeToMySQL($value, $quote="'")
+	private static function ConvertTypeToMySQL($value, $quote="'", $resource)
 	{
 		if(is_string($value))
 		{
-			$value = mysql_real_escape_string($value);
+			$value = mysql_real_escape_string($value, $resource);
 			$tmpArg = "$quote" . $value ."$quote";
 		}
 		elseif(is_int($value))
@@ -171,8 +179,13 @@ class DataConnection extends Object
 	{
 		$args = func_get_args();
 		$query = self::GenerateSqlString($spName, array_slice($args, 2));
-		$dbCmd = new PGSqlCommand($this, $query);
+		$dbCmd = new DataCommand($this, $query);
 		return $dbCmd;
+	}
+	function __call($name, $args)
+	{
+		array_splice($args, 0, 0, $name);
+		call_user_func_array(array($this, 'ExecFunction'), $args);
 	}
 }
 ?>
