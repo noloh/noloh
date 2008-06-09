@@ -6,6 +6,7 @@ NOLOHKey = null;
 NOLOHCaught = new Array();
 _NFocus = null;
 _NContextMenuSource = null;
+_NFlashArgs = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -14,24 +15,16 @@ ConversionArray["style.height"] = "Height";
 ConversionArray["style.zIndex"] = "ZIndex";
 ConversionArray["style.background"] = "BackColor";
 ConversionArray["style.color"] = "Color";
-ConversionArray["style.opacity"] = "Opacity";
-ConversionArray["style.filter"] = "Opacity";
 ConversionArray["value"] = "_NText";
 ConversionArray["newText"] = "_NText";
 ConversionArray["selectedIndex"] = "SelectedIndex";
 ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
-//ConversionArray["killlater"] = "KillLater";
 ConversionArray["src"] = "Src";
 ConversionArray["scrollLeft"] = "ScrollLeft";
 ConversionArray["scrollTop"] = "ScrollTop";
-//ConversionArray["style.visibility"] = "Visible";
-//ConversionArray["style.display"] = "Visible";
 ConversionArray["options"] = "_NItems";
 ConversionArray["selectedIndices"] = "_NSelectedIndices";
-//ConversionArray["timer"] = "ServerVisible";
-//ConversionArray["CachedWidth"] = "CachedWidth";
-//ConversionArray["CachedHeight"] = "CachedHeight";
 ConversionArray["calViewDate.setMonth"] = "ViewMonth";
 ConversionArray["calViewDate.setFullYear"] = "ViewYear";
 ConversionArray["calSelectDate.setDate"] = "Date";
@@ -82,41 +75,30 @@ function _NInit(loadLblId, loadImgId)
 function CheckURL()
 {
 	var inner = _N('NBackButton').contentWindow.document.body.innerText;
-	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner/* && _NHash.charAt(1)=="/" && _NInnerHas.charAt(1)=="/"*/))
-		//if(/*document.body.NOLOHPostingBack && */location.href.indexOf('#')==location.href.length-1)
-		//{
-			//_NHash = location.href;
-		//	_NHash = inner;
-		//	location = _NHash;
-		//}
-		//else
-		{
-			clearInterval(_NURLCheck);
-			//alert(inner);
-			var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
-			//req = new XMLHttpRequest();
-			req = new ActiveXObject("Microsoft.XMLHTTP");
-			_N(_NLoadImg).style.visibility = "visible";
-			_N(_NLoadLbl).style.visibility = "visible";
-			req.onreadystatechange = ProcessReqChange;
-			req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
-               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
-			location = inner;
-            _NHash = location.hash;
-			_NURL = location.href;
-			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
-			req.send(str);
-			_N("N1").innerHTML = "";
-			/*
-			location.replace(inner);
-			location.reload(false);
-			*/
-		}
+	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner))
+	{
+		clearInterval(_NURLCheck);
+		var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
+		req = new ActiveXObject("Microsoft.XMLHTTP");
+		_N(_NLoadImg).style.visibility = "visible";
+		_N(_NLoadLbl).style.visibility = "visible";
+		req.onreadystatechange = ProcessReqChange;
+		req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
+           + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+		location = inner;
+        _NHash = location.hash;
+		_NURL = location.href;
+		req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
+		req.send(str);
+		_N("N1").innerHTML = "";
+	}
+	//alert(document.title);
 }
 
 function _NSetURL(hash)
 {
+	var title = document.title;
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 	_NURL=location.href;
@@ -124,6 +106,13 @@ function _NSetURL(hash)
 	d.open();
 	d.write(location.href);
 	d.close();
+	document.title = _NTitle;
+}
+
+function _NSetTitle(title)
+{
+	document.title = title;
+	_NTitle = title;
 }
 
 function SaveControl(id)
@@ -151,11 +140,6 @@ function _NSetProperty(id, property, value)
 	NOLOHChange(id, property, value);
 	_NSave(id, property, value);
 }
-/*function ChangeAndSave(id, propertyString, newValue)
-{
-	NOLOHChange(id, propertyString, newValue);
-	_NSave(id, propertyString, newValue);
-}*/
 
 function NOLOHChangeInit(id, propertyString)
 {
@@ -261,7 +245,8 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			break;
 		case "Group":
 			obj.Group = window[newValue];
-			obj.Group.Elements.push(obj.id);
+			if(newValue)
+				obj.Group.Elements.push(obj.id);
 			break;
 		case "Selected":
 			if(obj.Selected != newValue)
@@ -348,6 +333,9 @@ function _NSave(id, propertyString, newValue)
 			var obj = _N(id);
 			NOLOHChanges[id]["Visible"][0] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
 			break;
+		case "style.filter":
+			NOLOHChangeInit(id, "Opacity");
+			NOLOHChanges[id]["Opacity"][0] = parseInt(newValue.substring(14));
 		default:
 			NOLOHChangeInit(id, propertyString);
 			NOLOHChanges[id][propertyString][0] = typeof newValue == "boolean" ? (newValue ? 1 : 0) : newValue;
@@ -499,7 +487,6 @@ function GetChanges()
 				changes += "~d1~";
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
 				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + NOLOHChanges[distinctId][property][0];
-//				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + SavedControls[distinctId][property];
 			}
 		changes += "~d0~";
 	}
@@ -578,7 +565,11 @@ function PostBack(EventType, ID)
             str += "&NOLOHFocus="+_NFocus+"&NOLOHSelectedText="+document.selection.createRange().text;
 		if(_NContextMenuSource != null)
 			str += "&NOLOHContextMenuSource="+_NContextMenuSource.id;
-	    //req = new XMLHttpRequest();
+		if(_NFlashArgs != null)
+		{
+			str += "&NOLOHFlashArgs="+_NFlashArgs;
+			_NFlashArgs = null;
+		}
 	    req = new ActiveXObject("Microsoft.XMLHTTP");
 		_N(_NLoadImg).style.visibility = "visible";
 		_N(_NLoadLbl).style.visibility = "visible";

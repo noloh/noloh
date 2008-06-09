@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Events
- */
-/**
  * Event class
  *
  * The Event class serves several purposes.
@@ -30,6 +27,8 @@
  * 
  * For more information, please see
  * @link /Tutorials/Events.html
+ * 
+ * @package Events
  */
 class Event extends Object implements ArrayAccess
 {
@@ -55,6 +54,10 @@ class Event extends Object implements ArrayAccess
 	 * @var string
 	 */
     public static $FocusedComponent;
+    /**
+	 * @ignore
+	 */
+    public static $FlashArgs;
 	/**
 	 * When relevant, the ASCII value of the keyboard key at the time the event triggered. {@see Control::KeyPress}
 	 * @var integer

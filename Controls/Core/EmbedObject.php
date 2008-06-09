@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * EmbedObject class
  * 
  * An EmbedObject is a Control used for showing various multimedia, e.g., Flash animation, etc...  
+ * 
+ * @package Controls/Core
  */
 class EmbedObject extends Control
 {
@@ -14,6 +13,7 @@ class EmbedObject extends Control
 	private $ClassId;
 	private $IsMovie;
 	public $Parameters;
+	public $FlashVars;
 	public $InnerEmbedObjects;
 	
 	public function EmbedObject($data = null, $left = 0, $top = 0, $width = 100, $height = 100, $isMovie=false)
@@ -22,6 +22,7 @@ class EmbedObject extends Control
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 		$this->Parameters = new ImplicitArrayList($this, 'AddParameter'/*, 'RemoveParam', 'ClearParam'*/);
+		$this->FlashVars = new ImplicitArrayList($this, 'AddFlashVar');//, 'RemoveFlashVar', 'ClearFlashVars'*/);
 		$this->InnerEmbedObjects = new ArrayList();
 		$this->InnerEmbedObjects->ParentId = $this->Id;
 		$this->SetData($data);
@@ -44,7 +45,7 @@ class EmbedObject extends Control
 		{
 			$this->SetType('application/x-shockwave-flash');
 			//$this->SetClassId('clsid:D27CDB6E-AE6D-11cf-96B8-444553540000');
-			$this->Parameters->Add (new Item('wmode', 'transparent'));
+			$this->Parameters->Add (new Item('wmode', 'window'));
 			$this->Parameters->Add(new Item('movie', $this->Data));
 		}
 		//NolohInternal::SetProperty('data', $data, $this);
@@ -74,21 +75,29 @@ class EmbedObject extends Control
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->Parameters->Add($item, true, true);
 	}
+	function AddFlashVar($flashVar)
+	{
+		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->FlashVars->Add($flashVar, true, true);
+	}
 	function SetWidth($width)
 	{
 		parent::SetWidth($width);
-		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.width'", "'".$width ."px'"), false);
+		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.width'", "'100%'"), false);
+//		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.width'", "'".$width ."px'"), false);
+		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "E'", "'width'", "'".$width ."'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
-		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
+		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'100%'"), false);
+//		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}
 	function GetInnerString()
 	{
-		$tmpStr = '<OBJECT id="'.$this->Id.'I"';
+		$tmpStr = '<OBJECT name="'.$this->Id.'I" id="'.$this->Id.'I" style="width:100%;height:100%" ';
 		if($this->Type != null)
 			$tmpStr.='type="'.$this->Type.'" ';
 		if($this->Data != null)
@@ -99,8 +108,19 @@ class EmbedObject extends Control
 //		$paramCount = $this->Parameters->Count();
 		foreach($this->Parameters as $item)
 			$tmpStr .='<PARAM name = "'.$item->Text.'" value = "'.$item->Value.'">';
+		$embedFlashVars='';
+		if(count($this->FlashVars) > 0)
+		{
+			$flashVars = '';
+			foreach($this->FlashVars as $var)
+				$flashVars .= $var->Text . '=' . $var->Value . '&';
+			$flashVars = rtrim($flashVars, '&');
+			$tmpStr .= '<PARAM name = "FlashVars" value = "'. $flashVars . '">';
+			$embedFlashVars = ' FlashVars="'. $flashVars . '" ';
+		}
 		if($this->IsMovie)/*$this->Type == 'application/x-shockwave-flash')*/
-			$tmpStr .= "<EMBED type=\"$this->Type\" src=\"$this->Data\" width=\"$this->Width\" height=\"$this->Height\"></EMBED>";	
+//			$tmpStr .= "<EMBED name=\"{$this->Id}I\" type=\"$this->Type\" src=\"$this->Data\" $embedFlashVars width=\"$this->Width\" height=\"$this->Height\"></EMBED>";	
+			$tmpStr .= "<EMBED name=\"{$this->Id}I\" type=\"$this->Type\" src=\"$this->Data\" $embedFlashVars width=100% height=100%></EMBED>";	
 //		$InnerEmbedObjectsCount = $this->InnerEmbedObjects->Count();
 //		for($i=0; $i < $InnerEmbedObjectsCount; $i++)
 //			$this->InnerEmbedObjects->Elements[$i]->Show($this->IndentLevel + 1);	
@@ -108,11 +128,29 @@ class EmbedObject extends Control
 		
 		$tmpStr .= '</OBJECT>';
 		//Terrible way of doing this, but width and height gets reset
-		return $tmpStr;
+		return str_replace("'", "\\'", $tmpStr);
+	}
+	function GetTalk()				{return $this->GetEvent('Talk');}
+	function SetTalk($event)		{$this->SetEvent($event, 'Talk');}
+	function InvokeFunction($function, $argsDotDotDot)
+	{
+//		$params = array_slice(func_get_args(), 1);
+		$params = func_get_args();
+		array_splice($params, 0, 0, $this->Id);
+		$count = count($params);
+		for($i=0; $i<$count; ++$i)
+			$params[$i] = ClientEvent::ClientFormat($params[$i]);
+		QueueClientFunction($this, '_NInvokeFlash', $params);
 	}
 	public function Show()
 	{	
+		AddNolohScriptSrc('EmbedObject.js');
 		NolohInternal::Show('DIV', parent::Show(), $this);
+	}
+	function __call($name, $args)
+	{
+		array_splice($args, 0, 0, $name);
+		call_user_func_array(array($this, 'InvokeFunction'), $args);
 	}
 }
 ?>

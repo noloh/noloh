@@ -6,6 +6,7 @@ NOLOHKey = null;
 NOLOHCaught = new Array();
 _NFocus = null;
 _NContextMenuSource = null;
+_NFlashArgs = null;
 _NShiftObjArray = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
@@ -15,24 +16,16 @@ ConversionArray["style.height"] = "Height";
 ConversionArray["style.zIndex"] = "ZIndex";
 ConversionArray["style.background"] = "BackColor";
 ConversionArray["style.color"] = "Color";
-ConversionArray["style.opacity"] = "Opacity";
-ConversionArray["style.filter"] = "Opacity";
 ConversionArray["value"] = "_NText";
 ConversionArray["newText"] = "_NText";
 ConversionArray["selectedIndex"] = "SelectedIndex";
 ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
-//ConversionArray["killlater"] = "KillLater";
 ConversionArray["src"] = "Src";
 ConversionArray["scrollLeft"] = "ScrollLeft";
 ConversionArray["scrollTop"] = "ScrollTop";
-//ConversionArray["style.visibility"] = "Visible";
-//ConversionArray["style.display"] = "Visible";
 ConversionArray["options"] = "_NItems";
 ConversionArray["selectedIndices"] = "_NSelectedIndices";
-//ConversionArray["timer"] = "ServerVisible";
-//ConversionArray["CachedWidth"] = "CachedWidth";
-//ConversionArray["CachedHeight"] = "CachedHeight";
 ConversionArray["calViewDate.setMonth"] = "ViewMonth";
 ConversionArray["calViewDate.setFullYear"] = "ViewYear";
 ConversionArray["calSelectDate.setDate"] = "Date";
@@ -57,7 +50,6 @@ function _NInit(loadLblId, loadImgId)
 	var Graveyard = document.createElement("DIV");
 	Graveyard.id = "Graveyard";
 	Graveyard.style.display = "none";
-	//Graveyard.style.visibility = "hidden";
 	document.body.appendChild(Graveyard);
 	_NHash = location.hash;
 	_NURLCheck = setInterval('CheckURL()', 500);
@@ -65,13 +57,8 @@ function _NInit(loadLblId, loadImgId)
 
 function CheckURL()
 {
-	//alert(_NHash);
 	if(_NHash != location.hash && (location.hash=="" || location.hash.charAt(1)=="/") && (_NHash=="" || _NHash.charAt(1)=="/"))
-		//if(/*document.body.NOLOHPostingBack && */location.href.indexOf('#')==location.href.length-1)
-			//_NHash = location.href;
-		//	location.replace(_NHash);
-		//else
-			location.reload(true);
+		location.reload(true);
 }
 
 function _NSetURL(hash)
@@ -104,11 +91,6 @@ function _NSetProperty(id, property, value)
 	NOLOHChange(id, property, value);
 	_NSave(id, property, value);
 }
-/*function ChangeAndSave(id, propertyString, newValue)
-{
-	NOLOHChange(id, propertyString, newValue);
-	_NSave(id, propertyString, newValue);
-}*/
 
 function NOLOHChangeInit(id, propertyString)
 {
@@ -211,7 +193,8 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 			break;
 		case "Group":
 			obj.Group = window[newValue];
-			obj.Group.Elements.push(obj.id);
+			if(newValue)
+				obj.Group.Elements.push(obj.id);
 			break;
 		case "Selected":
 			if(obj.Selected != newValue)
@@ -293,6 +276,9 @@ function _NSave(id, propertyString, newValue)
 			var obj = _N(id);
 			NOLOHChanges[id]["Visible"][0] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
 			break;
+		case "style.opacity":
+			NOLOHChangeInit(id, "Opacity");
+			NOLOHChanges[id]["Opacity"][0] = newValue * 100;
 		default:
 			NOLOHChangeInit(id, propertyString);
 			NOLOHChanges[id][propertyString][0] = typeof newValue == "boolean" ? (newValue ? 1 : 0) : newValue;
@@ -444,7 +430,6 @@ function GetChanges()
 				changes += "~d1~";
 				SavedControls[distinctId][property] = NOLOHChanges[distinctId][property][0];
 				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + NOLOHChanges[distinctId][property][0];
-//				changes += (ConversionArray[property] ? ConversionArray[property] : property) + "~d1~" + SavedControls[distinctId][property];
 			}
 		changes += "~d0~";
 	}
@@ -533,6 +518,11 @@ function PostBack(EventType, ID, event)
         }
 		if(_NContextMenuSource != null)
 			str += "&NOLOHContextMenuSource="+_NContextMenuSource.id;
+		if(_NFlashArgs != null)
+		{
+			str += "&NOLOHFlashArgs="+_NFlashArgs;
+			_NFlashArgs = null;
+		}
 	    req = new XMLHttpRequest();
 		_N(_NLoadImg).style.visibility = "visible";
 		_N(_NLoadLbl).style.visibility = "visible";

@@ -1,11 +1,10 @@
 <?php
 /**
- * @package System
- */
-/**
  * WebPage class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package System
  */
 class WebPage extends Component
 {
@@ -45,14 +44,14 @@ class WebPage extends Component
 		$this->SetTitle($title);
 		$this->Keywords = $keywords;
 		$this->Description = $description;
-		$this->ReflectOS = false;
+//		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
 		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Controls/NStyles.css');
 		
-		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Images/noloh_ani_small.gif', 1, 1);
+		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Images/loading.gif', 1, 1, 30, 30);
 		$this->LoadImg->CSSClass = 'NLoad';
 		$this->LoadImg->SetParentId($this->Id);
-		$this->LoadLbl = new Label(' Loading...', 31, 4);
+		$this->LoadLbl = new Label(' Loading...', 31, 7);
 		$this->LoadLbl->SetParentId($this->Id);
 		$this->LoadLbl->Opacity = 70;
 		$this->LoadLbl->CSSClass = 'NLoad NLoadLbl';
@@ -64,7 +63,7 @@ class WebPage extends Component
 		
 		//SetOperatingSystem();
 		//SetBrowser();
-		SetGlobal('ReflectOS', $this->ReflectOS);
+//		SetGlobal('ReflectOS', $this->ReflectOS);
 		//$this->Controls->Add(new PostBackForm());
 		/*
 		//$this->JSIframe = new Iframe("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
@@ -110,7 +109,7 @@ class WebPage extends Component
 	function SetTitle($title)
 	{
 		$this->Title = $title;
-		AddScript('document.title="'.addslashes($title).'"');
+		AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'));
 	}
 	
 	function GetWidth()
@@ -145,7 +144,12 @@ class WebPage extends Component
 		$this->BackColor = $backColor;
 		QueueClientFunction($this, 'document.bgColor=\''.$backColor.'\';void', array(0));
 	}
-	
+	function CSSSwitch($browsers)
+	{
+		//Take in possible dotDotDotargs of items, or array of items, each of which has a name assoicated with a browser,
+		//and value with a stylesheet
+		//new Item('default', 'default.css', new Item('mac', 'mac.css'), etc..
+	}
 	function SetScrollLeft($scrollLeft)
 	{
 		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';BodyScrollState', array());

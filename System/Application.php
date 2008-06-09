@@ -68,9 +68,9 @@ function _NPHPInfo($info)
 	return $text;
 }
 /**
-* @ignore
+* @package System
 */
-final class Application
+final class Application extends Object
 {
 	private $WebPage;
 
@@ -110,9 +110,12 @@ final class Application
 			print('var frm=document.createElement("FORM");frm.action='.$url.';frm.method="post";document.body.appendChild(frm);frm.submit();');
 		exit();
 	}
-
+	/**
+	 * @ignore
+	 */
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
+		//ini_set('session.gc_maxlifetime', '0');
 		session_name(hash('md5', $_SERVER['PHP_SELF']));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
@@ -153,7 +156,9 @@ final class Application
 		else
 			$this->HandleFirstRun($className, $unsupportedURL);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	static function UnsetNolohSessionVars()
 	{
 		unset($_SESSION['_NVisit'],
@@ -292,6 +297,8 @@ final class Application
 			Event::$MouseX = $_POST['NOLOHMouseX'];
 			Event::$MouseY = $_POST['NOLOHMouseY'];
 		}
+		if(isset($_POST['NOLOHFlashArgs']))
+			Event::$FlashArgs = explode('~d3~', $_POST['NOLOHFlashArgs']);
 		if(!empty($_POST['NOLOHClientChanges']))
 		{
 			$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
@@ -396,8 +403,9 @@ final class Application
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
 			URL::UpdateTokens();
 		NolohInternal::ShowQueue();
-		NolohInternal::FunctionQueue();
 		NolohInternal::SetPropertyQueue();
+		NolohInternal::FunctionQueue();
+		//NolohInternal::SetPropertyQueue();
 		ob_end_clean();
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
@@ -409,7 +417,7 @@ final class Application
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['_NGarbage']);
 	}
-	
+
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
@@ -430,7 +438,7 @@ final class Application
 		session_destroy();
 		session_unset();
 	}
-	
+
 	private function ExplodeDragCatch($objectsString)
 	{
 		$objs = array();
