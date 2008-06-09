@@ -263,7 +263,7 @@ abstract class Control extends Component
 	function SetOpacity($newOpacity)
 	{
 		$this->Opacity = $newOpacity;
-		if(UserAgentDetect::GetBrowser()=='ie')
+		if(UserAgent::GetBrowser()=='ie')
 			NolohInternal::SetProperty('style.filter', "alpha(opacity=$newOpacity)", $this);
 		else
 			NolohInternal::SetProperty('style.opacity', $newOpacity/100, $this);

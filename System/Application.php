@@ -208,7 +208,7 @@ final class Application extends Object
 		$_SESSION['_NTokens'] = array();
 		$_SESSION['HighestZIndex'] = 0;
 		$_SESSION['LowestZIndex'] = 0;
-		UserAgentDetect::LoadInformation();
+		UserAgent::LoadInformation();
 		if($trulyFirst)
 			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')
 				$this->SearchEngineRun();

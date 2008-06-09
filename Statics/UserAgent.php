@@ -1,17 +1,17 @@
 <?php
 /**
- * UserAgentDetect class
+ * UserAgent class
  *
  * This class has static functions that pertain to retrieving user agent's information, such as browser and operating system.
  * 
  * @package Statics
  */
-final class UserAgentDetect 
+final class UserAgent
 {	
 	/**
 	 * @ignore
 	 */
-	private function UserAgentDetect(){}
+	private function UserAgent() {}
 	/**
 	 * @ignore
 	 */
@@ -71,7 +71,7 @@ final class UserAgentDetect
 	}
 	/**
 	 * Returns whether or not the user is using internet explorer as their browser.<br>
-	 * This is identical in functionality to UserAgentDetect::GetBrowser()=='ie', but provides a shortcut as, in practice, internet explorer
+	 * This is identical in functionality to UserAgent::GetBrowser()=='ie', but provides a shortcut as, in practice, internet explorer
 	 * often needs code different than other browsers.
 	 * @return boolean
 	 */

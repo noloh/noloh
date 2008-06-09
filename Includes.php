@@ -11,6 +11,7 @@ require('System/Application.php');
 require('System/Component.php');
 require('System/GeneralFunctions.php');
 require('System/Multiple.php');
+require('System/NolohInternal.php');
 require('System/Pointer.php');
 require('System/WebPage.php');
 
@@ -106,11 +107,10 @@ require('Controls/Auxilary/TreeNode.php');
 require('Statics/Animate.php');
 require('Statics/Cursor.php');
 require('Statics/Layout.php');
-require('Statics/NolohInternal.php');
 require('Statics/Priority.php');
 require('Statics/Shift.php');
 require('Statics/System.php');
 require('Statics/URL.php');
-require('Statics/UserAgentDetect.php');
+require('Statics/UserAgent.php');
 
 ?>
