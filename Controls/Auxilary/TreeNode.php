@@ -1,11 +1,10 @@
 <?
 /**
- * @package Controls/Auxilary
- */
-/**
  * TreeNode class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Auxiliary
  */
 class TreeNode extends Panel
 {
@@ -34,9 +33,9 @@ class TreeNode extends Panel
 		return NOLOHConfig::GetNOLOHPath().'Images/folder_open.gif';
 	}
 	
-	function TreeNode($element)
+	function TreeNode($element, $left=10)
 	{
-		parent::Panel(20, 0, 0, null);
+		parent::Panel($left, 0, 0, null);
 		$this->SetScrolling(System::Full);
 		$this->SetLayoutType(1);
 		if(GetBrowser() == 'ie')
