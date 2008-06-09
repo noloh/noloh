@@ -1,16 +1,34 @@
 <?
 /**
- * @package Collections 
- */
-/**
  * Group class
  * 
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A Group is a Component for collecting various elements implementing either the Groupable or MultiGroupable interfaces, for example, a Group of RadioButtons, or a Group of RolloverImages. 
+ * It can then be used to determine which, if any, groupable elements are selected. The difference between Groupable and MultiGroupable is that only 1 Groupable element can be selected, whereas many MultiGroupable elements can be selected at once, e.g., a Group of CheckBoxes.
+ * Note that a Group is not a Control, and does not have physical properties like Left, Top, etc... In this sense, it behaves much more like a Container than a Panel.
+ * 
+ * A Group is typically added to some Container or Panel and objects are added to it so that they too will show, for example:
+ * <code>
+ * // Instantiate a new Panel
+ * $panel = new Panel();
+ * // Instantiate a new Group
+ * $group = new Group();
+ * // Instantiate a new RolloverImage
+ * // Add the group to the Panel
+ * $panel->Controls->Add($group);
+ * // Add a RolloverImage to that group
+ * 
+ * </code>
+ * 
+ * @package Collections
  */
 class Group extends Component implements ArrayAccess, Countable, Iterator
 {
 	private $Groupees;
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Group.
+	 * @return Group
+	 */
 	function Group()
 	{
 		parent::Component();
@@ -19,11 +37,6 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	function GetChange()				{return $this->GetEvent('Change');}
 	function SetChange($change)			{$this->SetEvent($change, 'Change');}
-	function UpdateEvent($eventType)
-	{
-		//QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\''.$eventType.'\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
-		QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\'onchange\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
-	}
 	function Add($element, $setByReference = true)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
@@ -61,8 +74,14 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	function Clear()
 	{
-		foreach($this->Groupees as $groupee)
+		AddScript('window.'.$this->Id.'.Elements=Array();', Priority::High);
+		//AddScript('window.'.$this->Id.'.=new Group();', Priority::High);
+		//QueueClientFunction($this, 'window.'.$this->Id.'.Elements=Array', array(), true, Priority::High);
+		foreach($this->Groupees->Elements as $groupee)
+		{
+			NolohInternal::SetProperty('Group', '', $groupee);
 			$groupee->SetGroupName(null);
+		}
 		$this->Groupees->Clear();
 	}
 	function GetSelectedIndex()
@@ -128,6 +147,17 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			if($groupee->GetText() == $text)
 				return $this->SetSelectedElement($groupee);
 	}
+	/**
+	 * @ignore
+	 */
+	function UpdateEvent($eventType)
+	{
+		//QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\''.$eventType.'\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\'onchange\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();
@@ -135,6 +165,14 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		AddScript('window.'.$this->Id.'=new Group();', Priority::High);
 		foreach($this->Groupees as $groupee)
 			NolohInternal::SetProperty('Group', $this->Id, $groupee);
+	}
+	/**
+	 * @ignore
+	 */
+	function SearchEngineShow()
+	{
+		foreach($this->Controls as $control)
+			$control->SearchEngineShow();
 	}
 	/**
 	 * @ignore
@@ -193,11 +231,28 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	/**
 	 * @ignore
 	 */
-	function offsetSet($index, $val)		{$this->Groupees->offsetSet($index, $val);}
+	function offsetSet($index, $val)		
+	{
+		if($index === null)
+			$this->Add($val, true);
+		else
+		{
+			$val->SetGroupName($this->Id);
+			if($this->GetShowStatus())
+				NolohInternal::SetProperty('Group', $this->Id, $val);
+			$this->Groupees->offsetSet($index, $val);
+			/*if(isset($this->Groupees[$index]))
+				$this->RemoveAt($index);
+			$this->Groupees[$index] = &$val;*/
+		}
+	}
 	/**
 	 * @ignore
 	 */
-	function offsetUnset($index)			{$this->Groupees->offsetUnset($index);}
+	function offsetUnset($index)			
+	{
+		$this->RemoveAt($index);
+	}
 	/**
 	 * @ignore
 	 */	
