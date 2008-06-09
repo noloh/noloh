@@ -6,8 +6,8 @@ require('NOLOHConfig.php');
 
 // System
 // **********************************************************************
-require('System/Application.php');
 require('System/Object.php');
+require('System/Application.php');
 require('System/Component.php');
 require('System/GeneralFunctions.php');
 require('System/Multiple.php');
@@ -103,6 +103,7 @@ require('Controls/Auxilary/TreeNode.php');
 
 // Statics
 // **********************************************************************
+require('Statics/Animate.php');
 require('Statics/Cursor.php');
 require('Statics/Layout.php');
 require('Statics/NolohInternal.php');
