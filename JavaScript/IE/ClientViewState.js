@@ -98,7 +98,6 @@ function CheckURL()
 
 function _NSetURL(hash)
 {
-	var title = document.title;
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 	_NURL=location.href;
@@ -107,6 +106,7 @@ function _NSetURL(hash)
 	d.write(location.href);
 	d.close();
 	document.title = _NTitle;
+	setTimeout(function() {document.title = _NTitle;}, 750);
 }
 
 function _NSetTitle(title)
