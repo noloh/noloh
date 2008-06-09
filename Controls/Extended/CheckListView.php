@@ -27,7 +27,7 @@ class CheckListView extends ListView
 		parent::InsertListViewItem($listViewItem, $idx);
 		$listViewItem->SubItems->PositionalInsert($tmpCheck = new CheckBox(null, 0, 0, 25), 'Check', 0);
 //		$tmpCheck->Click[] = new ClientEvent('event.cancelBubble=true;event.stopPropagation();');
-		$tmpCheck->Click[] = new ClientEvent(UserAgentDetect::IsIE()?'window.event.cancelBubble=true;':'event.cancelBubble=true;event.stopPropagation();');
+		$tmpCheck->Click[] = new ClientEvent(UserAgent::IsIE()?'window.event.cancelBubble=true;':'event.cancelBubble=true;event.stopPropagation();');
 	}
 	function AddColumn($text, $width = System::Auto)
 	{
