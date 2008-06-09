@@ -4,11 +4,11 @@ _NAnims = Array();
 _NAnimsCount = 0;
 _NAnimTimer = null;
 
-function _NAniStart(id, prpty, from, to, duration, queue, fps)
+function _NAniStart(id, prpty, from, to, duration, units, easing, fps)
 {
-	_NAnims.push(new _NAnimation(id, prpty, from, to, duration, queue, fps));
+	_NAnims.push(new _NAnimation(id, prpty, from, to, duration, units, easing, fps));
 }
-function _NAnimation(id, prpty, from, to, duration, queue, fps)
+function _NAnimation(id, prpty, from, to, duration, units, easing, fps)
 {
 	++_NAnimsCount;
 	this.Index = _NAnims.length;
@@ -20,12 +20,14 @@ function _NAnimation(id, prpty, from, to, duration, queue, fps)
 	this.ObjId = id;
 	this.Duration = duration;
 //	this.Change =  _NAniLinearCumulativeChange;
-	this.Change =  _NAniQuadraticCumulativeChange;
+//	this.Change =  _NAniQuadraticCumulativeChange;
 //	this.Change =  _NAniCubicCumulativeChange;
+	this.Change = easing==1?_NAniLinear : easing==2?_NAniQuadratic : _NAniCubic;
+	this.Units = units;
 	this.Property = prpty;
 	if(this.Obj.ShiftsWith != null)
 	{
-		this.ShiftType = prpty=="width"?1: prpty=="height"?2: prpty=="left"?3: 4;
+		this.ShiftType = prpty=="style.width"?1: prpty=="style.height"?2: prpty=="style.left"?4: 5;
 		SetShiftWithInitials(this.Obj);
 	}
 	this.Step = _NRunStep;
@@ -56,9 +58,9 @@ function _NAniStop()
 		//_NSetProperty(this.ObjId, 'style.opacity', this.From + delta);
 	else
 	{
-		_NSetProperty(this.ObjId, 'style.' + this.Property, this.Destination + 'px');
+		_NSetProperty(this.ObjId, this.Property, this.Destination + this.Units);
 		if(this.Obj.ShiftsWith != null)
-			if(this.Property == 'left' || this.Property == 'width')
+			if(this.Property == 'style.left' || this.Property == 'style.width')
 				ShiftObjects(this.Obj.ShiftsWith, this.Difference, null, this.ShiftType);
 			else
 				ShiftObjects(this.Obj.ShiftsWith, null, this.Difference, this.ShiftType);
@@ -76,9 +78,9 @@ function _NRunStep()
 			//_NSetProperty(this.ObjId, 'style.opacity', this.From + delta);
 		else
 		{
-			_NSetProperty(this.ObjId, 'style.' + this.Property, this.From + delta + 'px');
+			_NSetProperty(this.ObjId, this.Property, this.From + delta + this.Units);
 			if(this.Obj.ShiftsWith != null)
-				if(this.Property == 'left' || this.Property == 'width')
+				if(this.Property == 'style.left' || this.Property == 'style.width')
 					ShiftObjects(this.Obj.ShiftsWith, delta, null, this.ShiftType);
 				else
 					ShiftObjects(this.Obj.ShiftsWith, null, delta, this.ShiftType);
@@ -87,17 +89,17 @@ function _NRunStep()
 	else
 		this.Stop();
 }
-function _NAniLinearCumulativeChange(time, difference, duration)
+function _NAniLinear(time, difference, duration)
 {
 	return Math.round(difference * time/duration);
 }
-function _NAniQuadraticCumulativeChange(time, difference, duration)
+function _NAniQuadratic(time, difference, duration)
 {
 	if((time /= duration/2) < 1)
 		return Math.round(difference/2 * time * time);
 	return Math.round(-difference/2 * (--time * (time-2) -1));
 }
-function _NAniCubicCumulativeChange(time, difference, duration)
+function _NAniCubic(time, difference, duration)
 {
 	if((time /= duration/2) < 1)
 		return Math.round(difference/2 * time * time * time);
