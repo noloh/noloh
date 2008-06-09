@@ -46,7 +46,8 @@ function _NShiftInitObject(info, obj)
 	if(isNaN(info.StartHeight))
 		info.StartHeight = 20;
 	if(isNaN(info.StartTop))
-		info.StartTop = yPos;
+		info.StartTop = obj.offsetLeft;
+		//info.StartTop = yPos;
 }
 function SetShiftWithInitials(obj)
 {	
@@ -77,28 +78,31 @@ function ShiftGo()
 	window.event.cancelBubble = true;
 	window.event.returnValue = false;
 }
-function ShiftObjects(objects, deltaX, deltaY)
+function ShiftObjects(objects, deltaX, deltaY, lastShift)
 {
-	var tmpCount = objects.length;
+	var tmpObj, tmpCount = objects.length;
 	for(var i=0; i<tmpCount; ++i)
 	{
-		if(objects[i][1] <= 3)
+		if(lastShift==null || objects[i][8]==null || lastShift==objects[i][8])
 		{
-			if(objects[i][1] != 1)
-				ShiftObject(objects[i][0], "style.height", objects[i].StartHeight, deltaY, objects[i][3], objects[i][6], objects[i][7]);
-			if(objects[i][1] != 2)	
-				ShiftObject(objects[i][0], "style.width", objects[i].StartWidth, deltaX, objects[i][3], objects[i][4], objects[i][5]);
+			if(objects[i][1] > 3)
+			{
+				if(objects[i][1] != 4 && deltaY != null)
+					ShiftObject(objects[i][0], "style.top", objects[i].StartTop, deltaY, objects[i][3], objects[i][6], objects[i][7]);
+				if(objects[i][1] != 5 && deltaX != null)
+					ShiftObject(objects[i][0], "style.left", objects[i].StartLeft, deltaX, objects[i][3], objects[i][4], objects[i][5]);
+			}
+			else
+			{
+				if(objects[i][1] != 1 && deltaY != null)
+					ShiftObject(objects[i][0], "style.height", objects[i].StartHeight, deltaY, objects[i][3], objects[i][6], objects[i][7]);
+				if(objects[i][1] != 2 && deltaX != null)
+					ShiftObject(objects[i][0], "style.width", objects[i].StartWidth, deltaX, objects[i][3], objects[i][4], objects[i][5]);
+			}
+			tmpObj = _N(objects[i][0]);
+			if(tmpObj.ShiftsWith != null)
+				ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY, objects[i][1]);
 		}
-		else
-		{
-			if(objects[i][1] != 4)
-				ShiftObject(objects[i][0], "style.top", objects[i].StartTop, deltaY, objects[i][3], objects[i][6], objects[i][7]);
-			if(objects[i][1] != 5)
-				ShiftObject(objects[i][0], "style.left", objects[i].StartLeft, deltaX, objects[i][3], objects[i][4], objects[i][5]);
-		}
-		var tmpObj = _N(objects[i][0]);
-		if(tmpObj.ShiftsWith != null)
-			ShiftObjects(tmpObj.ShiftsWith, deltaX, deltaY);
 	}
 }
 function ShiftObject(id, property, start, delta, ratio, minBound, maxBound)

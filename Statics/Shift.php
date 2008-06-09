@@ -1,24 +1,28 @@
 <?php
 /**
- * @package Statics
- */
-/**
  * Shift class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Statics
  */
-class Shift
+final class Shift
 {
 	const Normal = 0;
 	const Ghost = 1;
+	
 	const Width = 1;
 	const Height = 2;
 	const Size = 3;
 	const Left = 4;
 	const Top = 5;
 	const Location = 6;
+	
 	const Mirror = 7;
+	const All = 'null';
 
+	private function Shift() {}
+	
 	static function Width($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1)
 	{
 		$id = $control->Id;
@@ -93,13 +97,13 @@ class Shift
 		return array($id,6,$shiftStr.')');
 	}
 	
-	static function With(Component $object, $shiftType, $constraint=Shift::Mirror, $min=1, $max=null, $ratio=1)
+	static function With(Component $object, $shiftMeType, $shiftWithType=Shift::All, $min=1, $max=null, $ratio=1)
 	{
 		if($min === null)
 			$min = 1;
 		if($max === null)
 			$max = 'null';
-		return array($object->Id, 7, $shiftType.',0,'.$ratio.','.$min.','.$max.')');
+		return array($object->Id, 7, $shiftMeType.',0,'.$ratio.','.$min.','.$max.','.$min.','.$max.','.$shiftWithType.')');
 	}
 }
 ?>
