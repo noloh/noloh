@@ -1,11 +1,10 @@
 <?php 
 /**
- * @package Controls/Auxilary
- */
-/**
  * MenuItem class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Auxiliary
  */
 class MenuItem extends Panel
 {
@@ -49,18 +48,19 @@ class MenuItem extends Panel
 //		$this->TextLabel->MouseOver[] = new ClientEvent("ToggleSubMenuItems('{$this->Id}', '{$this->TextLabel->Id}','{$this->MenuItemsPanel->Id}', false);");
 //		$this->TextLabel->MouseOver['Toggle'] = new ClientEvent("_NTglSubMnuItms('{$this->Id}', false);");
 		$this->MouseOver['Toggle'] = new ClientEvent("_NTglSubMnuItms('{$this->Id}', false);");
-		NolohInternal::SetProperty('TxtLbl', "{$this->TextLabel->Id}", $this);
+		NolohInternal::SetProperty('TxtLbl', $this->TextLabel->Id, $this);
 		$this->TextLabel->ParentId = $this->Id;
 		$this->MenuItemsPanel->ParentId = $this->Id;
 		//$this->LayoutType = 1;
 		//$this->Controls->AddRange($this->TextLabel, $this->MenuItemsPanel);
 	}
-	function AddMenuItem(MenuItem $menuItem)
+	function AddMenuItem($menuItem)
 	{
 		//Alert($menuItem->Text);
 		//$menuItem->Buoyant = true;
 		//$menuItem->MouseOver[] = new ClientEvent("alert('test');");
-		
+		if(is_string($menuItem))
+			$menuItem = new MenuItem($menuItem);
 		if(($tmpCount = $this->MenuItemsPanel->Controls->Count()) > 0)
 		{
 			//Alert($tmpCount);

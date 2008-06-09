@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * Menu class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Extended
  */
 class Menu extends Panel
 {
@@ -21,8 +20,10 @@ class Menu extends Panel
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		$this->Scrolling = System::Full;
 	}
-	function AddMenuItem(MenuItem $menuItem)
+	function AddMenuItem($menuItem)
 	{
+		if(is_string($menuItem))
+			$menuItem = new MenuItem($menuItem);
 		$tmpCount = $this->MenuItems->Count();
 		if($tmpCount > 0)
 			$menuItem->SetLeft($this->MenuItems->Elements[$tmpCount -1]->GetRight());
@@ -35,7 +36,7 @@ class Menu extends Panel
 		$this->MenuItems->Add($menuItem, true, true);
 		$menuItem->SetWidth($menuItem->GetWidth());
 		
-		NolohInternal::SetProperty('IsMnu','true', $menuItem);
+		//NolohInternal::SetProperty('IsMnu','true', $menuItem);
 		return $menuItem;
 	}
 }
