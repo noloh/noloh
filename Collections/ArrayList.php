@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Collections
- */
-/**
  * ArrayList class
  * 
  * An ArrayList is an array with additional functionality. 
@@ -48,8 +45,7 @@
  * }
  * </code>
  * 
- * @property-read integer $Count The length of the ArrayList
- * 
+ * @package Collections
  */
 class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 {
@@ -114,7 +110,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	{
 		$numArgs = func_num_args();
 		$Args = func_get_args();
-		for($i = 0; $i < $numArgs; $i++)
+		for($i = 0; $i < $numArgs; ++$i)
 			if($Args[$i] instanceof Component)
 				$this->Add(GetComponentById($Args[$i]->Id));
 			else 
@@ -126,8 +122,8 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 * If the index is a string and there already is an element at the specified index, that element's index will be appended
 	 * with a ' (indicating prime), to make room for the element being inserted.
 	 * @param mixed $element The element to be inserted
-	 * @param integer|string $index The index into which your element will be added
-	 * @return mixed The element that has been added
+	 * @param integer|string $index The index into which your element will be inserted
+	 * @return mixed The element that has been inserted
 	 * <code>
 	 * // Inserts a new Button into the zeroth index
 	 * $this->Controls->Insert(new Button('Click'), 0);
@@ -175,7 +171,13 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 			$this->InsertIntoStringHelper($this->Elements[$index], $index . '\'');
 		$this->Elements[$index] = &$element;
 	}
-
+	/**
+	 * Inserts an element into a particular index of the ArrayList, as well as a particular position, in the sense of the order in which foreach iterates
+	 * @param mixed $element The element to be inserted
+	 * @param mixed $index The index into which your element will be inserted
+	 * @param int $position The position into which your element will be inserted
+	 * @return mixed The Element that has been inserted
+	 */
     function PositionalInsert($element, $index, $position)
     {
 		$oldElements = $this->Elements;
@@ -314,7 +316,8 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		else
 		{
 			$this->PreAdd($val);
-			$this->RemoveAt($index);
+			if(isset($this->Elements[$index]))
+				$this->RemoveAt($index);
 			$this->Elements[$index] = &$val;
 		}
 	}

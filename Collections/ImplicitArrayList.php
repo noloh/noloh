@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Collections
- */
-/**
  * ImplicitArrayList class
  *
  * An ImplicitArrayList is an ArrayList that allows the developer to define functions to be called when elements are added, 
@@ -31,6 +28,8 @@
  * 	}
  * }
  * </code>
+ * 
+ * @package Collections
  */
 class ImplicitArrayList extends ArrayList 
 {
@@ -110,7 +109,14 @@ class ImplicitArrayList extends ArrayList
 		else
 			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $index);
 	}
-
+	/**
+	 * Inserts an element into a particular index of the ArrayList, as well as a particular position, in the sense of the order in which foreach iterates
+	 * @param mixed $element The element to be inserted
+	 * @param mixed $index The index into which your element will be inserted
+	 * @param int $position The position into which your element will be inserted
+	 * @param bool $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
+	 * @return mixed The Element that has been inserted
+	 */
     function PositionalInsert($object, $index, $position, $onlyInsert = false)
     {
 		if($this->InsertFunctionName=='' || $onlyInsert)
@@ -172,7 +178,8 @@ class ImplicitArrayList extends ArrayList
 			$this->Add($val);
 		else 
 		{
-			$this->RemoveAt($index);
+			if(isset($this->Elements[$index]))
+				$this->RemoveAt($index);
 			$this->Insert($val, $index);
 		}
 			//parent::offsetSet($index, $val);
