@@ -1,7 +1,4 @@
 <?php
-/**
- * @package Controls/Core
- */
 /** 
  * Control class
  *
@@ -75,9 +72,11 @@
  *          Alert("Hello World");
  *      }
  * </code>
+ * 
+ * @package Controls/Core
  */
 
-class Control extends Component
+abstract class Control extends Component
 {
 	//Attributes
 	/**
@@ -258,7 +257,7 @@ class Control extends Component
 
 	function GetOpacity()
 	{
-		return $this->Opacity;
+		return $this->Opacity === null ? 100 : $this->Opacity;
 	}
 
 	function SetOpacity($newOpacity)
@@ -595,23 +594,25 @@ class Control extends Component
 
 	function SetBuoyant($bool)
 	{
+		$this->Buoyant = $bool ? true : null;/*
 		if($bool)
 			$this->Buoyant = true;
 		else
 		{
 			$this->Buoyant = null;
 			QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
-		}
+		}*/
 		if($this->GetShowStatus()===1)
 		{
 			NolohInternal::Bury($this);
 			NolohInternal::Resurrect($this);
+			QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
 		}
 	}
 	
 	function GetSelected()
 	{
-		return $this->SetSelected !== null;
+		return $this->Selected !== null;
 	}
 	
 	function SetSelected($bool)
@@ -624,7 +625,7 @@ class Control extends Component
 			if($bool && $this->GroupName != null)
 				GetComponentById($this->GroupName)->Deselect();
 			$this->Selected = $bool ? true : null;
-			if($bool && $this->GroupName != null)
+			if(/*$bool && */$this->GroupName != null)
 			{
 				$group = GetComponentById($this->GroupName);
 				if(!$group->Change->Blank())
@@ -701,7 +702,7 @@ class Control extends Component
 		}
 		else
 		{
-			$fncStr = 'document.getElementById(\''.$this->Id.'\').Shifts.splice';
+			$fncStr = '_N(\''.$this->Id.'\').Shifts.splice';
 			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id][$fncStr]))
 				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
 			else 
@@ -739,7 +740,7 @@ class Control extends Component
 				  ($shift[1]==6 && ($curType==4||$curType==5)))
 				{
 					$this->Shifts->RemoveAt($i);
-					QueueClientFunction($this, "document.getElementById('$this->Id').Shifts.splice", array($i,1), false);
+					QueueClientFunction($this, '_N(\'' . $this->Id. '\').Shifts.splice', array($i,1), false);
 				}
 				elseif($curType==3)
 				{
