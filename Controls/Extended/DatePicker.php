@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * DatePicker class
  *
  * DatePicker is a Panel with a {@see Calendar} that can be pulled up and down via a drop-down, and keeps track of the date selected.
@@ -19,6 +16,8 @@
  * @property integer $Timestamp The currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
  * @property string $Format The format of the DatePicker display, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function. 
  * NOLOH's default is 'l, F d, Y' which means that a typical date will look like 'Tuesday, August 14, 2007'
+ * 
+ * @package Controls/Extended
  */
 class DatePicker extends Panel
 {

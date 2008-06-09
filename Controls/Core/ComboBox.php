@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * ComboBox class
  *
  * A Control for ComboBox. A ComboBox allows you to select items from a dropdown menu.a conventional web checkbox. Checkbox's are usually used to indicate
@@ -26,8 +23,7 @@
  *		
  * </code>
  * 
- * @property string $Type The type of the button
- * The Type of this Button, the Default is "Normal", can also be set to "Submit".
+ * @package Controls/Core
  */
 class ComboBox extends ListControl 
 {

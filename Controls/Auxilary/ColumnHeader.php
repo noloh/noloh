@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Auxilary
- */	
-/**
  * ColumnHeader class
  *
  * This class needs a description...
+ * 
+ * @package Controls/Auxiliary
  */
 class ColumnHeader extends Panel
 {

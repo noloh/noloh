@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Events
- */
-/**
  * ClientEvent class
  *
  * A ClientEvent is a kind of Event that is executed on the client without communicating with the server.<br>
@@ -22,6 +19,7 @@
  * For more information, please see
  * @link /Tutorials/Events.html#ClientEvents
  * 
+ * @package Events
  */
 class ClientEvent extends Event
 {
@@ -51,7 +49,7 @@ class ClientEvent extends Event
 		}
 		parent::Event(str_replace(array("\n", '\''), array(' ', '\\\''), $allCodeAsString));
 	}
-	static private function ClientFormat($param)
+	static public function ClientFormat($param)
 	{
 		if(is_string($param))
 			//return '\''.str_replace('\'', '\\\'', $param).'\'';

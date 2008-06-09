@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Auxilary
- */
-/**
  * MarkupItem class
  *
  * A MarkupItem serves as the parent class of both {@see Eventee} and {@see Larva}. It has no purpose other than
@@ -20,6 +17,8 @@
  * 
  * For more information, please see
  * @see RichMarkupRegion
+ * 
+ * @package Controls/Auxiliary
  */
 abstract class MarkupItem extends Object
 {

@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * Timer class
  *
  * The Timer Component gives the developer the ability to have events launch after a certain period of time has elapsed.<br>
@@ -20,6 +17,8 @@
  * 	Alert("5 seconds has passed");
  * }
  * </code>
+ * 
+ * @package Controls/Core
  */
 class Timer extends Component
 {

@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * MarkupRegion class
  *
  * A MarkupRegion is a Control that is capable of displaying a string or file containing mark-up.
+ * 
+ * @package Controls/Core
  */
 class MarkupRegion extends Control
 {

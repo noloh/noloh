@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Collections
- */
-/**
  * Container class
  *
  * A Container is a Component which is capable of having and showing children Controls, but which is not a Control.
@@ -10,6 +7,8 @@
  * It is distinguished from Panel Controls in that the latter is a Control, having a physical representation and presense on the client, 
  * including properties like position (Left, Top), size, and visual styles (Border, Color, etc...), whereas Container merely shows its
  * children Controls and has no appearance or presense of its own.
+ * 
+ * @package Collections
  */
 class Container extends Component
 {

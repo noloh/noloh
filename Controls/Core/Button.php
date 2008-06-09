@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * Button class
  * 
  * A Button is a Control for a conventional web button.
@@ -25,6 +22,8 @@
  *      }
  *		
  * </code>
+ * 
+ * @package Controls/Core
  */
 class Button extends Control 
 {

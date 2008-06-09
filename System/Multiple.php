@@ -1,11 +1,10 @@
 <?php
 /**
- * @package System
- */
-/**
  * System class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package System
  */
 abstract class Multiple extends Component implements ArrayAccess, Countable, Iterator
 {

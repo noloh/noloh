@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Interfaces
- */
-/**
  * Groupable interface
  * 
  * This interface needs a description...
+ * 
+ * @package Interfaces
  */
 interface Groupable
 {

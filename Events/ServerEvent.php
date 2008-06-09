@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Events
- */
-/**
  * ServerEvent class
  *
  * A ServerEvent is a kind of Event that is executed on the server. This is probably one of the most-used classes in an application.
@@ -43,6 +40,7 @@
  * @see FileUpload
  * @see File
  * 
+ * @package Events
  */
 class ServerEvent extends Event
 {

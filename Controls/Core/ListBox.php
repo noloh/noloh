@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */	
-/**
  * ListBox class
  *
  * A ListBox is a rectangular ListControl where the user is able to see all the Items and may select several of them at the same time.
@@ -16,6 +13,8 @@
  * // Adds another Item to the ListBox
  * $listBox->Items->Add(new Item("value2", "text2"));
  * </code>
+ * 
+ * @package Controls/Core
  */
 class ListBox extends ListControl
 {

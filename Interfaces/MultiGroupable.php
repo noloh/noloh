@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Interfaces
- */
-/**
  * MultiGroupable interface
  * 
  * This interface needs a description...
+ * 
+ * @package Interfaces
  */
 interface MultiGroupable
 {

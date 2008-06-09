@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * FileUpload class
  *
  * A FileUpload is a Control that enables a user to upload a file to the server.
@@ -15,6 +12,8 @@
  * // Say that clicking on the Button will upload the selected file to the server
  * $button->Click->Uploads->Add($fileUpload);
  * </code>
+ * 
+ * @package Controls/Core
  */
 class FileUpload extends Control
 {

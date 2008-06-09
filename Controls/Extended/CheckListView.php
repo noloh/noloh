@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * CheckListView class
  * 
  * This class needs a description...
+ * 
+ * @package Controls/Extended
  */
 class CheckListView extends ListView
 {

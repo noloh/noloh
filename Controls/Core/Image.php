@@ -1,8 +1,5 @@
 <?php
 /**
-* @package Controls/Core
-*/
-/**
  * Image class
  *
  * A Control for an Image. An image can either be used to diplay a graphic, or be used as a custom button.
@@ -22,6 +19,7 @@
  * 
  * @property string $Src The source file of this image
  * 
+ * @package Controls/Core
  */
 class Image extends Control 
 {

@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Data
- */
-/**
  * Data class
  * 
  * This class is for data
+ * 
+ * @package Data
  */
 final class Data extends Object
 {	
@@ -31,6 +30,5 @@ final class Data extends Object
 		return $_SESSION['_NDataLinks'][$name] = $value;
 	}
 }
-
 Data::$Links = new Data();
 ?>

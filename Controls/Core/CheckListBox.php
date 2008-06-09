@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * CheckListBox class
  * 
  *  A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.
@@ -15,6 +12,8 @@
  * // Adds another Item to the CheckListBox
  * $checkListBox->Items->Add(new Item("value2", "text2"));
  * </code>
+ * 
+ * @package Controls/Core
  */
 class CheckListBox extends ListControl
 {

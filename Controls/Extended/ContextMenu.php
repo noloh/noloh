@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * ContextMenu class
  *
  * A ContextMenu is a Menu that can appear when right-clicking a Control by assigning a ContextMenu object to some existing Control's
@@ -17,6 +14,8 @@
  * $but->ContextMenu->MenuItems->Add(new MenuItem('First Item Text'));
  * $but->ContextMenu->MenuItems->Add(new MenuItem('Second Item Text'));
  * </code>
+ * 
+ * @package Controls/Extended
  */
 class ContextMenu extends Menu
 {

@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
 * Calendar class
 * 
 * A Calendar is a Panel which shows the days of the year sorted by month in a table where
@@ -30,6 +27,7 @@
 * // Thus, when a new date is selected on the Calendar, that date will be Alerted
 * </code>
 * 
+* @package Controls/Core
 */
 class Calendar extends Panel 
 {

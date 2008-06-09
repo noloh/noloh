@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * IFrame class
  *
  * A Control for an IFrame
@@ -21,6 +18,8 @@
  *		}
  *		
  * </code>
+ * 
+ * @package Controls/Core
  */
 
 class IFrame extends Control

@@ -1,12 +1,11 @@
 <?php
 /**
- * @package Statics
- */
-/**
  * System class
  *
  * The System class contains various constants used by various parts of NOLOH, especially constants having to do with the
  * physical properties of controls such as size.
+ * 
+ * @package Statics
  */
 final class System
 {

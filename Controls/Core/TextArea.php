@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * TextArea class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Core
  */
 class TextArea extends Control 
 {

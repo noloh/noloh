@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * Accordian class
  *
  * This class needs a description...
+ * 
+ * @package Controls/Extended
  */
 class Accordion extends Panel
 {

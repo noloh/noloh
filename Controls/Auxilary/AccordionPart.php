@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Auxilary
- */
-/**
  * AccordianPart class
  * 
  * This class needs a description...
+ * 
+ * @package Controls/Auxiliary
  */
 class AccordionPart extends Panel implements Groupable
 {

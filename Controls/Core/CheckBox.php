@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * CheckBox class
  *
  * A Control for a conventional web checkbox. Checkbox's are usually used to indicate
@@ -20,6 +17,7 @@
  * }
  * </code>
  * 
+ * @package Controls/Core
  */
 class CheckBox extends GroupedInputControl implements MultiGroupable
 {

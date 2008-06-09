@@ -1,14 +1,13 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * ListControl class
  *
  * A ListControl is a Control that has Items in it that may become selected. For example, {@see ComboBox}, {@see ListBox}, and {@see CheckListBox}
  * both extend ListControl, and it is ListControl's purpose to provide functionality that is common to both ComboBox, ListBox, and CheckListBox
  * as well as for proper organization and inheritance. 
  * It is not recommended that you extend ListControl directly, instead, you should extend ComboBox, ListBox, or CheckListBox. 
+ * 
+ * @package Controls/Core
  */
 abstract class ListControl extends Control
 {

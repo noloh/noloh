@@ -1,16 +1,12 @@
 <?php
 /**
- * @package System
- */ 
-/**
  * Component class
  *
  * A component is a basic building-block in a NOLOH application. It is an abstract class, so you may not instantiate a new Component, only write classes that extend this class.<br>
  * Each component has an <b>Id</b> that uniquely identifies itself among all other components.<br>
  * A component may have a <b>Parent</b>, which establishes a tree based on the parent-child relationship.<br>
- *
- * @property-read Component::(NotShown\Shown\Buried) $ShowStatus Whether it is Shown, NotShown, Buried
- * @property-read Component $Parent The Parent Component
+ * 
+ * @package System
  */
 
 abstract class Component extends Object

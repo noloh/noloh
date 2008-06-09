@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Core
- */
-/**
  * Link class
  *
  * A Control for a Link
@@ -21,6 +18,8 @@
  *		}
  *		
  * </code>
+ * 
+ * @package Controls/Core
  */
 
 class Link extends Label

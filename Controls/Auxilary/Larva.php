@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Auxilary
- */
-/**
  * Larva class
  *
  * A Larva is a MarkupItem that is capable of turning into Components.<br>
@@ -20,6 +17,8 @@
  * 		$larva->Morph(new Button($eventee->Value));
  * }
  * </code>
+ * 
+ * @package Controls/Auxiliary
  */
 class Larva extends MarkupItem 
 {	

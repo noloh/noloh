@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Collections
- */
-/**
  * ControlPair class
  * 
  * This class needs a description...
+ * 
+ * @package Collections
  */
 class ControlPair extends Container
 {

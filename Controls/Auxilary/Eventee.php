@@ -1,8 +1,5 @@
 <?php
 /**
- * @package Controls/Auxilary
- */
-/**
  * Eventee class
  *
  * An Eventee is a MarkupItem that is capable of recieving events.<br>
@@ -33,6 +30,8 @@
  * 	Alert("That Eventee's value is $value");
  * }
  * </code>
+ * 
+ * @package Controls/Auxiliary
  */
 class Eventee extends MarkupItem 
 {
