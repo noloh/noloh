@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Auxilary
- */
-/**
  * Tab class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Auxiliary
  */
 class Tab extends Panel
 {
@@ -19,6 +18,8 @@ class Tab extends Panel
 		$this->MainImage = new Image($mainImageSrc);
 		$this->RightImage = new Image($rightImageSrc);
 		parent::Panel(0,0,$this->LeftImage->Width + $this->MainImage->Width + $this->RightImage->Width, $this->LeftImage->Height);		
+		$this->MainImage->Shifts[] = Shift::With($this, Shift::Width);
+		$this->RightImage->Shifts[] = Shift::With($this, Shift::Left);
 		$this->Controls->AddRange($this->LeftImage, $this->MainImage, $this->RightImage);	
 	}	
 	function SetWidth($width)

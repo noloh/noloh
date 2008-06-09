@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Controls/Extended
- */
-/**
  * TabControl class
  *
  * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * 
+ * @package Controls/Extended
  */
 class TabControl extends Panel
 {
@@ -23,15 +22,15 @@ class TabControl extends Panel
 		
 	function TabControl($left = 0, $top = 0, $width = 500, $height = 500)
 	{
-		parent::Panel($left, $top, $width, $height);
+		parent::Panel($left, $top, null, null);
 		$this->Tabs = new Group();
 		$this->Tabs->Change = new ClientEvent('_NStTbPg', $this->Id, $this->Tabs->Id);
 		
 		$this->TabBar = new Panel(0, 0, '100%', 25);
-		$this->Body = new Panel(0, 0, null, 'auto', $this);
+		$this->Body = new Panel(0, 0, '100%', null, $this);
 		
-//		$this->SetWidth($width);
-//		$this->SetHeight($height);
+		$this->SetWidth($width);
+		$this->SetHeight($height);
 		$this->TabPages = &$this->Body->Controls;
 		$this->TabPages->AddFunctionName = 'AddTabPage';
 		
@@ -61,6 +60,11 @@ class TabControl extends Panel
 			$preStr = '_NStTbPg("'.$this->Id.'","' . $this->Tabs->Id . '");';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}*/
+	public function SetHeight($height)
+	{
+		parent::SetHeight($height);
+		$this->Body->SetHeight($height-$this->TabBar->GetHeight());
+	}
 	public function GetSelectedIndex()	
 	{
 		return $this->Tabs->GetSelectedIndex();

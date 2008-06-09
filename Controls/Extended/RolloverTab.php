@@ -53,7 +53,6 @@ class RolloverTab extends Panel implements Groupable
 		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
-		
 	}
 	function SetWidth($width)
 	{
@@ -166,12 +165,14 @@ class RolloverTab extends Panel implements Groupable
 	//function GetSelected()				{return $this->Selected != null;}
 	function SetSelected($bool)
 	{
-		parent::SetSelected($bool);
 //		if(is_string($bool))
 //			$bool = $bool == 'true'?true:false;			
 		$selected = $bool ? true : null;
+		//Alert($selected . ' + ' . $this->Selected);
+		//Alert($selected . ' + ' . $this->GetSelected());
 		if($this->Selected != $selected)
 		{
+			parent::SetSelected($bool);
 			//Trigger Select Event if $bool is true, i.e. Selected
 			if($bool && $this->GroupName != null)
 			{
