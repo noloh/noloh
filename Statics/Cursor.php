@@ -1,11 +1,10 @@
 <?php
 /**
- * @package Statics
- */
-/**
  * Cursor class
  *
  * This class contains various constants and static functions relating to the mouse's cursor.
+ * 
+ * @package Statics
  */
 final class Cursor
 {
@@ -29,7 +28,7 @@ final class Cursor
 	
 	public static function URL($str)
 	{
-		return "url($str)";
+		return 'url('.$str.')';
 	}
 }
 
