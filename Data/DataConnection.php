@@ -16,7 +16,7 @@ class DataConnection extends Object
 	public $ActiveConnection;
 	private $Type;
 	
-	function DataConnection($type = Data::Postgres, $databaseName='',  $username='', $host='localhost', $port='5432', $password='')
+	function DataConnection($type = Data::Postgres, $databaseName='',  $username='', $password='', $host='localhost', $port='5432')
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
