@@ -34,7 +34,7 @@ class TabControl extends Panel
 		$this->TabPages = &$this->Body->Controls;
 		$this->TabPages->AddFunctionName = 'AddTabPage';
 		
-		$this->TabBar->LayoutType = $this->Body->LayoutType = Layout::Relative;
+		$this->TabBar->Layout = $this->Body->Layout = Layout::Relative;
 		$this->Controls->Add($this->TabBar);
 		$this->Controls->Add($this->Body);
 		$this->TabBar->Controls->Add($this->Tabs);

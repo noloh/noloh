@@ -16,7 +16,7 @@ class ListViewItem extends Panel //extends Component
 	{
 		parent::Panel(null, null, '100%', 20, $this);
 //		$this->Scrolling = System::Full;
-		$this->LayoutType = Layout::Relative;
+		$this->Layout = Layout::Relative;
 		$this->SubItems = &$this->Controls;//new ImplicitArrayList($this, "AddSubItem");
 		$this->SubItems->AddFunctionName = 'AddSubItem';
 		if($objOrText != null)
@@ -34,7 +34,7 @@ class ListViewItem extends Panel //extends Component
 		$objOrText->SetCSSClass("NLVItem");	
 		//$objOrText->Width = '100%';
 		/*$objOrText->CSSFloat = 'left';
-		$objOrText->LayoutType = 1;*/
+		$objOrText->Layout = 1;*/
 		if($this->ListViewId != null)
 			GetComponentById($this->ListViewId)->Update($this);
 		if(($tmpHeight = $objOrText->GetHeight()) > $this->GetHeight())

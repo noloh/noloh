@@ -15,7 +15,7 @@ class AccordionPart extends Panel implements Groupable
 	{
 		$this->BodyPanel = new Panel(0, 0, '100%', 50);
 		parent::Panel(0, 0, null, null);
-		$this->LayoutType = 1;
+		$this->Layout = 1;
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
 		$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/Std/HeadBlue.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/HeadOrange.gif', 0, 0, '100%', $titleHeight);
 		$tmpTitleLabel = new Label($title, 0, 0, null, null);
@@ -24,10 +24,10 @@ class AccordionPart extends Panel implements Groupable
 		$this->TitlePanel->Controls['Text'] = $tmpTitleLabel;
 		//$this->TitlePanel->Controls->AddRange($tmpGlossy, $tmpTitleLabel);
 		$this->TitlePanel->ParentId = $this->Id;
-		$this->TitlePanel->LayoutType = 1;
+		$this->TitlePanel->Layout = 1;
 		
 		$this->BodyPanel->ParentId = $this->Id; 
-		$this->BodyPanel->LayoutType = 1;
+		$this->BodyPanel->Layout = 1;
 		$this->SetWidth('100%');
 		$this->Controls = &$this->BodyPanel->Controls;
 	}	

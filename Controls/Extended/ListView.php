@@ -29,7 +29,7 @@ class ListView extends Panel
 		$this->BodyPanelsHolder = new Panel(0, $this->ColumnsPanel->Bottom, $width, $height - $this->ColumnsPanel->Height);
 		$this->BodyPanelsHolder->Scrolling = System::Auto;
 		$this->InnerPanel = new Panel(0, 0, null, 'auto', $this);
-		$this->InnerPanel->LayoutType = Layout::Web;
+		$this->InnerPanel->Layout = Layout::Web;
 		$this->BodyPanelsHolder->Scrolling = System::Auto;
 		$this->ListViewItems = &$this->InnerPanel->Controls;
 		$this->ListViewItems->AddFunctionName = 'AddListViewItem';

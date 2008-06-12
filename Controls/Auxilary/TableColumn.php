@@ -13,7 +13,7 @@ class TableColumn extends Panel
 	{
 		Panel::Panel(null, null, $width, $height, $this);
 		$this->Controls->AddFunctionName = "AddControl";
-		$this->LayoutType = 1;
+		$this->Layout = 1;
 		//$this->Border = "1px solid black";
 		$this->SetControl($object);
 	}
@@ -21,7 +21,7 @@ class TableColumn extends Panel
 	{
 		//if(func_num_args()==1)
 		$this->Controls->Add($control, true, true);
-		$control->LayoutType = 1;
+		$control->Layout = 1;
 	}
 	public function GetControl()
 	{

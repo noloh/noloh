@@ -51,7 +51,7 @@ class MenuItem extends Panel
 		NolohInternal::SetProperty('TxtLbl', $this->TextLabel->Id, $this);
 		$this->TextLabel->ParentId = $this->Id;
 		$this->MenuItemsPanel->ParentId = $this->Id;
-		//$this->LayoutType = 1;
+		//$this->Layout = 1;
 		//$this->Controls->AddRange($this->TextLabel, $this->MenuItemsPanel);
 	}
 	function AddMenuItem($menuItem)
@@ -86,7 +86,7 @@ class MenuItem extends Panel
 			$menuItem->SetTop(0);
 			//$menuItem->MenuItemsPanel->SetTop($menuItem->GetTop());
 		}
-		//$menuItem->LayoutType = Layout::Relative;
+		//$menuItem->Layout = Layout::Relative;
 		//$menuItem->SetWidth('100%');
 		//Alert($this->MenuItemsPanel->GetWidth() . ' | ' . $menuItem->GetWidth());
 		if($this->MenuItemsPanel->GetWidth() < ($tmpWidth = $menuItem->GetWidth()))
@@ -151,7 +151,7 @@ class MenuItem extends Panel
 	function SetMouseOver($event)			{$this->TextLabel->SetMouseOver($event);}
 	function SetMouseOut($event)			{$this->TextLabel->SetMouseOut($event);}
 	function SetClick($event)				{$this->TextLabel->SetClick($event);}
-	//function SetLayoutType($layoutType)		{$this->TextLabel->SetLayoutType($layoutType);}
+	//function SetLayout($Layout)		{$this->TextLabel->SetLayout($Layout);}
 	function SetOutTextColor($color='#001E42')	
 	{
 		$this->TextLabel->SetColor($color);

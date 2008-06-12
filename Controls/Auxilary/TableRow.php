@@ -14,7 +14,7 @@ class TableRow extends Control
 	function TableRow()
 	{
 		parent::Control(0, 0, null, 20);
-		$this->LayoutType = 1;
+		$this->Layout = 1;
 		$this->Columns = new ArrayList();
 		$this->Columns->ParentId = $this->Id;
 	}

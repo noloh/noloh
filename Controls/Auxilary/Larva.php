@@ -30,7 +30,7 @@ class Larva extends MarkupItem
 		parent::MarkupItem($id, $keyword, $value, $panelId);
 	}
 	/**
-	 * Morph inserts a Component object into where your n:component tag would have been. The Component's LayoutType will 
+	 * Morph inserts a Component object into where your n:larva tag would have been. The Component's Layout will 
 	 * automatically be set to relative so that it would look correct in the context of surrounding mark-up.
 	 * @param Component $component
 	 * @return Component The object passed in
@@ -45,7 +45,7 @@ class Larva extends MarkupItem
 				$markUpPanel->ComponentSpace[$this->Id]->SetParentId(null);
 		$markUpPanel->ComponentSpace[$this->Id] = &$component;
 		$component->SetParentId($this->Id);
-		$component->SetLayoutType(1);
+		$component->SetLayout(1);
 		return $component;
 	}
 }
