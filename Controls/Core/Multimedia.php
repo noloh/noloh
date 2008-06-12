@@ -1,12 +1,12 @@
 <?php
 /**
- * EmbedObject class
+ * Multimedia class
  * 
- * An EmbedObject is a Control used for showing various multimedia, e.g., Flash animation, etc...  
+ * An Multimedia is a Control used for showing various multimedia, e.g., Flash animation, etc...  
  * 
  * @package Controls/Core
  */
-class EmbedObject extends Control
+class Multimedia extends Control
 {
 	private $Data;
 	private $Type;
@@ -14,17 +14,17 @@ class EmbedObject extends Control
 	private $IsMovie;
 	public $Parameters;
 	public $FlashVars;
-	public $InnerEmbedObjects;
+	public $InnerMultimedia;
 	
-	public function EmbedObject($data = null, $left = 0, $top = 0, $width = 100, $height = 100, $isMovie=false)
+	public function Multimedia($data = null, $left = 0, $top = 0, $width = 100, $height = 100, $isMovie=false)
 	{
 		parent::Control($left, $top, null, null);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 		$this->Parameters = new ImplicitArrayList($this, 'AddParameter'/*, 'RemoveParam', 'ClearParam'*/);
 		$this->FlashVars = new ImplicitArrayList($this, 'AddFlashVar');//, 'RemoveFlashVar', 'ClearFlashVars'*/);
-		$this->InnerEmbedObjects = new ArrayList();
-		$this->InnerEmbedObjects->ParentId = $this->Id;
+		$this->InnerMultimedia = new ArrayList();
+		$this->InnerMultimedia->ParentId = $this->Id;
 		$this->SetData($data);
 		$this->IsMovie = ($isMovie)?true:null;
 		$this->BackColor = 'white';
@@ -45,6 +45,7 @@ class EmbedObject extends Control
 		{
 			$this->SetType('application/x-shockwave-flash');
 			//$this->SetClassId('clsid:D27CDB6E-AE6D-11cf-96B8-444553540000');
+//			$this->Parameters->Add (new Item('wmode', 'window'));
 			$this->Parameters->Add (new Item('wmode', 'window'));
 			$this->Parameters->Add(new Item('movie', $this->Data));
 		}
@@ -121,9 +122,9 @@ class EmbedObject extends Control
 		if($this->IsMovie)/*$this->Type == 'application/x-shockwave-flash')*/
 //			$tmpStr .= "<EMBED name=\"{$this->Id}I\" type=\"$this->Type\" src=\"$this->Data\" $embedFlashVars width=\"$this->Width\" height=\"$this->Height\"></EMBED>";	
 			$tmpStr .= "<EMBED name=\"{$this->Id}I\" type=\"$this->Type\" src=\"$this->Data\" $embedFlashVars width=100% height=100%></EMBED>";	
-//		$InnerEmbedObjectsCount = $this->InnerEmbedObjects->Count();
-//		for($i=0; $i < $InnerEmbedObjectsCount; $i++)
-//			$this->InnerEmbedObjects->Elements[$i]->Show($this->IndentLevel + 1);	
+//		$InnerMultimediaCount = $this->InnerMultimedia->Count();
+//		for($i=0; $i < $InnerMultimediaCount; $i++)
+//			$this->InnerMultimedia->Elements[$i]->Show($this->IndentLevel + 1);	
 		//print(str_repeat("  ", $IndentLevel) . "</OBJECT></DIV>\n");
 		
 		$tmpStr .= '</OBJECT>';
@@ -144,7 +145,7 @@ class EmbedObject extends Control
 	}
 	public function Show()
 	{	
-		AddNolohScriptSrc('EmbedObject.js');
+		AddNolohScriptSrc('Multimedia.js');
 		NolohInternal::Show('DIV', parent::Show(), $this);
 	}
 	function __call($name, $args)
