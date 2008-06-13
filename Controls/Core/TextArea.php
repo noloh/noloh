@@ -30,10 +30,10 @@ class TextArea extends Control
 		NolohInternal::SetProperty('MaxLength', $newMaxLength, $this);
 	}
 	
-	function SetText($newText)
+	function SetText($text)
 	{
-		parent::SetText($newText);
-		QueueClientFunction($this, 'SetTextAreaText', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($newText)).'\''));
+		parent::SetText($text);
+		QueueClientFunction($this, 'SetTextAreaText', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($text)).'\''));
 	}
 	/*function GetScrollLeft()
 	{

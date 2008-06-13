@@ -10,9 +10,10 @@ function BloodyMurder($message)
 {
 	$backtrace = debug_backtrace();
 	$backtraceCount = count($backtrace);
-	$nolohPath = realpath(dirname(__FILE__).'/../');
+	$nolohPath = realpath(dirname(__FILE__).'/../') . '/';
 	for($i=0; $i<$backtraceCount; ++$i)
 		if(strpos($backtrace[$i]['file'], $nolohPath) === false)
+		//if(($backtrace[$i]['file'], $nolohPath) === false)
 			_NErrorHandler(0, $message, $backtrace[$i]['file'], $backtrace[$i]['line']);
 	_NErrorHandler(0, $message, '?', '?');
 }

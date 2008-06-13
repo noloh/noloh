@@ -35,8 +35,22 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		$this->Groupees = new ArrayList();
 		$this->Groupees->ParentId = $this->Id;
 	}
+	/**
+	 * Returns the Change Event of the Group
+	 * @return Event
+	 */
 	function GetChange()				{return $this->GetEvent('Change');}
-	function SetChange($change)			{$this->SetEvent($change, 'Change');}
+	/**
+	 * Sets the Change Event of the Group
+	 * @param Event $change
+	 */
+	function SetChange($change)			{return $this->SetEvent($change, 'Change');}
+	/**
+	 * Adds an element to the Group.
+	 * @param mixed $element The element to be added 
+	 * @param bool $setByReference Indicates whether the Group sets by reference as opossed to by value
+	 * @return mixed The element that has been added
+	 */
 	function Add($element, $setByReference = true)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
@@ -45,12 +59,22 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if($this->GetShowStatus())
 			NolohInternal::SetProperty('Group', $this->Id, $element);
 		$this->Groupees->Add($element, $setByReference);
+		return $element;
 	}
+	/**
+	 * Adds an unlimited number elements to the Group.
+	 * @param mixed ... Unlimited number of elements to be added
+	 * <code>$group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</code>
+	 */
 	function AddRange($dotDotDot)
 	{
-		$numArgs = func_num_args();
+		$args = func_get_args();
+		$numArgs = count($args);
 		for($i = 0; $i < $numArgs; ++$i)
-			$this->Add(GetComponentById(func_get_arg($i)->Id));
+			if($args[$i] instanceof Component)
+				$this->Add(GetComponentById($args[$i]->Id));
+			else 
+				$this->Add($args[$i]);
 	}
 	function Insert($element, $index)
 	{

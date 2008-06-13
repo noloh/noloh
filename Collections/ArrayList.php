@@ -109,12 +109,12 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	function AddRange($dotDotDot)
 	{
 		$numArgs = func_num_args();
-		$Args = func_get_args();
+		$args = func_get_args();
 		for($i = 0; $i < $numArgs; ++$i)
-			if($Args[$i] instanceof Component)
-				$this->Add(GetComponentById($Args[$i]->Id));
+			if($args[$i] instanceof Component)
+				$this->Add(GetComponentById($args[$i]->Id));
 			else 
-				$this->Add($Args[$i]);
+				$this->Add($args[$i]);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, not overwriting what was previously there.
