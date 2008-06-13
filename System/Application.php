@@ -45,7 +45,8 @@ function _NErrorHandler($number, $string, $file, $line)
 		ob_start('ob_gzhandler');
 		++$_SESSION['_NVisit'];
 	}
-	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? ("A server error has occurred:\\n\\n".str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line") : 'An application error has occurred.') . '");');
+	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line"));
+	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");');
 	global $OmniscientBeing;
 	$_SESSION['_NScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
@@ -256,7 +257,7 @@ final class Application extends Object
 			set_error_handler('_NErrorHandler', error_reporting());
 			ob_start('_NOBErrorHandler');
 			if($_SESSION['_NVisit']==-1)
-				AddScript('_NDebugMode='.($debugMode?'true;':'false;'));
+				AddScript('_NDebugMode='.($debugMode?'true':'false'));
 		}
 	}
 	
@@ -268,8 +269,10 @@ final class Application extends Object
 		$idArrayStr = '';
 		foreach($_SESSION['_NGarbage'] as $id => $nothing)
 		{
-			$control = &$GLOBALS['OmniscientBeing'][$id];
-			if(!isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
+			//$control = &$GLOBALS['OmniscientBeing'][$id];
+			$control = &$OmniscientBeing[$id];
+			//if(!isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
+			if($control instanceof Control && !isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0)
 				$idArrayStr .= '\'' . $id . '\',';
 			unset($OmniscientBeing[$id]);
 		}
