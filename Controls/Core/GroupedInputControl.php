@@ -86,7 +86,7 @@ abstract class GroupedInputControl extends Control
 				if($bool)
 					$group->Deselect();
 			}
-			if($this->GetShowStatus !== 0)
+			if($this->GetShowStatus() !== 0)
 				QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
 			$this->Checked = $newChecked;
 			if(!$this->Change->Blank())

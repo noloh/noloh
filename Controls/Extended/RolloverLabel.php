@@ -74,7 +74,7 @@ class RolloverLabel extends Label implements Groupable
 		$this->Click['Select'] = new ClientEvent('_NTglRlOvrLbl', $this->Id, 'Slct');
 	}	
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
-	function GetTogglesOff($bool)		{return ($this->TogglesOff==true);}
+	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	//Select Event Functions
 	function GetSelect()				{return $this->GetEvent('Select');}
 	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}

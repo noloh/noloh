@@ -113,7 +113,7 @@ class WindowPanel extends Panel
 		
 		if($this->Menu != null)
 		{
-			$this->Menu->CSSBorder_Left = $boder;
+			$this->Menu->CSSBorder_Left = $border;
 			$this->Menu->CSSBorder_Right = $border;
 		}
 	}
