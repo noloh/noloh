@@ -10,8 +10,8 @@ class Table extends Control
 {
 	public $Rows;
 	public $BuiltMatrix;
-	public $ScrollLeft;
-	public $ScrollTop;
+	private $ScrollLeft;
+	private $ScrollTop;
 	
 	function Table($left=0, $top=0, $width=500, $height=500)
 	{
@@ -34,23 +34,45 @@ class Table extends Control
 			}
 		}
 	}
+	function GetScrollLeft()
+	{
+		return $this->ScrollLeft;
+	}
+    function SetScrollLeft($scrollLeft)
+    {
+    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+        if($_SESSION['_NIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
+        $this->ScrollLeft = $scrollLeft;
+    }
+    function GetScrollTop()
+    {
+    	return $this->ScrollTop;
+    }
+    function SetScrollTop($scrollTop)
+    {
+    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+    	if($_SESSION['_NIsIE'])
+    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    	else
+        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        $this->ScrollTop = $scrollTop;
+    }
 	function Show()
 	{
 		$initialProperties = parent::Show();
 		$id = $this->Id;
 		$initialProperties .= ",'style.overflow','auto'";
-		NolohInternal::Show("DIV", $initialProperties, $this);
+		NolohInternal::Show('DIV', $initialProperties, $this);
 		$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.borderCollapse','collapse','style.position','relative','style.width','{$this->Width}px','style.height','{$this->Height}px'";
 //		$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.position','relative'";
 		//$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.borderCollapse','collapse','style.position','relative','style.width','{$this->Width}px','style.height','{$this->Height}px'";
 		//$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.position','relative','style.width','{$this->Width}px','style.height','{$this->Height}px'";
-		NolohInternal::Show("TABLE", $initialProperties, $this, $id);
+		NolohInternal::Show('TABLE', $initialProperties, $this, $id);
 		$initialProperties = "'id','{$id}InnerTBody', 'style.position','relative'";
-		NolohInternal::Show("TBODY", $initialProperties, $this, $id."InnerTable");
-		if($this->ScrollLeft != null)
-			AddScript("_N('$this->Id').scrollLeft = $this->ScrollLeft;");
-		if($this->ScrollTop != null)
-			AddScript("_N('$this->Id').scrollTop = $this->ScrollTop;");
+		NolohInternal::Show('TBODY', $initialProperties, $this, $id.'InnerTable');
 	}
 	function SearchEngineShow()
 	{

@@ -51,7 +51,7 @@ class WebPage extends Component
 		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Images/loading.gif', 1, 1, 30, 30);
 		$this->LoadImg->CSSClass = 'NLoad';
 		$this->LoadImg->SetParentId($this->Id);
-		$this->LoadLbl = new Label(' Loading...', 31, 7);
+		$this->LoadLbl = new Label('&nbsp;Loading...', 31, 7);
 		$this->LoadLbl->SetParentId($this->Id);
 		$this->LoadLbl->Opacity = 70;
 		$this->LoadLbl->CSSClass = 'NLoad NLoadLbl';
@@ -152,11 +152,13 @@ class WebPage extends Component
 	}
 	function SetScrollLeft($scrollLeft)
 	{
+		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
 		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';BodyScrollState', array());
 	}
 	
 	function SetScrollTop($scrollTop)
 	{
+		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
 		QueueClientFunction($this, 'document.documentElement.scrollTop='.$scrollTop.';BodyScrollState', array());
 	}
 

@@ -48,10 +48,11 @@ class Panel extends Control
 	}
     function SetScrollLeft($scrollLeft)
     {
+    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
         if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
-        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+        	NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
         $this->ScrollLeft = $scrollLeft;
     }
     function GetScrollTop()
@@ -60,6 +61,7 @@ class Panel extends Control
     }
     function SetScrollTop($scrollTop)
     {
+    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
     	if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
@@ -141,12 +143,12 @@ class Panel extends Control
 
 		//return $initialProperties;
 	}
-	function SetChildLayout($layoutType)
+	function SetChildLayout($layout)
 	{
-		//This needs to be modified to actually set a property, and Controls needs to be Implict so when adding a control it can set the LayoutType right there
+		//This needs to be modified to actually set a property, and Controls needs to be Implict so when adding a control it can set the Layout right there
 		$childCount = $this->Controls->Count();
 		for($i=0;$i<$childCount;++$i)
-			$this->Controls->Elements[$i]->LayoutType = $layoutType;
+			$this->Controls->Elements[$i]->Layout = $layout;
 	}
 	function SearchEngineShow()
 	{

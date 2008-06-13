@@ -56,21 +56,21 @@ final class Animate
 	
 	static function ScrollLeft($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=45)
 	{
-		Animate::Property($control, 'scrollLeft', $from===null?$control->ScrollLeft:$from, $to, $duration, '', $easing, $fps);
+		$from = $from===null?$control->ScrollLeft: $from==Layout::Left?0: $from==Layout::Right?9999: $from;
+		$to = $to==Layout::Left?0: $to==Layout::Right?9999: $to;
+		Animate::Property($control, 'scrollLeft', $from, $to, $duration, '', $easing, $fps);
 	}
 	
 	static function ScrollTop($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=45)
 	{
-		Animate::Property($control, 'scrollTop', $from===null?$control->ScrollTop:$from, $to, $duration, '', $easing, $fps);
+		$from = $from===null?$control->ScrollTop: $from==Layout::Top?0: $from==Layout::Bottom?9999: $from;
+		$to = $to==Layout::Top?0: $to==Layout::Bottom?9999: $to;
+		Animate::Property($control, 'scrollTop', $from, $to, $duration, '', $easing, $fps);
 	}
 	
 	static function Opacity($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=45)
 	{
 		Animate::Property($control, 'opacity', $from===null?$control->Opacity:$from, $to, $duration, '', $easing, $fps);
-		/*if($_SESSION['_NIsIE'])
-			Animate::Property($control, '.filter="alpha(opacity', $from===null?$control->Opacity:$from, $to, $duration, ')"', $easing, $fps);
-		else
-			Animate::Property($control, 'style.opacity', ($from===null?$control->Opacity:$from)/100.0, $to/100.0, $duration, '', $easing, $fps);*/
 	}
 }
 

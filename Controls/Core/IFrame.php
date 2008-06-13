@@ -75,10 +75,11 @@ class IFrame extends Control
 		return $this->ScrollLeft;
 	}
 	
-	function SetScrollLeft($newScrollLeft)
+	function SetScrollLeft($scrollLeft)
 	{
-		$this->ScrollLeft = $newScrollLeft;
-		NolohInternal::SetProperty('scrollLeft', $newScrollLeft, $this);
+		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+		$this->ScrollLeft = $scrollLeft;
+		NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
 	}
 	
 	function GetScrollTop()
@@ -86,10 +87,11 @@ class IFrame extends Control
 		return $this->ScrollTop;
 	}
 	
-	function SetScrollTop($newScrollTop)
+	function SetScrollTop($scrollTop)
 	{
-		$this->ScrollTop = $newScrollTop;
-		NolohInternal::SetProperty('scrollTop', $newScrollTop, $this);
+		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+		$this->ScrollTop = $scrollTop;
+		NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
 	}
 	function SetScrolling($scrollType)
 	{
