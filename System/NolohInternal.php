@@ -65,7 +65,7 @@ final class NolohInternal
 			if($obj->GetBuoyant())
 			{
 				$addTo = 'N1';
-				AddScript('StartBuoyant(\''.$objId.'\',\''.$parent->GetAddId($obj).'\')');
+				AddScript('StartBuoyant(\''.$objId.'\',\''.$parent->GetAddId($obj).'\')', Priority::Low);
 				unset($_SESSION['_NFunctionQueue'][$objId]['StopBuoyant']);
 			}
 			else

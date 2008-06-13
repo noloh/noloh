@@ -279,6 +279,7 @@ function _NSave(id, propertyString, newValue)
 		case "style.opacity":
 			NOLOHChangeInit(id, "Opacity");
 			NOLOHChanges[id]["Opacity"][0] = newValue * 100;
+			break;
 		default:
 			NOLOHChangeInit(id, propertyString);
 			NOLOHChanges[id][propertyString][0] = typeof newValue == "boolean" ? (newValue ? 1 : 0) : newValue;
@@ -301,7 +302,7 @@ function BodyScrollState()
 	loadImg.style.top = Y+"px";	
 	var loadLbl = _N(_NLoadLbl);
 	loadLbl.style.left = X+30+"px";
-	loadLbl.style.top = Y+3+"px";
+	loadLbl.style.top = Y+6+"px";
 }
 
 function BodySizeState()
@@ -313,6 +314,12 @@ function BodySizeState()
 		var deltaY = document.documentElement.clientHeight - body.Height;
 		SetShiftWithInitials(body);
 		ShiftObjects(body.ShiftsWith, deltaX, deltaY);
+	}
+	if(body.BuoyantChildren != null)
+	{
+		var buoyantCount = body.BuoyantChildren.length;
+		for(var i=0; i<buoyantCount; ++i)
+			MoveBuoyant(body.BuoyantChildren[i]);
 	}
 	_NSetProperty(body.id, "Width", document.documentElement.clientWidth);
 	_NSetProperty(body.id, "Height", document.documentElement.clientHeight);

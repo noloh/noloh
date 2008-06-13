@@ -80,7 +80,7 @@ function StartBuoyant(id, parentId)
 		parent.BuoyantChildren.push(id);
 		parent = parent.parentNode;
 	}while (parent && parent.id);
-	MoveBuoyant(id);
+	setTimeout(function() {MoveBuoyant(id);}, 500);
 }
 
 function StopBuoyant(id)
