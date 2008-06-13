@@ -12,8 +12,8 @@
  *  @property string $CSS_________ Allows for the ability to
  *  set ANY CSS property on the fly. Just prepend the style with CSS,
  *  and change dash to underscore. ex. CSSBorder_Bottom = "1px solid black";
- *  @property integer LayoutType
- * - <b>LayoutType</b>, integer,
+ *  @property integer Layout
+ * - <b>Layout</b>, integer,
  *   <br>Sets whether the position is absolute, relative, or static
  * - <b>Enabled</b>, boolean
  *   <br>Gets or sets whether the Control is Enabled
@@ -106,12 +106,12 @@ abstract class Control extends Component
 	*/
 	protected $CSSPropertyArray;
 	/**
-	*LayoutType, Gets or sets the LayoutType of this Control
+	*Layout, Gets or sets the Layout of this Control
 	*Default is Layout::Absolute, possible values are Layout::Absolute, 
 	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
 	*@var integer
 	*/
-	private $LayoutType;
+	private $Layout;
 	/**
 	*	Enabled, Gets or sets whether this control is Enabled, when Enabled is false, the Control takes on a Disabled look
 	* @var boolean
@@ -428,37 +428,37 @@ abstract class Control extends Component
 	{
 		return $this->GetLeft() + $this->GetWidth();
 	}
-	function GetLayoutType()
+	function GetLayout()
 	{
-		return $this->LayoutType === null ? 0 : $this->LayoutType;
+		return $this->Layout === null ? 0 : $this->Layout;
 	}
 	/**
-	*LayoutType, Gets or sets the LayoutType of this Control
+	*Layout, Gets or sets the Layout of this Control
 	*Default is Layout::Absolute, possible values are Layout::Absolute, 
 	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
 	*@var integer
 	*/
-	function SetLayoutType($layoutType)
+	function SetLayout($Layout)
 	{
-		if(is_numeric($layoutType))
+		if(is_numeric($Layout))
 		{
-			switch($layoutType)
+			switch($Layout)
 			{
 				case 0: $printAs = 'absolute'; break;
 				case 1: $printAs = 'relative'; break;
 				case 2: $printAs = 'static';
 			}
 			NolohInternal::SetProperty('style.position', $printAs, $this);
-			if(is_string($this->LayoutType))
+			if(is_string($this->Layout))
 				NolohInternal::SetProperty('style.float', '', $this);
 		}
 		else
 		{
-			NolohInternal::SetProperty('style.float', $layoutType, $this);
-			if(is_numeric($this->GetLayoutType()))
+			NolohInternal::SetProperty('style.float', $Layout, $this);
+			if(is_numeric($this->GetLayout()))
 				NolohInternal::SetProperty('style.position', 'relative', $this);
 		}
-		$this->LayoutType = $layoutType === 0 ? null : $layoutType;
+		$this->Layout = $Layout === 0 ? null : $Layout;
 	}
 	function GetEnabled()
 	{
@@ -594,19 +594,20 @@ abstract class Control extends Component
 
 	function SetBuoyant($bool)
 	{
-		$this->Buoyant = $bool ? true : null;/*
-		if($bool)
+		$this->Buoyant = $bool ? true : null;
+		/*if($bool)
 			$this->Buoyant = true;
 		else
 		{
 			$this->Buoyant = null;
-			QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
+			//QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
 		}*/
 		if($this->GetShowStatus()===1)
 		{
 			NolohInternal::Bury($this);
 			NolohInternal::Resurrect($this);
-			QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
+			if(!$bool)
+				QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
 		}
 	}
 	
@@ -817,7 +818,8 @@ abstract class Control extends Component
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
-			$key = str_replace('_', '', str_replace('CSS', '', $nm));
+			//$key = str_replace('_', '', str_replace('CSS', '', $nm));
+			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
 			$first = strtolower(substr($key, 0, 1));
 			$key = $first . substr($key, 1, strlen($key)-1);
 			$ret = &$this->CSSPropertyArray[$key];
@@ -825,7 +827,7 @@ abstract class Control extends Component
 		//elseif(Event::ValidType($nm))
 		//	$ret = $this->GetEvent($nm);
 		else 
-			$ret = parent::__get($nm);
+			$ret = &parent::__get($nm);
 		return $ret;
 	}
 	/**
@@ -833,17 +835,20 @@ abstract class Control extends Component
 	 */
 	function __set($nm, $val)
 	{
-		parent::__set($nm, $val);
+		//parent::__set($nm, $val);
 		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
-			$key = str_replace('_', '', str_replace('CSS', '', $nm));
+			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
+			//$key = str_replace('_', '', str_replace('CSS', '', $nm));
 			$first = strtolower(substr($key, 0, 1));
 			$key = $first . substr($key, 1, strlen($key)-1);
 			$this->CSSPropertyArray[$key] = $val;
-			NolohInternal::SetProperty("style.$key", $val, $this);
+			NolohInternal::SetProperty('style.'.$key, $val, $this);
 		}
+		else
+			return parent::__set($nm, $val);
 		return $val;
 	}
 }

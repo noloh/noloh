@@ -51,7 +51,7 @@ final class System
 	const Full = 'Full';
 	/**
 	 * System::Vacuous is used in connection with {@link Control::SetVisible()} to indicate that the control will not
-	 * take up space. This is similar to false except that if either static or relative PositionType is used, the
+	 * take up space. This is similar to false except that if either static or relative Layout is used, the
 	 * control will not occupy space.
 	 * <code>
 	 * // Add a new Button
@@ -59,7 +59,7 @@ final class System
 	 * // Add another new Button
 	 * $this->Controls->Add($btn2 = new Button());
 	 * // Position them both statically
-	 * $btn1->PositionType = $btn2->PositionType = 2;
+	 * $btn1->Layout = $btn2->Layout = 2;
 	 * // Make the first button vacuous
 	 * $btn1->Visible = System::Vacuous;
 	 * // Now $btn2 will be on the left side of the screen, not to the right of an invisible object
@@ -71,6 +71,9 @@ final class System
 	* indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.
 	*/
 	const Unhandled = 'Unhandled';
+	
+	const Horizontal = 'horizontal';
+	const Vertical = 'vertical';
 }
 
 ?>
