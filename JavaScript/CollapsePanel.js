@@ -1,7 +1,7 @@
-function _NTglClpsePanel(id, titlId, bdyId)
+function _NTglClpsePanel(id, titlId, bdyId, clpse)
 {
 	var pnl = _N(id);
-	if(pnl.Opn == null || pnl.Opn)
+	if((pnl.Opn == null || pnl.Opn) || clpse)
 	{
 		var tmpHgt = (pnl.style.height == '')?'':parseInt(pnl.style.height, 10);
 		if(tmpHgt != pnl.Hgt)

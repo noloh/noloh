@@ -21,7 +21,7 @@ class CollapsePanel extends Panel
 		$this->TitlePanel->ParentId = $this->Id;
 		$this->BodyPanel->ParentId = $this->Id; 
 		$this->Controls = &$this->BodyPanel->Controls;
-		$this->TitlePanel->LayoutType = $this->BodyPanel->LayoutType = Layout::Relative;
+		$this->TitlePanel->Layout = $this->BodyPanel->Layout = Layout::Relative;
 		$this->SetTitleBackground();
 		$this->SetText($text);
 		$this->TitlePanel->Click['Collapse'] = new ClientEvent('_NTglClpsePanel', $this->Id, $this->TitlePanel->Id, $this->BodyPanel->Id);
@@ -36,14 +36,19 @@ class CollapsePanel extends Panel
 			$imagePath = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_up.png';
 			$rolloverImage = new RolloverImage($imagePath, $imagePath, null, 6);
 			$rolloverImage->SelectedSrc = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_down.png';
-			$rolloverImage->SetTogglesOff(true);
+			
 		}
 		if($rolloverImage->SelectedSrc != null)
 		{
 			$this->TitlePanel->Click['Collapse1'] = $rolloverImage->Click['Select'];
 			unset($rolloverImage->Click['Select']);
-		}	
-		$this->ToggleButton = $rolloverImage;
+		}
+		$rolloverImage->SetTogglesOff(true);
+		if($this->ToggleButton != null)
+			$this->ToggleButton->ParentId = null;
+		$this->ToggleButton = &$rolloverImage;
+		$this->ToggleButton->ReflectAxis('x');
+//		$this->ToggleButton->SetSelected(true);
 		$this->ToggleButton->ParentId = $this->TitlePanel->Id;
 	}
 	function GetToggleButton()
@@ -55,6 +60,7 @@ class CollapsePanel extends Panel
 		if(!isset($this->TitlePanel->Controls['Text']))
 		{
 			$tmpTitleLabel = new Label($text, 0, 0, null, null);
+			$tmpTitleLabel->Layout = Layout::Relative;
 			$tmpTitleLabel->CSSClass = 'NAccordionText';	
 			$this->TitlePanel->Controls['Text'] = $tmpTitleLabel;		
 		}
@@ -74,6 +80,8 @@ class CollapsePanel extends Panel
 			else
 			{
 				$this->TitlePanel->BackColor = $objectOrColor;
+				if($this->TitlePanel->Controls['Glossy'] != null)
+					unset($this->TitlePanel->Controls['Glossy']);
 				return;
 			}
 		}
@@ -81,16 +89,20 @@ class CollapsePanel extends Panel
 			$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/Std/HeadBlue.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/HeadOrange.gif', 0, 0, '100%', $this->TitlePanel->GetHeight());
 		$this->TitlePanel->Controls['Glossy'] = $tmpGlossy;
 	}
-	function SetWidth($width, $toggleMargin = 5)
+	/*function SetWidth($width, $toggleMargin = 5)
 	{
 		parent::SetWidth($width);
 		$this->ToggleButton->SetLeft($toggleMargin);
-		$this->ToggleButton->ReflectAxis('x');
+	}*/
+	function SetCollapsed($bool)
+	{
+//		$this->ToggleButton->SetSelected(!$bool);
+		QueueClientFunction($this, '_NTglClpsePanel', array('\''.$this->Id.'\'', '\''.$this->TitlePanel->Id.'\'', '\''.$this->BodyPanel->Id.'\'', $bool?'true':'false'));
 	}
 	function SetHeight($newHeight)
 	{
 		parent::SetHeight($newHeight);
-		NolohInternal::SetProperty('Hgt', "{$this->GetHeight()}", $this);
+		NolohInternal::SetProperty('Hgt', $this->GetHeight(), $this);
 	}
 	function GetTitleBackground()
 	{
