@@ -26,15 +26,15 @@ class Tab extends Panel
 	{
 		parent::SetWidth($width);	
 		$this->MainImage->Width = $width - $this->LeftImage->Width - $this->RightImage->Width;
-		$this->MainImage->Left = $this->LeftImage->Right;
-		$this->RightImage->Left = $this->MainImage->Right;
+		$this->MainImage->SetLeft($this->LeftImage->GetRight());
+		$this->RightImage->SetLeft($this->MainImage->GetRight());
 	}
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
-		$this->LeftImage->Height = $height;
-		$this->MainImage->Height = $height;
-		$this->RightImage->Height = $height;
+		$this->LeftImage->SetHeight($height);
+		$this->MainImage->SetHeight($height);
+		$this->RightImage->SetHeight($height);
 	}
 }
 ?>

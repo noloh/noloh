@@ -39,12 +39,12 @@ class RolloverTab extends Panel implements Groupable
 			}
 		}
 		if($outTab == null)
-			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Win/TabBackLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Win/TabBackMiddle.gif', NOLOHConfig::GetNOLOHPath().'Images/Win/TabBackRight.gif'));
+			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Std/TabBackLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabBackMiddle.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabBackRight.gif'));
 //			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Std/TabInARndLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabInACenter.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabInARndRight.gif'));
 		else 	
 			$this->SetOutTab($outTab);
 		if($selectedTab == null)
-			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Win/TabFrontLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Win/TabFrontMiddle.gif', NOLOHConfig::GetNOLOHPath().'Images/Win/TabFrontRight.gif'));
+			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Std/TabFrontLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabFrontMiddle.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabFrontRight.gif'));
 //			$this->SetSelectedTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Std/TabActRndLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabActCenter.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabActRndRight.gif'));
 		else
 			$this->SetSelectedTab($selectedTab);
