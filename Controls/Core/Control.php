@@ -827,7 +827,9 @@ abstract class Control extends Component
 		//elseif(Event::ValidType($nm))
 		//	$ret = $this->GetEvent($nm);
 		else 
-			$ret = &parent::__get($nm);
+			$ret = parent::__get($nm);
+			//The following line stole 10 hours from my life :( - Asher
+//			$ret = &parent::__get($nm);
 		return $ret;
 	}
 	/**
