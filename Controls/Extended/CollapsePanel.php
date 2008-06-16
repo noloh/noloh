@@ -40,6 +40,7 @@ class CollapsePanel extends Panel
 		}
 		if($rolloverImage->SelectedSrc != null)
 		{
+			$rolloverImage->SetSelected(true);
 			$this->TitlePanel->Click['Collapse1'] = $rolloverImage->Click['Select'];
 			unset($rolloverImage->Click['Select']);
 		}
@@ -96,7 +97,9 @@ class CollapsePanel extends Panel
 	}*/
 	function SetCollapsed($bool)
 	{
-//		$this->ToggleButton->SetSelected(!$bool);
+		$this->ToggleButton->SetSelected(false);
+//		Alert($this->ToggleButton->Selected);
+//		$this->TitlePanel->Click->Exec();
 		QueueClientFunction($this, '_NTglClpsePanel', array('\''.$this->Id.'\'', '\''.$this->TitlePanel->Id.'\'', '\''.$this->BodyPanel->Id.'\'', $bool?'true':'false'));
 	}
 	function SetHeight($newHeight)
