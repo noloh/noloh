@@ -144,7 +144,7 @@ class RichMarkupRegion extends MarkupRegion
 		$this->EventSpace[$eventeeId][$eventType] = $eventObj;
 		//$pair = array(array($this->PanelId, $eventeeId), $eventType);
 		$pair = array(array($this->Id, $eventeeId), $eventType);
-		if($eventObj != null && !in_array($pair, $eventObj->Handles))
+		if($eventObj != null && !in_array($pair, $eventObj->Handles, true))
 			$eventObj->Handles[] = $pair;
 		$this->UpdateEvent($eventType, $eventeeId);
 	}

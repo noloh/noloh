@@ -40,7 +40,7 @@ function _NErrorHandler($number, $string, $file, $line)
 		$_SESSION['_NPHPInfo'] = true;
 		Application::Reset(true, false);
 	}
-	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers()))
+	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers(), true))
 	{
 		ob_start('ob_gzhandler');
 		++$_SESSION['_NVisit'];

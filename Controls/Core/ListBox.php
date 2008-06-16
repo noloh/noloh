@@ -53,7 +53,7 @@ class ListBox extends ListControl
 	 */
 	function SetSelectedIndex($index)
 	{
-		if(!in_array($index, $this->SelectedIndices))
+		if(!in_array($index, $this->SelectedIndices, true))
 		{
 			$this->SelectedIndices[] = $index;
 			parent::SetSelectedIndex($index);
@@ -111,7 +111,7 @@ class ListBox extends ListControl
 	{
 		if($select)
 			SetSelectedIndex($index);
-		elseif(in_array($index, $this->SelectedIndices))
+		elseif(in_array($index, $this->SelectedIndices, true))
 		{
 			//NolohInternal::SetProperty("options[$index].selected", false, $this);
 			//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=false;void", array(0));

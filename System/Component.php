@@ -154,7 +154,7 @@ abstract class Component extends Object
 			$this->EventSpace = array();
 		$this->EventSpace[$eventType] = $eventObj;
 		$pair = array($this->Id, $eventType);
-		if($eventObj != null && !in_array($pair, $eventObj->Handles))
+		if($eventObj != null && !in_array($pair, $eventObj->Handles, true))
 			$eventObj->Handles[] = $pair;
 		$this->UpdateEvent($eventType);
 		return $eventObj;
