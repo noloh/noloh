@@ -90,6 +90,19 @@ class Panel extends Control
 			$tmpScroll = 'visible';
 		elseif($scrollType === null)
 			$tmpScroll = '';
+		elseif($scrollType == System::Horizontal)
+		{
+			$tmpScroll = '';
+			NolohInternal::SetProperty('style.overflowX', 'auto', $this);
+			NolohInternal::SetProperty('style.overflowY', 'hidden', $this);
+		}
+		elseif($scrollType == System::Vertical)
+		{
+			
+			$tmpScroll = '';
+			NolohInternal::SetProperty('style.overflowX', 'hidden', $this);
+			NolohInternal::SetProperty('style.overflowY', 'auto', $this);
+		}
 		elseif($scrollType)
 			$tmpScroll = 'scroll';
 		else//if(!$scrollType)
