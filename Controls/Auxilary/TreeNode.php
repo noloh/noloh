@@ -19,6 +19,7 @@ class TreeNode extends Panel
 	private $ParentNodeId;
 	private $Selected;
 	private $Value;
+	private $TreeListId;
 	
 	public static function GetDefaultLeafSrc()
 	{
@@ -205,9 +206,19 @@ class TreeNode extends Panel
 		$this->ChildrenPanel->ClientVisible = true;
 		if($deep)
 		{
-			$NodeCount = $this->ChildrenPanel->Controls->Count();
-			for($i=0; $i<$NodeCount; ++$i)
-				$this->ChildrenPanel->Controls->Elements[$i]->Expand(true);
+			$nodeCount = $this->ChildrenPanel->Controls->Count();
+			for($i=0; $i<$nodeCount; ++$i)
+				$this->ChildrenPanel->Controls->Elements[$i]->Expand(true, false);
+		}
+	}
+	
+	function ExpandToShow()
+	{
+		if($this->ParentNodeId)
+		{
+			$parentNode = GetComponentById($this->ParentNodeId);
+			$parentNode->Expand();
+			$parentNode->ExpandToShow();
 		}
 	}
 	
@@ -303,6 +314,27 @@ class TreeNode extends Panel
 		NolohInternal::SetProperty('OpenSrc', $newSrc, $this);
 		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->ClientVisible === true)
 			$this->Icon->SetSrc($newSrc);
+	}
+	
+	function GetSelected()
+	{
+		return $this->TreeListId != null && in_array($this, GetComponentById($this->TreeListId)->GetSelectedTreeNodes(), true);
+	}
+	
+	function SetSelected($bool)
+	{
+		if($this->TreeListId != null)
+		{
+			if($bool)
+				GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
+			//GetComponentById($this->TreeListId)->;
+//			QueueClientFunction($this, 'SelectNode', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''/*, (GetBrowser()=='ie'?'window.':'').'event'*/));
+			//if($bool)
+			//	QueueClientFunction($this, 'SelectNode', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\'', 'Object()'));
+			//$this->Click->Exec();
+		}
+		else
+			BloodyMurder('You must add the TreeNode to the TreeList before selecting it.');
 	}
 	
 	function AddShift($shift)
