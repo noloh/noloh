@@ -75,46 +75,66 @@ class TreeList extends Panel
 		$selectedNode = $this->GetSelectedTreeNode();
 		return $selectedNode ? $selectedNode->GetValue() : null;
 	}
+	function SetSelectedValue($value)
+	{
+		foreach($this->Controls->Elements as $treeNode)
+			self::SetSelectedValueHelper($value, $treeNode);
+	}
+	function SetSelectedValueHelper($value, $node)
+	{
+		if($node->GetValue() == $value)
+			$node->Selected = true;
+		foreach($node->TreeNodes as $treeNode)
+			self::SetSelectedValueHelper($value, $treeNode);
+	}
 	function GetSelectedText()
 	{
 		$selectedNode = $this->GetSelectedTreeNode();
 		return $selectedNode ? $selectedNode->GetText() : null;
 	}
+	function SetSelectedText($text)
+	{
+		foreach($this->Controls->Elements as $treeNode)
+			self::SetSelectedTextHelper($text, $treeNode);
+	}
+	function SetSelectedTextHelper($text, $node)
+	{
+		if($node->GetText() == $text)
+			$node->Selected = true;
+		foreach($node->TreeNodes as $treeNode)
+			self::SetSelectedTextHelper($text, $treeNode);
+	}
 	function SetOpenSrc($openSrc)
 	{
 		NolohInternal::SetProperty('OpenSrc', $openSrc, $this);
-		$nodeCount = $this->TreeNodes->Count;
-		for($i=0; $i<$nodeCount; ++$i)
-			self::OpenSrcHelper($openSrc, $this->TreeNodes[$i]);
+		foreach($this->Controls->Elements as $treeNode)
+			self::OpenSrcHelper($openSrc, $treeNode);
 	}
 	static function OpenSrcHelper($openSrc, $node)
 	{
 		if($node->GetOpenSrc() == null && $node->ChildrenPanel->Controls->Count() != 0 && $node->ChildrenPanel->ClientVisible === true)
 			$this->Icon->SetSrc($openSrc);
-		$nodeCount = $this->TreeNodes->Count;
-		for($i=0; $i<$nodeCount; ++$i)
-			self::OpenSrcHelper($openSrc, $this->TreeNodes[$i]);
+		foreach($this->Controls->Elements as $treeNode)
+			self::OpenSrcHelper($openSrc, $treeNode);
 	}
 	function SetCloseSrc($closeSrc)
 	{
 		NolohInternal::SetProperty('CloseSrc', $closeSrc, $this);
-		$nodeCount = $this->TreeNodes->Count;
-		for($i=0; $i<$nodeCount; ++$i)
-			self::CloseSrcHelper($closeSrc, $this->TreeNodes[$i]);
+		foreach($this->Controls->Elements as $treeNode)
+			self::CloseSrcHelper($closeSrc, $treeNode);
 	}
 	static function CloseSrcHelper($closeSrc, $node)
 	{
 		if($node->GetCloseSrc() == null && $node->ChildrenPanel->Controls->Count() != 0 && $node->ChildrenPanel->ClientVisible !== true)
 			$this->NodeIcon->SetSrc($closeSrc);
 		$nodeCount = $this->TreeNodes->Count;
-		for($i=0; $i<$nodeCount; ++$i)
-			self::CloseSrcHelper($closeSrc, $this->TreeNodes[$i]);
+		foreach($this->Controls->Elements as $treeNode)
+			self::CloseSrcHelper($closeSrc, $treeNode);
 	}
 	function ExpandAll()
 	{
-		$nodeCount = $this->Controls->Count();
-		for($i=1; $i<$nodeCount; ++$i)
-			$this->Controls->Elements[$i]->Expand(true);
+		foreach($this->Controls->Elements as $element)
+			$element->Expand(true);
 	}
 	function Set_NSelectedNodes($selectedNodes)
 	{
