@@ -6,12 +6,15 @@
  * 
  * @package Controls/Core
  */
-class RadioButton extends GroupedInputControl implements Groupable 
+class RadioButton extends CheckControl implements Groupable 
 {
 	function RadioButton($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		parent::GroupedInputControl($text, $left, $top, $width, $height);
+		parent::CheckControl($text, $left, $top, $width, $height);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString == 'Click')
@@ -19,6 +22,9 @@ class RadioButton extends GroupedInputControl implements Groupable
 			return '_NRBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
         parent::Show();

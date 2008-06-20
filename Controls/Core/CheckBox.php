@@ -19,7 +19,7 @@
  * 
  * @package Controls/Core
  */
-class CheckBox extends GroupedInputControl implements MultiGroupable
+class CheckBox extends CheckControl implements MultiGroupable
 {
     /**
      *Constructor.
@@ -38,7 +38,7 @@ class CheckBox extends GroupedInputControl implements MultiGroupable
      */
 	function CheckBox($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		parent::GroupedInputControl($text, $left, $top, $width, $height);
+		parent::CheckControl($text, $left, $top, $width, $height);
 	}
 	/**
 	 * @ignore
