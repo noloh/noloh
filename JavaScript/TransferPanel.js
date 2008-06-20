@@ -1,4 +1,4 @@
-function TransferPaneAdd(objFrom, objTo)
+function TransferPanelAdd(objFrom, objTo)
 {
 	FromPane = _N(objFrom);
 	ToPane = _N(objTo);

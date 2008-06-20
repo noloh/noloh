@@ -1,19 +1,35 @@
 <?php
 /**
- * GroupedInputControl class
+ * CheckControl class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A CheckControl is a Control that can visually be checked on or off. For example, {@see CheckBox} and {@see RadioButton}
+ * both extend CheckControl, and it is CheckControl's purpose to provide functionality that is common to both CheckBox and RadioButton,
+ * as well as for proper organization and inheritance. It is not recommended that you extend CheckControl directly, instead, you should 
+ * extend CheckBox or RadioButton.
  * 
  * @package Controls/Core
  */
-abstract class GroupedInputControl extends Control
+abstract class CheckControl extends Control
 {
+	/**
+	 * The Label showing the Text of this Control
+	 * @var Label
+	 */
+	public $Caption;
 	private $GroupName;
 	private $Checked;
 	protected $Value;
-	public $Caption;
-	
-	function GroupedInputControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends CheckControl
+	 * @param mixed $text The Text of this element. If it a Control, it will be used as the Caption. If it is an Item or a string, a Label will be instantiated as the Caption with the specified Text.
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @return CheckControl
+	 */
+	function CheckControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
         parent::Control($left, $top, $width, $height);
 		//$this->Caption = is_object($text) ? $text : new Label(null, 23, 0, null, null);
@@ -30,10 +46,16 @@ abstract class GroupedInputControl extends Control
         $this->Caption->SetParentId($this->Id);
 //		$this->GroupName = $this->Id;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetText()
 	{
 		return $this->Caption->Text;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetText($newText)
 	{
 		if($newText instanceof Item)
@@ -43,18 +65,32 @@ abstract class GroupedInputControl extends Control
 		}
 		$this->Caption->SetText($newText);
 	}
+	/**
+	 * Returns the value of this CheckControl. If there is no value, the Text will be returned instead.
+	 * @return string
+	 */
 	function GetValue()
 	{
-		return ($this->Value != null)? $this->Value : $this->Text;
+		return $this->Value != null ? $this->Value : $this->Text;
 	}
+	/**
+	 * Sets the value of this CheckControl
+	 * @param text $value
+	 */
 	function SetValue($value)
 	{
 		$this->Value = $value;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetGroupName()
 	{
 		return $this->GroupName;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetGroupName($newGroupName)
 	{
 		$this->GroupName = $newGroupName;
@@ -63,18 +99,34 @@ abstract class GroupedInputControl extends Control
 		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
 	}
+	/**
+	 * Returns whether or not this element is checked
+	 * @return boolean
+	 */
 	function GetChecked()
 	{
 		return $this->GetSelected();
 	}
+	/**
+	 * Sets whether or not this element is checked
+	 * @param boolean $bool
+	 */
 	function SetChecked($bool)
 	{
 		$this->SetSelected($bool);
-	} 
+	}
+	/**
+	 * An alias for GetChecked
+	 * @return boolean
+	 */
 	function GetSelected()
 	{
 		return $this->Checked != null;
 	}
+	/**
+	 * An Alias for SetChecked
+	 * @param boolean $bool
+	 */
 	function SetSelected($bool)
 	{
 		$newChecked = $bool ? true : null;
@@ -134,15 +186,21 @@ abstract class GroupedInputControl extends Control
 //	{
 //		$this->Caption->CSSClass = $className;
 //	}
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
 			return ',\'onclick\',\''.$this->GetEventString('Click').'this.blur();\'';
 		return parent::GetEventString($eventTypeAsString);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
-		AddNolohScriptSrc('GroupedInputControl.js');
+		AddNolohScriptSrc('CheckControl.js');
         NolohInternal::Show('DIV', parent::Show().',\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
 		//$this->Caption->Show();
 		//return $parentShow;
@@ -157,6 +215,9 @@ abstract class GroupedInputControl extends Control
 		$this->Caption->Resurrect();
 		parent::Resurrect();
 	}*/
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		$this->Caption->SearchEngineShow();
