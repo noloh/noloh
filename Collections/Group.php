@@ -254,7 +254,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function SearchEngineShow()
 	{
-		foreach($this->Controls as $control)
+		foreach($this->Groupees as $control)
 			$control->SearchEngineShow();
 	}
 	/**
