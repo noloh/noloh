@@ -139,7 +139,7 @@ abstract class Component extends Object
 		return $this->GetParent()->GetAddId($obj);
 	}
 	/**
-	 * Gets an Event with a particular name
+	 * Gets an Event with a particular name. Should be called by your own custom Events, as this enables certain functionality, e.g., the use of array square bracket notation for appending to an event.
 	 * @param string $eventType
 	 * @return Event
 	 */
@@ -152,7 +152,7 @@ abstract class Component extends Object
 			: new Event(array(), array(array($this->Id, $eventType)));
 	}
 	/**
-	 * Sets an Event with a particular name
+	 * Sets an Event with a particular name. Should be called by your own custom Events, as this enables certain functionality, e.g., the use of array square bracket notation for appending to an event.
 	 * @param Event $eventObj The Event object
 	 * @param string $eventType The name of the event
 	 * @return Event The Event Object that was passed in

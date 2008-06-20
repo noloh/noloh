@@ -8,6 +8,10 @@
  */
 class TreeList extends Panel 
 {
+	/**
+	 * An ArrayList of all the TreeNodes
+	 * @var ArrayList
+	 */
 	public $TreeNodes;
 	private $SelectedTreeNodes;
 	private $OpenSrc;
@@ -24,6 +28,9 @@ class TreeList extends Panel
 		NolohInternal::SetProperty('OpenSrc', TreeNode::GetDefaultOpenSrc(), $this);
 		NolohInternal::SetProperty('CloseSrc', TreeNode::GetDefaultCloseSrc(), $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddTreeNode($node)
 	{
 		if(!($node instanceof TreeNode))
@@ -34,6 +41,9 @@ class TreeList extends Panel
 		$node->TellChildren($this->Id);
 		return $node;
 	}
+	/**
+	 * @ignore
+	 */
 	function InsertTreeNode($node, $index)
 	{
 		if(!($node instanceof TreeNode))
@@ -44,6 +54,9 @@ class TreeList extends Panel
 		$node->TellChildren($this->Id);
 		return $node;
 	}
+	/**
+	 * @ignore
+	 */
 	function RemoveTreeNodeAt($index)
 	{
 		$this->Controls->Elements[$index]->Remove();
@@ -80,6 +93,9 @@ class TreeList extends Panel
 		foreach($this->Controls->Elements as $treeNode)
 			self::SetSelectedValueHelper($value, $treeNode);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetSelectedValueHelper($value, $node)
 	{
 		if($node->GetValue() == $value)
@@ -97,6 +113,9 @@ class TreeList extends Panel
 		foreach($this->Controls->Elements as $treeNode)
 			self::SetSelectedTextHelper($text, $treeNode);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetSelectedTextHelper($text, $node)
 	{
 		if($node->GetText() == $text)
@@ -136,10 +155,16 @@ class TreeList extends Panel
 		foreach($this->Controls->Elements as $element)
 			$element->Expand(true);
 	}
+	/**
+	 * @ignore
+	 */
 	function Set_NSelectedNodes($selectedNodes)
 	{
 		$this->SelectedTreeNodes = explode('~d2~', $selectedNodes);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		AddNolohScriptSrc('TreeList.js');

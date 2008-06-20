@@ -37,10 +37,16 @@ class TableColumn extends Panel
 			else
 				$this->Controls->Add($object);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetAddId()
 	{
 		return $this->Id . 'IC';
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		$initialProperties = Control::Show();

@@ -20,15 +20,23 @@ class TreeNode extends Panel
 	private $Selected;
 	private $Value;
 	private $TreeListId;
-	
+	/**
+	 * @ignore
+	 */
 	public static function GetDefaultLeafSrc()
 	{
 		return NOLOHConfig::GetNOLOHPath().'Images/document.gif';
 	}
+	/**
+	 * @ignore
+	 */
 	public static function GetDefaultCloseSrc()
 	{
 		return NOLOHConfig::GetNOLOHPath().'Images/folder_close.gif';
 	}
+	/**
+	 * @ignore
+	 */
 	public static function GetDefaultOpenSrc()
 	{
 		return NOLOHConfig::GetNOLOHPath().'Images/folder_open.gif';
@@ -63,6 +71,9 @@ class TreeNode extends Panel
 		$this->Controls->Add($this->Element);
 		$this->Controls->Add($this->ChildrenPanel);
 	}
+	/**
+	 * @ignore
+	 */
 	private function AddNodeHelper($node)
 	{
 		$node->SetWidth($this->Width-20);
@@ -81,6 +92,9 @@ class TreeNode extends Panel
 				$this->Icon->Src = $this->CloseSrc!=null ? $this->CloseSrc : TreeNode::GetDefaultCloseSrc();
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function AddTreeNode($node)
 	{
 		if(!($node instanceof TreeNode))
@@ -89,6 +103,9 @@ class TreeNode extends Panel
 		$this->ChildrenPanel->Controls->Add($node, true, true);
 		return $node;
 	}
+	/**
+	 * @ignore
+	 */
 	function InsertTreeNode($node, $index)
 	{
 		if(!($node instanceof TreeNode))
@@ -105,10 +122,16 @@ class TreeNode extends Panel
 		}
 		return $node;
 	}
+	/**
+	 * @ignore
+	 */
 	function RemoveTreeNodeAt($idx)
 	{
 		$this->ChildrenPanel->Controls->Elements[$idx]->Remove();
 	}
+	/**
+	 * @ignore
+	 */
 	function Remove()
 	{
 		$tList = GetComponentById($this->TreeListId);
@@ -126,7 +149,9 @@ class TreeNode extends Panel
 			$tList->TreeNodes->Remove($this, true);
 		$this->ForgetListDeeply();
 	}
-
+	/**
+	 * @ignore
+	 */
 	function TellChildren($treeListId)
 	{
 		$nodesCount = $this->TreeNodes->Count();
@@ -136,7 +161,9 @@ class TreeNode extends Panel
 			$node->SetTreeListId($treeListId);
 		}
 	}
-	
+	/**
+	 * @ignore
+	 */
 	private function ForgetListDeeply()
 	{
 		$this->SetTreeListId(null);
@@ -226,14 +253,18 @@ class TreeNode extends Panel
 	{
 		return $this->TreeListId;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetTreeListId($newId)
 	{
 		$this->TreeListId = $newId;
 		NolohInternal::SetProperty('ListId', $newId, $this);
 		$this->Element->Click['_N'] = new ClientEvent('SelectNode("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
 	}
-
+	/**
+	 * @ignore
+	 */
 	function GetClick()
 	{
 		$click = $this->Element->Click;
@@ -241,7 +272,9 @@ class TreeNode extends Panel
 			$click['_N'] = new ClientEvent('');
 		return $this->Element->Click;
 	}
-
+	/**
+	 * @ignore
+	 */
 	function SetClick($newClick)
 	{
 		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
@@ -250,12 +283,16 @@ class TreeNode extends Panel
 			: new ClientEvent('SelectNode("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
 		$this->Element->Click[] = $newClick;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetText()
 	{
 		return $this->Element ? $this->Element->GetText() : null;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetText($text)
 	{
 		if($this->Element != null)
@@ -336,7 +373,9 @@ class TreeNode extends Panel
 		else
 			BloodyMurder('You must add the TreeNode to the TreeList before selecting it.');
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function AddShift($shift)
 	{
 		$this->MouseDown[] = new ClientEvent('_N(\''.$this->Element->Id.'\').onclick.call(' . (GetBrowser()=='ie'?'':'this, event') . ');');

@@ -3,7 +3,7 @@
  * ListControl class
  *
  * A ListControl is a Control that has Items in it that may become selected. For example, {@see ComboBox}, {@see ListBox}, and {@see CheckListBox}
- * both extend ListControl, and it is ListControl's purpose to provide functionality that is common to both ComboBox, ListBox, and CheckListBox
+ * all extend ListControl, and it is ListControl's purpose to provide functionality that is common to both ComboBox, ListBox, and CheckListBox
  * as well as for proper organization and inheritance. 
  * It is not recommended that you extend ListControl directly, instead, you should extend ComboBox, ListBox, or CheckListBox. 
  * 
@@ -13,7 +13,6 @@ abstract class ListControl extends Control
 {
 	/**
 	* Items, An ArrayList containing the Items of the ListControl
-	* @access public
 	* @var ArrayList
 	*/
 	public $Items;

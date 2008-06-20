@@ -68,6 +68,9 @@ class Panel extends Control
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
     }
+    /**
+     * @ignore
+     */
 	function SetCSSClass($cssClass=null)
 	{
 		parent::SetCSSClass('NPanel '.$cssClass);
@@ -110,11 +113,16 @@ class Panel extends Control
 		//Alert($tmpScroll);
 		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetStyleString()
 	{
 		return parent::Show();
 	}
-		
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
         NolohInternal::Show('DIV', parent::Show(), $this);
@@ -163,6 +171,9 @@ class Panel extends Control
 		for($i=0;$i<$childCount;++$i)
 			$this->Controls->Elements[$i]->Layout = $layout;
 	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		foreach($this->Controls as $control)

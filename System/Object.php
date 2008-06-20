@@ -2,11 +2,40 @@
 /**
  * Object class
  * 
- * An Object is the top-most parent of any NOLOH class.
+ * An Object is the top-most parent of any NOLOH class. Its purpose is two-fold: First of all, for organizing classes, it is convenient and
+ * logically elegant to have a base for all of your classes. Secondly, it comes equipped with the syntactic sugar that calls Get or Set 
+ * functions for you for properties that are not accessible. Consider the following example:
+ * 
+ * <code>
+ * class Foo extends Object
+ * {
+ *   // A property not visible outside of this class
+ *   private $Property;
+ *   // An accessor method for the private property
+ *   function GetProperty()
+ *   {
+ *     Alert('GetProperty has been called!');
+ *     return $this->Property;
+ *   }
+ *   // A mutator method for the private property
+ *   function SetProperty($value)
+ *   {
+ *     Alert('SetProperty has been called!');
+ *     $this->Property = $value;
+ *   }
+ * }
+ * 
+ * // Instantiate a new Foo object
+ * $foo = new Foo();
+ * // Automatically calls the SetProperty method, triggering an Alert and setting the private variable to 'Hello'
+ * $foo->Property = 'Hello';
+ * // Automatically calls the GetProperty method, triggering an Alert and setting the local variable to 'Hello'
+ * $property = $foo->Property;
+ * </code>
  * 
  * @package System
  */
-class Object
+abstract class Object
 {
 	/**
 	* @ignore

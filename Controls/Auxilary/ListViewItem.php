@@ -28,6 +28,9 @@ class ListViewItem extends Panel //extends Component
 			return GetComponentById($this->ListViewId);
 	}
 	function SetListView($listView)	{$this->ListViewId = $listView->Id;}
+	/**
+	 * @ignore
+	 */
 	function AddSubItem($objOrText=null)
 	{
 		$this->SubItems->Add((is_string($objOrText) || $objOrText == null)?$objOrText = new Label($objOrText, null, null, null, null):$objOrText, true, true);
@@ -40,6 +43,9 @@ class ListViewItem extends Panel //extends Component
 		if(($tmpHeight = $objOrText->GetHeight()) > $this->GetHeight())
 			$this->SetHeight($tmpHeight);
 	}
+	/**
+	 * @ignore
+	 */
 	function Remove()
 	{
 		$this->GetListView()->ListViewItems->Remove($this);

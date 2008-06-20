@@ -56,6 +56,9 @@ class CollapsePanel extends Panel
 	{
 		return $this->ToggleButton;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetText($text)
 	{
 		if(!isset($this->TitlePanel->Controls['Text']))
@@ -68,6 +71,9 @@ class CollapsePanel extends Panel
 		else
 			$this->TitlePanel->Controls['Text']->SetText($text);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetText()
 	{
 		return $this->TitlePanel->Controls['Text']->GetText();
@@ -102,6 +108,9 @@ class CollapsePanel extends Panel
 //		$this->TitlePanel->Click->Exec();
 		QueueClientFunction($this, '_NTglClpsePanel', array('\''.$this->Id.'\'', '\''.$this->TitlePanel->Id.'\'', '\''.$this->BodyPanel->Id.'\'', $bool?'true':'false'));
 	}
+	/**
+	 * @ignore
+	 */
 	function SetHeight($newHeight)
 	{
 		parent::SetHeight($newHeight);
@@ -116,6 +125,9 @@ class CollapsePanel extends Panel
 			
 	}
 	function GetTitlePanel()	{return $this->TitlePanel;}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
         parent::Show();

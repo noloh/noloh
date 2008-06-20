@@ -2,7 +2,10 @@
 /**
  * Button class
  * 
- * A Button is a Control for a conventional web button.
+ * A Button is a Control for a conventional web button. From a design standpoint, it invites a user to click on it to trigger a certain behavior
+ * typically described by its Text. Thus, it commonly has a Click Event. A button also has a Type property, which can either be Button::Normal
+ * or Button::Submit. A Button::Submit is only used in connection with Forms, please see the reference article on Forms for more information on
+ * Submitting; Note, however, that Forms are <b>strongly</b> discouraged and should be used only when a specific situation calls for it, i.e., next to never.
  * 
  * The following is an example of instantiating and adding a button
  * <code>
@@ -27,7 +30,13 @@
  */
 class Button extends Control 
 {
+	/**
+	 * A Normal Button, the default Type.
+	 */
 	const Normal = 'Button';
+	/**
+	 * A Button that Submits a Form that it is in. 
+	 */
 	const Submit = 'Submit';
 	/**
 	* @property string $Type The type of the button
@@ -53,24 +62,24 @@ class Button extends Control
 		$this->SetText($text);
 	}
 	/**
-	 * Gets the type of this button, default button type is Button::Normal
-	 * @return Button::Normal | Button::Submit 
+	 * Gets the Type of this button, which is Button::Normal by default
+	 * @return Button::Normal|Button::Submit 
 	 */
 	function GetType()
 	{
-		return ($this->Type === null)?Button::Normal:$this->Type;
+		return $this->Type === null ? Button::Normal : $this->Type;
 	}
 	/**
 	 * Sets the type of this button, the default is Button::Normal
-	 * @param string $type possible values are Button::Normal, Button::Submit
+	 * @param Button::Normal|Button::Submit $type possible values are Button::Normal, Button::Submit
 	 */
 	function SetType($type)
 	{
-		$this->Type = ($type == Button::Normal?null:$type);
+		$this->Type = $type == Button::Normal ? null : $type;
 		NolohInternal::SetProperty('type', $type, $this);
 	}
 	/**
-	 * This will set the text that is displayed on the button
+	 * This will set the Text that is displayed on the button
 	 * @param string $text
 	 */
 	function SetText($text)

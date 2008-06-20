@@ -31,10 +31,16 @@ class AccordionPart extends Panel implements Groupable
 		$this->SetWidth('100%');
 		$this->Controls = &$this->BodyPanel->Controls;
 	}	
+	/**
+	 * @ignore
+	 */
 	function SetText($text)
 	{
 		$this->TitlePanel->Controls['Text']->SetText($text);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetText()
 	{
 		return $this->TitlePanel->Controls['Text']->GetText();
@@ -52,10 +58,16 @@ class AccordionPart extends Panel implements Groupable
 		$this->SetEvent($newEvent, 'DataBind');
 		$this->BodyPanel->Scroll = new ClientEvent("_NScrollCheck('{$this->BodyPanel->Id}');");
 	}
+	/**
+	 * @ignore
+	 */
 	function SetScrolling($scrollType)
 	{
 		$this->BodyPanel->SetScrolling($scrollType);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetWidth($width)
 	{
 		parent::SetWidth($width);
@@ -69,7 +81,13 @@ class AccordionPart extends Panel implements Groupable
 	function GetSelect()				{return $this->TitlePanel->Controls['Glossy']->GetSelect();}
 	function SetSelect($newSelect)		{$this->TitlePanel->Controls['Glossy']->SetSelect($newSelect);}
 	//Groupable Functions
+	/**
+	 * @ignore
+	 */
 	function GetGroupName()				{return $this->TitlePanel->Controls['Glossy']->GroupName;}
+	/**
+	 * @ignore
+	 */
 	function SetGroupName($groupName)	
 	{
 		$this->TitlePanel->Controls['Glossy']->SetGroupName($groupName);
@@ -79,6 +97,9 @@ class AccordionPart extends Panel implements Groupable
 	{			
 		$this->TitlePanel->Controls['Glossy']->SetSelected($bool);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();

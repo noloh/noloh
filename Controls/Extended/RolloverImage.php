@@ -64,7 +64,13 @@ class RolloverImage extends Image implements Groupable
 	function GetSelect()				{return $this->GetEvent('Select');}
 	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
 	//Groupable Functions
+	/**
+	 * @ignore
+	 */
 	function GetGroupName()				{return $this->GroupName;}
+	/**
+	 * @ignore
+	 */
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
 	//function GetSelected()				{return $this->Selected != null;}
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
@@ -93,6 +99,9 @@ class RolloverImage extends Image implements Groupable
 			}
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();

@@ -79,8 +79,8 @@ class ImplicitArrayList extends ArrayList
 	/**
 	 * Adds an element to the ArrayList.
 	 * @param mixed $element The element to be added 
-	 * @param bool $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
-	 * @param bool $onlyAdd Specifies whether or not you want a default ArrayList Add, or the overidden AddFunction to be called
+	 * @param boolean $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
+	 * @param boolean $onlyAdd Specifies whether or not you want a default ArrayList Add, or the overidden AddFunction to be called
 	 * @return mixed The element that has been added
 	 */
 	function Add($object, $passByReference = true, $onlyAdd = false)
@@ -97,7 +97,7 @@ class ImplicitArrayList extends ArrayList
 	 * If the index is an integer, the ArrayList is reindexed to fill in the gap.
 	 * @param mixed $element The element to be inserted
 	 * @param integer|string $index The index into which your element will be added
-	 * @param bool $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
+	 * @param boolean $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
 	 * @return mixed The element that has been added
 	 */
 	function Insert($object, $index, $onlyInsert = false)
@@ -113,8 +113,8 @@ class ImplicitArrayList extends ArrayList
 	 * Inserts an element into a particular index of the ArrayList, as well as a particular position, in the sense of the order in which foreach iterates
 	 * @param mixed $element The element to be inserted
 	 * @param mixed $index The index into which your element will be inserted
-	 * @param int $position The position into which your element will be inserted
-	 * @param bool $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
+	 * @param integer $position The position into which your element will be inserted
+	 * @param boolean $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
 	 * @return mixed The Element that has been inserted
 	 */
     function PositionalInsert($object, $index, $position, $onlyInsert = false)
@@ -129,8 +129,8 @@ class ImplicitArrayList extends ArrayList
 	/**
 	 * Removes a particular element of the ArrayList.
 	 * @param mixed $element The element to be removed
-	 * @param bool $onlyRemove Specifies whether or not you want a default ArrayList Remove, or the overidden RemoveFunction to be called
-	 * @return bool Whether the remove was successful
+	 * @param boolean $onlyRemove Specifies whether or not you want a default ArrayList Remove, or the overidden RemoveFunction to be called
+	 * @return boolean Whether the remove was successful
 	 */
 	function Remove($object, $onlyRemove = false)
 	{
@@ -145,7 +145,7 @@ class ImplicitArrayList extends ArrayList
 	 * Removes an element at a particular index. 
 	 * If the index is an integer, the ArrayList is reindexed to fill in the gap.
 	 * @param integer|string $index The index of the element to be removed
-	 * @param bool $onlyRemoveAt Specifies whether or not you want a default ArrayList RemoveAt, or the overidden RemoveAtFunction to be called
+	 * @param boolean $onlyRemoveAt Specifies whether or not you want a default ArrayList RemoveAt, or the overidden RemoveAtFunction to be called
 	 */
 	function RemoveAt($index, $onlyRemove = false)
 	{
@@ -158,7 +158,7 @@ class ImplicitArrayList extends ArrayList
 	}
 	/**
 	 * Clears the ArrayList.
-	 * @param bool $onlyClear Specifies whether or not you want a default ArrayList Clear, or the overidden ClearFunction to be called
+	 * @param boolean $onlyClear Specifies whether or not you want a default ArrayList Clear, or the overidden ClearFunction to be called
 	 */
 	function Clear($onlyClear = false)
 	{

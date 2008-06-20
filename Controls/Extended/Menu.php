@@ -20,6 +20,9 @@ class Menu extends Panel
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';
 		$this->Scrolling = System::Full;
 	}
+	/**
+	 * @ignore
+	 */
 	function AddMenuItem($menuItem)
 	{
 		if(is_string($menuItem))

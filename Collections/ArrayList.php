@@ -89,7 +89,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an element to the ArrayList.
 	 * @param mixed $element The element to be added 
-	 * @param bool $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
+	 * @param boolean $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
 	 * @return mixed The element that has been added
 	 */
 	function Add($element, $setsByReference = true)
@@ -175,7 +175,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 * Inserts an element into a particular index of the ArrayList, as well as a particular position, in the sense of the order in which foreach iterates
 	 * @param mixed $element The element to be inserted
 	 * @param mixed $index The index into which your element will be inserted
-	 * @param int $position The position into which your element will be inserted
+	 * @param integer $position The position into which your element will be inserted
 	 * @return mixed The Element that has been inserted
 	 */
     function PositionalInsert($element, $index, $position)
@@ -205,7 +205,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * Removes the first occurrence of a particular element from the ArrayList.
 	 * @param mixed $element The element to be removed
-	 * @return bool Whether the remove was successful
+	 * @return boolean Whether the remove was successful
 	 */
 	function Remove($element)
 	{

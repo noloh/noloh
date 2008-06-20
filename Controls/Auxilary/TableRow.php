@@ -18,14 +18,18 @@ class TableRow extends Control
 		$this->Columns = new ArrayList();
 		$this->Columns->ParentId = $this->Id;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		$intialProperties = parent::Show();
 		//$intialProperties .= ",'style.border','0px'";
 		NolohInternal::Show("TR", $intialProperties, $this, $this->ParentId."InnerTBody");
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		foreach($this->Columns as $column)

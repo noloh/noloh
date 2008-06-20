@@ -79,7 +79,13 @@ class RolloverLabel extends Label implements Groupable
 	function GetSelect()				{return $this->GetEvent('Select');}
 	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
 	//Groupable Functions
+	/**
+	 * @ignore
+	 */
 	function GetGroupName()				{return $this->GroupName;}
+	/**
+	 * @ignore
+	 */
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
 //	function GetSelected()				{return $this->Selected != null;}
 	function SetSelected($bool)
@@ -103,6 +109,9 @@ class RolloverLabel extends Label implements Groupable
 				$this->Color = (!$bool)?$this->OutColor:(($this->SelectedColor != null)?$this->SelectedColor:$this->OverColor);
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();

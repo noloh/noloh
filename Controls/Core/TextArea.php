@@ -29,7 +29,9 @@ class TextArea extends Control
 		$this->MaxLength = $newMaxLength;
 		NolohInternal::SetProperty('MaxLength', $newMaxLength, $this);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetText($text)
 	{
 		parent::SetText($text);
@@ -63,6 +65,9 @@ class TextArea extends Control
     }
 	function GetScroll()							{return $this->GetEvent('Scroll');}
 	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
@@ -117,6 +122,9 @@ class TextArea extends Control
     {
         return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
     }
+    /**
+     * @ignore
+     */
 	function Show()
 	{
 		$initialProperties = parent::Show();

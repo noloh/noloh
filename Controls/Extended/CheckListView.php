@@ -17,11 +17,17 @@ class CheckListView extends ListView
 		$this->CheckColumn->Click = null;
 		$this->CheckColumn->ParentId = $this->ColumnsPanel->Id;
 	}
+	/**
+	 * @ignore
+	 */
 	public function AddListViewItem(ListViewItem $listViewItem)
 	{
 		parent::AddListViewItem($listViewItem);
 		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
+	/**
+	 * @ignore
+	 */
 	public function InsertListViewItem(ListViewItem $listViewItem, $idx)
 	{
 		parent::InsertListViewItem($listViewItem, $idx);
@@ -29,6 +35,9 @@ class CheckListView extends ListView
 //		$tmpCheck->Click[] = new ClientEvent('event.cancelBubble=true;event.stopPropagation();');
 		$tmpCheck->Click[] = new ClientEvent(UserAgent::IsIE()?'window.event.cancelBubble=true;':'event.cancelBubble=true;event.stopPropagation();');
 	}
+	/**
+	 * @ignore
+	 */
 	function AddColumn($text, $width = System::Auto)
 	{
 		$tmpCount = $this->Columns->Count();

@@ -123,7 +123,7 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
  * @param boolean $replace If true, 
  * @param mixed $priority Determines the order in which scripts run. Can be: Priority::Low, Priority::Medium, or Priority::High 
  */
-function QueueClientFunction(Component $component, $functionName, $paramsArray, $replace=true, $priority=Priority::Medium)
+function QueueClientFunction(Component $component, $functionName, $paramsArray=array(), $replace=true, $priority=Priority::Medium)
 {
     $objId = $component->Id;
 	if($GLOBALS['_NQueueDisabled'] != $objId)
@@ -166,7 +166,7 @@ function &GetComponentById($id)
 * Determines whether a variable holds an array.<br>
 * This is a little more general than {@see PHP_Manual#is_array} because it evaluates true for things like ArrayList.
 * @param mixed $x The variable to be tested
-* @return bool
+* @return boolean
 */
 function isArray($x)
 {

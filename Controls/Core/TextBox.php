@@ -16,7 +16,9 @@ class TextBox extends Control
 	{
 		parent::Control($left, $top, $width, $height);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function EditComplete($labId)
 	{
 		$lab = GetComponentById($labId);
@@ -60,7 +62,9 @@ class TextBox extends Control
 	{
 		$this->Hidden = $bool ? true : null;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetText($newText)
 	{
 		parent::SetText($newText);
@@ -71,6 +75,9 @@ class TextBox extends Control
     {
         return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
     }
+    /**
+     * @ignore
+     */
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
@@ -83,7 +90,9 @@ class TextBox extends Control
             $preStr = '_NFocus="'.$this->Id.'";';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
-		
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		$initialProperties = parent::Show();

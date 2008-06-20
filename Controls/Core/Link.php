@@ -24,10 +24,6 @@
 
 class Link extends Label
 {
-	/**
-	* Href, The Href of this Link, the Default is ""
-	* @var string
-	*/
 	const Blank = '_blank', Self = '_self';
 	
 	private $Destination;
@@ -35,15 +31,15 @@ class Link extends Label
 	
 	/**
 	* Constructor.
-	* for inherited components, be sure to call the parent constructor first
- 	* so that the component properties and events are defined.
+	* Be sure to call this from the constructor of any class that extends Link
  	* Example
  	*	<code> $tempVar = new Link("#", 0, 0, 80, 24);</code>
- 	* @param string|optional
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
+ 	* @param string $destination
+ 	* @param string $text
+	* @param integer $left
+	* @param integer $top
+	* @param integer $width
+	* @param integer $height
 	*/
 	function Link($destination='', $text='', $left = 0, $top = 0, $width = 83, $height = 20)  
 	{

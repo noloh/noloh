@@ -91,7 +91,7 @@ class File extends Object
 	/**
 	 * Open a file for reading, writing, or both. Always close your file when you are finished
 	 * @param mixed $mode A File class constant signifying what the file is opened for 
-	 * @param bool $autoSave
+	 * @param boolean $autoSave
 	 */
 	function Open($mode = File::ReadWrite, $autoSave = true)
 	{

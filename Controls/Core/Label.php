@@ -8,7 +8,13 @@
  */
 class Label extends Control 
 {
+	/**
+	 * @ignore
+	 */
 	public $CachedWidth;
+	/**
+	 * @ignore
+	 */
 	public $CachedHeight;
 	private $Align;
 	private $VAlign;
@@ -28,7 +34,9 @@ class Label extends Control
 		$this->SetText($text);
 		$this->SetCSSClass();
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetText($text)
 	{
 		parent::SetText($text);
@@ -53,7 +61,9 @@ class Label extends Control
 		$this->ResetCache();
 		NolohInternal::SetProperty('style.fontSize', $newSize.'pt', $this);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetWidth()
 	{
 		$width = parent::GetWidth();
@@ -66,13 +76,17 @@ class Label extends Control
 		else 
 			return $width;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetWidth($newWidth)
 	{
 		parent::SetWidth($newWidth);
 		$this->ResetCache();
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetHeight()
 	{
 		$height = parent::GetHeight();
@@ -85,7 +99,9 @@ class Label extends Control
 		else 
 			return $height;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SetHeight($newHeight)
 	{
 		parent::SetHeight($newHeight);
@@ -202,7 +218,9 @@ class Label extends Control
 			$this->EditInPlace = null;
 		}
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function EditStart()
 	{
 		$txt = new TextBox($this->Left, $this->Top, $this->Width, $this->Height);
@@ -239,7 +257,9 @@ class Label extends Control
 		//if(isset($_SESSION['_NFunctionQueue'][$this->Id]))
 		//	unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		//$initialProperties = parent::Show();

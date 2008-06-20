@@ -2,38 +2,57 @@
 /**
  * WebPage class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
- * 
+ * The WebPage class is the starting point of any NOLOH application. You must write a class that extends it and call the SetStartupPage function
+ * with the name of your class as the parameter. 
  * @package System
  */
-class WebPage extends Component
+abstract class WebPage extends Component
 {
+	/**
+	 * An ArrayList of the paths (as strings) of external stylesheets to be included with your application
+	 * @var ArrayList
+	 */
 	public $CSSFiles;
-	public $AlternativePath;
-	public $ReflectOS;
+	/**
+	 * An ArrayList of Controls that will be displayed when Added
+	 * @var ArrayList
+	 */
 	public $Controls;
+	/**
+	 * @ignore
+	 */
+	public $AlternativePath;
+	/**
+	 * @ignore
+	 */
 	public $Keywords;
+	/**
+	 * @ignore
+	 */
 	public $Description;
+	/**
+	 * NOLOH's loading Image that is displayed when a ServerEvent is taking place
+	 * @var Image
+	 */
+	protected $LoadImg;
+	/**
+	 * NOLOH's loading Label that is displayed when a ServerEvent is taking place
+	 * @var Label
+	 */
+	protected $LoadLbl;
+	
 	private $Title;
 	private $Width;
 	private $Height;
 	private $BackColor;
-
-	//var $MetaInformation;
-	//var $JSIframe;
 	/**
-	*ScrollLeft of the component
-	*@var integer
-	*/
-	//public $ScrollLeft;
-	/**
-	*ScrollTop of the component
-	*@var integer
-	*/
-	//public $ScrollTop;
-	protected $LoadImg;
-	protected $LoadLbl;
-	
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends WebPage.
+	 * @param string $title The WebPage's title, i.e., the text appearing in the browser's title bar across the top
+	 * @param string $keywords Keywords can be used by search engines to help better archive your application, but are not necessary to take advantage of NOLOH's built-in SearchEngineFriendly capabilities.
+	 * @param string $description Description can be used by search engines to help better archive your application, but are not necessary to take advantage of NOLOH's built-in SearchEngineFriendly capabilities.
+	 * @return WebPage
+	 */
 	function WebPage($title = 'Unititled Document', $keywords = '', $description = '')
 	{
 		parent::Component();
@@ -76,14 +95,18 @@ class WebPage extends Component
 		
 		//$this->LoadViewState();
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function AddCSSFile($path)
 	{
 		$initialProperties = '\'id\',\''.hash('md5',$path).'\',\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
 		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead');
 		$this->CSSFiles->Add($path, true, true);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function RemoveCSSFileAt($index)
 	{
 		if($index != -1)
@@ -93,95 +116,144 @@ class WebPage extends Component
 			AddScript('_NRemStyle(\''.hash('md5',$path).'\',\''.NOLOHConfig::GetNOLOHPath().'\')');
 		}
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function ClearCSSFiles()
 	{
 		foreach($this->CSSFiles as $index => $path)
 			$this->RemoveCSSFileAt($index);
 		$this->CSSFiles->Clear(true);
 	}
-	
+	/**
+	 * Returns the WebPage's title, i.e., the text appearing in the browser's title bar across the top
+	 * @return string
+	 */
 	function GetTitle()
 	{
 		return $this->Title;
 	}
-	
+	/**
+	 * Sets the WebPage's title, i.e., the text appearing in the browser's title bar across the top
+	 * @param string $title
+	 */
 	function SetTitle($title)
 	{
 		$this->Title = $title;
 		AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'));
 	}
-	
+	/**
+	 * Returns the horizontal size of the browser, in pixels
+	 * @return integer
+	 */
 	function GetWidth()
 	{
 		return $this->Width;
 	}
-	
+	/**
+	 * Changes the horizontal size of the browser, in pixels
+	 * @param integer $width
+	 */
 	function SetWidth($width)
 	{
 		$this->Width = $width;
 		QueueClientFunction($this, 'resizeTo', array($this->Width, $this->Height));
 	}
-	
+	/**
+	 * Returns the vertical size of the browser, in pixels
+	 * @return integer
+	 */
 	function GetHeight()
 	{
 		return $this->Height;
 	}
-	
+	/**
+	 * Changes the vertical size of the browser, in pixels
+	 * @param integer $height
+	 */
 	function SetHeight($height)
 	{
 		$this->Height = $height;
 		QueueClientFunction($this, 'resizeTo', array($this->Width, $this->Height));
 	}
-	
+	/**
+	 * Returns the background color of the WebPage. Can either be a string of hex like '#FF0000' or the name of a color like 'red'.
+	 * @return string
+	 */
 	function GetBackColor()
 	{
 		return $this->BackColor;
 	}
-	
+	/**
+	 * Sets the background color of the WebPage. Can either be a string of hex like '#FF0000' or the name of a color like 'red'.
+	 * @param string $backColor
+	 */
 	function SetBackColor($backColor)
 	{
 		$this->BackColor = $backColor;
 		QueueClientFunction($this, 'document.bgColor=\''.$backColor.'\';void', array(0));
 	}
+	/**
+	 * @ignore
+	 */
 	function CSSSwitch($browsers)
 	{
 		//Take in possible dotDotDotargs of items, or array of items, each of which has a name assoicated with a browser,
 		//and value with a stylesheet
 		//new Item('default', 'default.css', new Item('mac', 'mac.css'), etc..
 	}
+	/**
+	 * Changes the horizontal scroll position of the browser
+	 * @param integer $scrollLeft
+	 */
 	function SetScrollLeft($scrollLeft)
 	{
 		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
 		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';BodyScrollState', array());
 	}
-	
+	/**
+	 * Changes the vertical scroll position of the browser
+	 * @param integer $scrollTop
+	 */
 	function SetScrollTop($scrollTop)
 	{
 		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
 		QueueClientFunction($this, 'document.documentElement.scrollTop='.$scrollTop.';BodyScrollState', array());
 	}
-
+	/**
+	 * Gets the Unload Event, which launches when someone navigates away from the application or closes their browser
+	 * @return Event
+	 */
     function GetUnload()
     {
         return $this->GetEvent('Unload');
     }
-
+	/**
+	 * Sets the Unload event, which launches when someone navigates away from the application or closes teir browser
+	 * @param Event $unloadEvent
+	 */
     function SetUnload($unloadEvent)
     {
         $this->SetEvent($unloadEvent, 'Unload');
     }
-	
+	/**
+	 * @ignore
+	 */
 	function UpdateEvent($eventType)
 	{
         QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEvent($eventType)->GetEventString($eventType, $this->Id).'\''));
 	}
-	
+	/**
+	 * Returns the instance of WebPage that was used with SetStartupPage. The name is a pun on the "this" concept.
+	 * @return WebPage
+	 */
 	static function That()
 	{
 		return GetComponentById($_SESSION['_NStartUpPageId']);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	static function SkeletalShow($unsupportedURL)
 	{
 		// Unsupported Browser Handling
@@ -252,7 +324,9 @@ class WebPage extends Component
   )."
 </SCRIPT>");
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();
@@ -268,7 +342,9 @@ class WebPage extends Component
 			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);
 		AddScript('SaveControl(\''.$this->Id.'\')');
 	}
-
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow($tokenLinks)
 	{
 		print('<HTML><HEAD><TITLE>'.$this->Title.'</TITLE>' .
@@ -279,7 +355,9 @@ class WebPage extends Component
 			$control->SearchEngineShow();
 		print(' ' . $tokenLinks . ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>');
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetAddId()
 	{
 		return $this->Id;

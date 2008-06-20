@@ -173,7 +173,7 @@ class Event extends Object implements ArrayAccess
 	}
 	/**
 	 * Gets whether or not the Event is enabled. A Disabled event will not launch, and execing it has no effect.
-	 * @return boolean
+	 * @return booleanean
 	 */
 	function GetEnabled()
 	{

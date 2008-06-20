@@ -30,6 +30,9 @@ class Accordion extends Panel
 	{
 		return (($this->SelectedIndex == null)?-1:$this->SelectedIndex);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddAccordionPart($accordionPart)
 	{
 		$tmpCount = $this->AccordionParts->Count();
@@ -41,6 +44,9 @@ class Accordion extends Panel
 		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
 	}
+	/**
+	 * @ignore
+	 */
 	function InsertAccordionPart($accordionPart, $index)
 	{
 		$tmpCount = $this->AccordionParts->Count();
@@ -52,6 +58,9 @@ class Accordion extends Panel
 		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
 	}
+	/**
+	 * @ignore
+	 */
 	function RemoveAccordionPartAt($index)
 	{
 		QueueClientFunction($this, '_NRmAccordPt', array("'$this->Id'", "$index"), false, Priority::High);
@@ -59,6 +68,9 @@ class Accordion extends Panel
 		if($this->SelectedIndex == $index)
 			$this->SetSelectedIndex(0, true);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		AddNolohScriptSrc('Accordion.js');

@@ -163,7 +163,13 @@ class WindowPanel extends Panel
 		$this->SetHeight($this->Height);
 	}
 	function GetWindowShade()	{return $this->WindowShade;}
+	/**
+	 * @ignore
+	 */
 	function SetText($text){$this->TitleBar->SetText($text);}
+	/**
+	 * @ignore
+	 */
 	function GetText(){return $this->TitleBar->GetText();}
 	function GetMenu()	{return $this->Menu;}
 	function SetMenu(Menu $mainMenu)
@@ -198,6 +204,9 @@ class WindowPanel extends Panel
 		$this->MinimizeBox = $bool ? null : false;
 		$this->MinimizeImage->Visible = $bool;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
@@ -207,6 +216,9 @@ class WindowPanel extends Panel
 		if($this->WindowShade)
 			NolohInternal::SetProperty('Hgt', '\'' . $this->GetHeight() . '\'', $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetWidth($width)
 	{
 		parent::SetWidth($width);
@@ -229,7 +241,13 @@ class WindowPanel extends Panel
 		$this->BorderSize = $borderSize;
 	}
 	function SetBackColor($color)	{$this->BodyPanel->SetBackColor($color);}
+	/**
+	 * @ignore
+	 */
 	function GetAddId($obj)	{return in_array($obj, $this->WindowPanelComponents->Elements, true) ? $this->Id : $this->BodyPanel->Id;}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
         parent::Show();

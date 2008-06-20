@@ -48,7 +48,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an element to the Group.
 	 * @param mixed $element The element to be added 
-	 * @param bool $setByReference Indicates whether the Group sets by reference as opossed to by value
+	 * @param boolean $setByReference Indicates whether the Group sets by reference as opossed to by value
 	 * @return mixed The element that has been added
 	 */
 	function Add($element, $setByReference = true)
@@ -76,6 +76,15 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			else 
 				$this->Add($args[$i]);
 	}
+	/**
+	 * Inserts an element into a particular index of the Group, not overwriting what was previously there.
+	 * If the index is an integer, the Group is reindexed to fill in the gap.
+	 * If the index is a string and there already is an element at the specified index, that element's index will be appended
+	 * with a ' (indicating prime), to make room for the element being inserted.
+	 * @param mixed $element The element to be inserted
+	 * @param integer|string $index The index into which your element will be inserted
+	 * @return mixed The element that has been inserted
+	 */
 	function Insert($element, $index)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
@@ -83,7 +92,13 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		$element->SetGroupName($this->Id);
 		NolohInternal::SetProperty('Group', $this->Id, $element);
 		$this->Groupees->Insert($element, $index);
+		return $element;
 	}
+	 /** 
+	  * Removes the first occurrence of a particular element from the Group.
+	  * @param mixed $element The element to be removed
+	  * @return boolean Whether the remove was successful
+	  */
 	function Remove($element)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
@@ -92,10 +107,18 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		NolohInternal::SetProperty('Group', '', $element);
 		$this->Groupees->Remove($element);		
 	}
+	/**
+	 * Removes an element at a particular index. 
+	 * If the index is an integer, the Group is reindexed to fill in the gap.
+	 * @param integer|string $index The index of the element to be removed
+	 */
 	function RemoveAt($index)
 	{
 		$this->Remove($this->Groupees->Elements[$index]);
 	}
+	/**
+	 * Clears the Group.
+	 */
 	function Clear()
 	{
 		AddScript('window.'.$this->Id.'.Elements=Array();', Priority::High);
@@ -108,6 +131,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		}
 		$this->Groupees->Clear();
 	}
+	/**
+	 * Returns the first index of the Group whose element is Selected, or -1 if it is not found
+	 * @return integer|string
+	 */
 	function GetSelectedIndex()
 	{
 		foreach($this->Groupees as $index => $groupee)
@@ -115,6 +142,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 				return $index;
 		return -1;
 	}
+	/**
+	 * Selects the element which is at a particular index, or Deselects if the parameter is -1 or null
+	 * @param integer|string $index
+	 */
 	function SetSelectedIndex($index)
 	{
 		if($index == -1 || $index === null)
@@ -122,6 +153,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		else
 			$this->SetSelectedElement($this->Groupees[$index]);
 	}
+	/**
+	 * Returns the Value of the first selected element of the Group, or null if it is not found
+	 * @return mixed
+	 */
 	function GetSelectedValue()
 	{
 		if(($element = $this->GetSelectedElement()) != null)
@@ -129,12 +164,20 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		else
 			return null;
 	}
+	/**
+	 * Selects the first element which has a particular Value
+	 * @param string $value
+	 */
 	function SetSelectedValue($value)
 	{
 		foreach($this->Groupees as $groupee)
 			if($groupee->GetValue() == $value)
 				return $this->SetSelectedElement($groupee);
 	}
+	/**
+	 * Deselects the first Selected element
+	 * @param boolean $deselectMultiGroupables
+	 */
 	function Deselect($deselectMultiGroupables = false)
 	{
 		if(!isset($GLOBALS['_NGroupSelecting'.$this->Id]))
@@ -144,11 +187,19 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 				$oldElement->SetSelected(false);
 		}
 	}
+	/**
+	 * Returns the first element that is Selected, or null if none are
+	 * @return mixed
+	 */
 	function GetSelectedElement()
 	{
 		$tmpIndex = $this->GetSelectedIndex();
 		return $tmpIndex != -1?$this->Groupees->Elements[$tmpIndex]:null;
 	}
+	/**
+	 * Selects a particular element
+	 * @param mixed $element
+	 */
 	function SetSelectedElement($element)
 	{
 		if(!isset($GLOBALS['_NGroupSelecting'.$this->Id]) && !$element->GetSelected())
@@ -161,10 +212,18 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			unset($GLOBALS['_NGroupSelecting'.$this->Id]);
 		}	
 	}
+	/**
+	 * Returns Text of the first element of the Group, or the empty string if it is not found
+	 * @return string
+	 */
 	function GetSelectedText()
 	{
 		return ($element = $this->GetSelectedElement()) != null ? $element->GetText() : '';
 	}
+	/**
+	 * Selects the first element which has a particular Text
+	 * @param string $text
+	 */
 	function SetSelectedText($text)
 	{
 		foreach($this->Groupees as $groupee)

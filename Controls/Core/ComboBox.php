@@ -2,42 +2,42 @@
 /**
  * ComboBox class
  *
- * A Control for ComboBox. A ComboBox allows you to select items from a dropdown menu.a conventional web checkbox. Checkbox's are usually used to indicate
- * whether a condition is on/off, yes/no, or true/false. Checkbox is simlar to RadioButton,
- * except that RadioButton's are usually limited to one choice, while a CheckBox allows for
- * multiple choices.
- * 
- * The following is an example of instantiating and adding a CheckBox
- * <code>
- *
- *      function Foo()
- *      {
- *          $tmpCheck = new CheckBox("CheckBox1", 0,0);
- *          //Adds a button to the Controls class of some Container object
- * 		    $this->Controls->Add($tmpCheck);
- *      }
- *      function SomeFunc()
- *      {
- *          Alert("Click event was triggered");
- *      }
- *		
- * </code>
+ * A Control for a conventional web ComboBox. A ComboBox allows a user to select exactly one Item from a dropdown menu. The menu will not pull
+ * down until a user explicitly clicks on it to view the options. That is one fundamental way in which it differs from a Group of RadioButtons,
+ * another possible way of allowing a user to select exactly one string of text out of many, but will display all the options at once without
+ * a menu.
  * 
  * @package Controls/Core
  */
 class ComboBox extends ListControl 
 {
 	private $SelectedIndex;
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends ComboBox
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @return ComboBox
+	 */
 	function ComboBox($left = 0, $top = 0, $width = 83, $height = 20)
 	{
 		parent::ListControl($left, $top, $width, $height);
 		//$this->SetSelectedIndex(0);
 	}
+	/**
+	 * Returns the index of the Item that is selected, or -1 if none are selected.
+	 * @return integer
+	 */
 	function GetSelectedIndex()
 	{
 		return ($this->SelectedIndex === null)?-1:$this->SelectedIndex;
 	}
+	/**
+	 * Sets an Item of a particular index as selected
+	 * @param integer $index
+	 */
 	function SetSelectedIndex($index)
 	{
 		if($this->GetSelectedIndex() != $index)
@@ -46,10 +46,17 @@ class ComboBox extends ListControl
 			parent::SetSelectedIndex($index);
 		}
 	}
+	/**
+	 * Returns the Item that is selected, or null if none are selected
+	 * @return unknown
+	 */
 	function GetSelectedItem()
 	{
 		return $this->SelectedIndex != -1 ? $this->Items->Elements[$this->SelectedIndex] : null;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventTypeAsString)
 	{
 		$preStr = '';
@@ -57,12 +64,18 @@ class ComboBox extends ListControl
 			$preStr = '_NSave("'.$this->Id.'","'.selectedIndex.'");';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddItem($item)
 	{
 		parent::AddItem($item);
 		if($this->Items->Count == 1)
 			$this->SetSelectedIndex(0);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");

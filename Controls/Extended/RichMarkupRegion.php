@@ -22,6 +22,9 @@ class RichMarkupRegion extends MarkupRegion
 		$this->ItemCount = 0;
 		parent::MarkupRegion($markupStringOrFile, $left, $top, $width, $height);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetText($markupStringOrFile)
 	{
 		$this->Eventees = array();
@@ -53,7 +56,6 @@ class RichMarkupRegion extends MarkupRegion
 		
 	}
 	// New one's. Has issues.
-	
 	private function ParseItems($text)
 	{
 //		do
@@ -116,6 +118,9 @@ class RichMarkupRegion extends MarkupRegion
 	{
 		return array_merge($this->GetEventees($byValue), $this->GetLarvae($byValue));
 	}
+	/**
+	 * @ignore
+	 */
 	public function UpdateEvent($eventType, $eventeeId=null)
 	{
 		if($eventeeId == null)
@@ -123,6 +128,9 @@ class RichMarkupRegion extends MarkupRegion
 		
 		NolohInternal::SetProperty(Event::$Conversion[$eventType], $eventType, $eventeeId);
 	}
+	/**
+	 * @ignore
+	 */
 	public function GetEvent($eventType, $eventeeId=null)
 	{
 		if($eventeeId == null)
@@ -134,6 +142,9 @@ class RichMarkupRegion extends MarkupRegion
 			$this->EventSpace[$eventeeId][$eventType] = new Event(array(), array(array(array($this->Id, $eventeeId), $eventType)));
 		return $this->EventSpace[$eventeeId][$eventType];
 	}
+	/**
+	 * @ignore
+	 */
 	public function SetEvent($eventObj, $eventType, $eventeeId=null)
 	{
 		if($eventeeId == null)
@@ -148,6 +159,9 @@ class RichMarkupRegion extends MarkupRegion
 			$eventObj->Handles[] = $pair;
 		$this->UpdateEvent($eventType, $eventeeId);
 	}
+	/**
+	 * @ignore
+	 */
 	public function GetEventString($eventType, $eventeeId=null)
 	{
 		if($eventeeId == null)
@@ -155,10 +169,16 @@ class RichMarkupRegion extends MarkupRegion
 		
 		return $this->EventSpace[$eventeeId][$eventType]->GetEventString($eventType, $eventeeId);
 	}
+	/**
+	 * @ignore
+	 */
 	public function ExecEvent($eventType, $eventeeId)
 	{
 		return $this->EventSpace[$eventeeId][$eventType]->Exec($execClientEvents=false);
 	}
+	/**
+	 * @ignore
+	 */
 	public function Show()
 	{
 		parent::Show();

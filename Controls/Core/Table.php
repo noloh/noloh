@@ -60,6 +60,9 @@ class Table extends Control
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
     }
+    /**
+     * @ignore
+     */
 	function Show()
 	{
 		$initialProperties = parent::Show();
@@ -74,6 +77,9 @@ class Table extends Control
 		$initialProperties = "'id','{$id}InnerTBody', 'style.position','relative'";
 		NolohInternal::Show('TBODY', $initialProperties, $this, $id.'InnerTable');
 	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		foreach($this->Rows as $row)

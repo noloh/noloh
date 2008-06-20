@@ -81,7 +81,7 @@ class Multimedia extends Control
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->FlashVars->Add($flashVar, true, true);
 	}
-	function SetWidth($width)
+/*	function SetWidth($width)
 	{
 		parent::SetWidth($width);
 		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.width'", "'100%'"), false);
@@ -95,7 +95,10 @@ class Multimedia extends Control
 		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'100%'"), false);
 //		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
-	}
+	}*/
+	/**
+	 * @ignore
+	 */
 	function GetInnerString()
 	{
 		$tmpStr = '<OBJECT name="'.$this->Id.'I" id="'.$this->Id.'I" style="width:100%;height:100%" ';
@@ -143,11 +146,17 @@ class Multimedia extends Control
 			$params[$i] = ClientEvent::ClientFormat($params[$i]);
 		QueueClientFunction($this, '_NInvokeFlash', $params);
 	}
+	/**
+	 * @ignore
+	 */
 	public function Show()
 	{	
 		AddNolohScriptSrc('Multimedia.js');
 		NolohInternal::Show('DIV', parent::Show(), $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function __call($name, $args)
 	{
 		array_splice($args, 0, 0, $name);

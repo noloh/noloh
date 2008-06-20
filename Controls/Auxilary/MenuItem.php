@@ -54,6 +54,9 @@ class MenuItem extends Panel
 		//$this->Layout = 1;
 		//$this->Controls->AddRange($this->TextLabel, $this->MenuItemsPanel);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddMenuItem($menuItem)
 	{
 		//Alert($menuItem->Text);
@@ -125,9 +128,21 @@ class MenuItem extends Panel
 		$this->SetLeft($image->Right);
 		$this->Controls->Add($image);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetText()		{return $this->TextLabel->GetText();}
+	/**
+	 * @ignore
+	 */
 	function SetText($text)	{$this->TextLabel->SetText($text);}
+	/**
+	 * @ignore
+	 */
 	function GetHeight()	{return $this->TextLabel->GetHeight();}
+	/**
+	 * @ignore
+	 */
 	function SetWidth($width)			
 	{
 		parent::SetWidth($width);
@@ -144,12 +159,33 @@ class MenuItem extends Panel
 		elseif($this->MenuItemsPanel != null)
 			$this->MenuItemsPanel->SetLeft($this->GetRight());
 	}
+	/**
+	 * @ignore
+	 */
 	function SetBackColor($backColor)		{$this->TextLabel->SetBackColor($backColor);}
+	/**
+	 * @ignore
+	 */
 	function GetMouseOver()					{return $this->TextLabel->MouseOver;}
+	/**
+	 * @ignore
+	 */
 	function GetMouseOut()					{return $this->TextLabel->MouseOut;}
+	/**
+	 * @ignore
+	 */
 	function GetClick()						{return $this->TextLabel->Click;}
+	/**
+	 * @ignore
+	 */
 	function SetMouseOver($event)			{$this->TextLabel->SetMouseOver($event);}
+	/**
+	 * @ignore
+	 */
 	function SetMouseOut($event)			{$this->TextLabel->SetMouseOut($event);}
+	/**
+	 * @ignore
+	 */
 	function SetClick($event)				{$this->TextLabel->SetClick($event);}
 	//function SetLayout($Layout)		{$this->TextLabel->SetLayout($Layout);}
 	function SetOutTextColor($color='#001E42')	
@@ -170,11 +206,17 @@ class MenuItem extends Panel
 	{
 		NolohInternal::SetProperty('OvBckClr', "$color", $this->TextLabel);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		AddNolohScriptSrc('MenuItem.js', true);
 		parent::Show();	
 	}
+	/**
+	 * @ignore
+	 */
 	function Hide()
 	{
 		parent::Hide();
@@ -182,4 +224,5 @@ class MenuItem extends Panel
 		$this->MenuItemsPanel->Hide();
 	}
 }
+
 ?>

@@ -58,7 +58,7 @@ final class URL
 	 * Sets the value of a particular URL token
 	 * @param string $tokenName
 	 * @param string $tokenValue
-	 * @param bool $removeSubsequentTokens If true, every token appearing after the current one will be removed
+	 * @param boolean $removeSubsequentTokens If true, every token appearing after the current one will be removed
 	 * @return string The value passed in
 	 */
 	static function SetToken($tokenName, $tokenValue, $removeSubsequentTokens=false)
@@ -155,7 +155,7 @@ final class URL
 	/**
 	 * Opens a URL in a new window
 	 * @param string $url
-	 * @param bool $newBrowserNotPanel Specifies whether the url opens in a browser window, or alternatively, in a WindowPanel
+	 * @param boolean $newBrowserNotPanel Specifies whether the url opens in a browser window, or alternatively, in a WindowPanel
 	 */
 	static function OpenInNewWindow($url, $newBrowserNotPanel = true)
 	{

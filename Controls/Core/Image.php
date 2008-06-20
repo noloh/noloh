@@ -2,20 +2,21 @@
 /**
  * Image class
  *
- * A Control for an Image. An image can either be used to diplay a graphic, or be used as a custom button.
- *
+ * A Control for an Image. An Image can either be used to diplay a graphic or be used as a custom button. It can also
+ * be used to render your own images using PHP's image magic functions by calling Conjure. Conjure can be used, to give 
+ * but one example, for rendering a captua.
  * 
  * Example 1: Instantiating and Adding an Image
  *
  * <code>
- *function Foo()
- *{
+ * function Foo()
+ * {
  *    //Instatiates $tmpImage as a new Image, with the src of SomePicture.gif, and a left, 
  *    //and top of 10px.
  *    $tmpImage = new Image("Images/SomePicture.gif", 10, 10);
  *    $this->Controls->Add($tmpImage); //Adds a button to the Controls of some Container
- *}     	
- *</code>
+ * }     	
+ * </code>
  * 
  * @property string $Src The source file of this image
  * 
@@ -23,24 +24,18 @@
  */
 class Image extends Control 
 {
-	/**
-	* Src, The source file of the image.
-	* @var string
-	*/
 	private $Src;
     private $Magician;
-	
 	/**
 	* Constructor.
-	* for inherited components, be sure to call the parent constructor first
- 	* so that the component properties and events are defined.
+	* Be sure to call this from the constructor of any class that extends Button
  	* Example
  	*	<code> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</code>
- 	* @param string[optional]
-	* @param integer[optiona]
-	* @param integer[optional]
-	* @param integer[optional] //The Width of the Image is determined automatically if not explicitly set
-	* @param integer[optional] //The Height of the Image is determined automatically if not explicitly set
+ 	* @param string $src
+	* @param integer $left
+	* @param integer $top
+	* @param integer $width
+	* @param integer $height
 	*/
 	function Image($src='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)  
 	{
@@ -54,7 +49,7 @@ class Image extends Control
 	* Gets the Src of the Image
 	* <b>Note:</b>Can also be called as a property.
 	*<code> $tempSrc = $this->Src;</code>
-	* @return string|absolute path
+	* @return string
  	*/
 	function GetSrc()
 	{
@@ -66,8 +61,8 @@ class Image extends Control
 	*<code>$this->Src = "Images/NewImage.gif";</code>
 	*The path is relative to your main file 
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
-	*@param string $Src
-	*@return string|Src
+	*@param string $src
+	*@return string 
 	*/
 	function SetSrc($newSrc, $adjustSize=false)
 	{
@@ -88,7 +83,7 @@ class Image extends Control
 	*Gets the Width of the Image.
 	*<b>Note:</b>Can also get as a property.
 	*<code>$tmpVar = $this->Width;</code>
-	*@param string $unit[optional] //Units you would like the width in, either px, or "%".
+	*@param string $unit Units you would like the width in, either px, or "%".
 	*@return mixed
 	*/
 	function GetWidth($unit='px')
@@ -106,7 +101,7 @@ class Image extends Control
 	*<b>Note:</b>Can also be set as a property.
 	*<code>$this->Width = 200;</code>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
-	*@param integer $Width
+	*@param integer $width
 	*/
 	function SetWidth($width)
 	{
@@ -133,7 +128,7 @@ class Image extends Control
 	*Gets the Width of the Image.
 	*<b>Note:</b>Can also get as a property.
 	*<code>$tmpVar = $this->Height;</code>
-	*@param string $unit[optional|] //Units you would like the height in, either px, or "%".
+	*@param string $unit Units you would like the height in, either px, or "%".
 	*@return mixed
 	*/
 	function GetHeight($unit='px')
@@ -174,7 +169,33 @@ class Image extends Control
 			$this->SetMagicianSrc();
 		parent::SetHeight($tmpHeight);
 	}
-
+	/**
+	 * Conjure can be used to render your own images on the fly, e.g., for creating captuas. It lets you specify a callback function, which MUST
+	 * be static, whose first parameter is the image resource, and subsequent parameters can be anything you define. One can then call PHP's image 
+	 * magic functions on the image resource. Consider the following example:
+	 * <code>
+	 * class Example
+	 * {
+	 *  function Example()
+	 *  {
+	 *   // Instantiate a new Image
+	 *   $image = new Image('me.jpg');
+	 *   // Conjure a magician for performing the image magic, passing in the parameters 255, 0, 0, which will correspond to red in our function
+	 *   $image->Conjure('Example', 'FillImage', 255, 0, 0);
+	 *  }
+	 *  function FillImage($resource, $red, $green, $blue)
+	 *  {
+	 *   // Create a color using PHP's imagecollorallocate function
+	 *   $col = imagecolorallocate($resource, $red, $green, $blue);
+	 *   // Fill in the image with this color, using PHP's imagefill function
+	 *   imagefill($resource, 5, 5, $col);
+	 *  }
+	 * }
+	 * </code>
+	 * @param string $className
+	 * @param string $functionName
+	 * @param mixed,... $paramsAsDotDotDot
+	 */
     function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
 		$this->Magician = func_get_args();
@@ -199,12 +220,13 @@ class Image extends Control
 	{
 		NolohInternal::Show('IMG', parent::Show(), $this);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		print('<IMG src="'.$this->Src.'"' . ($this->ToolTip==null?'':(' alt="'.$this->ToolTip.'"')) . '></IMG> ');
 	}
-	
 	/**
 	 *@ignore 
 	*/

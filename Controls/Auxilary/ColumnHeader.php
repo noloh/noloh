@@ -34,7 +34,13 @@ class ColumnHeader extends Panel
 	}
 	function GetCaption()	{return $this->Caption;}
 	function GetOrderArrow()	{return $this->OrderArrow;}
+	/**
+	 * @ignore
+	 */
 	function SetText($text)	{$this->Caption->SetText($text);}
+	/**
+	 * @ignore
+	 */
 	function GetText()		{return $this->Caption->GetText();}
 	public function GetSizeHandle()	{return $this->SizeHandle;}
 	public function Sort()

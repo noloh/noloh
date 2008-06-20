@@ -182,6 +182,9 @@ class DataConnection extends Object
 		$dbCmd = new DataCommand($this, $query);
 		return $dbCmd;
 	}
+	/**
+	 * @ignore
+	 */
 	function __call($name, $args)
 	{
 		array_splice($args, 0, 0, $name);

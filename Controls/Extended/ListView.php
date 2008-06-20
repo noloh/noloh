@@ -48,6 +48,9 @@ class ListView extends Panel
 		$this->ModifyScroll();
 	}
 	//function GetColumns(){return $this->Columns;}
+	/**
+	 * @ignore
+	 */
 	function AddColumn($text, $width = System::Auto)
 	{
 		$tmpCount = $this->Columns->Count();
@@ -79,6 +82,9 @@ class ListView extends Panel
 		$tmpColumn->SizeHandle->Shifts[] = Shift::Left($tmpColumn->SizeHandle);
 		$tmpColumn->SizeHandle->Shifts[] = Shift::Width($tmpColumn);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddListViewItem(ListViewItem $listViewItem)
 	{
 		$this->ListViewItems->Add($listViewItem, true, true);
@@ -88,11 +94,17 @@ class ListView extends Panel
 			if(empty($this->LVItemsQueue["{$listViewItem->Id}"])) 
 				$this->LVItemsQueue["{$listViewItem->Id}"] = $listViewItem;*/
 	}
+	/**
+	 * @ignore
+	 */
 	function InsertListViewItem($listViewItem, $idx)
 	{
 		$this->ListViewItems->Insert($listViewItem, $idx, true);
 		$this->SetItemProperties($listViewItem);
 	}
+	/**
+	 * @ignore
+	 */
 	function Update(ListViewItem $listViewItem=null, $startColumn=null/*, $addToQueue=true*/)
 	{
 		return true;
@@ -136,6 +148,9 @@ class ListView extends Panel
 	{
 		$this->BodyPanelsHolder->Scroll = new ClientEvent("_N_LV_ModScroll('{$this->BodyPanelsHolder->Id}', '{$this->ColumnPanel->Id}');");
 	}
+	/**
+	 * @ignore
+	 */
 	public function ClearListViewItems(/*$clearBodyPanels=true*/)
 	{
 		$this->ListViewItems->Clear(true);
@@ -155,6 +170,9 @@ class ListView extends Panel
 	{
 		$this->SetEvent($newEvent, 'DataBind');
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		AddNolohScriptSrc('ListView.js', true);

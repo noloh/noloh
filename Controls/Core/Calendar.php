@@ -46,7 +46,6 @@ class Calendar extends Panel
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Calendar
 	 *	<code> $cal = new Calendar(0, 0, 80, 24, 1000000);</code>
-	 *
 	 * @param integer $left The left coordinate of this Control
 	 * @param integer $top The top coordinate of this Control
 	 * @param integer $width The width of this Control

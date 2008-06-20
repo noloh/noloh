@@ -22,6 +22,9 @@ class MarkupRegion extends Control
 		//$this->AutoScroll = true;
 		$this->SetText($markupStringOrFile);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetFontSize()
 	{
 		return 12;
@@ -32,11 +35,17 @@ class MarkupRegion extends Control
 //		$this->AutoWidthHeight();
 //		NolohInternal::SetProperty("style.fontSize",$this->FontSize."px",$this);
 //	}
+	/**
+	 * @ignore
+	 */
 	function GetWidth()
 	{
 		$Width = parent::GetWidth();
 		return ($Width == System::Auto || $Width == System::AutoHtmlTrim) ? $this->CachedWidth : $Width;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetHeight()
 	{
 		$Height = parent::GetHeight();
@@ -107,6 +116,9 @@ class MarkupRegion extends Control
 	//	return $this->MarkupString;
 	//}
 	//TODO, DON'T LIKE THAT THIS IS REPEATED FROM LABEL, BUT, MarkupRegion IS A PANEL, AND NOT A LABEL, SOMETHING TO THINK ABOUT - Asher
+	/**
+	 * @ignore
+	 */
 	protected function AutoWidthHeight($markup)
 	{
 		$width = parent::GetWidth();
@@ -130,7 +142,7 @@ class MarkupRegion extends Control
 			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
 	}
-
+	
     function SetText($markupStringOrFile)
 	{
 
@@ -149,6 +161,9 @@ class MarkupRegion extends Control
 		//if($this->MarkupString == false)
 			//$this->MarkupString = $markupStringOrFile;
 //	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
         NolohInternal::Show('DIV', parent::Show(), $this);
@@ -159,6 +174,9 @@ class MarkupRegion extends Control
 	{
 		return '<span class=\''.$class.'\'>'.$text.'</span>';
 	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		print(((is_file($this->Text))?file_get_contents($this->Text):$this->Text).' ');

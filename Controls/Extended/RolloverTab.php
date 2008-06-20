@@ -54,6 +54,9 @@ class RolloverTab extends Panel implements Groupable
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
 	}
+	/**
+	 * @ignore
+	 */
 	function SetWidth($width)
 	{
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
@@ -75,11 +78,20 @@ class RolloverTab extends Panel implements Groupable
 			$this->SelectedTab->SetWidth($width);
 		$this->TextObject->SetWidth($width);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetText()	{return $this->TextObject->Text;}
+	/**
+	 * @ignore
+	 */
 	function SetText($text)
 	{
 		$this->TextObject->Text = $text;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
@@ -160,17 +172,23 @@ class RolloverTab extends Panel implements Groupable
 	function GetSelect()				{return $this->GetEvent('Select');}
 	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
 	//Groupable Functions
+	/**
+	 * @ignore
+	 */
 	function GetGroupName()				{return $this->GroupName;}
+	/**
+	 * @ignore
+	 */
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
 	//function GetSelected()				{return $this->Selected != null;}
 	function SetSelected($bool)
 	{
 //		if(is_string($bool))
 //			$bool = $bool == 'true'?true:false;			
-		$selected = $bool ? true : null;
+		//$selected = $bool ? true : null;
 		//Alert($selected . ' + ' . $this->Selected);
 		//Alert($selected . ' + ' . $this->GetSelected());
-		if($this->Selected != $selected)
+		if($this->Selected != $bool)
 		{
 			parent::SetSelected($bool);
 			//Trigger Select Event if $bool is true, i.e. Selected
@@ -184,7 +202,7 @@ class RolloverTab extends Panel implements Groupable
 			else
 				NolohInternal::SetProperty('Cur', 'Out', $this);
 			//$this->Selected = $selected;
-			if($selected)
+			if($bool)
 			{
 				$this->OutTab->Visible = $this->OverTab->Visible = $this->DownTab->Visible = System::Vacuous;
 				$this->SelectedTab->Visible = true;
@@ -196,12 +214,15 @@ class RolloverTab extends Panel implements Groupable
 			}
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		$this->TextObject->BringToFront();
 		parent::Show();
 		AddNolohScriptSrc('RolloverTab.js');
-		NolohInternal::SetProperty('Cur', 'Out', $this);	
+		NolohInternal::SetProperty('Cur', 'Out', $this);
 	}
 }
 ?>

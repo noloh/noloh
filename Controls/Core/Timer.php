@@ -17,7 +17,8 @@
  * 	Alert("5 seconds has passed");
  * }
  * </code>
- * 
+ * <b>Note</b>: Timer currently has a number of known issues. For instance, if a Timer is added to a Panel, and then that Panel is removed,
+ * the Timer will still tick. It is marked for major development in the near future to dodge these issues.
  * @package Controls/Core
  */
 class Timer extends Component
