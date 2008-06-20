@@ -129,7 +129,8 @@ class ClientEvent extends Event
 	function Exec(&$execClientEvents=true)
 	{
 		if(!$GLOBALS['_NQueueDisabled'] && $execClientEvents && $this->Enabled===null)
-			AddScript($this->ExecuteFunction);
+			AddScript(str_replace('\\\'', '\'', $this->ExecuteFunction));
+			//AddScript($this->ExecuteFunction);
 	}
 }
 
