@@ -36,6 +36,10 @@ class ListView extends Panel
 		$this->ListViewItems->ClearFunctionName = 'ClearListViewItems';
 		$this->ListViewItems->InsertFunctionName = 'InsertListViewItem';
 		$this->BodyPanelsHolder->Controls->Add($this->InnerPanel);
+		//Shift With Outer Panel
+		$this->ColumnsPanel->Shifts[] = Shift::With($this, Shift::Width, Shift::Width);
+		$this->BodyPanelsHolder->Shifts[] = Shift::With($this, Shift::Width, Shift::Width);
+		
 		$this->Line = new Label('', 0, 0, 3, '100%');
 		$this->Line->Visible = false;
 		$this->Line->BackColor = '#808080';
