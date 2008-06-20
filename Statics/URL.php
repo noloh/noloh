@@ -52,24 +52,44 @@ final class URL
 	 */
 	static function GetToken($tokenName, $defaultValue=null)
 	{
-		return isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] ? $_SESSION['_NTokens'][$tokenName] : $defaultValue;
+		return isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] ? urldecode($_SESSION['_NTokens'][$tokenName]) : $defaultValue;
 	}
 	/**
 	 * Sets the value of a particular URL token
 	 * @param string $tokenName
 	 * @param string $tokenValue
+	 * @param bool $removeSubsequentTokens If true, every token appearing after the current one will be removed
+	 * @return string The value passed in
 	 */
-	static function SetToken($tokenName, $tokenValue)
+	static function SetToken($tokenName, $tokenValue, $removeSubsequentTokens=false)
 	{
 		if($GLOBALS['_NURLTokenMode'] && (!isset($_SESSION['_NTokens'][$tokenName]) || $_SESSION['_NTokens'][$tokenName]!=$tokenValue))
 		{
-			if(!isset($GLOBALS['_NTokenUpdate']))
+			self::QueueUpdateTokens();
+			if($tokenValue === null)
+				unset($_SESSION['_NTokens'][$tokenName]);
+			else
+				$_SESSION['_NTokens'][$tokenName] = urlencode($tokenValue);
+			if($removeSubsequentTokens)
 			{
-				$GLOBALS['_NTokenUpdate'] = true;
-				if($GLOBALS['_NTokenTrailsExpiration'])
-					$GLOBALS['_NInitialURLTokens'] = self::TokenString($_SESSION['_NTokens']);
+				reset($_SESSION['_NTokens']);
+				for($position=1; key($_SESSION['_NTokens'])!=$tokenName; ++$position)
+					next($_SESSION['_NTokens']);
+				array_splice($_SESSION['_NTokens'], $position);
 			}
-			$_SESSION['_NTokens'][$tokenName] = $tokenValue;
+		}
+		return $tokenValue;
+	}
+	/**
+	 * Removes 
+	 * @param string $tokenName
+	 */
+	static function RemoveToken($tokenName)
+	{
+		if($GLOBALS['_NURLTokenMode'] && isset($_SESSION['_NTokens'][$tokenName]))
+		{
+			self::QueueUpdateTokens();
+			unset($_SESSION['_NTokens'][$tokenName]);
 		}
 	}
 	/**
@@ -82,6 +102,18 @@ final class URL
 			$str .= $key . '=' . $val . '&';
 		$str = rtrim($str, '&');
 		return $GLOBALS['_NURLTokenMode'] == 2 ? base64_encode($str) : $str;
+	}
+	/**
+	 * @ignore
+	 */
+	static function QueueUpdateTokens()
+	{
+		if(!isset($GLOBALS['_NTokenUpdate']))
+		{
+			$GLOBALS['_NTokenUpdate'] = true;
+			if($GLOBALS['_NTokenTrailsExpiration'])
+				$GLOBALS['_NInitialURLTokens'] = self::TokenString($_SESSION['_NTokens']);
+		}
 	}
 	/**
 	 * @ignore
@@ -112,12 +144,19 @@ final class URL
 				file_put_contents($file, base64_encode(serialize($trails)));
 		}
 	}
-	
+	/**
+	 * Redirects to another URL
+	 * @param string $url
+	 */
 	static function Redirect($url)
 	{
 		AddScript('location="'.$url.'";');
 	}
-	
+	/**
+	 * Opens a URL in a new window
+	 * @param string $url
+	 * @param bool $newBrowserNotPanel Specifies whether the url opens in a browser window, or alternatively, in a WindowPanel
+	 */
 	static function OpenInNewWindow($url, $newBrowserNotPanel = true)
 	{
 		if($newBrowserNotPanel)
@@ -130,7 +169,7 @@ final class URL
 			//$iframe->SetEvent(new ClientEvent('alert("hey!");'), 'onreadystatechange;');
 			AddScript('_N("'.$iframe->Id.'").src = "'.$url.'";', Priority::Low);
 			$iframe->Shifts[] = Shift::With($wp->ResizeImage, Shift::Size);
-			GetComponentById('N1')->Controls->Add($wp);
+			WebPage::That()->Controls->Add($wp);
 		}
 	}
 }
