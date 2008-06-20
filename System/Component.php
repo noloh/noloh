@@ -138,7 +138,11 @@ abstract class Component extends Object
 	{
 		return $this->GetParent()->GetAddId($obj);
 	}
-	
+	/**
+	 * Gets an Event with a particular name
+	 * @param string $eventType
+	 * @return Event
+	 */
 	function GetEvent($eventType)
 	{
 		if($this->EventSpace == null)
@@ -147,7 +151,12 @@ abstract class Component extends Object
 			? $this->EventSpace[$eventType]
 			: new Event(array(), array(array($this->Id, $eventType)));
 	}
-	
+	/**
+	 * Sets an Event with a particular name
+	 * @param Event $eventObj The Event object
+	 * @param string $eventType The name of the event
+	 * @return Event The Event Object that was passed in
+	 */
 	function SetEvent($eventObj, $eventType)
 	{
 		if($this->EventSpace == null)

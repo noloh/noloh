@@ -72,11 +72,13 @@ final class NolohInternal
 				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
 		if(isset($_SESSION['_NControlInserts'][$objId]))
 		{
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'),\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
+//			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'),\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',['.$initialProperties.'],\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
 			unset($_SESSION['_NControlInserts'][$objId]);
 		}
 		else
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'))', Priority::High);
+//			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',Array('.$initialProperties.'))', Priority::High);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',['.$initialProperties.'])', Priority::High);
 	}
 	
 	public static function Bury($obj)
@@ -135,7 +137,11 @@ final class NolohInternal
 		{
 			$obj = &GetComponentById($objId);
 			if($obj!=null && $obj->GetShowStatus())
-				AddScript('_NSetP(\''.$objId.'\',Array('.self::GetPropertiesString($objId, $nameValPairs).'))');
+//				AddScript('_NSetP(\''.$objId.'\',Array('.self::GetPropertiesString($objId, $nameValPairs).'))');
+				/*Change made by Asher, realized that we can use [] instead of Array, saves 5 chars for every _NSetP :),
+				I tested on all our applications, they all seem to still work fine*/
+				AddScript('_NSetP(\''.$objId.'\',['.self::GetPropertiesString($objId, $nameValPairs).'])');
+			
 			else 
 			{
 				$splitStr = explode('i', $objId, 2);
@@ -145,7 +151,9 @@ final class NolohInternal
 					$nameValPairsString = '';
 					foreach($nameValPairs as $name => $val)
 						$nameValPairsString .= '\''.$name.'\',\''.($name=='href'?$val:$markupPanel->GetEventString($val, $objId)).'\',';
-					AddScript('_NSetPEvtee(\''.$objId.'\',Array('.rtrim($nameValPairsString,',').'))');
+//					AddScript('_NSetPEvtee(\''.$objId.'\',Array('.rtrim($nameValPairsString,',').'))');
+					AddScript('_NSetPEvtee(\''.$objId.'\',['.rtrim($nameValPairsString,',').'])');
+				
 				}
 			}
 		}

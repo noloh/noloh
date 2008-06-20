@@ -49,6 +49,9 @@ class ClientEvent extends Event
 		}
 		parent::Event(str_replace(array("\n", '\''), array(' ', '\\\''), $allCodeAsString));
 	}
+	/**
+	 * @ignore
+	 */
 	static public function ClientFormat($param)
 	{
 		if(is_string($param))

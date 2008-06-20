@@ -1,4 +1,4 @@
-/*Easing Equations by Robert Penner, Copyright © 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
+/*!Easing Equations by Robert Penner, Copyright © 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
 
 _NAnims = Array();
 _NAnimsCount = 0;

@@ -2,13 +2,21 @@
 /**
  * ControlPair class
  * 
- * This class needs a description...
+ * A ControlPair is a Container showing two Controls next to each other, either vertically or horizontally. 
  * 
  * @package Collections
  */
 class ControlPair extends Container
 {
-	const Horizontal = 0, Vertical = 1;
+	/**
+	 * Represents that the two Controls should be horizontally next to each other, i.e., side by side
+	 */
+	const Horizontal = 0;
+	/**
+	 * Represents that the two Controls should be vertically next to each other, i.e., top to bottom
+	 */
+	const Vertical = 1;
+	
 	private $Control1;
 	private $Control2;
 	private $Margin = 5;
@@ -17,6 +25,18 @@ class ControlPair extends Container
 	/*TODO
 	Allow for setting of Pixel/Ratio, SetRatio()
 	*/
+	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends ControlPair.
+	 * @param mixed $firstControl If it is a string, the first Control will be a Label
+	 * @param mixed $secondControl If it is null, the second Control will be a TextBox
+	 * @param integer $left
+	 * @param integer $top
+	 * @param ControlPair::Horizontal|ControlPair::Vertical $layout
+	 * @param integer $margin
+	 * @return ControlPair
+	 */
 	function ControlPair($firstControl, $secondControl=null, $left=0, $top=0, $layout=ControlPair::Horizontal, $margin = 0)
 	{
 		parent::Container();
@@ -32,6 +52,18 @@ class ControlPair extends Container
 		$this->SetTop($top);
 		$this->Controls->AddRange($firstControl, $secondControl);
 	}
+	/**
+	 * Returns the first Control
+	 * @return Control
+	 */
+	function GetControl1()	
+	{
+		return $this->Control1;
+	}
+	/**
+	 * Sets the first Control
+	 * @param Control $obj
+	 */
 	function SetControl1($obj)
 	{
 		$tmpLeft = $this->GetLeft();
@@ -41,6 +73,18 @@ class ControlPair extends Container
 		$this->SetLeft($tmpLeft);
 		$this->Controls->Add($this->Control1);
 	}
+	/**
+	 * Returns the second Control
+	 * @return Control
+	 */
+	function GetControl2()	
+	{
+		return $this->Control2;
+	}
+	/**
+	 * Sets the second Control
+	 * @param Control $obj
+	 */
 	function SetControl2($obj)
 	{
 		$this->Controls->Remove($this->Control2);
@@ -49,6 +93,18 @@ class ControlPair extends Container
 		$this->SetTop($this->GetTop());
 		$this->Controls->Add($this->Control2);
 	}
+	/**
+	 * Returns the spacing between the two Controls
+	 * @return integer
+	 */
+	function GetMargin()	
+	{
+		return $this->Margin;
+	}
+	/**
+	 * Sets the spacing between the two Controls
+	 * @param integer $margin
+	 */
 	function SetMargin($margin)
 	{
 		if($this->Margin != $margin)
@@ -60,9 +116,9 @@ class ControlPair extends Container
 				$this->SetTop($this->GetTop());
 		}
 	}
-	function GetMargin()	{return $this->Margin;}
-	function GetControl1()	{return $this->Control1;}
-	function GetControl2()	{return $this->Control2;}
+	/**
+	 * @ignore
+	 */
 	function SetLeft($left)
 	{
 		if($this->Layout == self::Horizontal)
@@ -76,6 +132,9 @@ class ControlPair extends Container
 			$this->Control2->SetLeft($left + $this->Control2->GetLeft());
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function SetTop($top)
 	{
 		if($this->Layout == self::Horizontal)
@@ -89,22 +148,37 @@ class ControlPair extends Container
 			$this->Control2->SetTop($this->Control1->GetTop() + $this->Margin + $this->Control2->GetTop());
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function GetLeft()
 	{
 		return $this->Control1->GetLeft();
 	}
+	/**
+	 * @ignore
+	 */
 	function GetTop()
 	{
 		return $this->Control1->GetTop();
 	}
+	/**
+	 * @ignore
+	 */
 	function GetRight()
 	{
 		return $this->GetLeft() + $this->GetWidth();
 	}
+	/**
+	 * @ignore
+	 */
 	function GetBottom()
 	{
 		return $this->GetTop() + $this->GetHeight();
 	}
+	/**
+	 * @ignore
+	 */
 	function GetWidth()
 	{
 		if($this->Layout == self::Horizontal)
@@ -115,6 +189,9 @@ class ControlPair extends Container
 			else
 				return $obj2Width;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetHeight()
 	{
 		if($this->Layout == self::Vertical)
@@ -125,6 +202,9 @@ class ControlPair extends Container
 			else
 				return $obj2Height;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetLayout($layout)
 	{
 		if($this->Layout != $layout)
@@ -134,10 +214,25 @@ class ControlPair extends Container
 			$this->SetLeft($this->GetLeft());
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function GetValue()	{return $this->Control2->GetText();}
+	/**
+	 * @ignore
+	 */
 	function SetValue($value)	{$this->Control2->SetText($value);}
+	/**
+	 * @ignore
+	 */
 	function GetText()	{return $this->Control1->GetText();}
+	/**
+	 * @ignore
+	 */
 	function SetText($text)	{$this->Control1->SetText($text);}
+	/**
+	 * @ignore
+	 */
 	function SetCSSClass($className)
 	{
 		$this->Control1->SetCSSClass($className);
