@@ -2,223 +2,48 @@
 /** 
  * Control class
  *
- * Control is the base class for all NOLOH controls.
- * All Custom defined controls must extends Control.
- * <br>
- * The Control Class enables Controls to handle events, as well as most visual properties
- *
- * 
- *  @property string $CSSClass The CSSClass of the Control
- *  @property string $CSS_________ Allows for the ability to
- *  set ANY CSS property on the fly. Just prepend the style with CSS,
- *  and change dash to underscore. ex. CSSBorder_Bottom = "1px solid black";
- *  @property integer Layout
- * - <b>Layout</b>, integer,
- *   <br>Sets whether the position is absolute, relative, or static
- * - <b>Enabled</b>, boolean
- *   <br>Gets or sets whether the Control is Enabled
- * - <b>Left</b>, Integer
- *   <br>Gets or sets the Left of the Control
- * - <b>Top</b>, Integer
- *   <br>Gets or sets the Top of the Control
- * - <b>Width</b>, Integer
- *   <br>Gets or sets the Width of the Control
- * - <b>Height</b>, Integer
- *   <br>Gets or sets the Height of the Control
- * - <b>Bottom</b>, Integer, read-only
- *   <br>Gets the Bottom of the Control
- * - <b>Right</b>, Integer, read-only
- *   <br>Gets the Right of the Control
- * - <b>Opacity</b>, integer
- * 	 <br>Gets or sets the Opacity of the Control
- * - <b>ClientVisible</b>, boolean
- *   <br>Gets or sets the Visibility of the Control
- * - <b>Border</b>, string
- *   <br>Gets or sets the Border of the Control
- * - <b>BackColor</b>, string
- *   <br>Gets or sets the BackColor of the Control
- * - <b>Cursor</b>, string
- *   <br>Gets or sets the Mouse Cursor to be shown while over the the Control
- * - <b>Text</b>, string
- *   <br>Gets or sets the Text of the Control
- * - <b>ToolTip</b>, string
- *   <br>Gets or sets the ToolTip to be displayed while the mouse cursor is over the Control
- * - <b>ZIndex</b>, integer
- *   <br>Gets or sets the z index position of this control on the webpage, or in it's container
- *  
- * Events<br>
- * - <b>Change</b>, Event
- * - <b>Click</b>, Event
- * - <b>DoubleClick</b>, Event
- * - <b>MouseDown</b>, Event
- * - <b>MouseOver</b>, Event
- * - <b>MouseOut</b>, Event
- * - <b>MouseOver</b>, Event
- * - <b>MouseUp</b>, Event
- * - <b>RightClick</b>, Event
- * - <b>Scroll</b>, Event
- *
- * Events play a crucial role in NOLOH, you can set an event as follows
- * <code>
- *
- * Class Foo extends Control
- * {
- *      function Foo()
- *      {
- *          $this->Click = new ServerEvent($this, "HelloWorld");
- *      }
- *      public function HelloWorld()
- *      {
- *          Alert("Hello World");
- *      }
- * </code>
+ * Control is the base class for most NOLOH controls. They are different from Components in that they have a visual representation
+ * on the browser, e.g., location, size, Visible, Opacity, etc... All Custom defined controls must extends Control.<br><br>
+ * We're sorry, but this huge and important class is not yet well-documented. We're working very hard on our documentation so check back soon!
  * 
  * @package Controls/Core
  */
 
 abstract class Control extends Component
 {
-	//Attributes
 	/**
-	* CSSClass, Gets or Sets the CSSClass associated with this object, default is empty
-	* If you have a Cascading Style Sheet with a class as follows.
-	* 	.Links
-	*	{
-	*		font-size:12px;
-	*	}
-	* <br> You would set this control to use that class as follows
-	* <code> $this->CSSClass = "Links"; </code>
- 	* @var string
- 	*/
-	private $CSSClass;
-	/**
-	*Opacity of the component
-	*@var integer
-	*/
-	private $Opacity;
-	/**
-	*ZIndex of the component
-	*@var integer
-	*/
-	private $ZIndex;
-	/**
-	*@ignore
+	* @ignore
 	*/
 	protected $CSSPropertyArray;
-	/**
-	*Layout, Gets or sets the Layout of this Control
-	*Default is Layout::Absolute, possible values are Layout::Absolute, 
-	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
-	*@var integer
-	*/
+	private $CSSClass;
+	private $Opacity;
+	private $ZIndex;
 	private $Layout;
-	/**
-	*	Enabled, Gets or sets whether this control is Enabled, when Enabled is false, the Control takes on a Disabled look
-	* @var boolean
-	*/
 	private $Enabled;
-	/**
-	*	Left, Gets or sets the Left Coordinates of this control in pixels
-	* @var integer
-	*/
 	private $Left;
-	/**
-	*	Top, Gets or sets the Top Coordinates of this control in pixels
-	* @var integer
-	*/
 	private $Top;
-	/**
-	*	Width, Gets or sets the Width of this control in pixels
-	* @var integer
-	*/
 	private $Width;
-	/**
-	*	Height, Gets or sets the Height of this control in pixels
-	* @var integer
-	*/
 	private $Height;
-	/**
-	*	ClientVisible, Gets or sets the whether this control is visible on the client.
-	*	<b>Note:</b> This is different from ServerVisible, when ServerVisible is set to false the control is not drawn on the client, when ClientVisible is set to false the control is drawn, but set to hidden.
-	* @var boolean
-	*/
 	private $Visible;
-	/**
-	*	Border, Gets or sets  the border of this Control
-	*	e.g, "1px solid black", "5px dashed red"
-	* @var String
-	*/
-	private $Border;	
-	//Styles
-	/**
-	*	BackColor, Gets or sets  the BackgroundColor of this Control
-	*	e.g, "Red", "#FFFFFF"
-	* @var String
-	*/
+	private $Border;
 	private $BackColor;
-	/**
-	*	BackColor, Gets or sets  the Color of this Control
-	* 	Usually affects the Text of the Control
-	*	e.g, "Red", "#FFFFFF"
-	* @var String
-	*/
 	private $Color;
-	/**
-	*	Cursor, Gets or sets the Cursor property of this Control
-	*	This affects how the Mouse Cursor will look over this Controlo
-	*	e.g, "pointer", "crosshair", "text", "wait", "help", "default","move","e-resize","ne-resize","nw-resize","n-resize","se-resize"."sw-resize","s-resize","w-resize", "http://www.foo.com/mycursor.gif"
-	* @var String
-	*/
 	private $Cursor;
-	/**
-	* @ignore
-	*/
 	private $ToolTip;
-    /**
-	* @ignore
-	*/
     private $ContextMenu;
-	/**
-	*Text, Gets or sets  the Text of this Control
-	*<b>Note:</b>Different Controls use this differently
-	* @var String
-	*/
 	private $Text;
-	/**
-	*
-	*/
 	private $Selected;
 	private $Buoyant;
-	/**
-	*	An array that holds the different Shift information on this Control.
-	*	This allows a Control to manipulate itself and any other control in multiple ways
-	*	<b>Example</b>
-	* 	<code>
-	*	$this->Shifts[] = Shift::Left(someObj, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Top(someObj2, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Location(this, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Width(someObj3, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Height(someObj3, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Size(someObj, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Size(someObj2, null, null, null, null, null);
-	*	</code>
-	*	Note: All the paramaters other than the object are optional.
-	*	<b>Note:</b>Different Controls use this differently
-	*@var array
-	*/
 	private $Shifts;
+	
 	/**
 	* Constructor.
-	* for inherited components, be sure to call the parent constructor first
- 	* so that the component properties and events are defined.
- 	* Example
- 	*	<code> $tempVar = new Control(15, 15, 20, 20);</code>
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
-	* @param integer|optional
+	* Be sure to call this from the constructor of any class that extends Button
+	* @param integer $left
+	* @param integer $top
+	* @param integer $width
+	* @param integer $height
  	*/
-	
 	function Control($left = 0, $top = 0, $width = 0, $height = 0)
 	{
 		parent::Component();
@@ -231,13 +56,17 @@ abstract class Control extends Component
 		if($height !== null)
 			$this->SetHeight($height);
 	}
-
+	/**
+	 * @ignore
+	 */
 	function Bury()
 	{
 		NolohInternal::Bury($this);
 		parent::Bury();
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function Resurrect()
 	{
 		NolohInternal::Resurrect($this);
@@ -282,13 +111,14 @@ abstract class Control extends Component
 			$_SESSION['LowestZIndex'] = $newZIndex;
 		$this->_NSetZIndex($newZIndex);
 	}
-
+	/**
+	 * @ignore
+	 */
 	function _NSetZIndex($newZIndex)
 	{
 		$this->ZIndex = $newZIndex;
 		NolohInternal::SetProperty('style.zIndex', $newZIndex, $this);
 	}
-
 	/**
 	* @ignore
 	*/
@@ -301,22 +131,23 @@ abstract class Control extends Component
 	*<b>Note:</b>Can also be set as a property.
 	*<code>$this->Text = "NOLOH";</code>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetText($newText)
-	* @param string|Src
+	* @param string $src
 	*/
 	function SetText($newText)
 	{
 		$this->Text = $newText;
 	}
-	/**
-	* @ignore
-	*/
-	function GetWidth() {return $this->Width;}
+	
+	function GetWidth() 
+	{
+		return $this->Width;
+	}
 	/**
 	*Sets the Width of the Control.
 	*<b>Note:</b>Can also be set as a property.
 	*<code>$this->Width = 100;</code>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
-	* @param string|Src
+	* @param string $newWidth
 	*/
 	function SetWidth($newWidth)
 	{
@@ -328,16 +159,17 @@ abstract class Control extends Component
 		elseif(is_null($newWidth))
 			NolohInternal::SetProperty('style.width', '', $this);
 	}
-	/**
-	* @ignore
-	*/
-	function GetHeight() {return $this->Height;}
+	
+	function GetHeight() 
+	{
+		return $this->Height;
+	}
 	/**
 	*Sets the Height of the Control.
 	*<b>Note:</b>Can also be set as a property.
 	*<code>$this->Height = 100;</code>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
-	* @param string|Src
+	* @param string $newHeight
 	*/
 	function SetHeight($newHeight)
 	{
@@ -349,9 +181,12 @@ abstract class Control extends Component
 		elseif(is_null($newHeight))
 			NolohInternal::SetProperty('style.height', '', $this);
 	}
-	//
-	function GetLeft() {return $this->Left;}
-	//
+	
+	function GetLeft() 
+	{
+		return $this->Left;
+	}
+	
 	function SetLeft($newLeft)
 	{
 		$this->Left = $newLeft;
@@ -362,6 +197,7 @@ abstract class Control extends Component
 		elseif(is_null($newLeft))
 			NolohInternal::SetProperty('style.left', '', $this);
 	}
+	
 	function ReflectAxis($axis, $on=true)
 	{
 		if(strtolower($axis == 'x'))
@@ -397,9 +233,12 @@ abstract class Control extends Component
 			}
 		}
 	}
-	//
-	function GetTop() {return $this->Top;}
-	//
+	
+	function GetTop() 
+	{
+		return $this->Top;
+	}
+	
 	function SetTop($newTop)
 	{
 		$this->Top = $newTop;
@@ -413,7 +252,7 @@ abstract class Control extends Component
 	/**
 	*<b>Note:</b>Can also be called as a property.
 	*<code> $tempLeft = $this->Bottom;</code>
-	* @return integer|Bottom
+	* @return integer
 	*/
 	function GetBottom()
 	{
@@ -422,7 +261,7 @@ abstract class Control extends Component
 	/**
 	*<b>Note:</b>Can also be called as a property.
 	*<code> $tempLeft = $this->Right;</code>
-	* @return integer|Right
+	* @return integer
 	*/
 	function GetRight()
 	{
@@ -436,7 +275,7 @@ abstract class Control extends Component
 	*Layout, Gets or sets the Layout of this Control
 	*Default is Layout::Absolute, possible values are Layout::Absolute, 
 	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
-	*@var integer
+	*@param integer 
 	*/
 	function SetLayout($Layout)
 	{
@@ -470,12 +309,16 @@ abstract class Control extends Component
 		$this->Enabled = $bool ? null : false;
 		NolohInternal::SetProperty('disabled', !$bool, $this);
 	}
-
+	/**
+	 * @ignore
+	 */
 	function GetClientVisible()
 	{
 		return $this->Visible === null ? true : $this->Visible;
 	}
-
+	/**
+	 * @ignore
+	 */
 	function SetClientVisible($newVisibility)
 	{
 		if(is_string($newVisibility))
@@ -510,7 +353,7 @@ abstract class Control extends Component
 			if($visibility===true || $visibility==="true")
 			{
 				$this->Visible = null;
-				NolohInternal::SetProperty('style.visibility', 'visible', $this);
+				NolohInternal::SetProperty('style.visibility', 'inherit', $this);
 			}
 			else
 			{
@@ -642,7 +485,9 @@ abstract class Control extends Component
 		$this->Text = str_replace(array('~da~','~dp~'), array('&','+'), $text);
 		//$this->Text = str_replace('~da~', '&', $text);
 	}
-
+	/**
+	 * @ignore
+	 */
     function SetParentId($id)
     {
         parent::SetParentId($id);
@@ -679,7 +524,23 @@ abstract class Control extends Component
 	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, 'RightClick');}
 	function GetTypePause()							{return $this->GetEvent('TypePause');}
 	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
-	
+	/**
+	*	Returns the ArrayList holding all the Shifts
+	*	This allows a Control to manipulate itself and any other control in multiple ways
+	*	<b>Example</b>
+	* 	<code>
+	*	$this->Shifts[] = Shift::Left(someObj, null, null, null, null, null);
+	*	$this->Shifts[] = Shift::Top(someObj2, null, null, null, null, null);
+	*	$this->Shifts[] = Shift::Location(this, null, null, null, null, null);
+	*	$this->Shifts[] = Shift::Width(someObj3, null, null, null, null, null);
+	*	$this->Shifts[] = Shift::Height(someObj3, null, null, null, null, null);
+	*	$this->Shifts[] = Shift::Size(someObj, null, null, null, null, null);
+	*	$this->Shifts[] = Shift::Size(someObj2, null, null, null, null, null);
+	*	</code>
+	*	Note: All the paramaters other than the object are optional.
+	*	<b>Note:</b>Different Controls use this differently
+	* @return ArrayList
+	*/
 	function GetShifts()
 	{
 		if($this->Shifts == null)
@@ -726,10 +587,7 @@ abstract class Control extends Component
 		$this->AddShiftHelper($shift);
 		$this->Shifts->Insert($shift, $index, true);
 	}
-	/**
-	 * Removes the 
-	 * @param mixed $shift
-	 */
+	
 	function RemoveShift($shift)
 	{
 		foreach($this->Shifts as $i => $val)
@@ -854,4 +712,5 @@ abstract class Control extends Component
 		return $val;
 	}
 }
+
 ?>
