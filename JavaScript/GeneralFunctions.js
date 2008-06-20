@@ -86,6 +86,7 @@ function StartBuoyant(id, parentId)
 function StopBuoyant(id)
 {
 	var obj = _N(id);
+	var parent = _N(obj.BuoyantParentId);
 	obj.style.left = obj.BuoyantLeft + "px";
 	obj.style.top = obj.BuoyantTop + "px";
 	obj.style.zIndex = obj.BuoyantZIndex;
@@ -93,6 +94,12 @@ function StopBuoyant(id)
 	obj.BuoyantLeft = null;
 	obj.BuoyantTop = null;
 	obj.BuoyantZIndex = null;
+	do
+	{
+		if(parent.BuoyantChildren)
+			parent.BuoyantChildren.splice(parent.BuoyantChildren.indexOf(id), 1);
+		parent = parent.parentNode;
+	}while (parent && parent.id);
 }
 
 function MoveBuoyant(id)
