@@ -6,8 +6,8 @@ function ShiftStart(event, objArray)
 	_NShiftObjArray.Ghosts = Array();
 	_NShiftObjArray.HasMoved = false;
 	
-	xPos = event.clientX + window.scrollX;
-	yPos = event.clientY + window.scrollY;
+	xPos = event.clientX + window.pageXOffset;
+	yPos = event.clientY + window.pageYOffset;
 	_NShiftObjArray.CursorStartX = xPos;
 	_NShiftObjArray.CursorStartY = yPos;
 	
@@ -69,8 +69,8 @@ function ShiftGo(event)
 	var xPos, yPos;
 	var deltaX, deltaY;
 
-	xPos = event.clientX + window.scrollX;
-    yPos = event.clientY + window.scrollY;
+	xPos = event.clientX + window.pageXOffset;
+    yPos = event.clientY + window.pageYOffset;
 	deltaX = xPos - _NShiftObjArray.CursorStartX;
 	deltaY = yPos - _NShiftObjArray.CursorStartY;
 	
@@ -116,8 +116,8 @@ function ShiftStop(event)
 	if(_NShiftObjArray.HasMoved)
 	{
 		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
-		DroppedX = event.clientX + window.scrollX;
-		DroppedY = event.clientY + window.scrollY;
+		DroppedX = event.clientX + window.pageXOffset;
+		DroppedY = event.clientY + window.pageYOffset;
 		tmpCount = NOLOHCatchers.length;
 		for(var i=0; i<tmpCount; ++i)
 			if(IsAvailable(NOLOHCatchers[i]))
