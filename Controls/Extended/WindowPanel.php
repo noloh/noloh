@@ -48,9 +48,8 @@ class WindowPanel extends Panel
 		$this->TitleBar = new Label($title, $this->LeftTitle->Right, 0, null, 34);
 		$this->TitleBar->CSSBackground_Image = 'url('. $imagesDir .'WinMid'. $format.')';
 		$this->TitleBar->CSSBackground_Repeat = "repeat-x";
-		$this->MinimizeImage = new Image($imagesDir.'WinMin' . $format, null, $tmpTop);
 //		$this->RestoreImage = new Image($imagesDir.'restore.gif', null, 2);
-		$this->CloseImage = new Image($imagesDir.'WinClose' . $format, null, $tmpTop);
+		$this->CloseImage = new RolloverImage($imagesDir.'WinClose' . $format, $imagesDir.'WinCloseHover' . $format, null, $tmpTop);
 		$this->ResizeImage = new Image($imagesRoot.'Std/WinResize.gif', null, null); 
 
 		parent::Panel($left, $top, $width, $height);
@@ -62,9 +61,6 @@ class WindowPanel extends Panel
 		$this->SetBackColor('white');
 		
 		$this->TitleBar->CSSClass = 'NWinPanelTitle';
-
-		$this->CloseImage->MouseOver = new ClientEvent("this.src='{$imagesDir}WinCloseHover$format';");
-		$this->CloseImage->MouseOut = new ClientEvent("this.src='{$imagesDir}WinClose$format';");
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
@@ -83,8 +79,6 @@ class WindowPanel extends Panel
 		$this->BodyPanel->Shifts[] = Shift::With($this->ResizeImage, Shift::Size);
 		
 		$this->WindowPanelComponents->Add($this->TitleBar);
-		//$this->WindowPanelComponents->Add($this->MinimizeImage);
-		//$this->WindowPanelComponents->Add($this->RestoreImage);
 		$this->WindowPanelComponents->Add($this->LeftTitle);
 		$this->WindowPanelComponents->Add($this->RightTitle);
 		$this->WindowPanelComponents->Add($this->CloseImage);
@@ -189,6 +183,7 @@ class WindowPanel extends Panel
 	{
 		$this->GetParent()->Controls->Remove($this);
 	}
+	function Minimize(){}
 	function GetMaximizeBox()
 	{
 		return $this->MaximizeBox == null;
@@ -198,9 +193,27 @@ class WindowPanel extends Panel
 		$this->MaximizeBox = $bool ? null : false;
 //		$this->RestoreImage->ServerVisible = $bool;
 	}
-	function GetMinimizeBox()	{return $this->MinimizeBox == null;}
-	function SetMinimizeBox($bool)
+	function GetMinimizable()	{return $this->MinimizeBox == null;}
+	function SetMinimizable($bool)
 	{
+		if(!$this->MinimizeImage)
+		{
+			$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
+			if(!$_SESSION['_NIE6'])
+			{
+				$imagesDir = $imagesRoot .'Std/';
+				$format = '.png';
+			}
+			else
+			{
+				$imagesDir = $imagesRoot .'IE/';
+				$format = '.gif';
+			}
+			$this->MinimizeImage = new RolloverImage($imagesDir .'WinMin'.$format, $imagesDir .'WinMinHover'.$format, 35, 7);
+			$this->MinimizeImage->ReflectAxis('x');
+			$this->MinimizeImage->Click['Minimize'] = new ServerEvent($this, 'Minimize');
+			$this->WindowPanelComponents->Add($this->MinimizeImage);
+		}
 		$this->MinimizeBox = $bool ? null : false;
 		$this->MinimizeImage->Visible = $bool;
 	}
@@ -226,7 +239,6 @@ class WindowPanel extends Panel
 		$this->BodyPanel->SetWidth($width - ($this->BorderSize << 1));
 		$this->TitleBar->SetWidth($width - ($this->LeftTitle->GetWidth() << 1));
 		$this->RightTitle->Left = $this->TitleBar->Right;
-		$this->MinimizeImage->SetLeft($width - 67);
 //		$this->RestoreImage->SetLeft($newWidth - 45);
 		$this->CloseImage->SetLeft($width - 33);
 		$this->ResizeImage->SetLeft($width - ($this->BorderSize) - 18);

@@ -31,6 +31,9 @@ class TabPanel extends Panel
 		
 		$this->SetWidth($width);
 		$this->SetHeight($height);
+
+		$this->Body->Shifts[] = Shift::With($this, Shift::Height);
+		
 		$this->TabPages = &$this->Body->Controls;
 		$this->TabPages->AddFunctionName = 'AddTabPage';
 		
