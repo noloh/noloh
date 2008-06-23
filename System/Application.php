@@ -401,6 +401,9 @@ final class Application extends Object
 	private function Run()
 	{
 		global $OmniscientBeing;
+		header('Cache-Control: no-cache');
+		header('Pragma: no-cache');
+		//header('Cache-Control: no-store');
 		if(++$_SESSION['_NVisit']==0)
 		{
 			header('Content-Type: text/javascript');
