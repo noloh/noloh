@@ -1,9 +1,9 @@
 /*! Copyright (c) 2005 - 2008 NOLOH, LLC. All rights reserved */
 
-SavedControls = new Array();
+SavedControls = [];
 NOLOHChanges = new Object();
 NOLOHKey = null;
-NOLOHCaught = new Array();
+NOLOHCaught = [];
 _NFocus = null;
 _NContextMenuSource = null;
 _NFlashArgs = null;
@@ -31,7 +31,7 @@ ConversionArray["calSelectDate.setDate"] = "Date";
 ConversionArray["calSelectDate.setMonth"] = "Month";
 ConversionArray["calSelectDate.setFullYear"] = "Year";
 NOLOHUpload = new Object();
-NOLOHUpload.FileUploadObjIds = new Array();
+NOLOHUpload.FileUploadObjIds = [];
 NOLOHVisit = -1;
 HighestZIndex = 0;
 LowestZIndex = 0;
@@ -39,7 +39,7 @@ LowestZIndex = 0;
 function _NInit(loadLblId, loadImgId)
 {
 	document.body.NOLOHPostingBack = false;
-	NOLOHCatchers = Array();
+	NOLOHCatchers = [];
 	window.onscroll = BodyScrollState;
 	window.onresize = BodySizeState;
 	_NLoadLbl = loadLblId;
@@ -607,7 +607,7 @@ function ReadyBox(id)
 				return;
 		PostBack(NOLOHUpload.EventType, NOLOHUpload.ID);
 		NOLOHUpload = new Object();
-		NOLOHUpload.FileUploadObjIds = new Array();
+		NOLOHUpload.FileUploadObjIds = [];
 	}
 }
 

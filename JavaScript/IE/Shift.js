@@ -2,7 +2,7 @@ function ShiftStart(objArray)
 {
 	var xPos, yPos, obj, deltaZIndex;
 	_NShiftObjArray = objArray;
-	_NShiftObjArray.Ghosts = Array();
+	_NShiftObjArray.Ghosts = [];
 	_NShiftObjArray.HasMoved = false;
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
@@ -132,7 +132,7 @@ function ShiftStop()
 				if(NOLOHCaught.length != 0)
 				{
 					Catcher.DragCatch.call();
-					NOLOHCaught = Array();
+					NOLOHCaught = [];
 				}
 			}
 	}
@@ -162,7 +162,7 @@ function AddShiftWith(objectId, info)
 {
 	var tmpObj = _N(objectId);
 	if(tmpObj.ShiftsWith == null)
-		tmpObj.ShiftsWith = Array(info);
+		tmpObj.ShiftsWith = [info];
 	else	
 		tmpObj.ShiftsWith.push(info);
 }

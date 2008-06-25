@@ -66,7 +66,7 @@ class ServerEvent extends Event
 	{
 		return count($uploadArray) == 0
 			? "PostBack(\"$eventType\",\"$objId\",event);"
-			: "PostBackWithUpload(\"$eventType\",\"$objId\", Array(" . implode(',', $uploadArray) . '),event);';
+			: "PostBackWithUpload(\"$eventType\",\"$objId\", [" . implode(',', $uploadArray) . '],event);';
 	}
 	/**
 	 * Constructor

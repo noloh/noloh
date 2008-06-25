@@ -1,7 +1,7 @@
 function InitTreeList(id)
 {
 	var tree = _N(id);
-	tree.SelectedElements = Array();
+	tree.SelectedElements = [];
 	tree.SelectedNodes = "";
 }
 function SelectNode(nodeId, elementId, event)
@@ -41,7 +41,7 @@ function SelectNode(nodeId, elementId, event)
 			_NSetProperty(tree.SelectedElements[i], "style.background", "transparent");
 			_NSetProperty(tree.SelectedElements[i], "style.color", "#000000");
 		}
-		tree.SelectedElements = Array(elementId);
+		tree.SelectedElements = [elementId];
 		tree.SelectedNodes = nodeId;
 	}
 	_NSave(tree.id, "_NSelectedNodes", tree.SelectedNodes);

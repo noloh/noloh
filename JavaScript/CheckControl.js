@@ -4,7 +4,7 @@ function _NGIClick(id)
 }
 function _NRBSave(id)
 {
-    var i, divId, changeArr = Array();
+    var i, divId, changeArr = [];
 	var radio = _N(id+"I");
 	var radioGroup = document.getElementsByName(radio.name);
 	for(i=0; i < radioGroup.length; ++i)

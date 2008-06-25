@@ -106,7 +106,7 @@ function PrintCal(id)
 
 function GetFullDay(theDate)
 {
-	var weekday = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
+	var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 	return weekday[theDate.getDay()];
 }
 
@@ -120,8 +120,8 @@ function GetShortDay(theDate)
 
 function GetFullMonth(theDate)
 {
-	var fullmonth = new Array("January","February","March","April","May","June",
-			"July","August","September","October","November","December");
+	var fullmonth = new ["January","February","March","April","May","June",
+			"July","August","September","October","November","December"];
 	return fullmonth[theDate.getMonth()];
 }
 

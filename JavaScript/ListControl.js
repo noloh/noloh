@@ -25,7 +25,7 @@ function _NListAdd(id,text,val,idx)
 			opts[i] = new Option(opts[--i].text, opts[i].value);
 		opts[i] = new Option(text,val);
 	}
-	return Array();
+	return [];
 }
 function _NListRem(id,idx)
 {

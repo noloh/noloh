@@ -15,7 +15,7 @@ function _NGetGroupSelectedElement()
 
 function Group()
 {
-	this.Elements = new Array();
+	this.Elements = [];
 	this.GetSelectedIndex = _NGetGroupSelectedIndex;
 	this.GetSelectedElement = _NGetGroupSelectedElement;
 }

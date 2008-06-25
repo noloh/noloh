@@ -76,7 +76,7 @@ function StartBuoyant(id, parentId)
 	do
 	{
 		if(parent.BuoyantChildren == null)
-			parent.BuoyantChildren = Array();
+			parent.BuoyantChildren = [];
 		parent.BuoyantChildren.push(id);
 		parent = parent.parentNode;
 	}while (parent && parent.id);

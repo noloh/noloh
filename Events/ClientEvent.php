@@ -68,7 +68,7 @@ class ClientEvent extends Event
 			$tmpArr = array();
 			foreach($param as $val)
 				$tmpArr[] = self::ClientFormat($val);
-			return 'Array(' . implode(',', $tmpArr) . ')';
+			return '[' . implode(',', $tmpArr) . ']';
 		}
 		elseif($param instanceof Component)
 			return '\'' . $param->Id . '\'';
