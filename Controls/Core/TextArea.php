@@ -2,7 +2,9 @@
 /**
  * TextArea class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A TextArea is a Control for a conventional web text area. It allows the user to type in multiple lines of text.
+ * If you want to allow the user to type in only a single line of text, then you are looking for the TextBox Control
+ * instead.
  * 
  * @package Controls/Core
  */
@@ -10,24 +12,40 @@ class TextArea extends Control
 {
 	private $MaxLength;
 	private $Scrolling;	
-	
-	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = -1)  
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends TextArea
+	 * @param string $text The Text of this element
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @param integer $maxLength The maximum number of characters that are allowed in the TextArea
+	 * @return TextArea
+	 */
+	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)  
 	{
 		parent::Control($left, $top, $width, $height);
 		$this->SetMaxLength($maxLength);
 		if($text != null)
 			$this->SetText($text);
 	}
-	
+	/**
+	 * Returns the maximum number of characters that are allowed in the TextArea
+	 * @return integer
+	 */
 	function GetMaxLength()
 	{
 		return $this->MaxLength;
 	}
-	
-	function SetMaxLength($newMaxLength)
+	/**
+	 * Sets the maximum number of characters that are allowed in the TextArea
+	 * @param integer $maxLength
+	 */
+	function SetMaxLength($maxLength)
 	{
-		$this->MaxLength = $newMaxLength;
-		NolohInternal::SetProperty('MaxLength', $newMaxLength, $this);
+		$this->MaxLength = $maxLength;
+		NolohInternal::SetProperty('MaxLength', $maxLength===null ? -1 : $maxLength, $this);
 	}
 	/**
 	 * @ignore
@@ -41,6 +59,10 @@ class TextArea extends Control
 	{
 		return $this->ScrollLeft;
 	}*/
+	/**
+	 * Sets the position of the horizontal scrollbar
+	 * @param integer $scrollLeft
+	 */
     function SetScrollLeft($scrollLeft)
     {
     	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
@@ -54,6 +76,10 @@ class TextArea extends Control
     {
     	return $this->ScrollTop;
     }*/
+    /**
+	 * Sets the position of the vertical scrollbar
+	 * @param integer $scrollTop
+	 */
     function SetScrollTop($scrollTop)
     {
     	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
@@ -63,8 +89,16 @@ class TextArea extends Control
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
     }
+    /**
+     * Returns the Scroll Event, which gets launched when a user scrolls through the TextArea
+     * @return Event
+     */
 	function GetScroll()							{return $this->GetEvent('Scroll');}
-	function SetScroll($newScroll)					{$this->SetEvent($newScroll, 'Scroll');}
+	/**
+	 * Sets the Scroll Event, which gets launched when a user scrolls through the TextArea
+	 * @param Event $scroll
+	 */
+	function SetScroll($scroll)						{$this->SetEvent($scroll, 'Scroll');}
 	/**
 	 * @ignore
 	 */
@@ -97,10 +131,18 @@ class TextArea extends Control
         }
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
+	/**
+	 * Returns the kind of scroll bars the TextArea will have, if any
+	 * @return mixed
+	 */
 	function GetScrolling()
 	{
 		return $this->Scrolling;
 	}
+	/**
+	 * Sets the kind of scroll bars the TextArea will have, if any
+	 * @param mixed $scrollType
+	 */
 	function SetScrolling($scrollType)
 	{
 		$this->Scrolling = $scrollType;
@@ -118,6 +160,10 @@ class TextArea extends Control
 		//Alert($tmpScroll);
 		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
+	/**
+	 * Returns the string of text that was highlighted by the user
+	 * @return string
+	 */
     function GetSelectedText()
     {
         return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';

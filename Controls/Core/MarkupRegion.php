@@ -2,7 +2,10 @@
 /**
  * MarkupRegion class
  *
- * A MarkupRegion is a Control that is capable of displaying a string or file containing mark-up.
+ * A MarkupRegion is a Control that is capable of displaying a string or file containing mark-up. Any HTML elements
+ * contained in that mark-up gives up some of the benefits of NOLOH (such as user state management) so you should
+ * probably not put a tag like INPUT. Indeed, MarkupRegion was specifically designed to take in the kind
+ * of mark-up that mark-up was originally designed for and is good at: styled text and possibly images.
  * 
  * @package Controls/Core
  */
@@ -14,7 +17,16 @@ class MarkupRegion extends Control
     private $ScrollLeft;
 	private $ScrollTop;
 	//private $FontSize;
-
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends MarkupRegion
+	 * @param string|file $markupStringOrFile A string of mark-up or a path to a file containing mark-up
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width coordinate of this element
+	 * @param integer $height The Height coordinate of this element
+	 * @return MarkupRegion
+	 */
 	function MarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
 		parent::Control($left, $top, $width, $height);
@@ -51,10 +63,18 @@ class MarkupRegion extends Control
 		$Height = parent::GetHeight();
 		return ($Height == System::Auto || $Height == System::AutoHtmlTrim)? $this->CachedHeight : $Height;
 	}
+	/**
+	 * Returns the kind of scroll bars the MarkupRegion will have, if any
+	 * @return mixed
+	 */
     function GetScrolling()
 	{
 		return $this->Scrolling;
 	}
+	/**
+	 * Sets the kind of scroll bars the MarkupRegion will have, if any
+	 * @param mixed $scrollType
+	 */
 	function SetScrolling($scrollType)
 	{
 		$this->Scrolling = $scrollType;
@@ -85,10 +105,17 @@ class MarkupRegion extends Control
 		//Alert($tmpScroll);
 		NolohInternal::SetProperty('style.overflow', $tmpScroll, $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetScrollLeft()
 	{
 		return $this->ScrollLeft;
 	}
+	/**
+	 * Sets the position of the horizontal scrollbar
+	 * @param integer $scrollLeft
+	 */
     function SetScrollLeft($scrollLeft)
     {
     	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
@@ -98,10 +125,17 @@ class MarkupRegion extends Control
         	NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
         $this->ScrollLeft = $scrollLeft;
     }
+    /**
+     * @ignore
+     */
     function GetScrollTop()
     {
     	return $this->ScrollTop;
     }
+    /**
+     * Sets the position of the vertical scrollbar
+	 * @param integer $scrollTop
+     */
     function SetScrollTop($scrollTop)
     {
     	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
@@ -142,7 +176,10 @@ class MarkupRegion extends Control
 			NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
 		}
 	}
-	
+	/**
+	 * Sets the MarkupRegion to a string of mark-up or a file containing mark-up
+	 * @param string|file $markupStringOrFile
+	 */
     function SetText($markupStringOrFile)
 	{
 
@@ -170,6 +207,12 @@ class MarkupRegion extends Control
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupRegionScript.js");
 		AddNolohScriptSrc('MarkupRegion.js');
 	}
+	/**
+	 * Styles a string of text by giving it a CSS class
+	 * @param string $text The string to be styled
+	 * @param string $class The name of the CSS class
+	 * @return string
+	 */
 	static function StyleText($text, $class)
 	{
 		return '<span class=\''.$class.'\'>'.$text.'</span>';

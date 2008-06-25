@@ -217,6 +217,14 @@ class WindowPanel extends Panel
 		$this->MinimizeBox = $bool ? null : false;
 		$this->MinimizeImage->Visible = $bool;
 	}
+/*	function SetResizable($bool)
+	{
+		if(!$this->ResizeImage)
+	}
+	function GetResizable()
+	{
+		
+	}*/
 	/**
 	 * @ignore
 	 */

@@ -201,13 +201,13 @@ class ListView extends Panel
 			arsort($tmpArray);
 		
 		$tmpNewArray = array();
-		$clientArray = 'Array(';
+		$clientArray = '[';
 		foreach($tmpArray as $key => $val)
 		{
 			$tmpNewArray[$key] = &$this->ListViewItems->Elements[$key];
 			$clientArray .= '\'' . $tmpNewArray[$key]->Id .'\',';
 		}
-		$clientArray = rtrim($clientArray, ',') . ')';
+		$clientArray = rtrim($clientArray, ',') . ']';
 		QueueClientFunction($this, '_N_LV_Sort', array('"'.$this->InnerPanel->Id.'",'.$clientArray));
 	}
 }

@@ -4,7 +4,7 @@
  *
  * The Form class can be used to Get or Post data to a server. It is discouraged in the strongest possible terms to use this as a way of 
  * communicating with the server running your NOLOH application, as various ways of doing so are built-in and much easier to use, e.g., 
- * a ServerEvent. This class should probably only be used to communicate with an outside server unfortunate enough to not have NOLOH 
+ * a ServerEvent or curl. This class should probably only be used to communicate with an outside server unfortunate enough to not have NOLOH 
  * installed on it running a website or web service.
  * 
  * @package Controls/Core

@@ -2,7 +2,9 @@
 /**
  * TextBox class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A TextBox is a Control for a conventional web text input field. It allows the user to type in a single line of text.
+ * If you want to allow the user to type in more than one line of text, then you are looking for the TextArea Control
+ * instead.
  * 
  * @package Controls/Core
  */
@@ -11,7 +13,15 @@ class TextBox extends Control
 	private $Password;
 	private $Hidden;
 	private $MaxLength;
-		
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends TextBox
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @return TextBox
+	 */
 	function TextBox($left = 0, $top = 0, $width = 83, $height = 16)  
 	{
 		parent::Control($left, $top, $width, $height);
@@ -31,46 +41,52 @@ class TextBox extends Control
 		}
 		$this->Parent->Controls->Remove($this);
 	}
-	
+	/**
+	 * Returns the maximum number of characters that are allowed in the TextBox
+	 * @return integer
+	 */
 	function GetMaxLength()
 	{
 		return $this->MaxLength;
 	}
-	
-	function SetMaxLength($newMaxLength)
+	/**
+	 * Sets the maximum number of characters that are allowed in the TextBox
+	 * @param integer $maxLength
+	 */
+	function SetMaxLength($maxLength)
 	{
-		$this->MaxLength = $newMaxLength;
-		NolohInternal::SetProperty('maxLength', $newMaxLength, $this);
+		$this->MaxLength = $maxLength;
+		NolohInternal::SetProperty('maxLength', $maxLength, $this);
 	}
-	
+	/**
+	 * Returns whether or not the TextBox is a password field. If it is, the user's input will appear censored to him via asterisks.
+	 * @return boolean
+	 */
 	function GetPassword()
 	{
 		return $this->Password != null;
 	}
-	
+	/**
+	 * Sets whether or not the TextBox is a password field. If it is, the user's input will appear censored to him via asterisks.
+	 * @param boolean $bool
+	 */
 	function SetPassword($bool)
 	{
 		$this->Password = $bool ? true : null;
-	}
-	
-	function GetHidden()
-	{
-		return $this->Hidden != null;
-	}
-	
-	function SetHidden($bool)
-	{
-		$this->Hidden = $bool ? true : null;
+		NolohInternal::SetProperty('type', $bool ? 'password' : 'text', $this);
 	}
 	/**
 	 * @ignore
 	 */
-	function SetText($newText)
+	function SetText($text)
 	{
-		parent::SetText($newText);
-		NolohInternal::SetProperty('value', $newText, $this);
+		parent::SetText($text);
+		NolohInternal::SetProperty('value', $text, $this);
 	}
-
+	/**
+	 * Returns the string of text that was highlighted by the user
+	 * @return string
+	 */
     function GetSelectedText()
     {
         return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
@@ -96,12 +112,10 @@ class TextBox extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-			
+		
 		$initialProperties .= ',\'type\',\'';
 		if($this->Password)
 			$initialProperties .= 'password\'';
-		elseif($this->Hidden)
-			$initialProperties .= 'hidden\'';
 		else
 			$initialProperties .= 'text\'';
 		

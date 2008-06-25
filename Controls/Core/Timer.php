@@ -18,7 +18,7 @@
  * }
  * </code>
  * <b>Note</b>: Timer currently has a number of known issues. For instance, if a Timer is added to a Panel, and then that Panel is removed,
- * the Timer will still tick. It is marked for major development in the near future to dodge these issues.
+ * the Timer will still tick. It is marked for major development in the near future to address these issues.
  * @package Controls/Core
  */
 class Timer extends Component
@@ -28,8 +28,8 @@ class Timer extends Component
 	private $Repeat;
 	/**
 	 * Constructor. 
-	 *
-	 * @param integer $interval Specifies the number of miliseconds until event executes
+	 * Be sure to call this from the constructor of any class that extends Timer
+	 * @param integer $interval Specifies the number of milliseconds until event executes
 	 * @param boolean $repeats Indicates whether or not the Event will keep executing periodically
 	 * @return Timer
 	 */

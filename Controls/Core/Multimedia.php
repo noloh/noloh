@@ -2,7 +2,7 @@
 /**
  * Multimedia class
  * 
- * An Multimedia is a Control used for showing various multimedia, e.g., Flash animation, etc...  
+ * An Multimedia is a Control used for showing various multimedia, e.g., a Flash animation.
  * 
  * @package Controls/Core
  */

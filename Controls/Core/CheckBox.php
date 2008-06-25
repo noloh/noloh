@@ -2,7 +2,7 @@
 /**
  * CheckBox class
  *
- * A Control for a conventional web checkbox. Checkbox's are usually used to indicate
+ * A Control for a conventional web checkbox. Checkboxes are usually used to indicate
  * whether a condition is on/off, yes/no, or true/false. Checkbox is simlar to RadioButton,
  * except that RadioButton's are usually limited to one choice, while a CheckBox allows for
  * multiple choices.

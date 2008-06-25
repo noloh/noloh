@@ -74,6 +74,13 @@ final class System
 	
 	const Horizontal = 'horizontal';
 	const Vertical = 'vertical';
+	
+	static function Log($text)
+	{
+		//Currently only works with firebug, ideally this would log to our debug window, or firebug with a param
+		//See http://getfirebug.com/console.html for some ideas
+		AddScript('console.log(' . ClientEvent::ClientFormat($text) . ');');
+	}
 }
 
 ?>

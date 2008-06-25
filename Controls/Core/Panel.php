@@ -2,31 +2,33 @@
 /**
  * Panel class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A Panel is a Control to which other Controls can be added. It is important both for visual reasons (as it has a position,
+ * size, background color, and all the other properties associated with Control - unlike a Container!) and for organizing
+ * your controls in a logical manner. When Controls that are added to a Panel, their Left and Top both being 0 corresponds to
+ * the top and left corner of the Panel, not of the screen. Thus, every Panel has its own inner coordinate system.
  * 
  * @package Controls/Core
  */
 class Panel extends Control
 {
 	/**
-	* Controls, An ArrayList to hold this Control's Controls
+	* An ArrayList of Controls that will be Shown when added, provided the Panel has also been Shown
 	* @var ArrayList
 	*/
 	public $Controls;
-	/**
-	 * ScrollLeft of the component
-	 * @var integer
-	 */
 	private $ScrollLeft;
-	/**
-	 * ScrollTop of the component
-	 * @var integer
-	 */
 	private $ScrollTop;
 	private $Scrolling;
-	public $SelectFix;
-	//public $DropShadow;
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Panel
+	 * @param integer $left
+	 * @param integer $top
+	 * @param integer $width
+	 * @param integer $height
+	 * @param Control $implicitObject
+	 * @return Panel
+	 */
 	function Panel($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
 	{
 		parent::Control($left, $top, $width, $height);
@@ -74,7 +76,7 @@ class Panel extends Control
 	function SetCSSClass($cssClass=null)
 	{
 		parent::SetCSSClass('NPanel '.$cssClass);
-	}		
+	}
 	function OpenPrintableVersion()
 	{
 		AddScript('var oldNode = _N(\''.$this->Id.'\'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);');
@@ -164,6 +166,9 @@ class Panel extends Control
 
 		//return $initialProperties;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetChildLayout($layout)
 	{
 		//This needs to be modified to actually set a property, and Controls needs to be Implict so when adding a control it can set the Layout right there
