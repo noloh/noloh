@@ -3,8 +3,9 @@
  * Control class
  *
  * Control is the base class for most NOLOH controls. They are different from Components in that they have a visual representation
- * on the browser, e.g., location, size, Visible, Opacity, etc... All Custom defined controls must extends Control.<br><br>
- * We're sorry, but this huge and important class is not yet well-documented. We're working very hard on our documentation so check back soon!
+ * on the browser, e.g., location, size, Visible, Opacity, etc... All custom defined controls must extend Control.<br>
+ * Controls also have a built-in syntactical sugar for setting all CSS properties, simply by prepending the property with CSS and using
+ * PascalCase. For example, if one wishes to set the CSS property margin-left to 2px, one would use $control->CSSMarginLeft = '2px';
  * 
  * @package Controls/Core
  */
@@ -38,11 +39,11 @@ abstract class Control extends Component
 	
 	/**
 	* Constructor.
-	* Be sure to call this from the constructor of any class that extends Button
-	* @param integer $left
-	* @param integer $top
-	* @param integer $width
-	* @param integer $height
+	* Be sure to call this from the constructor of any class that extends Control
+	* @param integer $left The left coordinate of this element
+	* @param integer $top The top coordinate of this element
+	* @param integer $width The width of this element
+	* @param integer $height The height of this element
  	*/
 	function Control($left = 0, $top = 0, $width = 0, $height = 0)
 	{
@@ -72,44 +73,62 @@ abstract class Control extends Component
 		NolohInternal::Resurrect($this);
 		parent::Resurrect();
 	}
-
+	/**
+	 * Returns the CSS classes to be used with this Control. If more than one class is used, it is a space-delimitted string.
+	 * @return string
+	 */
 	function GetCSSClass()
 	{
-		return $this->CSSClass;
+		return $this->CSSClass === null ? '' : $this->CSSClass;
 	}
-
-	function SetCSSClass($newClass)
+	/**
+	 * Sets the CSS classes to be used with this Control. If more than one class is used, it is a space-delimitted string.
+	 * @param string $class
+	 */
+	function SetCSSClass($class)
 	{
-		$this->CSSClass = $newClass;
-		NolohInternal::SetProperty('className', $newClass, $this);
+		$this->CSSClass = $class;
+		NolohInternal::SetProperty('className', $class, $this);
 	}
-
+	/**
+	 * Returns the Opacity of this Control in percents, i.e., from 0 to 100.
+	 * @return integer
+	 */
 	function GetOpacity()
 	{
 		return $this->Opacity === null ? 100 : $this->Opacity;
 	}
-
-	function SetOpacity($newOpacity)
+	/**
+	 * Sets the Opacity of this Control in percents, i.e., from 0 to 100.
+	 * @return integer
+	 */
+	function SetOpacity($opacity)
 	{
-		$this->Opacity = $newOpacity;
+		$this->Opacity = $opacity;
 		if(UserAgent::GetBrowser()=='ie')
-			NolohInternal::SetProperty('style.filter', "alpha(opacity=$newOpacity)", $this);
+			NolohInternal::SetProperty('style.filter', "alpha(opacity=$opacity)", $this);
 		else
-			NolohInternal::SetProperty('style.opacity', $newOpacity/100, $this);
+			NolohInternal::SetProperty('style.opacity', $opacity/100, $this);
 	}
-
+	/**
+	 * Returns the ZIndex of this Control. A higher ZIndex means that this Control will appear on top of other Controls with overlapping location.
+	 * @return integer
+	 */
 	function GetZIndex()
 	{
-		return $this->ZIndex;
+		return $this->ZIndex === null ? 0 : $this->ZIndex;
 	}
-
-	function SetZIndex($newZIndex)
+	/**
+	 * Sets the ZIndex of this Control. A higher ZIndex means that this Control will appear on top of other Controls with overlapping location.
+	 * @param integer $zIndex
+	 */
+	function SetZIndex($zIndex)
 	{
-		if($newZIndex > $_SESSION['HighestZIndex'])
-			$_SESSION['HighestZIndex'] = $newZIndex;
-		if($newZIndex < $_SESSION['LowestZIndex'])
-			$_SESSION['LowestZIndex'] = $newZIndex;
-		$this->_NSetZIndex($newZIndex);
+		if($zIndex > $_SESSION['HighestZIndex'])
+			$_SESSION['HighestZIndex'] = $zIndex;
+		if($zIndex < $_SESSION['LowestZIndex'])
+			$_SESSION['LowestZIndex'] = $zIndex;
+		$this->_NSetZIndex($zIndex);
 	}
 	/**
 	 * @ignore
@@ -120,84 +139,166 @@ abstract class Control extends Component
 		NolohInternal::SetProperty('style.zIndex', $newZIndex, $this);
 	}
 	/**
-	* @ignore
-	*/
+	 * Returns the Text of this Control. Depending on the specific Control, this can have several different interpretations.
+	 * @return string
+	 */
 	function GetText()
 	{
-		return ($this->Text == null?'':$this->Text);
+		return $this->Text === null ? '' : $this->Text;
 	}
 	/**
-	*Sets the Text of the Control.
-	*<b>Note:</b>Can also be set as a property.
-	*<code>$this->Text = "NOLOH";</code>
-	*<b>!Important!</b> If Overriding, make sure to call parent::SetText($newText)
-	* @param string $src
-	*/
-	function SetText($newText)
+	 * Sets the Text of this Control. Depending on the specific Control, this can have several different interpretations.
+	 * @param string $text
+	 */
+	function SetText($text)
 	{
-		$this->Text = $newText;
+		$this->Text = $text;
 	}
-	
+	/**
+	 * Returns the Width of this Control. Can be either an integer signifying Width in pixels, or can be a string for percents, e.g., '50%'
+	 * @return integer|string
+	 */
 	function GetWidth() 
 	{
 		return $this->Width;
 	}
 	/**
-	*Sets the Width of the Control.
-	*<b>Note:</b>Can also be set as a property.
-	*<code>$this->Width = 100;</code>
-	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
-	* @param string $newWidth
-	*/
-	function SetWidth($newWidth)
+	 * Returns the Width of this Control. Can be either an integer signifying Width in pixels, or can be a string for percents, e.g., '50%'
+	 * @param integer|string $width
+	 */
+	function SetWidth($width)
 	{
-		$this->Width = $newWidth;
-		if(is_numeric($newWidth))
-			NolohInternal::SetProperty('style.width', $newWidth.'px', $this);
-		elseif(is_numeric(rtrim($newWidth, '%')))
-			NolohInternal::SetProperty('style.width', $newWidth, $this);
-		elseif(is_null($newWidth))
+		$this->Width = $width;
+		if(is_numeric($width))
+			NolohInternal::SetProperty('style.width', $width.'px', $this);
+		elseif(is_numeric(rtrim($width, '%')))
+			NolohInternal::SetProperty('style.width', $width, $this);
+		elseif(is_null($width))
 			NolohInternal::SetProperty('style.width', '', $this);
 	}
-	
+	/**
+	 * Returns the Height of this Control. Can be either an integer signifying Height in pixels, or can be a string for percents, e.g., '50%'
+	 * @return integer|string
+	 */
 	function GetHeight() 
 	{
 		return $this->Height;
 	}
 	/**
-	*Sets the Height of the Control.
-	*<b>Note:</b>Can also be set as a property.
-	*<code>$this->Height = 100;</code>
-	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
-	* @param string $newHeight
-	*/
-	function SetHeight($newHeight)
+	 * Sets the Height of this Control. Can be either an integer signifying Height in pixels, or can be a string for percents, e.g., '50%'
+	 * @param integer|string $height
+	 */
+	function SetHeight($height)
 	{
-		$this->Height = $newHeight;
-		if(is_numeric($newHeight))
-			NolohInternal::SetProperty('style.height', $newHeight.'px', $this);
-		elseif(is_numeric(rtrim($newHeight, '%')))
-			NolohInternal::SetProperty('style.height', $newHeight, $this);
-		elseif(is_null($newHeight))
+		$this->Height = $height;
+		if(is_numeric($height))
+			NolohInternal::SetProperty('style.height', $height.'px', $this);
+		elseif(is_numeric(rtrim($height, '%')))
+			NolohInternal::SetProperty('style.height', $height, $this);
+		elseif(is_null($height))
 			NolohInternal::SetProperty('style.height', '', $this);
 	}
-	
+	/**
+	 * Returns the Left of this Control. Can be either an integer signifying Left in pixels, or can be a string for percents, e.g., '50%'
+	 * @return integer|string
+	 */
 	function GetLeft() 
 	{
 		return $this->Left;
 	}
-	
-	function SetLeft($newLeft)
+	/**
+	 * Sets the Left of this Control. Can be either an integer signifying Left in pixels, or can be a string for percents, e.g., '50%'
+	 * @param integer|string $left
+	 */
+	function SetLeft($left)
 	{
-		$this->Left = $newLeft;
-		if(is_numeric($newLeft))
-			NolohInternal::SetProperty('style.left', $newLeft.'px', $this);
-		elseif(is_numeric(rtrim($newLeft, '%')))
-			NolohInternal::SetProperty('style.left', $newLeft, $this);
-		elseif(is_null($newLeft))
+		$this->Left = $left;
+		if(is_numeric($left))
+			NolohInternal::SetProperty('style.left', $left.'px', $this);
+		elseif(is_numeric(rtrim($left, '%')))
+			NolohInternal::SetProperty('style.left', $left, $this);
+		elseif(is_null($left))
 			NolohInternal::SetProperty('style.left', '', $this);
 	}
-	
+	/**
+	 * Returns the Top of this Control. Can be either an integer signifying Top in pixels, or can be a string for percents, e.g., '50%'
+	 * @return integer|string
+	 */
+	function GetTop() 
+	{
+		return $this->Top;
+	}
+	/**
+	 * Sets the Top of this Control. Can be either an integer signifying Top in pixels, or can be a string for percents, e.g., '50%'
+	 * @param integer|string $top
+	 */
+	function SetTop($top)
+	{
+		$this->Top = $top;
+		if(is_numeric($top))
+			NolohInternal::SetProperty('style.top', $top.'px', $this);
+		elseif(is_numeric(rtrim($top, '%')))
+			NolohInternal::SetProperty('style.top', $top, $this);
+		elseif(is_null($top))
+			NolohInternal::SetProperty('style.top', '', $this);
+	}
+	/**
+	 * Returns the Bottom coordinate of this Control, in pixels, but only if both the Top and Height were integers.
+	 * @return integer
+	 */
+	function GetBottom()
+	{
+		return $this->GetTop() + $this->GetHeight();
+	}
+	/**
+	 * Returns the Right coordinate of this Control, in pixels, but only if both the Left and Width were integers.
+	 * @return integer
+	 */
+	function GetRight()
+	{
+		return $this->GetLeft() + $this->GetWidth();
+	}
+	/**
+	 * Returns the Layout type of this Control. The Default is Layout::Absolute, but other possible values are 
+	 * Layout::Relative and Layout::Web (which is the equivalent to CSS static).
+	 * @return mixed
+	 */
+	function GetLayout()
+	{
+		return $this->Layout === null ? 0 : $this->Layout;
+	}
+	/**
+	 * Sets the Layout type of this Control. The Default is Layout::Absolute, but other possible values are 
+	 * Layout::Relative and Layout::Web (which is the equivalent to CSS static).
+	 * @param mixed 
+	 */
+	function SetLayout($layout)
+	{
+		if(is_numeric($layout))
+		{
+			switch($layout)
+			{
+				case 0: $printAs = 'absolute'; break;
+				case 1: $printAs = 'relative'; break;
+				case 2: $printAs = 'static';
+			}
+			NolohInternal::SetProperty('style.position', $printAs, $this);
+			if(is_string($this->Layout))
+				NolohInternal::SetProperty('style.float', '', $this);
+		}
+		else
+		{
+			NolohInternal::SetProperty('style.float', $layout, $this);
+			if(is_numeric($this->GetLayout()))
+				NolohInternal::SetProperty('style.position', 'relative', $this);
+		}
+		$this->Layout = $layout === 0 ? null : $layout;
+	}
+	/**
+	 * Reflects either the x or y axes. Once the x-axis has been reflected, Left will correspond to Right, and similarly for Top.
+	 * @param string $axis Either the string 'x' or 'y'
+	 * @param boolean $on
+	 */
 	function ReflectAxis($axis, $on=true)
 	{
 		if(strtolower($axis == 'x'))
@@ -233,116 +334,44 @@ abstract class Control extends Component
 			}
 		}
 	}
-	
-	function GetTop() 
-	{
-		return $this->Top;
-	}
-	
-	function SetTop($newTop)
-	{
-		$this->Top = $newTop;
-		if(is_numeric($newTop))
-			NolohInternal::SetProperty('style.top', $newTop.'px', $this);
-		elseif(is_numeric(rtrim($newTop, '%')))
-			NolohInternal::SetProperty('style.top', $newTop, $this);
-		elseif(is_null($newTop))
-			NolohInternal::SetProperty('style.top', '', $this);
-	}
 	/**
-	*<b>Note:</b>Can also be called as a property.
-	*<code> $tempLeft = $this->Bottom;</code>
-	* @return integer
-	*/
-	function GetBottom()
-	{
-		return $this->GetTop() + $this->GetHeight();
-	}
-	/**
-	*<b>Note:</b>Can also be called as a property.
-	*<code> $tempLeft = $this->Right;</code>
-	* @return integer
-	*/
-	function GetRight()
-	{
-		return $this->GetLeft() + $this->GetWidth();
-	}
-	function GetLayout()
-	{
-		return $this->Layout === null ? 0 : $this->Layout;
-	}
-	/**
-	*Layout, Gets or sets the Layout of this Control
-	*Default is Layout::Absolute, possible values are Layout::Absolute, 
-	*Layout::Relative, and Layout::Web (which is the equivalent to CSS static).
-	*@param integer 
-	*/
-	function SetLayout($Layout)
-	{
-		if(is_numeric($Layout))
-		{
-			switch($Layout)
-			{
-				case 0: $printAs = 'absolute'; break;
-				case 1: $printAs = 'relative'; break;
-				case 2: $printAs = 'static';
-			}
-			NolohInternal::SetProperty('style.position', $printAs, $this);
-			if(is_string($this->Layout))
-				NolohInternal::SetProperty('style.float', '', $this);
-		}
-		else
-		{
-			NolohInternal::SetProperty('style.float', $Layout, $this);
-			if(is_numeric($this->GetLayout()))
-				NolohInternal::SetProperty('style.position', 'relative', $this);
-		}
-		$this->Layout = $Layout === 0 ? null : $Layout;
-	}
+	 * Returns whether the Control is Enabled. The Events for Disabled Controls will not launch, as well as several other features being
+	 * disabled, depending on the specific kind of Control. For instance, one cannot type into a disabled TextBox.
+	 * @return boolean
+	 */
 	function GetEnabled()
 	{
 		return $this->Enabled === null;
 	}
-
+	/**
+	 * Sets whether the Control is Enabled. The Events for Disabled Controls will not launch, as well as several other features being
+	 * disabled, depending on the specific kind of Control. For instance, one cannot type into a disabled TextBox.
+	 * @param boolean $bool
+	 */
 	function SetEnabled($bool)
 	{
 		$this->Enabled = $bool ? null : false;
 		NolohInternal::SetProperty('disabled', !$bool, $this);
 	}
 	/**
-	 * @ignore
+	 * Returns whether the Control is Visible. Can be either a boolean value or System::Vacuous. The difference between false and
+	 * System::Vacuous only comes into play when a Layout::Web is used. Invisible Controls still take up space, whereas Vacuous
+	 * Controls do not.
+	 * @return mixed
 	 */
-	function GetClientVisible()
-	{
-		return $this->Visible === null ? true : $this->Visible;
-	}
-	/**
-	 * @ignore
-	 */
-	function SetClientVisible($newVisibility)
-	{
-		if(is_string($newVisibility))
-		{
-			$this->Visible = $newVisibility;
-			NolohInternal::SetProperty('style.display', 'none', $this);
-			NolohInternal::SetProperty('style.visibility', 'inherit', $this);
-		}
-		else
-		{
-			$this->Visible = $newVisibility ? null : false;
-			NolohInternal::SetProperty('style.display', '', $this);
-			NolohInternal::SetProperty('style.visibility', $newVisibility?'inherit':'hidden', $this);
-		}
-	}
-
 	function GetVisible()
 	{
 		return $this->Visible === null ? true : $this->Visible;
 	}
-
+	/**
+	 * Sets whether the Control is Visible. Can be either a boolean value or System::Vacuous. The difference between false and
+	 * System::Vacuous only comes into play when a Layout::Web is used. Invisible Controls still take up space, whereas Vacuous
+	 * Controls do not.
+	 * @param mixed $visibility
+	 */
 	function SetVisible($visibility)
 	{
-		if($visibility === null || $visibility === "null")
+		if($visibility === null || $visibility === 'null')
 		{
 			$this->Visible = 0;
 			NolohInternal::SetProperty('style.display', 'none', $this);
@@ -350,7 +379,7 @@ abstract class Control extends Component
 		else//if(is_bool($visibility))
 		{
 			NolohInternal::SetProperty('style.display', '', $this);
-			if($visibility===true || $visibility==="true")
+			if($visibility===true || $visibility==='true')
 			{
 				$this->Visible = null;
 				NolohInternal::SetProperty('style.visibility', 'inherit', $this);
@@ -362,79 +391,127 @@ abstract class Control extends Component
 			}
 		}
 	}
-
+	/**
+	 * Returns the border of this Control. Can be either an integer representing the number of pixels of thickness, or a string
+	 * of the size, type, and color of the border, e.g., '2px solid red'. For integers, solid black is always used.
+	 * @return integer|string
+	 */
 	function GetBorder()
 	{
 		return $this->Border;
 	}
-
-	function SetBorder($newBorder)
+	/**
+	 * Sets the border of this Control. Can be either an integer representing the number of pixels of thickness, or a string
+	 * of the size, type, and color of the border, e.g., '2px solid red'. For integers, solid black is always used.
+	 * @param integer|string $border
+	 */
+	function SetBorder($border)
 	{
-		$this->Border = $newBorder;
-		NolohInternal::SetProperty('style.border', is_numeric($newBorder)?($newBorder.'px solid black'):$newBorder, $this);
+		$this->Border = $border;
+		NolohInternal::SetProperty('style.border', is_numeric($border)?($border.'px solid black'):$border, $this);
 	}
-
+	/**
+	 * Returns the background color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'
+	 * @return string
+	 */
 	function GetBackColor()
 	{
 		return $this->BackColor;
 	}
-
-	function SetBackColor($newBackColor)
+	/**
+	 * Sets the background color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'
+	 * @param string $backColor
+	 */
+	function SetBackColor($backColor)
 	{
-		$this->BackColor = $newBackColor;
-		NolohInternal::SetProperty('style.background', $newBackColor, $this);
+		$this->BackColor = $backColor;
+		NolohInternal::SetProperty('style.background', $backColor, $this);
 	}
-
+	/**
+	 * Sets the color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'. Depending on
+	 * the specific type of Control, this can have a variety of interpretations.
+	 * @return string
+	 */
 	function GetColor()
 	{
 		return $this->Color;
 	}
-
-	function SetColor($newColor)
+	/**
+	 * Sets the color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'. Depending on
+	 * the specific type of Control, this can have a variety of interpretations.
+	 * @param string $color
+	 */
+	function SetColor($color)
 	{
-		$this->Color = $newColor;
-		NolohInternal::SetProperty('style.color', $newColor, $this);
+		$this->Color = $color;
+		NolohInternal::SetProperty('style.color', $color, $this);
 	}
-
+	/**
+	 * Returns the mouse cursor when it is over the Control. Should be a constant or static of the Cursor class.
+	 * @return mixed
+	 */
 	function GetCursor()
 	{
 		return $this->Cursor == null ? Cursor::Arrow : $this->Cursor;
 	}
-
-	function SetCursor($newCursor)
+	/**
+	 * Sets the mouse cursor when it is over the Control. Should be a constant or static of the Cursor class.
+	 * @param mixed $cursor
+	 */
+	function SetCursor($cursor)
 	{
-		$this->Cursor = $newCursor == Cursor::Arrow ? null : $newCursor;
-		NolohInternal::SetProperty('style.cursor', $newCursor, $this);
+		$this->Cursor = $cursor == Cursor::Arrow ? null : $cursor;
+		NolohInternal::SetProperty('style.cursor', $cursor, $this);
 	}
-
+	/**
+	 * Returns the ToolTip of the Control, a little caption displaying a specified string that appears when the user hovers his mouse cursor over the Control.
+	 * @return string
+	 */
 	function GetToolTip()
 	{
 		return $this->ToolTip;
 	}
-
-	function SetToolTip($newToolTip)
+	/**
+	 * Sets the ToolTip of the Control, a little caption displaying a specified string that appears when the user hovers his mouse cursor over the Control.
+	 * @param string $toolTip
+	 */
+	function SetToolTip($toolTip)
 	{
-		$this->ToolTip = $newToolTip;
-		NolohInternal::SetProperty('title', $newToolTip, $this);
+		$this->ToolTip = $toolTip;
+		NolohInternal::SetProperty('title', $toolTip, $this);
 	}
-
+	/**
+	 * Returns the ContextMenu of the Control. It is a Menu that appears when the Control is right-clicked.
+	 * @return ContextMenu
+	 */
     function GetContextMenu()
     {
         return $this->ContextMenu;
     }
-
+	/**
+	 * Sets the ContextMenu of the Control. It is a Menu that appears when the Control is right-clicked.
+	 * @param ContextMenu $contextMenu
+	 */
     function SetContextMenu(ContextMenu $contextMenu)
     {
 		$this->ContextMenu = &$contextMenu;
-        $contextMenu->SetParentId('N1');
+        $contextMenu->SetParentId(WebPage::That()->Id);
 		NolohInternal::SetProperty('ContextMenu', $contextMenu->Id, $this);
     }
-
+	/**
+	 * Returns whether or not the Control is Buoyant. Buoyant Controls always float to the top, and compete with only other Buoyant
+	 * Controls for being on top, based on their ZIndex.
+	 * @return boolean
+	 */
 	function GetBuoyant()
 	{
 		return $this->Buoyant !== null;
 	}
-
+	/**
+	 * Sets whether or not the Control is Buoyant. Buoyant Controls always float to the top, and compete with only other Buoyant
+	 * Controls for being on top, based on their ZIndex.
+	 * @param boolean $bool
+	 */
 	function SetBuoyant($bool)
 	{
 		$this->Buoyant = $bool ? true : null;
@@ -453,12 +530,20 @@ abstract class Control extends Component
 				QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
 		}
 	}
-	
+	/**
+	 * Returns whether the Control is Selected. This only makes sense in the context of Controls implementing Groupable or
+	 * MultiGroupable and Added to a Group.
+	 * @return boolean
+	 */
 	function GetSelected()
 	{
 		return $this->Selected !== null;
 	}
-	
+	/**
+	 * Sets whether the Control is Selected. This only makes sense in the context of Controls implementing Groupable or
+	 * MultiGroupable and Added to a Group.
+	 * @param boolean $bool
+	 */
 	function SetSelected($bool)
 	{
 		if(!($this instanceof Groupable || $this instanceof MultiGroupable))
@@ -494,53 +579,155 @@ abstract class Control extends Component
         if($this->ZIndex == null)
             $this->_NSetZIndex(++$_SESSION['HighestZIndex']);
     }
-
-	//Event Functions
-	function GetChange()							{return $this->GetEvent('Change');}
-	function SetChange($newChange)					{$this->SetEvent($newChange, 'Change');}
-	function GetClick()								{return $this->GetEvent('Click');}
-	function SetClick($newClick)					{$this->SetEvent($newClick, 'Click');}
-	function GetDoubleClick()						{return $this->GetEvent('DoubleClick');}
-	function SetDoubleClick($newDoubleClick)		{$this->SetEvent($newDoubleClick, 'DoubleClick');}
-	function GetDragCatch()							{return $this->GetEvent('DragCatch');}
-	function SetDragCatch($newDragCatch)			{$this->SetEvent($newDragCatch, 'DragCatch');}
-	function GetFocus()								{return $this->GetEvent('Focus');}
-	function SetFocus($newFocus)					{$this->SetEvent($newFocus, 'Focus');}
-	function GetKeyPress()							{return $this->GetEvent('KeyPress');}
-	function SetKeyPress($newKeyPress)				{$this->SetEvent($newKeyPress, 'KeyPress');}
-	function GetLoseFocus()							{return $this->GetEvent('LoseFocus');}
-	function SetLoseFocus($newLoseFocus)			{$this->SetEvent($newLoseFocus, 'LoseFocus');}
-	function GetMouseDown()							{return $this->GetEvent('MouseDown');}
-	function SetMouseDown($newMouseDown)			{$this->SetEvent($newMouseDown, 'MouseDown');}
-	function GetMouseOut()							{return $this->GetEvent('MouseOut');}
-	function SetMouseOut($newMouseOut)				{$this->SetEvent($newMouseOut, 'MouseOut');}
-	function GetMouseOver()							{return $this->GetEvent('MouseOver');}
-	function SetMouseOver($newMouseOver)			{$this->SetEvent($newMouseOver, 'MouseOver');}
-	function GetMouseUp()							{return $this->GetEvent('MouseUp');}
-	function SetMouseUp($newMouseUp)				{$this->SetEvent($newMouseUp, 'MouseUp');}
-	function GetReturnKey()							{return $this->GetEvent('ReturnKey');}
-	function SetReturnKey($newReturnKey)			{$this->SetEvent($newReturnKey, 'ReturnKey');}
-	function GetRightClick()						{return $this->GetEvent('RightClick');}
-	function SetRightClick($newRightClick)			{$this->SetEvent($newRightClick, 'RightClick');}
-	function GetTypePause()							{return $this->GetEvent('TypePause');}
-	function SetTypePause($newTypePause)			{$this->SetEvent($newTypePause, 'TypePause');}
 	/**
-	*	Returns the ArrayList holding all the Shifts
-	*	This allows a Control to manipulate itself and any other control in multiple ways
-	*	<b>Example</b>
-	* 	<code>
-	*	$this->Shifts[] = Shift::Left(someObj, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Top(someObj2, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Location(this, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Width(someObj3, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Height(someObj3, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Size(someObj, null, null, null, null, null);
-	*	$this->Shifts[] = Shift::Size(someObj2, null, null, null, null, null);
-	*	</code>
-	*	Note: All the paramaters other than the object are optional.
-	*	<b>Note:</b>Different Controls use this differently
-	* @return ArrayList
-	*/
+	 * Returns the Change Event, which gets launched when significant changes are made to the Control. This can have different
+	 * interpretations depending on the specific type of Control.
+	 * @return Event
+	 */
+	function GetChange()							{return $this->GetEvent('Change');}
+	/**
+	 * Sets the Change Event, which gets launched when significant changes are made to the Control. This can have different
+	 * interpretations depending on the specific type of Control.
+	 * @param Event $change
+	 */
+	function SetChange($change)						{$this->SetEvent($change, 'Change');}
+	/**
+	 * Returns the Click Event, which gets launched when a user clicks on the Control.
+	 * @return Event
+	 */
+	function GetClick()								{return $this->GetEvent('Click');}
+	/**
+	 * Sets the Click Event, which gets launched when a user clicks on the Control.
+	 * @param Event $click
+	 */
+	function SetClick($click)						{$this->SetEvent($click, 'Click');}
+	/**
+	 * Returns the DoubleClick Event, which gets launched when a user double-clicks on the Control.
+	 * @return Event
+	 */
+	function GetDoubleClick()						{return $this->GetEvent('DoubleClick');}
+	/**
+	 * Sets the DoubleClick Event, which gets launched when a user double-clicks on the Control
+	 * @param Event $doubleClick
+	 */
+	function SetDoubleClick($doubleClick)			{$this->SetEvent($doubleClick, 'DoubleClick');}
+	/**
+	 * Returns the DragCatch Event, which gets launched when a user drags a Control being Shifted into the space
+	 * occupying this Control. An array of all the Controls being dragged can be found in the Event::$DragCaught array.
+	 * @return Event
+	 */
+	function GetDragCatch()							{return $this->GetEvent('DragCatch');}
+	/**
+	 * Sets the DragCatch Event, which gets launched when a user drags a Control being Shifted into the space
+	 * occupying this Control. An array of all the Controls being dragged can be found in the Event::$DragCaught array.
+	 * @param Event $dragCatch
+	 */
+	function SetDragCatch($dragCatch)				{$this->SetEvent($dragCatch, 'DragCatch');}
+	/**
+	 * Returns the Focus Event, which gets launched when a user focuses this Control, e.g., by clicking or tabbing into it
+	 * @return Event
+	 */
+	function GetFocus()								{return $this->GetEvent('Focus');}
+	/**
+	 * Sets the Focus Event, which gets launched when a user focuses this Control, e.g., by clicking or tabbing into it
+	 * @param Event $focus
+	 */
+	function SetFocus($focus)						{$this->SetEvent($focus, 'Focus');}
+	/**
+	 * Returns the KeyPress Event, which gets launched when the Control is focused and a user presses a key on his keyboard
+	 * @return Event
+	 */
+	function GetKeyPress()							{return $this->GetEvent('KeyPress');}
+	/**
+	 * Sets the KeyPress Event, which gets launched when the Control is focused and a user presses a key on his keyboard
+	 * @param Event $keyPress
+	 */
+	function SetKeyPress($keyPress)					{$this->SetEvent($keyPress, 'KeyPress');}
+	/**
+	 * Returns the LoseFocus Event, which gets launched when the Control loses focus, e.g., by clicking away or tabbing out of it
+	 * @return Event
+	 */
+	function GetLoseFocus()							{return $this->GetEvent('LoseFocus');}
+	/**
+	 * Sets the LoseFocus Event, which gets launched when the Control loses focus, e.g., by clicking away or tabbing out of it
+	 * @param Event $loseFocus
+	 */
+	function SetLoseFocus($loseFocus)				{$this->SetEvent($loseFocus, 'LoseFocus');}
+	/**
+	 * Returns the MouseDown Event, which gets launched when the user presses down his left mouse button over the Control
+	 * @return Event
+	 */
+	function GetMouseDown()							{return $this->GetEvent('MouseDown');}
+	/**
+	 * Sets the MouseDown Event, which gets launched when the user presses down his left mouse button over the Control
+	 * @param Event $mouseDown
+	 */
+	function SetMouseDown($mouseDown)				{$this->SetEvent($mouseDown, 'MouseDown');}
+	/**
+	 * Returns the MouseOut Event, which gets launched when the user moves his mouse cursor out of the Control's occupying space
+	 * @return Event
+	 */
+	function GetMouseOut()							{return $this->GetEvent('MouseOut');}
+	/**
+	 * Sets the MouseOut Event, which gets launched when the user moves his mouse cursor out of the Control's occupying space
+	 * @param Event $mouseOut
+	 */
+	function SetMouseOut($mouseOut)					{$this->SetEvent($mouseOut, 'MouseOut');}
+	/**
+	 * Returns the MouseOver Event, which gets launched when the user moves his mouse cursor over the Control's occupying space
+	 * @return Event
+	 */
+	function GetMouseOver()							{return $this->GetEvent('MouseOver');}
+	/**
+	 * Sets the MouseOver Event, which gets launched when the user moves his mouse cursor over the Control's occupying space
+	 * @param Event $mouseOver
+	 */
+	function SetMouseOver($mouseOver)				{$this->SetEvent($mouseOver, 'MouseOver');}
+	/**
+	 * Returns the MouseUp Event, which gets launched when the user releases the left mouse button over the Control's occupying space
+	 * @return Event
+	 */
+	function GetMouseUp()							{return $this->GetEvent('MouseUp');}
+	/**
+	 * Sets the MouseUp Event, which gets launched when the user releases the left mouse button over the Control's occupying space
+	 * @param Event $mouseUp
+	 */
+	function SetMouseUp($mouseUp)					{$this->SetEvent($mouseUp, 'MouseUp');}
+	/**
+	 * Returns the ReturnKey Event, which gets launched when the Control is focused and a user presses the return key on his keyboard
+	 * @return Event
+	 */
+	function GetReturnKey()							{return $this->GetEvent('ReturnKey');}
+	/**
+	 * Sets the ReturnKey Event, which gets launched when the Control is focused and a user presses the return key on his keyboard
+	 * @param Event $returnKey
+	 */
+	function SetReturnKey($returnKey)				{$this->SetEvent($returnKey, 'ReturnKey');}
+	/**
+	 * Returns the RightClick Event, which gets launched when a user right-clicks the Control
+	 * @return Event
+	 */
+	function GetRightClick()						{return $this->GetEvent('RightClick');}
+	/**
+	 * Sets the RightClick Event, which gets launched when a user right-clicks the Control
+	 * @param Event $rightClick
+	 */
+	function SetRightClick($rightClick)				{$this->SetEvent($rightClick, 'RightClick');}
+	/**
+	 * Returns the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
+	 * @return Event
+	 */
+	function GetTypePause()							{return $this->GetEvent('TypePause');}
+	/**
+	 * Sets the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
+	 * @param Event $typePause
+	 */
+	function SetTypePause($typePause)				{$this->SetEvent($typePause, 'TypePause');}
+	/**
+	 * Returns the ArrayList holding all the Shifts. This allows a Control to manipulate itself and any other control in various ways.
+	 * The only thing that should be added to this ArrayList are statics of the Shift class.
+	 * @return ArrayList
+	 */
 	function GetShifts()
 	{
 		if($this->Shifts == null)
@@ -575,19 +762,25 @@ abstract class Control extends Component
 		}
 		unset($shift[2]);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function AddShift($shift)
 	{
 		$this->AddShiftHelper($shift);
 		$this->Shifts->Add($shift, true, true);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function InsertShift($shift, $index)
 	{
 		$this->AddShiftHelper($shift);
 		$this->Shifts->Insert($shift, $index, true);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function RemoveShift($shift)
 	{
 		foreach($this->Shifts as $i => $val)
@@ -631,7 +824,7 @@ abstract class Control extends Component
 		QueueClientFunction($this, 'ChangeShiftType', array("'$this->Id'", $arrayIndex, $newType));
 	}
 	/**
-	 * Removes all Shift on this Control
+	 * @ignore
 	 */
 	function ClearShift()
 	{
@@ -640,15 +833,15 @@ abstract class Control extends Component
 	}
 	
 	/**
-	* Brings this Control to the front of whatever container it is in.
-	*/
+	 * Brings this Control to the front of whatever Parent it is in. In other words, it will be given a ZIndex higher than any other.
+	 */
 	function BringToFront()
 	{
 		$this->_NSetZIndex(++$_SESSION['HighestZIndex']);
 	}
 	/**
-	* Sends this Control to the back of whatever container it is in.
-	*/
+	 * Sends this Control to the back of whatever Parent it is in. In other words, it will be given a ZIndex lower than any other.
+	 */
 	function SendToBack()
 	{
 		$this->_NSetZIndex(--$_SESSION['LowestZIndex']);
@@ -676,14 +869,10 @@ abstract class Control extends Component
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
-			//$key = str_replace('_', '', str_replace('CSS', '', $nm));
 			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
-			$first = strtolower(substr($key, 0, 1));
-			$key = $first . substr($key, 1, strlen($key)-1);
+			$key = strtolower($key[0]) . substr($key, 1);
 			$ret = &$this->CSSPropertyArray[$key];
 		}
-		//elseif(Event::ValidType($nm))
-		//	$ret = $this->GetEvent($nm);
 		else 
 			$ret = parent::__get($nm);
 			//The following line stole 10 hours from my life :( - Asher
@@ -695,15 +884,12 @@ abstract class Control extends Component
 	 */
 	function __set($nm, $val)
 	{
-		//parent::__set($nm, $val);
 		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
 			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
-			//$key = str_replace('_', '', str_replace('CSS', '', $nm));
-			$first = strtolower(substr($key, 0, 1));
-			$key = $first . substr($key, 1, strlen($key)-1);
+			$key = strtolower($key[0]) . substr($key, 1);
 			$this->CSSPropertyArray[$key] = $val;
 			NolohInternal::SetProperty('style.'.$key, $val, $this);
 		}

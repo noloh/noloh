@@ -131,7 +131,7 @@ class TreeList extends Panel
 	}
 	static function OpenSrcHelper($openSrc, $node)
 	{
-		if($node->GetOpenSrc() == null && $node->ChildrenPanel->Controls->Count() != 0 && $node->ChildrenPanel->ClientVisible === true)
+		if($node->GetOpenSrc() == null && $node->ChildrenPanel->Controls->Count() != 0 && $node->ChildrenPanel->Visible === true)
 			$this->Icon->SetSrc($openSrc);
 		foreach($this->Controls->Elements as $treeNode)
 			self::OpenSrcHelper($openSrc, $treeNode);
@@ -144,7 +144,7 @@ class TreeList extends Panel
 	}
 	static function CloseSrcHelper($closeSrc, $node)
 	{
-		if($node->GetCloseSrc() == null && $node->ChildrenPanel->Controls->Count() != 0 && $node->ChildrenPanel->ClientVisible !== true)
+		if($node->GetCloseSrc() == null && $node->ChildrenPanel->Controls->Count() != 0 && $node->ChildrenPanel->Visible !== true)
 			$this->NodeIcon->SetSrc($closeSrc);
 		$nodeCount = $this->TreeNodes->Count;
 		foreach($this->Controls->Elements as $treeNode)

@@ -22,11 +22,11 @@ class Panel extends Control
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Panel
-	 * @param integer $left
-	 * @param integer $top
-	 * @param integer $width
-	 * @param integer $height
-	 * @param Control $implicitObject
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width coordinate of this element
+	 * @param integer $height The Height coordinate of this element
+	 * @param Control $implicitObject If you want an ImplicitArrayList instantiated instead of a regular ArrayList, this parameter signifies the implicit object, usually $this
 	 * @return Panel
 	 */
 	function Panel($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
@@ -42,12 +42,27 @@ class Panel extends Control
 		$this->SetScrolling(($width === null || $height === null)?null:false);
 		$this->SetCSSClass();
 	}
+	/**
+     * Returns the Scroll Event, which gets launched when a user scrolls through the Panel
+     * @return Event
+     */
 	function GetScroll()							{return $this->GetEvent('Scroll');}
+	/**
+	 * Sets the Scroll Event, which gets launched when a user scrolls through the Panel
+	 * @param Event $scroll
+	 */
 	function SetScroll($scroll)						{$this->SetEvent($scroll, 'Scroll');}
+	/**
+	 * @ignore
+	 */
 	function GetScrollLeft()
 	{
 		return $this->ScrollLeft;
 	}
+	/**
+	 * Sets the position of the horizontal scrollbar
+	 * @param integer $scrollLeft
+	 */
     function SetScrollLeft($scrollLeft)
     {
     	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
@@ -57,10 +72,17 @@ class Panel extends Control
         	NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
         $this->ScrollLeft = $scrollLeft;
     }
+    /**
+     * @ignore
+     */
     function GetScrollTop()
     {
     	return $this->ScrollTop;
     }
+    /**
+	 * Sets the position of the vertical scrollbar
+	 * @param integer $scrollTop
+	 */
     function SetScrollTop($scrollTop)
     {
     	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
@@ -77,14 +99,26 @@ class Panel extends Control
 	{
 		parent::SetCSSClass('NPanel '.$cssClass);
 	}
+	/**
+	 * Opens the Panel and only the Panel in a separate window so that the user may print it. The user's browser must
+	 * allow opening new windows for this to work.
+	 */
 	function OpenPrintableVersion()
 	{
 		AddScript('var oldNode = _N(\''.$this->Id.'\'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);');
 	}
+	/**
+	 * Returns the kind of scroll bars the Panel will have, if any
+	 * @return mixed
+	 */
 	function GetScrolling()
 	{
 		return $this->Scrolling;
 	}
+	/**
+	 * Sets the kind of scroll bars the Panel will have, if any
+	 * @param mixed $scrollType
+	 */
 	function SetScrolling($scrollType)
 	{
 		$this->Scrolling = $scrollType;

@@ -12,10 +12,32 @@ class Multimedia extends Control
 	private $Type;
 	private $ClassId;
 	private $IsMovie;
+	/**
+	 * Parameters for the Multimedia. Each parameter should be an Item. They correspond to PARAM tags for EMBED tags.
+	 * @var ArrayList
+	 */
 	public $Parameters;
+	/**
+	 * Vars passed to Flash animations. Each var should be an Item.
+	 * @var ArrayList
+	 */
 	public $FlashVars;
+	/**
+	 * Multimedia Controls to be used should this one fail.
+	 * @var ArrayList
+	 */
 	public $InnerMultimedia;
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Multimedia
+	 * @param string $data The URL of the Multimedia
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @param boolean $isMovie
+	 * @return Multimedia
+	 */
 	public function Multimedia($data = null, $left = 0, $top = 0, $width = 100, $height = 100, $isMovie=false)
 	{
 		parent::Control($left, $top, null, null);
@@ -29,10 +51,18 @@ class Multimedia extends Control
 		$this->IsMovie = ($isMovie)?true:null;
 		$this->BackColor = 'white';
 	}
+	/**
+	 * Returns the URL of the Multimedia data
+	 * @return string
+	 */
 	function GetData()
 	{
 		return $this->Data;
 	}
+	/**
+	 * Sets the URL of the Multimedia data
+	 * @param string $data
+	 */
 	function SetData($data)
 	{
 		if($data == null)
@@ -52,20 +82,43 @@ class Multimedia extends Control
 		//NolohInternal::SetProperty('data', $data, $this);
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 	}
+	/**
+	 * Returns the implementation URI for the Multimedia
+	 * @return string
+	 */
+	function GetClassId()
+	{
+		return $this->ClassId;
+	}
+	/**
+	 * Sets the implementation URI for the Multimedia
+	 * @param string $classId
+	 */
 	function SetClassId($classId)
 	{
 		$this->ClassId = $classId;
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 	}
+	/**
+	 * Returns the Content-type used for the Multimedia
+	 * @return string
+	 */
 	function GetType()
 	{
 		return $this->Type;
 	}
-	function SetType($newType)
+	/**
+	 * Sets the Content-type used for the Multimedia
+	 * @param string $type
+	 */
+	function SetType($type)
 	{
-		$this->Type = $newType;
+		$this->Type = $type;
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddParameter(Item $item)
 	{
 //		if($this->GetShowStatus())
@@ -76,6 +129,9 @@ class Multimedia extends Control
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->Parameters->Add($item, true, true);
 	}
+	/**
+	 * @ignore
+	 */
 	function AddFlashVar($flashVar)
 	{
 		NolohInternal::SetProperty('innerHTML', $this, $this);
@@ -134,8 +190,21 @@ class Multimedia extends Control
 		//Terrible way of doing this, but width and height gets reset
 		return str_replace("'", "\\'", $tmpStr);
 	}
+	/**
+	 * Returns a Talk Event, which gets launched when a Flash object attempts to talk to NOLOH. The arguments are stored in Event::$FlashArgs
+	 * @return Event
+	 */
 	function GetTalk()				{return $this->GetEvent('Talk');}
+	/**
+	 * Sets a Talk Event, which gets launched when a Flash object attempts to talk to NOLOH. The arguments are stored in Event::$FlashArgs
+	 * @param Event $event
+	 */
 	function SetTalk($event)		{$this->SetEvent($event, 'Talk');}
+	/**
+	 * Calls a function of the Multimedia, e.g., a function defined in Flash
+	 * @param string $function The name of the function
+	 * @param mixed,... $argsDotDotDot An unlimitted list of parameters to be passed into the function
+	 */
 	function InvokeFunction($function, $argsDotDotDot)
 	{
 //		$params = array_slice(func_get_args(), 1);

@@ -85,8 +85,8 @@ class TreeNode extends Panel
 		}
 		if($this->ChildrenPanel->Controls->Count() == 0)
 		{
-			$this->PlusMinus->ClientVisible = true;
-			if($this->ChildrenPanel->ClientVisible === true)
+			$this->PlusMinus->Visible = true;
+			if($this->ChildrenPanel->Visible === true)
 				$this->Icon->Src = $this->OpenSrc!=null ? $this->OpenSrc : TreeNode::GetDefaultOpenSrc();
 			else 
 				$this->Icon->Src = $this->CloseSrc!=null ? $this->CloseSrc : TreeNode::GetDefaultCloseSrc();
@@ -141,7 +141,7 @@ class TreeNode extends Panel
 			$parentNode->ChildrenPanel->Controls->Remove($this, true);
 			if($parentNode->ChildrenPanel->Controls->Count() == 0)
 			{
-				$parentNode->PlusMinus->ClientVisible = false;
+				$parentNode->PlusMinus->Visible = false;
 				$parentNode->Icon->Src = TreeNode::GetDefaultLeafSrc();
 			}
 		}
@@ -230,7 +230,7 @@ class TreeNode extends Panel
 	function Expand($deep = false)
 	{
 		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath().'Images/minus.gif';
-		$this->ChildrenPanel->ClientVisible = true;
+		$this->ChildrenPanel->Visible = true;
 		if($deep)
 		{
 			$nodeCount = $this->ChildrenPanel->Controls->Count();
@@ -334,7 +334,7 @@ class TreeNode extends Panel
 			$newSrc = TreeNode::GetDefaultCloseSrc();
 		$this->CloseSrc = $newSrc;
 		NolohInternal::SetProperty('CloseSrc', $newSrc, $this);
-		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->ClientVisible !== true)
+		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->Visible !== true)
 			$this->Icon->SetSrc($newSrc);
 	}
 	
@@ -349,7 +349,7 @@ class TreeNode extends Panel
 			$newSrc = TreeNode::GetDefaultOpenSrc();
 		$this->OpenSrc = $newSrc;
 		NolohInternal::SetProperty('OpenSrc', $newSrc, $this);
-		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->ClientVisible === true)
+		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->Visible === true)
 			$this->Icon->SetSrc($newSrc);
 	}
 	
