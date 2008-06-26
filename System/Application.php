@@ -114,7 +114,10 @@ final class Application extends Object
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
 		$browser = GetBrowser();
 		if($browser=='ie' || $browser=='ff')
-			print('location.replace('.$url.');');
+			if($clearURLTokens)
+				print('window.location.replace('.$url.');');
+			else
+				print('window.location.reload(true);');
 		else
 			print('var frm=document.createElement("FORM");frm.action='.$url.';frm.method="post";document.body.appendChild(frm);frm.submit();');
 		exit();
