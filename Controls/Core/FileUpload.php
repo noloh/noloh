@@ -61,6 +61,7 @@ class FileUpload extends Control
 	 */
 	function Show()
 	{
+		AddNolohScriptSrc('FileUpload.js', true);
 		$initialProperties = parent::Show();
 		$initialProperties .= ",'marginWidth',0,'marginHeight',0,'frameBorder',0,'scrolling','no','name','$this->Id','src','".$_SERVER['PHP_SELF']."?NOLOHFileUpload={$this->Id}&Width={$this->GetWidth()}&Height={$this->GetHeight()}'";
 		NolohInternal::Show('IFRAME', $initialProperties, $this);

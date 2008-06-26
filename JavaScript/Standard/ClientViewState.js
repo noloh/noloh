@@ -24,7 +24,7 @@ ConversionArray["checked"] = "Checked";
 ConversionArray["src"] = "Src";
 ConversionArray["scrollLeft"] = "ScrollLeft";
 ConversionArray["scrollTop"] = "ScrollTop";
-ConversionArray["options"] = "_NItems";
+//ConversionArray["options"] = "_NItems";
 ConversionArray["selectedIndices"] = "_NSelectedIndices";
 ConversionArray["calViewDate.setMonth"] = "ViewMonth";
 ConversionArray["calViewDate.setFullYear"] = "ViewYear";
@@ -325,20 +325,6 @@ function BodySizeState()
 	_NSetProperty(body.id, "Height", document.documentElement.clientHeight);
 }
 
-function AddOptionAndSave(id, option)
-{
-	var tempObj = _N(id);
-	tempObj.options.add(option);
-	_NSave(id, "options", ImplodeOptions(tempObj.options));
-}
-
-function RemoveOptionAndSave(id, index)
-{
-	var tempObj = _N(id);
-	tempObj.remove(index);
-	_NSave(id, "options", ImplodeOptions(tempObj.options));
-}
-
 function _NSetP(id, nameValuePairs)
 {
 	var i = 0;
@@ -348,14 +334,6 @@ function _NSetP(id, nameValuePairs)
 		NOLOHChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
 		SavedControls[id][nameValuePairs[i++]] = nameValuePairs[i++];
 	}
-}
-
-function _NSetPEvtee(id, nameValuePairs)
-{
-	var i = 0;
-	var obj = _N(id);
-	while(i<nameValuePairs.length)
-		NOLOHChangeByObj(obj, nameValuePairs[i++], nameValuePairs[i++]);
 }
 
 function _NAdd(addTo, tag, nameValuePairs, beforeId)
@@ -548,34 +526,6 @@ function PostBack(EventType, ID, event)
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 	    req.send(str);
-	}
-}
-
-function ReadyBox(id)
-{
-	if(NOLOHUpload.FileUploadObjIds.length > 0)
-	{
-		_N(id).UploadComplete = true;
-		for(var i=0; i<NOLOHUpload.FileUploadObjIds.length; i++)
-			if(_N(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
-				return;
-		PostBack(NOLOHUpload.EventType, NOLOHUpload.ID, NOLOHUpload.event);
-		NOLOHUpload = new Object();
-		NOLOHUpload.FileUploadObjIds = [];
-	}
-}
-
-function PostBackWithUpload(EventType, ID, FileUploadObjIds, event)
-{
-	NOLOHUpload.EventType = EventType;
-	NOLOHUpload.ID = ID;
-	NOLOHUpload.FileUploadObjIds = FileUploadObjIds;
-	NOLOHUpload.event = event;
-	for(var i=0; i<FileUploadObjIds.length; i++)
-	{
-		iFrame = _N(FileUploadObjIds[i]);
-		iFrame.UploadComplete = false;
-		iFrame.contentWindow._N("frm").submit();
 	}
 }
 

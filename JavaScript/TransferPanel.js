@@ -1,12 +1,12 @@
 function TransferPanelAdd(objFrom, objTo)
 {
-	FromPane = _N(objFrom);
-	ToPane = _N(objTo);
-	while(FromPane.selectedIndex >= 0)
+	FromPanel = _N(objFrom);
+	ToPanel = _N(objTo);
+	while(FromPanel.selectedIndex >= 0)
 	{
-		AddOptionAndSave(objTo, new Option(FromPane.options[FromPane.selectedIndex].text, FromPane.options[FromPane.selectedIndex].value));
-		//ToPane.options.add(new Option(FromPane.options[FromPane.selectedIndex].text, FromPane.options[FromPane.selectedIndex].value));
-		RemoveOptionAndSave(objFrom, FromPane.selectedIndex);
-		//FromPane.remove(FromPane.selectedIndex);
+		ToPanel.options.add(new Option(FromPanel.options[FromPanel.selectedIndex].text, FromPanel.options[FromPanel.selectedIndex].value));
+		FromPanel.remove(FromPanel.selectedIndex);
 	}
+	_NSave(objFrom, "_NItems", ImplodeOptions(FromPanel.options));
+	_NSave(objTo, "_NItems", ImplodeOptions(ToPanel.options));
 }

@@ -8,8 +8,8 @@
  */
 class TransferPanel extends Panel
 {
-	public $LeftPane;
-	public $RightPane;
+	public $LeftPanel;
+	public $RightPanel;
 	public $ToRight;
 	public $ToLeft;
 	
@@ -18,14 +18,14 @@ class TransferPanel extends Panel
 		parent::Panel($left, $top);
 		$this->ToRight = new Button('>', 0,0,25,25);
 		$this->ToLeft = new Button('<', 0,0,25,25);
-		$this->LeftPane = new ListBox();
-		$this->RightPane = new ListBox();
+		$this->LeftPanel = new ListBox();
+		$this->RightPanel = new ListBox();
 		$this->SetWidth($width);
 		$this->SetHeight($height);
-		$this->ToRight->Click = new ClientEvent("TransferPanelAdd('". $this->LeftPane->Id ."', '". $this->RightPane->Id ."');");
-		$this->ToLeft->Click = new ClientEvent("TransferPanelAdd('". $this->RightPane->Id ."', '". $this->LeftPane->Id ."');");
-		$this->Controls->Add($this->LeftPane);
-		$this->Controls->Add($this->RightPane);
+		$this->ToRight->Click = new ClientEvent("TransferPanelAdd('". $this->LeftPanel->Id ."', '". $this->RightPanel->Id ."');");
+		$this->ToLeft->Click = new ClientEvent("TransferPanelAdd('". $this->RightPanel->Id ."', '". $this->LeftPanel->Id ."');");
+		$this->Controls->Add($this->LeftPanel);
+		$this->Controls->Add($this->RightPanel);
 		$this->Controls->Add($this->ToRight);
 		$this->Controls->Add($this->ToLeft);
 	}
@@ -35,12 +35,12 @@ class TransferPanel extends Panel
 	public function SetWidth($width)
 	{
 		parent::SetWidth($width);
-		$this->LeftPane->Left = 0;
-		$this->LeftPane->Width = ($this->Width/2)-18;
-		$this->ToRight->Left = ($this->LeftPane->Width) +5;
-		$this->ToLeft->Left = ($this->LeftPane->Width) +5;
-		$this->RightPane->Left = ($this->LeftPane->Width) + $this->ToRight->Width + 10;
-		$this->RightPane->Width = ($this->Width/2)-18;
+		$this->LeftPanel->Left = 0;
+		$this->LeftPanel->Width = ($this->Width/2)-18;
+		$this->ToRight->Left = ($this->LeftPanel->Width) +5;
+		$this->ToLeft->Left = ($this->LeftPanel->Width) +5;
+		$this->RightPanel->Left = ($this->LeftPanel->Width) + $this->ToRight->Width + 10;
+		$this->RightPanel->Width = ($this->Width/2)-18;
 	}
 	/**
 	 * @ignore
@@ -48,10 +48,10 @@ class TransferPanel extends Panel
 	public function SetHeight($height)
 	{
 		parent::SetHeight($height);
-		$this->LeftPane->Height = $this->Height;
+		$this->LeftPanel->Height = $this->Height;
 		$this->ToRight->Top = ($this->Height/2) - $this->ToRight->Height - .025*($this->Height);
 		$this->ToLeft->Top = ($this->Height/2)  + .025*($this->Height);
-		$this->RightPane->Height = $this->Height;
+		$this->RightPanel->Height = $this->Height;
 	}
 	/**
 	 * @ignore
