@@ -44,7 +44,8 @@ class Larva extends MarkupItem
 			else
 				$markUpPanel->ComponentSpace[$this->Id]->SetParentId(null);
 		$markUpPanel->ComponentSpace[$this->Id] = &$component;
-		$component->SetParentId($this->Id);
+		//$component->SetParentId($this->Id);
+		$component->SetMorphedParentId($this->Id);
 		$component->SetLayout(1);
 		return $component;
 	}

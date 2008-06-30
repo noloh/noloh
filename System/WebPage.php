@@ -56,6 +56,7 @@ abstract class WebPage extends Component
 	function WebPage($title = 'Unititled Document', $keywords = '', $description = '')
 	{
 		parent::Component();
+		parent::Show();
 		$this->Width = $GLOBALS['_NWidth'];
 		$this->Height = $GLOBALS['_NHeight'];
 		$this->Controls = new ArrayList();
@@ -329,7 +330,7 @@ abstract class WebPage extends Component
 	 */
 	function Show()
 	{
-		parent::Show();
+		//parent::Show();
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(GetBrowser())
 		{

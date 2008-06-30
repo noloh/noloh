@@ -86,10 +86,36 @@ abstract class Component extends Object
 	 */
 	function SetParentId($parentId)
 	{
-		$bool = $parentId != null;
-		if($bool)
-			$this->ParentId = $parentId;
-		$_SESSION['_NControlQueue'][$this->Id] = $bool;
+		if($this->ParentId !== $parentId)
+		{
+			$bool = $parentId !== null;
+			if($bool)
+				$this->ParentId = $parentId;
+			else 
+				$parentId = $this->ParentId;
+			if(GetComponentById($parentId)->GetShowStatus()!==0)
+				$_SESSION['_NControlQueueRoot'][$this->Id] = $bool;
+			else 
+				if(isset($_SESSION['_NControlQueueDeep'][$parentId]))
+					$_SESSION['_NControlQueueDeep'][$parentId][$this->Id] = $bool;
+				else 
+					$_SESSION['_NControlQueueDeep'][$parentId] = array($this->Id => $bool);
+		}
+	}
+	/**
+	 * @ignore
+	 */
+	function SetMorphedParentId($parentId)
+	{
+		$this->ParentId = $parentId;
+		$regionId = substr($parentId, 0, strpos($parentId, 'i'));
+		if(GetComponentById($regionId)->GetShowStatus()!==0)
+			$_SESSION['_NControlQueueRoot'][$this->Id] = true;
+		else 
+			if(isset($_SESSION['_NControlQueueDeep'][$regionId]))
+				$_SESSION['_NControlQueueDeep'][$regionId][$this->Id] = true;
+			else 
+				$_SESSION['_NControlQueueDeep'][$regionId] = array($this->Id => true);
 	}
 	/**
 	 * Gets Parent of this Component, or Parent based on the $generation paramater as follows:<br>
@@ -104,7 +130,7 @@ abstract class Component extends Object
 	 */
 	function GetParent($generation = 1)
 	{
-		if($this->ParentId == null)
+		if($this->ParentId === null)
 			return null;
 		if(is_int($generation))
 		{
@@ -192,9 +218,9 @@ abstract class Component extends Object
 	function Show()
 	{
 		$this->ShowStatus = null;
-		if(isset($_SESSION['_NControlQueue'][$this->Id]))
-			unset($_SESSION['_NControlQueue'][$this->Id]);
-		return "'id','$this->Id'";
+		if(isset($_SESSION['_NControlQueueRoot'][$this->Id]))
+			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
+		return '\'id\',\''.$this->Id.'\'';
 	}
 	/**
 	 * The opposite of Showing. If the Component has a client-side aspect, it will be removed from the client.
@@ -204,9 +230,9 @@ abstract class Component extends Object
 	function Bury()
 	{
 		$this->ShowStatus = 2;
-		if(isset($_SESSION['_NControlQueue'][$this->Id]))
+		if(isset($_SESSION['_NControlQueueRoot'][$this->Id]))
 		{
-			unset($_SESSION['_NControlQueue'][$this->Id]);
+			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
 			$this->ParentId = null;
 		}
 	}
@@ -218,8 +244,8 @@ abstract class Component extends Object
 	function Resurrect()
 	{
 		$this->ShowStatus = null;
-		if(isset($_SESSION['_NControlQueue'][$this->Id]))
-			unset($_SESSION['_NControlQueue'][$this->Id]);
+		if(isset($_SESSION['_NControlQueueRoot'][$this->Id]))
+			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
 	}
 	/**
 	 * @ignore
@@ -273,7 +299,8 @@ abstract class Component extends Object
 		if(isset($GLOBALS['_NGarbage']))
 		{
 			$id = $this->Id;
-			unset($_SESSION['_NControlQueue'][$id],
+			unset($_SESSION['_NControlQueueRoot'][$id],
+				$_SESSION['_NControlQueueDeep'][$id],
 				$_SESSION['_NFunctionQueue'][$id],
 				$_SESSION['_NPropertyQueue'][$id]);
 			$_SESSION['_NGarbage'][$id] = true;

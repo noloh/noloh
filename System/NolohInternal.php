@@ -6,50 +6,43 @@ final class NolohInternal
 {
 	private function NolohInternal(){}
 
-	public static function ShowQueue()
+	public static function ControlQueue()
 	{
-		//foreach($_SESSION['_NControlQueue'] as $objId => $bool)
-        while (list($objId, $bool) = each($_SESSION['_NControlQueue']))
-			self::ShowControl(GetComponentById($objId), $bool);
+        while (list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
+			self::ShowControl($control=&GetComponentById($objId), GetComponentById($control->GetParentId()), $bool);
 	}
 
-	public static function ShowControl($control, $bool)
+	public static function ShowControl($control, $parent, $bool)
 	{
-		//if(isset($control))
-		//{
-			$parent = $control->GetParent();
+		if(!$parent)
+		{
+			$parent = GetComponentById(substr($str = $control->GetParentId(), 0, strpos($str, 'i')));
 			if(!$parent)
 			{
-				$splitStr = explode('i', $control->GetParentId(), 2);
-				$parent = GetComponentById($splitStr[0]);
-				if(!$parent)
-				{
-					$control->SecondGuessParent();
-					return;
-				}
+				$control->SecondGuessParent();
+				return;
 			}
-			if($parent->GetShowStatus()!==0)
+		}
+		if($parent->GetShowStatus()!==0)
+		{
+			if($bool)
 			{
-				if($bool)
-				{
-					if($control->GetShowStatus()===0)
-						$control->Show();
-                    elseif($control->GetShowStatus()===1)
-                        self::Adoption($control, $parent);
-					elseif($control->GetShowStatus()===2)
-						$control->Resurrect();
-				}
-				elseif($control->GetShowStatus()!==0)
-					$control->Bury();
+				if($control->GetShowStatus()===0)
+					$control->Show();
+                elseif($control->GetShowStatus()===1)
+                    self::Adoption($control, $parent);
+				elseif($control->GetShowStatus()===2)
+					$control->Resurrect();
 			}
-			elseif(isset($_SESSION['_NControlQueue'][$parent->Id]) && $_SESSION['_NControlQueue'][$parent->Id] && func_num_args()==2)
-			{
-				self::ShowControl($parent, true);
-				self::ShowControl($control, $bool, false);
-			}
-		//}
-		//else
-		//	Alert("whatBool=" . ($bool?"TRUE":"FALSE"));
+			elseif($control->GetShowStatus()!==0)
+				$control->Bury();
+		}
+		if(isset($_SESSION['_NControlQueueDeep'][$control->Id]))
+		{
+			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$control->Id]))
+				self::ShowControl(GetComponentById($childObjId), $control, $bool);
+			unset($_SESSION['_NControlQueueDeep'][$control->Id]);
+		}
 	}
 	
 	public static function Show($tag, $initialProperties, $obj, $addTo = null)

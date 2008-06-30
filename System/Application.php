@@ -176,7 +176,8 @@ final class Application extends Object
 		unset($_SESSION['_NVisit'],
 			$_SESSION['_NNumberOfComponents'],
 			$_SESSION['_NOmniscientBeing'],
-			$_SESSION['_NControlQueue'],
+			$_SESSION['_NControlQueueRoot'],
+			$_SESSION['_NControlQueueDeep'],
 			$_SESSION['_NControlInserts'],
 			$_SESSION['_NFunctionQueue'],
 			$_SESSION['_NPropertyQueue'],
@@ -204,7 +205,8 @@ final class Application extends Object
 		}
 		$_SESSION['_NVisit'] = -1;
 		$_SESSION['_NNumberOfComponents'] = 0;
-		$_SESSION['_NControlQueue'] = array();
+		$_SESSION['_NControlQueueRoot'] = array();
+		$_SESSION['_NControlQueueDeep'] = array();
 		$_SESSION['_NControlInserts'] = array();
 		$_SESSION['_NFunctionQueue'] = array();
 		$_SESSION['_NPropertyQueue'] = array();
@@ -342,10 +344,7 @@ final class Application extends Object
 			return $obj->{$splitEvent[0]}->Exec($execClientEvents);
         }
 		else 
-		{
-			$splitStr = explode('i', $splitEvent[1], 2);
-			return GetComponentById($splitStr[0])->ExecEvent($splitEvent[0], $splitEvent[1]);
-		}
+			return GetComponentById(substr($splitEvent[1], 0, strpos($splitEvent[1], 'i')))->ExecEvent($splitEvent[0], $splitEvent[1]);
 	}
 
 	private function HandleTokens()
@@ -420,7 +419,7 @@ final class Application extends Object
 		}
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
 			URL::UpdateTokens();
-		NolohInternal::ShowQueue();
+		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();
 		NolohInternal::FunctionQueue();
 		//NolohInternal::SetPropertyQueue();
