@@ -32,7 +32,7 @@ class TextBox extends Control
 	function EditComplete($labId)
 	{
 		$lab = GetComponentById($labId);
-		$lab->ClientVisible = true;
+		$lab->SetVisible(true);
 		if($lab->Text != $this->Text)
 		{
 			$lab->Text = $this->Text; 
