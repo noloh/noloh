@@ -714,6 +714,27 @@ abstract class Control extends Component
 	 */
 	function SetRightClick($rightClick)				{$this->SetEvent($rightClick, 'RightClick');}
 	/**
+	 * Returns the ShiftStart Event, which gets launched when a user starts shifting this Control
+	 * @return Event
+	 */
+	function GetShiftStart()						{return $this->GetEvent('ShiftStart');}
+	/**
+	 * Sets the ShiftStart Event, which gets launched when a user starts shifting this Control
+	 * @param Event $shiftStart
+	 */
+	function SetShiftStart($shiftStart)				{$this->SetEvent($shiftStart, 'ShiftStart');}
+	/**
+	 * Returns the ShiftStop Event, which gets launched when a user stops shifting this Control
+	 * @return Event
+	 */
+	function GetShiftStop()							{return $this->GetEvent('ShiftStop');}
+	/**
+	 * Sets the ShiftStop Event, which gets launched when a user stops shifting this Control
+	 * @param Event $shiftStop
+	 */
+	function SetShiftStop($shiftStop)				{$this->SetEvent($shiftStop, 'ShiftStop');}
+	
+	/**
 	 * Returns the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
 	 * @return Event
 	 */
@@ -728,6 +749,7 @@ abstract class Control extends Component
 	 * The only thing that should be added to this ArrayList are statics of the Shift class.
 	 * @return ArrayList
 	 */
+	
 	function GetShifts()
 	{
 		if($this->Shifts == null)

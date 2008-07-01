@@ -3,6 +3,7 @@ function ShiftStart(objArray)
 	var xPos, yPos, obj, deltaZIndex;
 	_NShiftObjArray = objArray;
 	_NShiftObjArray.Ghosts = [];
+	_NShiftObjArray.ObjsWithStop = [];
 	_NShiftObjArray.HasMoved = false;
 
 	xPos = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
@@ -15,6 +16,11 @@ function ShiftStart(objArray)
 		deltaZIndex = ++HighestZIndex + tmpCount - _N(_NShiftObjArray[0][0]).style.zIndex;
 	for(var i=0; i<tmpCount; ++i)
 	{
+		obj = _N(_NShiftObjArray[i][0]);
+		if(obj.ShiftStart != null)
+			obj.ShiftStart.call();
+		if(obj.ShiftStop != null)
+			_NShiftObjArray.ObjsWithStop.push(obj);
 		if(_NShiftObjArray[i][2] == 1)
 		{
 			obj = _N(_NShiftObjArray[i][0]).cloneNode(true);
@@ -24,10 +30,8 @@ function ShiftStart(objArray)
 			obj.style.filter = "alpha(opacity=50)";
 			_NShiftObjArray[i][0] = obj.id = _NShiftObjArray[i][0] + "_Ghost";
 			document.body.appendChild(obj);
-			_NShiftObjArray.Ghosts[_NShiftObjArray.Ghosts.length] = i;
+			_NShiftObjArray.Ghosts.push(i);
 		}
-		else
-			obj = _N(_NShiftObjArray[i][0]);
 		_NShiftInitObject(_NShiftObjArray[i], obj);
 		SetShiftWithInitials(obj);
 		_NSetProperty(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
@@ -153,6 +157,12 @@ function ShiftStop()
 			if(obj.onclick != null)
 				obj.onclick.call(obj, event);
 		}
+	}
+	if(_NShiftObjArray.ObjsWithStop != null)
+	{
+		tmpCount = _NShiftObjArray.ObjsWithStop.length;
+		for(i=0; i<tmpCount; ++i)
+			_NShiftObjArray.ObjsWithStop[i].ShiftStop.call();
 	}
 	_NShiftObjArray = null;
 	document.detachEvent("onmousemove", ShiftGo);
