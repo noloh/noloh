@@ -43,8 +43,8 @@ class Multimedia extends Control
 		parent::Control($left, $top, null, null);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
-		$this->Parameters = new ImplicitArrayList($this, 'AddParameter'/*, 'RemoveParam', 'ClearParam'*/);
-		$this->FlashVars = new ImplicitArrayList($this, 'AddFlashVar');//, 'RemoveFlashVar', 'ClearFlashVars'*/);
+		$this->Parameters = new ImplicitArrayList($this, 'AddParameter', 'RemoveParameter', 'ClearParameters');
+		$this->FlashVars = new ImplicitArrayList($this, 'AddFlashVar', 'RemoveFlashVar', 'ClearFlashVars');
 		$this->InnerMultimedia = new ArrayList();
 		$this->InnerMultimedia->ParentId = $this->Id;
 		$this->SetData($data);
@@ -129,6 +129,16 @@ class Multimedia extends Control
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->Parameters->Add($item, true, true);
 	}
+	function RemoveParameter(Item $item)
+	{
+		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->Parameters->Remove($item, true);
+	}
+	function ClearParameters()
+	{
+		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->Parameters->Clear(true);
+	}
 	/**
 	 * @ignore
 	 */
@@ -136,6 +146,16 @@ class Multimedia extends Control
 	{
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->FlashVars->Add($flashVar, true, true);
+	}
+	function RemoveFlashVar($flashVar)
+	{	
+		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->FlashVars->Remove($flashVar, true);
+	}
+	function ClearFlashVars()
+	{
+		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->FlashVars->Clear(true);
 	}
 /*	function SetWidth($width)
 	{
@@ -205,7 +225,7 @@ class Multimedia extends Control
 	 * @param string $function The name of the function
 	 * @param mixed,... $argsDotDotDot An unlimitted list of parameters to be passed into the function
 	 */
-	function InvokeFunction($function, $argsDotDotDot)
+	function InvokeFunction($function, $argsDotDotDot=null)
 	{
 //		$params = array_slice(func_get_args(), 1);
 		$params = func_get_args();
