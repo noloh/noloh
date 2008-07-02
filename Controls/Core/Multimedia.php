@@ -129,11 +129,17 @@ class Multimedia extends Control
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->Parameters->Add($item, true, true);
 	}
+	/**
+	 * @ignore
+	 */
 	function RemoveParameter(Item $item)
 	{
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->Parameters->Remove($item, true);
 	}
+	/**
+	 * @ignore
+	 */
 	function ClearParameters()
 	{
 		NolohInternal::SetProperty('innerHTML', $this, $this);
@@ -147,11 +153,17 @@ class Multimedia extends Control
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->FlashVars->Add($flashVar, true, true);
 	}
+	/**
+	 * @ignore
+	 */
 	function RemoveFlashVar($flashVar)
 	{	
 		NolohInternal::SetProperty('innerHTML', $this, $this);
 		$this->FlashVars->Remove($flashVar, true);
 	}
+	/**
+	 * @ignore
+	 */
 	function ClearFlashVars()
 	{
 		NolohInternal::SetProperty('innerHTML', $this, $this);
