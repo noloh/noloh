@@ -12,7 +12,9 @@ final class Layout
 	const Relative = 1;
 	const Web = 2;
 	const Left = 'left';
+	const Center = 'center';
 	const Top = 'top';
+	const Baseline = 'baseline';
 	const Bottom = 'bottom';
 	const Right = 'right';
 	

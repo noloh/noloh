@@ -2,21 +2,16 @@
 /**
  * Link class
  *
- * A Control for a Link
- *
- * Properties
- * - <b>Href</b>, string, 
- *   <br>Gets or Sets the Href of the Link, usually # due to actions set via Events
+ * A Control for a conventional web link. 
  * 
  * You can use the Link as follows
  * <code>
- *
- *		function Foo()
- *		{
- *			$tempLink = new Link("#", 0,0);
- *			$this->Controls->Add($tempLink); //Adds a Link to the Controls class of some Container
- *		}
- *		
+ * function Foo()
+ * {
+ *	$tempLink = new Link('#', 0, 0);
+ * 	//Adds a Link to the Controls ArrayList of some Container
+ *	$this->Controls->Add($tempLink); 
+ * }
  * </code>
  * 
  * @package Controls/Core
@@ -24,22 +19,28 @@
 
 class Link extends Label
 {
-	const Blank = '_blank', Self = '_self';
+	/**
+	 * @ignore
+	 */
+	const Blank = '_blank';
+	/**
+	 * @ignore
+	 */
+	const Self = '_self';
 	
 	private $Destination;
 	private $Target;
-	
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Link
  	* Example
- 	*	<code> $tempVar = new Link("#", 0, 0, 80, 24);</code>
- 	* @param string $destination
+ 	*	<code> $tempVar = new Link('#', 0, 0, 80, 24);</code>
+ 	* @param string $destination 
  	* @param string $text
-	* @param integer $left
-	* @param integer $top
-	* @param integer $width
-	* @param integer $height
+	* @param integer $left The left coordinate of this element
+	* @param integer $top The top coordinate of this element
+	* @param integer $width The width of this element
+	* @param integer $height The height of this element
 	*/
 	function Link($destination='', $text='', $left = 0, $top = 0, $width = 83, $height = 20)  
 	{
@@ -47,18 +48,32 @@ class Link extends Label
 		//$this->SetText($text);
 		$this->SetDestination($destination);
 	}
-	
+	/**
+	 * Returns the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
+	 * value of '#' can be used for not redirecting anywhere but still having the look of a Link, useful for Click Events.
+	 * @return string
+	 */
 	function GetDestination()
 	{
-		return $this->Destination;
+		return $this->Destination===null?'':$this->Destination;
 	}
-	
-	function SetDestination($newDestination)
+	/**
+	 * Sets the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
+	 * value of '#' can be used for not redirecting anywhere but still having the look of a Link, useful for Click Events.
+	 * @param string $destination
+	 */
+	function SetDestination($destination)
 	{
-		$this->Destination = $newDestination;
-		NolohInternal::SetProperty('href', $newDestination, $this);
+		$this->Destination = $destination;
+		NolohInternal::SetProperty('href', $destination===null?'':$destination, $this);
 	}
+	/**
+	 * @ignore
+	 */
 	function GetTarget()	{return ($this->Target === null)?self::Self:$this->Target;}
+	/**
+	 * @ignore
+	 */
 	function SetTarget($targetType)
 	{
 		$this->Target = ($targetType == self::Self)?null:$targetType;

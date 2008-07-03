@@ -168,7 +168,7 @@ function &GetComponentById($id)
 * @param mixed $x The variable to be tested
 * @return boolean
 */
-function isArray($x)
+function IsArray($x)
 {
 	return $x instanceof ArrayList || is_array($x) || $x instanceof ArrayObject;
 }

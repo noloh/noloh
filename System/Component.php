@@ -11,8 +11,17 @@
 
 abstract class Component extends Object
 {
+	/**
+	 * A possible ShowStatus for the Component. NotShown indicates that the Component has never been shown.
+	 */
 	const NotShown = 0;
+	/**
+	 * A possible ShowStatus for the Component. Shown indicates that the Component is present on the client.
+	 */
 	const Shown = 1;
+	/**
+	 * A possible ShowStatus for the Component. Buried indicates that the Component is has been shown and then removed.
+	 */
 	const Buried = 2;
 	
 	private $EventSpace;
@@ -45,7 +54,7 @@ abstract class Component extends Object
 	}
 	/**
 	 * Whether the component has never been shown, has been shown, or has been shown and removed
-	 * @return Component::(NotShown\Shown\Buried)
+	 * @return mixed
 	 */
 	function GetShowStatus()
 	{

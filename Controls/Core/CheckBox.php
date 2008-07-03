@@ -22,17 +22,15 @@
 class CheckBox extends CheckControl implements MultiGroupable
 {
     /**
-     *Constructor.
-	 * for inherited components, be sure to call the parent constructor first
-	 * so that the component properties and events are defined.
-	 * Example
+     * Constructor.
+	 * Be sure to call this from the constructor of any class that extends CheckBox
 	 *	<code> $tmpCheck = new CheckBox("Check Me", 0, 0, 100, 24);</code>
-     * @param string[optional] $text The text of the CheckBox
-     * @param integer[optional] $left The left coordinate of this element.
-     * @param integer[optional] $top The top coordinate of this element.
-     * @param mixed[optional] $width The Width of this element, possible values are
+     * @param string $text The text of the CheckBox
+     * @param integer $left The left coordinate of this element.
+     * @param integer $top The top coordinate of this element.
+     * @param mixed $width The Width of this element, possible values are
      * integer, percentage, System::Auto
-     * @param mixed[optional] $height The Height of this element, possible values are
+     * @param mixed $height The Height of this element, possible values are
      * integer, percentage, System::Auto
      * @return CheckBox
      */

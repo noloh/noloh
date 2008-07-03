@@ -2,8 +2,10 @@
 /**
  * Label class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
- * 
+ * The Label is a Control that displays styled text to the user. Its text should be a simple string, styled by the properties
+ * and\or CSS properties of the Label. The text should generally NOT contain any mark-up, in that case, one should use the
+ * MarkupRegion class instead.
+ *  
  * @package Controls/Core
  */
 class Label extends Control 
@@ -25,7 +27,16 @@ class Label extends Control
 	private $Overflow;
 	private $EditInPlace;
 	private $FontSize;
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Label
+	 * @param string $text 
+	 * @param integer $left The left coordinate of this element
+	 * @param integer $top The top coordinate of this element
+	 * @param integer $width The width of this element
+	 * @param integer $height The height of this element
+	 * @return Label
+	 */
 	function Label($text='', $left = 0, $top = 0, $width = 83, $height = 18)
 	{
 		parent::Control($left, $top, null, null);
@@ -51,17 +62,23 @@ class Label extends Control
 	{
 		parent::SetCSSClass('NLabel '. $cssClass);
 	}
-	
+	/**
+	 * Returns the font size of the Label, in points. The default is 12.
+	 * @return integer
+	 */
 	function GetFontSize()
 	{
 		return isset($this->FontSize) ? $this->FontSize : 12;
 	}
-	
-	function SetFontSize($newSize)
+	/**
+	 * Sets the font size of the Label, in points. The default is 12.
+	 * @param integer $size
+	 */
+	function SetFontSize($size)
 	{
-		$this->FontSize = $newSize;
+		$this->FontSize = $size;
 		$this->ResetCache();
-		NolohInternal::SetProperty('style.fontSize', $newSize.'pt', $this);
+		NolohInternal::SetProperty('style.fontSize', $size.'pt', $this);
 	}
 	/**
 	 * @ignore
@@ -119,34 +136,52 @@ class Label extends Control
 		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
 			QueueClientFunction($this, '_NAWH', array('\''.$this->Id.'\''));
 	}
-	
+	/**
+	 * Returns the alignment of the Label, i.e., where the text will show with respect to the bounds of the Label. Possible values include Layout::Left, Layout::Center, or Layout::Right. 
+	 * @return mixed
+	 */
 	function GetAlign()
 	{
 		return $this->Align == null ? 'left' : $this->Align;
 	}
-	
-	function SetAlign($newAlign)
+	/**
+	 * Sets the alignment of the Label, i.e., where the text will show with respect to the horizontal bounds of the Label. Possible values include Layout::Left, Layout::Center, or Layout::Right. 
+	 * @param mixed $align
+	 */
+	function SetAlign($align)
 	{
-		$this->Align = $newAlign == 'left' ? null : $newAlign;
-		NolohInternal::SetProperty('style.textAlign', $newAlign, $this);
+		$this->Align = $align == 'left' ? null : $align;
+		NolohInternal::SetProperty('style.textAlign', $align, $this);
 	}
-	
+	/**
+	 * Returns the vertical alignment of the Label, i.e., where the text will show with respect to the vertical bounds of the Label. Possible values include Layout::Top, Layout::Baseline, or Layout::Bottom.
+	 * @return mixed
+	 */
 	function GetVAlign()
 	{
 		return $this->VAlign == null ? 'baseline' : $this->VAlign;
 	}
-	
-	function SetVAlign($newVAlign)
+	/**
+	 * Sets the vertical alignment of the Label, i.e., where the text will show with respect to the vertical bounds of the Label. Possible values include Layout::Top, Layout::Baseline, or Layout::Bottom.
+	 * @param mixed $vAlign
+	 */
+	function SetVAlign($vAlign)
 	{
-		$this->VAlign = $newVAlign == 'baseline' ? null : $newVAlign;
-		NolohInternal::SetProperty('style.verticalAlign', $newVAlign, $this);
+		$this->VAlign = $vAlign == 'baseline' ? null : $vAlign;
+		NolohInternal::SetProperty('style.verticalAlign', $vAlign, $this);
 	}
-	
+	/**
+	 * Returns whether the Label will be bold
+	 * @return boolean
+	 */
 	function GetBold()
 	{
-		return $this->Bold == null ? false : true;
+		return $this->Bold !== null;
 	}
-	
+	/**
+	 * Sets whether the Label will be bold
+	 * @param boolean $bool
+	 */
 	function SetBold($bool)
 	{
 		if($bool)
@@ -160,34 +195,50 @@ class Label extends Control
 			NolohInternal::SetProperty('style.fontWeight', 'normal', $this);
 		}
 	}
-	
+	/**
+	 * Returns the name of the font of the Label, e.g., 'Arial'
+	 * @return string
+	 */
 	function GetFont()
 	{
 		return $this->Font;
 	}
-	
-	function SetFont($newFont)
+	/**
+	 * Sets the name of the font of the Label, e.g., 'Arial'
+	 * @param string $font
+	 */
+	function SetFont($font)
 	{
-		$this->Font = $newFont;
-		NolohInternal::SetProperty('style.fontFamily', $newFont, $this);
+		$this->Font = $font;
+		NolohInternal::SetProperty('style.fontFamily', $font, $this);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function GetLeftPadding()
 	{
 		return $this->LeftPadding == null ? 0 : $this->LeftPadding;
 	}
-	
-	function SetLeftPadding($newPadding)
+	/**
+	 * @ignore
+	 */
+	function SetLeftPadding($padding)
 	{
-		$this->LeftPadding = $newPadding == 0 ? null : $newPadding;
-		NolohInternal::SetProperty('style.paddingLeft', $newPadding.'px', $this);
+		$this->LeftPadding = $padding == 0 ? null : $padding;
+		NolohInternal::SetProperty('style.paddingLeft', $padding.'px', $this);
 	}
-	
+	/**
+	 * Returns whether the text will overflow beyond the bounds of the Label
+	 * @return boolean
+	 */
 	function GetOverflow()
 	{
-		return $this->Overflow != null;
+		return $this->Overflow !== null;
 	}
-	
+	/**
+	 * Sets whether the text will overflow beyond the bounds of the Label
+	 * @param boolean $bool
+	 */
 	function SetOverflow($bool)
 	{
 		if($bool)
@@ -201,12 +252,20 @@ class Label extends Control
 			NolohInternal::SetProperty('style.overflow', 'hidden', $this);
 		}
 	}
-	
+	/**
+	 * Returns whether the user will be able to edit the Label in place. If they can, the Label will have a DoubleClick Event
+	 * that turns it into a TextBox to edit its Text.
+	 * @return boolean
+	 */
 	function GetEditInPlace()
 	{
-		return $this->EditInPlace != null;
+		return $this->EditInPlace !== null;
 	}
-	
+	/**
+	 * Sets whether the user will be able to edit the Label in place. If they can, the Label will have a DoubleClick Event
+	 * that turns it into a TextBox to edit its Text.
+	 * @param boolean $bool
+	 */
 	function SetEditInPlace($bool)
 	{
 		if($bool)

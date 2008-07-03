@@ -21,7 +21,7 @@ class Table extends Control
 	private $ScrollTop;
 	/**
 	 * Constructor.
-	 * Be sure to call this from the constructor of any class that extends Button
+	 * Be sure to call this from the constructor of any class that extends Table
 	 * @param integer $left The left coordinate of this element
 	 * @param integer $top The top coordinate of this element
 	 * @param integer $width The width coordinate of this element

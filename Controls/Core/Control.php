@@ -749,7 +749,6 @@ abstract class Control extends Component
 	 * The only thing that should be added to this ArrayList are statics of the Shift class.
 	 * @return ArrayList
 	 */
-	
 	function GetShifts()
 	{
 		if($this->Shifts == null)

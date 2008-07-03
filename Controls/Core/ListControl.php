@@ -18,7 +18,7 @@ abstract class ListControl extends Control
 	public $Items;
 	/**
 	 * Constructor.
-	 * Be sure to call this from the constructor of any class that extends ArrayList.
+	 * Be sure to call this from the constructor of any class that extends ListControl.
 	* @param integer $left
 	* @param integer $top
 	* @param integer $width
