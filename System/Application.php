@@ -143,10 +143,10 @@ final class Application extends Object
 			File::SendRequestedFile($_GET['NOLOHFileRequest']);
 		elseif(isset($_SESSION['_NVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
-				return;
 			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
 				$this->HandleIENavigation($className, $unsupportedURL);
+			elseif($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
+				return;
 			$this->HandleDebugMode($debugMode);
 			if(isset($_SESSION['_NOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
@@ -438,6 +438,9 @@ final class Application extends Object
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
+		$className = $_SESSION['_NStartUpPageClass'];
+		$this->WebPage = new $className();
+		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 		$tokenLinks = '';
 		$file = getcwd().'/NOLOHSearchTrails.dat';
 		if(file_exists($file))
@@ -445,12 +448,17 @@ final class Application extends Object
 			$tokenString = URL::TokenString($_SESSION['_NTokens']);
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
+			{
+				//file_put_contents('/tmp/PhillData.txt', 'YES!');
 				foreach($trails[$tokenString] as $key => $nothing)
 					$tokenLinks .= '<A href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ';
+			}
+			//else
+				//file_put_contents('/tmp/PhillData.txt', $tokenString);
 		}
-		$className = $_SESSION['_NStartUpPageClass'];
+		/*$className = $_SESSION['_NStartUpPageClass'];
 		$this->WebPage = new $className();
-		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
+		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;*/
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		session_destroy();
 		session_unset();
