@@ -241,6 +241,24 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		$this->Elements = array();
 	}
 	/**
+	 * Returns an ImplicitArrayList version of this ArrayList, having the same Elements
+	 * and ParentId. Note that any reference to the original ArrayList will not be replaced
+	 * with a reference to the ImplicitArrayList, it will simply be returned. You will have 
+	 * to change references yourself <i>if</i> that's the behavior you want.
+	 * @param object $obj The object whose functions will be called
+	 * @param string $addFunctionName
+	 * @param string $removeAtFunctionName
+	 * @param string $clearFunctionName
+	 * @return ImplicitArrayList
+	 */
+	function ToImplicit($obj=null, $addFunctionName='', $removeAtFunctionName='', $clearFunctionName='')
+	{
+		$implicit = new ImplicitArrayList($obj, $addFunctionName, $removeAtFunctionName, $clearFunctionName);
+		$implicit->Elements = $this->Elements;
+		$implicit->ParentId = $this->ParentId;
+		return $implicit;
+	}
+	/**
 	 * The length of the ArrayList.
 	 * This may also be accessed as a property, as in,
 	 * <code>if($this->Controls->Count==0)</code>
