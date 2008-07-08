@@ -85,7 +85,9 @@ function CheckURL()
 		req.onreadystatechange = ProcessReqChange;
 		req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
            + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
-		location = inner;
+		//alert((inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
+        //   + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
+        location = inner;
         _NHash = location.hash;
 		_NURL = location.href;
 		req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -103,9 +105,10 @@ function _NSetURL(hash)
 	var d=_N('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.href);
+	//d.write(location.href + "<SCRIPT type='text/javascript'>/*alert(parent.document.title);*/parent.document.title='"+_NTitle+"';</SCRIPT>");
 	d.close();
-	document.title = _NTitle;
-	setTimeout(function() {document.title = _NTitle;}, 1000);
+	//document.title = _NTitle;
+	//setTimeout(function() {document.title = _NTitle;}, 1000);
 }
 
 function _NSetTitle(title)
@@ -497,6 +500,17 @@ function ExecReqResponse(response)
 		document.getElementsByTagName('head')[0].appendChild(s);
 	}
 	eval(response[1]);
+	//var r = response[1].split("/*_N*/");
+	/*for(var i=0; i<r.length; ++i)
+		try
+		{
+			eval(r[i]);
+		}
+		catch(e)
+		{
+			alert(r[i]);
+			i=r.length;
+		}*/
 }
 
 function CompleteReqResponse()

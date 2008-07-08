@@ -79,8 +79,7 @@ class Multimedia extends Control
 			$this->Parameters->Add (new Item('wmode', 'window'));
 			$this->Parameters->Add(new Item('movie', $this->Data));
 		}
-		//NolohInternal::SetProperty('data', $data, $this);
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 	}
 	/**
 	 * Returns the implementation URI for the Multimedia
@@ -97,7 +96,7 @@ class Multimedia extends Control
 	function SetClassId($classId)
 	{
 		$this->ClassId = $classId;
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 	}
 	/**
 	 * Returns the Content-type used for the Multimedia
@@ -114,7 +113,7 @@ class Multimedia extends Control
 	function SetType($type)
 	{
 		$this->Type = $type;
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 	}
 	/**
 	 * @ignore
@@ -126,7 +125,7 @@ class Multimedia extends Control
 //			$initialProperties = ''name','$item->Text','value','$item->Value'';
 //			NolohInternal::Show('PARAM', $initialProperties, $this, $this->Id);
 //		}
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 		$this->Parameters->Add($item, true, true);
 	}
 	/**
@@ -134,7 +133,7 @@ class Multimedia extends Control
 	 */
 	function RemoveParameter(Item $item)
 	{
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 		$this->Parameters->Remove($item, true);
 	}
 	/**
@@ -142,7 +141,7 @@ class Multimedia extends Control
 	 */
 	function ClearParameters()
 	{
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 		$this->Parameters->Clear(true);
 	}
 	/**
@@ -150,7 +149,7 @@ class Multimedia extends Control
 	 */
 	function AddFlashVar($flashVar)
 	{
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 		$this->FlashVars->Add($flashVar, true, true);
 	}
 	/**
@@ -158,7 +157,7 @@ class Multimedia extends Control
 	 */
 	function RemoveFlashVar($flashVar)
 	{	
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 		$this->FlashVars->Remove($flashVar, true);
 	}
 	/**
@@ -166,7 +165,7 @@ class Multimedia extends Control
 	 */
 	function ClearFlashVars()
 	{
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		$this->QueueResetInnerString();
 		$this->FlashVars->Clear(true);
 	}
 /*	function SetWidth($width)
@@ -189,6 +188,7 @@ class Multimedia extends Control
 	 */
 	function GetInnerString()
 	{
+		//AddScript('_NClearMM(\'' . $this->Id . '\');', Priority::High);
 		$tmpStr = '<OBJECT name="'.$this->Id.'I" id="'.$this->Id.'I" style="width:100%;height:100%" ';
 		if($this->Type != null)
 			$tmpStr.='type="'.$this->Type.'" ';
@@ -210,9 +210,11 @@ class Multimedia extends Control
 			$tmpStr .= '<PARAM name = "FlashVars" value = "'. $flashVars . '">';
 			$embedFlashVars = ' FlashVars="'. $flashVars . '" ';
 		}
-		if($this->IsMovie)/*$this->Type == 'application/x-shockwave-flash')*/
+		if($this->IsMovie /*&& !UserAgent::IsIE()*/)/*$this->Type == 'application/x-shockwave-flash')*/
+		{
 //			$tmpStr .= "<EMBED name=\"{$this->Id}I\" type=\"$this->Type\" src=\"$this->Data\" $embedFlashVars width=\"$this->Width\" height=\"$this->Height\"></EMBED>";	
 			$tmpStr .= "<EMBED name=\"{$this->Id}I\" type=\"$this->Type\" src=\"$this->Data\" $embedFlashVars width=100% height=100%></EMBED>";	
+		}
 //		$InnerMultimediaCount = $this->InnerMultimedia->Count();
 //		for($i=0; $i < $InnerMultimediaCount; $i++)
 //			$this->InnerMultimedia->Elements[$i]->Show($this->IndentLevel + 1);	
@@ -221,6 +223,14 @@ class Multimedia extends Control
 		$tmpStr .= '</OBJECT>';
 		//Terrible way of doing this, but width and height gets reset
 		return str_replace("'", "\\'", $tmpStr);
+	}
+	/**
+	 * @ignore
+	 */
+	function QueueResetInnerString()
+	{
+		//QueueClientFunction($this, '_NSetInnerMMString', array('\''.$this->Id.'\'', ));
+		NolohInternal::SetProperty('innerHTML', $this, $this);
 	}
 	/**
 	 * Returns a Talk Event, which gets launched when a Flash object attempts to talk to NOLOH. The arguments are stored in Event::$FlashArgs
@@ -245,7 +255,7 @@ class Multimedia extends Control
 		$count = count($params);
 		for($i=0; $i<$count; ++$i)
 			$params[$i] = ClientEvent::ClientFormat($params[$i]);
-		QueueClientFunction($this, '_NInvokeFlash', $params);
+		QueueClientFunction($this, '_NInvokeFlash', $params, false);
 	}
 	/**
 	 * @ignore

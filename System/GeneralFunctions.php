@@ -75,11 +75,8 @@ function Alert($msg)
 */
 function AddScript($script, $priority=Priority::Medium)
 {
-	//if(isset($_SESSION['UnlockNOLOHDebug']) && $_SESSION['UnlockNOLOHDebug'] == 'mddevmddev')
-	//	$_SESSION['_NScript'] .= $script . ";";
-	//else
-		/*$_SESSION['_NScript'] .= str_replace('"','\"',str_replace("'","\'",str_replace("\n","",$script))) . ';';*/
-		$_SESSION['_NScript'][$priority] .= $script . ';';
+	$_SESSION['_NScript'][$priority] .= $script . ';';
+	//$_SESSION['_NScript'][$priority] .= $script . ';/*_N*/';
 }
 /**
 * Adds a Javascript script file to be run immediately on the client <br>

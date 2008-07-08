@@ -442,6 +442,17 @@ function ExecReqResponse(response)
 		eval(response[0]);
 	}
 	eval(response[1]);
+	//var r = response[1].split("/*_N*/");
+	/*for(var i=0; i<r.length; ++i)
+		try
+		{
+			eval(r[i]);
+		}
+		catch(e)
+		{
+			alert(r[i]);
+			i=r.length;
+		}*/
 }
 
 function CompleteReqResponse(tmpLoadImg, tmpLoadLbl)
