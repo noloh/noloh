@@ -28,6 +28,24 @@ class Container extends Component
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 	}
+		/**
+	 * @ignore
+	 */
+	function Bury()
+	{
+		foreach($this->Controls as $control)
+			$control->Bury();
+		parent::Bury();
+	}
+	/**
+	* @ignore
+	*/
+	function Resurrect()
+	{
+		foreach($this->Controls as $control)
+			$control->Resurrect();
+		parent::Resurrect();	
+	}
 	/**
 	 * @ignore
 	 */
