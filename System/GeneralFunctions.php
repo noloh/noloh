@@ -65,7 +65,7 @@ function SetGlobal($name, $value)
 */
 function Alert($msg)
 {
-	AddScript('alert("' . str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$msg) . '")');
+	AddScript('alert("' . str_replace(array("\n","\r",'"','\\'),array('\n','\r','\"','\\\\'),$msg) . '")');
 }
 /**
 * Adds Javascript code to be run immediately on the client.<br>
