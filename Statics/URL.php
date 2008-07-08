@@ -106,6 +106,17 @@ final class URL
 	/**
 	 * @ignore
 	 */
+	static function TokenDisplayText($keyValuePairs)
+	{
+		$str = '';
+		foreach($keyValuePairs as $val)
+			$str .= $val . ' ';
+		$str = rtrim($str);
+		return $str;
+	}
+	/**
+	 * @ignore
+	 */
 	static function QueueUpdateTokens()
 	{
 		if(!isset($GLOBALS['_NTokenUpdate']))
@@ -122,6 +133,25 @@ final class URL
 	{
 		$tokenString = self::TokenString($_SESSION['_NTokens']);
 		AddScript('_NSetURL(\''.$tokenString.'\')', Priority::Low);
+		self::UpdateTrails('?' . $tokenString, $GLOBALS['_NURLTokenMode']==2?$tokenString:self::TokenDisplayText($_SESSION['_NTokens']));
+	}
+	/**
+	 * Redirects to another URL
+	 * @param string $url
+	 * @param string $searchEngineLinkText 
+	 */
+	static function Redirect($url, $searchEngineLinkText=null)
+	{
+		AddScript('location="'.$url.'";');
+		if(!isset($GLOBALS['_NInitialURLTokens']))
+			$GLOBALS['_NInitialURLTokens'] = self::TokenString($_SESSION['_NTokens']);
+		self::UpdateTrails($url, $searchEngineLinkText?$searchEngineLinkText:$url);
+	}
+	/**
+	 * @ignore
+	 */
+	static function UpdateTrails($tokenString, $tokenText)
+	{
 		if($GLOBALS['_NTokenTrailsExpiration'])
 		{
 			$initialURLString = $GLOBALS['_NInitialURLTokens'];
@@ -139,18 +169,10 @@ final class URL
 				$trails = array();
 				$trails[$initialURLString] = array();
 			}
-			$trails[$initialURLString][$tokenString] = true;
+			$trails[$initialURLString][$tokenString] = array($tokenText, time());
 			if(is_writable($file))
 				file_put_contents($file, base64_encode(serialize($trails)));
 		}
-	}
-	/**
-	 * Redirects to another URL
-	 * @param string $url
-	 */
-	static function Redirect($url)
-	{
-		AddScript('location="'.$url.'";');
 	}
 	/**
 	 * Opens a URL in a new window

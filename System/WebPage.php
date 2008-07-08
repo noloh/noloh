@@ -354,7 +354,7 @@ abstract class WebPage extends Component
 			'"></META></HEAD><BODY>');
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
-		print(' ' . $tokenLinks . ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>');
+		print(' <BR>' . $tokenLinks . ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>');
 	}
 	/**
 	 * @ignore
