@@ -41,7 +41,7 @@ class ControlPair extends Container
 	{
 		parent::Container();
 		if(is_string($firstControl))
-			$firstControl = new Label($firstControl, $left, $top, System::Auto);
+			$firstControl = new Label($firstControl, 0, 0, System::Auto);
 		$this->Control1 = $firstControl;
 		if($secondControl === null)
 			$secondControl = new TextBox(0, 0);
