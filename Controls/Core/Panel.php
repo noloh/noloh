@@ -162,43 +162,6 @@ class Panel extends Control
 	function Show()
 	{
         NolohInternal::Show('DIV', parent::Show(), $this);
-		//$initialProperties = $this->GetStyleString();
-		//$initialProperties = parent::Show();
-		//NolohInternal::Show('DIV', $initialProperties, $this);
-
-//			if(false && $this->SelectFix && (GetBrowser() == "ie"))
-//			{
-//				$initialProperties = "'id','{$this->Id}IFRAME','style.position','absolute','style.left','{$this->Left}px','style.top','{$this->Top}px','style.width','{$this->Width}px','style.height','{$this->Height}px','src','javascript:false','scrolling','no','frameborder','0'";
-//				NolohInternal::Show("IFRAME", $initialProperties, $this);
-//				AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
-//			}
-		
-		
-		/*
-		if($showIFrame)
-			$dispStr .= "<IFRAME ID = '{$this->Id}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px;' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>";
-		//if($this->DropShadow == true)
-		//{
-		//	print(str_repeat("  ", $IndentLevel) . "<DIV ID = '{$this->Id}DS' style='POSITION:absolute; LEFT:".($this->Left + 5)."px; TOP:".($this->Top+5)."px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; background:black; filter:alpha(opacity=20)'></DIV>\n");
-		//	AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}DS'");
-		//}
-			/*else
-			{
-				print(str_repeat("  ", $IndentLevel) . "<IFRAME ID = '{$this->Id}IFRAME' style='POSITION:absolute; LEFT:{$this->Left}px; TOP:{$this->Top}px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; filter: alpha(opacity=0)' src='javascript:false;' scrolling='no' frameborder='0'></IFRAME>\n");
-				AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
-			}*
-		
-		$dispStr .= "<DIV " . $parentShow;
-		//if(GetBrowser() == "ie" && $this->AddIFrame == true)
-			//print(str_repeat("  ", $IndentLevel+1) . "<IFRAME style='POSITION:absolute; LEFT:0px; TOP:0px; WIDTH:{$this->Width}px; HEIGHT:{$this->Height}px; filter: alpha(opacity=0);' frameborder=0 scrolling=no src='javascript:false;'></IFRAME>\n");		
-		$this->IterateThroughAllControls($IndentLevel);
-		$dispStr .= "</DIV>";
-		NolohInternal::Show($dispStr, $this);*/
-		//$this->IterateThroughAllControls();
-		//if($showIFrame)
-		//	AddScript("_N('{$this->Id}').ShiftsWith = '{$this->Id}IFRAME'");
-
-		//return $initialProperties;
 	}
 	/**
 	 * @ignore
@@ -209,6 +172,19 @@ class Panel extends Control
 		$childCount = $this->Controls->Count();
 		for($i=0;$i<$childCount;++$i)
 			$this->Controls->Elements[$i]->Layout = $layout;
+	}
+	/**
+	 * @ignore
+	 */
+	function SetStretches($option)
+	{
+		AddNolohScriptSrc('StretchPanel.js');
+		$this->Controls = $this->Controls->ToImplicit($this, 'ImplicitAdd');
+	}
+	function ImplicitAdd($object)
+	{
+		$this->Controls->Add($object, true, true);
+		QueueClientFunction($this, '_NStrPnlAdd', array('\'' . $this->Id . '\'', '\'' . $object->Id . '\''), false);
 	}
 	/**
 	 * @ignore
