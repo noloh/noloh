@@ -8,7 +8,7 @@
  * Submitting; Note, however, that Forms are <b>strongly</b> discouraged and should be used only when a specific situation calls for it, i.e., next to never.
  * 
  * The following is an example of instantiating and adding a button
- * <code>
+ * <pre>
  *
  *      function Foo()
  *      {
@@ -24,7 +24,7 @@
  *          Alert("Click event was triggered");
  *      }
  *		
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */
@@ -46,7 +46,7 @@ class Button extends Control
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Button
-	*	<code> $tmpBut = new Button(0, 0, 80, 24, Button::Normal);</code>
+	*	<pre> $tmpBut = new Button(0, 0, 80, 24, Button::Normal);</pre>
 	* @param string $text The Text of this element
 	* @param integer $left The left coordinate of this element
 	* @param integer $top The top coordinate of this element

@@ -5,7 +5,7 @@
  * A ContextMenu is a Menu that can appear when right-clicking a Control by assigning a ContextMenu object to some existing Control's
  * ContextMenu property.
  * 
- * <code>
+ * <pre>
  * // Instantiate a new Button
  * $but = new Button('Click Me');
  * // Instantiate a new ContextMenu and set it as the Button's ContextMenu
@@ -13,7 +13,7 @@
  * // Add some MenuItems
  * $but->ContextMenu->MenuItems->Add(new MenuItem('First Item Text'));
  * $but->ContextMenu->MenuItems->Add(new MenuItem('Second Item Text'));
- * </code>
+ * </pre>
  * 
  * @package Controls/Extended
  */

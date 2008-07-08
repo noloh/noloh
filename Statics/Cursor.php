@@ -25,7 +25,11 @@ final class Cursor
 	const Wait = 'wait';
 	
 	private function Cursor(){}
-	
+	/**
+	 * Provides a URL for the image of a mouse cursor 
+	 * @param string $str
+	 * @return mixed
+	 */
 	public static function URL($str)
 	{
 		return 'url('.$str.')';

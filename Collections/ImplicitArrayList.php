@@ -7,7 +7,7 @@
  * defined an Add function and attempt to add an element to the ImplicitArrayList, the function that you defined will be called 
  * instead. If you would like an actual add to happen, then you must pass in an additional true as a last parameter. 
  * 
- * <code>
+ * <pre>
  * class Example
  * {
  * 	// Variable which will hold our ImplicitArrayList
@@ -27,7 +27,7 @@
  * 		$this->Items->Add($item, true, true);
  * 	}
  * }
- * </code>
+ * </pre>
  * 
  * @package Collections
  */

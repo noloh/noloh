@@ -7,7 +7,39 @@
  * @package Statics
  */
 final class UserAgent
-{	
+{
+	/**
+	 * A short-hand for the Internet Explorer browser
+	 */
+	const IE = 'ie';
+	/**
+	 * The Internet Explorer browser
+	 */
+	const InternetExplorer = 'ie';
+	/**
+	 * The Firefox family of browsers (e.g., it includes Gecko)
+	 */
+	const Firefox = 'ff';
+	/**
+	 * The Opera browser
+	 */
+	const Opera = 'op';
+	/**
+	 * The Safari family of browsers (e.g., it includes Konquerer)
+	 */
+	const Safari = 'sa';
+	/**
+	 * The Windows operating system
+	 */
+	const Windows = 'win';
+	/**
+	 * The Macintosh operation system
+	 */
+	const Macintosh = 'mac';
+	/**
+	 * The Linux family of operating system (e.g., it includes Unix)
+	 */
+	const Linux = 'lin';
 	/**
 	 * @ignore
 	 */
@@ -62,8 +94,8 @@ final class UserAgent
 	}
 	
 	/**
-	 * Gets browser that user is using in shorthand (e.g., ie, ff, sa, op, ...)
-	 * @return string
+	 * Returns the user's browser
+	 * @return mixed
 	 */
 	public static function GetBrowser()
 	{
@@ -71,7 +103,7 @@ final class UserAgent
 	}
 	/**
 	 * Returns whether or not the user is using internet explorer as their browser.<br>
-	 * This is identical in functionality to UserAgent::GetBrowser()=='ie', but provides a shortcut as, in practice, internet explorer
+	 * This is identical in functionality to UserAgent::GetBrowser()==UserAgent::IE, but provides a shortcut as, in practice, internet explorer
 	 * often needs code different than other browsers.
 	 * @return boolean
 	 */
@@ -80,8 +112,8 @@ final class UserAgent
 		return $_SESSION['_NIsIE'];
 	}
 	/**
-	* Gets operating system that user is using in shorthand (e.g., win, mac, lin, ...)
-	* @return string
+	* Returns the user's operating system
+	* @return mixed
 	*/
 	public static function GetOperatingSystem()
 	{

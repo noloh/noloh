@@ -60,7 +60,7 @@ function SetGlobal($name, $value)
 }
 /**
 * Alert a string specified by the $msg variable.
-* <br><code>Alert("Hi, my name is Asher!");</code>
+* <br><pre>Alert("Hi, my name is Asher!");</pre>
 * @param string $msg Message to be Alerted
 */
 function Alert($msg)
@@ -111,9 +111,9 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
  * Queues a JavaScript function associated with a specific Component to be executed on the client. <br>
  * The code will not be sent to the client, until the given Component has shown.<br>
  * Be sure to include an extra set of quotes for your string parameters.<br>
- * <code>
+ * <pre>
  * 	QueueClientFunction($this, 'alert', "'This Component's Id is $this->Id'");
- * </code>
+ * </pre>
  * @param Component $component
  * @param string $functionName The name of the JavaScript function
  * @param array $paramsArray An array of parameters passed into the function

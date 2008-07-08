@@ -447,10 +447,8 @@ final class Application extends Object
 			$tokenString = URL::TokenString($_SESSION['_NTokens']);
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
-			{
 				foreach($trails[$tokenString] as $key => $nothing)
 					$tokenLinks .= '<A href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ';
-			}
 		}
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		session_destroy();

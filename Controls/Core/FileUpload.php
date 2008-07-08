@@ -4,14 +4,14 @@
  *
  * A FileUpload is a Control that enables a user to upload a file to the server.
  * 
- * <code>
+ * <pre>
  * // Instantiate a new FileUpload and add it
  * $this->Controls->Add($fileUpload = new FileUpload());
  * // Instantiate a new Button and add it
  * $this->Controls->Add($button = new Button('Submit', 50);
  * // Say that clicking on the Button will upload the selected file to the server
  * $button->Click->Uploads->Add($fileUpload);
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */

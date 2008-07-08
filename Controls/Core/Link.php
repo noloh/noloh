@@ -5,14 +5,14 @@
  * A Control for a conventional web link. 
  * 
  * You can use the Link as follows
- * <code>
+ * <pre>
  * function Foo()
  * {
  *	$tempLink = new Link('#', 0, 0);
  * 	//Adds a Link to the Controls ArrayList of some Container
  *	$this->Controls->Add($tempLink); 
  * }
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */
@@ -34,7 +34,7 @@ class Link extends Label
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Link
  	* Example
- 	*	<code> $tempVar = new Link('#', 0, 0, 80, 24);</code>
+ 	*	<pre> $tempVar = new Link('#', 0, 0, 80, 24);</pre>
  	* @param string $destination 
  	* @param string $text
 	* @param integer $left The left coordinate of this element

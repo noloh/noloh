@@ -48,7 +48,7 @@ class ComboBox extends ListControl
 	}
 	/**
 	 * Returns the Item that is selected, or null if none are selected
-	 * @return unknown
+	 * @return Item
 	 */
 	function GetSelectedItem()
 	{

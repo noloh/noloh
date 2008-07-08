@@ -6,17 +6,17 @@
 * the columns correspond to days of the week, as in a conventional calendar. Furthermore,
 * the user can scroll between months and years, as well as select a date.
 * 
-* <code>
+* <pre>
 * // Instantiates a new Calendar object
 * $calendar = new Calendar();
 * // Adds it to the Controls ArrayList
 * $this->Controls->Add($calendar);
-* </code>
+* </pre>
 * 
 * One may also set a Change Event on the calendar. This Event will be triggered when any
 * date is selected.
 * 
-* <code>
+* <pre>
 * // Sets the Calendar object's Change Event to call the AlertDate function with itself as a parameter
 * $calendar->Change = new ServerEvent($this, 'AlertDate', $calendar);
 * // A function which will alert a Calendar's FullDate
@@ -25,7 +25,7 @@
 * 	Alert($calendar->FullDate);
 * }
 * // Thus, when a new date is selected on the Calendar, that date will be Alerted
-* </code>
+* </pre>
 * 
 * @package Controls/Core
 */
@@ -45,7 +45,7 @@ class Calendar extends Panel
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Calendar
-	 *	<code> $cal = new Calendar(0, 0, 80, 24, 1000000);</code>
+	 *	<pre> $cal = new Calendar(0, 0, 80, 24, 1000000);</pre>
 	 * @param integer $left The left coordinate of this Control
 	 * @param integer $top The top coordinate of this Control
 	 * @param integer $width The width of this Control

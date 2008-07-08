@@ -8,14 +8,14 @@
  * multiple choices.
  * 
  * The following is an example of instantiating and adding a CheckBox
- * <code>
+ * <pre>
  * function Foo()
  * {
  *     $tmpCheck = new CheckBox("CheckBox1", 0,0);
  *     //Adds a CheckBox to the Controls class of some Container object
  *     $this->Controls->Add($tmpCheck);
  * }
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */
@@ -24,7 +24,7 @@ class CheckBox extends CheckControl implements MultiGroupable
     /**
      * Constructor.
 	 * Be sure to call this from the constructor of any class that extends CheckBox
-	 *	<code> $tmpCheck = new CheckBox("Check Me", 0, 0, 100, 24);</code>
+	 *	<pre> $tmpCheck = new CheckBox("Check Me", 0, 0, 100, 24);</pre>
      * @param string $text The text of the CheckBox
      * @param integer $left The left coordinate of this element.
      * @param integer $top The top coordinate of this element.

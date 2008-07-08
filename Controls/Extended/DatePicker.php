@@ -5,12 +5,12 @@
  * DatePicker is a Panel with a {@see Calendar} that can be pulled up and down via a drop-down, and keeps track of the date selected.
  *
  * For example:
- * <code>
+ * <pre>
  * // Instantiates a new DatePicker object
  * $datePicker = new DatePicker();
  * // Adds it to the Controls ArrayList
  * $this->Controls->Add($datePicker);
- * </code>
+ * </pre>
  * 
  * @property-read string $FullDate The full date of the selected day. It will be formatted according to the Format property.
  * @property integer $Timestamp The currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
@@ -34,7 +34,7 @@ class DatePicker extends Panel
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends DatePicker
- 	*	<code> $tempVar = new DatePicker(15, 15, 219, 21);</code>
+ 	*	<pre> $tempVar = new DatePicker(15, 15, 219, 21);</pre>
 	* @param integer $left The left coordinate of this Control
 	* @param integer $top The top coordinate of this Control
 	* @param integer $width The width of this Control
@@ -84,10 +84,10 @@ class DatePicker extends Panel
 	/**
 	 * Sets the current day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
 	 * @param integer $TimestampTime
-	 * <code>
+	 * <pre>
 	 * // Sets the $datePicker to Monday, January 12, 1970
 	 * $datePicker->Timestamp = 1000000;
-	 * </code>
+	 * </pre>
 	 */
 	function SetTimestamp($timestamp)
 	{

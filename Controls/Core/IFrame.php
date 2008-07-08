@@ -5,7 +5,7 @@
  * An IFrame is a Control for a conventional web iframe. Roughly speaking, is a mini-browser that runs within a browser. 
  * 
  * You can use the IFrame as follows
- * <code>
+ * <pre>
  * function Foo()
  * {
  * 	// Instantiates a new IFrame that navigates to noloh.com
@@ -13,7 +13,7 @@
  *  // Adds an IFrame to the Controls of some object
  * 	$this->Controls->Add($tempIFrame); 
  * }
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */
@@ -29,7 +29,7 @@ class IFrame extends Control
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends IFrame
  	* Example
- 	*	<code> $tempVar = new IFrame("http://www.noloh.com", 0, 0, 100, 100);</code>
+ 	*	<pre> $tempVar = new IFrame("http://www.noloh.com", 0, 0, 100, 100);</pre>
  	* @param string $src The URL to which the IFrame navigates
 	* @param integer $left
 	* @param integer $top

@@ -5,14 +5,14 @@
  * A ListBox is a rectangular ListControl where the user is able to see all the Items and may select several of them at the same time.
  * This differs from a {@see ComboBox} in that a ComboBox must be pulled down in order to view the list of items and only one may be selected.
  * 
- * <code>
+ * <pre>
  * // Instantiates a new ListBox
  * $listBox = new ListBox();
  * // Adds an Item to the ListBox
  * $listBox->Items->Add(new Item("value1", "text1"));
  * // Adds another Item to the ListBox
  * $listBox->Items->Add(new Item("value2", "text2"));
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */

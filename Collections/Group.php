@@ -7,7 +7,7 @@
  * Note that a Group is not a Control, and does not have physical properties like Left, Top, etc... In this sense, it behaves much more like a Container than a Panel.
  * 
  * A Group is typically added to some Container or Panel and objects are added to it so that they too will show, for example:
- * <code>
+ * <pre>
  * // Instantiate a new Panel
  * $panel = new Panel();
  * // Instantiate a new Group
@@ -17,7 +17,7 @@
  * $panel->Controls->Add($group);
  * // Add a RolloverImage to that group
  * 
- * </code>
+ * </pre>
  * 
  * @package Collections
  */
@@ -64,7 +64,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an unlimited number elements to the Group.
 	 * @param mixed ... Unlimited number of elements to be added
-	 * <code>$group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</code>
+	 * <pre>$group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</pre>
 	 */
 	function AddRange($dotDotDot)
 	{

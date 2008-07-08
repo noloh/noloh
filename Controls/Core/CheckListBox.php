@@ -4,14 +4,14 @@
  * 
  *  A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.
  * 
- * <code>
+ * <pre>
  * // Instantiates a new CheckListBox
  * $checkListBox = new CheckListBox();
  * // Adds an Item to the CheckListBox
  * $checkListBox->Items->Add(new Item("value1", "text1"));
  * // Adds another Item to the CheckListBox
  * $checkListBox->Items->Add(new Item("value2", "text2"));
- * </code>
+ * </pre>
  * 
  * @package Controls/Core
  */
@@ -49,7 +49,7 @@ class CheckListBox extends ListControl
 	/**
 	 * Adds an Item to the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->Add($item)</code>
+	 * <pre>$this->Items->Add($item)</pre>
 	 * @param Item $item
 	 * @return Item
 	 */
@@ -82,7 +82,7 @@ class CheckListBox extends ListControl
 	/**
 	 * Removes an Item from a particular index of the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->RemoveAt($index)</code>
+	 * <pre>$this->Items->RemoveAt($index)</pre>
 	 * @param integer $index
 	 */
 	public function RemoveItemAt($index)
@@ -97,7 +97,7 @@ class CheckListBox extends ListControl
 	/**
 	 * Clears the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->Clear()</code>
+	 * <pre>$this->Items->Clear()</pre>
 	 * @param Item $item
 	 */
 	function ClearItems()
@@ -162,7 +162,7 @@ class CheckListBox extends ListControl
 	 * Selects an item whose Value matches the value passed in
 	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Value in the Items ArrayList
 	 * <br> Can also be called as a property
-	 * <code>$this->SelectedValue = 42;</code>
+	 * <pre>$this->SelectedValue = 42;</pre>
 	 * @param string $value
 	 * @param boolean $select Indicates whether the Item should be selected or deseleted
 	 * @return mixed If found, the value passed in; otherwise null.

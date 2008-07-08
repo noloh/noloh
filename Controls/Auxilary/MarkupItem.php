@@ -6,7 +6,7 @@
  * organization and inheritance. In particular, there is no reason for the developer to extend this themselves.
  * 
  * A MarkupItem represents a mark-up tag that has an "n" namespace before the tag name and a descriptor property, for example:<br>
- * <code><n:a descriptor="keyword:value"></n:a></code>
+ * <pre><n:a descriptor="keyword:value"></n:a></pre>
  * 
  * The descriptor has two pieces of information, the keyword and value, separated by a colon. When no colon is present, the entire
  * string will be treated as the keyword and the MarkupItem will have no value. Corresponding to those, every MarkupItem has a Keyword 
@@ -49,7 +49,7 @@ abstract class MarkupItem extends Object
 	}
 	/**
 	 * Gets the Keyword of the MarkupItem.
-	 * For example, <code><n:a descriptor="X:Y"></n:a></code> has the keyword X.
+	 * For example, <pre><n:a descriptor="X:Y"></n:a></pre> has the keyword X.
 	 * @return string
 	 */
 	function GetKeyword()
@@ -58,7 +58,7 @@ abstract class MarkupItem extends Object
 	}
 	/**
 	 * Gets the Value of the MarkupItem.
-	 * For example, <code><n:a descriptor="X:Y"></n:a></code> has the keyword Y.
+	 * For example, <pre><n:a descriptor="X:Y"></n:a></pre> has the keyword Y.
 	 * @return string
 	 */	
 	function GetValue()

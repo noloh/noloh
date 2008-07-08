@@ -6,7 +6,7 @@
  * logically elegant to have a base for all of your classes. Secondly, it comes equipped with the syntactic sugar that calls Get or Set 
  * functions for you for properties that are not accessible. Consider the following example:
  * 
- * <code>
+ * <pre>
  * class Foo extends Object
  * {
  *   // A property not visible outside of this class
@@ -31,7 +31,7 @@
  * $foo->Property = 'Hello';
  * // Automatically calls the GetProperty method, triggering an Alert and setting the local variable to 'Hello'
  * $property = $foo->Property;
- * </code>
+ * </pre>
  * 
  * @package System
  */

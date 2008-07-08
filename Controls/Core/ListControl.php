@@ -51,7 +51,7 @@ abstract class ListControl extends Control
 	/**
 	 * Gets the Value of a selected Item
 	 * <br> Can also be called as a property
-	 * <code>$tempVal = $this->SelectedValue</code>
+	 * <pre>$tempVal = $this->SelectedValue</pre>
 	 * @return string
 	 */
 	function GetSelectedValue()
@@ -65,7 +65,7 @@ abstract class ListControl extends Control
 	 * Selects an item whose Value matches the value passed in
 	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Value in the Items ArrayList
 	 * <br> Can also be called as a property
-	 * <code>$this->SelectedValue = 42;</code>
+	 * <pre>$this->SelectedValue = 42;</pre>
 	 * @param string $value
 	 * @return mixed If found, the value passed in; otherwise null.
 	 */
@@ -83,7 +83,7 @@ abstract class ListControl extends Control
 	/**
 	 * Gets the Text of the selected Item
 	 * <br> Can also be called as a property
-	 * <code>$tempText = $this->SelectedText</code>
+	 * <pre>$tempText = $this->SelectedText</pre>
 	 * @return string
 	 */
 	function GetSelectedText()
@@ -97,7 +97,7 @@ abstract class ListControl extends Control
 	 * Selects an item whose Text matches the text passed in
 	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Text in the Items ArrayList
 	 * <br> Can also be called as a property
-	 * <code>$this->SelectedText = "Asher";</code>
+	 * <pre>$this->SelectedText = "Asher";</pre>
 	 * @param string $text specifies the text to set.
 	 * @return mixed If found, the text passed in; otherwise null.
 	 */
@@ -115,7 +115,7 @@ abstract class ListControl extends Control
 	/**
 	 * Adds an Item to the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->Add($item)</code>
+	 * <pre>$this->Items->Add($item)</pre>
 	 * @param Item $item
 	 */
 	public function AddItem($item)
@@ -132,7 +132,7 @@ abstract class ListControl extends Control
 	/**
 	 * Inserts an Item into a particular index of the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->Insert($item, $index)</code>
+	 * <pre>$this->Items->Insert($item, $index)</pre>
 	 * @param Item $item
 	 */
 	public function InsertItem($item, $index)
@@ -145,7 +145,7 @@ abstract class ListControl extends Control
 	/**
 	 * Removes an Item from a particular index of the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->RemoveAt($index)</code>
+	 * <pre>$this->Items->RemoveAt($index)</pre>
 	 * @param integer $index
 	 */
 	public function RemoveItemAt($index)
@@ -160,7 +160,7 @@ abstract class ListControl extends Control
 	/**
 	 * Clears the Items ArrayList. 
 	 * <br> This is equivalent to:
-	 * <code>$this->Items->Clear()</code>
+	 * <pre>$this->Items->Clear()</pre>
 	 * @param Item $item
 	 */
 	public function ClearItems()

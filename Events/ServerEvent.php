@@ -6,15 +6,15 @@
  * They are capable of calling a function on a particular object with particular parameters, or alternatively, a static function of
  * a class with particular parameters.
  * 
- * <code>
+ * <pre>
  * // Instantiate a new Button
  * $btn = new Button("Click Me");
  * // Give the button a Click Event, so that when it is clicked, ButtonClicked("FirstParam", 2) will be called on the $this object
  * $btn->Click = new ServerEvent($this, "ButtonClicked", "FirstParam", 2);
- * </code>
+ * </pre>
  * 
  * In addition, they are capable of setting particular FileUpload objects to upload when the event is launched. For example:
- * <code>
+ * <pre>
  * class UploadForm extends Panel
  * {
  * 	function UploadForm($left, $top, $width, $height)
@@ -35,7 +35,7 @@
  * 		Alert("Size of file: " . $fileUpload->File->GetSize() . " bytes");	
  * 	}
  * }
- * </code>
+ * </pre>
  * See also:
  * @see FileUpload
  * @see File
@@ -121,7 +121,7 @@ class ServerEvent extends Event
 	/**
 	 * Launches the particular event. That is, the specified function will be called on the specified object or class 
 	 * using the specified parameters.
-	 * <code>
+	 * <pre>
 	 * // Instantiate a new Button
 	 * $btn = new Button("Click Me");
 	 * // Give it a Click ServerEvent
@@ -129,7 +129,7 @@ class ServerEvent extends Event
 	 * // The following two lines are identical:
 	 * $btn->Exec();
 	 * $this->ButtonClicked("FirstParam", 2);
-	 * </code>
+	 * </pre>
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */

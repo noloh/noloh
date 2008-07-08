@@ -130,10 +130,10 @@ abstract class Component extends Object
 	 * Gets Parent of this Component, or Parent based on the $generation paramater as follows:<br>
 	 * If $generation is an integer, it will return that number of Parents above, e.g., GetParent(2) will return the grandparent.<br>
 	 * If $generation is a string, it will return the closest ancestor that is an instance of the class passed in.
-	 * <code>
+	 * <pre>
 	 * // Sets $parentPanel to the Panel that is the closest ancestor of $btn
 	 * $parentPanel = $btn->GetParent('Panel');
-	 * </code>
+	 * </pre>
 	 * @param integer|string $generation
 	 * @return Component
 	 */

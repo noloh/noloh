@@ -6,7 +6,7 @@
  * Namely, you may use the standard square bracket notation on it to read\write to indices, or traverse through it with a foreach loop.
  * In addition, it is equipped with functions normally expected from arrays, such as IndexOf.
  * 
- * <code>
+ * <pre>
  * // Instantiate a new ArrayList
  * $arrayList = new ArrayList();
  * // Adds the string "Hello" into the ArrayList.
@@ -17,13 +17,13 @@
  * foreach($arrayList as $value)
  * 	Alert($value);
  * // First "Hello" will be alerted, followed 42.
- * </code>
+ * </pre>
  * 
  * 
  * Moreover, an ArrayList is capable of setting the Parent of an added Component, thus allowing it to display correctly. 
  * This is useful for more advanced functionality. {@see Component::GetParent()} 
  * 
- * <code>
+ * <pre>
  * class Sample extends Control
  * {
  * 		public $SubControls;
@@ -43,7 +43,7 @@
  * 			// $labelsParent is identical with $this
  * 		}
  * }
- * </code>
+ * </pre>
  * 
  * @package Collections
  */
@@ -104,7 +104,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an unlimited number elements to the ArrayList.
 	 * @param mixed ... Unlimited number of elements to be added
-	 * <code>$arrayList->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</code>
+	 * <pre>$arrayList->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</pre>
 	 */
 	function AddRange($dotDotDot)
 	{
@@ -124,12 +124,12 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 * @param mixed $element The element to be inserted
 	 * @param integer|string $index The index into which your element will be inserted
 	 * @return mixed The element that has been inserted
-	 * <code>
+	 * <pre>
 	 * // Inserts a new Button into the zeroth index
 	 * $this->Controls->Insert(new Button('Click'), 0);
 	 * // The Controls ArrayList will now begin with the said button, followed by whatever else was there previously
-	 * </code><br>
-	 * <code>
+	 * </pre><br>
+	 * <pre>
 	 * // Instantiates a new ArrayList
 	 * $arr = new ArrayList();
 	 * // Inserts the string "a" into a string position in the ArrayList
@@ -142,7 +142,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 * // "c" will be in the position "ind"
 	 * // "b" will be in the position "ind'" 
 	 * // "a" will be in the position "ind''"
-	 * </code>
+	 * </pre>
 	 */
 	function Insert($element, $index)
 	{
@@ -261,7 +261,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * The length of the ArrayList.
 	 * This may also be accessed as a property, as in,
-	 * <code>if($this->Controls->Count==0)</code>
+	 * <pre>if($this->Controls->Count==0)</pre>
 	 * @return integer
 	 */
 	function Count()

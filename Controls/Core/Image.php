@@ -8,7 +8,7 @@
  * 
  * Example 1: Instantiating and Adding an Image
  *
- * <code>
+ * <pre>
  * function Foo()
  * {
  *    //Instatiates $tmpImage as a new Image, with the src of SomePicture.gif, and a left, 
@@ -16,7 +16,7 @@
  *    $tmpImage = new Image("Images/SomePicture.gif", 10, 10);
  *    $this->Controls->Add($tmpImage); //Adds a button to the Controls of some Container
  * }     	
- * </code>
+ * </pre>
  * 
  * @property string $Src The source file of this image
  * 
@@ -30,7 +30,7 @@ class Image extends Control
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Button
  	* Example
- 	*	<code> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</code>
+ 	*	<pre> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</pre>
  	* @param string $src
 	* @param integer $left
 	* @param integer $top
@@ -48,7 +48,7 @@ class Image extends Control
 	/**
 	* Gets the Src of the Image
 	* <b>Note:</b>Can also be called as a property.
-	*<code> $tempSrc = $this->Src;</code>
+	*<pre> $tempSrc = $this->Src;</pre>
 	* @return string
  	*/
 	function GetSrc()
@@ -58,7 +58,7 @@ class Image extends Control
 	/**
 	*Sets the Src of the Image.
 	*<b>Note:</b>Can also be set as a property.
-	*<code>$this->Src = "Images/NewImage.gif";</code>
+	*<pre>$this->Src = "Images/NewImage.gif";</pre>
 	*The path is relative to your main file 
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
 	*@param string $src
@@ -82,7 +82,7 @@ class Image extends Control
 	/**
 	*Gets the Width of the Image.
 	*<b>Note:</b>Can also get as a property.
-	*<code>$tmpVar = $this->Width;</code>
+	*<pre>$tmpVar = $this->Width;</pre>
 	*@param string $unit Units you would like the width in, either px, or "%".
 	*@return mixed
 	*/
@@ -99,7 +99,7 @@ class Image extends Control
 	/**
 	*Sets the Width of the Image.
 	*<b>Note:</b>Can also be set as a property.
-	*<code>$this->Width = 200;</code>
+	*<pre>$this->Width = 200;</pre>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
 	*@param integer $width
 	*/
@@ -127,7 +127,7 @@ class Image extends Control
 	/**
 	*Gets the Width of the Image.
 	*<b>Note:</b>Can also get as a property.
-	*<code>$tmpVar = $this->Height;</code>
+	*<pre>$tmpVar = $this->Height;</pre>
 	*@param string $unit Units you would like the height in, either px, or "%".
 	*@return mixed
 	*/
@@ -144,7 +144,7 @@ class Image extends Control
 	/**
 	*Sets the Height of the Image.
 	*<b>Note:</b>Can also be set as a property. 
-	*<code>$this->Height = 200;</code>
+	*<pre>$this->Height = 200;</pre>
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
 	*@param integer $height
 	*/
@@ -173,7 +173,7 @@ class Image extends Control
 	 * Conjure can be used to render your own images on the fly, e.g., for creating captuas. It lets you specify a callback function, which MUST
 	 * be static, whose first parameter is the image resource, and subsequent parameters can be anything you define. One can then call PHP's image 
 	 * magic functions on the image resource. Consider the following example:
-	 * <code>
+	 * <pre>
 	 * class Example
 	 * {
 	 *  function Example()
@@ -191,7 +191,7 @@ class Image extends Control
 	 *   imagefill($resource, 5, 5, $col);
 	 *  }
 	 * }
-	 * </code>
+	 * </pre>
 	 * @param string $className
 	 * @param string $functionName
 	 * @param mixed,... $paramsAsDotDotDot

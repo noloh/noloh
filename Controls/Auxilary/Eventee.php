@@ -16,7 +16,7 @@
  * 	MouseUp
  * 	RightClick
  * 
- * <code>
+ * <pre>
  * // A function which takes an RichMarkupRegion object that we'll locally name $eventMarkupRegion
  * function SetEventeeClicks(RichMarkupRegion $eventMarkupRegion)
  * {
@@ -29,7 +29,7 @@
  * {
  * 	Alert("That Eventee's value is $value");
  * }
- * </code>
+ * </pre>
  * 
  * @package Controls/Auxiliary
  */

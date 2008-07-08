@@ -8,7 +8,7 @@
  * for instance the Enabled property, and using the [] notation to chain events. 
  * 
  * Also, an Event object serves as a collection of events when multiple events are used. Consider the following:
- * <code>
+ * <pre>
  * // Instantiate a new Button
  * $pnl = new Button("Click Me");
  * // Alert the class of the button's Click
@@ -20,7 +20,7 @@
  * $pnl->Click[] = new ServerEvent($this, "AlsoDoThisFunction");
  * // Alert the class of the button's Click
  * Alert(get_class($pnl->Click)); // Will alert "Event" because Click now holds multiple events.
- * </code>
+ * </pre>
  * 
  * Finally, the Event class contains several static variables that contain information about the particular events,
  * such as the position of the mouse when the event triggered.
@@ -191,12 +191,12 @@ class Event extends Object implements ArrayAccess
 	/**
 	 * For the events of Controls, checking to see if they are null will always return false as an Event object will always
 	 * be automatically instantiated for you. You must therefore check to see if it is blank instead.<br>
-	 * <code>
+	 * <pre>
 	 * // Will always be false. Do not do this:
 	 * if($this->Click == null) {...}
 	 * // Use the Blank function instead:
 	 * if($this->Click->Blank()) {...}
-	 * </code>
+	 * </pre>
 	 * @return boolean
 	 */
 	function Blank()

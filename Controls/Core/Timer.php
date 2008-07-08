@@ -4,19 +4,19 @@
  *
  * The Timer Component gives the developer the ability to have events launch after a certain period of time has elapsed.<br>
  * It may either launch the event once, or continue launching it periodically, depending on the value of the $Repeat property.<br>
- * <code>
+ * <pre>
  * function Init()
  * {
  * 	// Creates a Timer that will execute every time 5 seconds expires
- * 	$timer = new Timer(5000, true);
+ *	$timer = new Timer(5000, true);
  * 	// Tells the Timer to execute the AlertIt Event on this object every time the 5 seconds expires
- *  $timer->Elapsed = new ServerEvent($this, "AlertIt");
+ *	$timer->Elapsed = new ServerEvent($this, "AlertIt");
  * }
  * function AlertIt()
  * {
  * 	Alert("5 seconds has passed");
  * }
- * </code>
+ * </pre>
  * <b>Note</b>: Timer currently has a number of known issues. For instance, if a Timer is added to a Panel, and then that Panel is removed,
  * the Timer will still tick. It is marked for major development in the near future to address these issues.
  * @package Controls/Core

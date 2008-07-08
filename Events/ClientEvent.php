@@ -7,14 +7,14 @@
  * to the visual aspects of an application. In order to enable client viewstate with your own ClientEvents, however, requires calling<br>
  * special NOLOH JavaScript functions. {@see JavaScriptFunctions}
  * 
- * <code>
+ * <pre>
  * 	// Instantiates a new Button
  *  $btn = new Button("Click Me");
  * 	// Sets the click of the button to an event which will alert without going to the server.
  * 	$btn->Click = new ClientEvent('alert("I have been clicked");');
  * 	// Launches that event. In particular, it will alert.
  *  $btn->Click->Exec();
- * </code>
+ * </pre>
  * 
  * For more information, please see
  * @link /Tutorials/Events.html#ClientEvents

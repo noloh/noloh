@@ -7,7 +7,7 @@
  * This class should never be instantiated by the developer. Use only the Larva objects that RichMarkupRegion::GetLarvae() returns.<br>
  * See {@see RichMarkupRegion} and {@see RichMarkupRegion::GetLarvae()} for more information.<br>
  *  
- * <code>
+ * <pre>
  * // A function which takes an RichMarkupRegion object that we'll locally name $eventMarkupRegion
  * function MakeLarvaeButtons(RichMarkupRegion $eventMarkupRegion)
  * {
@@ -16,7 +16,7 @@
  * 		// Morphs each Larva intoa Button whose Text is that Larva's value
  * 		$larva->Morph(new Button($eventee->Value));
  * }
- * </code>
+ * </pre>
  * 
  * @package Controls/Auxiliary
  */
