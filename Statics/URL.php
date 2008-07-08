@@ -52,7 +52,7 @@ final class URL
 	 */
 	static function GetToken($tokenName, $defaultValue=null)
 	{
-		return isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] ? urldecode($_SESSION['_NTokens'][$tokenName]) : $defaultValue;
+		return isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] ? $_SESSION['_NTokens'][$tokenName] : $defaultValue;
 	}
 	/**
 	 * Sets the value of a particular URL token
@@ -69,7 +69,7 @@ final class URL
 			if($tokenValue === null)
 				unset($_SESSION['_NTokens'][$tokenName]);
 			else
-				$_SESSION['_NTokens'][$tokenName] = urlencode($tokenValue);
+				$_SESSION['_NTokens'][$tokenName] = $tokenValue;
 			if($removeSubsequentTokens)
 			{
 				reset($_SESSION['_NTokens']);
@@ -81,7 +81,7 @@ final class URL
 		return $tokenValue;
 	}
 	/**
-	 * Removes 
+	 * Removes a particular URL token
 	 * @param string $tokenName
 	 */
 	static function RemoveToken($tokenName)
@@ -99,7 +99,7 @@ final class URL
 	{
 		$str = '';
 		foreach($keyValuePairs as $key => $val)
-			$str .= $key . '=' . $val . '&';
+			$str .= $key . '=' . urlencode($val) . '&';
 		$str = rtrim($str, '&');
 		return $GLOBALS['_NURLTokenMode'] == 2 ? base64_encode($str) : $str;
 	}
@@ -121,11 +121,11 @@ final class URL
 	static function UpdateTokens()
 	{
 		$tokenString = self::TokenString($_SESSION['_NTokens']);
-		AddScript("_NSetURL('$tokenString')", Priority::Low);
+		AddScript('_NSetURL(\''.$tokenString.'\')', Priority::Low);
 		if($GLOBALS['_NTokenTrailsExpiration'])
 		{
 			$initialURLString = $GLOBALS['_NInitialURLTokens'];
-			$file = getcwd()."/NOLOHSearchTrails.dat";
+			$file = getcwd().'/NOLOHSearchTrails.dat';
 			if(file_exists($file) && time()-filemtime($file)<$GLOBALS['_NTokenTrailsExpiration'])
 			{
 				$trails = unserialize(base64_decode(file_get_contents($file)));

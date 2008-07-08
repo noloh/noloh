@@ -354,7 +354,7 @@ final class Application extends Object
 		unset($_GET['NOLOHVisit'], $_GET['NWidth'], $_GET['NHeight']);
 		if($GLOBALS['_NURLTokenMode'] == 1)
 			$_SESSION['_NTokens'] = $_GET;
-		if($GLOBALS['_NURLTokenMode'] == 2)
+		elseif($GLOBALS['_NURLTokenMode'] == 2)
 		{
 			$keys = array_keys($_GET);
 			$ubound = count($keys) - 1;
@@ -422,7 +422,6 @@ final class Application extends Object
 		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();
 		NolohInternal::FunctionQueue();
-		//NolohInternal::SetPropertyQueue();
 		ob_end_clean();
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
@@ -449,16 +448,10 @@ final class Application extends Object
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 			{
-				//file_put_contents('/tmp/PhillData.txt', 'YES!');
 				foreach($trails[$tokenString] as $key => $nothing)
 					$tokenLinks .= '<A href="' . $_SERVER['PHP_SELF'] . '?' . $key . '">' . $key . '</a> ';
 			}
-			//else
-				//file_put_contents('/tmp/PhillData.txt', $tokenString);
 		}
-		/*$className = $_SESSION['_NStartUpPageClass'];
-		$this->WebPage = new $className();
-		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;*/
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		session_destroy();
 		session_unset();
