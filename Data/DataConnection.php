@@ -27,9 +27,14 @@ class DataConnection extends Object
 	}
 	function Connect()
 	{
-		$tmpConnectString = "dbname = $this->DatabaseName user=$this->Username host = $this->Host port = $this->Port password = $this->Password";
 		if($this->Type == Data::Postgres)
-			$this->ActiveConnection = pg_connect($tmpConnectString);
+		{
+			if(!is_resource($this->ActiveConnection) || pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD)
+			{
+				$tmpConnectString = 'dbname = ' . $this->DatabaseName . ' user='.$this->Username .' host = '.$this->Host. ' port = '. $this->Port .' password = ' .$this->Password;
+				$this->ActiveConnection = pg_connect($tmpConnectString);
+			}
+		}
 		elseif($this->Type == Data::MySQL)
 		{
 			$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $this->Password);
@@ -39,11 +44,12 @@ class DataConnection extends Object
 	}
 	function Close()
 	{
-		if($this->Type == Data::Postgres)
-			$status = pg_close($this->ActiveConnection);
-		elseif($this->Type == Data::MySQL)
-			$status = mysql_close($this->ActiveConnection);
-		return $status;
+		if(is_resource($this->ActiveConnection))
+			if($this->Type == Data::Postgres)
+				return pg_close($this->ActiveConnection);
+			elseif($this->Type == Data::MySQL)
+				return mysql_close($this->ActiveConnection);
+		return false;
 	}
 	function SetType($type)	{$this->Type = $type;}
 	function GetType()		{return $this->Type;}
@@ -134,7 +140,7 @@ class DataConnection extends Object
 		}
 		$dbCmd = new DataCommand($this, $sql);
 		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-		$dbCmd->Connection->Close();
+//		$dbCmd->Connection->Close();
 		return $tmpReturn;
 	}
 	function ExecFunction($spName, $paramsDotDotDot = null)
@@ -148,7 +154,7 @@ class DataConnection extends Object
 		$query = self::GenerateSqlString($spName, array_slice($args, $hasResultOption?2:1));
 		$dbCmd = new DataCommand($this, $query);
 		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-		$dbCmd->Connection->Close();
+//		$dbCmd->Connection->Close();
 		return $tmpReturn;
 	}
 	function ExecView($view, $offset=null, $limit=null)
@@ -171,7 +177,7 @@ class DataConnection extends Object
 		$query .= ';';
 		$dbCmd = new DataCommand($this, $query);
 		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-		$dbCmd->Connection->Close();
+//		$dbCmd->Connection->Close();
 		
 		return $tmpReturn;
 	}
