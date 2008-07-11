@@ -9,12 +9,13 @@ final class NolohInternal
 	public static function ControlQueue()
 	{
         while (list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
-			self::ShowControl($control=&GetComponentById($objId), GetComponentById($control->GetParentId()), $bool);
+			self::ShowControl(GetComponentById($objId), $bool);
+			//self::ShowControl($control=&GetComponentById($objId), GetComponentById($control->GetParentId()), $bool);
 	}
 
-	public static function ShowControl($control, $parent, $bool)
+	public static function ShowControl($control/*, $parent*/, $bool)
 	{
-		if(!$parent)
+		/*if(!$parent)
 		{
 			$parent = GetComponentById(substr($str = $control->GetParentId(), 0, strpos($str, 'i')));
 			if(!$parent)
@@ -24,23 +25,23 @@ final class NolohInternal
 			}
 		}
 		if($parent->GetShowStatus()!==0)
-		{
+		{*/
 			if($bool)
 			{
 				if($control->GetShowStatus()===0)
 					$control->Show();
                 elseif($control->GetShowStatus()===1)
-                    self::Adoption($control, $parent);
+                    self::Adoption($control/*, $parent*/);
 				elseif($control->GetShowStatus()===2)
 					$control->Resurrect();
 			}
 			elseif($control->GetShowStatus()!==0)
 				$control->Bury();
-		}
+		//}
 		if(isset($_SESSION['_NControlQueueDeep'][$control->Id]))
 		{
 			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$control->Id]))
-				self::ShowControl(GetComponentById($childObjId), $control, $bool);
+				self::ShowControl(GetComponentById($childObjId)/*, $control*/, $bool);
 			unset($_SESSION['_NControlQueueDeep'][$control->Id]);
 		}
 	}
@@ -84,17 +85,17 @@ final class NolohInternal
 		AddScript('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId($obj)).'\')', Priority::High);
 	}
 
-    public static function Adoption($obj, $parent)
+    public static function Adoption($obj)
     {
         if(!$obj->GetBuoyant())
-            AddScript('_NAdopt(\''.$obj->Id.'\',\'' . $parent->GetAddId($obj) . '\')', Priority::High);
+            AddScript('_NAdopt(\''.$obj->Id.'\',\'' . $obj->GetParent()->GetAddId($obj) . '\')', Priority::High);
         unset($_SESSION['_NControlQueue'][$obj->Id]);
     }
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
 	{
 		$nameValPairsString = '';
-		if(count($nameValPairs) == 0 && isset($_SESSION['_NPropertyQueue'][$objId]))
+		if(count($nameValPairs) === 0 && isset($_SESSION['_NPropertyQueue'][$objId]))
 			$nameValPairs = $_SESSION['_NPropertyQueue'][$objId];
 		foreach($nameValPairs as $name => $val)
 		{

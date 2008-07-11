@@ -97,6 +97,28 @@ abstract class Component extends Object
 	{
 		if($this->ParentId !== $parentId)
 		{
+			if($parentId === null)
+				if($this->ShowStatus===null)
+					$_SESSION['_NControlQueueRoot'][$this->Id] = false;
+				else 
+					unset($_SESSION['_NControlQueueRoot'][$this->Id], $_SESSION['_NControlQueueDeep'][$this->ParentId][$this->Id]);
+			else 
+			{
+				if($this->ParentId !== null)
+					unset($_SESSION['_NControlQueueRoot'][$this->Id], $_SESSION['_NControlQueueDeep'][$this->ParentId][$this->Id]);
+				if(GetComponentById($parentId)->ShowStatus !== 0)
+					$_SESSION['_NControlQueueRoot'][$this->Id] = true;
+				else 
+					if(isset($_SESSION['_NControlQueueDeep'][$parentId]))
+						$_SESSION['_NControlQueueDeep'][$parentId][$this->Id] = true;
+					else 
+						$_SESSION['_NControlQueueDeep'][$parentId] = array($this->Id => true);
+			}
+			$this->ParentId = $parentId;
+		}
+		/*
+		if($this->ParentId !== $parentId)
+		{
 			$bool = $parentId !== null;
 			if($bool)
 				$this->ParentId = $parentId;
@@ -110,6 +132,8 @@ abstract class Component extends Object
 				else 
 					$_SESSION['_NControlQueueDeep'][$parentId] = array($this->Id => $bool);
 		}
+		return;
+		*/
 	}
 	/**
 	 * @ignore
@@ -139,31 +163,30 @@ abstract class Component extends Object
 	 */
 	function GetParent($generation = 1)
 	{
-		if($this->ParentId === null)
-			return null;
-		if(is_int($generation))
-		{
-			if($generation == 1)
-				return GetComponentById($this->ParentId);
-			elseif($generation > 1)
-				return GetComponentById($this->ParentId)->GetParent($generation-1);
-			else 
-				return $this;
-		}
-		elseif(is_string($generation))
-		{
-			$parent = GetComponentById($this->ParentId);
-			return $parent instanceof $generation ? $parent : $parent->GetParent($generation);
-		}
-		elseif(is_array($generation))
-		{
-			$parent = GetComponentById($this->ParentId);
-			$count = count($generation);
-			for($i=0; $i<$count; $i++)
-				if($parent instanceof $generation[$i])
-					return $parent;
-			return $parent->GetParent($generation);
-		}
+		if($this->ParentId !== null)
+			if(is_int($generation))
+			{
+				if($generation == 1)
+					return GetComponentById($this->ParentId);
+				elseif($generation > 1)
+					return GetComponentById($this->ParentId)->GetParent($generation-1);
+				else 
+					return $this;
+			}
+			elseif(is_string($generation))
+			{
+				$parent = GetComponentById($this->ParentId);
+				return $parent instanceof $generation ? $parent : $parent->GetParent($generation);
+			}
+			elseif(is_array($generation))
+			{
+				$parent = GetComponentById($this->ParentId);
+				$count = count($generation);
+				for($i=0; $i<$count; $i++)
+					if($parent instanceof $generation[$i])
+						return $parent;
+				return $parent->GetParent($generation);
+			}
 		return null;
 	}
 	/**
