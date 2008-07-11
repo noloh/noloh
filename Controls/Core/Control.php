@@ -768,7 +768,7 @@ abstract class Control extends Component
 		if($shift[1]==7)
 		{
 			AddNolohScriptSrc('Shift.js', true);
-			QueueClientFunction($this, 'AddShiftWith', array('\''.$shift[0].'\'', 'Array(\''.$this->Id.'\',' . $shift[2]), false, Priority::High);
+			QueueClientFunction($this, '_NShftWth', array('\''.$shift[0].'\'', 'Array(\''.$this->Id.'\',' . $shift[2]), false, Priority::High);
 		}
 		else
 		{

@@ -168,7 +168,7 @@ function ShiftStop(event)
 	document.removeEventListener("mousemove", ShiftGo, true);
 	document.removeEventListener("mouseup", ShiftStop, true);
 }
-function AddShiftWith(objectId, info)
+function _NShftWth(objectId, info)
 {
 	var tmpObj = _N(objectId);
 	if(tmpObj.ShiftsWith == null)
