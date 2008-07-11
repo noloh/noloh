@@ -83,11 +83,20 @@ function CheckURL()
 		_N(_NLoadImg).style.visibility = "visible";
 		_N(_NLoadLbl).style.visibility = "visible";
 		req.onreadystatechange = ProcessReqChange;
-		req.open("POST", (inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
-           + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
-		//alert((inner.indexOf('#/')==-1 ? inner.replace(_NHash,'')+(inner.indexOf('?')==-1?'?':'&') : inner.replace('#/',inner.indexOf('?')==-1?'?':'&')+'&') 
-        //   + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight);
-        location = inner;
+		if(_NHistoryLength+1==history.length)
+			var targetURL = inner;
+		else
+		{
+			var targetURL = location.href;
+			var d=_N('NBackButton').contentWindow.document;
+			d.open();
+			d.write(location.href);
+			d.close();
+			_NHistoryLength = history.length;
+		}
+		req.open("POST", (targetURL.indexOf('#/')==-1 ? targetURL.replace(_NHash,'')+(targetURL.indexOf('?')==-1?'?':'&') : targetURL.replace('#/',targetURL.indexOf('?')==-1?'?':'&')+'&')
+           	+ 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+		location = targetURL;
         _NHash = location.hash;
 		_NURL = location.href;
 		req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -105,10 +114,9 @@ function _NSetURL(hash)
 	var d=_N('NBackButton').contentWindow.document;
 	d.open();
 	d.write(location.href);
-	//d.write(location.href + "<SCRIPT type='text/javascript'>/*alert(parent.document.title);*/parent.document.title='"+_NTitle+"';</SCRIPT>");
 	d.close();
-	//document.title = _NTitle;
-	//setTimeout(function() {document.title = _NTitle;}, 1000);
+	_NHistoryLength = history.length;
+	setTimeout(function() {document.title = _NTitle;}, 1000);
 }
 
 function _NSetTitle(title)
