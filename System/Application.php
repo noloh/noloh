@@ -426,6 +426,10 @@ final class Application extends Object
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['_NScript'][0] . $_SESSION['_NScript'][1] . $_SESSION['_NScript'][2]);
+		ob_flush();
+		if(isset($_SESSION['_NDataLinks']))
+			foreach($_SESSION['_NDataLinks'] as $connection)
+				$connection->Close();
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
 		$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
@@ -451,6 +455,10 @@ final class Application extends Object
 					$tokenLinks .= '<A href="' . ($key[0]=='?'?($_SERVER['PHP_SELF'].$key):$key) . '">' . $info[0] . '</a> ';
 		}
 		$this->WebPage->SearchEngineShow($tokenLinks);
+		ob_flush();
+		if(isset($_SESSION['_NDataLinks']))
+			foreach($_SESSION['_NDataLinks'] as $connection)
+				$connection->Close();
 		session_destroy();
 		session_unset();
 	}
