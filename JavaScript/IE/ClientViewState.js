@@ -17,6 +17,7 @@ ConversionArray["style.background"] = "BackColor";
 ConversionArray["style.color"] = "Color";
 ConversionArray["value"] = "_NText";
 ConversionArray["newText"] = "_NText";
+ConversionArray["innerHTML"] = "_NText";
 ConversionArray["selectedIndex"] = "SelectedIndex";
 ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
@@ -66,8 +67,10 @@ function _NInit(loadLblId, loadImgId)
 	finally
 	{
 		d.open();
+		//d.write('<HTML><HEAD><TITLE>'+_NTitle+'</TITLE></HEAD><BODY>'+location.href+'</BODY></HTML>');
 		d.write(location.href);
 		d.close();
+		//d.title = _NTitle;
 		_NURLCheck = setInterval('CheckURL()', 500);
 	}
 }
@@ -91,7 +94,9 @@ function CheckURL()
 			var d=_N('NBackButton').contentWindow.document;
 			d.open();
 			d.write(location.href);
+			//d.write('<HTML><HEAD><TITLE>'+_NTitle+'</TITLE></HEAD><BODY>'+location.href+'</BODY></HTML>');
 			d.close();
+			//d.title = _NTitle;
 			_NHistoryLength = history.length;
 		}
 		req.open("POST", (targetURL.indexOf('#/')==-1 ? targetURL.replace(_NHash,'')+(targetURL.indexOf('?')==-1?'?':'&') : targetURL.replace('#/',targetURL.indexOf('?')==-1?'?':'&')+'&')
@@ -113,10 +118,12 @@ function _NSetURL(hash)
 	_NURL=location.href;
 	var d=_N('NBackButton').contentWindow.document;
 	d.open();
+	//d.write('<HTML><HEAD><TITLE>'+_NTitle+'</TITLE></HEAD><BODY>'+location.href+'</BODY></HTML>');
 	d.write(location.href);
 	d.close();
+	//d.title = _NTitle;
 	_NHistoryLength = history.length;
-	setTimeout(function() {document.title = _NTitle;}, 1000);
+	setTimeout(function() {document.title = _NTitle;}, 2000);
 }
 
 function _NSetTitle(title)
@@ -514,9 +521,9 @@ function ExecReqResponse(response)
 		{
 			eval(r[i]);
 		}
-		catch(e)
+		catch(err)
 		{
-			alert(r[i]);
+			alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description + "\nProcessing statement: " + r[i]);
 			i=r.length;
 		}*/
 }

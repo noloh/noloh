@@ -141,7 +141,7 @@ abstract class WebPage extends Component
 	function SetTitle($title)
 	{
 		$this->Title = $title;
-		AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'));
+		AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'), Priority::High);
 	}
 	/**
 	 * Returns the horizontal size of the browser, in pixels

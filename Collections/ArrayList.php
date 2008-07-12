@@ -83,7 +83,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	{
 		/*if($element instanceof Control && $element->GetZIndex() == null)
 			$element->_NSetZIndex(++$_SESSION['HighestZIndex']);*/
-		if($this->ParentId != null && $element instanceof Component)
+		if($this->ParentId !== null && $element instanceof Component)
 			$element->SetParentId($this->ParentId);
 	}
 	/**
@@ -181,7 +181,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
     function PositionalInsert($element, $index, $position)
     {
 		$oldElements = $this->Elements;
-   		if($this->ParentId != null && $element instanceof Component && isset($oldElements[$position]) && $oldElements[$position] instanceof Component)
+   		if($this->ParentId !== null && $element instanceof Component && isset($oldElements[$position]) && $oldElements[$position] instanceof Component)
 			$_SESSION['_NControlInserts'][$element->Id] = $oldElements[$position]->Id;
     	$this->Elements = array_slice($oldElements, 0, $position);
         $this->Insert($element, $index, true);
@@ -195,7 +195,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function RemoveAt($index)
 	{
-		if(isset($this->Elements[$index]) && $this->Elements[$index] instanceof Component && $this->Elements[$index]->ParentId == $this->ParentId)
+		if(isset($this->Elements[$index]) && $this->Elements[$index] instanceof Component && $this->Elements[$index]->GetParentId() === $this->ParentId)
 			$this->Elements[$index]->SetParentId(null);
 		if(is_numeric($index))
 			array_splice($this->Elements, $index, 1);
@@ -212,7 +212,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		$idx = $this->IndexOf($element);
 		if($idx != -1)
 		{
-			if(func_num_args()==1 || !func_get_arg(1))
+			if(func_num_args()===1 || !func_get_arg(1))
 				$this->RemoveAt($idx);
 			else
 				$this->RemoveAt($idx, true);
@@ -236,7 +236,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	function Clear()
 	{
 		foreach($this->Elements as $val)
-			if($val instanceof Component && $val->GetParentId()==$this->ParentId)
+			if($val instanceof Component && $val->GetParentId()===$this->ParentId)
 				$val->SetParentId(null);
 		$this->Elements = array();
 	}

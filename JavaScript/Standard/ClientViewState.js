@@ -18,6 +18,7 @@ ConversionArray["style.background"] = "BackColor";
 ConversionArray["style.color"] = "Color";
 ConversionArray["value"] = "_NText";
 ConversionArray["newText"] = "_NText";
+ConversionArray["innerHTML"] = "_NText";
 ConversionArray["selectedIndex"] = "SelectedIndex";
 ConversionArray["selectedTab"] = "SelectedTab";
 ConversionArray["checked"] = "Checked";
@@ -448,9 +449,9 @@ function ExecReqResponse(response)
 		{
 			eval(r[i]);
 		}
-		catch(e)
+		catch(err)
 		{
-			alert(r[i]);
+			alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description + "\nProcessing statement: " + r[i]);
 			i=r.length;
 		}*/
 }

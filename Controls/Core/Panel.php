@@ -181,6 +181,9 @@ class Panel extends Control
 		AddNolohScriptSrc('StretchPanel.js');
 		$this->Controls = $this->Controls->ToImplicit($this, 'ImplicitAdd');
 	}
+	/**
+	 * @ignore
+	 */
 	function ImplicitAdd($object)
 	{
 		$this->Controls->Add($object, true, true);

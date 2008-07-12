@@ -29,6 +29,11 @@ class CollapsePanel extends Panel
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 	}
+	/**
+	 * Gets the Panel object for the body part of the CollapsePanel. This is the actual Panel that the Controls of CollapsePanel are added to.
+	 * @return Panel
+	 */
+	function GetBodyPanel()	{return $this->BodyPanel;}
 	function SetToggleButton($rolloverImage=null)
 	{
 		if($rolloverImage == null)
