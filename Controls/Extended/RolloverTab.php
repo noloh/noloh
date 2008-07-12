@@ -38,6 +38,7 @@ class RolloverTab extends Panel implements Groupable
 				}
 			}
 		}
+		$this->SetWidth($width);
 		if($outTab == null)
 			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Std/TabBackLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabBackMiddle.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabBackRight.gif'));
 //			$this->SetOutTab(new Tab(NOLOHConfig::GetNOLOHPath().'Images/Std/TabInARndLeft.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabInACenter.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/TabInARndRight.gif'));
@@ -49,7 +50,6 @@ class RolloverTab extends Panel implements Groupable
 		else
 			$this->SetSelectedTab($selectedTab);
 		$this->Cursor = Cursor::Arrow;
-		$this->SetWidth($width);
 		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
@@ -66,7 +66,7 @@ class RolloverTab extends Panel implements Groupable
 				$this->TextObject->SetWidth($width);
 				$width = $this->TextObject->GetWidth() + 10;
 			}
-		}	
+		}
 		parent::SetWidth($width);
 		if($this->OutTab != null)
 			$this->OutTab->SetWidth($width);

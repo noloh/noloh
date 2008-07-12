@@ -170,7 +170,10 @@ abstract class Control extends Component
 	{
 		$this->Width = $width;
 		if(is_numeric($width))
-			NolohInternal::SetProperty('style.width', $width.'px', $this);
+			if($width >= 0)
+				NolohInternal::SetProperty('style.width', $width.'px', $this);
+			else 
+				BloodyMurder('Cannot set Width to a negative value.');
 		elseif(is_numeric(rtrim($width, '%')))
 			NolohInternal::SetProperty('style.width', $width, $this);
 		elseif(is_null($width))
@@ -192,7 +195,10 @@ abstract class Control extends Component
 	{
 		$this->Height = $height;
 		if(is_numeric($height))
-			NolohInternal::SetProperty('style.height', $height.'px', $this);
+			if($height >= 0)
+				NolohInternal::SetProperty('style.height', $height.'px', $this);
+			else 
+				BloodyMurder('Cannot set Height to a negative value.');
 		elseif(is_numeric(rtrim($height, '%')))
 			NolohInternal::SetProperty('style.height', $height, $this);
 		elseif(is_null($height))
