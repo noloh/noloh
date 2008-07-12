@@ -18,14 +18,13 @@ function _NChgRlOvrTb(rlOvrTb, state)
 			_N(prevTab.Slct).style.display = 'none';
 			_N(prevTab.Out).style.display = '';
 			prevTab.Selected = false;
-			//_NSetProperty(prevTab.id, 'Selected', false);
+			_NSave(prevTab.id, 'Selected');
 			prevTab.Cur = 'Out';
 		}
 		_N(tab.Out).style.display = 'none';
 		_N(tab.Slct).style.display = '';
 		_NSetProperty(rlOvrTb, 'Selected', true);
 		if(tab.Select != null)
-			tab.Select.call();	
-			
+			tab.Select.call();
 	}
 }
