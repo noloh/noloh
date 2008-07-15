@@ -33,6 +33,7 @@ ConversionArray["calSelectDate.setMonth"] = "Month";
 ConversionArray["calSelectDate.setFullYear"] = "Year";
 NOLOHUpload = new Object();
 NOLOHUpload.FileUploadObjIds = [];
+_NHistoryLength = history.length;
 NOLOHVisit = -1;
 HighestZIndex = 0;
 LowestZIndex = 0;
@@ -515,6 +516,8 @@ function ExecReqResponse(response)
 		document.getElementsByTagName('head')[0].appendChild(s);
 	}
 	eval(response[1]);
+	//var r = response[1].split(/((?:[^'";]|'.*?'|".*?")*?);/m);
+	//alert(r.length);
 	//var r = response[1].split("/*_N*/");
 	/*for(var i=0; i<r.length; ++i)
 		try
