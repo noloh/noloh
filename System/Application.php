@@ -249,6 +249,8 @@ final class Application extends Object
 			}
 			return true;
 		}
+		if($_SESSION['_NVisit']===0 && $_GET['NOLOHVisit']==0 && count($_POST)===0)	//FireBug bug
+			return true;
 		return false;
 	}
 	
@@ -282,16 +284,13 @@ final class Application extends Object
 		$idArrayStr = '';
 		foreach($_SESSION['_NGarbage'] as $id => $nothing)
 		{
-			//$control = &$GLOBALS['OmniscientBeing'][$id];
 			$control = &$OmniscientBeing[$id];
-			//if(!isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0 && $control instanceof Control)
 			if($control instanceof Control && !isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0)
 				$idArrayStr .= '\'' . $id . '\',';
 			unset($OmniscientBeing[$id]);
 		}
 		if($idArrayStr != '')
 			AddScript('_NGCAsc([' . rtrim($idArrayStr, ',') . '])', Priority::Low);
-//			AddScript('_NGCAsc(Array(' . rtrim($idArrayStr, ',') . '))', Priority::Low);
 		$_SESSION['_NGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['_NStartUpPageId']);
 	}
@@ -406,7 +405,7 @@ final class Application extends Object
 		header('Cache-Control: no-cache');
 		header('Pragma: no-cache');
 		//header('Cache-Control: no-store');
-		if(++$_SESSION['_NVisit']==0)
+		if(++$_SESSION['_NVisit']===0)
 		{
 			header('Content-Type: text/javascript');
 			$GLOBALS['_NWidth'] = $_GET['NWidth'];
