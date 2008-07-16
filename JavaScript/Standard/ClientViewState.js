@@ -442,9 +442,10 @@ function ExecReqResponse(response)
 		document.getElementsByTagName('head')[0].appendChild(s);
 		eval(response[0]);
 	}
-	eval(response[1]);
-	//var r = response[1].split("/*_N*/");
-	/*for(var i=0; i<r.length; ++i)
+	if(_NDebugMode == "Full")
+	{
+		var r = response[1].match(/((?:[^'";]|'.*?'|".*?")*?);/mg);
+		for(var i=0; i<r.length; ++i)
 		try
 		{
 			eval(r[i]);
@@ -453,7 +454,10 @@ function ExecReqResponse(response)
 		{
 			alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description + "\nProcessing statement: " + r[i]);
 			i=r.length;
-		}*/
+		}
+	}
+	else
+		eval(response[1]);
 }
 
 function CompleteReqResponse(tmpLoadImg, tmpLoadLbl)

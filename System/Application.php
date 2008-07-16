@@ -270,7 +270,7 @@ final class Application extends Object
 			set_error_handler('_NErrorHandler', error_reporting());
 			ob_start('_NOBErrorHandler');
 			if($_SESSION['_NVisit']==-1)
-				AddScript('_NDebugMode='.($debugMode?'true':'false'));
+				AddScript('_NDebugMode='.($debugMode==='Full'?'"Full"':($debugMode?'true':'false')));
 		}
 	}
 	
