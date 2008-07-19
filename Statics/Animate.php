@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Animate class
  *
@@ -7,12 +6,12 @@
  * 
  * @package Statics
  */
-
 final class Animate
-{	
+{
 	const Linear = 1;
 	const Quadratic = 2;
 	const Cubic = 3;
+	const Oblivion = 'Oblivion';
 	
 	private function Animate() {}
 	
@@ -38,17 +37,19 @@ final class Animate
 	
 	static function Location($control, $toLeft, $toTop, $duration=1000, $easing=Animate::Quadratic, $fromLeft=null, $fromTop=null, $fps=30)
 	{
-		Animate::Property($control, 'style.left', $fromLeft===null?$control->Left:$fromLeft, $toLeft, $duration, 'px', $easing, $fps);
-		Animate::Property($control, 'style.top', $fromTop===null?$control->Top:$fromTop, $toTop, $duration, 'px', $easing, $fps);
+		Animate::Left($control, $toLeft, $duration, $easing, $fromLeft, $fps);
+		Animate::Top($control, $toTop, $duration, $easing, $fromTop, $fps);
 	}
 	
 	static function Width($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
+		self::ProcessOblivion($control, $to);
 		Animate::Property($control, 'style.width', $from===null?$control->Width:$from, $to, $duration, 'px', $easing, $fps);
 	}
 	
 	static function Height($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
+		self::ProcessOblivion($control, $to);
 		Animate::Property($control, 'style.height', $from===null?$control->Height:$from, $to, $duration, 'px', $easing, $fps);
 	}
 	
@@ -78,7 +79,19 @@ final class Animate
 	
 	static function Opacity($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
+		self::ProcessOblivion($control, $to);
 		Animate::Property($control, 'opacity', $from===null?$control->Opacity:$from, $to, $duration, '', $easing, $fps);
+	}
+	/**
+	 * @ignore
+	 */
+	static function ProcessOblivion($control, &$to)
+	{
+		if($to === 'Oblivion')
+		{
+			$to = 1;
+			NolohInternal::SetProperty('_NOblivionC', true, $control);
+		}
 	}
 }
 

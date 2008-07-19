@@ -204,6 +204,13 @@ abstract class WebPage extends Component
 		//new Item('default', 'default.css', new Item('mac', 'mac.css'), etc..
 	}
 	/**
+	 * @ignore
+	 */
+	function GetScrollLeft()
+	{
+		return 'document.documentElement.scrollLeft';
+	}
+	/**
 	 * Changes the horizontal scroll position of the browser
 	 * @param integer $scrollLeft
 	 */
@@ -211,6 +218,13 @@ abstract class WebPage extends Component
 	{
 		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
 		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';BodyScrollState', array());
+	}
+	/**
+	 * @ignore
+	 */
+	function GetScrollTop()
+	{
+		return 'document.documentElement.scrollTop';
 	}
 	/**
 	 * Changes the vertical scroll position of the browser

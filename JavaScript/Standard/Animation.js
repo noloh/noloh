@@ -19,9 +19,6 @@ function _NAnimation(id, prpty, from, to, duration, units, easing, fps)
 	this.Obj = _N(id);
 	this.ObjId = id;
 	this.Duration = duration;
-//	this.Change =  _NAniLinearCumulativeChange;
-//	this.Change =  _NAniQuadraticCumulativeChange;
-//	this.Change =  _NAniCubicCumulativeChange;
 	this.Change = easing==1?_NAniLinear : easing==2?_NAniQuadratic : _NAniCubic;
 	this.Units = units;
 	this.Property = prpty;
@@ -32,7 +29,6 @@ function _NAnimation(id, prpty, from, to, duration, units, easing, fps)
 	}
 	this.Step = _NRunStep;
 	this.Stop = _NAniStop;
-	//this.Timer = setInterval('_NAnims['+this.Index+'].Step();', Math.round(1000/fps));
 	if(_NAnimTimer == null)
 		_NAnimTimer = setInterval(StepAllAnims, Math.round(1000/fps));
 }
@@ -45,7 +41,6 @@ function StepAllAnims()
 }
 function _NAniStop()
 {
-	//clearInterval(this.Timer);
 	if(--_NAnimsCount == 0)
 	{
 		_NAnims = [];
@@ -54,19 +49,31 @@ function _NAniStop()
 	}
 	else
 		_NAnims[this.Index] = null;
-	//if(this.Property == 'style.opacity')
-	//	_NSetProperty(this.ObjId, 'style.opacity', this.Destination/100);
-		//_NSetProperty(this.ObjId, 'style.opacity', this.From + delta);
-	//else
-	//{
+	if(this.ObjId == "N1")
+	{
+		document.documentElement[this.Property] = this.Destination + this.Units;
+		BodyScrollState();
+	}
+	else if(this.Property == "opacity")
+	{
+		_NSetProperty(this.ObjId, 'style.opacity', this.Destination/100);
+		if(this.Destination == 100)
+			this.Obj.style.opacity = '';
+	}
+	else
+	{
 		_NSetProperty(this.ObjId, this.Property, this.Destination + this.Units);
 		if(this.Obj.ShiftsWith != null)
 			if(this.Property == 'style.left' || this.Property == 'style.width')
 				ShiftObjects(this.Obj.ShiftsWith, this.Difference, null, this.ShiftType);
 			else
 				ShiftObjects(this.Obj.ShiftsWith, null, this.Difference, this.ShiftType);
-	//}
-	//}
+	}
+	if(this.Destination == 1 && this.Obj._NOblivionC)
+	{
+		_NRem(this.ObjId);
+		_NSetProperty(this.ObjId, '_NOblivionS', 1);
+	}
 }
 function _NRunStep()
 {
@@ -74,11 +81,10 @@ function _NRunStep()
 	if(timePassed < this.Duration)
 	{
 		delta = this.Change(timePassed, this.Difference, this.Duration);
-		//alert(timePassed + " - " + this.Difference + " - " + this.Duration);
-		//alert(delta);
-		if(this.Property == 'opacity')
+		if(this.ObjId == "N1")
+			document.documentElement[this.Property] = this.From + delta + this.Units;
+		else if(this.Property == 'opacity')
 			_NSetProperty(this.ObjId, 'style.opacity', (this.From + delta)/100);
-			//_NSetProperty(this.ObjId, 'style.opacity', this.From + delta);
 		else
 		{
 			_NSetProperty(this.ObjId, this.Property, this.From + delta + this.Units);

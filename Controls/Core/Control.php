@@ -103,12 +103,20 @@ abstract class Control extends Component
 	 * @return integer
 	 */
 	function SetOpacity($opacity)
-	{
-		$this->Opacity = $opacity;
-		if(UserAgent::GetBrowser()=='ie')
-			NolohInternal::SetProperty('style.filter', "alpha(opacity=$opacity)", $this);
-		else
-			NolohInternal::SetProperty('style.opacity', $opacity/100, $this);
+	{/*
+		if($opacity === 'Oblivion')
+		{
+			$this->Opacity = 0;
+			$this->Parent->Controls->Remove($this);
+		}
+		else 
+		{*/
+			$this->Opacity = $opacity;
+			if(UserAgent::IsIE())
+				NolohInternal::SetProperty('style.filter', 'alpha(opacity='.$opacity.')', $this);
+			else
+				NolohInternal::SetProperty('style.opacity', $opacity/100, $this);
+		//}
 	}
 	/**
 	 * Returns the ZIndex of this Control. A higher ZIndex means that this Control will appear on top of other Controls with overlapping location.
@@ -137,6 +145,14 @@ abstract class Control extends Component
 	{
 		$this->ZIndex = $newZIndex;
 		NolohInternal::SetProperty('style.zIndex', $newZIndex, $this);
+	}
+	/**
+	 * @ignore
+	 */
+	function Set_NOblivionS($bool)
+	{
+		if($bool)
+			$this->Parent->Controls->Remove($this);
 	}
 	/**
 	 * Returns the Text of this Control. Depending on the specific Control, this can have several different interpretations.
@@ -774,7 +790,7 @@ abstract class Control extends Component
 		if($shift[1]==7)
 		{
 			AddNolohScriptSrc('Shift.js', true);
-			QueueClientFunction($this, '_NShftWth', array('\''.$shift[0].'\'', 'Array(\''.$this->Id.'\',' . $shift[2]), false, Priority::High);
+			QueueClientFunction($this, '_NShftWth', array('\''.$shift[0].'\'', '[\''.$this->Id.'\',' . $shift[2]), false, Priority::High);
 		}
 		else
 		{
