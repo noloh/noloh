@@ -55,7 +55,7 @@ class Link extends Label
 	 */
 	function GetDestination()
 	{
-		return $this->Destination===null?'':$this->Destination;
+		return $this->Destination;
 	}
 	/**
 	 * Sets the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
@@ -65,7 +65,7 @@ class Link extends Label
 	function SetDestination($destination)
 	{
 		$this->Destination = $destination;
-		NolohInternal::SetProperty('href', $destination===null?'':$destination, $this);
+		NolohInternal::SetProperty('href', $destination===null?'#':$destination, $this);
 	}
 	/**
 	 * @ignore
