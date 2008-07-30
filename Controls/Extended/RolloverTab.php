@@ -76,7 +76,8 @@ class RolloverTab extends Panel implements Groupable
 			$this->DownTab->SetWidth($width);
 		if($this->SelectedTab != null)
 			$this->SelectedTab->SetWidth($width);
-		$this->TextObject->SetWidth($width);
+		if($this->TextObject != null)
+			$this->TextObject->SetWidth($width);
 	}
 	/**
 	 * @ignore
@@ -219,7 +220,8 @@ class RolloverTab extends Panel implements Groupable
 	 */
 	function Show()
 	{
-		$this->TextObject->BringToFront();
+		if($this->TextObject)
+			$this->TextObject->BringToFront();
 		parent::Show();
 		AddNolohScriptSrc('RolloverTab.js');
 		NolohInternal::SetProperty('Cur', 'Out', $this);

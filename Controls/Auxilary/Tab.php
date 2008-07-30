@@ -41,8 +41,15 @@ class Tab extends Panel
 		}
 		parent::Panel(0,0, $width, $this->MainImage->GetHeight());		
 		$this->MainImage->Shifts[] = Shift::With($this, Shift::Width);
-		$this->RightImage->Shifts[] = Shift::With($this, Shift::Left);
-		$this->Controls->AddRange($this->LeftImage, $this->MainImage, $this->RightImage);	
+		
+		if($this->LeftImage)
+			$this->Controls->Add($this->LeftImage);
+		$this->Controls->Add($this->MainImage);
+		if($this->RightImage)
+		{
+			$this->RightImage->Shifts[] = Shift::With($this, Shift::Left);
+			$this->Controls->Add($this->RightImage);
+		}
 	}
 	/**
 	 * @ignore
