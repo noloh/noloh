@@ -47,6 +47,14 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 			}
 	}
 	/**
+	 * @ignore
+	 */
+	static function MakeInstance($className, $params)
+	{
+		$reflect = new ReflectionClass($className);
+		return $reflect->newInstanceArgs($params);
+	}
+	/**
 	 * Constructs one of the classes that the Multiple object extends. It is one aspect of constructing the entire object. 
 	 * The parameters are passed in as an unlimited number of parameters.
 	 * @param string $className The name of the class being constructed, as a string
@@ -60,14 +68,9 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 				BloodyMurder('Circular extensions detected in Multiple object, particularly extending the ' . $className . ' class');
 			else
 			{
-				$args = func_get_args();
-				$loopBound = count($args)-2;
-				$paramsString = '';
-				for($i=1; $i<$loopBound; ++$i)
-					$paramsString .= '$args['.$i.'],';
-				$paramsString .= '$args['.$i.']';
 				$GLOBALS['_NMultipleConstruct' . $className] = true;
-				eval('$this->SubObjects[$className] = new $className('.$paramsString.');');
+				$params = array_slice(func_get_args(), 1);
+				$this->SubObjects[$className] = self::MakeInstance($className, $params);
 				unset($GLOBALS['_NMultipleConstruct' . $className]);
 			}
 		else 
@@ -88,13 +91,8 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 				BloodyMurder('Circular extensions detected in Multiple object, particularly extending the ' . $className . ' class');
 			else
 			{
-				$loopBound = count($paramsArray)-1;
-				$paramsString = '';
-				for($i=0; $i<$loopBound; ++$i)
-					$paramsString .= '$paramsArray['.$i.'],';
-				$paramsString .= '$paramsArray['.$i.']';
 				$GLOBALS['_NMultipleConstruct' . $className] = true;
-				eval('$this->SubObjects[$className] = new $className('.$paramsString.');');
+				$this->SubObjects[$className] = self::MakeInstance($className, $paramsArray);
 				unset($GLOBALS['_NMultipleConstruct' . $className]);
 			}
 		else 
@@ -110,6 +108,18 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 	{
 		$this->CastClass = $className;
 		return $this;
+	}
+	/**
+	 * Checks whether the Multiple object is an instance of a class
+	 * @param string $className
+	 * @return boolean
+	 */
+	function IsA($className)
+	{
+		foreach($this->SubObjects as $object)
+			if(($object instanceof Multiple && $object->InstanceOf($className)) || $object instanceof $className)
+				return true;
+		return false;
 	}
 	/**
 	 * @ignore
