@@ -769,7 +769,7 @@ abstract class Control extends Component
 	/**
 	 * Returns the ArrayList holding all the Shifts. This allows a Control to manipulate itself and any other control in various ways.
 	 * The only thing that should be added to this ArrayList are statics of the Shift class.
-	 * @return ArrayList
+	 * @return ImplicitArrayList
 	 */
 	function GetShifts()
 	{

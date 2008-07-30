@@ -67,7 +67,7 @@ class IFrame extends Control
 		return $this->ScrollLeft;
 	}
 	/**
-	 * Scrolls the IFrame horinzontally to a given position
+	 * Scrolls the IFrame horizontally to a given position
 	 * @param integer $scrollLeft
 	 */
 	function SetScrollLeft($scrollLeft)
@@ -84,7 +84,7 @@ class IFrame extends Control
 		return $this->ScrollTop;
 	}
 	/**
-	 * Scrolls the IFrame horinzontally to a given position
+	 * Scrolls the IFrame vertically to a given position
 	 * @param integer $scrollTop
 	 */
 	function SetScrollTop($scrollTop)

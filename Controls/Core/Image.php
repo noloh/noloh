@@ -47,8 +47,7 @@ class Image extends Control
 	}
 	/**
 	* Gets the Src of the Image
-	* <b>Note:</b>Can also be called as a property.
-	*<pre> $tempSrc = $this->Src;</pre>
+
 	* @return string
  	*/
 	function GetSrc()
@@ -57,8 +56,7 @@ class Image extends Control
 	}
 	/**
 	*Sets the Src of the Image.
-	*<b>Note:</b>Can also be set as a property.
-	*<pre>$this->Src = "Images/NewImage.gif";</pre>
+
 	*The path is relative to your main file 
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
 	*@param string $src
@@ -81,8 +79,7 @@ class Image extends Control
 	}
 	/**
 	*Gets the Width of the Image.
-	*<b>Note:</b>Can also get as a property.
-	*<pre>$tmpVar = $this->Width;</pre>
+
 	*@param string $unit Units you would like the width in, either px, or "%".
 	*@return mixed
 	*/
@@ -98,8 +95,7 @@ class Image extends Control
 	}
 	/**
 	*Sets the Width of the Image.
-	*<b>Note:</b>Can also be set as a property.
-	*<pre>$this->Width = 200;</pre>
+
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
 	*@param integer $width
 	*/
@@ -126,8 +122,7 @@ class Image extends Control
 	}
 	/**
 	*Gets the Width of the Image.
-	*<b>Note:</b>Can also get as a property.
-	*<pre>$tmpVar = $this->Height;</pre>
+
 	*@param string $unit Units you would like the height in, either px, or "%".
 	*@return mixed
 	*/
@@ -143,8 +138,7 @@ class Image extends Control
 	}
 	/**
 	*Sets the Height of the Image.
-	*<b>Note:</b>Can also be set as a property. 
-	*<pre>$this->Height = 200;</pre>
+
 	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
 	*@param integer $height
 	*/
@@ -259,6 +253,32 @@ class Image extends Control
 			call_user_func('image'.$extension, $im);
 			imagedestroy($im);
 		}
+	}
+	/**
+	 * ShiftColor can be used to dynamically rotate the colors of your image. This is useful for skinning objects.
+	 * ShiftColor maintains all transparency and gradients. For instance, if you have a gradient image that has a blue base you can change
+	 * that image to be based on whichever color you wish and it will maintain the look and feel of the image.
+	 * 
+	 * ShiftColor works with gif, png, and jpeg.
+	 * <pre>
+	 * class Example
+	 * {
+	 *  function Example()
+	 *  {
+	 *		// Instantiate a new Image
+	 *		$image = new Image('titlebar.gif');
+	 *	 	Image::ShiftColor($image, '#CC0000');
+	 *  }
+	 * }
+	 * </pre>
+	 * @param image|array $image The image or array of images that will have their colors rotated
+	 * @param string $toColor The color that you would like the image to be based on.
+	 * @param string $fromColor The color that you would like the rotation to start from. This is useful if you wish to preserve certain colors
+	 * or have a different starting based. By default the color range begins from the darkest color in your image.
+	 */
+	static function ShiftColor($image, $toColor, $fromColor=null)
+	{
+		
 	}
 }
 ?>

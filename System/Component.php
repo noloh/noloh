@@ -26,21 +26,11 @@ abstract class Component extends Object
 	
 	private $EventSpace;
 	/**
-	 * Id of the component
+	 * A unique Id for the component
 	 * @var string
 	 */
 	public $Id;
-	/**
-	 * ParentId of the component
-	 * @access private
-	 * @var string
-	 */
 	private $ParentId;
-	/**
-	 * Whether it is not shown, shown, or in the graveyard
-	 * @access private
-	 * @var integer
-	 */
 	private $ShowStatus;
 	/**
 	 * Constructor.
@@ -116,24 +106,6 @@ abstract class Component extends Object
 			}
 			$this->ParentId = $parentId;
 		}
-		/*
-		if($this->ParentId !== $parentId)
-		{
-			$bool = $parentId !== null;
-			if($bool)
-				$this->ParentId = $parentId;
-			else 
-				$parentId = $this->ParentId;
-			if(GetComponentById($parentId)->GetShowStatus()!==0)
-				$_SESSION['_NControlQueueRoot'][$this->Id] = $bool;
-			else 
-				if(isset($_SESSION['_NControlQueueDeep'][$parentId]))
-					$_SESSION['_NControlQueueDeep'][$parentId][$this->Id] = $bool;
-				else 
-					$_SESSION['_NControlQueueDeep'][$parentId] = array($this->Id => $bool);
-		}
-		return;
-		*/
 	}
 	/**
 	 * @ignore
