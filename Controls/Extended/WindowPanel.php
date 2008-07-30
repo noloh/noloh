@@ -64,7 +64,7 @@ class WindowPanel extends Panel
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
-		$this->CloseImage->Click['Hide'] = new ClientEvent('NOLOHChange(\''.$this->Id.'\', \'style.visibility\', \'hidden\');');
+		$this->CloseImage->Click['Hide'] = new ClientEvent('NOLOHChange(\''.$this->Id.'\', \'style.display\', \'none\');');
 		$this->CloseImage->Click[] = new ServerEvent($this, 'Close');
 		$this->SetBodyBorder($this->ThemeBorder);
 		
