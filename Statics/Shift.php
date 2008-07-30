@@ -103,7 +103,7 @@ final class Shift
 			$min = 1;
 		if($max === null)
 			$max = 'null';
-		return array($object->Id, 7, $shiftMeType.',0,'.$ratio.','.$min.','.$max.','.$min.','.$max.','.$shiftWithType.')');
+		return array($object->Id, 7, $shiftMeType.',0,'.$ratio.','.$min.','.$max.','.$min.','.$max.','.$shiftWithType.']');
 	}
 }
 ?>
