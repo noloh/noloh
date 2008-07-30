@@ -143,6 +143,18 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return -1;
 	}
 	/**
+	 * Returns an array of selected indices
+	 * @return array
+	 */
+	function GetSelectedIndices()
+	{
+		$array = array();
+		foreach($this->Groupees as $index => $groupee)
+			if($groupee->GetSelected())
+				$array[] = $index;
+		return $array;
+	}
+	/**
 	 * Selects the element which is at a particular index, or Deselects if the parameter is -1 or null
 	 * @param integer|string $index
 	 */
@@ -163,6 +175,18 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			return ($tmpValue = $element->Value) == null?$element->Text:$tmpValue;
 		else
 			return null;
+	}
+	/**
+	 * Returns an array of selected values
+	 * @return array
+	 */
+	function GetSelectedValues()
+	{
+		$array = array();
+		foreach($this->Groupees as $index => $groupee)
+			if($groupee->GetSelected())
+				$array[] = ($tmpValue = $element->Value) == null?$element->Text:$tmpValue;
+		return $array;
 	}
 	/**
 	 * Selects the first element which has a particular Value
@@ -196,6 +220,15 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		$tmpIndex = $this->GetSelectedIndex();
 		return $tmpIndex != -1?$this->Groupees->Elements[$tmpIndex]:null;
 	}
+	
+	function GetSelectedElements()
+	{
+		$array = array();
+		foreach($this->Groupees as $index => $groupee)
+			if($groupee->GetSelected())
+				$array[] = $groupee;
+		return $array;
+	}
 	/**
 	 * Selects a particular element
 	 * @param mixed $element
@@ -219,6 +252,15 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function GetSelectedText()
 	{
 		return ($element = $this->GetSelectedElement()) != null ? $element->GetText() : '';
+	}
+	
+	function GetSelectedTexts()
+	{
+		$array = array();
+		foreach($this->Groupees as $index => $groupee)
+			if($groupee->GetSelected())
+				$array[] = $groupee->Text;
+		return $array;
 	}
 	/**
 	 * Selects the first element which has a particular Text
