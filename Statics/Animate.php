@@ -23,7 +23,7 @@ final class Animate
 			$to = 1;
 			NolohInternal::SetProperty('_NOblivionC', true, $control);
 		}
-		QueueClientFunction($control, '_NAniStart', array('\''.$control->Id.'\'', '\''.$property.'\'', $from!==null?$from:('_N("'.$control->Id.'").'.$property), $to, $duration, '\''.$units.'\'', $easing, $fps), false, Priority::Low);
+		QueueClientFunction($control, 'new _NAni', array('\''.$control->Id.'\'', '\''.$property.'\'', $from!==null?$from:('_N("'.$control->Id.'").'.$property), $to, $duration, '\''.$units.'\'', $easing, $fps), false, Priority::Low);
 	}
 	
 	static function Left($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)

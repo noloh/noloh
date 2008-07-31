@@ -4,24 +4,18 @@ _NAnims = [];
 _NAnimsCount = 0;
 _NAnimTimer = null;
 
-function _NAniStart(id, prpty, from, to, duration, units, easing, fps)
+function _NAni(id, prpty, from, to, duration, units, easing, fps)
 {
-	_NAnims.push(new _NAnimation(id, prpty, from, to, duration, units, easing, fps));
-}
-function _NAnimation(id, prpty, from, to, duration, units, easing, fps)
-{
-	++_NAnimsCount;
-	this.Index = _NAnims.length;
-	this.StartTime = new Date().getTime();
+	this.Obj = _N(id);
+	this.ObjId = id;
 	this.From = from;
 	this.Destination = to;
 	this.Difference = to - from;
-	this.Obj = _N(id);
-	this.ObjId = id;
+	this.Property = prpty;
+	this.Index = _NAnims.length;
 	this.Duration = duration;
 	this.Change = easing==1?_NAniLinear : easing==2?_NAniQuadratic : _NAniCubic;
 	this.Units = units;
-	this.Property = prpty;
 	if(this.Obj.ShiftsWith != null)
 	{
 		this.ShiftType = prpty=="style.width"?1: prpty=="style.height"?2: prpty=="style.left"?4: 5;
@@ -29,6 +23,9 @@ function _NAnimation(id, prpty, from, to, duration, units, easing, fps)
 	}
 	this.Step = _NRunStep;
 	this.Stop = _NAniStop;
+	++_NAnimsCount;
+	_NAnims.push(this);
+	this.StartTime = new Date().getTime();
 	if(_NAnimTimer == null)
 		_NAnimTimer = setInterval(StepAllAnims, Math.round(1000/fps));
 }
@@ -60,6 +57,8 @@ function _NAniStop()
 		if(this.Destination == 100)
 			this.Obj.style.filter = '';
 	}
+	else if(this.Property == 'scrollLeft' || this.Property == 'scrollTop')
+		NOLOHChangeByObj(this.Obj, this.Property, this.Destination);
 	else
 	{
 		_NSetProperty(this.ObjId, this.Property, this.Destination + this.Units);
@@ -85,6 +84,8 @@ function _NRunStep()
 			document.documentElement[this.Property] = this.From + delta + this.Units;
 		else if(this.Property == 'opacity')
 			_NSetProperty(this.ObjId, 'style.filter', 'alpha(opacity='+(this.From + delta)+')');
+		else if(this.Property == 'scrollLeft' || this.Property == 'scrollTop')
+			NOLOHChangeByObj(this.Obj, this.Property, this.From + delta + this.Units);
 		else
 		{
 			_NSetProperty(this.ObjId, this.Property, this.From + delta + this.Units);
