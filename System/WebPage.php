@@ -31,6 +31,10 @@ abstract class WebPage extends Component
 	 */
 	public $Description;
 	/**
+	 * @ignore
+	 */
+	public $DebugWindow;
+	/**
 	 * NOLOH's loading Image that is displayed when a ServerEvent is taking place
 	 * @var Image
 	 */
