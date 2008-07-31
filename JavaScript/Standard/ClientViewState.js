@@ -8,6 +8,7 @@ _NFocus = null;
 _NContextMenuSource = null;
 _NFlashArgs = null;
 _NShiftObjArray = null;
+_NURLTokenLink = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -62,8 +63,10 @@ function CheckURL()
 		location.reload(true);
 }
 
-function _NSetURL(hash)
+function _NSetURL(hash, id)
 {
+	if(id != null)
+		_NURLTokenLink = id;
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 }
@@ -532,6 +535,11 @@ function PostBack(EventType, ID, event)
 		{
 			str += "&NOLOHFlashArgs="+_NFlashArgs;
 			_NFlashArgs = null;
+		}
+		if(_NURLTokenLink != null)
+		{
+			str += "&NOLOHURLTokenLink="+_NURLTokenLink;
+			_NURLTokenLink = null;
 		}
 	    req = new XMLHttpRequest();
 		_N(_NLoadImg).style.visibility = "visible";

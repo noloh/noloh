@@ -7,6 +7,7 @@ NOLOHCaught = [];
 _NFocus = null;
 _NContextMenuSource = null;
 _NFlashArgs = null;
+_NURLTokenLink = null;
 ConversionArray = new Object();
 ConversionArray["style.left"] = "Left";
 ConversionArray["style.top"] = "Top";
@@ -112,8 +113,10 @@ function CheckURL()
 	}
 }
 
-function _NSetURL(hash)
+function _NSetURL(hash, id)
 {
+	if(id != null)
+		_NURLTokenLink = id;
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
 	_NURL=location.href;
@@ -596,6 +599,11 @@ function PostBack(EventType, ID)
 		{
 			str += "&NOLOHFlashArgs="+_NFlashArgs;
 			_NFlashArgs = null;
+		}
+		if(_NURLTokenLink != null)
+		{
+			str += "&NOLOHURLTokenLink="+_NURLTokenLink;
+			_NURLTokenLink = null;
 		}
 	    req = new ActiveXObject("Microsoft.XMLHTTP");
 		_N(_NLoadImg).style.visibility = "visible";

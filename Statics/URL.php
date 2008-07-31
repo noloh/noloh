@@ -39,7 +39,10 @@ final class URL
 	 * Will have the effect of writing random-looking characters in the user's URL.
 	 */
 	const Encrypt = 2;
-	
+	/**
+	 * A possible value for the Destination of a Link.
+	 */
+	const Tokens = null;
 	/**
 	 * @ignore
 	 */

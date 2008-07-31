@@ -155,6 +155,8 @@ final class Application extends Object
 				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
 			foreach($_SESSION['_NFiles'] as $key => $val)
 				GetComponentById($key)->File = new File($val);
+			if(isset($_POST['NOLOHURLTokenLink']))
+				GetComponentById($_POST['NOLOHURLTokenLink'])->SetAllTokens();
 			if(!empty($_POST['NOLOHServerEvent']))
 				$this->HandleServerEvent();
 			foreach($_SESSION['_NFiles'] as $key => $val)
