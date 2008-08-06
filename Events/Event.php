@@ -235,12 +235,12 @@ class Event extends Object implements ArrayAccess
 	 */
 	function offsetSet($index, $val)
 	{
-		if(get_class($this) == 'Event')
+		if(get_class($this) === 'Event')
 			if($index !== null)
 			{
 				$this->ExecuteFunction[$index] = $val;
 				$val->Handles[] = array($this);
-				if(count($this->ExecuteFunction)==1)
+				if(count($this->ExecuteFunction) === 1)
 					foreach($this->Handles as $pair)
 						if(is_string($pair[0]))
 							GetComponentById($pair[0])->SetEvent($this, $pair[1]);
@@ -248,9 +248,11 @@ class Event extends Object implements ArrayAccess
 							$pair[0][$pair[1]] = $this;
 						else 
 							GetComponentById($pair[0][0])->SetEvent($this, $pair[1], $pair[0][1]);
+				else
+					$this->UpdateClient();
 			}
 			else 
-				if(count($this->ExecuteFunction)==0)// && count($this->Handles)!=0)
+				if(count($this->ExecuteFunction) === 0)
 					foreach($this->Handles as $pair)
 						if(is_string($pair[0]))
 							GetComponentById($pair[0])->SetEvent($val, $pair[1]);
@@ -277,7 +279,7 @@ class Event extends Object implements ArrayAccess
 				elseif(is_object($pair[0]))
 					$pair[0][$pair[1]] = $event;
 				else 
-					GetComponentById($pair[0][0])->SetEvent($val, $pair[1], $pair[0][1]);
+					GetComponentById($pair[0][0])->SetEvent($event, $pair[1], $pair[0][1]);
 		}
 	}
 	/**
