@@ -47,6 +47,7 @@ function _NAWH(id)
 {
 	var ele = _N(id);
 	var awh = _N("NAWH");
+	awh.className = ele.className;
 	awh.style.fontSize = ele.style.fontSize;
 	awh.style.width = ele.style.width;
 	awh.style.height = ele.style.height;
