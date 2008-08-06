@@ -38,7 +38,7 @@ class ClientEvent extends Event
 	 */
 	function ClientEvent($allCodeAsString, $params=null)
 	{
-		if(!preg_match('/(?:;|})\s*?\z/', $allCodeAsString))
+		if($allCodeAsString !== '' && !preg_match('/(?:;|})\s*?\z/', $allCodeAsString))
 		{
 			$allCodeAsString = trim($allCodeAsString) . '(';
 			$params = func_get_args();
