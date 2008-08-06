@@ -144,15 +144,17 @@ class ServerEvent extends Event
 				$runThisString = '$this->Owner->Dereference()->';
 			else 
 				$runThisString = '$this->Owner->';
-		else 
+		elseif(is_string($this->Owner))
 			$runThisString = $this->Owner . '::';
+		else
+			$runThisString = '';
 		$runThisString .= $this->ExecuteFunction;
 		
 		if(strpos($this->ExecuteFunction,'(') === false)
 		{
 			$parameterCount = count($this->Parameters);
 			$runThisString .= '(';
-			for($i = 0; $i < $parameterCount - 1; $i++)
+			for($i = 0; $i < $parameterCount - 1; ++$i)
 				$runThisString .= '$this->Parameters['.$i.'],';
 			$runThisString .= $parameterCount > 0 ? '$this->Parameters['.$i.']);' : ');';
 		}
