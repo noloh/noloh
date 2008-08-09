@@ -42,6 +42,7 @@ require('Events/ServerEvent.php');
 // **********************************************************************
 require('Interfaces/Groupable.php');
 require('Interfaces/MultiGroupable.php');
+require('Interfaces/Singleton.php');
 
 // Core Controls
 // **********************************************************************

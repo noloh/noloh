@@ -41,6 +41,14 @@ abstract class Component extends Object
 		$this->ShowStatus = 0;
 		global $OmniscientBeing;
 		$OmniscientBeing[$this->Id = 'N' . ++$_SESSION['_NNumberOfComponents']] = &$this;
+		if($this instanceof Singleton)
+		{
+			$class = get_class($this);
+			if(isset($_SESSION['_NSingletons'][$class]))
+				BloodyMurder('Cannot create more than one instance of a ' . $class . ' class because it is a Singleton.');
+			else
+				$_SESSION['_NSingletons'][$class] = $this->Id;
+		}
 	}
 	/**
 	 * Whether the component has never been shown, has been shown, or has been shown and removed
@@ -175,7 +183,7 @@ abstract class Component extends Object
 	 */
 	function GetEvent($eventType)
 	{
-		if($this->EventSpace == null)
+		if($this->EventSpace === null)
 			$this->EventSpace = array();
 		return isset($this->EventSpace[$eventType]) 
 			? $this->EventSpace[$eventType]
@@ -189,7 +197,7 @@ abstract class Component extends Object
 	 */
 	function SetEvent($eventObj, $eventType)
 	{
-		if($this->EventSpace == null)
+		if($this->EventSpace === null)
 			$this->EventSpace = array();
 		$this->EventSpace[$eventType] = $eventObj;
 		$pair = array($this->Id, $eventType);
@@ -213,6 +221,14 @@ abstract class Component extends Object
 		return isset($this->EventSpace[$eventType])
 			? $this->EventSpace[$eventType]->GetEventString($eventType, $this->Id)
 			: '';
+	}
+	/**
+	 * Returns the only instance of a specified class that implements Singleton. Should not be called directly outside of your own That() methods.
+	 * @param string $className The name of the class, as a string.
+	 */
+	static function That($className)
+	{
+		return isset($_SESSION['_NSingletons'][$className]) ? $_SESSION['_NSingletons'][$className] : null;
 	}
 	/**
 	 * Shows the Component.
