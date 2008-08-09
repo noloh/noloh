@@ -24,7 +24,6 @@ class IFrame extends Control
 	private $ScrollLeft;
 	private $ScrollTop;
 	private $Scrolling;
-
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends IFrame
@@ -39,7 +38,7 @@ class IFrame extends Control
 	*/
 	function IFrame($src ='', $left=0, $top=0, $width=300, $height=300)
 	{
-		Control::Control($left, $top, $width, $height);
+		parent::Control($left, $top, $width, $height);
 		$this->SetSrc($src);
 	}
 	/**
@@ -125,8 +124,14 @@ class IFrame extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		$initialProperties .= ",'frameBorder','no'";
-		NolohInternal::Show('IFRAME', $initialProperties, $this);
+		$initialProperties .= ',\'frameBorder\',\'no\'';
+		if(UserAgent::IsIE())
+			NolohInternal::Show('<IFRAME name="'.$this->Id.'">', $initialProperties, $this);
+		else
+		{
+			$initialProperties .= ',"name","' . $this->Id . '"';
+			NolohInternal::Show('IFRAME', $initialProperties, $this);
+		}
 	}
 	/**
 	 * @ignore
