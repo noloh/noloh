@@ -24,6 +24,14 @@ class Form extends Component
 	 */
 	const Get = 'GET';
 	/**
+	 * A possible value for the Target, Here indicates that the action will be performed in the same frame as your NOLOH App, essentially navigating away.
+	 */
+	const Here = '_self';
+	/**
+	 * A possible value for the Target, NewWindow indicates that the action will be performed in a new browser window.
+	 */
+	const NewWindow = '_blank';
+	/**
 	 * An ArrayList of objects that are added to the Form and whose values are posted when the Form is submitted.
 	 * @var ArrayList
 	 */
@@ -32,6 +40,7 @@ class Form extends Component
 	private $Action;
 	private $Method;
 	private $EncType;
+	private $Target;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Form.
@@ -40,14 +49,15 @@ class Form extends Component
 	 * @param string $encType Specifies the content-type to be used when the Method is Form::Post; The default used is 'application/x-www-form-urlencoded'
 	 * @return Form
 	 */
-	function Form($action, $method = Form::Post, $encType)
+	function Form($action, $method = Form::Post, $target = Form::Here, $encType = 'application/x-www-form-urlencoded')
 	{
 		parent::Component();
 		//parent::Control($left, $top, $width, $height);
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
-		$this->SetMethod($method);
 		$this->SetAction($action);
+		$this->SetMethod($method);
+		$this->SetTarget($target);
 		$this->SetEncType($encType);
 	}
 	/**
@@ -102,6 +112,24 @@ class Form extends Component
 		NolohInternal::SetProperty('enctype', $encType, $this);
 	}
 	/**
+	 * Returns where the action will open. Possible values include Form::Here, Form::NewWindow, an IFrame object, or a string.
+	 */
+	function GetTarget()
+	{
+		return $this->Target;
+	}
+	/**
+	 * Sets where the action will open. Possible values include Form::Here, Form::NewWindow, an IFrame object, or a string.
+	 * @param mixed $target
+	 */
+	function SetTarget($target)
+	{
+		if($target === null)
+			$target = Form::Here;
+		$this->Target = $target;
+		NolohInternal::SetProperty('target', $target instanceof IFrame ? $target->Id : $target, $this);
+	}
+	/**
 	 * Manually submits the Form. This can also be accomplished with the click on a Button of Type Button::Submit. Note that submitting
 	 * a Form will navigate away from your application.
 	 */
@@ -112,9 +140,49 @@ class Form extends Component
 	/**
 	 * @ignore
 	 */
+	function GetAddId()
+	{
+		return $this->Id;
+	}
+	/**
+	 * @ignore
+	 */
+	function GetBuoyant()
+	{
+		return false;
+	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		NolohInternal::Show('FORM', parent::Show(), $this);
+	}
+	/**
+	 * @ignore
+	 */
+	function SearchEngineShow()
+	{
+		foreach($this->Controls as $control)
+			$control->SearchEngineShow();
+	}
+	/**
+	 * @ignore
+	 */
+	function Bury()
+	{
+		foreach($this->Controls as $control)
+			$control->Bury();
+		parent::Bury();
+	}
+	/**
+	* @ignore
+	*/
+	function Resurrect()
+	{
+		foreach($this->Controls as $control)
+			$control->Resurrect();
+		parent::Resurrect();	
 	}
 }
 ?>
