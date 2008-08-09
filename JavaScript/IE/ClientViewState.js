@@ -83,7 +83,7 @@ function CheckURL()
 	if((_NHash != location.hash && _NHash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_NURL != inner))
 	{
 		clearInterval(_NURLCheck);
-		var str = "NOLOHVisit="+ ++NOLOHVisit + "&NoSkeleton=true";
+		var str = "NOLOHVisit="+ ++NOLOHVisit + "&NApp=" + _NApp + "&NoSkeleton=true";
 		req = new ActiveXObject("Microsoft.XMLHTTP");
 		_N(_NLoadImg).style.visibility = "visible";
 		_N(_NLoadLbl).style.visibility = "visible";
@@ -102,7 +102,7 @@ function CheckURL()
 			_NHistoryLength = history.length;
 		}
 		req.open("POST", (targetURL.indexOf('#/')==-1 ? targetURL.replace(_NHash,'')+(targetURL.indexOf('?')==-1?'?':'&') : targetURL.replace('#/',targetURL.indexOf('?')==-1?'?':'&')+'&')
-           	+ 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+           	+ 'NOLOHVisit=0&NApp' + _NApp + '&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
 		location = targetURL;
         _NHash = location.hash;
 		_NURL = location.href;
@@ -580,7 +580,7 @@ function PostBack(EventType, ID)
 	{
 		clearInterval(_NURLCheck);
 		document.body.NOLOHPostingBack = true;
-		var str = "NOLOHClientChanges="+GetChanges()+"&NOLOHServerEvent="+EventType+"@"+ID+"&NOLOHVisit="+ ++NOLOHVisit;
+		var str = "NOLOHClientChanges="+GetChanges()+"&NOLOHServerEvent="+EventType+"@"+ID+"&NOLOHVisit="+ ++NOLOHVisit + "&NApp=" + _NApp;
 		if(window.event != null)
 			str += "&NOLOHMouseX="+(window.event.clientX+document.documentElement.scrollLeft)+
 				"&NOLOHMouseY="+(window.event.clientY+document.documentElement.scrollTop);

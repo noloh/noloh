@@ -61,6 +61,7 @@ abstract class WebPage extends Component
 	{
 		parent::Component();
 		parent::Show();
+		$_SESSION['_NStartUpPageId'] = $this->Id;
 		$this->Width = $GLOBALS['_NWidth'];
 		$this->Height = $GLOBALS['_NHeight'];
 		$this->Controls = new ArrayList();
@@ -71,7 +72,6 @@ abstract class WebPage extends Component
 //		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
 		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Controls/NStyles.css');
-		
 		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Images/loading.gif', 1, 1, 30, 30);
 		$this->LoadImg->CSSClass = 'NLoad';
 		$this->LoadImg->SetParentId($this->Id);
@@ -80,6 +80,9 @@ abstract class WebPage extends Component
 		$this->LoadLbl->Opacity = 70;
 		$this->LoadLbl->CSSClass = 'NLoad NLoadLbl';
 		unset($_SESSION['_NPropertyQueue'][$this->LoadLbl->Id]['style.zIndex'],$_SESSION['_NPropertyQueue'][$this->LoadImg->Id]['style.zIndex']);
+		$unload = parent::GetEvent('Unload');
+		$unload['User'] = new ClientEvent('');
+		$unload['System'] = new ServerEvent(null, 'isset', true);
 		//$this->LoadImg->ZIndex = $this->LoadLbl->ZIndex = null;
 		//AddScript("document.getElementById('{$this->LoadLbl->Id}').style.zIndex=document.getElementById('{$this->LoadImg->Id}').style.zIndex=999999");
 		//require_once($_SERVER['DOCUMENT_ROOT'] ."/NOLOH/Javascripts/GetBrowserAndOs.php");
@@ -245,7 +248,8 @@ abstract class WebPage extends Component
 	 */
     function GetUnload()
     {
-        return $this->GetEvent('Unload');
+		$unload = $this->GetEvent('Unload');
+        return $unload['User'];
     }
 	/**
 	 * Sets the Unload event, which launches when someone navigates away from the application or closes teir browser
@@ -253,14 +257,15 @@ abstract class WebPage extends Component
 	 */
     function SetUnload($unloadEvent)
     {
-        $this->SetEvent($unloadEvent, 'Unload');
+		$currentUnload = $this->GetEvent('Unload');
+        $currentUnload['User'] = $unloadEvent;
     }
 	/**
 	 * @ignore
 	 */
 	function UpdateEvent($eventType)
 	{
-        QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEvent($eventType)->GetEventString($eventType, $this->Id).'\''));
+		QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEvent($eventType)->GetEventString($eventType, $this->Id).'\''));
 	}
 	/**
 	 * Returns the instance of WebPage that was used with SetStartupPage. The name is a pun on the "this" concept.
@@ -305,13 +310,13 @@ abstract class WebPage extends Component
   <BODY>
     <DIV id='N1'></DIV>
     <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>":"
-  <BODY id='N1'>
-  ")."
+  <BODY id='N1'>")."
     <DIV id='NAWH' style='position:absolute; visibility:hidden;'></DIV>
   </BODY>
 </HTML>
 
-<SCRIPT type='text/javascript'>".($_SESSION['_NIE6'] ? 
+<SCRIPT type='text/javascript'>
+  _NApp = ".$GLOBALS['_NApp']."; " .($_SESSION['_NIE6'] ? 
   "
   function _NIe6InitIframeLoad()
   {
@@ -328,7 +333,7 @@ abstract class WebPage extends Component
   req = new ActiveXObject('Microsoft.XMLHTTP');
   req.onreadystatechange = _NIe6InitIframeLoad;
   req.open('POST', (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
+               + 'NOLOHVisit=0&NApp=' + _NApp + '&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
   req.send('');
   
   "
@@ -338,7 +343,7 @@ abstract class WebPage extends Component
   var script = document.createElement('SCRIPT');
   script.type = 'text/javascript';
   script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
+               + 'NOLOHVisit=0&NApp=' + _NApp + '&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
   head.appendChild(script);"
   )."
 </SCRIPT>");

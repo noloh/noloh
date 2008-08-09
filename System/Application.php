@@ -65,7 +65,6 @@ function _NPHPInfo($info)
 		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . NOLOHConfig::GetNOLOHPath() . 'Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
 		substr($info, $loc);
 	session_destroy();
-	session_unset();
 	return $text;
 }
 /**
@@ -105,10 +104,7 @@ final class Application extends Object
             $webPage->Unload->Exec();
         }
 		if($clearSessionVariables)
-		{
 			session_destroy();
-			session_unset();
-		}
 		else
 			self::UnsetNolohSessionVars();
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
@@ -127,8 +123,9 @@ final class Application extends Object
 	 */
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
-		//ini_set('session.gc_maxlifetime', '0');
-		session_name(hash('md5', $_SERVER['PHP_SELF']));
+		//ini_set('session.gc_probability', '100');
+		//session_name(hash('md5', $_SERVER['PHP_SELF']));
+		session_name(hash('md5', isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : ($GLOBALS['_NApp'] = rand(0, 99999))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
@@ -187,6 +184,7 @@ final class Application extends Object
 			$_SESSION['_NScriptSrc'],
 			$_SESSION['_NScriptSrcs'],
 			$_SESSION['_NGlobals'],
+			$_SESSION['_NSingletons'],
 			$_SESSION['_NFiles'],
 			$_SESSION['_NFileSend'],
 			$_SESSION['_NGarbage'],
@@ -216,6 +214,7 @@ final class Application extends Object
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScriptSrcs'] = array();
 		$_SESSION['_NGlobals'] = array();
+		$_SESSION['_NSingletons'] = array();
 		$_SESSION['_NFiles'] = array();
 		$_SESSION['_NFileSend'] = array();
 		$_SESSION['_NGarbage'] = array();
@@ -342,17 +341,22 @@ final class Application extends Object
 		if($obj != null)
         {
             $execClientEvents = false;
-			return $obj->{$splitEvent[0]}->Exec($execClientEvents);
+			$obj->{$splitEvent[0]}->Exec($execClientEvents);
+			if($splitEvent[1] === $_SESSION['_NStartUpPageId'] && $splitEvent[0] === 'Unload')
+			{
+				session_destroy();
+				exit();
+			}
         }
 		else 
-			return GetComponentById(substr($splitEvent[1], 0, strpos($splitEvent[1], 'i')))->ExecEvent($splitEvent[0], $splitEvent[1]);
+			GetComponentById(substr($splitEvent[1], 0, strpos($splitEvent[1], 'i')))->ExecEvent($splitEvent[0], $splitEvent[1]);
 	}
 
 	private function HandleTokens()
 	{
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
-		unset($_GET['NOLOHVisit'], $_GET['NWidth'], $_GET['NHeight']);
+		unset($_GET['NOLOHVisit'], $_GET['NApp'], $_GET['NWidth'], $_GET['NHeight']);
 		if($GLOBALS['_NURLTokenMode'] == 1)
 			$_SESSION['_NTokens'] = $_GET;
 		elseif($GLOBALS['_NURLTokenMode'] == 2)
@@ -415,7 +419,6 @@ final class Application extends Object
 			$this->HandleTokens();
 			$className = $_SESSION['_NStartUpPageClass'];
 			$this->WebPage = new $className();
-			$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 			$this->WebPage->Show();
 		}
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
@@ -461,7 +464,6 @@ final class Application extends Object
 			foreach($_SESSION['_NDataLinks'] as $connection)
 				$connection->Close();
 		session_destroy();
-		session_unset();
 	}
 
 	private function ExplodeDragCatch($objectsString)

@@ -507,7 +507,7 @@ function PostBack(EventType, ID, event)
 	if(!document.body.NOLOHPostingBack)
 	{
 		document.body.NOLOHPostingBack = true;
-		var str = "NOLOHClientChanges="+GetChanges()+"&NOLOHServerEvent="+EventType+"@"+ID+"&NOLOHVisit="+ ++NOLOHVisit;
+		var str = "NOLOHClientChanges="+GetChanges()+"&NOLOHServerEvent="+EventType+"@"+ID+"&NOLOHVisit="+ ++NOLOHVisit + "&NApp=" + _NApp;
 		if(event != null)
 			str += "&NOLOHMouseX="+event.pageX+"&NOLOHMouseY="+event.pageY;
 		if(NOLOHKey != null)
@@ -546,7 +546,7 @@ function PostBack(EventType, ID, event)
 		_N(_NLoadLbl).style.visibility = "visible";
         if(EventType != "Unload")
     	    req.onreadystatechange = ProcessReqChange;
-	    req.open("POST", window.location.href, true);
+	    req.open("POST", window.location.href, EventType!="Unload");
 	    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	    req.setRequestHeader('Remote-Scripting', 'NOLOH-Postback');
 	    req.send(str);
