@@ -871,6 +871,7 @@ abstract class Control extends Component
 	 */
 	function ClearShift()
 	{
+		unset($_SESSION['_NFunctionQueue'][$this->Id]['_N(\''.$this->Id.'\').Shifts.splice']);
 		NolohInternal::SetProperty('Shifts', 'Array()', $this);
 		$this->Shifts->Clear(true);
 	}
