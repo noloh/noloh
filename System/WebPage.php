@@ -280,80 +280,68 @@ abstract class WebPage extends Component
 	 */
 	static function SkeletalShow($unsupportedURL)
 	{
-		// Unsupported Browser Handling
-		/*
-		$OS = GetOperatingSystem();
-		$Browser = GetBrowser();
-		if(($OS == "win" && ($Browser != "ie" && $Browser != "moz")) ||
-		   ($OS == "mac" && ($Browser != "moz")))
-		   		header("Location: ".(empty($this->AlternativePath)?
-				"http://216.254.66.6/NOLOHBeta/Errors/UnsupportedBrowser.html":"$this->AlternativePath"));
-		*/	
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
-		print(
-"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">
+		echo 
+'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
 <!-- Powered by NOLOH -->
 <!--  www.noloh.com  -->
 
 <HTML>
-  <HEAD id='NHead'>
-    <META HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+  <HEAD id="NHead">
     <TITLE>Loading NOLOH Application...</TITLE>
-    <NOSCRIPT><META http-equiv='refresh' content='0;url=".
-				($unsupportedURL=='' ?
+    <NOSCRIPT><META http-equiv="refresh" content="0;url=',
+			$unsupportedURL === '' ?
 				'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
-				$unsupportedURL).
-  "'></NOSCRIPT>
-  </HEAD>".(GetBrowser()=='ie'?"
+				$unsupportedURL,
+  '"></NOSCRIPT>
+  </HEAD>',
+UserAgent::IsIE() ? '
   <BODY>
-    <DIV id='N1'></DIV>
-    <IFRAME id='NBackButton' style='display:none;' src='javascript:false;'></IFRAME>":"
-  <BODY id='N1'>")."
-    <DIV id='NAWH' style='position:absolute; visibility:hidden;'></DIV>
+    <DIV id="N1"></DIV>
+    <IFRAME id="NBackButton" style="display:none;" src="javascript:false;"></IFRAME>'
+: '
+  <BODY id="N1">'
+, '
+    <DIV id="NAWH" style="position:absolute; visibility:hidden;"></DIV>
   </BODY>
 </HTML>
 
-<SCRIPT type='text/javascript'>
-  _NApp = ".$GLOBALS['_NApp']."; " .($_SESSION['_NIE6'] ? 
-  "
+<SCRIPT type="text/javascript">
+  _NApp = ', $GLOBALS['_NApp'], '; ', 
+$_SESSION['_NIE6'] ? '
   function _NIe6InitIframeLoad()
   {
   	if (req.readyState==4)
   	{
-	    var head = document.getElementById('NHead');
-	    var script = document.createElement('SCRIPT');
-	    script.type = 'text/javascript';
+	    var head = document.getElementById("NHead");
+	    var script = document.createElement("SCRIPT");
+	    script.type = "text/javascript";
 	    script.text = req.responseText;
 	    head.appendChild(script);
   	}
   }
   
-  req = new ActiveXObject('Microsoft.XMLHTTP');
+  req = new ActiveXObject("Microsoft.XMLHTTP");
   req.onreadystatechange = _NIe6InitIframeLoad;
-  req.open('POST', (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NApp=' + _NApp + '&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight, true);
-  req.send('');
-  
-  "
-  :
-  "
-  var head = document.getElementById('NHead');
-  var script = document.createElement('SCRIPT');
-  script.type = 'text/javascript';
-  script.src = (document.URL.indexOf('#/')==-1 ? document.URL.replace(location.hash,'')+(document.URL.indexOf('?')==-1?'?':'&') : document.URL.replace('#/',document.URL.indexOf('?')==-1?'?':'&')+'&')
-               + 'NOLOHVisit=0&NApp=' + _NApp + '&NWidth=' + document.documentElement.clientWidth + '&NHeight=' + document.documentElement.clientHeight;
-  head.appendChild(script);"
-  )."
-</SCRIPT>");
+  req.open("POST", (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+(document.URL.indexOf("?")==-1?"?":"&") : document.URL.replace("#/",document.URL.indexOf("?")==-1?"?":"&")+"&")
+               + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight, true);
+  req.send("");'
+: '
+  var head = document.getElementById("NHead");
+  var script = document.createElement("SCRIPT");
+  script.type = "text/javascript";
+  script.src = (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+(document.URL.indexOf("?")==-1?"?":"&") : document.URL.replace("#/",document.URL.indexOf("?")==-1?"?":"&")+"&")
+               + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight;
+  head.appendChild(script);', '
+</SCRIPT>';
 	}
 	/**
 	 * @ignore
 	 */
 	function Show()
 	{
-		//parent::Show();
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(GetBrowser())
 		{
@@ -362,7 +350,7 @@ abstract class WebPage extends Component
 			case 'op': 						AddNolohScriptSrc('FindPositionOp.js');
 		}
 		AddNolohScriptSrc('GeneralFunctions.js');
-		if(!isset($_POST['NoSkeleton']) || GetBrowser()!='ie')
+		if(!isset($_POST['NoSkeleton']) || !UserAgent::IsIE())
 			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);
 		AddScript('SaveControl(\''.$this->Id.'\')');
 	}
@@ -371,13 +359,13 @@ abstract class WebPage extends Component
 	 */
 	function SearchEngineShow($tokenLinks)
 	{
-		print('<HTML><HEAD><TITLE>'.$this->Title.'</TITLE>' .
-			'<META name="keywords" content="' . (is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords) . '"></META>' .
-			'<META name="description" content="' . (is_file($this->Description)?file_get_contents($this->Description):$this->Description) . 
-			'"></META></HEAD><BODY>');
+		echo '<HTML><HEAD><TITLE>', $this->Title, '</TITLE>',
+			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '"></META>',
+			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,
+			'"></META></HEAD><BODY>';
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
-		print(' <BR>' . $tokenLinks . ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>');
+		echo ' <BR>', $tokenLinks, ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>';
 	}
 	/**
 	 * @ignore

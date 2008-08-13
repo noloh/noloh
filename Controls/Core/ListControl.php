@@ -202,7 +202,7 @@ abstract class ListControl extends Control
 	function SearchEngineShow()
 	{
 		foreach($this->Items as $item)
-			print($item->Text . ' ' . $item->Value . ' ');
+			echo $item->Text, ' ', $item->Value, ' ';
 	}
 }
 	

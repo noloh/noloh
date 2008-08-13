@@ -138,7 +138,7 @@ class IFrame extends Control
 	 */
 	function SearchEngineShow()
 	{
-		print('<A href="'.$this->Src.'">'.$this->Src.'</A> ');
+		echo '<A href="', $this->Src, '">', $this->Src, '</A> ';
 	}
 }
 	

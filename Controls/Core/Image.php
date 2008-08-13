@@ -219,7 +219,7 @@ class Image extends Control
 	 */
 	function SearchEngineShow()
 	{
-		print('<IMG src="'.$this->Src.'"' . ($this->ToolTip==null?'':(' alt="'.$this->ToolTip.'"')) . '></IMG> ');
+		echo '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), '></IMG> ';
 	}
 	/**
 	 *@ignore 

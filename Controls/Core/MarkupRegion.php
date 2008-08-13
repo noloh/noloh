@@ -222,7 +222,7 @@ class MarkupRegion extends Control
 	 */
 	function SearchEngineShow()
 	{
-		print(((is_file($this->Text))?file_get_contents($this->Text):$this->Text).' ');
+		echo is_file($this->Text)?file_get_contents($this->Text):$this->Text, ' ';
 	}
 }
 

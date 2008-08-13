@@ -132,10 +132,10 @@ abstract class Control extends Component
 	 */
 	function SetZIndex($zIndex)
 	{
-		if($zIndex > $_SESSION['HighestZIndex'])
-			$_SESSION['HighestZIndex'] = $zIndex;
-		if($zIndex < $_SESSION['LowestZIndex'])
-			$_SESSION['LowestZIndex'] = $zIndex;
+		if($zIndex > $_SESSION['_NHighestZ'])
+			$_SESSION['_NHighestZ'] = $zIndex;
+		if($zIndex < $_SESSION['_NLowestZ'])
+			$_SESSION['_NLowestZ'] = $zIndex;
 		$this->_NSetZIndex($zIndex);
 	}
 	/**
@@ -599,7 +599,7 @@ abstract class Control extends Component
     {
         parent::SetParentId($id);
         if($this->ZIndex == null)
-            $this->_NSetZIndex(++$_SESSION['HighestZIndex']);
+            $this->_NSetZIndex(++$_SESSION['_NHighestZ']);
     }
 	/**
 	 * Returns the Change Event, which gets launched when significant changes are made to the Control. This can have different
@@ -881,14 +881,14 @@ abstract class Control extends Component
 	 */
 	function BringToFront()
 	{
-		$this->_NSetZIndex(++$_SESSION['HighestZIndex']);
+		$this->_NSetZIndex(++$_SESSION['_NHighestZ']);
 	}
 	/**
 	 * Sends this Control to the back of whatever Parent it is in. In other words, it will be given a ZIndex lower than any other.
 	 */
 	function SendToBack()
 	{
-		$this->_NSetZIndex(--$_SESSION['LowestZIndex']);
+		$this->_NSetZIndex(--$_SESSION['_NLowestZ']);
 	}
 	/**
 	 * @ignore
@@ -902,7 +902,7 @@ abstract class Control extends Component
 	 */
 	function SearchEngineShow()
 	{
-		print($this->Text . ' ');
+		echo $this->Text, ' ';
 	}
 	/**
 	 * @ignore

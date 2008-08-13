@@ -28,30 +28,32 @@ function _NOBErrorHandler($buffer)
 function _NErrorHandler($number, $string, $file, $line)
 {
 	ob_end_clean();
-	if(strpos($string, '~OB~')===0)
+	if(strpos($string, '~OB~') === 0)
 	{
 		$splitStr = explode('~', $string);
 		$string = $splitStr[3];
 		$file = $splitStr[4];
 		$line = $splitStr[5];
 	}
-	elseif($string == '~_NINFO~')
+	elseif($string === '~_NINFO~')
 	{
 		$_SESSION['_NPHPInfo'] = true;
 		Application::Reset(true, false);
 	}
-	if(defined('FORCE_GZIP') && !in_array('ob_gzhandler', ob_list_handlers(), true))
-	{
+	$gzip = defined('FORCE_GZIP');
+	if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
 		ob_start('ob_gzhandler');
+	if(!in_array('Cache-Control: no-cache', headers_list(), true))
 		++$_SESSION['_NVisit'];
-	}
 	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line"));
-	print('/*~NScript~*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");');
+	echo '/*~NScript~*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
+	if($gzip)
+		ob_end_flush();
+	flush();
 	global $OmniscientBeing;
 	$_SESSION['_NScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
-	$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-    ob_end_flush();
+	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
     exit();
 }
 /**
@@ -96,11 +98,11 @@ final class Application extends Object
 	{
 		if(isset($GLOBALS['_NDebugMode']))
 			ob_end_clean();
-        print('/*~NScript~*/');
+        echo '/*~NScript~*/';
         $webPage = GetComponentById('N1');
         if($webPage != null && !$webPage->GetUnload()->Blank())
         {
-            print('window.onunload=null;');
+            echo 'window.onunload=null;';
             $webPage->Unload->Exec();
         }
 		if($clearSessionVariables)
@@ -111,11 +113,11 @@ final class Application extends Object
 		$browser = GetBrowser();
 		if($browser=='ie' || $browser=='ff')
 			if($clearURLTokens)
-				print('window.location.replace('.$url.');');
+				echo 'window.location.replace(', $url, ');';
 			else
-				print('window.location.reload(true);');
+				echo 'window.location.reload(true);';
 		else
-			print('var frm=document.createElement("FORM");frm.action='.$url.';frm.method="post";document.body.appendChild(frm);frm.submit();');
+			echo 'var frm=document.createElement("FORM");frm.action=', $url, ';frm.method="post";document.body.appendChild(frm);frm.submit();';
 		exit();
 	}
 	/**
@@ -125,7 +127,7 @@ final class Application extends Object
 	{
 		//ini_set('session.gc_probability', '100');
 		//session_name(hash('md5', $_SERVER['PHP_SELF']));
-		session_name(hash('md5', isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : ($GLOBALS['_NApp'] = rand(0, 99999))));
+		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : rand(0, 99999))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
@@ -191,8 +193,8 @@ final class Application extends Object
 			$_SESSION['_NStartUpPageClass'],
 			$_SESSION['_NURL'],
 			$_SESSION['_NTokens'],
-			$_SESSION['HighestZIndex'],
-			$_SESSION['LowestZIndex']);
+			$_SESSION['_NHighestZ'],
+			$_SESSION['_NLowestZ']);
 	}
 	
 	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
@@ -221,8 +223,8 @@ final class Application extends Object
 		$_SESSION['_NStartUpPageClass'] = $className;
 		$_SESSION['_NURL'] = $_SERVER['PHP_SELF'];
 		$_SESSION['_NTokens'] = array();
-		$_SESSION['HighestZIndex'] = 0;
-		$_SESSION['LowestZIndex'] = 0;
+		$_SESSION['_NHighestZ'] = 0;
+		$_SESSION['_NLowestZ'] = 0;
 		UserAgent::LoadInformation();
 		if($trulyFirst)
 			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')
@@ -411,7 +413,7 @@ final class Application extends Object
 		header('Cache-Control: no-cache');
 		header('Pragma: no-cache');
 		//header('Cache-Control: no-store');
-		if(++$_SESSION['_NVisit']===0)
+		if(++$_SESSION['_NVisit'] === 0)
 		{
 			header('Content-Type: text/javascript');
 			$GLOBALS['_NWidth'] = $_GET['NWidth'];
@@ -427,16 +429,19 @@ final class Application extends Object
 		NolohInternal::SetPropertyQueue();
 		NolohInternal::FunctionQueue();
 		ob_end_clean();
-		if(defined('FORCE_GZIP'))
+		$gzip = defined('FORCE_GZIP');
+		if($gzip)
 			ob_start('ob_gzhandler');
-		print($_SESSION['_NScriptSrc'] . '/*~NScript~*/' . $_SESSION['_NScript'][0] . $_SESSION['_NScript'][1] . $_SESSION['_NScript'][2]);
-		ob_flush();
+		echo $_SESSION['_NScriptSrc'], '/*~NScript~*/', $_SESSION['_NScript'][0], $_SESSION['_NScript'][1], $_SESSION['_NScript'][2];
+		if($gzip)
+			ob_end_flush();
+		flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)
 				$connection->Close();
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
 		$GLOBALS['_NGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['_NGarbage']);
