@@ -19,10 +19,9 @@ class CheckListBox extends ListControl
 {
 	/**
 	 * The ArrayList of CheckBox objects
-	 * @access protected
 	 * @var ArrayList
 	 */
-	protected $CheckBoxes;
+	public $CheckBoxes;
 	
 	/**
 	* Constructor.
@@ -206,6 +205,7 @@ class CheckListBox extends ListControl
 	function Show()
 	{
 		$initialProperties = parent::Show();
+		$initialProperties .= ',\'style.overflow\',\'auto\'';
 		NolohInternal::Show('DIV', $initialProperties, $this);
 		return $initialProperties;
 	}
