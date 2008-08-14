@@ -37,7 +37,7 @@ function _NErrorHandler($number, $string, $file, $line)
 	}
 	elseif($string === '~_NINFO~')
 	{
-		$_SESSION['_NPHPInfo'] = true;
+		setcookie('_NPHPInfo', true);
 		Application::Reset(true, false);
 	}
 	$gzip = defined('FORCE_GZIP');
@@ -99,7 +99,7 @@ final class Application extends Object
 		if(isset($GLOBALS['_NDebugMode']))
 			ob_end_clean();
         echo '/*~NScript~*/';
-        $webPage = GetComponentById('N1');
+        $webPage = WebPage::That();
         if($webPage != null && !$webPage->GetUnload()->Blank())
         {
             echo 'window.onunload=null;';
@@ -127,7 +127,7 @@ final class Application extends Object
 	{
 		//ini_set('session.gc_probability', '100');
 		//session_name(hash('md5', $_SERVER['PHP_SELF']));
-		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : rand(0, 99999))));
+		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : rand(0, 99999999))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
@@ -199,8 +199,10 @@ final class Application extends Object
 	
 	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
 	{
-		if(isset($_SESSION['_NPHPInfo']))
+		if(isset($_COOKIE['_NPHPInfo']))
 		{
+			setcookie('_NPHPInfo', false);
+			unset($_COOKIE['_NPHPInfo'], $_REQUEST['_NPHPInfo']);
 			ob_start('_NPHPInfo');
 			phpinfo();
 			exit();
