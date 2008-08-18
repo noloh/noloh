@@ -13,6 +13,7 @@ class TextBox extends Control
 	private $Password;
 	private $Hidden;
 	private $MaxLength;
+	private $Filter;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends TextBox
@@ -84,6 +85,24 @@ class TextBox extends Control
 		NolohInternal::SetProperty('value', $text, $this);
 	}
 	/**
+	 * Returns the regular expression  which filters out user input. E.g., '/^\d*$/' indicates numeric only
+	 * @return string
+	 */
+	function GetFilter()
+	{
+		return $this->Filter;
+	}
+	/**
+	 * Sets the regular expression  which filters out user input. E.g., '/^\d*$/' indicates numeric only
+	 * @param string $filter
+	 */
+	function SetFilter($filter)
+	{
+		AddNolohScriptSrc('Filter.js', true);
+		$this->Filter = $filter;
+		$this->UpdateEvent('KeyPress');
+	}
+	/**
 	 * Returns the string of text that was highlighted by the user
 	 * @return string
 	 */
@@ -104,6 +123,11 @@ class TextBox extends Control
 			$preStr = '_NSave("'.$this->Id.'","value");';
         elseif($eventTypeAsString == 'Focus')
             $preStr = '_NFocus="'.$this->Id.'";';
+        elseif($eventTypeAsString == 'KeyPress' && $this->Filter)
+        {
+        	preg_match('/^(.)\^?(.*?)\$?\1([a-zA-Z]*)$/', $this->Filter, $matches);
+        	$preStr = '_NFilter('.(UserAgent::IsIE()?'"':'event,"').$this->Id.'","'.str_replace('\\','\\\\\\\\',$matches[2]).'","'.$matches[3].'");';
+        }
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	/**
