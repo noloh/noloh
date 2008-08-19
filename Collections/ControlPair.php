@@ -66,11 +66,10 @@ class ControlPair extends Container
 	 */
 	function SetControl1($obj)
 	{
-		$tmpLeft = $this->GetLeft();
-		//$tmpTop = $this->GetTop();
+		$left = $this->GetLeft();
 		$this->Controls->Remove($this->Control1);
 		$this->Control1 = $obj;
-		$this->SetLeft($tmpLeft);
+		$this->SetLeft($left);
 		$this->Controls->Add($this->Control1);
 	}
 	/**
@@ -145,7 +144,7 @@ class ControlPair extends Container
 		else
 		{
 			$this->Control1->SetTop($top + $this->Control1->GetTop());
-			$this->Control2->SetTop($this->Control1->GetTop() + $this->Margin + $this->Control2->GetTop());
+			$this->Control2->SetTop($this->Control1->GetBottom() + $this->Margin + $this->Control2->GetTop());
 		}
 	}
 	/**
