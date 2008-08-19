@@ -359,10 +359,10 @@ $_SESSION['_NIE6'] ? '
 	 */
 	function SearchEngineShow($tokenLinks)
 	{
-		echo '<HTML><HEAD><TITLE>', $this->Title, '</TITLE>',
+		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML><HEAD><TITLE>', $this->Title, '</TITLE>',
 			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '"></META>',
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,
-			'"></META></HEAD><BODY>';
+			'"></META></HEAD><BODY lang="en">';
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
 		echo ' <BR>', $tokenLinks, ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>';

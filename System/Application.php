@@ -142,7 +142,7 @@ final class Application extends Object
 			File::SendRequestedFile($_GET['NOLOHFileRequest']);
 		elseif(isset($_SESSION['_NVisit']) || isset($_POST['NOLOHVisit']))
 		{
-			if(isset($_POST['NoSkeleton']) && GetBrowser()=='ie')
+			if(isset($_POST['NoSkeleton']) && UserAgent::IsIE())
 				$this->HandleIENavigation($className, $unsupportedURL);
 			elseif($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
 				return;
@@ -252,7 +252,7 @@ final class Application extends Object
 				self::UnsetNolohSessionVars();
 				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 			}
-			return true;
+			return true;//!isset($_COOKIE['_NApp']);
 		}
 		if($_SESSION['_NVisit']===0 && $_GET['NOLOHVisit']==0 && count($_POST)===0)	//FireBug bug
 			return true;
@@ -463,7 +463,7 @@ final class Application extends Object
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $info)
-					$tokenLinks .= '<A href="' . ($key[0]=='?'?($_SERVER['PHP_SELF'].$key):$key) . '">' . $info[0] . '</a> ';
+					$tokenLinks .= '<A href="' . ($key[0]=='?'?($_SERVER['PHP_SELF'].$key):$key) . '">' . $info[0] . '</a>, ';
 		}
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		ob_flush();
