@@ -6,7 +6,7 @@
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
+function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
 {
 	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 }
@@ -79,12 +79,12 @@ final class Application extends Object
 	/**
 	 * Specifies which WebPage class will serve as the initial start-up point of your application
 	 * @param string $className The name of the class that extends WebPage, as a string
-	 * @param string $unsupportedURL If a user's browser is not supported, or he does not have JavaScript enabled, this will be the URL of the error page to which he is navigated
+	 * @param string $unsupportedURL If a user's browser is not supported, or he does not have JavaScript enabled, this will be the URL of the error page to which he is navigated. A value of null will use NOLOH's to create a more degraded, non-JavaScript application
 	 * @param mixed $urlTokenMode Specifies how URL tokens are displayed. Possible values are URL::Display, URL::Encrypt, or URL::Disable
 	 * @param integer $tokenTrailsExpiration Specifies the number of seconds until token search trails file expires. Please see Search Engine Friendly documentation for more information
 	 * @param mixed $debugMode Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
 	 */
-	public static function SetStartUpPage($className, $unsupportedURL='', $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
+	public static function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
 	{
 		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 	}
@@ -126,8 +126,7 @@ final class Application extends Object
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
 		//ini_set('session.gc_probability', '100');
-		//session_name(hash('md5', $_SERVER['PHP_SELF']));
-		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : rand(0, 99999999))));
+		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : (empty($_COOKIE['NAppCookie']) ? rand(1, 99999999) : $_COOKIE['NAppCookie']))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
@@ -232,7 +231,10 @@ final class Application extends Object
 			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')
 				$this->SearchEngineRun();
 			else 
+			{
+				setcookie('NAppCookie', $GLOBALS['_NApp'], 0, '/');
 				WebPage::SkeletalShow($unsupportedURL);
+			}
 	}
 	
 	private function HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
@@ -417,15 +419,18 @@ final class Application extends Object
 		//header('Cache-Control: no-store');
 		if(++$_SESSION['_NVisit'] === 0)
 		{
-			header('Content-Type: text/javascript');
 			$GLOBALS['_NWidth'] = $_GET['NWidth'];
 			$GLOBALS['_NHeight'] = $_GET['NHeight'];
 			$this->HandleTokens();
 			$className = $_SESSION['_NStartUpPageClass'];
 			$this->WebPage = new $className();
-			$this->WebPage->Show();
+			if(empty($_COOKIE['NAppCookie']))
+				$this->WebPage->Show();
+			else
+				return $this->WebPage->NoScriptShow();
 		}
-		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || GetBrowser()!='ie'))
+		header('Content-Type: text/javascript');
+		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || !UserAgent::IsIE()))
 			URL::UpdateTokens();
 		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();

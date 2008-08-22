@@ -291,10 +291,11 @@ abstract class WebPage extends Component
 <HTML>
   <HEAD id="NHead">
     <TITLE>Loading NOLOH Application...</TITLE>
-    <NOSCRIPT><META http-equiv="refresh" content="0;url=',
-			$unsupportedURL === '' ?
-				'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
-				$unsupportedURL,
+    <NOSCRIPT><META http-equiv="refresh" content="0',
+			$unsupportedURL === null ?
+				//'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
+				'' : 
+				(';url='.$unsupportedURL.''),
   '"></NOSCRIPT>
   </HEAD>',
 UserAgent::IsIE() ? '
@@ -309,7 +310,8 @@ UserAgent::IsIE() ? '
 </HTML>
 
 <SCRIPT type="text/javascript">
-  _NApp = ', $GLOBALS['_NApp'], '; ', 
+  _NApp = ', $GLOBALS['_NApp'], ';
+  document.cookie = "NAppCookie=; expires=Thu, 1 Jan 1970, 00:00:00 UTC; path=/";', 
 $_SESSION['_NIE6'] ? '
   function _NIe6InitIframeLoad()
   {
@@ -366,6 +368,19 @@ $_SESSION['_NIE6'] ? '
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
 		echo ' <BR>', $tokenLinks, ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>';
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow()
+	{
+		ob_end_clean();
+		if(defined('FORCE_GZIP'));
+			ob_start('ob_gzhandler');
+		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML><HEAD><TITLE>', $this->Title, '</TITLE></HEAD><BODY lang="en">';
+		foreach($this->Controls as $control)
+			$control->SearchEngineShow();
+		echo '</BODY></HTML>';
 	}
 	/**
 	 * @ignore
