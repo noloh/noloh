@@ -59,6 +59,8 @@ abstract class WebPage extends Component
 	 */
 	function WebPage($title = 'Unititled Document', $keywords = '', $description = '')
 	{
+		if($_SESSION['_NVisit'] === -1)
+			throw new Exception($title, $GLOBALS['_NApp']);
 		parent::Component();
 		parent::Show();
 		$_SESSION['_NStartUpPageId'] = $this->Id;
@@ -66,7 +68,7 @@ abstract class WebPage extends Component
 		$this->Height = $GLOBALS['_NHeight'];
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
-		$this->SetTitle($title);
+		$this->Title = $title;
 		$this->Keywords = $keywords;
 		$this->Description = $description;
 //		$this->ReflectOS = false;
@@ -83,6 +85,17 @@ abstract class WebPage extends Component
 		$unload = parent::GetEvent('Unload');
 		$unload['User'] = new ClientEvent('');
 		$unload['System'] = new ServerEvent(null, 'isset', true);
+		AddNolohScriptSrc('ClientViewState.js', true);
+		switch(GetBrowser())
+		{
+			case 'ie': case 'sa': 			AddNolohScriptSrc('FindPositionIESa.js'); break;
+			case 'ff': 						AddNolohScriptSrc('FindPositionFF.js'); break;
+			case 'op': 						AddNolohScriptSrc('FindPositionOp.js');
+		}
+		AddNolohScriptSrc('GeneralFunctions.js');
+		if(!isset($_POST['NoSkeleton']) || !UserAgent::IsIE())
+			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);
+		AddScript('SaveControl(\''.$this->Id.'\')');
 		//$this->LoadImg->ZIndex = $this->LoadLbl->ZIndex = null;
 		//AddScript("document.getElementById('{$this->LoadLbl->Id}').style.zIndex=document.getElementById('{$this->LoadImg->Id}').style.zIndex=999999");
 		//require_once($_SERVER['DOCUMENT_ROOT'] ."/NOLOH/Javascripts/GetBrowserAndOs.php");
@@ -147,8 +160,11 @@ abstract class WebPage extends Component
 	 */
 	function SetTitle($title)
 	{
-		$this->Title = $title;
-		AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'), Priority::High);
+		if($this->Title !== $title)
+		{
+			$this->Title = $title;
+			AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'), Priority::High);
+		}
 	}
 	/**
 	 * Returns the horizontal size of the browser, in pixels
@@ -278,7 +294,7 @@ abstract class WebPage extends Component
 	/**
 	 * @ignore
 	 */
-	static function SkeletalShow($unsupportedURL)
+	static function SkeletalShow($title, $unsupportedURL)
 	{
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
@@ -290,7 +306,7 @@ abstract class WebPage extends Component
 
 <HTML>
   <HEAD id="NHead">
-    <TITLE>Loading NOLOH Application...</TITLE>
+    <TITLE>', $title, '</TITLE>
     <NOSCRIPT><META http-equiv="refresh" content="0',
 			$unsupportedURL === null ?
 				//'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
@@ -338,23 +354,6 @@ $_SESSION['_NIE6'] ? '
                + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight;
   head.appendChild(script);', '
 </SCRIPT>';
-	}
-	/**
-	 * @ignore
-	 */
-	function Show()
-	{
-		AddNolohScriptSrc('ClientViewState.js', true);
-		switch(GetBrowser())
-		{
-			case 'ie': case 'sa': 			AddNolohScriptSrc('FindPositionIESa.js'); break;
-			case 'ff': 						AddNolohScriptSrc('FindPositionFF.js'); break;
-			case 'op': 						AddNolohScriptSrc('FindPositionOp.js');
-		}
-		AddNolohScriptSrc('GeneralFunctions.js');
-		if(!isset($_POST['NoSkeleton']) || !UserAgent::IsIE())
-			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);
-		AddScript('SaveControl(\''.$this->Id.'\')');
 	}
 	/**
 	 * @ignore

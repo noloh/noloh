@@ -233,7 +233,17 @@ final class Application extends Object
 			else 
 			{
 				setcookie('NAppCookie', $GLOBALS['_NApp'], 0, '/');
-				WebPage::SkeletalShow($unsupportedURL);
+				try
+				{
+					$webPage = new $className();
+				}
+				catch(Exception $e)
+				{
+					if($e->getCode() === $GLOBALS['_NApp'])
+						WebPage::SkeletalShow($e->getMessage(), $unsupportedURL);
+					else 
+						BloodyMurder('An exception has been thrown from the constructor of your WebPage or a function called by it, and not caught. ' . $e->getMessage());
+				}
 			}
 	}
 	
