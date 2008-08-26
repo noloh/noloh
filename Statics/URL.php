@@ -197,6 +197,42 @@ final class URL
 			WebPage::That()->Controls->Add($wp);
 		}
 	}
+	/**
+	 * For browsers that support automatic bookmarks (sometimes known as favorites), it adds this application to the user's list. 
+	 * Otherwise, it will tell the user how he may easily bookmark this application manually.
+	 */
+	static function Bookmark()
+	{
+		switch(UserAgent::GetBrowser())
+		{
+			case 'ie':
+				AddScript('window.external.AddFavorite(document.URL,document.title);', Priority::Low);
+				break;
+			case 'ff': 
+				AddScript('window.sidebar.addPanel(document.title,document.URL,"");', Priority::Low);
+				break;
+			case 'op':
+				$version = (int)substr($_SERVER['HTTP_USER_AGENT'], strpos($_SERVER['HTTP_USER_AGENT'], 'Opera') + 6);
+				if($version === 9)
+				{
+					WebPage::That()->Controls->Add($wp = new WindowPanel('Bookmark', 0, 0, 330, 70));
+					$wp->Controls->Add($link = new Link(null, 'Please click here to bookmark this application.', 20, 5, null, null));
+					$link->Click = $wp->CloseImage->Click;
+					NolohInternal::SetProperty('rel', 'sidebar', $link);
+					AddScript('var a=_N("' . $link->Id . '");a.href=window.location;a.title=document.title;', Priority::Low);
+					break;
+				}
+				if($version === 7 || $version === 8)
+				{
+					AddScript('var a=document.createElement("a");a.href=document.URL;a.title=document.title;a.rel="sidebar";a.click();', Priority::Low);
+					break;
+				}
+			case 'sa':
+				$first = UserAgent::GetOperatingSystem() === 'mac' ? 'Cmd' : 'Ctrl';
+				$second = strpos($_SERVER['HTTP_USER_AGENT'], 'konqueror') === false ? 'D' : 'B';
+				Alert('Please press ' . $first . '+' . $second . ' to bookmark this application.');
+		}
+	}
 }
 
 ?>
