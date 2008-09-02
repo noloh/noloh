@@ -8,31 +8,32 @@ _NFocus = null;
 _NContextMenuSource = null;
 _NFlashArgs = null;
 _NURLTokenLink = null;
-_NLookup = new Object();
-_NLookup["style.left"] = "Left";
-_NLookup["style.top"] = "Top";
-_NLookup["style.width"] = "Width";
-_NLookup["style.height"] = "Height";
-_NLookup["style.zIndex"] = "ZIndex";
-_NLookup["style.background"] = "BackColor";
-_NLookup["style.color"] = "Color";
-_NLookup["value"] = "_NText";
-_NLookup["newText"] = "_NText";
-_NLookup["innerHTML"] = "_NText";
-_NLookup["selectedIndex"] = "SelectedIndex";
-_NLookup["selectedTab"] = "SelectedTab";
-_NLookup["checked"] = "Checked";
-_NLookup["className"] = "CSSClass";
-_NLookup["src"] = "Src";
-_NLookup["scrollLeft"] = "ScrollLeft";
-_NLookup["scrollTop"] = "ScrollTop";
-//_NLookup["options"] = "_NItems";
-_NLookup["selectedIndices"] = "_NSelectedIndices";
-_NLookup["calViewDate.setMonth"] = "ViewMonth";
-_NLookup["calViewDate.setFullYear"] = "ViewYear";
-_NLookup["calSelectDate.setDate"] = "Date";
-_NLookup["calSelectDate.setMonth"] = "Month";
-_NLookup["calSelectDate.setFullYear"] = "Year";
+_NLookup = 
+{
+	"style.left": "Left",
+	"style.top": "Top",
+	"style.width": "Width",
+	"style.height": "Height",
+	"style.zIndex": "ZIndex",
+	"style.background": "BackColor",
+	"style.color": "Color",
+	value: "_NText",
+	newText: "_NText",
+	innerHTML: "_NText",
+	selectedIndex: "SelectedIndex",
+	selectedTab: "SelectedTab",
+	checked: "Checked",
+	className: "CSSClass",
+	src: "Src",
+	scrollLeft: "ScrollLeft",
+	scrollTop: "ScrollTop",
+	selectedIndices: "_NSelectedIndices",
+	"calViewDate.setMonth": "ViewMonth",
+	"calViewDate.setFullYear": "ViewYear",
+	"calSelectDate.setDate": "Date",
+	"calSelectDate.setMonth": "Month",
+	"calSelectDate.setFullYear": "Year"
+}
 NOLOHUpload = new Object();
 NOLOHUpload.FileUploadObjIds = [];
 _NHistoryLength = history.length;
