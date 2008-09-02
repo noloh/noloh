@@ -17,7 +17,7 @@ _NLookup =
 	"style.height": "Height",
 	"style.zIndex": "ZIndex",
 	"style.background": "BackColor",
-	style.color: "Color",
+	"style.color": "Color",
 	value: "_NText",
 	newText: "_NText",
 	innerHTML: "_NText",
