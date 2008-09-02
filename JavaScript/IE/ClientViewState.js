@@ -47,6 +47,7 @@ function _NInit(loadLblId, loadImgId)
 	NOLOHCatchers = [];
 	window.onscroll = BodyScrollState;
 	window.onresize = BodySizeState;
+	_NTitle = document.title;
 	_NLoadLbl = loadLblId;
 	_NLoadImg = loadImgId;
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
@@ -134,8 +135,7 @@ function _NSetURL(hash, id)
 
 function _NSetTitle(title)
 {
-	document.title = title;
-	_NTitle = title;
+	document.title = _NTitle = title;
 }
 
 function SaveControl(id)
