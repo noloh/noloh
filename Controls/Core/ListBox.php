@@ -154,6 +154,14 @@ class ListBox extends ListControl
 		$initialProperties .= $this->GetEventString(null);
 		NolohInternal::Show('SELECT', $initialProperties, $this);
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = Control::NoScriptShow($indent);
+		echo $indent, '<SELECT MULTIPLE ', $str, ">\n", ListControl::NoScriptShow($indent), $indent, "</INPUT>\n";
+	}
 }
 
 ?>

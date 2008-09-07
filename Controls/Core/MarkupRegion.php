@@ -199,15 +199,6 @@ class MarkupRegion extends Control
 			//$this->MarkupString = $markupStringOrFile;
 //	}
 	/**
-	 * @ignore
-	 */
-	function Show()
-	{
-        NolohInternal::Show('DIV', parent::Show(), $this);
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupRegionScript.js");
-		AddNolohScriptSrc('MarkupRegion.js');
-	}
-	/**
 	 * Styles a string of text by giving it a CSS class
 	 * @param string $text The string to be styled
 	 * @param string $class The name of the CSS class
@@ -220,9 +211,26 @@ class MarkupRegion extends Control
 	/**
 	 * @ignore
 	 */
+	function Show()
+	{
+        NolohInternal::Show('DIV', parent::Show(), $this);
+		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupRegionScript.js");
+		AddNolohScriptSrc('MarkupRegion.js');
+	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
 		echo is_file($this->Text)?file_get_contents($this->Text):$this->Text, ' ';
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = Control::NoScriptShow($indent);
+		echo $indent, '<DIV ', $str, ">\n", is_file($this->Text)?file_get_contents($this->Text):$this->Text, $indent, "</DIV>\n";
 	}
 }
 

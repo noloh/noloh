@@ -328,5 +328,13 @@ class Label extends Control
 		NolohInternal::Show('DIV', parent::Show(), $this);
 		//return $initialProperties;
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<DIV ', $str, '>', $this->Text, "</DIV>\n";
+	}
 }
 ?>

@@ -84,6 +84,14 @@ class ComboBox extends ListControl
 		$initialProperties .= $this->GetEventString(null);
 		NolohInternal::Show('SELECT', $initialProperties, $this);
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = Control::NoScriptShow($indent);
+		echo $indent, '<SELECT ', $str, ">\n", ListControl::NoScriptShow($indent), $indent, "</INPUT>\n";
+	}
 }
 
 ?>

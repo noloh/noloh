@@ -169,6 +169,17 @@ class Form extends Component
 	/**
 	 * @ignore
 	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<FORM action="', $this->Action, '" method="', $this->Method, "\">\n";
+		foreach($this->Controls as $control)
+			$control->NoScriptShow($indent);
+		echo $indent, "</FORM>\n";
+	}
+	/**
+	 * @ignore
+	 */
 	function Bury()
 	{
 		foreach($this->Controls as $control)

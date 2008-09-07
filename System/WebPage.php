@@ -376,10 +376,25 @@ $_SESSION['_NIE6'] ? '
 		ob_end_clean();
 		if(defined('FORCE_GZIP'));
 			ob_start('ob_gzhandler');
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML><HEAD><TITLE>', $this->Title, '</TITLE></HEAD><BODY lang="en">';
+		echo 
+'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<!-- Powered by NOLOH -->
+<!--  www.noloh.com  -->
+
+<HTML>
+  <HEAD>
+    <TITLE>', $this->Title, '</TITLE>
+  </HEAD>
+  <BODY lang="en"';
+		if($this->BackColor)
+			echo ' bgcolor="', $this->BackColor, '"';
+		echo ">\n";
 		foreach($this->Controls as $control)
-			$control->SearchEngineShow();
-		echo '</BODY></HTML>';
+			$control->NoScriptShow('  ');
+		echo 
+'  </BODY>
+</HTML>';
 	}
 	/**
 	 * @ignore

@@ -197,5 +197,16 @@ class Panel extends Control
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<DIV ', $str, ">\n";
+		foreach($this->Controls as $control)
+			$control->NoScriptShow($indent);
+		echo $indent, "</DIV>\n";
+	}
 }
 ?>

@@ -88,11 +88,19 @@ class Button extends Control
 		NolohInternal::SetProperty('value', $text, $this);
 	}
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	function Show()
 	{
 		NolohInternal::Show('INPUT', parent::Show(), $this);
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<INPUT type="button" ', $str, ' value="', $this->Text, "\"></INPUT>\n";
 	}
 }
 ?>

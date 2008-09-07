@@ -181,6 +181,14 @@ class TextArea extends Control
 		if(GetBrowser() != 'ie')
 			AddScript('_N(\''.$this->Id.'\').addEventListener(\'input\',doInput,false)');
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<TEXTAREA ', $str, "></TEXTAREA>\n";
+	}
 }
 
 ?>

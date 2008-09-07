@@ -907,6 +907,25 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
+	function NoScriptShow(&$indent)
+	{
+		$indent .= '  ';
+		$str = '';
+		if($this->Layout !== 2)
+			$str .= 'position:' . ($this->Layout === 1 ? 'absolute' : 'relative') . ';';
+		if($this->Left !== null)
+			$str .= 'left:' . $this->Left . (is_numeric($this->Left)?'px':'') . ';';
+		if($this->Top !== null)
+			$str .= 'top:' . $this->Top . (is_numeric($this->Top)?'px':'') . ';';
+		if($this->Width !== null)
+			$str .= 'width:' . $this->Width . (is_numeric($this->Width)?'px':'') . ';';
+		if($this->Height !== null)
+			$str .= 'height:' . $this->Height . (is_numeric($this->Height)?'px':'') . ';';
+		return $str ? ('style="' . $str . '"') : $str;
+	}
+	/**
+	 * @ignore
+	 */
 	function &__get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')

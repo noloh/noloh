@@ -204,6 +204,15 @@ abstract class ListControl extends Control
 		foreach($this->Items as $item)
 			echo $item->Text, ' ', $item->Value, ' ';
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$indent .= '  ';
+		foreach($this->Items as $item)
+			echo $indent, '<OPTION value="', $item->Value, '">', $item->Text, "</OPTION>\n";
+	}
 }
 	
 ?>

@@ -51,6 +51,14 @@ class RadioButton extends CheckControl implements Groupable
 			NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
         }
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<INPUT type="radio" ', $str, '>', $this->Text, "</INPUT>\n";
+	}
 }
 	
 ?>

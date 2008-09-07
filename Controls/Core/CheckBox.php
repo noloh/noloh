@@ -65,5 +65,13 @@ class CheckBox extends CheckControl implements MultiGroupable
 		NolohInternal::Show('INPUT', $initialProperties, $this);    */
 		//return $initialProperties;
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<INPUT type="checkbox" ', $str, '>', $this->Text, "</INPUT>\n";
+	}
 }	
 ?>

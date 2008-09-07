@@ -168,9 +168,9 @@ class Link extends Label
 		$image->SetParentId($this->Id);
 		$this->Image = $image;
 		if(Control::GetWidth() === System::Auto)
-			Control::SetWidth($image->Width);
+			Control::SetWidth($image->GetWidth());
 		if(Control::GetHeight() === System::Auto)
-			Control::SetHeight($image->Height);
+			Control::SetHeight($image->GetHeight());
 	}
 	/**
 	 * @ignore
@@ -189,6 +189,23 @@ class Link extends Label
 		//$initialProperties = Control::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
 		NolohInternal::Show('A', Control::Show(), $this);
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = Control::NoScriptShow($indent);
+		echo $indent, '<A href="', $this->Destination, '" ', $str, '>';
+		if($this->Image)
+		{
+			echo "\n";
+			$this->Image->NoScriptShow($indent);
+			echo $indent;
+		}
+		else 
+			echo $this->Text;
+		echo "</A>\n";
 	}
 }
 ?>

@@ -59,14 +59,14 @@ class CheckListBox extends ListControl
 		if(is_string($item))
 		{
 			$checkItem = new Item($item, $item);
-			$newCheckBox = new CheckBox($item, 0, $top, $this->Width);
+			$newCheckBox = new CheckBox($item, 0, $top, System::Auto, System::Auto);
 		}
 		elseif(is_object($item))
 		{
 			if($item instanceof Item)
 			{
 				$checkItem = $item;
-				$newCheckBox = new CheckBox($item->Text, 0, $top, $this->Width);
+				$newCheckBox = new CheckBox($item->Text, 0, $top, System::Auto, System::Auto);
 			}
 			elseif($item instanceof CheckBox)
 			{
@@ -205,9 +205,20 @@ class CheckListBox extends ListControl
 	function Show()
 	{
 		$initialProperties = parent::Show();
-		$initialProperties .= ',\'style.overflow\',\'auto\'';
+		//$initialProperties .= ',\'style.overflow\',\'auto\'';
 		NolohInternal::Show('DIV', $initialProperties, $this);
 		return $initialProperties;
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<DIV ', $str, ">\n";
+		foreach($this->CheckBoxes as $checkBox)
+			$checkBox->NoScriptShow($indent);
+		echo $indent, "</DIV>\n";
 	}
 }
 

@@ -140,6 +140,14 @@ class IFrame extends Control
 	{
 		echo '<A href="', $this->Src, '">', $this->Src, '</A> ';
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<IFRAME src="', $this->Src, '" ', $str, "></INPUT>\n";
+	}
 }
 	
 ?>

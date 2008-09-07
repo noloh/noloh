@@ -150,5 +150,13 @@ class TextBox extends Control
 		$initialProperties .= $this->GetEventString(null);
 		NolohInternal::Show('INPUT', $initialProperties, $this);
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<INPUT type="text" ', $str, "></INPUT>\n";
+	}
 }
 ?>

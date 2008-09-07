@@ -85,6 +85,14 @@ class FileUpload extends Control
 			$_SESSION['_NFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
 		}
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<INPUT type="file" ', $str, "></INPUT>\n";
+	}
 }
 
 ?>

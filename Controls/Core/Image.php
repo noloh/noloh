@@ -222,6 +222,14 @@ class Image extends Control
 		echo '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), '></IMG> ';
 	}
 	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		$str = parent::NoScriptShow($indent);
+		echo $indent, '<IMG src="', $this->Src, '" ', $str, "></IMG>\n";
+	}
+	/**
 	 *@ignore 
 	*/
 	static function MagicGeneration($src, $class, $function, $params, $width=300, $height=200)

@@ -54,4 +54,12 @@ class Container extends Component
 		foreach($this->Controls as $control)
 			$control->SearchEngineShow();
 	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow()
+	{
+		foreach($this->Controls as $control)
+			$control->NoScriptShow();
+	}
 }
