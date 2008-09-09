@@ -37,12 +37,18 @@ abstract class CheckControl extends Control
 			$this->Caption = $text;
 		else
 		{
-			$this->Caption = new Label(null, 23, 0, null, null);
+			if(is_numeric($width))
+				$width = max(1, $width-23);
+			$this->Caption = new Label(null, 23, 0, $width, $height);
 			$this->SetText($text);
+			if($width === System::Auto)
+				$this->SetWidth($this->Caption->Right);
+			if($height === System::Auto)
+				$this->SetHeight($this->Caption->Height);
 		}
 		//parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
-		$this->Caption->Click = new ClientEvent('_NGIClick("'.$this->Id.'I");');
+		$this->Caption->Click = new ClientEvent('_NCCClick("'.$this->Id.'I");');
         $this->Caption->SetParentId($this->Id);
 //		$this->GroupName = $this->Id;
 	}
@@ -147,7 +153,6 @@ abstract class CheckControl extends Control
 				$group->Change->Exec();
 		}
 	}
-	
 	/*
 	function SetLeft($newLeft)
 	{
@@ -189,6 +194,26 @@ abstract class CheckControl extends Control
 	/**
 	 * @ignore
 	 */
+	function GetChange()
+	{
+		$change = parent::GetEvent('Change');
+		if($change->Blank())
+			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
+		return $change;
+	}
+	/**
+	 * @ignore
+	 */
+	function SetChange($change)
+	{
+		$change = parent::GetEvent('Change');
+		if($change->Blank())
+			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'alert("hi");var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
+		return parent::SetChange($change);
+	}
+	/**
+	 * @ignore
+	 */
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
@@ -200,7 +225,12 @@ abstract class CheckControl extends Control
 	 */
 	function Show()
 	{
-		AddNolohScriptSrc('CheckControl.js');
+		// Weird AddNolohScriptSrc for Mixed browsers
+		if(!isset($_SESSION['_NScriptSrcs']['CheckControl.js']))
+		{
+			$_SESSION['_NScriptSrc'] .= file_get_contents(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'JavaScript/Mixed/CheckControl'.((UserAgent::IsIE()||UserAgent::GetBrowser()==='op')?'IEOp.js':'FFSa.js'));
+			$_SESSION['_NScriptSrcs']['CheckControl.js'] = true;
+		}
         NolohInternal::Show('DIV', parent::Show().',\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
 		//$this->Caption->Show();
 		//return $parentShow;
