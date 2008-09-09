@@ -88,9 +88,9 @@ abstract class WebPage extends Component
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(GetBrowser())
 		{
-			case 'ie': case 'sa': 			AddNolohScriptSrc('FindPositionIESa.js'); break;
-			case 'ff': 						AddNolohScriptSrc('FindPositionFF.js'); break;
-			case 'op': 						AddNolohScriptSrc('FindPositionOp.js');
+			case 'ie': case 'sa': 			AddNolohScriptSrc('Mixed/FindPositionIESa.js'); break;
+			case 'ff': 						AddNolohScriptSrc('Mixed/FindPositionFF.js'); break;
+			case 'op': 						AddNolohScriptSrc('Mixed/FindPositionOp.js');
 		}
 		AddNolohScriptSrc('GeneralFunctions.js');
 		if(!isset($_POST['NoSkeleton']) || !UserAgent::IsIE())
