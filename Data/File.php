@@ -41,7 +41,7 @@ class File extends Object
 	 */
 	static function Send($fileName, $contentType='application/octet-stream', $alias=null)
 	{
-		AddScript('_NRequestFile("' . $_SERVER['PHP_SELF'] . '?NOLOHFileRequest=' . $fileName . '")');
+		AddScript('_NRequestFile("' . $_SERVER['PHP_SELF'] . '?NApp=' . $GLOBALS['_NApp'] . '&NOLOHFileRequest=' . $fileName . '")');
 		$_SESSION['_NFileSend'][$fileName] = array($contentType, $alias);
 		//$webPage = GetComponentById('N1');
 		//$webPage->Controls->Add($iframe = new IFrame($_SERVER['PHP_SELF'].'?NOLOHFileRequest='.$fileName));
