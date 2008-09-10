@@ -71,7 +71,7 @@ class ClientEvent extends Event
 			return '[' . implode(',', $tmpArr) . ']';
 		}
 		elseif($param instanceof Component)
-			return '\'' . $param->Id . '\'';
+			return '"' . $param->Id . '"';
 		elseif(is_object($param))
 			BloodyMurder('Objects can not be passed as parameters to ClientEvent');
 	}
