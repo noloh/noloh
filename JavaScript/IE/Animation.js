@@ -21,6 +21,8 @@ function _NAni(id, prpty, from, to, duration, units, easing, fps)
 		this.ShiftType = prpty=="style.width"?1: prpty=="style.height"?2: prpty=="style.left"?4: 5;
 		SetShiftWithInitials(this.Obj);
 	}
+	if(this.Obj.AnimationStart != null)
+		this.Obj.AnimationStart.call();
 	this.Step = _NRunStep;
 	this.Stop = _NAniStop;
 	++_NAnimsCount;
@@ -73,6 +75,8 @@ function _NAniStop()
 		_NRem(this.ObjId);
 		_NSetProperty(this.ObjId, '_NOblivionS', 1);
 	}
+	if(this.Obj.AnimationStop != null)
+		this.Obj.AnimationStop.call();
 }
 function _NRunStep()
 {

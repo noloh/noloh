@@ -601,6 +601,26 @@ abstract class Control extends Component
         if($this->ZIndex == null)
             $this->_NSetZIndex(++$_SESSION['_NHighestZ']);
     }
+    /**
+     * Returns the AnimationStart Event, which gets launched whenever this Control begins to get animated.
+     * @return Event
+     */
+    function GetAnimationStart()					{return $this->GetEvent('AnimationStart');}
+    /**
+     * Sets the AnimationStart Event, which gets launched whenever this Control begins to get animated.
+     * @param Event
+     */
+    function SetAnimationStart($animationStart)		{$this->SetEvent($animationStart, 'AnimationStart');}
+    /**
+     * Returns the AnimationStop Event, which gets launched whenever this Control finishes getting animated.
+     * @return Event
+     */
+    function GetAnimationStop()						{return $this->GetEvent('AnimationStop');}
+    /**
+     * Sets the AnimationStop Event, which gets launched whenever this Control finishes getting animated.
+     * @param Event
+     */
+    function SetAnimationStop($animationStop)		{$this->SetEvent($animationStop, 'AnimationStop');}
 	/**
 	 * Returns the Change Event, which gets launched when significant changes are made to the Control. This can have different
 	 * interpretations depending on the specific type of Control.
