@@ -31,15 +31,15 @@ class WindowPanel extends Panel
 		$this->BodyPanel = new Panel(0, 0, null, null);
 		$this->SetThemeBorder('4px solid #07254a');
 		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
-		if(!$_SESSION['_NIE6'])
-		{
-			$imagesDir = $imagesRoot .'Std/';
-			$format = '.png';
-		}
-		else
+		if(UserAgent::IsIE6())
 		{
 			$imagesDir = $imagesRoot .'IE/';
 			$format = '.gif';
+		}
+		else
+		{
+			$imagesDir = $imagesRoot .'Std/';
+			$format = '.png';
 		}
 		$tmpTop = 7;
 			
@@ -128,7 +128,8 @@ class WindowPanel extends Panel
 			{
 				$this->TitleBar->CSSBackground_Image = 'url('. $corners[1] .')';
 				$this->TitleBar->SetHeight($this->LeftTitle->GetHeight());
-				$this->Menu->SetWidth($this->Width - ($this->BorderSize << 1));
+				if($this->Menu)
+					$this->Menu->SetWidth($this->Width - ($this->BorderSize << 1));
 			}
 		}
 		//TODO maximize, minimize, restore
@@ -199,15 +200,15 @@ class WindowPanel extends Panel
 		if(!$this->MinimizeImage)
 		{
 			$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
-			if(!$_SESSION['_NIE6'])
-			{
-				$imagesDir = $imagesRoot .'Std/';
-				$format = '.png';
-			}
-			else
+			if(UserAgent::IsIE6())
 			{
 				$imagesDir = $imagesRoot .'IE/';
 				$format = '.gif';
+			}
+			else
+			{
+				$imagesDir = $imagesRoot .'Std/';
+				$format = '.png';
 			}
 			$this->MinimizeImage = new RolloverImage($imagesDir .'WinMin'.$format, $imagesDir .'WinMinHover'.$format, 35, 7);
 			$this->MinimizeImage->ReflectAxis('x');

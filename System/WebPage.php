@@ -328,7 +328,7 @@ UserAgent::IsIE() ? '
 <SCRIPT type="text/javascript">
   _NApp = ', $GLOBALS['_NApp'], ';
   document.cookie = "NAppCookie=; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/";', 
-$_SESSION['_NIE6'] ? '
+UserAgent::IsIE6() ? '
   function _NIe6InitIframeLoad()
   {
   	if (req.readyState==4)
