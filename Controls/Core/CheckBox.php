@@ -43,7 +43,8 @@ class CheckBox extends CheckControl implements MultiGroupable
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change')
+		if($eventTypeAsString === 'Click')
+		//if($eventTypeAsString === 'Click' || $eventTypeAsString === 'Change')
            return '_NCBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
@@ -54,8 +55,8 @@ class CheckBox extends CheckControl implements MultiGroupable
 	{
         parent::Show();
 		$initialProperties = '\'id\',\''.$this->Id.'I\',\'type\',\'checkbox\',\'defaultChecked\','.($this->Checked?'true':'false').parent::GetEventString(null);
-        if($this->GroupName != null)
-            $initialProperties .= ',\'name\',\''.$this->GroupName.'\'';
+        //if($this->GroupName === null)
+        //    $initialProperties .= ',\'name\',\''.$this->Id.'\'';
 		NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
 
         /*

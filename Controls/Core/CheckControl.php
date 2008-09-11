@@ -141,7 +141,7 @@ abstract class CheckControl extends Control
 			if($this->GroupName != null)
 			{
 				$group = GetComponentById($this->GroupName);
-				if($bool)
+				if($bool && $group)
 					$group->Deselect();
 			}
 			if($this->GetShowStatus() !== 0)
@@ -193,7 +193,7 @@ abstract class CheckControl extends Control
 //	}
 	/**
 	 * @ignore
-	 */
+	 *
 	function GetChange()
 	{
 		$change = parent::GetEvent('Change');
@@ -203,12 +203,12 @@ abstract class CheckControl extends Control
 	}
 	/**
 	 * @ignore
-	 */
+	 *
 	function SetChange($change)
 	{
-		$change = parent::GetEvent('Change');
-		if($change->Blank())
-			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'alert("hi");var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
+		$oldChange = parent::GetEvent('Change');
+		if($oldChange->Blank())
+			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
 		return parent::SetChange($change);
 	}
 	/**

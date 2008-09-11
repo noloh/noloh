@@ -30,7 +30,7 @@ class RadioButton extends CheckControl implements Groupable
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString == 'Click')
+		if($eventTypeAsString === 'Click')
 //		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change')
 			return '_NRBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
@@ -46,8 +46,8 @@ class RadioButton extends CheckControl implements Groupable
 			NolohInternal::Show('<INPUT name="'.($this->GroupName != null?$this->GroupName:$this->Id).'">', $initialProperties, $this, $this->Id);
 		else
         {
-            if($this->GroupName != null)
-                $initialProperties .= ',\'name\',\''.$this->GroupName.'\'';
+            if($this->GroupName === null)
+                $initialProperties .= ',\'name\',\''.$this->Id.'\'';
 			NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
         }
 	}
