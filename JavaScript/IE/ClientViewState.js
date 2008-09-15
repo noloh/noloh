@@ -131,6 +131,8 @@ function _NSetURL(hash, id)
 	//d.title = _NTitle;
 	_NHistoryLength = history.length;
 	setTimeout(function() {document.title = _NTitle;}, 2000);
+	if(window.Tracker != null)
+		eval(window.Tracker);
 }
 
 function _NSetTitle(title)

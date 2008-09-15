@@ -178,6 +178,24 @@ final class URL
 		}
 	}
 	/**
+	 * Returns the URL Tracker, a ClientEvent that will get called when the URL changes, useful
+	 * for various statistical purposes, e.g., Google Analytics.
+	 * @return ClientEvent
+	 */
+	static function GetTracker()
+	{
+		return WebPage::That()->GetEvent('Tracker');
+	}
+	/**
+	 * Sets the URL Tracker, a ClientEvent that will get called when the URL changes, useful
+	 * for various statistical purposes, e.g., Google Analytics.
+	 * @param ClientEvent $tracker
+	 */
+	static function SetTracker($tracker)
+	{
+		return WebPage::That()->SetEvent($tracker, 'Tracker');
+	}
+	/**
 	 * Opens a URL in a new window
 	 * @param string $url
 	 * @param boolean $newBrowserNotPanel Specifies whether the url opens in a browser window, or alternatively, in a WindowPanel

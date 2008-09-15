@@ -281,7 +281,16 @@ abstract class WebPage extends Component
 	 */
 	function UpdateEvent($eventType)
 	{
-		QueueClientFunction($this, 'NOLOHChangeByObj',array('window','\''.Event::$Conversion[$eventType].'\'','\''.$this->GetEvent($eventType)->GetEventString($eventType, $this->Id).'\''));
+		$value = $this->GetEvent($eventType)->GetEventString($eventType, $this->Id);
+		if($eventType === 'Tracker')
+		{
+			$value = preg_replace('/null/', 'location.hash', $value, 1);
+			$property = 'Tracker';
+			QueueClientFunction($this, 'eval', array('window.Tracker'), true, Priority::Low);
+		}
+		else 
+			$property = Event::$Conversion[$eventType];
+		QueueClientFunction($this, 'NOLOHChangeByObj', array('window','\''.$property.'\'','\''.$value.'\''), false);
 	}
 	/**
 	 * Returns the instance of WebPage that was used with SetStartupPage. The name is a pun on the "this" concept.

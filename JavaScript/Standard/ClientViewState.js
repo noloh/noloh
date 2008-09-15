@@ -71,6 +71,8 @@ function _NSetURL(hash, id)
 		_NURLTokenLink = id;
 	location = document.URL.split('#',1)[0] + "#/" + hash;
 	_NHash = location.hash;
+	if(window.Tracker != null)
+		eval(window.Tracker);
 }
 
 function SaveControl(id)
