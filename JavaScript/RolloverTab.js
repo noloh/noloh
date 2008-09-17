@@ -1,10 +1,10 @@
 function _NChgRlOvrTb(rlOvrTb, state)
 {
 	var tab = _N(rlOvrTb);
-	if(tab.Selected || tab.cur == state)
+	if(tab.Selected || tab.Cur == state)
 		return;
 	if(tab.Cur != null)
-	{	
+	{
 		_N(tab[tab.Cur]).style.display = 'none';
 		_N(tab[state]).style.display = '';
 		tab.Cur = state;

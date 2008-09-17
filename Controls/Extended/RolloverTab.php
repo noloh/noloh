@@ -53,6 +53,7 @@ class RolloverTab extends Panel implements Groupable
 		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
+		NolohInternal::SetProperty('Cur', 'Out', $this);
 	}
 	/**
 	 * @ignore
@@ -220,11 +221,11 @@ class RolloverTab extends Panel implements Groupable
 	 */
 	function Show()
 	{
+		AddNolohScriptSrc('RolloverTab.js');
+		//NolohInternal::SetProperty('Cur', 'Out', $this);
 		if($this->TextObject)
 			$this->TextObject->BringToFront();
 		parent::Show();
-		AddNolohScriptSrc('RolloverTab.js');
-		NolohInternal::SetProperty('Cur', 'Out', $this);
 	}
 }
 ?>
