@@ -2,7 +2,7 @@
 /**
  * Link class
  *
- * A Control for a conventional web link. A Link is a string of Text or Image that can redirect a user to a different Destination,
+ * A Control for a conventional web link. A Link is a string of Text or Control (e.g., an Image) that can redirect a user to a different Destination,
  * either an external URL or by setting URL Tokens of your applcation, indicated by a Destination value of URL::Tokens. By default,
  * a text Link is blue and underlined, which has a familiar psychological appeal to anyone who has browsed the World Wide Web.
  * 
@@ -32,7 +32,7 @@ class Link extends Label
 	
 	private $Destination;
 	private $Target;
-	private $Image;
+	private $Control;
 	private $Tokens;
 	private $RemoveSubsequents;
 	/**
@@ -40,22 +40,27 @@ class Link extends Label
 	* Be sure to call this from the constructor of any class that extends Link
  	* Example
  	*	<pre> $tempVar = new Link(null, 0, 0, 80, 24);</pre>
- 	* @param mixed $destination Either a URL string or URL::Tokens if 
- 	* @param string|Image $textOrImage
+ 	* @param mixed $destination Either a URL string or URL::Tokens if you want the link to change tokens
+ 	* @param string|Control $textOrControl
 	* @param integer $left The left coordinate of this element
 	* @param integer $top The top coordinate of this element
 	* @param integer $width The width of this element
 	* @param integer $height The height of this element
 	*/
-	function Link($destination='', $textOrImage='', $left = 0, $top = 0, $width = 83, $height = 20)  
+	function Link($destination='', $textOrControl='', $left = 0, $top = 0, $width = 83, $height = 20)  
 	{
-		if(is_object($textOrImage))
+		if(is_object($textOrControl))
 		{
-			parent::Label(null, $left, $top, $width, $height);
-			$this->SetImage($textOrImage);
+			if($textOrControl instanceof Control)
+			{
+				parent::Label(null, $left, $top, $width, $height);
+				$this->SetControl($textOrControl);
+			}
+			else
+				BloodyMurder('Invalid type passed into the 2nd parameter of Link constructor. Must be either a string or Control.');
 		}
 		else 
-			parent::Label($textOrImage, $left, $top, $width, $height);
+			parent::Label($textOrControl, $left, $top, $width, $height);
 		$this->SetDestination($destination);
 		$this->Tokens = array();
 		$this->RemoveSubsequents = array();
@@ -150,27 +155,55 @@ class Link extends Label
 		NolohInternal::SetProperty('target', $targetType, $this);
 	}
 	/**
-	 * Returns the Image to be used as the Link, instead of a string of text.
-	 * @return Image
+	 * Returns the Control to be used as the Link, instead of a string of text.
+	 * @return Control
 	 */
-	function GetImage()
+	function GetControl()
 	{
-		return $this->Image;
+		return $this->Control;
 	}
 	/**
-	 * Sets the Image to be used as the Link, instead of a string of text.
-	 * @param Image $image
+	 * Sets the Control to be used as the Link, instead of a string of text.
+	 * @param Control $control
 	 */
-	function SetImage($image)
+	function SetControl($control)
 	{
-		if($this->Image != null)
-			$this->Image->SetParentId(null);
-		$image->SetParentId($this->Id);
-		$this->Image = $image;
-		if(Control::GetWidth() === System::Auto)
-			Control::SetWidth($image->GetWidth());
-		if(Control::GetHeight() === System::Auto)
-			Control::SetHeight($image->GetHeight());
+		if($this->Control != null)
+			$this->Control->SetParentId(null);
+		$control->SetParentId($this->Id);
+		$this->Control = $control;
+		unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
+		NolohInternal::SetProperty('style.width', '', $this);
+		NolohInternal::SetProperty('style.height', '', $this);
+		$this->CSSClass = 'NLinkC';
+	}
+	/**
+	 * @ignore
+	 */
+	function SetText($text)
+	{
+		parent::SetText($text);
+		if($this->Control != null)
+		{
+			$this->Control->SetParentId(null);
+			Control::SetWidth($this->Width);
+			Control::SetHeight($this->Height);
+		}
+		$this->CSSClass = str_replace('NLinkC', '', $this->CSSClass);
+	}
+	/**
+	 * @ignore
+	 */
+	function GetWidth()
+	{
+		return $this->Control == null ? parent::GetWidth() : $this->Control->GetWidth();
+	}
+	/**
+	 * @ignore
+	 */
+	function GetHeight()
+	{
+		return $this->Control == null ? parent::GetHeight() : $this->Control->GetHeight();
 	}
 	/**
 	 * @ignore
@@ -197,10 +230,10 @@ class Link extends Label
 	{
 		$str = Control::NoScriptShow($indent);
 		echo $indent, '<A href="', $this->Destination, '" ', $str, '>';
-		if($this->Image)
+		if($this->Control)
 		{
 			echo "\n";
-			$this->Image->NoScriptShow($indent);
+			$this->Control->NoScriptShow($indent);
 			echo $indent;
 		}
 		else 
