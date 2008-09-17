@@ -48,6 +48,7 @@
 {
 	background-color:#FFFFFF;
 	border:2px ridge;
+	overflow:auto;
 }
 .NLabel
 {
@@ -67,10 +68,24 @@
 	visibility:hidden;
 	z-index:999999;
 }
-.NLVItem
+a img
+{
+	border:0px;
+}
+.NLinkC
+{
+	text-decoration:none;
+	overflow:visible;
+}
+.NLVSubItem
 {
 	padding-left:.3em;
 	white-space:nowrap;
+}
+.NLVSelect
+{
+	background-color:#011f43;
+	color:#FFFFFF;
 }
 .NPanel
 {
