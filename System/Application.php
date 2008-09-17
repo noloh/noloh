@@ -468,6 +468,7 @@ final class Application extends Object
 	{
 		$this->HandleTokens();
 		$className = $_SESSION['_NStartUpPageClass'];
+		++$_SESSION['_NVisit'];
 		$this->WebPage = new $className();
 		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 		$tokenLinks = '';
