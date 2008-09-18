@@ -137,8 +137,8 @@ class Link extends Label
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString == 'Click' && $this->Destination === null)
-			return '_NSetURL("' . URL::TokenString($this->Tokens) . '","' . $this->Id . '");' . parent::GetEventString($eventTypeAsString);
+		if($eventTypeAsString === 'Click' && $this->Destination === null)
+			return '_NSetURL("' . URL::TokenString($this->Tokens) . '","' . $this->Id . '");' . parent::GetEventString($eventTypeAsString) . 'this.blur();';
 			//return 'location="#/' . URL::TokenString($this->Tokens) . '";' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
@@ -168,14 +168,15 @@ class Link extends Label
 	 */
 	function SetControl($control)
 	{
-		if($this->Control != null)
+		if($this->Control == null)
+			$this->CSSClass .= ' NLnkCtrl';
+		else 
 			$this->Control->SetParentId(null);
 		$control->SetParentId($this->Id);
 		$this->Control = $control;
 		unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
 		NolohInternal::SetProperty('style.width', '', $this);
 		NolohInternal::SetProperty('style.height', '', $this);
-		$this->CSSClass = 'NLinkC';
 	}
 	/**
 	 * @ignore
@@ -189,7 +190,7 @@ class Link extends Label
 			Control::SetWidth($this->Width);
 			Control::SetHeight($this->Height);
 		}
-		$this->CSSClass = str_replace('NLinkC', '', $this->CSSClass);
+		$this->CSSClass = str_replace('NLnkCtrl', '', $this->CSSClass);
 	}
 	/**
 	 * @ignore
