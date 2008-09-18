@@ -5,7 +5,6 @@ function LastMonth(id)
 	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
 	PrintCal(id);
 }
-
 function NextMonth(id)
 {
 	var calObj = _N(id);
@@ -13,21 +12,18 @@ function NextMonth(id)
 	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
 	PrintCal(id);
 }
-
 function LastYear(id)
 {
 	var calObj = _N(id);
 	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()-1);
 	PrintCal(id);
 }
-
 function NextYear(id)
 {
 	var calObj = _N(id);
 	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()+1);
 	PrintCal(id);
 }
-
 function CalSelectDate(event, calid)
 {
 	var cal = _N(calid);
@@ -41,19 +37,16 @@ function CalSelectDate(event, calid)
 	if(cal.onchange != null)
 		cal.onchange.call();
 }
-
 function PickerSelectDate(calid, comboid, format)
 {
     ShowDatePicker(calid, comboid, format);
 	_N(calid).style.display = 'none';
 }
-
 function ShowDatePicker(calid, comboid, format)
 {
 	var ds = GetDateString(calid,format);
 	_N(comboid).options[0] = new Option(ds,ds);
 }
-
 function ShowCalendar(id, ViewMonth, ViewYear, SelectDate, SelectMonth, SelectYear)
 {
 	var calObj = _N(id);
@@ -64,7 +57,6 @@ function ShowCalendar(id, ViewMonth, ViewYear, SelectDate, SelectMonth, SelectYe
 	SaveControl(id);
 	PrintCal(id);
 }
-
 function PrintCal(id)
 {
 	var ubound, date, i, Obj;
@@ -103,13 +95,11 @@ function PrintCal(id)
 	}
 	cal.calViewDate.setFullYear(Year, Month);
 }
-
 function GetFullDay(theDate)
 {
 	var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 	return weekday[theDate.getDay()];
 }
-
 function GetShortDay(theDate)
 {
 	var day = GetFullDay(theDate);
@@ -117,14 +107,12 @@ function GetShortDay(theDate)
 		return day.substring(0, 4);
 	return day.substring(0, 3);
 }
-
 function GetFullMonth(theDate)
 {
 	var fullmonth = ["January","February","March","April","May","June",
-			"July","August","September","October","November","December"];
+		"July","August","September","October","November","December"];
 	return fullmonth[theDate.getMonth()];
 }
-
 function GetMonthWithZeros(theDate)
 {
 	var month = theDate.getMonth();
@@ -132,14 +120,12 @@ function GetMonthWithZeros(theDate)
 		return "0"+(month+1).toString();
 	return month;
 }
-
 function GetDateWithZeros(theDate)
 {
 	if(theDate.getDate() <= 9)
 		return "0" + theDate.getDate().toString();
 	return theDate.getDate();
 }
-
 function GetShortMonth(theDate)
 {
 	var month = GetFullMonth(theDate);
@@ -147,7 +133,6 @@ function GetShortMonth(theDate)
 		return month.substring(0, 4);
 	return month.substring(0, 3);
 }
-
 function GetSuffixToNumericalDate(theDate)
 {
 	var date = theDate.getDate();
@@ -161,12 +146,10 @@ function GetSuffixToNumericalDate(theDate)
 		return date.toString() + "rd";
 	return date.toString() + "th";
 }
-
 function GetYear(theDate)
 {
 	return theDate.getFullYear().toString().substring(2,4);
 }
-
 function ChangeDateLetter(letter, theDate)
 {
 	switch(letter)
@@ -186,7 +169,6 @@ function ChangeDateLetter(letter, theDate)
 	}
 	return letter;
 }
-
 function GetDateString(calid, dateStr)
 {
 	var d = _N(calid).calSelectDate;
@@ -195,9 +177,7 @@ function GetDateString(calid, dateStr)
 		finalStr += ChangeDateLetter(dateStr.substring(i, i+1), d);
 	return finalStr;
 }
-
 _NOpenedCalendar = null;
-
 function TogglePull(calId, comboId, event)
 {
 	var Obj=_N(calId);
@@ -210,7 +190,6 @@ function TogglePull(calId, comboId, event)
 	}
 	_N(comboId).blur();
 }
-
 function CalendarClickOff()
 {
 	_N(_NOpenedCalendar).style.display = 'none';

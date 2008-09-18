@@ -62,13 +62,13 @@ class Calendar extends Panel
 		$this->DateDisplay = new Label('Out of Service', 0, 0, $width, 25);
 		$this->DateDisplay->SetCSSClass('NCalHead');
 		$leftYear = new Button('<<', 0, 0, 25, 25);
-		$leftYear->Click = new ClientEvent('LastYear(\''.$this->Id.'\');');
+		$leftYear->SetClick(new ClientEvent('LastYear(\''.$this->Id.'\');'));
 		$rightYear = new Button('>>', $width-25, 0, 25, 25);
-		$rightYear->Click = new ClientEvent('NextYear(\''.$this->Id.'\');');
+		$rightYear->SetClick(new ClientEvent('NextYear(\''.$this->Id.'\');'));
 		$leftMonth = new Button('<', 25, 0, 25, 25);
-		$leftMonth->Click = new ClientEvent('LastMonth(\''.$this->Id.'\');');
+		$leftMonth->SetClick(new ClientEvent('LastMonth(\''.$this->Id.'\');'));
 		$rightMonth = new Button('>', $width-50, 0, 25, 25);
-		$rightMonth->Click = new ClientEvent('NextMonth(\''.$this->Id.'\');');
+		$rightMonth->SetClick(new ClientEvent('NextMonth(\''.$this->Id.'\');'));
 		$this->Controls->AddRange($this->DateDisplay, $leftYear, $rightYear, $leftMonth, $rightMonth);
 		for($i=6; $i>=0; --$i)
 		{
@@ -80,7 +80,7 @@ class Calendar extends Panel
 			{
 				$this->Controls->Add($lbl = &new Label('', $j*31, 33+23*$i, 31));
 				$lbl->SetCSSClass('NCalCell');
-				$lbl->SetMouseUp(new ClientEvent('CalSelectDate(event,\''.$this->Id.'\')'));
+				$lbl->SetMouseUp(new ClientEvent('CalSelectDate(event,\''.$this->Id.'\');'));
 			}
 		$this->SetTimestamp($timestamp);
 	}
