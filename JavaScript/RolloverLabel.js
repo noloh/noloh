@@ -10,7 +10,8 @@ function _NTglRlOvrLbl(id, state)
 			{
 				prevLbl = _N(prevLbl);
 				_NSetRlOvrLblClr(prevLbl.id, prevLbl['Out']);
-				_NSetProperty(prevLbl.id, 'Selected', false);
+				prevLbl.Selected = false;
+				_NSave(prevLbl.id, 'Selected');
 				prevLbl.Cur = 'Out';
 			}
 			_NSetProperty(id, 'Selected', true);

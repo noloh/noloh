@@ -77,8 +77,7 @@ class RolloverImage extends Image implements Groupable
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	function SetSelected($bool)
 	{			
-		$selected = $bool ? true : null;
-		if($this->GetSelected() !== $selected)
+		if($this->GetSelected() != $bool)
 		{
 			parent::SetSelected($bool);
 			//Trigger Select Event if $bool is true, i.e. Selected

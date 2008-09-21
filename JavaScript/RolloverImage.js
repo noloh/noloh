@@ -14,7 +14,8 @@ function _NTglRlOvrImg(id, state)
 				{
 					prevImg = _N(prevImg);
 					prevImg.src = prevImg['Out'];
-					_NSetProperty(prevImg.id, 'Selected', false);
+					prevImg.Selected = false;
+					_NSave(prevImg.id, 'Selected');
 					prevImg.Cur = 'Out';
 				}
 			}

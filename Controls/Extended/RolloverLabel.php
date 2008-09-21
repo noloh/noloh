@@ -89,11 +89,10 @@ class RolloverLabel extends Label implements Groupable
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
 //	function GetSelected()				{return $this->Selected != null;}
 	function SetSelected($bool)
-	{		
-		parent::SetSelected($bool);	
-		$selected = $bool ? true : null;
-		if($this->Selected != $selected)
+	{
+		if($this->GetSelected() != $bool)
 		{
+			parent::SetSelected($bool);
 			if($bool)
 			{
 				$sel = $this->GetSelect();
