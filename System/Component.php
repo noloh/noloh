@@ -242,6 +242,13 @@ abstract class Component extends Object
 			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
 		return '\'id\',\''.$this->Id.'\'';
 	}
+	
+	function NoScriptShowChildren($indent)
+	{
+		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
+			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $true)
+				GetComponentById($id)->NoScriptShow($indent);
+	}
 	/**
 	 * The opposite of Showing. If the Component has a client-side aspect, it will be removed from the client.
 	 * Should not be called under most circumstances. Should only be called in overriding the Bury() of advanced, custom components.

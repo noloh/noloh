@@ -203,10 +203,12 @@ class Panel extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<DIV ', $str, ">\n";
-		foreach($this->Controls as $control)
-			$control->NoScriptShow($indent);
-		echo $indent, "</DIV>\n";
+		if($str !== false)
+		{
+			echo $indent, '<DIV ', $str, ">\n";
+			$this->NoScriptShowChildren($indent);
+			echo $indent, "</DIV>\n";
+		}
 	}
 }
 ?>

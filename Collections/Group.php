@@ -302,10 +302,9 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow()
+	function NoScriptShow($indent)
 	{
-		foreach($this->Groupees as $control)
-			$control->NoScriptShow();
+		$this->NoScriptShowChildren($indent);
 	}
 	/**
 	 * @ignore

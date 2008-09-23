@@ -227,7 +227,8 @@ class Image extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<IMG src="', $this->Src, '" ', $str, "></IMG>\n";
+		if($str !== false)
+			echo $indent, '<IMG src="', $this->Src, '" ', $str, "></IMG>\n";
 	}
 	/**
 	 *@ignore 

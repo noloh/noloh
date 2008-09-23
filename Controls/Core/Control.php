@@ -929,19 +929,45 @@ abstract class Control extends Component
 	 */
 	function NoScriptShow(&$indent)
 	{
+		if($this->Visible === 0)
+			return false;
+			
 		$indent .= '  ';
 		$str = '';
+		
 		if($this->Layout !== 2)
-			$str .= 'position:' . ($this->Layout === 1 ? 'absolute' : 'relative') . ';';
+			if($this->Layout == 0)
+			{
+				if($this->Visible === false)
+					return false;
+				$str .= 'position:absolute;';
+			}
+			else
+			{
+				if($this->Visible === false)
+					$str .= "visibility:hidden;";
+				$str .= 'position:relative;';
+			}
+		if(isset($_SESSION['_NPropertyQueue'][$this->Id]))
+			foreach($_SESSION['_NPropertyQueue'][$this->Id] as $name => $val)
+				if(strpos($name, 'style.') === 0 && $val !== '')
+					$str .= substr($name, 6) . ':' . $val . ';';
+		/*
 		if($this->Left !== null)
-			$str .= 'left:' . $this->Left . (is_numeric($this->Left)?'px':'') . ';';
+			$str .= (isset($_SESSION['_NPropertyQueue'][$this->Id]['style.right'])?'right:':'left:') . $this->Left . (is_numeric($this->Left)?'px':'') . ';';
 		if($this->Top !== null)
-			$str .= 'top:' . $this->Top . (is_numeric($this->Top)?'px':'') . ';';
+			$str .= (isset($_SESSION['_NPropertyQueue'][$this->Id]['style.bottom'])?'bottom:':'top:') . $this->Top . (is_numeric($this->Top)?'px':'') . ';';
 		if($this->Width !== null)
 			$str .= 'width:' . $this->Width . (is_numeric($this->Width)?'px':'') . ';';
 		if($this->Height !== null)
 			$str .= 'height:' . $this->Height . (is_numeric($this->Height)?'px':'') . ';';
-		return $str ? ('style="' . $str . '"') : $str;
+		*/
+		if($str)
+			$str = 'style="' . $str . '"';
+			
+		if($this->CSSClass !== null)
+			$str .= ' class="' . $this->CSSClass . '"';
+		return trim($str);
 	}
 	/**
 	 * @ignore
@@ -967,7 +993,7 @@ abstract class Control extends Component
 	 */
 	function __set($nm, $val)
 	{
-		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
+		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass')
 		{
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();

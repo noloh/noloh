@@ -172,10 +172,12 @@ class Form extends Component
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<FORM action="', $this->Action, '" method="', $this->Method, "\">\n";
-		foreach($this->Controls as $control)
-			$control->NoScriptShow($indent);
-		echo $indent, "</FORM>\n";
+		if($str !== false)
+		{
+			echo $indent, '<FORM action="', $this->Action, '" method="', $this->Method, "\">\n";
+			$this->NoScriptShowChildren();
+			echo $indent, "</FORM>\n";
+		}
 	}
 	/**
 	 * @ignore

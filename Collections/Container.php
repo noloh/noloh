@@ -59,7 +59,6 @@ class Container extends Component
 	 */
 	function NoScriptShow()
 	{
-		foreach($this->Controls as $control)
-			$control->NoScriptShow();
+		$this->NoScriptShowChildren($indent);
 	}
 }

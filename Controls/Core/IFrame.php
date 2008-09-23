@@ -146,7 +146,8 @@ class IFrame extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<IFRAME src="', $this->Src, '" ', $str, "></INPUT>\n";
+		if($str !== false)
+			echo $indent, '<IFRAME src="', $this->Src, '" ', $str, "></INPUT>\n";
 	}
 }
 	

@@ -230,7 +230,8 @@ class MarkupRegion extends Control
 	function NoScriptShow($indent)
 	{
 		$str = Control::NoScriptShow($indent);
-		echo $indent, '<DIV ', $str, ">\n", is_file($this->Text)?file_get_contents($this->Text):$this->Text, $indent, "</DIV>\n";
+		if($str !== false)
+			echo $indent, '<DIV ', $str, ">\n", is_file($this->Text)?file_get_contents($this->Text):$this->Text, $indent, "</DIV>\n";
 	}
 }
 

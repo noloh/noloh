@@ -334,7 +334,8 @@ class Label extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<DIV ', $str, '>', $this->Text, "</DIV>\n";
+		if($str !== false)
+			echo $indent, '<DIV ', $str, '>', $this->Text, "</DIV>\n";
 	}
 }
 ?>

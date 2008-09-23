@@ -72,7 +72,8 @@ class CheckBox extends CheckControl implements MultiGroupable
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<INPUT type="checkbox" ', $str, '>', $this->Text, "</INPUT>\n";
+		if($str !== false)
+			echo $indent, '<INPUT type="checkbox" ', $str, '>', $this->Text, "</INPUT>\n";
 	}
 }	
 ?>

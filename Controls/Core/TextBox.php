@@ -156,7 +156,8 @@ class TextBox extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<INPUT type="text" ', $str, "></INPUT>\n";
+		if($str !== false)
+			echo $indent, '<INPUT type="text" ', $str, "></INPUT>\n";
 	}
 }
 ?>

@@ -187,7 +187,8 @@ class TextArea extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<TEXTAREA ', $str, "></TEXTAREA>\n";
+		if($str !== false)
+			echo $indent, '<TEXTAREA ', $str, "></TEXTAREA>\n";
 	}
 }
 

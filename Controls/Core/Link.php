@@ -129,7 +129,8 @@ class Link extends Label
 	 */
 	function UpdateTokens()
 	{
-		NolohInternal::SetProperty('href', $destination===null?('#/'.URL::TokenString($this->Tokens)):$destination, $this);
+		NolohInternal::SetProperty('href', $this->Destination===null?('#/'.URL::TokenString($this->Tokens)):$this->Destination, $this);
+		//NolohInternal::SetProperty('href', $destination===null?('#/'.URL::TokenString($this->Tokens)):$destination, $this);
 		$this->UpdateEvent('Click');
 	}
 	/**
@@ -230,16 +231,19 @@ class Link extends Label
 	function NoScriptShow($indent)
 	{
 		$str = Control::NoScriptShow($indent);
-		echo $indent, '<A href="', $this->Destination, '" ', $str, '>';
-		if($this->Control)
+		if($str !== false)
 		{
-			echo "\n";
-			$this->Control->NoScriptShow($indent);
-			echo $indent;
+			echo $indent, '<A href="', $this->Destination===null?($_SERVER['PHP_SELF'].'?'.URL::TokenString($this->Tokens)):$this->Destination, '" ', $str, '>';
+			if($this->Control)
+			{
+				echo "\n";
+				$this->Control->NoScriptShow($indent);
+				echo $indent;
+			}
+			else 
+				echo $this->Text;
+			echo "</A>\n";
 		}
-		else 
-			echo $this->Text;
-		echo "</A>\n";
 	}
 }
 ?>

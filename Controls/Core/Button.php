@@ -100,7 +100,8 @@ class Button extends Control
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<INPUT type="button" ', $str, ' value="', $this->Text, "\"></INPUT>\n";
+		if($str !== false)
+			echo $indent, '<INPUT type="button" ', $str, ' value="', $this->Text, "\"></INPUT>\n";
 	}
 }
 ?>

@@ -57,7 +57,8 @@ class RadioButton extends CheckControl implements Groupable
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<INPUT type="radio" ', $str, '>', $this->Text, "</INPUT>\n";
+		if($str !== false)
+			echo $indent, '<INPUT type="radio" ', $str, '>', $this->Text, "</INPUT>\n";
 	}
 }
 	

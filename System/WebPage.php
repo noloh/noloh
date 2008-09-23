@@ -307,6 +307,7 @@ abstract class WebPage extends Component
 	{
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
+		$symbol = empty($_GET) ? '?' : '&';
 		echo 
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
@@ -352,14 +353,14 @@ UserAgent::IsIE6() ? '
   
   req = new ActiveXObject("Microsoft.XMLHTTP");
   req.onreadystatechange = _NIe6InitIframeLoad;
-  req.open("POST", (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+(document.URL.indexOf("?")==-1?"?":"&") : document.URL.replace("#/",document.URL.indexOf("?")==-1?"?":"&")+"&")
+  req.open("POST", (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
                + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight, true);
   req.send("");'
 : '
   var head = document.getElementById("NHead");
   var script = document.createElement("SCRIPT");
   script.type = "text/javascript";
-  script.src = (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+(document.URL.indexOf("?")==-1?"?":"&") : document.URL.replace("#/",document.URL.indexOf("?")==-1?"?":"&")+"&")
+  script.src = (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
                + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight;
   head.appendChild(script);', '
 </SCRIPT>';
@@ -393,17 +394,27 @@ UserAgent::IsIE6() ? '
 
 <HTML>
   <HEAD>
-    <TITLE>', $this->Title, '</TITLE>
+    <TITLE>', $this->Title, '</TITLE>';
+	foreach($this->CSSFiles as $path)
+		echo '
+    <LINK rel="stylesheet" type="text/css" href="', $path, '"></LINK>';
+	echo '
   </HEAD>
   <BODY lang="en"';
 		if($this->BackColor)
 			echo ' bgcolor="', $this->BackColor, '"';
 		echo ">\n";
-		foreach($this->Controls as $control)
-			$control->NoScriptShow('  ');
+		foreach($_SESSION['_NControlQueueRoot'] as $id => $true)
+			GetComponentById($id)->NoScriptShow('  ');
 		echo 
 '  </BODY>
 </HTML>';
+		setcookie('NAppCookie', false, 0, '/');
+		ob_flush();
+		if(isset($_SESSION['_NDataLinks']))
+			foreach($_SESSION['_NDataLinks'] as $connection)
+				$connection->Close();
+		session_destroy();
 	}
 	/**
 	 * @ignore
