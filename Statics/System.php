@@ -98,38 +98,38 @@ final class System
 	 */
 	static function Log($what, $toFireBug=false)
 	{
-		//See http://getfirebug.com/console.html for some ideas
-		if($toFireBug)
-		{
-			if(!UserAgent::IsIE())
-				AddScript('console.log(' . ClientEvent::ClientFormat($text) . ');');
-		}
-		elseif($GLOBALS['_NDebugMode'])
-		{
-			$webPage = WebPage::That();
-			$debugWindow = $webPage->DebugWindow;
-			if($debugWindow)
+		if($GLOBALS['_NDebugMode'])
+			if($toFireBug)
 			{
-				$display = $debugWindow->Controls['Display'];
-				$old = true;
+				if(UserAgent::GetBrowser() == 'ff')
+					AddScript('console.log(' . ClientEvent::ClientFormat($text) . ');');
 			}
-			else
+			elseif($GLOBALS['_NDebugMode'])
 			{
-				$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
-				$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
-				$old = false;
-				$debugWindow->Buoyant = true;
+				$webPage = WebPage::That();
+				$debugWindow = $webPage->DebugWindow;
+				if($debugWindow)
+				{
+					$display = $debugWindow->Controls['Display'];
+					$old = true;
+				}
+				else
+				{
+					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
+					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
+					$old = false;
+					$debugWindow->Buoyant = true;
+				}
+				$debugWindow->ParentId = $webPage->Id;
+				$debugWindow->Visible = true;
+				$stamp = date('h:i:s') . substr(microtime(), 1, 5);
+				$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ' . self::LogFormat($what);
+				if(!isset($GLOBALS['_NDebugScrollAnim']))
+				{
+					Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
+					$GLOBALS['_NDebugScrollAnim'] = true;
+				}
 			}
-			$debugWindow->ParentId = $webPage->Id;
-			$debugWindow->Visible = true;
-			$stamp = date('h:i:s') . substr(microtime(), 1, 5);
-			$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ' . self::LogFormat($what);
-			if(!isset($GLOBALS['_NDebugScrollAnim']))
-			{
-				Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
-				$GLOBALS['_NDebugScrollAnim'] = true;
-			}
-		}
 	}
 }
 
