@@ -121,6 +121,24 @@ class CollapsePanel extends Panel
 		parent::SetHeight($newHeight);
 		NolohInternal::SetProperty('Hgt', $this->GetHeight(), $this);
 	}
+ 	/** Returns the Expand Event, which gets launched when the CollapsePanel expands open
+     * @return Event
+     */
+	function GetExpand()							{return $this->GetEvent('Expand');}
+	/**
+	 * Sets the Expand Event, which gets launched when a the CollapsePanel expands open
+	 * @param Event $scroll
+	 */
+	function SetExpand($expand)						{$this->SetEvent($expand, 'Expand');}
+ 	/** Returns the Collapse Event, which gets launched when the CollapsePanel collapses close
+     * @return Event
+     */
+	function GetCollapse()							{return $this->GetEvent('Collapse');}
+	/**
+	 * Sets the Collapse Event, which gets launched when a the CollapsePanel collapses close
+	 * @param Event $scroll
+	 */
+	function SetCollapse($collapse)						{$this->SetEvent($collapse, 'Collapse');}
 	function GetTitleBackground()
 	{
 		if(isset($this->TitlePanel->Controls['Glossy']))
