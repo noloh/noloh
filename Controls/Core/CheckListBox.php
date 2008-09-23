@@ -199,6 +199,57 @@ class CheckListBox extends ListControl
 		foreach($array as $val)
 			$this->SetSelectedValue($val, $bool);
 	}
+		/**
+	 * Gets the Text of a selected Item
+	 * @return string
+	 */
+	function GetSelectedText()
+	{
+		$selIdx = $this->GetSelectedIndex();
+		return $selIdx != -1 ? $this->Items->Elements[$selIdx]->Text : '';
+	}
+	/**
+	 * Selects an item whose Text matches the value passed in
+	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Value in the Items ArrayList
+	 * <br> Can also be called as a property
+	 * <pre>$this->SelectedText= 42;</pre>
+	 * @param string $value
+	 * @param boolean $select Indicates whether the Item should be selected or deseleted
+	 * @return mixed If found, the value passed in; otherwise null.
+	 */
+	function SetSelectedText($text, $bool=true)
+	{
+		$checkBoxCount = $this->CheckBoxes->Count();
+		for($i=0; $i<$checkBoxCount; $i++)
+			if($this->Items->Elements[$i]->Text == $val)
+			{
+				$this->CheckBoxes->Elements[$i]->Checked = $bool;
+				return $val;
+			}
+		return null;
+	}
+	/**
+	 * Returns an array of all the texts of the selected Items
+	 * @return array
+	 */
+	function GetSelectedTexts()
+	{
+		$checkedArray = array();
+		$selectedIndices = $this->GetSelectedIndices();
+		foreach($selectedIndices as $idx)
+			$checkedArray[] = $this->Items->Elements[$idx]->Text;
+		return $checkedArray;
+	}
+	/**
+	* Selects or deselects those and only those Items whose texts are elements of the specified array.
+	* @param array $array
+	* @param boolean $select Indicates whether the Items should be selected or deseleted
+	*/
+	function SetSelectedTexts($array, $bool=true)
+	{
+		foreach($array as $val)
+			$this->SetSelectedText($val, $bool);
+	}
 	/**
 	 * @ignore
 	 */
@@ -215,10 +266,12 @@ class CheckListBox extends ListControl
 	function NoScriptShow($indent)
 	{
 		$str = parent::NoScriptShow($indent);
-		echo $indent, '<DIV ', $str, ">\n";
-		foreach($this->CheckBoxes as $checkBox)
-			$checkBox->NoScriptShow($indent);
-		echo $indent, "</DIV>\n";
+		if($str !== false)
+		{
+			echo $indent, '<DIV ', $str, ">\n";
+			$this->NoScriptShowChildren($indent);
+			echo $indent, "</DIV>\n";
+		}
 	}
 }
 
