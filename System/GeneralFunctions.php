@@ -75,7 +75,7 @@ function Alert($msg)
 */
 function AddScript($script, $priority=Priority::Medium)
 {
-	$_SESSION['_NScript'][$priority] .= $script . ';';
+	$_SESSION['_NScript'][$priority] .= $script . ';';   //if(_N("N96")!=null&&_N("N96").Cur==null) alert('.++$GLOBALS['NUM'].');';
 	//$_SESSION['_NScript'][$priority] .= $script . ';/*_N*/';
 }
 /**
@@ -112,7 +112,7 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
  * The code will not be sent to the client, until the given Component has shown.<br>
  * Be sure to include an extra set of quotes for your string parameters.<br>
  * <pre>
- * 	QueueClientFunction($this, 'alert', "'This Component's Id is $this->Id'");
+ * 	QueueClientFunction($this, 'alert', array("'This Component's Id is $this->Id'"));
  * </pre>
  * @param Component $component
  * @param string $functionName The name of the JavaScript function
@@ -219,5 +219,25 @@ function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontS
 	}
 	return $retArray;
 }
-
+function GetRelativePath($fromDirectory, $toDirectory)
+{
+	$fromDirectory = rtrim($fromDirectory, '/');
+	$toLength = strlen($toDirectory);
+	$fromLength = strlen($fromDirectory);
+	
+	$length = min(array($toLength, $fromLength));
+	$lastMatchingSlash = 0;
+	
+	for($i=0; ($i<$length && ($toDirectory[$i] === $fromDirectory[$i])) ; ++$i)
+	{
+		if($fromDirectory[$i] === '/')
+			$lastMatchingSlash = $i;
+	}
+	$slashCount = 1;
+	for(; $i<$fromLength; ++$i)
+		if($fromDirectory[$i] === '/')
+			++$slashCount;
+			
+	return str_repeat('../', $slashCount) . substr($toDirectory, $lastMatchingSlash + 1);
+}
 ?>
