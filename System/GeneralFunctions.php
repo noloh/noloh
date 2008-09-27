@@ -233,7 +233,13 @@ function GetRelativePath($fromDirectory, $toDirectory)
 		if($fromDirectory[$i] === '/')
 			$lastMatchingSlash = $i;
 	}
-	$slashCount = 1;
+	if($i == $fromLength && $toLength > $fromLength && $toDirectory[$i] === '/')
+	{
+		$lastMatchingSlash = $i;
+		$slashCount = 0;
+	}
+	else
+		$slashCount = 1;
 	for(; $i<$fromLength; ++$i)
 		if($fromDirectory[$i] === '/')
 			++$slashCount;
