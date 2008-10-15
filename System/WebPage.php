@@ -284,7 +284,8 @@ abstract class WebPage extends Component
 		$value = $this->GetEvent($eventType)->GetEventString($eventType, $this->Id);
 		if($eventType === 'Tracker')
 		{
-			$value = preg_replace('/null/', 'location.hash', $value, 1);
+			//$value = preg_replace('/null/', 'location.hash', $value, 1);
+			$value = preg_replace('/null/', 'document.URL.indexOf("#/")==-1?document.URL.replace(location.hash,""):document.URL.replace("#/",document.URL.indexOf("?")==-1?"?":"&")', $value, 1);
 			$property = 'Tracker';
 			QueueClientFunction($this, 'eval', array('window.Tracker'), true, Priority::Low);
 		}
