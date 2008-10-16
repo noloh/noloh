@@ -31,8 +31,8 @@ class DataConnection extends Object
 		{
 			if(!is_resource($this->ActiveConnection) || pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD)
 			{
-				$tmpConnectString = 'dbname = ' . $this->DatabaseName . ' user='.$this->Username .' host = '.$this->Host. ' port = '. $this->Port .' password = ' .$this->Password;
-				$this->ActiveConnection = pg_connect($tmpConnectString);
+				$connectString = 'dbname = ' . $this->DatabaseName . ' user='.$this->Username .' host = '.$this->Host. ' port = '. $this->Port .' password = ' .$this->Password;
+				$this->ActiveConnection = pg_connect($connectString);
 			}
 		}
 		elseif($this->Type == Data::MySQL)
@@ -97,6 +97,8 @@ class DataConnection extends Object
 		}
 		elseif(is_int($value))
 			$tmpArg = (int)$value;
+		elseif(is_double($value))
+			$tmpArg = (double)$value;
 		elseif(is_bool($value))
 			$tmpArg = ($value)?'true':'false';
 		elseif(is_array($value))
@@ -114,6 +116,8 @@ class DataConnection extends Object
 		}
 		elseif(is_int($value))
 			$tmpArg = (int)$value;
+		elseif(is_double($value))
+			$tmpArg = (double)$value;
 		elseif(is_bool($value))
 			$tmpArg = ($value)?'true':'false';
 		elseif($value === null || $value == 'null') 
