@@ -228,7 +228,7 @@ abstract class Component extends Object
 	 */
 	static function That($className)
 	{
-		return isset($_SESSION['_NSingletons'][$className]) ? $_SESSION['_NSingletons'][$className] : null;
+		return isset($_SESSION['_NSingletons'][$className]) ? GetComponentById($_SESSION['_NSingletons'][$className]) : null;
 	}
 	/**
 	 * Shows the Component.
