@@ -83,6 +83,11 @@ class Event extends Object implements ArrayAccess
 	* @var string
 	*/
     public static $SelectedText;
+    /**
+	* When a ServerEvent is used as a callback for Bind(), this will contain the data pertaining to the particular iteration.
+	* @var string
+	*/
+    public static $BoundData;
 	
 	/**
 	 * @ignore
@@ -139,7 +144,8 @@ class Event extends Object implements ArrayAccess
 			$info = $this->GetInfo($arr, $onlyClientEvents);
 			$ret = '';
 			if($info[0] != '')
-				$ret .= ClientEvent::GenerateString($info[0]);
+//				$ret .= isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $info[0]) : $info[0];
+				$ret .= ClientEvent::GenerateString($eventType, $info[0]);
 			if(!$onlyClientEvents)
 				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1]);
 			return $ret;

@@ -26,10 +26,11 @@ class ClientEvent extends Event
 	/**
 	 * @ignore
 	 */
-	static function GenerateString($str)
+	static function GenerateString($eventType, $str)
 	{
+		return isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $str) : $str;
 		//return addslashes(str_replace("'", stripslashes("\""), $str));
-		return $str;
+		//return $str;
 	}
 	/**
 	 * Constructor.
@@ -46,8 +47,11 @@ class ClientEvent extends Event
 			for($i=1;$i<$count;++$i)
 				$allCodeAsString .= self::ClientFormat($params[$i]) .',';
 			$allCodeAsString = rtrim($allCodeAsString, ',') . ');';
+			parent::Event($allCodeAsString);
 		}
-		parent::Event(str_replace(array("\n", '\''), array(' ', '\\\''), $allCodeAsString));
+		else
+			parent::Event(str_replace("\n", ' ', $allCodeAsString));
+		//parent::Event(str_replace(array("\n", '\''), array(' ', '\\\''), $allCodeAsString));
 	}
 	/**
 	 * @ignore
@@ -56,7 +60,8 @@ class ClientEvent extends Event
 	{
 		if(is_string($param))
 			//return '\''.str_replace('\'', '\\\'', $param).'\'';
-			return '"'.str_replace('"', '\\\\"', $param).'"';
+			//return '"'.str_replace('"', '\\\\"', $param).'"';
+			return '"'.str_replace(array('"', "\n"), array('\\\\"', ' '), $param).'"';
 		elseif(is_int($param) || is_float($param))
 			return $param;
 		elseif(is_bool($param))
@@ -87,10 +92,12 @@ class ClientEvent extends Event
 	/**
 	 * @ignore
 	 */
-	function GetEventString($eventType, $ObjsId)
+	function GetEventString($eventType, $objsId)
 	{
 		return $this->GetEnabled() 
-			? $this->ParseToJS($eventType, $ObjsId)
+			? ClientEvent::GenerateString($eventType, $this->ExecuteFunction)
+	//		? (isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $this->ExecuteFunction) : $this->ExecuteFunction)
+	//		? $this->ParseToJS($eventType, $ObjsId)
 			: '';
 	}
 	/**
@@ -102,7 +109,7 @@ class ClientEvent extends Event
 	}
 	/**
 	 * @ignore
-	 */
+	 *
 	function ParseToJS($eventTypeAsString, $ObjsId)
 	{
 		//Temporary solution until it parses
@@ -120,7 +127,8 @@ class ClientEvent extends Event
 					$Code .= $this->ExecuteFunction[$i]->ParseToJS($eventTypeAsString."->ExecuteFunction[$i]", $ObjsId);
 			return $Code;
 		}
-	}
+	}/
+	
 	/**
 	 * Launches the particular event. That is, the client will be notified to execute the given JavaScript.
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
