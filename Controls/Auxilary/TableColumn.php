@@ -8,20 +8,17 @@
  */
 class TableColumn extends Panel
 {
-	//public $Span;
 	function TableColumn($object=null, $width=null, $height=null)
 	{
 		Panel::Panel(null, null, $width, $height, $this);
 		$this->Controls->AddFunctionName = "AddControl";
-		$this->Layout = 1;
-		//$this->Border = "1px solid black";
+		$this->Layout = Layout::Relative;
 		$this->SetControl($object);
 	}
 	function AddControl($control)
 	{
-		//if(func_num_args()==1)
 		$this->Controls->Add($control, true, true);
-		$control->Layout = 1;
+		$control->Layout = Layout::Relative;
 	}
 	public function GetControl()
 	{
@@ -53,7 +50,7 @@ class TableColumn extends Panel
 		NolohInternal::Show("TD", $initialProperties, $this);
 //		$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
 		//$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
-		$initialProperties = "'id','{$this->Id}IC','style.position','relative','style.overflow','hidden','style.width','{$this->Width}px'";
+		$initialProperties = "'id','{$this->Id}IC','style.position','relative','style.overflow','hidden','style.width','100%'";
 		NolohInternal::Show("DIV", $initialProperties, $this, $this->Id);
 	}
 }

@@ -13,8 +13,8 @@ class TableRow extends Control
 	
 	function TableRow()
 	{
-		parent::Control(0, 0, null, 20);
-		$this->Layout = 1;
+		parent::Control(0, 0, null, null);
+		$this->Layout = Layout::Relative;
 		$this->Columns = new ArrayList();
 		$this->Columns->ParentId = $this->Id;
 	}
