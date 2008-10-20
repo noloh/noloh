@@ -64,9 +64,9 @@ class ServerEvent extends Event
 	 */
 	static function GenerateString($eventType, $objId, $uploadArray)
 	{
-		return count($uploadArray) == 0
-			? "PostBack(\"$eventType\",\"$objId\",event);"
-			: "PostBackWithUpload(\"$eventType\",\"$objId\", [" . implode(',', $uploadArray) . '],event);';
+		return count($uploadArray) === 0
+			? 'PostBack("' . $eventType . '","' . $objId . '",event);'
+			: 'PostBackWithUpload("' . $eventType . '","' . $objId . '",[' . implode(',', $uploadArray) . '],event);';
 	}
 	/**
 	 * Constructor
@@ -139,15 +139,15 @@ class ServerEvent extends Event
 			return;
 		$execClientEvents = true;		
 		
+		$runThisString = 'return ';
 		if(is_object($this->Owner))
 			if($this->Owner instanceof Pointer)
-				$runThisString = '$this->Owner->Dereference()->';
+				$runThisString .= '$this->Owner->Dereference()->';
 			else 
-				$runThisString = '$this->Owner->';
+				$runThisString .= '$this->Owner->';
 		elseif(is_string($this->Owner))
-			$runThisString = $this->Owner . '::';
-		else
-			$runThisString = '';
+			$runThisString .= $this->Owner . '::';
+			
 		$runThisString .= $this->ExecuteFunction;
 		
 		if(strpos($this->ExecuteFunction,'(') === false)
@@ -169,8 +169,9 @@ class ServerEvent extends Event
 			Event::$Source = &$handles[0];
 		else
 			Event::$Source = $handles;
-		eval($runThisString);
+		$return = eval($runThisString);
 		Event::$Source = &$source;
+		return $return;
 	}
 	/**
 	 * @ignore
