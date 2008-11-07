@@ -1,8 +1,23 @@
 <?php
+// The code in this class is VERY repetitive. Don't code this way and don't judge me. I'll simplify it at a later date when I have time.
+
 /**
  * Shift class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * The Shift class contains various static functions and constants that when added to the Shifts
+ * ArrayList of any Control, allows the Control to be moved with another. Shift::With indicates
+ * that a Control will Shift when another Control is Shifted or Animated, while the other Shifts
+ * indicate a dragging behavior. 
+ * 
+ * <pre>
+ * // Makes a panel draggable.
+ * $panel->Shifts[] = Shift::Location($panel);
+ * // Makes an image resize a panel.
+ * $image->Shifts[] = Shift::Size($panel);
+ * </pre>
+ * 
+ * If the ShiftStart and ShiftStop Events for that Control have been defined, they will be launched when
+ * the animation starts and stops, respectfully.
  * 
  * @package Statics
  */
@@ -10,100 +25,321 @@ final class Shift
 {
 	const Normal = 0;
 	const Ghost = 1;
-	
+
 	const Width = 1;
 	const Height = 2;
 	const Size = 3;
 	const Left = 4;
 	const Top = 5;
 	const Location = 6;
-	
-	const Mirror = 7;
-	const All = 'null';
+
+	const Mirror = 0;
+	const All = 7;
 
 	private function Shift() {}
+
+	static function Width($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	{
+		$id = $control->Id;
+		if(func_num_args()>1)
+		{
+			$args = func_get_args();
+			unset($args[0]);
+			$str = '["'.$id.'",1,' . implode(',', $args) . ']';
+		}
+		else 
+			$str = '["'.$id.'",1]';
+		return array($id, 1, $str);
+	}
+
+	static function Height($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	{
+		$id = $control->Id;
+		if(func_num_args()>1)
+		{
+			$args = func_get_args();
+			unset($args[0]);
+			$str = '["'.$id.'",2,' . implode(',', $args) . ']';
+		}
+		else 
+			$str = '["'.$id.'",2]';
+		return array($id, 2, $str);
+	}
+
+	static function Size($control, $minWidth=1, $maxWidth=null, $minHeight=1, $maxHeight=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	{
+		$id = $control->Id;
+		$numArgs = func_num_args();
+		if($numArgs > 1)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[3], $args[4]);
+			$str1 = '["'.$id.'",1,' . implode(',', $args) . ']';
+			if($numArgs > 3)
+				$args[1] = $minHeight;
+			if($numArgs > 4)
+				$args[2] = $maxHeight;
+			$str2 = '["'.$id.'",2,' . implode(',', $args) . ']';
+		}
+		else 
+		{
+			$str1 = '["'.$id.'",1]';
+			$str2 = '["'.$id.'",2]';
+		}
+		return array($control->Id, 3, $str1, $str2);
+	}
+
+	static function Left($control, $min=0, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	{
+		$id = $control->Id;
+		if(func_num_args()>1)
+		{
+			$args = func_get_args();
+			unset($args[0]);
+			$str = '["'.$id.'",4,' . implode(',', $args) . ']';
+		}
+		else 
+			$str = '["'.$id.'",4]';
+		return array($id, 4, $str);
+	}
+
+	static function Top($control, $min=0, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	{
+		$id = $control->Id;
+		if(func_num_args()>1)
+		{
+			$args = func_get_args();
+			unset($args[0]);
+			$str = '["'.$id.'",5,' . implode(',', $args) . ']';
+		}
+		else 
+			$str = '["'.$id.'",5]';
+		return array($id, 5, $str);
+	}
+
+	static function Location($control, $minLeft=0, $maxLeft=null, $minTop=0, $maxTop=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	{
+		$id = $control->Id;
+		$numArgs = func_num_args();
+		if($numArgs > 1)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[3], $args[4]);
+			$str1 = '["'.$id.'",4,' . implode(',', $args) . ']';
+			if($numArgs > 3)
+				$args[1] = $minTop;
+			if($numArgs > 4)
+				$args[2] = $maxTop;
+			$str2 = '["'.$id.'",5,' . implode(',', $args) . ']';
+		}
+		else 
+		{
+			$str1 = '["'.$id.'",4]';
+			$str2 = '["'.$id.'",5]';
+		}
+		return array($control->Id, 6, $str1, $str2);
+	}
+
+	static function With(Component $object, $shiftMeType, $shiftWithType=Shift::Mirror, $min=null, $max=null, $ratio=null, $grid=1)
+	{
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 3)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[2]);
+			if($numArgs >= 6)
+				array_splice($args, 3, 0, $shiftWithType);
+			if($shiftMeType === 3 || $shiftMeType === 6)
+			{
+				unset($args[0]);
+				$str = ',' . implode(',', $args) . ']';
+				if($shiftMeType === 3)
+					if(!$shiftWithType || $shiftWithType === 3)
+						array_push($array, 1, '1'.$str, 2, '2'.$str);
+					elseif($shiftWithType === 6)
+						array_push($array, 4, '1'.$str, 5, '2'.$str);
+					else
+						array_push($array, $shiftWithType, '1'.$str, $shiftWithType, '2'.$str);
+				else
+					if(!$shiftWithType || $shiftWithType === 6)
+						array_push($array, 4, '4'.$str, 5, '5'.$str);
+					elseif($shiftWithType === 3)
+						array_push($array, 1, '4'.$str, 2, '5'.$str);
+					else
+						array_push($array, $shiftWithType, '4'.$str, $shiftWithType, '5'.$str);
+			}
+			else 
+			{
+				$str = implode(',', $args) . ']';
+				if($shiftWithType === 3)
+					array_push($array, 1, $str, 2, $str);
+				elseif($shiftWithType === 6)
+					array_push($array, 4, $str, 5, $str);
+				else
+					array_push($array, $shiftWithType ? $shiftWithType : $shiftMeType, $str);
+			}
+		}
+		else 
+			if($shiftMeType === 3)
+				array_push($array, 1, '1]', 2, '2]');
+			elseif($shiftMeType === 6)
+				array_push($array, 4, '4]', 5, '5]');
+			else 
+				array_push($array, $shiftWithType ? $shiftWithType : $shiftMeType, $shiftMeType.']');		
+		return $array;
+	}
 	
-	static function Width($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1)
+	static function WidthWith(Component $object, $shiftWithType=Shift::Width, $min=null, $max=null, $ratio=null, $grid=1)
 	{
-		$id = $control->Id;
-		return array($id,1,'["'.$id.'",1,'.$type.','.$ratio.','.
-        	($min===null ? 1 : $min).
-        	($max===null ? ']' : (','.$max.']')));
-	}
-
-	static function Height($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1)
-	{
-		$id = $control->Id;
-		return array($id,2,'["'.$id.'",2,'.$type.','.$ratio.','.
-        	($min===null ? 1 : $min).
-        	($max===null ? ']' : (','.$max.']')));
-	}
-
-	static function Size($control, $minWidth=1, $maxWidth=null, $minHeight=1, $maxHeight=null, $type=Shift::Normal, $ratio=1)
-	{
-		$id = $control->Id;
-		return array($id,3,'["'.$id.'",3,'.$type.','.$ratio.','.
-			($minWidth===null ? 1 : $minWidth).
-        	($maxWidth===null ? ',null,' : (','.$maxWidth.',')).
-        	($minHeight===null ? 1 : $minHeight).
-        	($maxHeight===null ? ']' : (','.$maxHeight.']')));
-	}
-
-	static function Left($control, $min=null, $max=null, $type=Shift::Normal, $ratio=1)
-	{
-		$id = $control->Id;
-		$shiftStr = '["'.$id.'",4,'.$type.','.$ratio;
-		if($max !== null)
-			$shiftStr .= ',' . ($min === null ? 'null' : $min) . ',' . $max;
-		elseif($min !== null)
-			$shiftStr .= ',' . $min;
-        return array($id,4,$shiftStr.']');
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 2)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[1]);
+			if($numArgs >= 5)
+				array_splice($args, 2, 0, $shiftWithType);
+			$str = '1,' . implode(',', $args) . ']';
+			if($shiftWithType === 3)
+				array_push($array, 1, $str, 2, $str);
+			elseif($shiftWithType === 6)
+				array_push($array, 4, $str, 5, $str);
+			else
+				array_push($array, $shiftWithType ? $shiftWithType : 1, $str);
+		}
+		else 
+			array_push($array, $shiftWithType ? $shiftWithType : 1, '1]');
+		return $array;
 	}
 	
-	static function Top($control, $min=null, $max=null, $type=Shift::Normal, $ratio=1)
+	static function HeightWith(Component $object, $shiftWithType=Shift::Height, $min=null, $max=null, $ratio=null, $grid=1)
 	{
-		$id = $control->Id;
-		$shiftStr = '["'.$id.'",5,'.$type.','.$ratio;
-		if($max !== null)
-			$shiftStr .= ',' . ($min === null ? 'null' : $min) . ',' . $max;
-		elseif($min !== null)
-			$shiftStr .= ',' . $min;
-        return array($id,5,$shiftStr.']');
-	}
-
-	static function Location($control, $minLeft=null, $maxLeft=null, $minTop=null, $maxTop=null, $type=Shift::Normal, $ratio=1)
-	{
-		$id = $control->Id;
-		$shiftStr = '["'.$id.'",6,'.$type.','.$ratio;
-		if($maxTop !== null)
-			$shiftStr .= ',' .
-				($minLeft === null ? 'null' : $minLeft) . ',' .
-				($maxLeft === null ? 'null' : $maxLeft) . ',' .
-				($minTop === null ? 'null' : $minTop) . ',' .
-				$maxTop;
-		elseif($minTop !== null)
-			$shiftStr .= ',' .
-				($minLeft === null ? 'null' : $minLeft) . ',' .
-				($maxLeft === null ? 'null' : $maxLeft) . ',' .
-				$minTop;
-		elseif($maxLeft !== null)
-			$shiftStr .= ',' .
-				($minLeft === null ? 'null' : $minLeft) . ',' .
-				$maxLeft;
-		elseif($minLeft !== null)
-			$shiftStr .= ',' .
-				$minLeft;
-
-		return array($id,6,$shiftStr.']');
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 2)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[1]);
+			if($numArgs >= 5)
+				array_splice($args, 2, 0, $shiftWithType);
+			$str = '2,' . implode(',', $args) . ']';
+			if($shiftWithType === 3)
+				array_push($array, 1, $str, 2, $str);
+			elseif($shiftWithType === 6)
+				array_push($array, 4, $str, 5, $str);
+			else
+				array_push($array, $shiftWithType ? $shiftWithType : 2, $str);
+		}
+		else 
+			array_push($array, $shiftWithType ? $shiftWithType : 2, '2]');
+		return $array;
 	}
 	
-	static function With(Component $object, $shiftMeType, $shiftWithType=Shift::All, $min=1, $max=null, $ratio=1)
+	static function SizeWith(Component $object, $shiftWithType=Shift::Size, $minWidth=null, $minHeight=null, $maxWidth=null, $maxHeight=null, $ratio=null, $grid=1)
 	{
-		if($min === null)
-			$min = 1;
-		if($max === null)
-			$max = 'null';
-		return array($object->Id, 7, $shiftMeType.',0,'.$ratio.','.$min.','.$max.','.$min.','.$max.','.$shiftWithType.']');
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 2)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[1], $args[3], $args[5]);
+			if($numArgs >= 6)
+				array_splice($args, 2, 0, $shiftWithType);
+			$str1 = '1,' . implode(',', $args) . ']';
+			if($numArgs >= 4)
+			{
+				$args[0] = $minHeight;
+				if($numArgs >= 6)
+					$args[1] = $maxHeight;
+			}
+			$str2 = '2,' . implode(',', $args) . ']';
+			if(!$shiftWithType || $shiftWithType === 3)
+				array_push($array, 1, $str1, 2, $str2);
+			elseif($shiftWithType === 6)
+				array_push($array, 4, $str1, 5, $str2);
+			else
+				array_push($array, $shiftWithType, $str1, $shiftWithType, $str2);
+		}
+		else 
+			array_push($array, 1, '1]', 2, '2]');
+		return $array;
+	}
+	
+	static function LeftWith(Component $object, $shiftWithType=Shift::Left, $min=null, $max=null, $ratio=null, $grid=1)
+	{
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 2)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[1]);
+			if($numArgs >= 5)
+				array_splice($args, 2, 0, $shiftWithType);
+			$str = '4,' . implode(',', $args) . ']';
+			if($shiftWithType === 3)
+				array_push($array, 1, $str, 2, $str);
+			elseif($shiftWithType === 6)
+				array_push($array, 4, $str, 5, $str);
+			else
+				array_push($array, $shiftWithType ? $shiftWithType : 4, $str);
+		}
+		else 
+			array_push($array, $shiftWithType ? $shiftWithType : 4, '4]');
+		return $array;
+	}
+	
+	static function TopWith(Component $object, $shiftWithType=Shift::Top, $min=null, $max=null, $ratio=null, $grid=1)
+	{
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 2)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[1]);
+			if($numArgs >= 5)
+				array_splice($args, 2, 0, $shiftWithType);
+			$str = '5,' . implode(',', $args) . ']';
+			if($shiftWithType === 3)
+				array_push($array, 1, $str, 2, $str);
+			elseif($shiftWithType === 6)
+				array_push($array, 4, $str, 5, $str);
+			else
+				array_push($array, $shiftWithType ? $shiftWithType : 5, $str);
+		}
+		else 
+			array_push($array, $shiftWithType ? $shiftWithType : 5, '5]');
+		return $array;
+	}
+	
+	static function LocationWith(Component $object, $shiftWithType=Shift::Location, $minLeft=null, $minTop=null, $maxLeft=null, $maxTop=null, $ratio=null, $grid=1)
+	{
+		$array = array($object->Id, 7);
+		$numArgs = func_num_args();
+		if($numArgs >= 2)
+		{
+			$args = func_get_args();
+			unset($args[0], $args[1], $args[3], $args[5]);
+			if($numArgs >= 6)
+				array_splice($args, 2, 0, $shiftWithType);
+			$str1 = '4,' . implode(',', $args) . ']';
+			if($numArgs >= 4)
+			{
+				$args[0] = $minTop;
+				if($numArgs >= 6)
+					$args[1] = $maxTop;
+			}
+			$str2 = '5,' . implode(',', $args) . ']';
+			if(!$shiftWithType || $shiftWithType === 6)
+				array_push($array, 4, $str1, 5, $str2);
+			elseif($shiftWithType === 3)
+				array_push($array, 1, $str1, 2, $str2);
+			else
+				array_push($array, $shiftWithType, $str1, $shiftWithType, $str2);
+		}
+		else 
+			array_push($array, 4, '4]', 5, '5]');
+		return $array;
 	}
 }
 ?>
