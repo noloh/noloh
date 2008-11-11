@@ -24,7 +24,6 @@
 class Timer extends Component
 {
 	private $Interval;
-	//private $Elapsed;
 	private $Repeat;
 	/**
 	 * Constructor. 
@@ -49,12 +48,15 @@ class Timer extends Component
 	}
 	/**
 	 * Sets the number of miliseconds until event executes
-	 * @param integer $newInterval
+	 * @param integer $interval
 	 */
-	function SetInterval($newInterval)
+	function SetInterval($interval)
 	{
-		$this->Interval = $newInterval;
-		$this->Show();
+		if($this->Interval != $interval)
+		{
+			$this->Interval = $interval;
+			$this->Reshow();
+		}
 	}
 	/**
 	 * Gets the Event associated with the Timer elapsing
@@ -66,11 +68,11 @@ class Timer extends Component
 	}
 	/**
 	 * Sets the Event associated with the Timer elapsing
-	 * @param Event $newElapsed
+	 * @param Event $elapsed
 	 */
-	function SetElapsed($newElapsed)
+	function SetElapsed($elapsed)
 	{
-		$this->SetEvent($newElapsed, 'Elapsed');
+		$this->SetEvent($elapsed, 'Elapsed');
 	}
 	/**
 	 * Gets whether or not the Elapsed Event will execute periodically or just once
@@ -82,14 +84,14 @@ class Timer extends Component
 	}
 	/**
 	 * Sets whether or not the Elapsed Event will execute periodically or just once
-	 * @param boolean $newRepeat
+	 * @param boolean $repeat
 	 */
-	function SetRepeat($newRepeat)
+	function SetRepeat($repeat)
 	{
-		if($this->Repeat != $newRepeat)
+		if($this->Repeat != $repeat)
 		{
-			$this->Repeat = $newRepeat;
-			$this->Show();
+			$this->Repeat = $repeat;
+			$this->Reshow();
 		}
 	}
 	/**
@@ -97,22 +99,24 @@ class Timer extends Component
 	 */
 	function UpdateEvent($eventType)
 	{
-		QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\'onelapsed\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		QueueClientFunction($this, 'NOLOHChangeByObj', array('window[\''.$this->Id.'\']', '\'onelapsed\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		//QueueClientFunction($this, 'alert', array('window[\''.$this->Id.'\'].Interval'));
 	}
 	/**
 	 * Stops the timer from running.
 	 */
 	function Stop()
 	{
-		if($this->GetShowStatus != 0)
-			AddScript('clear' . ($this->Repeat?'Interval':'Timeout') . '(window.'.$this->Id.'.timer)');
+		if($this->GetShowStatus() === 1)
+			QueueClientFunction($this, 'window[\''.$this->Id.'\'].Stop', array(), true, Priority::High);
 	}
 	/**
-	 * Resets the timer. That is, regardless of how close the timer was to completing its interval, it will start over.
+	 * Resets the Timer. That is, regardless of how close the Timer was to completing its Interval, it will start over.
 	 */
 	function Reset()
 	{
-		$this->Show();
+		if($this->GetShowStatus() === 1)
+			QueueClientFunction($this, 'var t=window[\''.$this->Id.'\'];t.Stop;t.Start', array(), true, Priority::High);
 	}
 	/**
 	 * @ignore
@@ -120,17 +124,47 @@ class Timer extends Component
 	function Show()
 	{
 		parent::Show();
-		$ref = "window.$this->Id";
-		AddScript("$ref=new Object();$ref.timer=set" . ($this->Repeat?'Interval':'Timeout')
-			. "('if($ref.onelapsed!=null) $ref.onelapsed.call();'," . $this->Interval . ');');
+		AddNolohScriptSrc('Timer.js');
+		$this->Reshow();
+	}
+	/**
+	 * @ignore
+	*/
+	function Reshow()
+	{
+		if($this->GetShowStatus() === 1 && ($parentId = $this->GetParentId()))
+		{
+			QueueClientFunction($this, 'new _NTimer', array('\''.$parentId.'\'', '\''.$this->Id.'\'', $this->Interval, (int)$this->Repeat), true, Priority::High);
+			/*
+			$ref = "window.$this->Id";
+			AddScript("$ref=new Object();$ref.timer=set" . ($this->Repeat?'Interval':'Timeout')
+				. "('if($ref.onelapsed!=null) $ref.onelapsed.call();'," . $this->Interval . ');');
+			*/
+		}
 	}
 	/**
 	 * @ignore
 	 */
-	function Hide()
+	function Bury()
 	{
-		$this->Stop();
-		parent::Hide();
+		AddScript('window[\''.$this->Id.'\'].Destroy();', Priority::High);
+		parent::Bury();
+	}
+	/**
+	 * @ignore
+	 */
+	function Adopt()
+	{
+		AddScript('window[\''.$this->Id.'\'].Destroy();', Priority::High);
+		$this->Reshow();
+	}
+	/**
+	 * @ignore
+	 */
+	function Resurrect()
+	{
+		parent::Resurrect();
+		$this->Reshow();
 	}
 }
 

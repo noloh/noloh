@@ -470,6 +470,9 @@ function _NRem(id)
     if(ele.BuoyantChildren != null)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRem(ele.BuoyantChildren[i]);
+    if(ele.TimerChildren)
+    	for(var i=0; i<ele.TimerChildren.length; ++i)
+			window[ele.TimerChildren[i]].Stop();
 }
 
 function _NRes(id, parentId)
@@ -480,6 +483,9 @@ function _NRes(id, parentId)
     if(ele.BuoyantChildren != null)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRes(ele.BuoyantChildren[i], parentId);
+	if(ele.TimerChildren)
+	    for(var i=0; i<ele.TimerChildren.length; ++i)
+			window[ele.TimerChildren[i]].Start();
 }
 
 function _NAsc(id)
@@ -499,6 +505,9 @@ function _NAsc(id)
 					parent = parent.parentNode;
 				}while (parent && parent.id);
         	}
+		if(ele.TimerChildren)
+			for(var i=0; i<ele.TimerChildren.length; ++i)
+				window[ele.TimerChildren[i]].Destroy();
         ele.parentNode.removeChild(ele);
     }
 }
