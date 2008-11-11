@@ -14,12 +14,22 @@ class RolloverTab extends Panel implements Groupable
 	private $SelectedTab;
 	//private $Selected;
 	
-	private $GroupName;
+	//private $GroupName;
 	public $TextObject;
 	
 	function RolloverTab($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::AutoHtmlTrim, $height = null)
 	{
 		parent::Panel($left, $top, null, null);
+		$click = parent::GetClick();
+		$click['System'] = new Event();
+		$click['User'] = new Event();
+		$select = parent::GetSelect();
+		$select['System'] = new Event();
+		$select['User'] = new Event();
+		$deselect = parent::GetDeselect();
+		$deselect['System'] = new Event();
+		$deselect['User'] = new Event();
+		
 		if($text != null)
 		{
 			if(is_string($text))
@@ -167,21 +177,62 @@ class RolloverTab extends Panel implements Groupable
 			$this->SelectedTab->Visible = System::Vacuous;
 			NolohInternal::SetProperty('Slct', $this->SelectedTab->Id, $this);
 			$this->SelectedTab->SetWidth($this->GetWidth());
-			$this->Click['Select'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Slct');");
+//			$this->Click['Select'] = new ClientEvent('_NChgRlOvrTb('{$this->Id}','Slct');");
+			//System::Log('here');
+			$click = parent::GetClick();
+			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', true);");
+			$select = parent::GetSelect();
+			$select['System'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Slct');");
+			$deselect = parent::GetDeselect();
+			$deselect['System'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Out');");
+//			$this->Select = new ClientEvent("_NChgRlOvrTb('{$this->Id}', 'Slct');");
 		}
 	}
+	function GetClick()
+	{
+//		Control::AddSystemHandler(Event::Click, new ClientEvent())
+		$click = parent::GetClick();
+		return $click['User'];
+	}
+	function SetClick($event)
+	{
+		$click = parent::GetClick();
+		$click['User'] = $event;
+	}
+	function GetSelect()
+	{
+//		Control::AddSystemHandler(Event::Click, new ClientEvent())
+		$select = parent::GetSelect();
+		return $select['User'];
+	}
+	function SetSelect($event)
+	{
+		$select = parent::GetSelect();
+		$select['User'] = $event;
+	}
+	function GetDeelect()
+	{
+//		Control::AddSystemHandler(Event::Click, new ClientEvent())
+		$deselect = parent::GetDeselect();
+		return $deselect['User'];
+	}
+	function SetDeselect($event)
+	{
+		$deselect = parent::GetDeselect();
+		$deselect['User'] = $event;
+	}
 	//Select Event Functions
-	function GetSelect()				{return $this->GetEvent('Select');}
-	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
+	//function GetSelect()				{return $this->GetEvent('Select');}
+	//function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
 	//Groupable Functions
 	/**
 	 * @ignore
 	 */
-	function GetGroupName()				{return $this->GroupName;}
-	/**
+	/*function GetGroupName()				{return $this->GroupName;}
+	*//**
 	 * @ignore
-	 */
-	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
+	 *//*
+	function SetGroupName($groupName)	{$this->GroupName = $groupName;}*/
 	//function GetSelected()				{return $this->Selected != null;}
 	function SetSelected($bool)
 	{
@@ -189,15 +240,17 @@ class RolloverTab extends Panel implements Groupable
 		{
 			parent::SetSelected($bool);
 			//Trigger Select Event if $bool is true, i.e. Selected
-			if($bool && $this->GroupName != null)
+			//System::Log($this->GroupName . ' is the groupname');
+/*			if($bool && $this->GroupName != null)
 			{
-				NolohInternal::SetProperty('Cur', 'Slct', $this);
+				System::Log('SetSelected');
+//				NolohInternal::SetProperty('Cur', 'Slct', $this);
 				$sel = $this->GetSelect();
 				if(!$sel->Blank())
 					$sel->Exec();
 			}
 			else
-				NolohInternal::SetProperty('Cur', 'Out', $this);
+				NolohInternal::SetProperty('Cur', 'Out', $this);*/
 			//$this->Selected = $selected;
 			if($bool)
 			{
@@ -206,6 +259,7 @@ class RolloverTab extends Panel implements Groupable
 			}
 			else
 			{
+				NolohInternal::SetProperty('Cur', 'Out', $this);
 				$this->OutTab->Visible = true;
 				$this->SelectedTab->Visible = System::Vacuous;
 			}

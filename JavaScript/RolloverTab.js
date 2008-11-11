@@ -1,7 +1,7 @@
 function _NChgRlOvrTb(rlOvrTb, state)
 {
 	var tab = _N(rlOvrTb);
-	if(tab.Selected || tab.Cur == state)
+	if(tab.Selected && state != 'Slct' || tab.Cur == state)
 		return;
 	if(tab.Cur != null)
 	{
@@ -11,20 +11,13 @@ function _NChgRlOvrTb(rlOvrTb, state)
 	}
 	if(state == 'Slct')
 	{
-		var prevTab = tab.Group.GetSelectedElement();
-		if(prevTab != null)
+		if(tab.Group)
 		{
-			prevTab = _N(prevTab);
-			_N(prevTab.Slct).style.display = 'none';
-			_N(prevTab.Out).style.display = '';
-			prevTab.Selected = false;
-			_NSave(prevTab.id, 'Selected');
-			prevTab.Cur = 'Out';
+			var prevTab = tab.Group.PrevSelectedElement;
+			if(prevTab != null)
+				_NSetProperty(prevTab, 'Selected', false);
 		}
 		_N(tab.Out).style.display = 'none';
 		_N(tab.Slct).style.display = '';
-		_NSetProperty(rlOvrTb, 'Selected', true);
-		if(tab.Select != null)
-			tab.Select.call();
 	}
 }
