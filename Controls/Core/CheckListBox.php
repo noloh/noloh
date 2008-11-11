@@ -18,7 +18,7 @@
 class CheckListBox extends ListControl
 {
 	/**
-	 * The ArrayList of CheckBox objects
+	 * The Group of CheckBox objects
 	 * @var ArrayList
 	 */
 	public $CheckBoxes;
@@ -34,8 +34,8 @@ class CheckListBox extends ListControl
 	function CheckListBox($left = 0, $top = 0, $width = 83, $height = 40)  
 	{
 		parent::ListControl($left, $top, $width, $height);
-		$this->CheckBoxes = new ArrayList();
-		$this->CheckBoxes->ParentId = $this->Id;
+		$this->CheckBoxes = new Group();
+		$this->CheckBoxes->SetParentId($this->Id);
 		$this->SetCSSClass();
 	}
 	/**
@@ -46,6 +46,20 @@ class CheckListBox extends ListControl
 		parent::SetCSSClass('NCheckListBox '. $cssClass);
 	}
 	/**
+	 * @ignore
+	 */
+	function GetChange()
+	{
+		return $this->CheckBoxes->GetChange();
+	}
+	/**
+	 * @ignore
+	 */
+	function SetChange($change)
+	{
+		return $this->CheckBoxes->SetChange($change);
+	}
+	/**
 	 * Adds an Item to the Items ArrayList. 
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Add($item)</pre>
@@ -54,8 +68,7 @@ class CheckListBox extends ListControl
 	 */
 	function AddItem($item)
 	{
-		$top = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes->Elements[$this->CheckBoxes->Count()-1]->Bottom;
-			
+		$top = $this->CheckBoxes->Count() == 0 ? 0 : $this->CheckBoxes[$this->CheckBoxes->Count()-1]->Bottom;
 		if(is_string($item))
 		{
 			$checkItem = new Item($item, $item);
@@ -72,6 +85,8 @@ class CheckListBox extends ListControl
 			{
 				$checkItem = new Item($item->Text, $item->Text);
 				$newCheckBox = $item;
+				$newCheckBox->SetLeft(0);
+				$newCheckBox->SetTop($top);
 			}
 		}
 		$this->Items->Add($checkItem, true, true);
@@ -89,9 +104,9 @@ class CheckListBox extends ListControl
 		$this->Items->RemoveAt($index, true);
 		$this->CheckBoxes->RemoveAt($index);
 		$checkBoxCount = $this->CheckBoxes->Count();
-		$this->CheckBoxes->Elements[$index]->Top = $index == 0 ? 0 : $this->CheckBoxes->Elements[$index-1]->Bottom;
+		$this->CheckBoxes[$index]->Top = $index == 0 ? 0 : $this->CheckBoxes[$index-1]->Bottom;
 		for($i=$index+1; $i<$checkBoxCount; ++$i)
-			$this->CheckBoxes->Elements[$i]->Top = $this->CheckBoxes->Elements[$i-1]->Bottom;
+			$this->CheckBoxes[$i]->Top = $this->CheckBoxes[$i-1]->Bottom;
 	}
 	/**
 	 * Clears the Items ArrayList. 
@@ -112,7 +127,7 @@ class CheckListBox extends ListControl
 	{
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->CheckBoxes->Elements[$i]->Checked)
+			if($this->CheckBoxes[$i]->Checked)
 				return $i;
 		return -1;
 	}
@@ -123,7 +138,7 @@ class CheckListBox extends ListControl
 	 */
 	function SetSelectedIndex($idx, $select=true)
 	{
-		$this->CheckBoxes->Elements[$idx]->Checked = $select;
+		$this->CheckBoxes[$idx]->Checked = $select;
 	}
 	/**
 	 * Returns an array of all the indices of the selected Items
@@ -134,7 +149,7 @@ class CheckListBox extends ListControl
 		$checkedArray = array();
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->CheckBoxes->Elements[$i]->Checked)
+			if($this->CheckBoxes[$i]->Checked)
 				$checkedArray[] = $i;
 		return $checkedArray;
 	}
@@ -172,7 +187,7 @@ class CheckListBox extends ListControl
 		for($i=0; $i<$checkBoxCount; $i++)
 			if($this->Items->Elements[$i]->Value == $val)
 			{
-				$this->CheckBoxes->Elements[$i]->Checked = $bool;
+				$this->CheckBoxes[$i]->Checked = $bool;
 				return $val;
 			}
 		return null;
@@ -223,7 +238,7 @@ class CheckListBox extends ListControl
 		for($i=0; $i<$checkBoxCount; $i++)
 			if($this->Items->Elements[$i]->Text == $val)
 			{
-				$this->CheckBoxes->Elements[$i]->Checked = $bool;
+				$this->CheckBoxes[$i]->Checked = $bool;
 				return $val;
 			}
 		return null;

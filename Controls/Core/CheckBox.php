@@ -37,6 +37,7 @@ class CheckBox extends CheckControl implements MultiGroupable
 	function CheckBox($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
 		parent::CheckControl($text, $left, $top, $width, $height);
+		$this->Caption->Click = new ClientEvent('_NCBCptClk("'.$this->Id.'");');
 	}
 	/**
 	 * @ignore
@@ -44,8 +45,9 @@ class CheckBox extends CheckControl implements MultiGroupable
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === 'Click')
+		//	return '_NSetProperty(\'' . $this->Id . '\',\'Selected\', true);' . parent::GetEventString($eventTypeAsString);
 		//if($eventTypeAsString === 'Click' || $eventTypeAsString === 'Change')
-           return '_NCBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
+			return '_NCBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
 	/**
@@ -53,7 +55,13 @@ class CheckBox extends CheckControl implements MultiGroupable
 	 */
 	function Show()
 	{
-        parent::Show();
+		// Weird AddNolohScriptSrc for Mixed browsers
+		if(!isset($_SESSION['_NScriptSrcs']['CheckBox.js']))
+		{
+			$_SESSION['_NScriptSrc'] .= file_get_contents(System::NOLOHPath().'/JavaScript/Mixed/CheckBox'.(UserAgent::IsIE()?'IE.js':(UserAgent::GetBrowser()==='op'?'Op.js':'FFSa.js')));
+			$_SESSION['_NScriptSrcs']['CheckBox.js'] = true;
+		}
+		parent::Show();
 		$initialProperties = '\'id\',\''.$this->Id.'I\',\'type\',\'checkbox\',\'defaultChecked\','.($this->Checked?'true':'false').parent::GetEventString(null);
         //if($this->GroupName === null)
         //    $initialProperties .= ',\'name\',\''.$this->Id.'\'';

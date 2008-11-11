@@ -16,8 +16,8 @@ abstract class CheckControl extends Control
 	 * @var Label
 	 */
 	public $Caption;
-	private $GroupName;
-	private $Checked;
+	//private $GroupName;
+	//private $Checked;
 	protected $Value;
 	/**
 	 * Constructor.
@@ -31,7 +31,7 @@ abstract class CheckControl extends Control
 	 */
 	function CheckControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-        parent::Control($left, $top, $width, $height);
+		parent::Control($left, $top, $width, $height);
 		//$this->Caption = is_object($text) ? $text : new Label(null, 23, 0, null, null);
 		if(is_object($text) && !($text instanceof Item))
 			$this->Caption = $text;
@@ -48,8 +48,7 @@ abstract class CheckControl extends Control
 		}
 		//parent::Control($left, $top, $width, $height);
 		$this->Caption->Cursor = Cursor::Hand;
-		$this->Caption->Click = new ClientEvent('_NCCClick("'.$this->Id.'I");');
-        $this->Caption->SetParentId($this->Id);
+		$this->Caption->SetParentId($this->Id);
 //		$this->GroupName = $this->Id;
 	}
 	/**
@@ -89,7 +88,7 @@ abstract class CheckControl extends Control
 	}
 	/**
 	 * @ignore
-	 */
+	 *
 	function GetGroupName()
 	{
 		return $this->GroupName;
@@ -99,9 +98,10 @@ abstract class CheckControl extends Control
 	 */
 	function SetGroupName($newGroupName)
 	{
-		$this->GroupName = $newGroupName;
+		parent::SetGroupName($newGroupName);
+		//$this->GroupName = $newGroupName;
         //if($this->GetShowStatus !== 0)
-            QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
+		QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
 		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
 	}
@@ -119,12 +119,12 @@ abstract class CheckControl extends Control
 	 */
 	function SetChecked($bool)
 	{
-		$this->SetSelected($bool);
+		return $this->SetSelected($bool);
 	}
 	/**
 	 * An alias for GetChecked
 	 * @return boolean
-	 */
+	 *
 	function GetSelected()
 	{
 		return $this->Checked != null;
@@ -135,6 +135,11 @@ abstract class CheckControl extends Control
 	 */
 	function SetSelected($bool)
 	{
+		parent::SetSelected($bool);
+		if($this->GetShowStatus() !== 0)
+			QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
+		return;
+
 		$newChecked = $bool ? true : null;
 		if($this->Checked != $newChecked)
 		{
@@ -152,6 +157,7 @@ abstract class CheckControl extends Control
 			if($group && !$group->Change->Blank())
 				$group->Change->Exec();
 		}
+		return $newChecked;
 	}
 	/*
 	function SetLeft($newLeft)
@@ -217,6 +223,7 @@ abstract class CheckControl extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
+		//	return ',\'onclick\',\''.$this->GetEventString('Click').'this.blur();\'';
 			return ',\'onclick\',\''.$this->GetEventString('Click').'this.blur();\'';
 		return parent::GetEventString($eventTypeAsString);
 	}
@@ -225,13 +232,7 @@ abstract class CheckControl extends Control
 	 */
 	function Show()
 	{
-		// Weird AddNolohScriptSrc for Mixed browsers
-		if(!isset($_SESSION['_NScriptSrcs']['CheckControl.js']))
-		{
-			$_SESSION['_NScriptSrc'] .= file_get_contents(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'JavaScript/Mixed/CheckControl'.((UserAgent::IsIE()||UserAgent::GetBrowser()==='op')?'IEOp.js':'FFSa.js'));
-			$_SESSION['_NScriptSrcs']['CheckControl.js'] = true;
-		}
-        NolohInternal::Show('DIV', parent::Show().',\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
+		NolohInternal::Show('DIV', parent::Show().',\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
 		//$this->Caption->Show();
 		//return $parentShow;
 	}

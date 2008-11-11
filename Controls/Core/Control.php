@@ -31,9 +31,10 @@ abstract class Control extends Component
 	private $Color;
 	private $Cursor;
 	private $ToolTip;
-    private $ContextMenu;
+	private $ContextMenu;
 	private $Text;
 	private $Selected;
+	private $GroupName;
 	private $Buoyant;
 	private $Shifts;
 	
@@ -564,17 +565,47 @@ abstract class Control extends Component
 			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
 		if($bool != $this->GetSelected())
 		{
-			NolohInternal::SetProperty('Selected', $bool, $this);
-			if($bool && $this->GroupName != null)
+			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
+			if($this->GroupName !== null)
+				$group = $group = GetComponentById($this->GroupName);
+			if($bool && $group && $this instanceof Groupable)
 				GetComponentById($this->GroupName)->Deselect();
 			$this->Selected = $bool ? true : null;
-			if(/*$bool && */$this->GroupName != null)
+			$event = $this->GetEvent($bool ? 'Select' : 'Deselect');
+			if(!$event->Blank())
+				$event->Exec();
+			if($group)
 			{
-				$group = GetComponentById($this->GroupName);
-				if(!$group->Change->Blank())
-					$group->Change->Exec();
+				$change = $group->GetEvent('Change');
+				if(!$change->Blank())
+					$change->Exec();
 			}
 		}
+	}
+	/**
+	 * Returns the id of the Group. This only makes sense in the context of Controls implementing Groupable or
+	 * MultiGroupable and Added to a Group.
+	 * @return string
+	 */
+	function GetGroupName()
+	{
+		return $this->GroupName;
+	}
+	/**
+	 * Sets the id of the Group. This only makes sense in the context of Controls implementing Groupable or
+	 * MultiGroupable and Added to a Group.
+	 * @param string $groupName
+	 */
+	function SetGroupName($groupName)
+	{
+		if($this->GroupName && !$groupName)
+			NolohInternal::SetProperty('Group', '', $this);
+		$this->GroupName = $groupName;
+		if($group = GetComponentById($groupName))
+			if($group->GetShowStatus())
+				NolohInternal::SetProperty('Group', $groupName, $this);
+			else 
+				$group->WaitingList[] = $this->Id;
 	}
 	/**
 	 * @ignore
@@ -635,6 +666,16 @@ abstract class Control extends Component
 	 * @param Event $click
 	 */
 	function SetClick($click)						{$this->SetEvent($click, 'Click');}
+	/**
+	 * Returns the Deselect Event, which gets launched when this Control gets deselected, which makes sense only in the context of Groupable Controls
+	 * @return Event
+	 */
+	function GetDeselect()							{return $this->GetEvent('Deselect');}
+	/**
+	 * Returns the Deselect Event, which gets launched when this Control gets deselected, which makes sense only in the context of Groupable Controls
+	 * @param Event $select
+	 */
+	function SetDeselect($deselect)					{$this->SetEvent($deselect, 'Deselect');}
 	/**
 	 * Returns the DoubleClick Event, which gets launched when a user double-clicks on the Control.
 	 * @return Event
@@ -757,6 +798,16 @@ abstract class Control extends Component
 	 * @param Event $shiftStart
 	 */
 	function SetShiftStart($shiftStart)				{$this->SetEvent($shiftStart, 'ShiftStart');}
+	/**
+	 * Returns the Select Event, which gets launched when this Control gets selected, which makes sense only in the context of Groupable Controls
+	 * @return Event
+	 */
+	function GetSelect()							{return $this->GetEvent('Select');}
+	/**
+	 * Returns the Select Event, which gets launched when this Control gets selected, which makes sense only in the context of Groupable Controls
+	 * @param Event $select
+	 */
+	function SetSelect($select)						{$this->SetEvent($select, 'Select');}
 	/**
 	 * Returns the ShiftStop Event, which gets launched when a user stops shifting this Control
 	 * @return Event

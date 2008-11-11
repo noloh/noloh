@@ -25,6 +25,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 {
 	private $Groupees;
 	/**
+	 * @ignore
+	 */
+	public $WaitingList;
+	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Group.
 	 * @return Group
@@ -34,6 +38,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		parent::Component();
 		$this->Groupees = new ArrayList();
 		$this->Groupees->ParentId = $this->Id;
+		$this->WaitingList = array();
 	}
 	/**
 	 * Returns the Change Event of the Group
@@ -56,8 +61,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
-		if($this->GetShowStatus())
-			NolohInternal::SetProperty('Group', $this->Id, $element);
+		/*if($this->GetShowStatus())
+			NolohInternal::SetProperty('Group', $this->Id, $element);*/
 		$this->Groupees->Add($element, $setByReference);
 		return $element;
 	}
@@ -90,7 +95,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
-		NolohInternal::SetProperty('Group', $this->Id, $element);
+		//NolohInternal::SetProperty('Group', $this->Id, $element);
 		$this->Groupees->Insert($element, $index);
 		return $element;
 	}
@@ -104,7 +109,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName(null);
-		NolohInternal::SetProperty('Group', '', $element);
+		//NolohInternal::SetProperty('Group', '', $element);
 		$this->Groupees->Remove($element);		
 	}
 	/**
@@ -126,7 +131,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		//QueueClientFunction($this, 'window.'.$this->Id.'.Elements=Array', array(), true, Priority::High);
 		foreach($this->Groupees->Elements as $groupee)
 		{
-			NolohInternal::SetProperty('Group', '', $groupee);
+			//NolohInternal::SetProperty('Group', '', $groupee);
 			$groupee->SetGroupName(null);
 		}
 		$this->Groupees->Clear();
@@ -288,8 +293,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		parent::Show();
 		AddNolohScriptSrc('Group.js');
 		AddScript('window.'.$this->Id.'=new Group();', Priority::High);
-		foreach($this->Groupees as $groupee)
-			NolohInternal::SetProperty('Group', $this->Id, $groupee);
+		$listCount = count($this->WaitingList);
+		for($i=0; $i<$listCount; ++$i)
+			NolohInternal::SetProperty('Group', $this->Id, GetComponentById($this->WaitingList[$i]));
+		$this->WaitingList = null;
 	}
 	/**
 	 * @ignore
@@ -370,8 +377,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		else
 		{
 			$val->SetGroupName($this->Id);
-			if($this->GetShowStatus())
-				NolohInternal::SetProperty('Group', $this->Id, $val);
+			/*if($this->GetShowStatus())
+				NolohInternal::SetProperty('Group', $this->Id, $val);*/
 			$this->Groupees->offsetSet($index, $val);
 			/*if(isset($this->Groupees[$index]))
 				$this->RemoveAt($index);

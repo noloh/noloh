@@ -12,6 +12,5 @@ interface Groupable
 	function GetSelected();
 	function SetGroupName($groupName);
 	function GetGroupName();
-	
 }
 ?>
