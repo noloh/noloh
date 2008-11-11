@@ -6,7 +6,7 @@
 global $OmniscientBeing;
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
+function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=14, $debugMode=true)
 {
 	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 }
@@ -81,10 +81,10 @@ final class Application extends Object
 	 * @param string $className The name of the class that extends WebPage, as a string
 	 * @param string $unsupportedURL If a user's browser is not supported, or he does not have JavaScript enabled, this will be the URL of the error page to which he is navigated. A value of null will use NOLOH's to create a more degraded, non-JavaScript application
 	 * @param mixed $urlTokenMode Specifies how URL tokens are displayed. Possible values are URL::Display, URL::Encrypt, or URL::Disable
-	 * @param integer $tokenTrailsExpiration Specifies the number of seconds until token search trails file expires. Please see Search Engine Friendly documentation for more information
+	 * @param integer $tokenTrailsExpiration Specifies the number of days until token search trails file expires. Please see Search Engine Friendly documentation for more information
 	 * @param mixed $debugMode Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
 	 */
-	public static function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=604800, $debugMode=true)
+	public static function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=14, $debugMode=true)
 	{
 		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 	}
