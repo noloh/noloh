@@ -103,20 +103,12 @@ abstract class Control extends Component
 	 * @return integer
 	 */
 	function SetOpacity($opacity)
-	{/*
-		if($opacity === 'Oblivion')
-		{
-			$this->Opacity = 0;
-			$this->Parent->Controls->Remove($this);
-		}
-		else 
-		{*/
-			$this->Opacity = $opacity;
-			if(UserAgent::IsIE())
-				NolohInternal::SetProperty('style.filter', 'alpha(opacity='.$opacity.')', $this);
-			else
-				NolohInternal::SetProperty('style.opacity', $opacity/100, $this);
-		//}
+	{
+		$this->Opacity = $opacity;
+		if(UserAgent::IsIE())
+			NolohInternal::SetProperty('style.filter', 'alpha(opacity='.$opacity.')', $this);
+		else
+			NolohInternal::SetProperty('style.opacity', $opacity/100, $this);
 	}
 	/**
 	 * Returns the ZIndex of this Control. A higher ZIndex means that this Control will appear on top of other Controls with overlapping location.
@@ -149,7 +141,7 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function Set_NOblivionS($bool)
+	function Set_NOblivion($bool)
 	{
 		if($bool)
 			$this->Parent->Controls->Remove($this);
@@ -798,32 +790,44 @@ abstract class Control extends Component
 			$this->Shifts = new ImplicitArrayList($this, 'AddShift', '', 'ClearShift');
 			$this->Shifts->RemoveFunctionName = 'RemoveShift';
 			$this->Shifts->InsertFunctionName = 'InsertShift';
-			NolohInternal::SetProperty('Shifts', 'Array()', $this);
+			NolohInternal::SetProperty('Shifts', '[]', $this);
 		}
 		return $this->Shifts;
 	}
 	/**
 	 * @ignore
 	 */
-	private function AddShiftHelper($shift)
+	private function AddShiftHelper(&$shift)
 	{
-		if($shift[1]==7)
+		if($shift[1] === 7)
 		{
-			AddNolohScriptSrc('Shift.js', true);
-			QueueClientFunction($this, '_NShftWth', array('\''.$shift[0].'\'', '[\''.$this->Id.'\',' . $shift[2]), false, Priority::High);
+			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id]['_NShftWth']))
+				array_push($_SESSION['_NFunctionQueue'][$this->Id]['_NShftWth'][0], $shift[2], '[\''.$this->Id.'\',' . $shift[3]);
+			else
+			{
+				AddNolohScriptSrc('Shift.js', true);
+				QueueClientFunction($this, '_NShftWth', array('\''.$shift[0].'\'', $shift[2], '[\''.$this->Id.'\',' . $shift[3]));
+			}
+			if(isset($shift[4]))
+			{
+				array_push($_SESSION['_NFunctionQueue'][$this->Id]['_NShftWth'][0], $shift[4], '[\''.$this->Id.'\',' . $shift[5]);
+				unset($shift[4], $shift[5]);
+			}
 		}
 		else
 		{
-			$fncStr = '_N(\''.$this->Id.'\').Shifts.splice';
+			$fncStr = '_N(\''.$this->Id.'\').Shifts.push';
 			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id][$fncStr]))
 				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
 			else 
 			{
 				AddNolohScriptSrc('Shift.js', true);
-				QueueClientFunction($this, $fncStr, array(-1, 0, $shift[2]));
+				QueueClientFunction($this, $fncStr, array($shift[2]));
 			}
+			if(isset($shift[3]))
+				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[3];
 		}
-		unset($shift[2]);
+		unset($shift[2], $shift[3]);
 	}
 	/**
 	 * @ignore
@@ -846,45 +850,56 @@ abstract class Control extends Component
 	 */
 	function RemoveShift($shift)
 	{
+		$remType = $shift[1];
 		foreach($this->Shifts as $i => $val)
-			if($this->Shifts[$i][0] == $shift[0])
+			if($this->Shifts[$i][0] === $shift[0])
 			{
-				$curType = $this->Shifts[$i][1];
-				if($shift[1]==$curType || 
-				  ($shift[1]==3 && ($curType==1||$curType==2)) ||
-				  ($shift[1]==6 && ($curType==4||$curType==5)))
+				$curType = &$this->Shifts[$i][1];
+				// Regular match to remove 1 or 2
+				if($remType===$curType)
+					$regularRemoveNum = ($remType===3 || $remType===6) ? 2 : 1;
+				// Overkill to remove 1
+				elseif(($remType===3 && ($curType===1||$curType===2)) ||
+				  ($remType===6 && ($curType===4||$curType===5)))
+					$regularRemoveNum = 1;
+				// Underkills Size to remove 1 and change
+				elseif($curType===3)
 				{
-					$this->Shifts->RemoveAt($i);
-					QueueClientFunction($this, '_N(\'' . $this->Id. '\').Shifts.splice', array($i,1), false);
+					if($remType===1)
+					{
+						$regularRemoveNum = 1;
+						$curType = 2;
+					}
+					elseif($remType===2)
+					{
+						$regularRemoveNum = 1;
+						$curType = 1;
+						++$i;
+					}
 				}
-				elseif($curType==3)
+				// Underkills Location to remove 1 and change
+				elseif($curType===6)
 				{
-					if($shift[1]==1)
-						$this->ChangeShiftType($i, 2);
-					elseif($shift[1]==2)
-						$this->ChangeShiftType($i, 1);
-				}
-				elseif($curType==6)
-				{
-					if($shift[1]==4)
-						$this->ChangeShiftType($i, 5);
-					elseif($shift[1]==5)
-						$this->ChangeShiftType($i, 4);
+					if($remType===4)
+					{
+						$regularRemoveNum = 1;
+						$curType = 5;
+					}
+					elseif($remType===5)
+					{
+						$regularRemoveNum = 1;
+						$curType = 4;
+						++$i;
+					}
 				}
 				else 
 					continue;
-				return;
+				if($regularRemoveNum)
+				{
+					QueueClientFunction($this, '_N(\'' . $this->Id. '\').Shifts.splice', array($i, $regularRemoveNum), false, Priority::Low);
+					return;
+				}
 			}
-	}
-	/**
-	 * @ignore
-	 */
-	private function ChangeShiftType($arrayIndex, $newType)
-	{
-		$tmp = $this->Shifts[$arrayIndex];
-		$tmp[1] = $newType;
-		$this->Shifts->Elements[$arrayIndex] = $tmp;
-		QueueClientFunction($this, 'ChangeShiftType', array("'$this->Id'", $arrayIndex, $newType));
 	}
 	/**
 	 * @ignore
