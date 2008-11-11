@@ -1,39 +1,19 @@
 function _NTglRlOvrImg(id, state)
 {
 	var img = _N(id);
-	if(img.Cur != state && (img.Selected == null || !img.Selected))
-	{
-		img.Cur = state;
-		if(state == 'Slct')
-		{
-			var group = img.Group;
-			if(group != null)
-			{
-				var prevImg = group.GetSelectedElement();
-				if(prevImg != null)
-				{
-					prevImg = _N(prevImg);
-					prevImg.src = prevImg['Out'];
-					prevImg.Selected = false;
-					_NSave(prevImg.id, 'Selected');
-					prevImg.Cur = 'Out';
-				}
-			}
-			_NSetProperty(id, 'Selected', true);
-			if(img.Select != null)
-				img.Select.call();	
-		}
-		img.src = img[state];
-		if(img.onchange != null)
-			img.onchange.call();
-		
-	}
-	else if(state == 'Slct' && (img.Tgl))
-	{
-		img.src = img['Out'];
-		_NSetProperty(id, 'Selected', false);
-		if(img.onchange != null)
-			img.onchange.call();
+	if(!img.Cur)
 		img.Cur = 'Out';
+	if(img.Selected && state != 'Slct' || img.Cur == state)
+		return;
+		
+	if(state == 'Slct' && img.Cur != 'Slct' && img.Group)
+	{
+		var prevImg = img.Group.PrevSelectedElement;
+		if(prevImg != null)
+			_NSetProperty(prevImg, 'Selected', false);
 	}
+	img.src = img[state];
+	img.Cur = state;
+	if(img.onchange != null)
+		img.onchange.call();
 }

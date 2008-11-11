@@ -12,12 +12,21 @@ class RolloverLabel extends Label implements Groupable
 	private $OverColor;
 	private $DownColor;
 	private $SelectedColor;
-	private $GroupName;
 	private $TogglesOff;
 	
 	function RolloverLabel($text, $outColor='#000000', $overColor='#FFFFFF', $selectedColor='#FFFFFF', $left = 0, $top = 0, $width = System::Auto, $height = 18)
 	{
 		parent::Label($text, $left, $top, $width, $height);
+		$click = parent::GetClick();
+		$click['System'] = new Event();
+		$click['User'] = new Event();
+		$select = parent::GetSelect();
+		$select['System'] = new Event();
+		$select['User'] = new Event();
+		$deselect = parent::GetDeselect();
+		$deselect['System'] = new Event();
+		$deselect['User'] = new Event();
+		
 		$this->SetOutColor($outColor);
 		$this->SetOverColor($overColor);
 		$this->SetSelectedColor($selectedColor);
@@ -68,37 +77,53 @@ class RolloverLabel extends Label implements Groupable
 		$this->SelectedColor = $color;
 		if(is_array($color))
 			QueueClientFunction($this, '_N(\''.$this->Id.'\').Slct=Array', array('\''.$color[0].'\'', '\''.$color[1].'\''));
-//			NolohInternal::SetProperty('Slct', 'Array(\'' . $color[0] . '\', \''. $color[1] .'\')', $this);
 		else
 			NolohInternal::SetProperty('Slct', $color, $this);
-		$this->Click['Select'] = new ClientEvent('_NTglRlOvrLbl', $this->Id, 'Slct');
+
+		$click = parent::GetClick();
+		$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
+		$select = parent::GetSelect();
+		$select['System'] = new ClientEvent("_NTglRlOvrLbl('{$this->Id}','Slct');");
+		$deselect = parent::GetDeselect();
+		$deselect['System'] = new ClientEvent("_NTglRlOvrLbl('{$this->Id}','Out');");
 	}	
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
-	//Select Event Functions
-	function GetSelect()				{return $this->GetEvent('Select');}
-	function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}
-	//Groupable Functions
-	/**
-	 * @ignore
-	 */
-	function GetGroupName()				{return $this->GroupName;}
-	/**
-	 * @ignore
-	 */
-	function SetGroupName($groupName)	{$this->GroupName = $groupName;}
-//	function GetSelected()				{return $this->Selected != null;}
+	function GetClick()
+	{
+		$click = parent::GetClick();
+		return $click['User'];
+	}
+	function SetClick($event)
+	{
+		$click = parent::GetClick();
+		$click['User'] = $event;
+	}
+	function GetSelect()
+	{
+		$select = parent::GetSelect();
+		return $select['User'];
+	}
+	function SetSelect($event)
+	{
+		$select = parent::GetSelect();
+		$select['User'] = $event;
+	}
+	function GetDeselect()
+	{
+		$deselect = parent::GetDeselect();
+		return $deselect['User'];
+	}
+	function SetDeselect($event)
+	{
+		$deselect = parent::GetDeselect();
+		$deselect['User'] = $event;
+	}	
 	function SetSelected($bool)
 	{
 		if($this->GetSelected() != $bool)
 		{
 			parent::SetSelected($bool);
-			if($bool)
-			{
-				$sel = $this->GetSelect();
-				if(!$sel->Blank())
-					$sel->Exec();
-			}
 			if(is_array($this->OutColor) || is_array($this->SelectedColor))	
 			{
 				$this->Color = (!$bool)?$this->OutColor[0]:(($this->SelectedColor != null)?$this->SelectedColor[0]:$this->OverColor[0]);

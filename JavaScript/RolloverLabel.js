@@ -1,36 +1,19 @@
 function _NTglRlOvrLbl(id, state)
 {
 	var lbl = _N(id);
-	if(lbl.Cur != state && (lbl.Selected == null || !lbl.Selected))
+	if(lbl.Selected && state != 'Slct' || lbl.Cur == state)
+		return;
+	
+	if(state == 'Slct' && lbl.Cur != 'Slct' && lbl.Group)
 	{
-		if(state == 'Slct')
-		{
-			var prevLbl = lbl.Group.GetSelectedElement();
-			if(prevLbl != null)
-			{
-				prevLbl = _N(prevLbl);
-				_NSetRlOvrLblClr(prevLbl.id, prevLbl['Out']);
-				prevLbl.Selected = false;
-				_NSave(prevLbl.id, 'Selected');
-				prevLbl.Cur = 'Out';
-			}
-			_NSetProperty(id, 'Selected', true);
-			if(lbl.Select != null)
-				lbl.Select.call();	
-		}
-		_NSetRlOvrLblClr(id, lbl[state]);
-		if(lbl.onchange != null)
-			lbl.onchange.call();
-		lbl.Cur = state;
+		var prevLbl = lbl.Group.PrevSelectedElement;
+		if(prevLbl != null)
+			_NSetProperty(prevLbl, 'Selected', false);
 	}
-	else if(state == 'Slct' && (lbl.Tgl))
-	{
-		_NSetRlOvrLblClr(id, lbl['Out']);
-		_NSetProperty(id, 'Selected', false);
-		if(lbl.onchange != null)
-			lbl.onchange.call();
-		lbl.Cur = 'Out';
-	}
+	_NSetRlOvrLblClr(id, lbl[state]);
+	lbl.Cur = state;
+	if(lbl.onchange != null)
+		lbl.onchange.call();
 }
 function _NSetRlOvrLblClr(id, color)
 {
