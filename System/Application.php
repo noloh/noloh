@@ -28,6 +28,7 @@ function _NOBErrorHandler($buffer)
 function _NErrorHandler($number, $string, $file, $line)
 {
 	ob_end_clean();
+	setcookie('NAppCookie', false, 0, '/');
 	if(strpos($string, '~OB~') === 0)
 	{
 		$splitStr = explode('~', $string);
