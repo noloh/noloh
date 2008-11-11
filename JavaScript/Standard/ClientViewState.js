@@ -316,12 +316,12 @@ function BodyScrollState()
 function BodySizeState()
 {
 	var body = document.body;
-	if(body.ShiftsWith != null)
+	if(body.ShiftsWith)
 	{
 		var deltaX = document.documentElement.clientWidth - body.Width;
 		var deltaY = document.documentElement.clientHeight - body.Height;
-		SetShiftWithInitials(body);
-		ShiftObjects(body.ShiftsWith, deltaX, deltaY);
+		for(var i in body.ShiftsWith)
+			ShiftObjects(body.ShiftsWith[i], deltaX, deltaY);
 	}
 	if(body.BuoyantChildren != null)
 	{
