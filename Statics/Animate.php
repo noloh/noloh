@@ -3,8 +3,16 @@
  * Animate class
  *
  * This class contains various static functions and constants pertaining to the animation of specified Controls.
+ * If there exist other Controls that Shift With the specified Control, they too will be animated. See the Shift class for more information.
  * If the AnimationStart and AnimationStop Events for that Control have been defined, they will be launched when
  * the animation starts and stops, respectfully.
+ * 
+ * <pre>
+ * // Animate's a Panel's Location to 100px Left and 200px Top.
+ * Animate::Location($panel, 100, 200);
+ * // Fades a Panel and then removes it.
+ * Animate::Opacity($panel, Animate::Oblivion);
+ * </pre>
  * 
  * @package Statics
  */

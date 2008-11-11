@@ -151,8 +151,8 @@ function _NShftWth(objectId)
 	var tmpObj = _N(objectId), count = arguments.length, i=0;
 	if(tmpObj.ShiftsWith == null)
 		tmpObj.ShiftsWith = [];
-	while(i<count)
-		if(tmpObj.ShiftsWith[arguments[++i]] == null)
+	while(++i<count)
+		if(tmpObj.ShiftsWith[arguments[i]] == null)
 			tmpObj.ShiftsWith[arguments[i]] = [arguments[++i]];
 		else
 			tmpObj.ShiftsWith[arguments[i]].push(arguments[++i]);

@@ -27,7 +27,7 @@ function ShiftStart(objArray)
 			obj.style.top = FindY(_NShiftObjArray[i][0]) + "px";
 			obj.style.filter = "alpha(opacity=50)";
 			_NShiftObjArray[i][0] = obj.id = _NShiftObjArray[i][0] + "_Ghost";
-			document.body.appendChild(obj);
+			_N("N1").appendChild(obj);
 			_NShiftObjArray.Ghosts.push(i);
 		}
 		_NShiftObjArray.ActualCount[_NShiftObjArray[i][7] = _NShiftObjArray[i][1] + _NShiftObjArray[i][0]] = parseInt(_NShiftObjArray[i][1]==1?obj.style.width: _NShiftObjArray[i][1]==2?obj.style.height: _NShiftObjArray[i][1]==4?obj.style.left: obj.style.top);
@@ -127,9 +127,10 @@ function ShiftStop()
 	for(i=0; i<tmpCount; ++i)
 	{
 		j = _NShiftObjArray.Ghosts[i];
-		document.body.removeChild(_N(_NShiftObjArray[j][0]));
+		_N("N1").removeChild(_N(_NShiftObjArray[j][0]));
 		_NShiftObjArray[j][0] = _NShiftObjArray[j][0].replace("_Ghost", "");
 	}
+	
 	if(!_NShiftObjArray.HasMoved)
 	{
 		var obj;
@@ -153,8 +154,8 @@ function _NShftWth(objectId)
 	var tmpObj = _N(objectId), count = arguments.length, i=0;
 	if(tmpObj.ShiftsWith == null)
 		tmpObj.ShiftsWith = [];
-	while(i<count)
-		if(tmpObj.ShiftsWith[arguments[++i]] == null)
+	while(++i<count)
+		if(tmpObj.ShiftsWith[arguments[i]] == null)
 			tmpObj.ShiftsWith[arguments[i]] = [arguments[++i]];
 		else
 			tmpObj.ShiftsWith[arguments[i]].push(arguments[++i]);
