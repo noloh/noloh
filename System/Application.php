@@ -438,6 +438,7 @@ final class Application extends Object
 				$this->WebPage->Show();
 			else
 				return $this->WebPage->NoScriptShow();
+			AddScript('document.body.NOLOHPostingBack=false;', Priority::Low);
 		}
 		header('Content-Type: text/javascript');
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || !UserAgent::IsIE()))

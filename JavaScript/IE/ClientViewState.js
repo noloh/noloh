@@ -43,7 +43,7 @@ LowestZIndex = 0;
 
 function _NInit(loadLblId, loadImgId)
 {
-	document.body.NOLOHPostingBack = false;
+	document.body.NOLOHPostingBack = true;
 	NOLOHCatchers = [];
 	window.onscroll = BodyScrollState;
 	window.onresize = BodySizeState;
