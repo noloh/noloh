@@ -188,6 +188,10 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 		case "href":
 			obj.href = newValue=="#" ? "javascript:void(0);" : newValue;
 			break;
+		case "checked":
+			NOLOHChangeByObj(obj, "Selected", newValue);
+			obj.checked = newValue;
+			break;
 		case "Shifts":
 			if(obj.onmousedown == null)
 				NOLOHChangeByObj(obj, "onmousedown", "");
@@ -205,13 +209,23 @@ function NOLOHChangeByObj(obj, propertyString, newValue)
 				obj.Group.Elements.push(obj.id);
 			break;
 		case "Selected":
-			if(obj.Selected != newValue)
+			if(obj.Selected==true != newValue)
 			{
-				obj.Selected = newValue;
-				if(obj.Group!=null && obj.Group.onchange!=null && !document.body.NOLOHPostingBack)
+				if(obj.Group)
+					obj.Group.PrevSelectedElement = obj.Group.GetSelectedElement();
+				_NSave(obj.id,'Selected',obj.Selected=newValue);
+				if(!document.body.NOLOHPostingBack)
 				{
-					_NSave(obj.id,'Selected',newValue);
-					obj.Group.onchange.call();
+					if(newValue)
+					{
+						if(obj.Select!=null)
+							obj.Select.call();
+					}
+					else
+						if(obj.Deselect!=null)
+							obj.Deselect.call();
+					if(obj.Group && obj.Group.onchange)
+						obj.Group.onchange.call();
 				}
 			}
 			break;
@@ -288,6 +302,8 @@ function _NSave(id, propertyString, newValue)
 			NOLOHChangeInit(id, "Opacity");
 			NOLOHChanges[id]["Opacity"][0] = newValue * 100;
 			break;
+		case "checked":
+			NOLOHChange(id, "Selected", newValue);
 		default:
 			NOLOHChangeInit(id, propertyString);
 			NOLOHChanges[id][propertyString][0] = typeof newValue == "boolean" ? (newValue ? 1 : 0) : newValue;
