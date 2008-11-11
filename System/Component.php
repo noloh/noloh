@@ -264,6 +264,15 @@ abstract class Component extends Object
 		}
 	}
 	/**
+	 * Re-shows an object for one parent that was once shown under another parent but not removed.
+	 * Should not be called under most circumstances. Should only be called in overriding the Adopt() of advanced, custom components.
+	 * Overriding this function allows you to have code execute when the Component is shown on the client after being added to another parent.
+	 */
+	function Adopt()
+	{
+		NolohInternal::Adoption($this);
+	}
+	/**
 	 * Re-shows an object that was once shown, then buried.
 	 * Should not be called under most circumstances. Should only be called in overriding the Resurrect() of advanced, custom components.
 	 * Overriding this function allows you to have code execute when the Component is shown on the client after the first time.
