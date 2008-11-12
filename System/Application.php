@@ -65,7 +65,7 @@ function _NPHPInfo($info)
 	$info = str_replace(array("\n", "\r", "'"), array('','',"\\'"), $info);
 	$loc = strpos($info, '</table>') + 8;
 	$text = substr($info, 0, $loc) .
-		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . NOLOHConfig::GetNOLOHPath() . 'Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
+		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . System::ImagePath() . 'nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
 		substr($info, $loc);
 	session_destroy();
 	return $text;
@@ -227,6 +227,8 @@ final class Application extends Object
 		$_SESSION['_NTokens'] = array();
 		$_SESSION['_NHighestZ'] = 0;
 		$_SESSION['_NLowestZ'] = 0;
+		$_SESSION['_NPath'] = ComputeNOLOHPath();
+		$_SESSION['_NRPath'] = (NOLOHConfig::NOLOHURL)?NOLOHConfig::NOLOHURL:GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), System::NOLOHPath());
 		UserAgent::LoadInformation();
 		if($trulyFirst)
 			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')

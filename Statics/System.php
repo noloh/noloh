@@ -71,9 +71,13 @@ final class System
 	* indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.
 	*/
 	const Unhandled = 'Unhandled';
-	
+	/**
+	 * System::Horizontal is used in connection with the Scrolling property to indicate the presence of Horizontal scrollbars.
+	 */
 	const Horizontal = 'horizontal';
-	
+	/**
+	 * System::Horizontal is used in connection with the Scrolling property to indicate the presence of Horizontal scrollbars.
+	 */
 	const Vertical = 'vertical';
 	/**
 	 * @ignore
@@ -94,15 +98,17 @@ final class System
 		return $what;
 	}
 	/**
-	 * @ignore
+	 * System::Log will log any piece of information to a debug window, along with a system timestamp. This function is useful for debugging.
+	 * @param mixed $what The information to be logged
+	 * @param boolean $toFireBug If set to true and the user has the Firebug extension for Firefox, Log will alternatively log to the console.
 	 */
 	static function Log($what, $toFireBug=false)
 	{
 		if($GLOBALS['_NDebugMode'])
 			if($toFireBug)
 			{
-				if(UserAgent::GetBrowser() == 'ff')
-					AddScript('console.log(' . ClientEvent::ClientFormat($text) . ');');
+				if(UserAgent::GetBrowser() === 'ff')
+					AddScript('try{console.log(' . ClientEvent::ClientFormat($text) . ');} catch(e){};');
 			}
 			elseif($GLOBALS['_NDebugMode'])
 			{
@@ -117,6 +123,7 @@ final class System
 				{
 					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
 					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
+					//$display->CSSFontFamily = 'consolas, monospace';
 					$old = false;
 					$debugWindow->Buoyant = true;
 				}
@@ -131,6 +138,17 @@ final class System
 				}
 			}
 	}
+	/**
+ 	* Returns the full system path to NOLOH
+ 	* @return string
+ 	*/
+	static function NOLOHPath(){return $_SESSION['_NPath'];}
+	/**
+ 	* Returns the relative system path to NOLOH
+ 	* @return string
+ 	*/
+	static function RelativePath()	{return $_SESSION['_NRPath'];}
+	static function ImagePath()		{return self::RelativePath() . '/Images/';}
 }
 
 ?>

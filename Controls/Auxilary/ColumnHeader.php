@@ -20,15 +20,15 @@ class ColumnHeader extends Panel
 		$this->Caption = new Label($text, 0, 0, $width, $height);
 		parent::Panel($left, 0, ($width == System::Auto || $width == System::AutoHtmlTrim)?$this->Caption->GetWidth() + 25:$width, $height);
 		$this->CSSBackground_Repeat = "repeat-x";
-		$this->SizeHandle = new Image(NOLOHConfig::GetNOLOHPath().'Images/Std/ColSep.gif', $this->Width - 3, 6);
+		$this->SizeHandle = new Image(System::ImagePath() . 'Std/ColSep.gif', $this->Width - 3, 6);
 		$this->Caption->CSSClass = 'NColHead';
 		$this->SizeHandle->Cursor = Cursor::WestResize;
 		$this->Caption->ParentId = $this->Id;
 		$this->SizeHandle->ParentId = $this->Id;
 		$this->Cursor = Cursor::Arrow;
-		$this->MouseOver = new ClientEvent("this.style.background = 'url(". NOLOHConfig::GetNOLOHPath() . 'Images/Std/HeadOrange.gif)' . '\';');
+		$this->MouseOver = new ClientEvent("this.style.background = 'url(". System::ImagePath() . 'Std/HeadOrange.gif)' . '\';');
 		$this->MouseOut = new ClientEvent("this.style.background = '';");
-		$this->Click = new ClientEvent("if(tmpMouseUp!=null) {tmpMouseUp=null;return;} this.parentNode.parentNode.style.cursor = 'wait';");
+		//$this->Click = new ClientEvent("if(tmpMouseUp!=null) {tmpMouseUp=null;return;} this.parentNode.parentNode.style.cursor = 'wait';");
 		$this->Click[] = new ServerEvent($this, 'Sort');
         $this->SizeHandle->MouseUp = new ClientEvent('tmpMouseUp=true;');
 	}
@@ -45,20 +45,20 @@ class ColumnHeader extends Panel
 	public function GetSizeHandle()	{return $this->SizeHandle;}
 	public function Sort()
 	{
-		$tmpListView = $this->GetListView();
-		$tmpListView->Sort($this, $this->Order);
-		$tmpSrc = NOLOHConfig::GetNOLOHPath().'Images/Std/' . (($this->Order)?'ArrDwn.gif':'ArrUp.gif');
+		$listView = $this->GetListView();
+		$listView->Sort($this, $this->Order);
+		$arrowPath = System::ImagePath() . 'Std/' . (($this->Order)?'ArrDwn.gif':'ArrUp.gif');
 		if($this->OrderArrow == null)
 		{
-			$this->OrderArrow = new Image($tmpSrc, $this->GetWidth() - 17, 12);
+			$this->OrderArrow = new Image($arrowPath, $this->GetWidth() - 17, 12);
 			$this->OrderArrow->ParentId = $this->Id;
 			$this->SizeHandle->Shifts[] = Shift::Left($this->OrderArrow);
 //			$this->OrderArrow->Shifts[] = Shift::With($this, Shift::Left);
 		}
 		else
-			$this->OrderArrow->SetSrc($tmpSrc);
+			$this->OrderArrow->SetSrc($arrowPath);
 		$this->OrderArrow->Visible = true;
-		$tmpListView->SetCursor($tmpListView->Cursor);//$this->Cursor;
+		$listView->SetCursor($listView->Cursor);//$this->Cursor;
 		$this->Order = !$this->Order;
 	}
 	function SetListView($listViewId){$this->ListViewId = $listViewId;}

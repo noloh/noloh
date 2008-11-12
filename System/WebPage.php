@@ -73,8 +73,9 @@ abstract class WebPage extends Component
 		$this->Description = $description;
 //		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
-		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Controls/NStyles.css');
-		$this->LoadImg = new Image(NOLOHConfig::GetNOLOHPath().'Images/loading.gif', 1, 1, 30, 30);
+//		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Controls/NStyles.css');
+		$this->CSSFiles->Add(System::RelativePath() .'/Controls/NStyles.css');
+		$this->LoadImg = new Image(System::ImagePath() . 'loading.gif', 1, 1, 30, 30);
 		$this->LoadImg->CSSClass = 'NLoad';
 		$this->LoadImg->SetParentId($this->Id);
 		$this->LoadLbl = new Label('&nbsp;Loading...', 31, 7);
@@ -134,7 +135,7 @@ abstract class WebPage extends Component
 		{
 			$path = $this->CSSFiles[$index];
 			$this->CSSFiles->RemoveAt($index, true);
-			AddScript('_NRemStyle(\''.hash('md5',$path).'\',\''.NOLOHConfig::GetNOLOHPath().'\')');
+			AddScript('_NRemStyle(\''.hash('md5',$path).'\',\''.System::RelativePath().'\')');
 		}
 	}
 	/**

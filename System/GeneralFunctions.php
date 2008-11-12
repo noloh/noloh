@@ -33,8 +33,8 @@ function GetHardMemoryUsage()
 function GetAbsolutePath($path)
 {
 	if($path[0] == '\\' || $path[0] == '/')
-		return realpath(NOLOHConfig::GetBaseDirectory().$path);
-	elseif(strpos($path, 'http://') >= 0)
+		return realpath($_SERVER['DOCUMENT_ROOT'].$path);
+	if(strpos($path, 'http://') >= 0)
 		return $path;
 	else
 		return realpath($path);
@@ -99,7 +99,8 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
 {
 	if(!isset($_SESSION['_NScriptSrcs'][$src]))
 	{
-		$path = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'JavaScript/';
+//		$path = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'JavaScript/';
+		$path = System::NOLOHPath() . '/JavaScript/';
 		if($browserSpecific)
 			$path .= $_SESSION['_NIsIE'] ? 'IE/' : 'Standard/';
 		$path .= $src;
@@ -180,7 +181,7 @@ function IsArray($x)
 function AutoWidthHeight($str, $width=System::Auto, $height=System::Auto, $fontSize=12)
 {
 	$retArray = array($width, $height);
-	$fontPath = NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath().'Fonts/times.ttf';
+	$fontPath = System::NOLOHPath() .'/Fonts/times.ttf';
 	if($width == System::Auto || $width == System::AutoHtmlTrim)
 	{
 		$bbox = imagettfbbox($fontSize, 0, $fontPath, $str);
