@@ -29,9 +29,8 @@ class WindowPanel extends Panel
 	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
-		$this->SetThemeBorder('4px solid #07254a');
-		$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
-		if(UserAgent::IsIE6())
+		$imagesRoot = System::ImagePath();
+		if(false && UserAgent::IsIE6())
 		{
 			$imagesDir = $imagesRoot .'IE/';
 			$format = '.gif';
@@ -50,8 +49,8 @@ class WindowPanel extends Panel
 		$this->TitleBar->CSSBackground_Repeat = "repeat-x";
 //		$this->RestoreImage = new Image($imagesDir.'restore.gif', null, 2);
 		$this->CloseImage = new RolloverImage($imagesDir.'WinClose' . $format, $imagesDir.'WinCloseHover' . $format, null, $tmpTop);
-		$this->ResizeImage = new Image($imagesRoot.'Std/WinResize.gif', null, null); 
-
+		$this->ResizeImage = new Image($imagesRoot.'Std/WinResize.gif', null, null);
+		$this->SetThemeBorder('4px solid #07254a');
 		parent::Panel($left, $top, $width, $height);
 		$this->WindowPanelComponents = new ArrayList();
 		$this->WindowPanelComponents->ParentId = $this->Id;
@@ -71,12 +70,14 @@ class WindowPanel extends Panel
 		$this->Click = new ClientEvent('BringToFront(\'' . $this->Id . '\');');
 		
 		$this->TitleBar->Shifts[] = Shift::Location($this);
-		$this->ResizeImage->Shifts[] = Shift::Location($this->ResizeImage, 150, null, 62);
-		$this->Shifts[] = Shift::With($this->ResizeImage, Shift::Size);
-		$this->TitleBar->Shifts[] = Shift::With($this->ResizeImage, Shift::Width);
-		$this->RightTitle->Shifts[] = Shift::With($this->ResizeImage, Shift::Left);
-		$this->CloseImage->Shifts[] = Shift::With($this->ResizeImage, Shift::Left);
-		$this->BodyPanel->Shifts[] = Shift::With($this->ResizeImage, Shift::Size);
+		$this->ResizeImage->Shifts[] = Shift::Size($this, 150, null, 65);
+		$this->TitleBar->Shifts[] = Shift::With($this, Shift::Width);
+		$this->RightTitle->Shifts[] = Shift::With($this, Shift::Left, Shift::Width);
+		$this->CloseImage->Shifts[] = Shift::With($this, Shift::Left, Shift::Width);
+//		$this->BodyPanel->Shifts[] = Shift::With($this, Shift::Size);
+		$this->BodyPanel->Shifts[] = Shift::With($this, Shift::Width);
+		$this->BodyPanel->Shifts[] = Shift::With($this, Shift::Height);
+		
 		
 		$this->WindowPanelComponents->Add($this->TitleBar);
 		$this->WindowPanelComponents->Add($this->LeftTitle);
@@ -93,8 +94,10 @@ class WindowPanel extends Panel
 		if($bool)
 		{
 			if(!isset($this->TitleBar->DoubleClick['WinShade']))
-				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NTglClpsePanel('{$this->Id}','{$this->TitleBar->Id}', '{$this->BodyPanel->Id}');");
-			NolohInternal::SetProperty('Hgt', "{$this->GetHeight()}", $this->Id);
+				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NTglClpsePanel('{$this->Id}');");
+				//$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NTglClpsePanel('{$this->Id}','{$this->TitleBar->Id}', '{$this->BodyPanel->Id}');");
+			NolohInternal::SetProperty('Hgt', $this->GetHeight(), $this);
+			NolohInternal::SetProperty('Top', $this->TitleBar->Id, $this);
 		}
 		else
 			$this->TitleBar->DoubleClick['WinShade'] = null;
@@ -145,7 +148,7 @@ class WindowPanel extends Panel
 					{
 						$this->CloseImage->SetOverSrc($buttons[0]->GetOverSrc());
 						$this->CloseImage->SetDownSrc($buttons[0]->GetDownSrc());
-						$this->CloseImage->SetSelectSrc($buttons[0]->GetSelectSrc());
+						$this->CloseImage->SetSelectedSrc($buttons[0]->GetSelectSrc());
 					}
 				}
 				elseif(is_string($buttons[0]))
@@ -199,7 +202,7 @@ class WindowPanel extends Panel
 	{
 		if(!$this->MinimizeImage)
 		{
-			$imagesRoot = NOLOHConfig::GetNOLOHPath().'Images/';
+			$imagesRoot = System::ImagePath() . '';
 			if(UserAgent::IsIE6())
 			{
 				$imagesDir = $imagesRoot .'IE/';
@@ -234,10 +237,20 @@ class WindowPanel extends Panel
 		parent::SetHeight($height);
 		$this->BodyPanel->SetHeight($height - $this->TitleBar->GetHeight() - $this->BorderSize);
 		$this->BodyPanel->SetTop($this->TitleBar->GetBottom());
-		$this->ResizeImage->SetTop($height - $this->BorderSize - 16);
+		//$this->ResizeImage->SetTop($height - $this->BorderSize - 16);
 		if($this->WindowShade)
-			NolohInternal::SetProperty('Hgt', '\'' . $this->GetHeight() . '\'', $this);
+			NolohInternal::SetProperty('Hgt', $height, $this);
 	}
+	/**
+	*Returns the the width of the BodyPanel.
+	*@return mixed 
+	*/
+	function GetInnerWidth()	{return $this->BodyPanel->GetWidth();}
+	/**
+	*Returns the the height of the BodyPanel.
+	*@return mixed 
+	*/
+	function GetInnerHeight()	{return $this->BodyPanel->GetHeight();}
 	/**
 	 * @ignore
 	 */
@@ -246,20 +259,24 @@ class WindowPanel extends Panel
 		parent::SetWidth($width);
 		
 		$this->BodyPanel->SetWidth($width - ($this->BorderSize << 1));
+		$this->TitleBar->SetLeft($this->LeftTitle->GetRight());
 		$this->TitleBar->SetWidth($width - ($this->LeftTitle->GetWidth() << 1));
-		$this->RightTitle->Left = $this->TitleBar->Right;
+		$this->RightTitle->Left = $this->TitleBar->GetRight();
 //		$this->RestoreImage->SetLeft($newWidth - 45);
 		$this->CloseImage->SetLeft($width - 33);
-		$this->ResizeImage->SetLeft($width - ($this->BorderSize) - 18);
+		//$this->ResizeImage->SetLeft($width - ($this->BorderSize) - 18);
 	}
 	private function SetThemeBorder($border)
 	{
 		$this->ThemeBorder = $border;
 		if(preg_match('/\A\s*?(\d+)\D*?.*?\z/', $this->ThemeBorder, $values)) 
-			$borderSize = $values[0];
+			$borderSize = $values[1];
 		else
 			BloodyMurder('Border has no numeric value');
 		$this->BorderSize = $borderSize;
+		$this->ResizeImage->Left = $this->ResizeImage->Top = $borderSize;
+		$this->ResizeImage->ReflectAxis('x');
+		$this->ResizeImage->ReflectAxis('y');
 	}
 	function SetBackColor($color)	{$this->BodyPanel->SetBackColor($color);}
 	/**
@@ -272,6 +289,8 @@ class WindowPanel extends Panel
 	function Show()
 	{
         parent::Show();
+        if($this->WindowShade)
+        	AddNolohScriptSrc('Animation.js', true);
 		AddNolohScriptSrc('CollapsePanel.js');
 	}
 }
