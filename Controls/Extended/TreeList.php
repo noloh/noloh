@@ -35,7 +35,7 @@ class TreeList extends Panel
 	{
 		if(!($node instanceof TreeNode))
 			$node = new TreeNode($node);
-		$node->SetWidth($this->Width-20);
+		//$node->SetWidth($this->Width-20);
 		$this->Controls->Add($node, true, true);
 		$node->SetTreeListId($this->Id);
 		$node->TellChildren($this->Id);

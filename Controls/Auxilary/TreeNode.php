@@ -25,21 +25,21 @@ class TreeNode extends Panel
 	 */
 	public static function GetDefaultLeafSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath().'Images/document.gif';
+		return System::ImagePath() . 'document.gif';
 	}
 	/**
 	 * @ignore
 	 */
 	public static function GetDefaultCloseSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath().'Images/folder_close.gif';
+		return System::ImagePath() . 'folder_close.gif';
 	}
 	/**
 	 * @ignore
 	 */
 	public static function GetDefaultOpenSrc()
 	{
-		return NOLOHConfig::GetNOLOHPath().'Images/folder_open.gif';
+		return System::ImagePath() . 'folder_open.gif';
 	}
 	
 	function TreeNode($element, $left=10)
@@ -50,8 +50,8 @@ class TreeNode extends Panel
 		if(GetBrowser() == 'ie')
 			NolohInternal::SetProperty('style.marginTop','6px',$this);
 		//$this->PlusMinus = new PlusMinusSwitch(0, 3);
-		$this->PlusMinus = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/plus.gif', null, 0, 3);
-		$this->PlusMinus->SetSelectedSrc(NOLOHConfig::GetNOLOHPath().'Images/minus.gif');
+		$this->PlusMinus = new RolloverImage(System::ImagePath() . 'plus.gif', null, 0, 3);
+		$this->PlusMinus->SetSelectedSrc(System::ImagePath() . 'minus.gif');
 		$this->PlusMinus->SetTogglesOff(true);
 		
 		$this->PlusMinus->SetVisible(false);
@@ -76,7 +76,7 @@ class TreeNode extends Panel
 	 */
 	private function AddNodeHelper($node)
 	{
-		$node->SetWidth($this->Width-20);
+		//$node->SetWidth($this->Width-20);
 		if($this->TreeListId != null)
 		{
 			$node->SetTreeListId($this->TreeListId);
@@ -229,8 +229,9 @@ class TreeNode extends Panel
 
 	function Expand($deep = false)
 	{
-		$this->PlusMinus->Src = NOLOHConfig::GetNOLOHPath().'Images/minus.gif';
-		$this->ChildrenPanel->Visible = true;
+		$this->PlusMinus->SetSelected(true);
+		//$this->PlusMinus->Src = System::ImagePath() . 'minus.gif';
+		//$this->ChildrenPanel->Visible = true;
 		if($deep)
 		{
 			$nodeCount = $this->ChildrenPanel->Controls->Count();
