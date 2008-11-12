@@ -88,6 +88,18 @@ class DataConnection extends Object
 		$query .= ");";
 		return $query;
 	}
+	public function ConvertValueToSQL($value)
+	{
+		if($this->Type == Data::Postgres)
+			$formattedValue = self::ConvertTypeToPostgres($value);
+		else
+		{
+			$resource = $this->Connect();
+			$formattedValue = self::ConvertTypeToMySQL($value, "'", $resource);
+			$this->Close();
+		}
+		return $formattedValue;
+	}
 	private static function ConvertTypeToPostgres($value, $quote="'")
 	{
 		if(is_string($value))
@@ -156,7 +168,7 @@ class DataConnection extends Object
 			$spName = $args[1];
 		}
 		$query = self::GenerateSqlString($spName, array_slice($args, $hasResultOption?2:1));
-		$dbCmd = new DataCommand($this, $query);
+		$dbCmd = new DataCommand($this, $query, $resultOption);
 		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 //		$dbCmd->Connection->Close();
 		return $tmpReturn;
@@ -188,8 +200,13 @@ class DataConnection extends Object
 	function CreateCommand($spName, $paramsDotDotDot)
 	{
 		$args = func_get_args();
-		$query = self::GenerateSqlString($spName, array_slice($args, 2));
-		$dbCmd = new DataCommand($this, $query);
+		if($hasResultOption = is_int($spName))
+		{
+			$resultOption = $spName;
+			$spName = $args[1];
+		}
+		$query = self::GenerateSqlString($spName, array_slice($args, $hasResultOption?2:1));
+		$dbCmd = new DataCommand($this, $query, $hasResultOption?$resultOption:Data::Both);
 		return $dbCmd;
 	}
 	/**

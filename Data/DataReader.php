@@ -11,7 +11,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	public $Data;
 	public $ResultType;
 	
-	function DataReader($type, $resource, $resultType=Data::Assoc)
+	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null)
 	{
 		$this->ResultType = $type;
 		if($type == Data::Postgres)
@@ -23,12 +23,44 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			else
 				$resultType = PGSQL_NUM;	
 				
-			if($resultType == PGSQL_BOTH || $resultType == PGSQL_NUM)
+			if($resultType == PGSQL_BOTH || $resultType == PGSQL_NUM || $callBack)
 			{
 				$this->Data = array();
 				$numRows = pg_numrows($resource);
+				if($callBack)
+				{
+					if(isset($callBack['id']))
+							$object = GetComponentById($callBack['id']);
+						else
+							$object = $callBack['class'];
+					$callArray = array($object, $callBack['function']);
+				}
 				for ($i=0; $i < $numRows; ++$i)
-					$this->Data[] = pg_fetch_array($resource, $i, $resultType);
+				{
+					if(isset($callBack['constraint']))
+					{
+						$intersection = array();
+						$data = pg_fetch_array($resource, $i, $resultType);
+						$columns = $callBack['constraint']->GetColumns();
+						$count = count($columns);
+						for($columnIndex=0; $columnIndex < $count; ++$columnIndex)
+						{
+							//$local = $keys[$i];
+							if(isset($data[$columns[$columnIndex]]))
+								$intersection[$columns[$columnIndex]] = $data[$columns[$columnIndex]];
+						}
+						$this->Data[] = $intersection;
+//						$this->Data[] = array_intersect_key(pg_fetch_array($resource, $i, $resultType), array_flip($callBack['constraint']->GetColumns()));
+					
+					}
+					else
+						$this->Data[] = pg_fetch_array($resource, $i, $resultType);
+					if($callBack)
+					{
+						$args = array_merge(array($this->Data[$i]), $callBack['params']);
+						call_user_func_array($callArray, $args);
+					}
+				}
 			}
 			else
 				$this->Data = pg_fetch_all($resource);
@@ -45,7 +77,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		
 			$numRows = mysql_num_rows($resource);
 			for ($i=0; $i < $numRows; ++$i)
-				$this->Data[] =  mysql_fetch_array($resource, $resultType);	
+				$this->Data[] =  mysql_fetch_array($resource, $resultType);
 		}
 		if(!$this->Data)
 			$this->Data = array();
