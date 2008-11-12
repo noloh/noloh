@@ -530,6 +530,7 @@ abstract class Control extends Component
 	function SetBuoyant($bool)
 	{
 		$this->Buoyant = $bool ? true : null;
+		AddNolohScriptSrc('Buoyant.js');
 		/*if($bool)
 			$this->Buoyant = true;
 		else

@@ -134,7 +134,10 @@ class Label extends Control
 		$width = parent::GetWidth();
 		$height = parent::GetHeight();
 		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
+		{
+			AddNolohScriptSrc('Auto.js');
 			QueueClientFunction($this, '_NAWH', array('\''.$this->Id.'\''));
+		}
 	}
 	/**
 	 * Returns the alignment of the Label, i.e., where the text will show with respect to the bounds of the Label. Possible values include Layout::Left, Layout::Center, or Layout::Right. 

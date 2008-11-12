@@ -135,6 +135,7 @@ abstract class WebPage extends Component
 		{
 			$path = $this->CSSFiles[$index];
 			$this->CSSFiles->RemoveAt($index, true);
+			AddNolohScriptSrc('Style.js');
 			AddScript('_NRemStyle(\''.hash('md5',$path).'\',\''.System::RelativePath().'\')');
 		}
 	}
