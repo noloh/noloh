@@ -52,14 +52,7 @@ abstract class Object
 				return $this->$func();
 			else
 				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only.');
-			/*elseif(strpos($nm, "CSS") == 0 && $nm != "CSSFile")
-				$ret = $this->CSSPropertyArray[str_replace("_", "-", str_replace("CSS", "", $nm))];*/
 		}
-		//else 
-			//if(array_key_exists($nm, $this->PublicProperties))
-				//return $this->PublicProperties[$nm];
-			//else 
-			//	return null;
 	}
 	/**
 	* @ignore
@@ -81,16 +74,32 @@ abstract class Object
 				return $val;
 			}
 			else
-				BloodyMurder('The property ' . $nm . ' could not be set because it does not exist or is read-only.');
-			/*elseif(strpos($nm, "CSS") === 0 && $nm != "CSSFile")
-			{
-				if($this->CSSPropertyArray == null)
-					$this->CSSPropertyArray = array();
-				$this->CSSPropertyArray[str_replace("_", "-", str_replace("CSS", "", $nm))] = $val;
-			}*/
-			
+				BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only.');
 		}
-		
+	}
+	/**
+	 * @ignore
+	 */
+	function __call($nm, $args)
+	{
+		if(strpos($nm, 'Get') === 0)
+		{
+			$prop = substr($nm, 3);
+			if(property_exists($this, $prop))
+				return $this->$prop;
+			else 
+				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist.');
+		}
+		elseif(strpos($nm, 'Set') === 0)
+		{
+			$prop = substr($nm, 3);
+			if(property_exists($this, $prop))
+				return $this->$prop = $args[0];
+			else 
+				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist.');
+		}
+		else 
+			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope.');
 	}
 }
 
