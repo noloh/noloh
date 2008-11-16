@@ -1,26 +1,27 @@
-function ReadyBox(id)
+_N.Upload = [];
+_N.Upload.FileUploadObjIds = [];
+function _NRdyBox(id)
 {
-	if(NOLOHUpload.FileUploadObjIds.length > 0)
+	if(_N.Upload.FileUploadObjIds.length > 0)
 	{
 		_N(id).UploadComplete = true;
-		for(var i=0; i<NOLOHUpload.FileUploadObjIds.length; ++i)
-			if(_N(NOLOHUpload.FileUploadObjIds[i]).UploadComplete == false)
+		for(var i=0; i<_N.Upload.FileUploadObjIds.length; ++i)
+			if(_N(_N.Upload.FileUploadObjIds[i]).UploadComplete == false)
 				return;
-		PostBack(NOLOHUpload.EventType, NOLOHUpload.ID);
-		NOLOHUpload = new Object();
-		NOLOHUpload.FileUploadObjIds = [];
+		_NServer(_N.Upload.EventType, _N.Upload.Id);
+		_N.Upload = [];
+		_N.Upload.FileUploadObjIds = [];
 	}
 }
-
-function PostBackWithUpload(EventType, ID, FileUploadObjIds)
+function _NServerWUpl(eventType, id, fileUploadObjIds)
 {
-	clearInterval(_NURLCheck);
-	NOLOHUpload.EventType = EventType;
-	NOLOHUpload.ID = ID;
-	NOLOHUpload.FileUploadObjIds = FileUploadObjIds;
-	for(var i=0; i<FileUploadObjIds.length; ++i)
+	clearInterval(_N.URLChecker);
+	_N.Upload.EventType = eventType;
+	_N.Upload.Id = id;
+	_N.Upload.FileUploadObjIds = fileUploadObjIds;
+	for(var i=0; i<fileUploadObjIds.length; ++i)
 	{
-		iFrame = _N(FileUploadObjIds[i]);
+		iFrame = _N(fileUploadObjIds[i]);
 		iFrame.UploadComplete = false;
 		iFrame.contentWindow.document.getElementById("frm").submit();
 	}

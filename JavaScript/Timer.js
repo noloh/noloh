@@ -15,13 +15,13 @@ function _NTimer(addTo, id, interval, repeat)
 		parent.TimerChildren.push(id);
 		parent = parent.parentNode;
 	}while (parent && parent.id);
-	window[id] = this;
+	_N[id] = this;
 	this.Start();
 }
 function _NTimerStart()
 {
 	this.Stop();
-	var func = "var tmr=window['"+this.Id+"'];if(tmr.onelapsed!=null) tmr.onelapsed.call();";
+	var func = "var tmr=_N."+this.Id+";if(tmr.onelapsed) tmr.onelapsed();";
 	this.Ref = this.Repeat ? window.setInterval(func, this.Interval) : window.setTimeout(func, this.Interval);
 }
 function _NTimerStop()

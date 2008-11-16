@@ -1,4 +1,4 @@
-function _NTglSubMnuItms(mnuItmId)
+function _NMnuTglSubItms(mnuItmId)
 {
 	var menu = _N(mnuItmId);
 	var subMenu =  (menu.ItmsPnl != null)?_N(menu.ItmsPnl):null;
@@ -8,13 +8,13 @@ function _NTglSubMnuItms(mnuItmId)
 		if(menu.IsMnu != null)
 		{
 			MnuItmGlobal = menu.id;
-			document.attachEvent("onclick", _NHideMnuChldrn);
+			document.attachEvent("onclick", _NMnuHideChldrn);
 		}
 		if(tmpParent.SlctMnuItm != null)
 			_NHideChldrn(tmpParent.SlctMnuItm, true, false);
-		menu.attachEvent("onmouseout", _NTglMnuOut);
+		menu.attachEvent("onmouseout", _NMnuTglOut);
 		tmpParent.SlctMnuItm = menu.id;
-		ChangeMenuOutColors(menu.TxtLbl, false)
+		_NMnuOutClrs(menu.TxtLbl, false)
 		menu.IsSlct = true;
 		if(subMenu != null && subMenu.ChildrenArray != null)
 			ToggleVisibility(subMenu.id);
@@ -22,7 +22,7 @@ function _NTglSubMnuItms(mnuItmId)
 	else
 		_NHideChldrn(tmpParent.SlctMnuItm, false, false);
 }
-function _NTglMnuOut(event)
+function _NMnuTglOut(event)
 {
 	var mnuItmLbl = _N(event.srcElement.id);
 	var mnuItm = mnuItmLbl.parentNode;
@@ -34,14 +34,14 @@ function _NTglMnuOut(event)
 	{
 		var mnuId = (mnuItmLbl.SlctMnuItm != null)?mnuItmLbl.SlctMnuItm:mnuItm.id;
 		_NHideChldrn(mnuId, true, false);
-		//mnuItm.removeEventListener("mouseout", _NTglMnuOut, true);
+		//mnuItm.removeEventListener("mouseout", _NMnuTglOut, true);
 	}
 }
-function _NHideMnuChldrn(event)
+function _NMnuHideChldrn(event)
 {
 	_N(MnuItmGlobal).parentNode.IsClk = false;
 	_NHideChldrn(MnuItmGlobal, true, true);
-	document.detachEvent("onclick", _NHideMnuChldrn, true);
+	document.detachEvent("onclick", _NMnuHideChldrn, true);
 }
 function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 {
@@ -56,13 +56,13 @@ function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 	}
 	if(topLvl)
 	{
-		ChangeMenuOutColors(opnMnu.TxtLbl, true);
+		_NMnuOutClrs(opnMnu.TxtLbl, true);
 		opnMnu.IsSlct = null;
 	}
 	if(rmEvt)
-		document.detachEvent("onclick", _NHideMnuChldrn, true);
+		document.detachEvent("onclick", _NMnuHideChldrn, true);
 }
-function ChangeMenuOutColors(mnuItmId, isOut)
+function _NMnuOutClrs(mnuItmId, isOut)
 {
 	var tmpMnuItm = _N(mnuItmId);
 	if(isOut)

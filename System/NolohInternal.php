@@ -59,8 +59,8 @@ final class NolohInternal
 			if($obj->GetBuoyant())
 			{
 				$addTo = 'N1';
-				AddScript('StartBuoyant(\''.$objId.'\',\''.$parent->GetAddId($obj).'\')', Priority::Low);
-				unset($_SESSION['_NFunctionQueue'][$objId]['StopBuoyant']);
+				AddScript('_NByntSta(\''.$objId.'\',\''.$parent->GetAddId($obj).'\')', Priority::Low);
+				unset($_SESSION['_NFunctionQueue'][$objId]['_NByntStp']);
 			}
 			else
 				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
@@ -136,10 +136,11 @@ final class NolohInternal
 				$markupPanel = &GetComponentById($splitStr[0]);
 				if($markupPanel!=null && $markupPanel->GetShowStatus())
 				{
+					AddNolohScriptSrc('Eventee.js');
 					$nameValPairsString = '';
 					foreach($nameValPairs as $name => $val)
 						$nameValPairsString .= '\''.$name.'\',\''.($name=='href'?$val:$markupPanel->GetEventString($val, $objId)).'\',';
-					AddScript('_NSetPEvtee(\''.$objId.'\',['.rtrim($nameValPairsString,',').'])');
+					AddScript('_NEvteeSetP(\''.$objId.'\',['.rtrim($nameValPairsString,',').'])');
 				}
 			}
 		}

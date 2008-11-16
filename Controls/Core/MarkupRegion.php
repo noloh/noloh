@@ -13,8 +13,8 @@ class MarkupRegion extends Control
 {
 	private $CachedWidth;
 	private $CachedHeight;
-    private $Scrolling;
-    private $ScrollLeft;
+	private $Scrolling;
+	private $ScrollLeft;
 	private $ScrollTop;
 	//private $FontSize;
 	/**
@@ -120,7 +120,7 @@ class MarkupRegion extends Control
     {
     	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
         if($_SESSION['_NIsIE'])
-    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
+    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
         	NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
         $this->ScrollLeft = $scrollLeft;
@@ -140,7 +140,7 @@ class MarkupRegion extends Control
     {
     	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
     	if($_SESSION['_NIsIE'])
-    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
@@ -182,22 +182,11 @@ class MarkupRegion extends Control
 	 */
     function SetText($markupStringOrFile)
 	{
-
-		//$this->IsFile = (is_file($markupStringOrFile))? true : false;
         parent::SetText($markupStringOrFile);
-//		if(is_file($markupStringOrFile))
-//		{
-			$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", '"', '\'', '\\'), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>', '\\\\'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
-			$this->AutoWidthHeight($tmpFullString);
-			QueueClientFunction($this, 'SetMarkupString', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
-//		}
-//		else
-//			NolohInternal::SetProperty("innerHTML", $markupStringOrFile, $this);
+		$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", '"', '\'', '\\'), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>', '\\\\'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
+		$this->AutoWidthHeight($tmpFullString);
+		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 	}
-		//$this->MarkupString = file_get_contents($markupStringOrFile);
-		//if($this->MarkupString == false)
-			//$this->MarkupString = $markupStringOrFile;
-//	}
 	/**
 	 * Styles a string of text by giving it a CSS class
 	 * @param string $text The string to be styled
@@ -213,9 +202,8 @@ class MarkupRegion extends Control
 	 */
 	function Show()
 	{
-        NolohInternal::Show('DIV', parent::Show(), $this);
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/MarkupRegionScript.js");
 		AddNolohScriptSrc('MarkupRegion.js');
+		NolohInternal::Show('DIV', parent::Show(), $this);
 	}
 	/**
 	 * @ignore

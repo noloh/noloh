@@ -28,9 +28,9 @@ class ColumnHeader extends Panel
 		$this->Cursor = Cursor::Arrow;
 		$this->MouseOver = new ClientEvent("this.style.background = 'url(". System::ImagePath() . 'Std/HeadOrange.gif)' . '\';');
 		$this->MouseOut = new ClientEvent("this.style.background = '';");
-		//$this->Click = new ClientEvent("if(tmpMouseUp!=null) {tmpMouseUp=null;return;} this.parentNode.parentNode.style.cursor = 'wait';");
+		//$this->Click = new ClientEvent("if(_N.LVMouseUp!=null) {_N.LVMouseUp=null;return;} this.parentNode.parentNode.style.cursor = 'wait';");
 		$this->Click[] = new ServerEvent($this, 'Sort');
-        $this->SizeHandle->MouseUp = new ClientEvent('tmpMouseUp=true;');
+        //$this->SizeHandle->MouseUp = new ClientEvent('_N.LVMouseUp=true;');
 	}
 	function GetCaption()	{return $this->Caption;}
 	function GetOrderArrow()	{return $this->OrderArrow;}

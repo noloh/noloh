@@ -1,12 +1,22 @@
-function TransferPanelAdd(objFrom, objTo)
+function _NTPTransfer(fromId, toId)
 {
-	FromPanel = _N(objFrom);
-	ToPanel = _N(objTo);
-	while(FromPanel.selectedIndex >= 0)
+	var from = _N(fromId);
+	var to = _N(toId);
+	while(from.selectedIndex >= 0)
 	{
-		ToPanel.options.add(new Option(FromPanel.options[FromPanel.selectedIndex].text, FromPanel.options[FromPanel.selectedIndex].value));
-		FromPanel.remove(FromPanel.selectedIndex);
+		to.options.add(new Option(from.options[from.selectedIndex].text, from.options[from.selectedIndex].value));
+		from.remove(from.selectedIndex);
 	}
-	_NSave(objFrom, "_NItems", ImplodeOptions(FromPanel.options));
-	_NSave(objTo, "_NItems", ImplodeOptions(ToPanel.options));
+	_NSave(fromId, "_NItems", _NExplOpts(from.options));
+	_NSave(toId, "_NItems", _NExplOpts(to.options));
+}
+function _NExplOpts(options)
+{
+	var tempString ="";
+	for(var i=0; i<options.length; ++i)
+	{
+		tempString += options[i].value + "~d2~";
+		tempString += options[i].text + "~d3~";
+	}
+    return tempString.substring(0,tempString.length-4);
 }

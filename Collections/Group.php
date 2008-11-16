@@ -126,7 +126,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function Clear()
 	{
-		AddScript('window.'.$this->Id.'.Elements=[];', Priority::High);
+		AddScript('_N.'.$this->Id.'.Elements=[];', Priority::High);
 		//AddScript('window.'.$this->Id.'.=new Group();', Priority::High);
 		//QueueClientFunction($this, 'window.'.$this->Id.'.Elements=Array', array(), true, Priority::High);
 		foreach($this->Groupees->Elements as $groupee)
@@ -282,8 +282,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function UpdateEvent($eventType)
 	{
-		//QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\''.$eventType.'\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
-		QueueClientFunction($this, 'NOLOHChangeByObj', array('window.'.$this->Id, '\'onchange\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		//QueueClientFunction($this, '_NChangeByObj', array('window.'.$this->Id, '\''.$eventType.'\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		QueueClientFunction($this, '_NChangeByObj', array('_N.'.$this->Id, '\'onchange\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
 	}
 	/**
 	 * @ignore
@@ -292,7 +292,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	{
 		parent::Show();
 		AddNolohScriptSrc('Group.js');
-		AddScript('window.'.$this->Id.'=new Group();', Priority::High);
+		AddScript('_N.'.$this->Id.'=new _NGroup();', Priority::High);
 		$listCount = count($this->WaitingList);
 		for($i=0; $i<$listCount; ++$i)
 			NolohInternal::SetProperty('Group', $this->Id, GetComponentById($this->WaitingList[$i]));

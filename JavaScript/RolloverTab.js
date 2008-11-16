@@ -1,4 +1,4 @@
-function _NChgRlOvrTb(rlOvrTb, state)
+function _NRlTbChg(rlOvrTb, state)
 {
 	var tab = _N(rlOvrTb);
 	if(tab.Selected && state != 'Slct' || tab.Cur == state)

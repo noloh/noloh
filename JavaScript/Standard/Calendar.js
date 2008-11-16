@@ -1,141 +1,130 @@
-function LastMonth(id)
+function _NCalLMt(id)
 {
-	var calObj = _N(id);
-	_NSetProperty(id, "calViewDate.setMonth", calObj.calViewDate.getMonth()-1);
-	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
-	PrintCal(id);
+	var cal = _N(id);
+	cal.ViewDate.setMonth(_NSetProperty(id,"ViewMonth",cal.ViewDate.getMonth()-1));
+	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()));
+	_NCalPrint(id);
 }
-function NextMonth(id)
+function _NCalNMt(id)
 {
-	var calObj = _N(id);
-	_NSetProperty(id, "calViewDate.setMonth", calObj.calViewDate.getMonth()+1);
-	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear());
-	PrintCal(id);
+	var cal = _N(id);
+	cal.ViewDate.setMonth(_NSetProperty(id,"ViewMonth",cal.ViewDate.getMonth()+1));
+	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()));
+	_NCalPrint(id);
 }
-function LastYear(id)
+function _NCalLYr(id)
 {
-	var calObj = _N(id);
-	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()-1);
-	PrintCal(id);
+	var cal = _N(id);
+	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()-1));
+	_NCalPrint(id);
 }
-function NextYear(id)
+function _NCalNYr(id)
 {
-	var calObj = _N(id);
-	_NSetProperty(id, "calViewDate.setFullYear", calObj.calViewDate.getFullYear()+1);
-	PrintCal(id);
+	var cal = _N(id);
+	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()+1));
+	_NCalPrint(id);
 }
-function CalSelectDate(event, calid)
+function _NCalSlctDt(event, calid)
 {
 	var cal = _N(calid);
 	var lab = event.target;
 	_N(cal.SelectedLabelId).style.fontWeight = "normal";
 	cal.SelectedLabelId = lab.id;
-	_NSetProperty(calid, "calSelectDate.setDate", lab.innerHTML);
-	_NSetProperty(calid, "calSelectDate.setMonth", cal.calViewDate.getMonth());
-	_NSetProperty(calid, "calSelectDate.setFullYear", cal.calViewDate.getFullYear());
+	cal.SelectDate.setDate(_NSetProperty(calid,"Date",lab.innerHTML));
+	cal.SelectDate.setMonth(_NSetProperty(calid,"Month",cal.ViewDate.getMonth()));
+	cal.SelectDate.setFullYear(_NSetProperty(calid,"Year",cal.ViewDate.getFullYear()));
 	lab.style.fontWeight = "bold";
-	if(cal.onchange != null)
-		cal.onchange.call();
+	if(cal.onchange)
+		cal.onchange();
 }
-function PickerSelectDate(calid, comboid, format)
+function _NCalShow(id, viewMonth, viewYear, selectDate, selectMonth, selectYear)
 {
-    ShowDatePicker(calid, comboid, format);
-	_N(calid).style.display = 'none';
-}
-function ShowDatePicker(calid, comboid, format)
-{
-	var ds = GetDateString(calid,format);
-	_N(comboid).options[0] = new Option(ds,ds);
-}
-function ShowCalendar(id, ViewMonth, ViewYear, SelectDate, SelectMonth, SelectYear)
-{
-	var calObj = _N(id);
-	calObj.calSelectDate = new Date();
-	calObj.calViewDate = new Date();
-	calObj.calViewDate.setFullYear(ViewYear, ViewMonth, 1);
-	calObj.calSelectDate.setFullYear(SelectYear, SelectMonth, SelectDate);
-	SaveControl(id);
-	PrintCal(id);
-}
-function PrintCal(id)
-{
-	var ubound, date, i, Obj;
 	var cal = _N(id);
-	var Month = cal.calViewDate.getMonth();
-	var Year = cal.calViewDate.getFullYear();
+	cal.SelectDate = new Date();
+	cal.ViewDate = new Date();
+	cal.ViewDate.setFullYear(viewYear, viewMonth, 1);
+	cal.SelectDate.setFullYear(selectYear, selectMonth, selectDate);
+	_NSaveControl(id);
+	_NCalPrint(id);
+}
+function _NCalPrint(id)
+{
+	var ubound, date, i, obj, cal = _N(id);
+	var month = cal.ViewDate.getMonth();
+	var year = cal.ViewDate.getFullYear();
 	id = parseInt(id.replace("N", ""));
-	var Offset = id + 13;
-	cal.calViewDate.setDate(1);
-	_N("N" + (id+1)).innerHTML = GetShortMonth(cal.calViewDate) + " " + cal.calViewDate.getFullYear();
-	ubound = cal.calViewDate.getDay()+Offset;
-	for(i = Offset; i < ubound; i++)
+	var offset = id + 13;
+	cal.ViewDate.setDate(1);
+	_N("N" + (id+1)).innerHTML = _NCalShMt(cal.ViewDate) + " " + cal.ViewDate.getFullYear();
+	ubound = cal.ViewDate.getDay()+offset;
+	for(i = offset; i < ubound; i++)
 	{
-		Obj = _N("N" + i);
-		Obj.innerHTML = "";
+		obj = _N("N" + i);
+		obj.innerHTML = "";
 	}
-	ubound = Offset+42;
-	for(i = cal.calViewDate.getDay() + Offset; i < ubound; i++)
+	ubound = offset+42;
+	for(i = cal.ViewDate.getDay() + offset; i < ubound; ++i)
 	{
-		Obj = _N("N" + i);
-		if(Month == cal.calViewDate.getMonth())
+		obj = _N("N" + i);
+		if(month == cal.ViewDate.getMonth())
 		{
-			Obj.innerHTML = cal.calViewDate.getDate();
-			if(cal.calViewDate.getDate()==cal.calSelectDate.getDate() && cal.calViewDate.getMonth()==cal.calSelectDate.getMonth()
-			 														  && cal.calViewDate.getFullYear()==cal.calSelectDate.getFullYear())
+			obj.innerHTML = cal.ViewDate.getDate();
+			if(cal.ViewDate.getDate()==cal.SelectDate.getDate() && cal.ViewDate.getMonth()==cal.SelectDate.getMonth()
+			 														  && cal.ViewDate.getFullYear()==cal.SelectDate.getFullYear())
 			{
-				Obj.style.fontWeight = "bold";
-				cal.SelectedLabelId = Obj.id;
+				obj.style.fontWeight = "bold";
+				cal.SelectedLabelId = obj.id;
 			}
 			else
-				Obj.style.fontWeight = "normal";
+				obj.style.fontWeight = "normal";
 		}
 		else
-			Obj.innerHTML = "";
-		cal.calViewDate.setDate(cal.calViewDate.getDate()+1);
+			obj.innerHTML = "";
+		cal.ViewDate.setDate(cal.ViewDate.getDate()+1);
 	}
-	cal.calViewDate.setFullYear(Year, Month);
+	cal.ViewDate.setFullYear(year, month);
 }
-function GetFullDay(theDate)
+function _NCalFlDy(dtObj)
 {
 	var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-	return weekday[theDate.getDay()];
+	return weekday[dtObj.getDay()];
 }
-function GetShortDay(theDate)
+function _NCalShDy(dtObj)
 {
-	var day = GetFullDay(theDate);
+	var day = _NCalFlDy(dtObj);
 	if(day == "Thursday")
 		return day.substring(0, 4);
 	return day.substring(0, 3);
 }
-function GetFullMonth(theDate)
+function _NCalFlMt(dtObj)
 {
 	var fullmonth = ["January","February","March","April","May","June",
 		"July","August","September","October","November","December"];
-	return fullmonth[theDate.getMonth()];
+	return fullmonth[dtObj.getMonth()];
 }
-function GetMonthWithZeros(theDate)
+function _NCalMtZer(dtObj)
 {
-	var month = theDate.getMonth();
+	var month = dtObj.getMonth();
 	if(month <= 9)
 		return "0"+(month+1).toString();
 	return month;
 }
-function GetDateWithZeros(theDate)
+function _NCalDtZer(dtObj)
 {
-	if(theDate.getDate() <= 9)
-		return "0" + theDate.getDate().toString();
-	return theDate.getDate();
+	if(dtObj.getDate() <= 9)
+		return "0" + dtObj.getDate().toString();
+	return dtObj.getDate();
 }
-function GetShortMonth(theDate)
+function _NCalShMt(dtObj)
 {
-	var month = GetFullMonth(theDate);
+	var month = _NCalFlMt(dtObj);
 	if(month == "September")
 		return month.substring(0, 4);
 	return month.substring(0, 3);
 }
-function GetSuffixToNumericalDate(theDate)
+function _NCalSuff(dtObj)
 {
-	var date = theDate.getDate();
+	var date = dtObj.getDate();
 	if(date == 1 || date == 21 || date == 31)
 		return date.toString() + "st";
 	else
@@ -146,53 +135,34 @@ function GetSuffixToNumericalDate(theDate)
 		return date.toString() + "rd";
 	return date.toString() + "th";
 }
-function GetYear(theDate)
+function _NCalYr(dtObj)
 {
-	return theDate.getFullYear().toString().substring(2,4);
+	return dtObj.getFullYear().toString().substring(2,4);
 }
-function ChangeDateLetter(letter, theDate)
+function _NCalDtLtr(letter, dtObj)
 {
 	switch(letter)
 	{
-		case "d":	return GetDateWithZeros(theDate);
-		case "D":	return GetShortDay(theDate);
-		case "F":	return GetFullMonth(theDate);
-		case "j":	return theDate.getDate();
-		case "l":	return GetFullDay(theDate);
-		case "m":	return GetMonthWithZeros(theDate);
-		case "M":	return GetShortMonth(theDate);
-		case "n":	return theDate.getMonth() + 1;
-		case "w":	return theDate.getDay() + 1;	
-		case "y":	return GetYear(theDate);
-		case "Y":	return theDate.getFullYear();
-		case "S":	return GetSuffixToNumericalDate(theDate);
+		case "d":	return _NCalDtZer(dtObj);
+		case "D":	return _NCalShDy(dtObj);
+		case "F":	return _NCalFlMt(dtObj);
+		case "j":	return dtObj.getDate();
+		case "l":	return _NCalFlDy(dtObj);
+		case "m":	return _NCalMtZer(dtObj);
+		case "M":	return _NCalShMt(dtObj);
+		case "n":	return dtObj.getMonth() + 1;
+		case "w":	return dtObj.getDay() + 1;	
+		case "y":	return _NCalYr(dtObj);
+		case "Y":	return dtObj.getFullYear();
+		case "S":	return _NCalSuff(dtObj);
 	}
 	return letter;
 }
-function GetDateString(calid, dateStr)
+function _NCalDtStr(calid, dateStr)
 {
-	var d = _N(calid).calSelectDate;
+	var d = _N(calid).SelectDate;
 	var finalStr = "";
 	for(var i = 0; i < dateStr.length; i++)
-		finalStr += ChangeDateLetter(dateStr.substring(i, i+1), d);
+		finalStr += _NCalDtLtr(dateStr.substring(i, i+1), d);
 	return finalStr;
-}
-_NOpenedCalendar = null;
-function TogglePull(calId, comboId, event)
-{
-	var Obj=_N(calId);
-	if(Obj.style.display == 'none')
-	{
-		Obj.style.display = '';
-		_NOpenedCalendar = calId;
-		window.addEventListener("click", CalendarClickOff, false);
-		event.stopPropagation();
-	}
-	_N(comboId).blur();
-}
-function CalendarClickOff()
-{
-	_N(_NOpenedCalendar).style.display = 'none';
-	_NOpenedCalendar = null;
-	window.removeEventListener("click", CalendarClickOff, false);
 }

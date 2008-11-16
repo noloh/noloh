@@ -59,7 +59,7 @@
 {
 	background:#ea9c38;
 	color:#011f43;
-	font-family:Arial;
+	font-family:arial;
 	font-weight:bold;
 }
 .NLoad
@@ -101,7 +101,6 @@ a img
 	color:white;
 	padding-top:5px;
 	padding-left:5px;
-	/*background-color:*//*#0055ea;*//*#ea9c38;*/
 	font-weight:bold;
-	font-family:Arial, sans-serif;
+	font-family:arial, sans-serif;
 }

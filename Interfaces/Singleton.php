@@ -11,7 +11,7 @@
  * you simply copy and paste one simple line of code, documented below. In NOLOH for PHP 5.3, however, the process is completely 
  * automated and the line is not required (though not harmful for backwards compatibility).
  *
- * Note: Calling That() before an instance is created will return null, and attempts at creating two instances will result in an error.
+ * Note: Singletons will only work for subclasses of Component. Calling That() before an instance is created will return null, and attempts at creating two instances will result in an error.
  * 
  * @package Interfaces
  */

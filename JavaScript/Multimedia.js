@@ -1,19 +1,18 @@
 function _NTalk(id, val)
 {
 	var obj = _N(id.substring(0, id.length-1));
-	_NFlashArgs = "";
+	_N.FlashArgs = "";
 	var lastIndex = arguments.length-1;
 	for(var i=1; i<lastIndex; ++i)
-		_NFlashArgs += arguments[i] + "~d3~";
+		_N.FlashArgs += arguments[i] + "~d3~";
 	if(lastIndex >= 1)
-		_NFlashArgs += arguments[lastIndex];
-	if(obj.Talk != null)
-		obj.Talk.call();
+		_N.FlashArgs += arguments[lastIndex];
+	if(obj.Talk)
+		obj.Talk();
 }
-function _NInvokeFlash(id, func)
+function _NFlashInvoke(id, func)
 {
-	var obj = _N(id + 'I');
-	var evalString = "";
+	var obj = _N(id + 'I'), evalString = "";
 	try
 	{
 		if(obj.PercentLoaded() == 100)
@@ -33,11 +32,11 @@ function _NInvokeFlash(id, func)
 	catch(e)
 	{
 		_NInvokeArgs = arguments;
-		window.setTimeout("_NInvokeFlash.apply(null, _NInvokeArgs);", 250);
+		window.setTimeout("_NFlashInvoke.apply(null, _NInvokeArgs);", 250);
 	}
 	finally
 	{
-		if(evalString != "")
+		if(evalString)
 			eval(evalString);
 	}
 }

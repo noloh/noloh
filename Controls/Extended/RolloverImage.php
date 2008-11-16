@@ -40,7 +40,7 @@ class RolloverImage extends Image implements Groupable
 		$this->OutSrc = $outSrc;
 		NolohInternal::SetProperty('Out', $outSrc, $this);
 		if($outSrc)
-			$this->MouseOut['Out'] = new ClientEvent('_NTglRlOvrImg', $this->Id, 'Out');
+			$this->MouseOut['Out'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Out');
 	}
 	function SetOverSrc($overSrc)
 	{
@@ -48,7 +48,7 @@ class RolloverImage extends Image implements Groupable
 		{
 			$this->OverSrc = $overSrc;
 			NolohInternal::SetProperty('Ovr', $overSrc, $this);
-			$this->MouseOver['Over'] = new ClientEvent('_NTglRlOvrImg', $this->Id, 'Ovr');
+			$this->MouseOver['Over'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Ovr');
 		}
 	}
 	function SetDownSrc($downSrc)
@@ -58,8 +58,8 @@ class RolloverImage extends Image implements Groupable
 			$this->DownSrc = $downSrc;
 			NolohInternal::SetProperty('Dwn', $downSrc, $this);
 		
-			$this->MouseDown['Down'] = new ClientEvent('_NTglRlOvrImg', $this->Id, 'Dwn');
-			$this->MouseUp['Down'] = new ClientEvent('_NTglRlOvrImg', $this->Id, 'Out');
+			$this->MouseDown['Down'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Dwn');
+			$this->MouseUp['Down'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Out');
 		}
 	}
 	function SetSelectedSrc($selectSrc)
@@ -71,9 +71,9 @@ class RolloverImage extends Image implements Groupable
 			$click = parent::GetClick();
 			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
 			$select = parent::GetSelect();
-			$select['System'] = new ClientEvent("_NTglRlOvrImg('{$this->Id}','Slct');");
+			$select['System'] = new ClientEvent("_NRlImgTgl('{$this->Id}','Slct');");
 			$deselect = parent::GetDeselect();
-			$deselect['System'] = new ClientEvent("_NTglRlOvrImg('{$this->Id}','Out');");
+			$deselect['System'] = new ClientEvent("_NRlImgTgl('{$this->Id}','Out');");
 		}
 	}
 	function GetClick()

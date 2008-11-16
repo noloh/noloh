@@ -1,4 +1,4 @@
-function _NTglRlOvrLbl(id, state)
+function _NRlLblTgl(id, state)
 {
 	var lbl = _N(id);
 	if(lbl.Selected && state != 'Slct' || lbl.Cur == state)
@@ -10,12 +10,12 @@ function _NTglRlOvrLbl(id, state)
 		if(prevLbl != null)
 			_NSetProperty(prevLbl, 'Selected', false);
 	}
-	_NSetRlOvrLblClr(id, lbl[state]);
+	_NRlLblSetClr(id, lbl[state]);
 	lbl.Cur = state;
-	if(lbl.onchange != null)
-		lbl.onchange.call();
+	if(lbl.onchange)
+		lbl.onchange();
 }
-function _NSetRlOvrLblClr(id, color)
+function _NRlLblSetClr(id, color)
 {
 	if(color instanceof Array)
 	{

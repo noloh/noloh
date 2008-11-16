@@ -11,7 +11,6 @@ function _NAWH(id)
 	{
 		ele.style.width = awh.offsetWidth + "px";
 		_NSave(id, "CachedWidth", awh.offsetWidth);
-		
 	}
 	if(ele.style.height == "")
 	{

@@ -1,23 +1,12 @@
 /*!Easing Equations by Robert Penner, Copyright © 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
 
-_NAnims = [];
-_NAnimsCount = 0;
-_NAnimTimer = null;
-
-function StepAllAnims()
-{
-	var count= _NAnims.length;
-	for(var i=0; i<count; ++i)
-		if(_NAnims[i])
-			_NAnims[i].Step();
-}
 function _NAni(id, prpty, to, duration, units, easing, from, fps)
 {
-	var count= _NAnims.length;
+	var count= _NAni.Active.length;
 	for(var i=0; i<count; ++i)
-		if(_NAnims[i] && _NAnims[i].ObjId == id && _NAnims[i].Property == prpty)
+		if(_NAni.Active[i] && _NAni.Active[i].ObjId == id && _NAni.Active[i].Property == prpty)
 		{
-			_NAnims[i].CleanUp();
+			_NAni.Active[i].CleanUp();
 			break;
 		}
 	this.ObjId = id;
@@ -34,8 +23,10 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 		this.Destination = to;
 	this.Property = prpty;
 	this.From = from == null ? (prpty == "opacity" ? (this.Obj.style.opacity?this.Obj.style.opacity*100:100) : parseInt(eval("this.Obj."+prpty+";"))) : from;
+	if(isNaN(this.From))
+		this.From = prpty=="style.width"?this.Obj.offsetWidth: prpty=="style.height"?this.Obj.offsetHeight: prpty=="style.left"?this.Obj.offsetLeft: prpty=="style.top"?this.Obj.offsetTop: 0;
 	this.Difference = this.Destination - this.From;
-	this.Index = _NAnims.length;
+	this.Index = _NAni.Active.length;
 	this.Duration = duration ? duration : 1000;
 	this.Change = easing ? (easing==1?_NAniLinear : easing==2?_NAniQuadratic : _NAniCubic) : _NAniQuadratic;
 	this.Units = (units==null&&units!="") ? "px" : units;
@@ -49,12 +40,14 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	}
 	if(this.Obj.AnimationStart)
 		this.Obj.AnimationStart();
-	++_NAnimsCount;
-	_NAnims.push(this);
+	++_NAni.ActiveCount;
+	_NAni.Active.push(this);
 	this.StartTime = new Date().getTime();
-	if(!_NAnimTimer)
-		_NAnimTimer = setInterval(StepAllAnims, Math.round(1000/ (fps?fps:30)));
+	if(!_NAni.Timer)
+		_NAni.Timer = setInterval(_NAniStepAll, Math.round(1000/ (fps?fps:30)));
 }
+_NAni.Active = [];
+_NAni.ActiveCount = 0;
 _NAni.prototype.Step = function()
 {
 	var timePassed = new Date().getTime() - this.StartTime, delta;
@@ -78,16 +71,16 @@ _NAni.prototype.Move = function(delta)
 		_NSetProperty(this.ObjId, this.Property, this.From + delta + this.Units);
 		if(this.Obj.ShiftsWith && this.Obj.ShiftsWith[this.ShiftType])
 			if(this.ShiftType == 1 || this.ShiftType == 4)
-				ShiftObjects(this.Obj.ShiftsWith[this.ShiftType], delta - this.LastDelta, 0);
+				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], delta - this.LastDelta, 0);
 			else
-				ShiftObjects(this.Obj.ShiftsWith[this.ShiftType], 0, delta - this.LastDelta);
+				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], 0, delta - this.LastDelta);
 		this.LastDelta = delta;
 	}
 }
 _NAni.prototype.FinishingTouches = function()
 {
 	if(this.ObjId == "N1")
-		BodyScrollState();
+		_NBodyScrollState();
 	else if(this.Property == "opacity" && this.Destination == 100)
 		this.Obj.style.opacity = '';
 	else if(this.Destination == 1)
@@ -104,16 +97,23 @@ _NAni.prototype.FinishingTouches = function()
 }
 _NAni.prototype.CleanUp = function()
 {
-	if(--_NAnimsCount == 0)
+	if(--_NAni.ActiveCount == 0)
 	{
-		_NAnims = [];
-		clearInterval(_NAnimTimer);
-		_NAnimTimer = null;
+		_NAni.Active = [];
+		clearInterval(_NAni.Timer);
+		_NAni.Timer = null;
 	}
 	else
-		_NAnims[this.Index] = null;
+		_NAni.Active[this.Index] = null;
 	if(this.Obj.AnimationStop)
 		this.Obj.AnimationStop();
+}
+function _NAniStepAll()
+{
+	var count= _NAni.Active.length;
+	for(var i=0; i<count; ++i)
+		if(_NAni.Active[i])
+			_NAni.Active[i].Step();
 }
 function _NAniLinear(time, difference, duration)
 {

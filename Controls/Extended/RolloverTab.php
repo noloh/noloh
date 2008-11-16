@@ -137,7 +137,7 @@ class RolloverTab extends Panel implements Groupable
 			$this->Controls->Add($this->OutTab);
 			NolohInternal::SetProperty('Out', $this->OutTab->Id, $this);
 			$this->OutTab->SetWidth($this->GetWidth());
-			$this->MouseOut['Out'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Out');");
+			$this->MouseOut['Out'] = new ClientEvent("_NRlTbChg('{$this->Id}','Out');");
 		}
 	}
 	function SetOverTab($overTab)
@@ -151,7 +151,7 @@ class RolloverTab extends Panel implements Groupable
 			$this->OverTab->Visible = System::Vacuous;
 			NolohInternal::SetProperty('Ovr', $this->OverTab->Id, $this);
 			$this->OverTab->SetWidth($this->GetWidth());
-			$this->MouseOver['Over'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Ovr');");
+			$this->MouseOver['Over'] = new ClientEvent("_NRlTbChg('{$this->Id}','Ovr');");
 		}
 	}
 	function SetDownTab($downTab)
@@ -165,7 +165,7 @@ class RolloverTab extends Panel implements Groupable
 			$this->DownTab->Visible = System::Vacuous;
 			NolohInternal::SetProperty('Dwn', $this->DownTab->Id, $this);
 			$this->DownTab->SetWidth($this->GetWidth());
-			$this->MouseDown['Down'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Dwn');");
+			$this->MouseDown['Down'] = new ClientEvent("_NRlTbChg('{$this->Id}','Dwn');");
 		}
 	}	
 	function SetSelectedTab($selectedTab)
@@ -179,15 +179,15 @@ class RolloverTab extends Panel implements Groupable
 			$this->SelectedTab->Visible = System::Vacuous;
 			NolohInternal::SetProperty('Slct', $this->SelectedTab->Id, $this);
 			$this->SelectedTab->SetWidth($this->GetWidth());
-//			$this->Click['Select'] = new ClientEvent('_NChgRlOvrTb('{$this->Id}','Slct');");
+//			$this->Click['Select'] = new ClientEvent('_NRlTbChg('{$this->Id}','Slct');");
 			//System::Log('here');
 			$click = parent::GetClick();
 			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', true);");
 			$select = parent::GetSelect();
-			$select['System'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Slct');");
+			$select['System'] = new ClientEvent("_NRlTbChg('{$this->Id}','Slct');");
 			$deselect = parent::GetDeselect();
-			$deselect['System'] = new ClientEvent("_NChgRlOvrTb('{$this->Id}','Out');");
-//			$this->Select = new ClientEvent("_NChgRlOvrTb('{$this->Id}', 'Slct');");
+			$deselect['System'] = new ClientEvent("_NRlTbChg('{$this->Id}','Out');");
+//			$this->Select = new ClientEvent("_NRlTbChg('{$this->Id}', 'Slct');");
 		}
 	}
 	function GetClick()

@@ -1,4 +1,4 @@
-function StartBuoyant(id, parentId)
+function _NByntSta(id, parentId)
 {
 	var obj = _N(id);
 	var parent = _N(parentId);
@@ -14,9 +14,9 @@ function StartBuoyant(id, parentId)
 		parent.BuoyantChildren.push(id);
 		parent = parent.parentNode;
 	}while (parent && parent.id);
-	setTimeout(function() {MoveBuoyant(id);}, 500);
+	setTimeout(function() {_NByntMv(id);}, 500);
 }
-function StopBuoyant(id)
+function _NByntStp(id)
 {
 	var obj = _N(id);
 	var parent = _N(obj.BuoyantParentId);
@@ -34,10 +34,10 @@ function StopBuoyant(id)
 		parent = parent.parentNode;
 	}while (parent && parent.id);
 }
-function MoveBuoyant(id)
+function _NByntMv(id)
 {
 	var obj = _N(id);
 	var parent = _N(obj.BuoyantParentId);
-	obj.style.left = FindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
-	obj.style.top = FindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
+	obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
+	obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
 }

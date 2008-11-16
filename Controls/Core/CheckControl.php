@@ -101,7 +101,7 @@ abstract class CheckControl extends Control
 		parent::SetGroupName($newGroupName);
 		//$this->GroupName = $newGroupName;
         //if($this->GetShowStatus !== 0)
-		QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
+		QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
 		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
 	}
@@ -137,7 +137,7 @@ abstract class CheckControl extends Control
 	{
 		parent::SetSelected($bool);
 		if($this->GetShowStatus() !== 0)
-			QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
+			QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
 		return;
 
 		$newChecked = $bool ? true : null;
@@ -150,7 +150,7 @@ abstract class CheckControl extends Control
 					$group->Deselect();
 			}
 			if($this->GetShowStatus() !== 0)
-				QueueClientFunction($this, 'NOLOHChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
+				QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
 			$this->Checked = $newChecked;
 			if(!$this->Change->Blank())
 				$this->Change->Exec();
@@ -204,7 +204,7 @@ abstract class CheckControl extends Control
 	{
 		$change = parent::GetEvent('Change');
 		if($change->Blank())
-			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
+			QueueClientFunction($this, '_NChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
 		return $change;
 	}
 	/**
@@ -214,7 +214,7 @@ abstract class CheckControl extends Control
 	{
 		$oldChange = parent::GetEvent('Change');
 		if($oldChange->Blank())
-			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
+			QueueClientFunction($this, '_NChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
 		return parent::SetChange($change);
 	}
 	/**

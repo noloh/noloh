@@ -14,6 +14,8 @@
  * $panel->Shifts[] = Shift::Location($panel);
  * // Makes an image resize a panel.
  * $image->Shifts[] = Shift::Size($panel);
+ * // Similarly, makes a panel resize with an image.
+ * $panel->Shifts[] = Shift::SizeWith($image);
  * </pre>
  * 
  * If the ShiftStart and ShiftStop Events for that Control have been defined, they will be launched when

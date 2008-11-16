@@ -536,14 +536,14 @@ abstract class Control extends Component
 		else
 		{
 			$this->Buoyant = null;
-			//QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
+			//QueueClientFunction($this, '_NByntStp', array("'$this->Id'"));
 		}*/
 		if($this->GetShowStatus()===1)
 		{
 			NolohInternal::Bury($this);
 			NolohInternal::Resurrect($this);
 			if(!$bool)
-				QueueClientFunction($this, 'StopBuoyant', array("'$this->Id'"));
+				QueueClientFunction($this, '_NByntStp', array("'$this->Id'"));
 		}
 	}
 	/**
@@ -566,7 +566,7 @@ abstract class Control extends Component
 			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
 		if($bool != $this->GetSelected())
 		{
-			QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
+			QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
 			if($this->GroupName !== null)
 				$group = $group = GetComponentById($this->GroupName);
 			if($bool && $group && $this instanceof Groupable)
@@ -713,12 +713,20 @@ abstract class Control extends Component
 	 * Returns the KeyPress Event, which gets launched when the Control is focused and a user presses a key on his keyboard
 	 * @return Event
 	 */
-	function GetKeyPress()							{return $this->GetEvent('KeyPress');}
+	function GetKeyPress()							
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		return $this->GetEvent('KeyPress');
+	}
 	/**
 	 * Sets the KeyPress Event, which gets launched when the Control is focused and a user presses a key on his keyboard
 	 * @param Event $keyPress
 	 */
-	function SetKeyPress($keyPress)					{$this->SetEvent($keyPress, 'KeyPress');}
+	function SetKeyPress($keyPress)					
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		$this->SetEvent($keyPress, 'KeyPress');
+	}
 	/**
 	 * Returns the LoseFocus Event, which gets launched when the Control loses focus, e.g., by clicking away or tabbing out of it
 	 * @return Event
@@ -773,12 +781,20 @@ abstract class Control extends Component
 	 * Returns the ReturnKey Event, which gets launched when the Control is focused and a user presses the return key on his keyboard
 	 * @return Event
 	 */
-	function GetReturnKey()							{return $this->GetEvent('ReturnKey');}
+	function GetReturnKey()							
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		return $this->GetEvent('ReturnKey');
+	}
 	/**
 	 * Sets the ReturnKey Event, which gets launched when the Control is focused and a user presses the return key on his keyboard
 	 * @param Event $returnKey
 	 */
-	function SetReturnKey($returnKey)				{$this->SetEvent($returnKey, 'ReturnKey');}
+	function SetReturnKey($returnKey)				
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		$this->SetEvent($returnKey, 'ReturnKey');
+	}
 	/**
 	 * Returns the RightClick Event, which gets launched when a user right-clicks the Control
 	 * @return Event
@@ -819,17 +835,24 @@ abstract class Control extends Component
 	 * @param Event $shiftStop
 	 */
 	function SetShiftStop($shiftStop)				{$this->SetEvent($shiftStop, 'ShiftStop');}
-	
 	/**
 	 * Returns the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
 	 * @return Event
 	 */
-	function GetTypePause()							{return $this->GetEvent('TypePause');}
+	function GetTypePause()							
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		return $this->GetEvent('TypePause');
+	}
 	/**
 	 * Sets the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
 	 * @param Event $typePause
 	 */
-	function SetTypePause($typePause)				{$this->SetEvent($typePause, 'TypePause');}
+	function SetTypePause($typePause)				
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		$this->SetEvent($typePause, 'TypePause');
+	}
 	/**
 	 * Returns the ArrayList holding all the Shifts. This allows a Control to manipulate itself and any other control in various ways.
 	 * The only thing that should be added to this ArrayList are statics of the Shift class.

@@ -1,10 +1,10 @@
-function InitTreeList(id)
+function _NTreeInit(id)
 {
 	var tree = _N(id);
 	tree.SelectedElements = [];
 	tree.SelectedNodes = "";
 }
-function SelectNode(nodeId, elementId, event)
+function _NTreeSlct(nodeId, elementId, event)
 {
 	var node = _N(nodeId);
 	var tree = _N(node.ListId);
@@ -48,7 +48,7 @@ function SelectNode(nodeId, elementId, event)
 	_NSetProperty(elementId, "style.background", "#316AC5");
 	_NSetProperty(elementId, "style.color", "#FFFFFF");
 }
-function PlusMinusChange(panelId, iconId, nodeId)
+function _NTreeTgl(panelId, iconId, nodeId)
 {
 	var Node = _N(nodeId);
 	if(_N(panelId).style.display=="")

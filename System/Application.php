@@ -28,7 +28,7 @@ function _NOBErrorHandler($buffer)
 function _NErrorHandler($number, $string, $file, $line)
 {
 	ob_end_clean();
-	setcookie('NAppCookie', false, 0, '/');
+	setcookie('_NAppCookie', false, 0, '/');
 	if(strpos($string, '~OB~') === 0)
 	{
 		$splitStr = explode('~', $string);
@@ -47,7 +47,7 @@ function _NErrorHandler($number, $string, $file, $line)
 	if(!in_array('Cache-Control: no-cache', headers_list(), true))
 		++$_SESSION['_NVisit'];
 	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line"));
-	echo '/*~NScript~*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
+	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
 	if($gzip)
 		ob_end_flush();
 	flush();
@@ -99,7 +99,7 @@ final class Application extends Object
 	{
 		if(isset($GLOBALS['_NDebugMode']))
 			ob_end_clean();
-        echo '/*~NScript~*/';
+        echo '/*_N*/';
         $webPage = WebPage::That();
         if($webPage != null && !$webPage->GetUnload()->Blank())
         {
@@ -127,22 +127,22 @@ final class Application extends Object
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
 		//ini_set('session.gc_probability', '100');
-		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['NApp']) ? $_REQUEST['NApp'] : (empty($_COOKIE['NAppCookie']) ? rand(1, 99999999) : $_COOKIE['NAppCookie']))));
+		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
 		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
-		if(isset($_GET['NOLOHImage']))
-			if(empty($_GET['Width']))
-				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params']);
+		if(isset($_GET['_NImage']))
+			if(empty($_GET['_NWidth']))
+				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
 			else
-				Image::MagicGeneration($_GET['NOLOHImage'], $_GET['Class'], $_GET['Function'], $_GET['Params'], $_GET['Width'], $_GET['Height']);
-		elseif(isset($_GET['NOLOHFileUpload']))
-			FileUpload::ShowInside($_GET['NOLOHFileUpload'], $_GET['Width'], $_GET['Height']);
-		elseif(isset($_GET['NOLOHFileRequest']))
-			File::SendRequestedFile($_GET['NOLOHFileRequest']);
-		elseif(isset($_SESSION['_NVisit']) || isset($_POST['NOLOHVisit']))
+				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams'], $_GET['_NWidth'], $_GET['_NHeight']);
+		elseif(isset($_GET['_NFileUpload']))
+			FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
+		elseif(isset($_GET['_NFileRequest']))
+			File::SendRequestedFile($_GET['_NFileRequest']);
+		elseif(isset($_SESSION['_NVisit']) || isset($_POST['_NVisit']))
 		{
-			if(isset($_POST['NoSkeleton']) && UserAgent::IsIE())
+			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 				$this->HandleIENavigation($className, $unsupportedURL);
 			elseif($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
 				return;
@@ -150,13 +150,13 @@ final class Application extends Object
 			if(isset($_SESSION['_NOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			$this->HandleClientChanges();
-			if(!empty($_POST['NOLOHFileUploadId']))
-				GetComponentById($_POST['NOLOHFileUploadId'])->File = &$_FILES['NOLOHFileUpload'];
+			if(!empty($_POST['_NFileUploadId']))
+				GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
 			foreach($_SESSION['_NFiles'] as $key => $val)
 				GetComponentById($key)->File = new File($val);
-			if(isset($_POST['NOLOHURLTokenLink']))
-				GetComponentById($_POST['NOLOHURLTokenLink'])->SetAllTokens();
-			if(!empty($_POST['NOLOHServerEvent']))
+			if(isset($_POST['_NTokenLink']))
+				GetComponentById($_POST['_NTokenLink'])->SetAllTokens();
+			if(!empty($_POST['_NEvents']))
 				$this->HandleServerEvent();
 			foreach($_SESSION['_NFiles'] as $key => $val)
 			{
@@ -235,7 +235,7 @@ final class Application extends Object
 				$this->SearchEngineRun();
 			else 
 			{
-				setcookie('NAppCookie', $GLOBALS['_NApp'], 0, '/');
+				setcookie('_NAppCookie', $GLOBALS['_NApp'], 0, '/');
 				try
 				{
 					$webPage = new $className();
@@ -253,12 +253,12 @@ final class Application extends Object
 	private function HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
 		if(!isset($_SESSION['_NVisit']) || 
-			(isset($_POST['NOLOHVisit']) && $_SESSION['_NVisit'] != $_POST['NOLOHVisit']) ||
-			((!isset($_POST['NOLOHVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['NOLOHVisit'])))
+			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
+			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit'])))
 		{
-			if(!isset($_POST['NOLOHServerEvent']) || $_POST['NOLOHServerEvent'] != ('Unload@'.$_SESSION['_NStartUpPageId']))
+			if(!isset($_POST['_NEvents']) || $_POST['_NEvents'] != ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
-				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['NOLOHServerEvent']) || !isset($_SESSION['_NVisit']) || isset($_GET['NWidth']))
+				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['_NEvents']) || !isset($_SESSION['_NVisit']) || isset($_GET['_NWidth']))
 					self::Reset(false, false);
 				$this->TheComingOfTheOmniscientBeing();
 				$webPage = WebPage::That();
@@ -269,7 +269,7 @@ final class Application extends Object
 			}
 			return true;//!isset($_COOKIE['_NApp']);
 		}
-		if($_SESSION['_NVisit']===0 && $_GET['NOLOHVisit']==0 && count($_POST)===0)	//FireBug bug
+		if($_SESSION['_NVisit']===0 && $_GET['_NVisit']==0 && count($_POST)===0)	//FireBug bug
 			return true;
 		return false;
 	}
@@ -280,7 +280,7 @@ final class Application extends Object
 		self::UnsetNolohSessionVars();
 		$this->HandleFirstRun($className, $unsupportedURL, false);
 		$_SESSION['_NScriptSrcs'] = $srcs;
-		AddScript('NOLOHVisit=-1', Priority::High);
+		AddScript('_NVisit=-1', Priority::High);
 	}
 	
 	private function HandleDebugMode($debugMode)
@@ -291,8 +291,6 @@ final class Application extends Object
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting());
 			ob_start('_NOBErrorHandler');
-			if($_SESSION['_NVisit']==-1)
-				AddScript('_NDebugMode='.($debugMode==='Full'?'"Full"':($debugMode?'true':'false')));
 		}
 	}
 	
@@ -317,27 +315,27 @@ final class Application extends Object
 
 	private function HandleClientChanges()
 	{
-		if(isset($_POST['NOLOHKey']))
-			Event::$Key = $_POST['NOLOHKey'];
-		if(isset($_POST['NOLOHCaught']))
-			Event::$Caught = $this->ExplodeDragCatch($_POST['NOLOHCaught']);
-        if(isset($_POST['NOLOHFocus']))
+		if(isset($_POST['_NKey']))
+			Event::$Key = $_POST['_NKey'];
+		if(isset($_POST['_NCaught']))
+			Event::$Caught = $this->ExplodeDragCatch($_POST['_NCaught']);
+        if(isset($_POST['_NFocus']))
         {
-			Event::$FocusedComponent = $_POST['NOLOHFocus'];
-            Event::$SelectedText = $_POST['NOLOHSelectedText'];
+			Event::$FocusedComponent = $_POST['_NFocus'];
+            Event::$SelectedText = $_POST['_NSelectedText'];
         }
-		if(isset($_POST['NOLOHContextMenuSource']))
-			ContextMenu::$Source = GetComponentById($_POST['NOLOHContextMenuSource']);
-		if(isset($_POST['NOLOHMouseX']))
+		if(isset($_POST['_NCMSource']))
+			ContextMenu::$Source = GetComponentById($_POST['_NCMSource']);
+		if(isset($_POST['_NMouseX']))
 		{
-			Event::$MouseX = $_POST['NOLOHMouseX'];
-			Event::$MouseY = $_POST['NOLOHMouseY'];
+			Event::$MouseX = $_POST['_NMouseX'];
+			Event::$MouseY = $_POST['_NMouseY'];
 		}
-		if(isset($_POST['NOLOHFlashArgs']))
-			Event::$FlashArgs = explode('~d3~', $_POST['NOLOHFlashArgs']);
-		if(!empty($_POST['NOLOHClientChanges']))
+		if(isset($_POST['_NFlashArgs']))
+			Event::$FlashArgs = explode('~d3~', $_POST['_NFlashArgs']);
+		if(!empty($_POST['_NChanges']))
 		{
-			$componentChanges = explode('~d0~', stripslashes($_POST['NOLOHClientChanges']));
+			$componentChanges = explode('~d0~', stripslashes($_POST['_NChanges']));
 			$numComponents = count($componentChanges);
 			for($i = 0; $i < $numComponents; ++$i)
 			{
@@ -355,7 +353,7 @@ final class Application extends Object
 	
 	private function HandleServerEvent()
 	{
-		$splitEvent = explode('@', $_POST['NOLOHServerEvent']);
+		$splitEvent = explode('@', $_POST['_NEvents']);
 		$obj = GetComponentById($splitEvent[1]);
 		if($obj != null)
         {
@@ -375,7 +373,7 @@ final class Application extends Object
 	{
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
-		unset($_GET['NOLOHVisit'], $_GET['NApp'], $_GET['NWidth'], $_GET['NHeight']);
+		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight']);
 		if($GLOBALS['_NURLTokenMode'] == 1)
 			$_SESSION['_NTokens'] = $_GET;
 		elseif($GLOBALS['_NURLTokenMode'] == 2)
@@ -432,19 +430,19 @@ final class Application extends Object
 		//header('Cache-Control: no-store');
 		if(++$_SESSION['_NVisit'] === 0)
 		{
-			$GLOBALS['_NWidth'] = $_GET['NWidth'];
-			$GLOBALS['_NHeight'] = $_GET['NHeight'];
+			$GLOBALS['_NWidth'] = $_GET['_NWidth'];
+			$GLOBALS['_NHeight'] = $_GET['_NHeight'];
 			$this->HandleTokens();
 			$className = $_SESSION['_NStartUpPageClass'];
 			$this->WebPage = new $className();
-			if(empty($_COOKIE['NAppCookie']))
+			if(empty($_COOKIE['_NAppCookie']))
 				$this->WebPage->Show();
 			else
 				return $this->WebPage->NoScriptShow();
-			AddScript('document.body.NOLOHPostingBack=false;', Priority::Low);
+			AddScript('_N.Request=null;', Priority::Low);
 		}
 		header('Content-Type: text/javascript');
-		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['NoSkeleton']) || !UserAgent::IsIE()))
+		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
 			URL::UpdateTokens();
 		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();
@@ -453,7 +451,7 @@ final class Application extends Object
 		$gzip = defined('FORCE_GZIP');
 		if($gzip)
 			ob_start('ob_gzhandler');
-		echo $_SESSION['_NScriptSrc'], '/*~NScript~*/', $_SESSION['_NScript'][0], $_SESSION['_NScript'][1], $_SESSION['_NScript'][2];
+		echo $_SESSION['_NScriptSrc'], '/*_N*/', $_SESSION['_NScript'][0], $_SESSION['_NScript'][1], $_SESSION['_NScript'][2];
 		if($gzip)
 			ob_end_flush();
 		flush();

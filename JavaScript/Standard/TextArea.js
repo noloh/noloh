@@ -1,26 +1,22 @@
-function doKeyPress(event)
+function _NTAPress(event)
 {
-	Obj = event.target;
-	Obj.cachedStart = Obj.selectionStart;
-	Obj.cachedRight = Obj.value.substr(Obj.selectionEnd, Obj.value.length - Obj.selectionEnd);
+	var obj = event.target;
+	obj.cachedStart = obj.selectionStart;
+	obj.cachedRight = obj.value.substr(obj.selectionEnd, obj.value.length - obj.selectionEnd);
 }
-
-function doInput(event)
+function _NTAInput(event)
 {
-	Obj = event.target;
-	if(Obj.value.length > Obj.MaxLength && Obj.MaxLength != -1)
+	var obj = event.target;
+	if(obj.value.length > obj.MaxLength && obj.MaxLength != -1)
 	{
-		doKeyPress(event);
-		var pos = Obj.MaxLength - Obj.cachedRight.length;
-		Obj.value = Obj.value.substr(0, pos) + Obj.cachedRight;
-		Obj.selectionStart = pos;
-		Obj.selectionEnd = pos;
+		_NTAPress(event);
+		var pos = obj.MaxLength - obj.cachedRight.length;
+		obj.value = Obj.value.substr(0, pos) + obj.cachedRight;
+		obj.selectionStart = pos;
+		obj.selectionEnd = pos;
 	}
 }
-
-function SetTextAreaText(id, text)
+function _NTATxt(id, text)
 {
-	var newText = text.replace(/<Nendl>/g,"\n");
-	_N(id).value = newText;
-	SavedControls[id]["value"] = newText;
+	_N.Saved[id]["value"] = _N(id).value = text.replace(/<Nendl>/g,"\n");
 }

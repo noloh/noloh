@@ -22,8 +22,8 @@ class TransferPanel extends Panel
 		$this->RightPanel = new ListBox();
 		$this->SetWidth($width);
 		$this->SetHeight($height);
-		$this->ToRight->Click = new ClientEvent("TransferPanelAdd('". $this->LeftPanel->Id ."', '". $this->RightPanel->Id ."');");
-		$this->ToLeft->Click = new ClientEvent("TransferPanelAdd('". $this->RightPanel->Id ."', '". $this->LeftPanel->Id ."');");
+		$this->ToRight->Click = new ClientEvent("_NTPTransfer('". $this->LeftPanel->Id ."', '". $this->RightPanel->Id ."');");
+		$this->ToLeft->Click = new ClientEvent("_NTPTransfer('". $this->RightPanel->Id ."', '". $this->LeftPanel->Id ."');");
 		$this->Controls->Add($this->LeftPanel);
 		$this->Controls->Add($this->RightPanel);
 		$this->Controls->Add($this->ToRight);

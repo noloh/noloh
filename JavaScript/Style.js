@@ -1,4 +1,4 @@
-function _NRemStyle(remPath, nPath)
+function _NStyleRem(remPath, nPath)
 {
 	_N('NHead').removeChild(_N(remPath));
 	var blankStyle = document.createElement("LINK");

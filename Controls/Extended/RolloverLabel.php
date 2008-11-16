@@ -47,7 +47,7 @@ class RolloverLabel extends Label implements Groupable
 			$this->SetColor($this->OutColor = $color);
 			NolohInternal::SetProperty('Out', $color, $this);
 		}
-		$this->MouseOut['Out'] = new ClientEvent('_NTglRlOvrLbl', $this->Id, 'Out');
+		$this->MouseOut['Out'] = new ClientEvent('_NRlLblTgl', $this->Id, 'Out');
 	}
 	function GetDownColor()	{return $this->DownColor;}
 	function SetDownColor($color)
@@ -58,7 +58,7 @@ class RolloverLabel extends Label implements Groupable
 			//NolohInternal::SetProperty('Dwn', 'Array(\'' . $color[0] . '\', \''. $color[1] .'\')', $this);
 		else
 			NolohInternal::SetProperty('Dwn', $color, $this);
-		$this->MouseDown['Down'] = new ClientEvent('_NTglRlOvrLbl', $this->Id, 'Dwn');
+		$this->MouseDown['Down'] = new ClientEvent('_NRlLblTgl', $this->Id, 'Dwn');
 	}
 	function GetOverColor()	{return $this->OverColor;}
 	function SetOverColor($color)
@@ -69,7 +69,7 @@ class RolloverLabel extends Label implements Groupable
 			//NolohInternal::SetProperty('Ovr', 'Array(\'' . $color[0] . '\', \''. $color[1] .'\')', $this);
 		else
 			NolohInternal::SetProperty('Ovr', $color, $this);
-		$this->MouseOver['Over'] = new ClientEvent('_NTglRlOvrLbl', $this->Id, 'Ovr');
+		$this->MouseOver['Over'] = new ClientEvent('_NRlLblTgl', $this->Id, 'Ovr');
 	}
 	function GetSelectedColor()	{return $this->SelectedColor;}
 	function SetSelectedColor($color)
@@ -83,9 +83,9 @@ class RolloverLabel extends Label implements Groupable
 		$click = parent::GetClick();
 		$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
 		$select = parent::GetSelect();
-		$select['System'] = new ClientEvent("_NTglRlOvrLbl('{$this->Id}','Slct');");
+		$select['System'] = new ClientEvent("_NRlLblTgl('{$this->Id}','Slct');");
 		$deselect = parent::GetDeselect();
-		$deselect['System'] = new ClientEvent("_NTglRlOvrLbl('{$this->Id}','Out');");
+		$deselect['System'] = new ClientEvent("_NRlLblTgl('{$this->Id}','Out');");
 	}	
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}

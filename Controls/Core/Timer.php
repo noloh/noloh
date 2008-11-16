@@ -17,8 +17,7 @@
  * 	Alert("5 seconds has passed");
  * }
  * </pre>
- * <b>Note</b>: Timer currently has a number of known issues. For instance, if a Timer is added to a Panel, and then that Panel is removed,
- * the Timer will still tick. It is marked for major development in the near future to address these issues.
+ *
  * @package Controls/Core
  */
 class Timer extends Component
@@ -99,7 +98,7 @@ class Timer extends Component
 	 */
 	function UpdateEvent($eventType)
 	{
-		QueueClientFunction($this, 'NOLOHChangeByObj', array('window[\''.$this->Id.'\']', '\'onelapsed\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
+		QueueClientFunction($this, '_NChangeByObj', array('_N.'.$this->Id, '\'onelapsed\'', '\''.$this->GetEvent($eventType)->GetEventString($eventType,$this->Id).'\''));
 		//QueueClientFunction($this, 'alert', array('window[\''.$this->Id.'\'].Interval'));
 	}
 	/**
@@ -108,7 +107,7 @@ class Timer extends Component
 	function Stop()
 	{
 		if($this->GetShowStatus() === 1)
-			QueueClientFunction($this, 'window[\''.$this->Id.'\'].Stop', array(), true, Priority::High);
+			QueueClientFunction($this, '_N.'.$this->Id.'.Stop', array(), true, Priority::High);
 	}
 	/**
 	 * Resets the Timer. That is, regardless of how close the Timer was to completing its Interval, it will start over.
@@ -116,7 +115,7 @@ class Timer extends Component
 	function Reset()
 	{
 		if($this->GetShowStatus() === 1)
-			QueueClientFunction($this, 'var t=window[\''.$this->Id.'\'];t.Stop;t.Start', array(), true, Priority::High);
+			QueueClientFunction($this, 'var t=_N.'.$this->Id.';t.Stop();t.Start', array(), true, Priority::High);
 	}
 	/**
 	 * @ignore
@@ -133,21 +132,14 @@ class Timer extends Component
 	function Reshow()
 	{
 		if($this->GetShowStatus() === 1 && ($parentId = $this->GetParentId()))
-		{
 			QueueClientFunction($this, 'new _NTimer', array('\''.$parentId.'\'', '\''.$this->Id.'\'', $this->Interval, (int)$this->Repeat), true, Priority::High);
-			/*
-			$ref = "window.$this->Id";
-			AddScript("$ref=new Object();$ref.timer=set" . ($this->Repeat?'Interval':'Timeout')
-				. "('if($ref.onelapsed!=null) $ref.onelapsed.call();'," . $this->Interval . ');');
-			*/
-		}
 	}
 	/**
 	 * @ignore
 	 */
 	function Bury()
 	{
-		AddScript('window[\''.$this->Id.'\'].Destroy();', Priority::High);
+		AddScript('_N.'.$this->Id.'.Destroy();', Priority::High);
 		parent::Bury();
 	}
 	/**
@@ -155,7 +147,7 @@ class Timer extends Component
 	 */
 	function Adopt()
 	{
-		AddScript('window[\''.$this->Id.'\'].Destroy();', Priority::High);
+		AddScript('_N.'.$this->Id.'.Destroy();', Priority::High);
 		$this->Reshow();
 	}
 	/**

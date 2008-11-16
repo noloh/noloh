@@ -1,4 +1,4 @@
-function _NTglRlOvrImg(id, state)
+function _NRlImgTgl(id, state)
 {
 	var img = _N(id);
 	if(!img.Cur)
@@ -14,6 +14,6 @@ function _NTglRlOvrImg(id, state)
 	}
 	img.src = img[state];
 	img.Cur = state;
-	if(img.onchange != null)
-		img.onchange.call();
+	if(img.onchange)
+		img.onchange();
 }

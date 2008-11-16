@@ -65,7 +65,7 @@ class TreeNode extends Panel
 		$this->TreeNodes->AddFunctionName = 'AddTreeNode';
 		$this->TreeNodes->InsertFunctionName = 'InsertTreeNode';
 		$this->TreeNodes->RemoveAtFunctionName = 'RemoveTreeNodeAt';
-		$this->PlusMinus->Change = new ClientEvent('PlusMinusChange("'.$this->ChildrenPanel->Id.'","'.$this->Icon->Id.'","' . $this->Id . '");');
+		$this->PlusMinus->Change = new ClientEvent('_NTreeTgl("'.$this->ChildrenPanel->Id.'","'.$this->Icon->Id.'","' . $this->Id . '");');
 		$this->Controls->Add($this->PlusMinus);
 		$this->Controls->Add($this->Icon);
 		$this->Controls->Add($this->Element);
@@ -261,7 +261,7 @@ class TreeNode extends Panel
 	{
 		$this->TreeListId = $newId;
 		NolohInternal::SetProperty('ListId', $newId, $this);
-		$this->Element->Click['_N'] = new ClientEvent('SelectNode("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
+		$this->Element->Click['_N'] = new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
 	}
 	/**
 	 * @ignore
@@ -281,7 +281,7 @@ class TreeNode extends Panel
 		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
 		$this->Element->Click['_N'] = $this->TreeListId==null 
 			? new ClientEvent('')
-			: new ClientEvent('SelectNode("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
+			: new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
 		$this->Element->Click[] = $newClick;
 	}
 	/**
@@ -366,9 +366,9 @@ class TreeNode extends Panel
 			if($bool)
 				GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
 			//GetComponentById($this->TreeListId)->;
-//			QueueClientFunction($this, 'SelectNode', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''/*, (GetBrowser()=='ie'?'window.':'').'event'*/));
+//			QueueClientFunction($this, '_NTreeSlct', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''/*, (GetBrowser()=='ie'?'window.':'').'event'*/));
 			//if($bool)
-			//	QueueClientFunction($this, 'SelectNode', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\'', 'Object()'));
+			//	QueueClientFunction($this, '_NTreeSlct', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\'', 'Object()'));
 			//$this->Click->Exec();
 		}
 		else

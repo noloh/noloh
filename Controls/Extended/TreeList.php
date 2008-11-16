@@ -72,7 +72,7 @@ class TreeList extends Panel
 	function SetSelectedTreeNode($treeNode)
 	{
 		$this->SelectedTreeNodes = array($treeNode->Id);
-		QueueClientFunction($treeNode, 'SelectNode', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\'', 'Object()'));
+		QueueClientFunction($treeNode, '_NTreeSlct', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\'', 'Object()'));
 		$treeNode->ExpandToShow();
 	}
 	function GetSelectedTreeNodes()
@@ -168,7 +168,7 @@ class TreeList extends Panel
 	function Show()
 	{
 		AddNolohScriptSrc('TreeList.js');
-		AddScript('InitTreeList(\''.$this->Id.'\')');
+		AddScript('_NTreeInit(\''.$this->Id.'\')');
 		parent::Show();
 	}
 }

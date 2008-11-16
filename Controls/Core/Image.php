@@ -65,16 +65,29 @@ class Image extends Control
 	function SetSrc($newSrc, $adjustSize=false)
 	{
 		$this->Src = $newSrc;
-		if($this->Magician == null)
-			NolohInternal::SetProperty('src', $newSrc, $this);
-		else
+		if($this->Magician)
 			$this->SetMagicianSrc();
+		/*elseif(UserAgent::IsIE6() && preg_match('/\.png$/i', $newSrc))
+		{
+			//Alert('progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $newSrc . '")');
+			NolohInternal::SetProperty('style.filter', 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $newSrc . '")', $this);
+//			NolohInternal::SetProperty('style.display', 'inline-block', $this);
+			
+			//AddScript("alert(_N('$this->Id').style.filter);", Priority::Low);
+		}*/
+		else
+			NolohInternal::SetProperty('src', $newSrc, $this);
         //NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
 		if($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
 			$this->SetHeight(System::Auto);
 		}
+		/*if (NOLOHConfig::NOLOHURL && preg_match('/^' . Server::ImagePath() . '(.*)$/', $newSrc, $matches)) 
+		{
+			$newSrc = NOLOHConfig::NOLOHURL . '/Images/' . $matches[1];
+			NolohInternal::SetProperty('src', $newSrc, $this);
+		}*/
 		return $newSrc;
 	}
 	/**
@@ -203,9 +216,9 @@ class Image extends Control
 	private function SetMagicianSrc()
 	{
 		if($this->Src)
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.urlencode(implode(',', array_slice($this->Magician, 2))), $this);
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))), $this);
 		else
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.urlencode(implode(',', array_slice($this->Magician, 2))).'&Width='.$this->GetWidth().'&Height='.$this->GetHeight(), $this);
+			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))).'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight(), $this);
 	}
 	/**
 	* @ignore

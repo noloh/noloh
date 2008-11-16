@@ -1,6 +1,6 @@
-function _NStTbPg(tabControl, group)
+function _NTbPgSt(tabControl, group)
 {
-	var grp = window[group];
+	var grp = _N(group);
 	var tab = grp.GetSelectedElement();
 	if(tab != null)
 	{

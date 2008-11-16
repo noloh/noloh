@@ -15,7 +15,7 @@ function _NRBSave(id)
 			if(radioGroup[i].tagName == "INPUT")
 			{
 				div = _N(divId = radioGroup[i].id.replace("I", ''));
-				NOLOHChange(divId, "Selected", divId==id);
+				_NChange(divId, "Selected", divId==id);
 				if(div.onchange)
 					div.onchange();
 			}

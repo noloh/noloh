@@ -3,7 +3,7 @@
  * MarkupItem class
  *
  * A MarkupItem serves as the parent class of both {@see Eventee} and {@see Larva}. It has no purpose other than
- * organization and inheritance. In particular, there is no reason for the developer to extend this themselves.
+ * organization and inheritance. In particular, there is no reason for the developer to extend this class themselves.
  * 
  * A MarkupItem represents a mark-up tag that has an "n" namespace before the tag name and a descriptor property, for example:<br>
  * <pre><n:a descriptor="keyword:value"></n:a></pre>

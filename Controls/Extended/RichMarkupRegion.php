@@ -51,7 +51,7 @@ class RichMarkupRegion extends MarkupRegion
 		//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
-			AddScript('SetMarkupString(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
+			AddScript('_NMkupSet(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
 		else
 			$this->TempString = $text;
 //		file_put_contents('/tmp/snakeinthegrass2', var_export($this->Eventees, true));
@@ -186,7 +186,7 @@ class RichMarkupRegion extends MarkupRegion
 	public function Show()
 	{
 		parent::Show();
-		AddScript('SetMarkupString(\''.$this->Id.'\',\''.$this->TempString.'\')', Priority::High);
+		AddScript('_NMkupSet(\''.$this->Id.'\',\''.$this->TempString.'\')', Priority::High);
 		$this->TempString = null;
 	}
 }

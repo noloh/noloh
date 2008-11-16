@@ -51,15 +51,15 @@ class DatePicker extends Panel
         switch(GetBrowser())
         {
             case 'ie':
-                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\');');
+                $this->PullDown->Click = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\');');
                 $this->Calendar->Click = new ClientEvent('window.event.cancelBubble=true;');
                 break;
             case 'sa':
-                $this->PullDown->MouseDown = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);return false;');
+                $this->PullDown->MouseDown = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);return false;');
                 $this->Calendar->MouseDown = new ClientEvent('event.stopPropagation();');
                 break;
             default:
-                $this->PullDown->Click = new ClientEvent('TogglePull(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);');
+                $this->PullDown->Click = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);');
                 $this->Calendar->Click = new ClientEvent('event.stopPropagation();');
         }
 		$this->Controls->Add($this->PullDown);
@@ -92,7 +92,7 @@ class DatePicker extends Panel
 	function SetTimestamp($timestamp)
 	{
 		$this->Calendar->SetTimestamp($timestamp);
-		QueueClientFunction($this, '_N(\''.$this->Calendar->Id.'\').onchange.call', array());
+		QueueClientFunction($this, '_N(\''.$this->Calendar->Id.'\').onchange', array());
 	}
 	/**
 	 * Returns the currently used format of the display of the DatePicker
@@ -110,16 +110,31 @@ class DatePicker extends Panel
 	function SetFormat($format)
 	{
 		$this->Calendar->SetFormat($format);
-		$this->Calendar->Change = new ClientEvent('PickerSelectDate("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$format.'");');
+		$this->Calendar->Change['Picker'] = new ClientEvent('_NDPSlctDt("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$format.'");');
+	}
+	/**
+	 * @ignore
+	 */
+	function GetChange()
+	{
+		return $this->Calendar->Change['User'];
+	}
+	/**
+	 * @ignore
+	 */
+	function SetChange($change)
+	{
+		return $this->Calendar->Change['User'] = $change;
 	}
 	/**
 	* @ignore
 	*/
 	function Show()
 	{
+		AddNolohScriptSrc('DatePicker.js', true);
 		parent::Show();
-		if($this->PullDown->Items->Count()==0)
-			AddScript('ShowDatePicker("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$this->Calendar->GetFormat().'")');
+		if($this->PullDown->Items->Count()===0)
+			AddScript('_NDPShow("'.$this->Calendar->Id.'","'.$this->PullDown->Id.'","'.$this->Calendar->GetFormat().'")');
 	}
 }
 

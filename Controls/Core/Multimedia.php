@@ -171,16 +171,16 @@ class Multimedia extends Control
 /*	function SetWidth($width)
 	{
 		parent::SetWidth($width);
-		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.width'", "'100%'"), false);
-//		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.width'", "'".$width ."px'"), false);
-		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "E'", "'width'", "'".$width ."'"), false);
+		//QueueClientFunction($this, '_NChange', array("'".$this->Id . "I'", "'style.width'", "'100%'"), false);
+//		QueueClientFunction($this, '_NChange', array("'".$this->Id . "I'", "'style.width'", "'".$width ."px'"), false);
+		//QueueClientFunction($this, '_NChange', array("'".$this->Id . "E'", "'width'", "'".$width ."'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
-		//QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'100%'"), false);
-//		QueueClientFunction($this, 'NOLOHChange', array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
+		//QueueClientFunction($this, '_NChange', array("'".$this->Id . "I'", "'style.height'", "'100%'"), false);
+//		QueueClientFunction($this, '_NChange', array("'".$this->Id . "I'", "'style.height'", "'".$height ."px'"), false);
 		//NolohInternal::SetProperty("innerHTML", $this, $this);
 	}*/
 	/**
@@ -255,7 +255,7 @@ class Multimedia extends Control
 		$count = count($params);
 		for($i=0; $i<$count; ++$i)
 			$params[$i] = ClientEvent::ClientFormat($params[$i]);
-		QueueClientFunction($this, '_NInvokeFlash', $params, false);
+		QueueClientFunction($this, '_NFlashInvoke', $params, false);
 	}
 	/**
 	 * @ignore

@@ -1,20 +1,19 @@
-function ShowContextMenu(event, obj)
+function _NCMShow(event, obj)
 {
 	var contextMenu = _N(obj.ContextMenu);
 	contextMenu.style.visibility = "visible";
 	contextMenu.style.left = event.pageX + "px";
 	contextMenu.style.top = event.pageY + "px";
-	_NContextMenuSource = obj;
-	window.addEventListener("click", HideContextMenu, true);
+	_N.ContextMenuSource = obj;
+	window.addEventListener("click", _NCMHide, true);
 }
-
-function HideContextMenu(event)
+function _NCMHide(event)
 {
-	if(_NContextMenuSource != null)
+	if(_N.ContextMenuSource)
 	{
-		var contextMenu = _N(_NContextMenuSource.ContextMenu);
+		var contextMenu = _N(_N.ContextMenuSource.ContextMenu);
 		contextMenu.style.visibility = "hidden";
 		_NContextMenu = null;
-		window.removeEventListener("click", HideContextMenu, true);
+		window.removeEventListener("click", _NCMHide, true);
 	}
 }

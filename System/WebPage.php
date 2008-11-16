@@ -71,9 +71,7 @@ abstract class WebPage extends Component
 		$this->Title = $title;
 		$this->Keywords = $keywords;
 		$this->Description = $description;
-//		$this->ReflectOS = false;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
-//		$this->CSSFiles->Add(NOLOHConfig::GetNOLOHPath().'Controls/NStyles.css');
 		$this->CSSFiles->Add(System::RelativePath() .'/Controls/NStyles.css');
 		$this->LoadImg = new Image(System::ImagePath() . 'loading.gif', 1, 1, 30, 30);
 		$this->LoadImg->CSSClass = 'NLoad';
@@ -86,6 +84,7 @@ abstract class WebPage extends Component
 		$unload = parent::GetEvent('Unload');
 		$unload['User'] = new ClientEvent('');
 		$unload['System'] = new ServerEvent(null, 'isset', true);
+		AddNolohScriptSrc('GeneralFunctions.js');
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(GetBrowser())
 		{
@@ -93,29 +92,9 @@ abstract class WebPage extends Component
 			case 'ff': 						AddNolohScriptSrc('Mixed/FindPositionFF.js'); break;
 			case 'op': 						AddNolohScriptSrc('Mixed/FindPositionOp.js');
 		}
-		AddNolohScriptSrc('GeneralFunctions.js');
-		if(!isset($_POST['NoSkeleton']) || !UserAgent::IsIE())
-			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\')', Priority::High);
-		AddScript('SaveControl(\''.$this->Id.'\')');
-		//$this->LoadImg->ZIndex = $this->LoadLbl->ZIndex = null;
-		//AddScript("document.getElementById('{$this->LoadLbl->Id}').style.zIndex=document.getElementById('{$this->LoadImg->Id}').style.zIndex=999999");
-		//require_once($_SERVER['DOCUMENT_ROOT'] ."/NOLOH/Javascripts/GetBrowserAndOs.php");
-		//require_once(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/GetBrowserAndOs.php");
-		
-		//SetOperatingSystem();
-		//SetBrowser();
-//		SetGlobal('ReflectOS', $this->ReflectOS);
-		//$this->Controls->Add(new PostBackForm());
-		/*
-		//$this->JSIframe = new Iframe("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
-		$this->JSIframe = new Iframe();
-		//$this->JSIframe->Visible = 0;
-		$this->JSIframe->Width = 0;
-		$this->JSIframe->Height = 0;
-		$this->Controls->Add($this->JSIframe); 
-		*/
-		
-		//$this->LoadViewState();
+		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
+			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\',' . ($GLOBALS['_NDebugMode']==='Full'?'"Full"':($GLOBALS['_NDebugMode']?'true':'false')) . ')', Priority::High);
+		AddScript('_NSaveControl(\''.$this->Id.'\')');
 	}
 	/**
 	 * @ignore
@@ -136,7 +115,7 @@ abstract class WebPage extends Component
 			$path = $this->CSSFiles[$index];
 			$this->CSSFiles->RemoveAt($index, true);
 			AddNolohScriptSrc('Style.js');
-			AddScript('_NRemStyle(\''.hash('md5',$path).'\',\''.System::RelativePath().'\')');
+			AddScript('_NStyleRem(\''.hash('md5',$path).'\',\''.System::RelativePath().'\')');
 		}
 	}
 	/**
@@ -242,7 +221,7 @@ abstract class WebPage extends Component
 	function SetScrollLeft($scrollLeft)
 	{
 		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
-		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';BodyScrollState', array());
+		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';_NBodyScrollState', array());
 	}
 	/**
 	 * @ignore
@@ -258,7 +237,7 @@ abstract class WebPage extends Component
 	function SetScrollTop($scrollTop)
 	{
 		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
-		QueueClientFunction($this, 'document.documentElement.scrollTop='.$scrollTop.';BodyScrollState', array());
+		QueueClientFunction($this, 'document.documentElement.scrollTop='.$scrollTop.';_NBodyScrollState', array());
 	}
 	/**
 	 * Gets the Unload Event, which launches when someone navigates away from the application or closes their browser
@@ -286,17 +265,18 @@ abstract class WebPage extends Component
 		$value = $this->GetEvent($eventType)->GetEventString($eventType, $this->Id);
 		if($eventType === 'Tracker')
 		{
-			//$value = preg_replace('/null/', 'location.hash', $value, 1);
-			$value = preg_replace('/null/', 'document.URL.indexOf("#/")==-1?document.URL.replace(location.hash,""):document.URL.replace("#/",document.URL.indexOf("?")==-1?"?":"&")', $value, 1);
-			$property = 'Tracker';
-			QueueClientFunction($this, 'eval', array('window.Tracker'), true, Priority::Low);
+			$value = preg_replace('/null/', 'location.href.indexOf("#/")==-1?location.href.replace(location.hash,""):location.href.replace("#/",location.href.indexOf("?")==-1?"?":"&")', $value, 1);
+			QueueClientFunction($this, '_NChangeByObj', array('_N','\'Tracker\'','\''.$value.'\''), false);
+			QueueClientFunction($this, 'eval', array('_N.Tracker'), true, Priority::Low);
 		}
 		else 
+		{
 			$property = Event::$Conversion[$eventType];
-		QueueClientFunction($this, 'NOLOHChangeByObj', array('window','\''.$property.'\'','\''.$value.'\''), false);
+			QueueClientFunction($this, '_NChangeByObj', array('window','\''.$property.'\'','\''.$value.'\''), false);
+		}
 	}
 	/**
-	 * Returns the instance of WebPage that was used with SetStartupPage. The name is a pun on the "this" concept.
+	 * Returns the instance of WebPage that was used with SetStartupPage. The name is a pun on the "this" concept. See also Singleton interface.
 	 * @return WebPage
 	 */
 	static function That()
@@ -311,6 +291,8 @@ abstract class WebPage extends Component
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
+		$url = '(document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
+               + "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
 		echo 
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
@@ -340,11 +322,11 @@ UserAgent::IsIE() ? '
 
 <SCRIPT type="text/javascript">
   _NApp = ', $GLOBALS['_NApp'], ';
-  document.cookie = "NAppCookie=; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/";', 
+  document.cookie = "_NAppCookie=; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/";', 
 UserAgent::IsIE6() ? '
-  function _NIe6InitIframeLoad()
+  function _NIe6Init()
   {
-  	if (req.readyState==4)
+  	if(req.readyState == 4)
   	{
 	    var head = document.getElementById("NHead");
 	    var script = document.createElement("SCRIPT");
@@ -355,16 +337,14 @@ UserAgent::IsIE6() ? '
   }
   
   req = new ActiveXObject("Microsoft.XMLHTTP");
-  req.onreadystatechange = _NIe6InitIframeLoad;
-  req.open("POST", (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
-               + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight, true);
+  req.onreadystatechange = _NIe6Init;
+  req.open("POST", ' . $url . ', true);
   req.send("");'
 : '
   var head = document.getElementById("NHead");
   var script = document.createElement("SCRIPT");
   script.type = "text/javascript";
-  script.src = (document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
-               + "NOLOHVisit=0&NApp=" + _NApp + "&NWidth=" + document.documentElement.clientWidth + "&NHeight=" + document.documentElement.clientHeight;
+  script.src = ' . $url . ';
   head.appendChild(script);', '
 </SCRIPT>';
 	}
@@ -412,7 +392,7 @@ UserAgent::IsIE6() ? '
 		echo 
 '  </BODY>
 </HTML>';
-		setcookie('NAppCookie', false, 0, '/');
+		setcookie('_NAppCookie', false, 0, '/');
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)

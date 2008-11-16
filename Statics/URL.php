@@ -40,7 +40,7 @@ final class URL
 	 */
 	const Encrypt = 2;
 	/**
-	 * A possible value for the Destination of a Link.
+	 * A possible value for the Destination of a Link, Tokens means the Link will point to the Tokens that have been set on that Link object.
 	 */
 	const Tokens = null;
 	/**

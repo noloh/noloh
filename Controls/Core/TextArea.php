@@ -53,7 +53,7 @@ class TextArea extends Control
 	function SetText($text)
 	{
 		parent::SetText($text);
-		QueueClientFunction($this, 'SetTextAreaText', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($text)).'\''));
+		QueueClientFunction($this, '_NTATxt', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($text)).'\''));
 	}
 	/*function GetScrollLeft()
 	{
@@ -67,7 +67,7 @@ class TextArea extends Control
     {
     	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
         if($_SESSION['_NIsIE'])
-    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
+    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
         	NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
         $this->ScrollLeft = $scrollLeft;
@@ -84,7 +84,7 @@ class TextArea extends Control
     {
     	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
     	if($_SESSION['_NIsIE'])
-    		QueueClientFunction($this, 'NOLOHChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
@@ -108,10 +108,10 @@ class TextArea extends Control
 			return ',\'onchange\',\''.$this->GetEventString('Change').'\',\'onfocus\',\''.$this->GetEventString('Focus')/*."','onblur','".$this->GetEventString('LoseFocus')*/."'" .
 				(GetBrowser()=='ie'
 				?
-					',\'onkeypress\',\'doKeyPress("'.$this->Id.'",this.MaxLength);\'' .
-					',\'onpaste\',\'doPaste("'.$this->Id.'",this.MaxLength);\''
+					',\'onkeypress\',\'_NTAPress("'.$this->Id.'",this.MaxLength);\'' .
+					',\'onpaste\',\'_NTAPaste("'.$this->Id.'",this.MaxLength);\''
 				:
-					',\'onkeypress\',\'doKeyPress(event);\'');
+					',\'onkeypress\',\'_NTAPress(event);\'');
 
 		$preStr = '';
         switch($eventTypeAsString)
@@ -178,8 +178,8 @@ class TextArea extends Control
 		$initialProperties .= $this->GetEventString(null);
 		AddNolohScriptSrc('TextArea.js', true);
 		NolohInternal::Show('TEXTAREA', $initialProperties, $this);
-		if(GetBrowser() != 'ie')
-			AddScript('_N(\''.$this->Id.'\').addEventListener(\'input\',doInput,false)');
+		if(!UserAgent::IsIE())
+			AddScript('_N(\''.$this->Id.'\').addEventListener(\'input\',_NTAInput,false)');
 	}
 	/**
 	 * @ignore

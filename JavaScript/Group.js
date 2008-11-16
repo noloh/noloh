@@ -1,8 +1,8 @@
-function Group() 
+function _NGroup() 
 {
 	this.Elements = [];
 }
-Group.prototype.GetSelectedIndex = function()
+_NGroup.prototype.GetSelectedIndex = function()
 {
 	var groupee;
 	var elementsLength = this.Elements.length;
@@ -11,7 +11,7 @@ Group.prototype.GetSelectedIndex = function()
 			return i;
 	return -1;
 };
-Group.prototype.GetSelectedElement = function()
+_NGroup.prototype.GetSelectedElement = function()
 {
 	var selectedIndex = this.GetSelectedIndex();
 	return selectedIndex == -1 ? null : this.Elements[selectedIndex];

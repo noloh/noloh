@@ -63,7 +63,7 @@ class FileUpload extends Control
 	{
 		AddNolohScriptSrc('FileUpload.js', true);
 		$initialProperties = parent::Show();
-		$initialProperties .= ',\'marginWidth\',0,\'marginHeight\',0,\'frameBorder\',0,\'scrolling\',\'no\',\'name\',\''.$this->Id.'\',\'src\',\''.$_SERVER['PHP_SELF'].'?NOLOHFileUpload='.$this->Id.'&NApp='.$GLOBALS['_NApp'].'&Width='.$this->GetWidth().'&Height='.$this->GetHeight().'\'';
+		$initialProperties .= ',\'marginWidth\',0,\'marginHeight\',0,\'frameBorder\',0,\'scrolling\',\'no\',\'name\',\''.$this->Id.'\',\'src\',\''.$_SERVER['PHP_SELF'].'?_NFileUpload='.$this->Id.'_NApp='.$GLOBALS['_NApp'].'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight().'\'';
 		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
 	/**
@@ -72,17 +72,17 @@ class FileUpload extends Control
 	static function ShowInside($id, $width, $height)
 	{
 		echo '
-			<BODY onLoad="parent.ReadyBox(\'',$id,'\');">
-				<FORM id="frm" action="',$_SERVER['PHP_SELF'],'?NOLOHFileUpload=',$id,'&NApp=',$GLOBALS['_NApp'],'&Width=',$width,'&Height=',$height,'" method="post" enctype="multipart/form-data">
-			   		<INPUT name="NOLOHFile" type="file" style="', UserAgent::IsIE()?'position:absolute; ':'', 'width:',$width,'px; height:',$height,'px;"></INPUT>
+			<BODY onLoad="parent._NRdyBox(\'',$id,'\');">
+				<FORM id="frm" action="',$_SERVER['PHP_SELF'],'?_NFileUpload=',$id,'_NApp=',$GLOBALS['_NApp'],'&_NWidth=',$width,'&_NHeight=',$height,'" method="post" enctype="multipart/form-data">
+			   		<INPUT name="_NFile" type="file" style="', UserAgent::IsIE()?'position:absolute; ':'', 'width:',$width,'px; height:',$height,'px;"></INPUT>
 			  	</FORM>
 			</BODY>
 		';
-		if(isset($_FILES['NOLOHFile']) && $_FILES['NOLOHFile']['tmp_name']!='')
+		if(isset($_FILES['_NFile']) && $_FILES['_NFile']['tmp_name']!='')
 		{
-			rename($_FILES['NOLOHFile']['tmp_name'], $_FILES['NOLOHFile']['tmp_name'].'N');
-			$_SESSION['_NFiles'][$_GET['NOLOHFileUpload']] = $_FILES['NOLOHFile'];
-			$_SESSION['_NFiles'][$_GET['NOLOHFileUpload']]['tmp_name'] .= 'N';
+			rename($_FILES['_NFile']['tmp_name'], $_FILES['_NFile']['tmp_name'].'N');
+			$_SESSION['_NFiles'][$_GET['_NFileUpload']] = $_FILES['_NFile'];
+			$_SESSION['_NFiles'][$_GET['_NFileUpload']]['tmp_name'] .= 'N';
 		}
 	}
 	/**

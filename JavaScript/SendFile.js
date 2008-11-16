@@ -1,4 +1,4 @@
-function _NRequestFile(iSrc)
+function _NFileReq(iSrc)
 {
 	var iframe = document.createElement("IFRAME");
 	iframe.id = iSrc;

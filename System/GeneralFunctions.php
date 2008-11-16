@@ -142,23 +142,13 @@ function GetBrowser()
 	return $_SESSION['_NBrowser'];
 }
 /**
-* @ignore
-*/
-function UnlockNOLOHDebug($password)
-{
-	$_SESSION['UnlockNOLOHDebug'] = $password;
-}
-/**
 * Gets a Component by its Id
 * @param string $id
 * @return Component
 */
 function &GetComponentById($id)
 {
-	global $OmniscientBeing;
-	//if(!isset($OmniscientBeing[$id]))
-	//	$OmniscientBeing[$id] = unserialize($_SESSION["NOLOH".$id]);
-	return $OmniscientBeing[$id];
+	return $GLOBALS['OmniscientBeing'][$id];
 }
 /**
 * Determines whether a variable holds an array.<br>

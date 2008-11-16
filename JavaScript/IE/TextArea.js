@@ -1,27 +1,23 @@
-function doKeyPress(whatObjectId, maxLength)
+function _NTAPress(id, maxLength)
 {
-	var Obj = _N(whatObjectId);
+	var obj = _N(id);
 	var oTR =  document.selection.createRange();
-	if(maxLength > -1 && Obj.value.length - oTR.text.length >= maxLength)
+	if(maxLength > -1 && obj.value.length - oTR.text.length >= maxLength)
 		event.returnValue = false;
 }
-		        
-function doPaste(whatObjectId, maxLength)
+function _NTAPaste(id, maxLength)
 {
-	var Obj = _N(whatObjectId);
+	var obj = _N(id);
     if(maxLength > -1)
 	{
 		var oTR =  document.selection.createRange();
-		var iInsertLength = maxLength -  Obj.value.length + oTR.text.length;
+		var iInsertLength = maxLength -  obj.value.length + oTR.text.length;
 		var sData = window.clipboardData.getData("Text").substr(0,iInsertLength);
 		oTR.text = sData;
 		event.returnValue = false;
 	}
 }
-
-function SetTextAreaText(id, text)
+function _NTATxt(id, text)
 {
-	var newText = text.replace(/<Nendl>/g,"\n");
-	_N(id).value = newText;
-	SavedControls[id]["value"] = newText;
+	_N.Saved[id]["value"] = _N(id).value = text.replace(/<Nendl>/g,"\n");
 }

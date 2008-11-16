@@ -1,19 +1,19 @@
-function _NListSel(id,idx)
+function _NLstCtrSel(id,idx)
 {
 	_N(id).options[idx].selected=true;
 }
-function _NListDesel(id,idx)
+function _NLstCtrDesel(id,idx)
 {
 	_N(id).options[idx].selected=false;
 }
-function _NListClrSel(id)
+function _NLstCtrClrSel(id)
 {
 	var opts = _N(id).options;
 	var length = opts.length;
 	for(var i=0; i<length; ++i)
 		opts[i].selected=false;
 }
-function _NListAdd(id,text,val,idx)
+function _NLstCtrAdd(id,text,val,idx)
 {
 	var opts = _N(id).options;
 	if(typeof idx == "undefined")
@@ -27,11 +27,24 @@ function _NListAdd(id,text,val,idx)
 	}
 	return [];
 }
-function _NListRem(id,idx)
+function _NLstCtrRem(id,idx)
 {
 	_N(id).remove(idx);
 }
-function _NListClr(id)
+function _NLstCtrClr(id)
 {
 	_N(id).options.length=0;
+}
+function _NLstCtrExplSelInds(options)
+{
+	var retString = "";
+	if(options)
+		for(var i=0; i < options.length; ++i)
+			if(options[i].selected)
+				retString += i + "~d2~";
+	return retString.substring(0,retString.length-4);
+}
+function _NLstCtrSaveSelInds(id)
+{
+	_N.Saved[id]._NSelectedIndices = _NLstCtrExplSelInds(_N(id).options);
 }

@@ -63,7 +63,7 @@ class WindowPanel extends Panel
 		
 		$this->ResizeImage->Cursor = Cursor::NorthWestResize;
 		
-		$this->CloseImage->Click['Hide'] = new ClientEvent('NOLOHChange(\''.$this->Id.'\', \'style.display\', \'none\');');
+		$this->CloseImage->Click['Hide'] = new ClientEvent('_NChange(\''.$this->Id.'\', \'style.display\', \'none\');');
 		$this->CloseImage->Click[] = new ServerEvent($this, 'Close');
 		$this->SetBodyBorder($this->ThemeBorder);
 		
@@ -94,8 +94,8 @@ class WindowPanel extends Panel
 		if($bool)
 		{
 			if(!isset($this->TitleBar->DoubleClick['WinShade']))
-				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NTglClpsePanel('{$this->Id}');");
-				//$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NTglClpsePanel('{$this->Id}','{$this->TitleBar->Id}', '{$this->BodyPanel->Id}');");
+				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NClpsPnlTgl('{$this->Id}');");
+				//$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NClpsPnlTgl('{$this->Id}','{$this->TitleBar->Id}', '{$this->BodyPanel->Id}');");
 			NolohInternal::SetProperty('Hgt', $this->GetHeight(), $this);
 			NolohInternal::SetProperty('Top', $this->TitleBar->Id, $this);
 		}

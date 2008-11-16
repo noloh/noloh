@@ -65,8 +65,8 @@ class ServerEvent extends Event
 	static function GenerateString($eventType, $objId, $uploadArray)
 	{
 		return count($uploadArray) === 0
-			? 'PostBack("' . $eventType . '","' . $objId . '",event);'
-			: 'PostBackWithUpload("' . $eventType . '","' . $objId . '",[' . implode(',', $uploadArray) . '],event);';
+			? '_NServer("' . $eventType . '","' . $objId . '",event);'
+			: '_NServerWUpl("' . $eventType . '","' . $objId . '",[' . implode(',', $uploadArray) . '],event);';
 	}
 	/**
 	 * Constructor

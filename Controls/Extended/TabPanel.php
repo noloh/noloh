@@ -24,7 +24,7 @@ class TabPanel extends Panel
 	{
 		parent::Panel($left, $top, null, null);
 		$this->Tabs = new Group();
-		$this->Tabs->Change = new ClientEvent('_NStTbPg', $this->Id, $this->Tabs->Id);
+		$this->Tabs->Change = new ClientEvent('_NTbPgSt', $this->Id, $this->Tabs->Id);
 		
 		$this->TabBar = new Panel(0, 0, '100%', 25);
 		$this->Body = new Panel(0, 0, '100%', null, $this);
@@ -60,7 +60,7 @@ class TabPanel extends Panel
 		
 		$preStr = '';
 		if($eventTypeAsString == 'Change')
-			$preStr = '_NStTbPg("'.$this->Id.'","' . $this->Tabs->Id . '");';
+			$preStr = '_NTbPgSt("'.$this->Id.'","' . $this->Tabs->Id . '");';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}*/
 	/**

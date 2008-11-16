@@ -1,4 +1,4 @@
-function FindX(objId)
+function _NFindX(objId)
 {
 	var currLeft = 0, lastBorder = 0, tmpBorder;
 	var obj = _N(objId);
@@ -7,7 +7,7 @@ function FindX(objId)
 		{
 			currLeft += obj.offsetLeft;
 			obj = obj.offsetParent;
-			if(!isNaN(tmpBorder = parseInt(obj.style.borderLeftWidth,10)))
+			if(!isNaN(tmpBorder = parseInt(obj.style.borderLeftWidth)))
 				currLeft += lastBorder = tmpBorder;
 		}
 	else if (obj.x)
@@ -15,7 +15,7 @@ function FindX(objId)
 	return currLeft + lastBorder;
 }
 
-function FindY(objId)
+function _NFindY(objId)
 {
 	var currTop = 0, lastBorder = 0;
 	var obj = _N(objId);
@@ -24,7 +24,7 @@ function FindY(objId)
 		{
 			currTop += obj.offsetTop;
 			obj = obj.offsetParent;
-			if(!isNaN(tmpBorder = parseInt(obj.style.borderTopWidth,10)))
+			if(!isNaN(tmpBorder = parseInt(obj.style.borderTopWidth)))
 				currTop += lastBorder = tmpBorder;
 		}
 	else if (obj.y)
