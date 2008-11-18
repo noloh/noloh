@@ -13,7 +13,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	this.Obj = id == "N1" ? document.documentElement : _N(id);
 	if(isNaN(to))
 	{
-		this.Destination = 1;
+		this.Destination = 0;
 		if(to == "Oblivion")
 			this.Oblivion = true;
 		else if(to == "Hiding")
@@ -35,7 +35,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 		this.ShiftType = prpty=="style.width"?1: prpty=="style.height"?2: prpty=="style.left"?4: 5;
 	if(this.Obj._NHiding)
 	{
-		this.Obj._NHiding = false;
+		this.Obj._NHiding = null;
 		_NSetProperty(this.ObjId, 'style.display', '');
 	}
 	if(this.Obj.AnimationStart)
@@ -85,7 +85,7 @@ _NAni.prototype.FinishingTouches = function()
 		_NBodyScrollState();
 	else if(this.Property == "opacity" && this.Destination == 100)
 		this.Obj.filter = '';
-	else if(this.Destination == 1)
+	else if(this.Destination == 0)
 		if(this.Oblivion)
 		{
 			_NRem(this.ObjId);

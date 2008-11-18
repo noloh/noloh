@@ -1,4 +1,3 @@
-_N.ShiftObjArray = null;
 _N.Catchers = [];
 function _NShftSta(event, objArray)
 {
@@ -52,33 +51,34 @@ function _NShftGo(event)
 }
 function _NShftObjs(objects, deltaX, deltaY)
 {
-	var obj, count = objects.length;
+	var obj, tmp, count = objects.length;
 	for(var i=0; i<count; ++i)
 	{
 		obj = _N(objects[i][0]);
 		if(objects[i][1] == 1)
-			_NShftProcObj(objects[i], 1, "style.width", 1, obj.style.width, deltaX, obj.ShiftsWith, 1, (!objects[i][7]||objects[i][3])?null:(obj.style.left?obj.style.left:obj.offsetLeft));
+			_NShftProcObj(objects[i], 1, "style.width", 1, (tmp=obj.style.width)?tmp:obj.offsetWidth, deltaX, obj.ShiftsWith, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.left)?tmp:obj.offsetLeft);
 		else if(objects[i][1] == 2)
-			_NShftProcObj(objects[i], 2, "style.height", 0, obj.style.height, deltaY, obj.ShiftsWith, 1, (!objects[i][7]||objects[i][3])?null:(obj.style.top?obj.style.top:obj.offsetTop));
+			_NShftProcObj(objects[i], 2, "style.height", 0, (tmp=obj.style.height)?tmp:obj.offsetHeight, deltaY, obj.ShiftsWith, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.top)?tmp:obj.offsetTop);
 		else if(objects[i][1] == 4)
-			_NShftProcObj(objects[i], 4, "style.left", 1, obj.style.left, deltaX, obj.ShiftsWith, 0, objects[i][3]?null:(obj.style.width?obj.style.width:obj.offsetWidth));
+			_NShftProcObj(objects[i], 4, "style.left", 1, (tmp=obj.style.left)?tmp:obj.offsetLeft, deltaX, obj.ShiftsWith, objects[i][3]?null:(tmp=obj.style.width)?tmp:obj.offsetWidth);
 		else
-			_NShftProcObj(objects[i], 5, "style.top", 0, obj.style.top, deltaY, obj.ShiftsWith, 0, objects[i][3]?null:(obj.style.height?obj.style.height:obj.offsetHeight));
+			_NShftProcObj(objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, obj.ShiftsWith, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
 	}
 }
-function _NShftProcObj(info, propNum, propStr, axis, startPx, delta, shiftsWith, defaultMin, opposite)
+function _NShftProcObj(info, propNum, propStr, axis, startPx, delta, shiftsWith, opposite)
 {
 	if(delta)
 	{
 		var maxBound;
 		if(opposite)
 		{
-			var parent = _N(info[0]).parentNode;
-			maxBound = Math.max((axis ? (parent.id == "N1" ? parent.Width : (parent.style.width?parseInt(parent.style.width):(parent.offsetWidth-(!isNaN(parseInt(parent.style.borderLeftWidth))?2*parseInt(parent.style.borderLeftWidth):0)))) : (parent.id == "N1" ? parent.Height : (parent.style.height?parseInt(parent.style.height):(parent.offsetHeight-(!isNaN(parseInt(parent.style.borderTopWidth))?2*parseInt(parent.style.borderTopWidth):0))))) - parseInt(opposite), defaultMin);
+			var tmp, parent = _N(info[0]).parentNode;
+			maxBound = Math.max((axis ? (parent.id == "N1" ? parent.Width : (tmp=parent.style.width)?parseInt(tmp):(parent.offsetWidth-(isNaN(tmp=parseInt(parent.style.borderLeftWidth))?0:(2*tmp))))
+									  : (parent.id == "N1" ? parent.Height : (tmp=parent.style.height)?parseInt(tmp):(parent.offsetHeight-(isNaN(tmp=parseInt(parent.style.borderTopWidth))?0:(2*tmp))))) - parseInt(opposite), 0);
 		}
 		else
 			maxBound = info[3];
-		if((delta = _NShftObj(info[0], propStr, parseInt(startPx), delta, info[2]?info[2]:defaultMin, maxBound, info[5], info[6], info[7]))
+		if((delta = _NShftObj(info[0], propStr, parseInt(startPx), delta, info[2]?info[2]:0, maxBound, info[5], info[6], info[7]))
 			&& shiftsWith && shiftsWith[propNum])
 				_NShftObjs(shiftsWith[propNum], delta, delta);
 	}
