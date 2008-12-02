@@ -1,26 +1,10 @@
 _N.Saved = [];
 _N.Changes = [];
+_N.EventVars = [];
 _N.Visit = -1;
 _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
-_N.LookUp =
-{
-	"style.left": "Left",
-	"style.top": "Top",
-	"style.width": "Width",
-	"style.height": "Height",
-	"style.zIndex": "ZIndex",
-	"style.background": "BackColor",
-	"style.color": "Color",
-	value: "_NText",
-	innerHTML: "_NText",
-	selectedIndex: "SelectedIndex",
-	className: "CSSClass",
-	src: "Src",
-	scrollLeft: "ScrollLeft",
-	scrollTop: "ScrollTop"
-}
 function _NInit(loadLblId, loadImgId, debugMode)
 {
 	window.onscroll = _NBodyScrollState;
@@ -135,9 +119,15 @@ function _NChangeByObj(obj, property, value)
 			break;
 		case "Group":
 			if(obj.Group = _N(value))
+			{
+				//alert("Group set for " + obj.id);
 				obj.Group.Elements.push(obj.id);
+				//if(obj.Selected)
+				//	obj.Group.PrevSelectedElement = obj.id;
+			}
 			break;
 		case "Selected":
+			//alert("Selected set for " + obj.id + " to " + (value?"true":"false"));
 			if(obj.Selected==true != value)
 			{
 				if(obj.Group)
@@ -157,6 +147,7 @@ function _NChangeByObj(obj, property, value)
 						obj.Group.onchange();
 				}
 			}
+			//alert(obj.Group ? obj.Group.PrevSelectedElement : "no group");
 			break;
 		case "style.zIndex":
 			if(value > _N.HighestZ)
@@ -357,14 +348,37 @@ function _NChangeString()
 		for(property in _N.Changes[id])
 			if(_N.Changes[id][property][0] != _N.Saved[id][property])
 			{
-				change += "~d1~" + (_N.LookUp[property] ? _N.LookUp[property] : property) + "~d1~" + _N.Changes[id][property][0];
+				change += "~d1~" + property.replace("style.", "") + "~d1~" + _N.Changes[id][property][0];
 				_N.Saved[id][property] = _N.Changes[id][property][0];
 			}
 		if(change != id)
 			changes += change + "~d0~";
 	}
 	_N.Changes = [];
-	return changes.substring(0,changes.length-4);
+	return changes.substring(0, changes.length-4);
+}
+function _NEventVarsString(event)
+{
+	var key, str = "";
+	if(event)
+		str += "MouseX~d0~"+event.pageX+"~d0~MouseY~d0~"+event.pageY+"~d0~";
+	if(_N.EventVars.FocusedComponent)
+	{
+		var obj = _N(_N.EventVars.FocusedComponent);
+        try
+		{
+			str += "FocusedComponent~d0~"+_N.EventVars.FocusedComponent+"~d0~SelectedText~d0~"+obj.value.substring(obj.selectionStart, obj.selectionEnd)+"~d0~";
+		}
+		catch(err)	{}
+		finally
+		{
+			delete _N.EventVars.FocusedComponent;
+		}
+	}
+	for(key in _N.EventVars)
+		str += key + "~d0~" + (typeof _N.EventVars[key] == "object" ? _N.EventVars[key].join(",") : _N.EventVars[key]) + "~d0~";
+	_N.EventVars = [];
+	return str.substring(0, str.length-4);
 }
 function _NProcessResponse(response)
 {
@@ -432,35 +446,7 @@ function _NServer(eventType, id, event)
 {
 	if(!_N.Request)
 	{
-		var str = "_NChanges="+_NChangeString()+"&_NEvents="+eventType+"@"+id+"&_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp;
-		if(event)
-			str += "&_NMouseX="+event.pageX+"&_NMouseY="+event.pageY;
-		if(_N.Key)
-		{
-			str += "&_NKey="+_N.Key;
-			_N.Key = null;
-		}
-		if(_N.Caught)
-			str += "&_NCaught="+_N.Caught.join(",");
-        if(_N.Focus)
-        {
-            var obj = _N(_N.Focus);
-            try
-            {
-                str += "&_NFocus="+_N.Focus+"&_NSelectedText="+obj.value.substring(obj.selectionStart, obj.selectionEnd);
-            }
-            catch(err)
-            {
-                _N.Focus = null;        
-            }
-        }
-		if(_N.ContextMenuSource)
-			str += "&_NCMSource="+_N.ContextMenuSource.id;
-		if(_N.FlashArgs)
-		{
-			str += "&_NFlashArgs="+_N.FlashArgs;
-			_N.FlashArgs = null;
-		}
+		var str = "_NChanges="+_NChangeString()+"&_NEventVars="+_NEventVarsString(event)+"&_NEvents="+eventType+"@"+id+"&_NVisit="+ ++_N.Visit+"&_NApp="+_NApp;
 		if(_N.URLTokenLink)
 		{
 			str += "&_NTokenLink="+_N.URLTokenLink;

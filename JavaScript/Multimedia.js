@@ -1,12 +1,12 @@
 function _NTalk(id, val)
 {
 	var obj = _N(id.substring(0, id.length-1));
-	_N.FlashArgs = "";
+	_N.EventVars.FlashArgs = "";
 	var lastIndex = arguments.length-1;
 	for(var i=1; i<lastIndex; ++i)
-		_N.FlashArgs += arguments[i] + "~d3~";
+		_N.EventVars.FlashArgs += arguments[i] + "~d3~";
 	if(lastIndex >= 1)
-		_N.FlashArgs += arguments[lastIndex];
+		_N.EventVars.FlashArgs += arguments[lastIndex];
 	if(obj.Talk)
 		obj.Talk();
 }

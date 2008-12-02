@@ -108,7 +108,7 @@ class TextBox extends Control
 	 */
     function GetSelectedText()
     {
-        return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
+        return Event::$FocusedComponent->Id == $this->Id ? Event::$SelectedText : '';
     }
     /**
      * @ignore
@@ -122,7 +122,7 @@ class TextBox extends Control
 		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change' || $eventTypeAsString == 'DoubleClick' || $eventTypeAsString == 'LoseFocus')
 			$preStr = '_NSave("'.$this->Id.'","value");';
         elseif($eventTypeAsString == 'Focus')
-            $preStr = '_NFocus="'.$this->Id.'";';
+            $preStr = '_N.EventVars.FocusedComponent="'.$this->Id.'";';
         elseif($eventTypeAsString == 'KeyPress' && $this->Filter)
         {
         	preg_match('/^(.)\^?(.*?)\$?\1([a-zA-Z]*)$/', $this->Filter, $matches);
@@ -135,9 +135,7 @@ class TextBox extends Control
 	 */
 	function Show()
 	{
-		$initialProperties = parent::Show();
-		
-		$initialProperties .= ',\'type\',\'';
+		$initialProperties = parent::Show() . ',\'type\',\'';
 		if($this->Password)
 			$initialProperties .= 'password\'';
 		else

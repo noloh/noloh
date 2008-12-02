@@ -10,7 +10,6 @@ function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Dis
 {
 	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 }
-
 /**
 * @ignore
 */
@@ -21,7 +20,6 @@ function _NOBErrorHandler($buffer)
 	elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
 		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
 }
-
 /**
  * @ignore
  */
@@ -149,6 +147,8 @@ final class Application extends Object
 			$this->HandleDebugMode($debugMode);
 			if(isset($_SESSION['_NOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
+			if(!empty($_POST['_NEventVars']))
+				$this->HandleEventVars();
 			$this->HandleClientChanges();
 			if(!empty($_POST['_NFileUploadId']))
 				GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
@@ -312,9 +312,33 @@ final class Application extends Object
 		$_SESSION['_NGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['_NStartUpPageId']);
 	}
-
-	private function HandleClientChanges()
+	
+	private function HandleEventVars()
 	{
+		$varInfo = explode('~d0~', $_POST['_NEventVars']);
+		$numInfo = count($varInfo);
+		$i = -1;
+		while(++$i < $numInfo)
+		{
+			switch($name = $varInfo[$i])
+			{
+				case 'Caught':
+					Event::$Caught = $this->ExplodeDragCatch($varInfo[++$i]);
+					break;
+				case 'ContextMenuSource':
+					ContextMenu::$Source = GetComponentById($varInfo[++$i]);
+					break;
+				case 'FlashArgs':
+					Event::$FlashArgs = explode('~d3~', $varInfo[++$i]);
+					break;
+				case 'FocusedComponent':
+					Event::$FocusedComponent = GetComponentById($varInfo[++$i]);
+					break;
+				default:
+					Event::$$name = $varInfo[++$i];
+			}
+		}
+		/*
 		if(isset($_POST['_NKey']))
 			Event::$Key = $_POST['_NKey'];
 		if(isset($_POST['_NCaught']))
@@ -333,8 +357,29 @@ final class Application extends Object
 		}
 		if(isset($_POST['_NFlashArgs']))
 			Event::$FlashArgs = explode('~d3~', $_POST['_NFlashArgs']);
+		*/
+	}
+
+	private function HandleClientChanges()
+	{
 		if(!empty($_POST['_NChanges']))
 		{
+			$lookUp = array(	
+				'left' => 'SetLeft',
+				'top' => 'SetTop',
+				'width' => 'SetWidth',
+				'height' => 'SetHeight',
+				'zIndex' => 'SetZIndex',
+				'background' => 'SetBackColor',
+				'color' => 'SetColor',
+				'value' => 'Set_NText',
+				'innerHTML' => 'Set_NText',
+				'selectedIndex' => 'SetSelectedIndex',
+				'className' => 'SetCSSClass',
+				'src' => 'SetSrc',
+				'scrollLeft' => 'SetScrollLeft',
+				'scrollTop' => 'SetScrollTop'
+			);
 			$componentChanges = explode('~d0~', stripslashes($_POST['_NChanges']));
 			$numComponents = count($componentChanges);
 			for($i = 0; $i < $numComponents; ++$i)
@@ -345,7 +390,7 @@ final class Application extends Object
 				$changeCount = count($changes);
 				$j = 0;
 				while(++$j < $changeCount)
-					$component->{$changes[$j]} = $changes[++$j];
+					$component->{isset($lookUp[$prop = $changes[$j]]) ? $lookUp[$prop] : ('Set'.$prop)}($changes[++$j]);
 			}
 		}
 		$GLOBALS['_NQueueDisabled'] = null;

@@ -5,7 +5,7 @@ function _NKeyEvntsPress(event)
 		this.ReturnKey.call(this, event);
 	if(this.KeyPress)
 	{
-		_N.Key = Math.max(event.keyCode, event.charCode);
+		_N.EventVars.Key = Math.max(event.keyCode, event.charCode);
 		this.KeyPress.call(this, event);
 	}
 	if(this.TypePause && (event.keyCode < 37 || event.keyCode > 40))

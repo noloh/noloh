@@ -104,6 +104,7 @@ function _NShftStp()
 	if((tmpCount = _N.Catchers.length) && _N.ShiftObjArray.HasMoved)
 	{
 		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
+		_N.EventVars.Caught = [];
 		DroppedX = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 		DroppedY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
 		for(var i=0; i<tmpCount; ++i)
@@ -115,11 +116,11 @@ function _NShftStp()
 				if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
 					for(j=0; j<_N.ShiftObjArray.length; ++j)
 						if(4 <= _N.ShiftObjArray[j][1] && _N.ShiftObjArray[j][1] <= 6 && _N.Catchers[i]!=_N.ShiftObjArray[j][0].replace("_Ghost",""))
-							_N.Caught.push(_N.ShiftObjArray[j][0].replace("_Ghost",""));
-				if(_N.Caught.length != 0)
+							_N.EventVars.Caught.push(_N.ShiftObjArray[j][0].replace("_Ghost",""));
+				if(_N.EventVars.Caught.length)
 				{
 					Catcher.DragCatch();
-					_N.Caught = [];
+					delete _N.EventVars.Caught;
 				}
 			}
 	}

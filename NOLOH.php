@@ -1,6 +1,7 @@
 <?php
+$_NPath = dirname(__FILE__) . '/';
 
-require_once('Includes.php');
+require_once($_NPath . 'Includes.php');
 
 /**
  * Computes the NOLOH path based on this file's directory
@@ -11,6 +12,6 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  * Gets the current version of NOLOH
  * @return string
  */
-function GetNOLOHVersion() {return '1.7.187';}
+function GetNOLOHVersion() {return '1.7.188';}
 
 ?>

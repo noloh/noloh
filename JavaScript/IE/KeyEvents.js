@@ -5,7 +5,7 @@ function _NKeyEvntsPress()
 		this.ReturnKey();
 	if(this.KeyPress)
 	{
-		_N.Key = window.event.keyCode;
+		_N.EventVars.Key = window.event.keyCode;
 		this.KeyPress();
 	}
 	if(this.TypePause && (window.event.keyCode < 37 || window.event.keyCode > 40))

@@ -50,7 +50,7 @@ class Event extends Object implements ArrayAccess
 	*/
 	public static $Source;
     /**
-	 * When relevant, the id of the component that was focused {@see Control::Focus}
+	 * When relevant, the Component that was focused {@see Control::Focus}
 	 * @var string
 	 */
     public static $FocusedComponent;

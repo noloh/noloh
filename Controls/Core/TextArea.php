@@ -123,11 +123,8 @@ class TextArea extends Control
                 $preStr = '_NSave("'.$this->Id.'","value");';
                 break;
             case 'Focus':
-                $preStr = '_NFocus="'.$this->Id.'";';
+                $preStr = '_N.EventVars.FocusedComponent="'.$this->Id.'";';
                 break;
-            /*case 'LoseFocus':
-                $preStr = "_NFocus=null;";
-                break;*/
         }
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
@@ -166,7 +163,7 @@ class TextArea extends Control
 	 */
     function GetSelectedText()
     {
-        return Event::$FocusedComponent == $this->Id ? Event::$SelectedText : '';
+        return Event::$FocusedComponent->Id == $this->Id ? Event::$SelectedText : '';
     }
     /**
      * @ignore
