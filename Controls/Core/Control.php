@@ -214,6 +214,31 @@ abstract class Control extends Component
 			NolohInternal::SetProperty('style.height', '', $this);
 	}
 	/**
+	 * Sets the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
+	 * When being used via the property syntax, Location should be set to an array of the Width and Height values.
+ 	 * <pre> $object->SetSize(300, 400);
+ 	 *       //or as a property being set to an array.
+ 	 *       $object->Size = array(300, 400);
+ 	 * </pre>
+	 * @param integer|string $width
+	 * @param integer|string $height
+	 */
+	function SetSize($width=null, $height=null)
+	{
+		if(is_array($width))
+		{
+			$this->SetWidth($width[0]);
+			$this->SetHeight($width[1]);
+		}
+		else
+		{
+			if(isset($width))
+				$this->SetLeft($width);
+			if(isset($height))
+				$this->SetTop($height);
+		}
+	}
+	/**
 	 * Returns the Left of this Control. Can be either an integer signifying Left in pixels, or can be a string for percents, e.g., '50%'
 	 * @return integer|string
 	 */
@@ -256,6 +281,31 @@ abstract class Control extends Component
 			NolohInternal::SetProperty('style.top', $top, $this);
 		elseif(is_null($top))
 			NolohInternal::SetProperty('style.top', '', $this);
+	}
+	/**
+	 * Sets the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
+	 * When being used via the property syntax, Location should be set to an array of the left and top values.
+ 	 * <pre> $object->SetLocation(100, 200);
+ 	 *       //or as a property being set to an array.
+ 	 *       $object->Location = array(100, 200);
+ 	 * </pre>
+	 * @param integer|string $left
+	 * @param integer|string $top
+	 */
+	function SetLocation($left=null, $top=null)
+	{
+		if(is_array($left))
+		{
+			$this->SetLeft($left[0]);
+			$this->SetTop($left[1]);
+		}
+		else
+		{
+			if(isset($left))
+				$this->SetLeft($left);
+			if(isset($top))
+				$this->SetTop($top);
+		}
 	}
 	/**
 	 * Returns the Bottom coordinate of this Control, in pixels, but only if both the Top and Height were integers.
