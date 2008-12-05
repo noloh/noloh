@@ -492,6 +492,7 @@ final class Application extends Object
 		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();
 		NolohInternal::FunctionQueue();
+		NolohInternal::ClientEventQueue();
 		ob_end_clean();
 		$gzip = defined('FORCE_GZIP');
 		if($gzip)

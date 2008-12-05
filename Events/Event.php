@@ -210,6 +210,30 @@ class Event extends Object implements ArrayAccess
 		return count($this->ExecuteFunction)==0;
 	}
 	/**
+	 * Returns true if one of the Controls that it handles has been shown and false otherwise
+	 * @return boolean
+	 */
+	function GetShowStatus()
+	{
+		foreach($this->Handles as $pair)
+			if(is_string($pair[0]))
+			{
+				if(GetComponentById($pair[0])->GetShowStatus())
+					return true;
+			}
+			elseif(is_object($pair[0])) 
+			{
+				if($pair[0]->GetShowStatus())
+					return true;
+			}
+			else 
+			{
+				if(GetComponentById($pair[0][0])->GetShowStatus())
+					return true;
+			}
+		return false;
+	}
+	/**
 	 * @ignore
 	 */
 	function GetDeepHandles(&$arr)
@@ -280,12 +304,15 @@ class Event extends Object implements ArrayAccess
 				$event = new Event(array($this, $index => $val), $this->Handles);
 			$this->Handles = array(array($event, 0));
 			foreach($event->Handles as $pair)
+			{
+				//System::Log($pair);
 				if(is_string($pair[0]))
 					GetComponentById($pair[0])->SetEvent($event, $pair[1]);
 				elseif(is_object($pair[0]))
 					$pair[0][$pair[1]] = $event;
 				else 
 					GetComponentById($pair[0][0])->SetEvent($event, $pair[1], $pair[0][1]);
+			}
 		}
 	}
 	/**

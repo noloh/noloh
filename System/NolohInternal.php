@@ -178,5 +178,13 @@ final class NolohInternal
 			//	Alert("Null Object: " . serialize($nameParam));
 		}
 	}
+	
+	public static function ClientEventQueue()
+	{
+		$count = count($GLOBALS['_NClientEventExecs']);
+		for($i=0; $i<$count; ++$i)
+			if($GLOBALS['_NClientEventExecs'][$i]->GetShowStatus())
+				$GLOBALS['_NClientEventExecs'][$i]->AddToScript();
+	}
 }
 ?>

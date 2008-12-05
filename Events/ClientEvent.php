@@ -34,7 +34,7 @@ class ClientEvent extends Event
 	}
 	/**
 	 * Constructor.
-	 * @param string $allCodeAsString The JavaScript code to be executed when 
+	 * @param string $allCodeAsString Either the full JavaScript code to be executed or the name of a JavaScript function as a string
 	 * @param mixed $params,... the optional params to be passed to your JavaScript function 
 	 */
 	function ClientEvent($allCodeAsString, $params=null)
@@ -132,13 +132,22 @@ class ClientEvent extends Event
 	/**
 	 * Launches the particular event. That is, the client will be notified to execute the given JavaScript.
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
-	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
+	 * <b>Note</b>:Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */
 	function Exec(&$execClientEvents=true)
 	{
 		if(!$GLOBALS['_NQueueDisabled'] && $execClientEvents && $this->Enabled===null)
-			AddScript(str_replace('\\\'', '\'', $this->ExecuteFunction), Priority::Low);
-			//AddScript($this->ExecuteFunction);
+			if(!isset($GLOBALS['_NClientEventExecs']))
+				$GLOBALS['_NClientEventExecs'] = array($this);
+			else
+				$GLOBALS['_NClientEventExecs'][] = $this;
+	}
+	/**
+	 * @ignore
+	 */
+	function AddToScript()
+	{
+		AddScript(str_replace('\\\'', '\'', $this->ExecuteFunction), Priority::Low);
 	}
 }
 
