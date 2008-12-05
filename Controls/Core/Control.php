@@ -616,7 +616,8 @@ abstract class Control extends Component
 			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
 		if($bool != $this->GetSelected())
 		{
-			QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
+			//QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
+			NolohInternal::SetProperty('Selected', (int)$bool, $this);
 			if($this->GroupName !== null)
 				$group = $group = GetComponentById($this->GroupName);
 			if($bool && $group && $this instanceof Groupable)
