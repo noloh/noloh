@@ -68,8 +68,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Adds an unlimited number elements to the Group.
-	 * @param mixed ... Unlimited number of elements to be added
 	 * <pre>$group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</pre>
+	 * @param mixed ... Unlimited number of elements to be added
 	 */
 	function AddRange($dotDotDot)
 	{
@@ -110,7 +110,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName(null);
 		//NolohInternal::SetProperty('Group', '', $element);
-		$this->Groupees->Remove($element);		
+		return $this->Groupees->Remove($element);		
 	}
 	/**
 	 * Removes an element at a particular index. 
