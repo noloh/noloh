@@ -80,9 +80,7 @@ class ComboBox extends ListControl
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
 		AddNolohScriptSrc('ListControl.js');
-		$initialProperties = parent::Show();
-		$initialProperties .= $this->GetEventString(null);
-		NolohInternal::Show('SELECT', $initialProperties, $this);
+		NolohInternal::Show('SELECT', parent::Show() . $this->GetEventString(null), $this);
 	}
 	/**
 	 * @ignore

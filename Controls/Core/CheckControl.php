@@ -232,7 +232,7 @@ abstract class CheckControl extends Control
 	 */
 	function Show()
 	{
-		NolohInternal::Show('DIV', parent::Show().',\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
+		NolohInternal::Show('DIV', parent::Show().'\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
 		//$this->Caption->Show();
 		//return $parentShow;
 	}

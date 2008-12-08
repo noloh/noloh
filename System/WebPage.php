@@ -94,7 +94,7 @@ abstract class WebPage extends Component
 		}
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
 			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\',' . ($GLOBALS['_NDebugMode']==='Full'?'"Full"':($GLOBALS['_NDebugMode']?'true':'false')) . ')', Priority::High);
-		AddScript('_NSaveControl(\''.$this->Id.'\')');
+		//AddScript('_NSaveControl(\''.$this->Id.'\')');
 	}
 	/**
 	 * @ignore
@@ -102,7 +102,7 @@ abstract class WebPage extends Component
 	function AddCSSFile($path)
 	{
 		$initialProperties = '\'id\',\''.hash('md5',$path).'\',\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
-		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead');
+		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
 		$this->CSSFiles->Add($path, true, true);
 	}
 	/**
@@ -110,7 +110,7 @@ abstract class WebPage extends Component
 	 */
 	function RemoveCSSFileAt($index)
 	{
-		if($index != -1)
+		if($index !== -1)
 		{
 			$path = $this->CSSFiles[$index];
 			$this->CSSFiles->RemoveAt($index, true);
@@ -126,6 +126,14 @@ abstract class WebPage extends Component
 		foreach($this->CSSFiles as $index => $path)
 			$this->RemoveCSSFileAt($index);
 		$this->CSSFiles->Clear(true);
+	}
+	 /** @ignore
+	 */
+	function SetFavIcon()
+	{
+	}
+	function GetFavIcon()
+	{
 	}
 	/**
 	 * Returns the WebPage's title, i.e., the text appearing in the browser's title bar across the top

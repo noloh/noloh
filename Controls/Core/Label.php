@@ -68,7 +68,7 @@ class Label extends Control
 	 */
 	function GetFontSize()
 	{
-		return isset($this->FontSize) ? $this->FontSize : 12;
+		return $this->FontSize ? $this->FontSize : 12;
 	}
 	/**
 	 * Sets the font size of the Label, in points. The default is 12.
@@ -86,9 +86,9 @@ class Label extends Control
 	function GetWidth()
 	{
 		$width = parent::GetWidth();
-		if($width == System::Auto || $width == System::AutoHtmlTrim)
+		if($width === System::Auto || $width === System::AutoHtmlTrim)
 		{
-			if($this->CachedWidth == null)
+			if($this->CachedWidth === null)
 				$this->AutoWidthHeight();
 			return $this->CachedWidth;
 		}
@@ -98,9 +98,9 @@ class Label extends Control
 	/**
 	 * @ignore
 	 */
-	function SetWidth($newWidth)
+	function SetWidth($width)
 	{
-		parent::SetWidth($newWidth);
+		parent::SetWidth($width);
 		$this->ResetCache();
 	}
 	/**
@@ -109,9 +109,9 @@ class Label extends Control
 	function GetHeight()
 	{
 		$height = parent::GetHeight();
-		if($height == System::Auto || $height == System::AutoHtmlTrim)
+		if($height === System::Auto || $height === System::AutoHtmlTrim)
 		{
-			if($this->CachedHeight == null)
+			if($this->CachedHeight === null)
 				$this->AutoWidthHeight();
 			return $this->CachedHeight;
 		}
@@ -121,9 +121,9 @@ class Label extends Control
 	/**
 	 * @ignore
 	 */
-	function SetHeight($newHeight)
+	function SetHeight($height)
 	{
-		parent::SetHeight($newHeight);
+		parent::SetHeight($height);
 		$this->ResetCache();
 	}
 	

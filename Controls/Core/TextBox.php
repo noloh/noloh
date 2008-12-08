@@ -135,17 +135,12 @@ class TextBox extends Control
 	 */
 	function Show()
 	{
-		$initialProperties = parent::Show() . ',\'type\',\'';
-		if($this->Password)
-			$initialProperties .= 'password\'';
-		else
-			$initialProperties .= 'text\'';
-		
+		$initialProperties = parent::Show() . '\'type\',\'' . ($this->Password?'password\'':'text\'') . $this->GetEventString(null);
+
 		//$tempStr = str_repeat("  ", $IndentLevel) . "<INPUT "  . $parentShow . "' ";
 		//if(!is_null($this->Text))
 		//if(!empty($this->MaxLength))
 		//	$initialProperties .= ",'MaxLength','$this->MaxLength'";
-		$initialProperties .= $this->GetEventString(null);
 		NolohInternal::Show('INPUT', $initialProperties, $this);
 	}
 	/**

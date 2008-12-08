@@ -270,9 +270,7 @@ class CheckListBox extends ListControl
 	 */
 	function Show()
 	{
-		$initialProperties = parent::Show();
-		//$initialProperties .= ',\'style.overflow\',\'auto\'';
-		NolohInternal::Show('DIV', $initialProperties, $this);
+		NolohInternal::Show('DIV', parent::Show(), $this);
 		return $initialProperties;
 	}
 	/**

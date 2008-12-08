@@ -108,17 +108,16 @@ class Table extends Control
      */
 	function Show()
 	{
-		$initialProperties = parent::Show();
 		$id = $this->Id;
-		$initialProperties .= ",'style.overflow','auto'";
+		$initialProperties = parent::Show() . "'style.overflow','auto'";
 		NolohInternal::Show('DIV', $initialProperties, $this);
-		$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.borderCollapse','collapse','style.position','relative','style.width','100%','style.height','100%'";
+		$initialProperties = "'cellpadding','0','cellspacing','0','style.borderCollapse','collapse','style.position','relative','style.width','100%','style.height','100%'";
 //		$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.position','relative'";
 		//$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.borderCollapse','collapse','style.position','relative','style.width','{$this->Width}px','style.height','{$this->Height}px'";
 		//$initialProperties = "'id','{$id}InnerTable','cellpadding','0','cellspacing','0','style.position','relative','style.width','{$this->Width}px','style.height','{$this->Height}px'";
-		NolohInternal::Show('TABLE', $initialProperties, $this, $id);
-		$initialProperties = "'id','{$id}InnerTBody', 'style.position','relative'";
-		NolohInternal::Show('TBODY', $initialProperties, $this, $id.'InnerTable');
+		NolohInternal::Show('TABLE', $initialProperties, $this, $id, $id.'InnerTable');
+		$initialProperties = "'style.position','relative'";
+		NolohInternal::Show('TBODY', $initialProperties, $this, $id.'InnerTable', $id.'InnerTBody');
 	}
 	/**
 	 * @ignore

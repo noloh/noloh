@@ -15,11 +15,11 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);
 	_NSetProperty(document.body.id, "Height", document.documentElement.clientHeight);
 	var graveyard = document.createElement("DIV");
-	graveyard.id = "Graveyard";
+	graveyard.id = "NGraveyard";
 	graveyard.style.display = "none";
 	document.body.appendChild(graveyard);
 	_N.Hash = location.hash;
-	_N.URLChecker = setInterval('_NCheckURL()', 500);
+	_N.URLChecker = setInterval("_NCheckURL()", 500);
 }
 function _NCheckURL()
 {
@@ -29,16 +29,10 @@ function _NCheckURL()
 function _NSetURL(hash, id)
 {
 	_N.URLTokenLink = id;
-	location = document.URL.split('#',1)[0] + "#/" + hash;
+	location = document.URL.split("#",1)[0] + "#/" + hash;
 	_N.Hash = location.hash;
 	if(_N.Tracker)
 		eval(_N.Tracker);
-}
-function _NSaveControl(id)
-{
-	var obj = _N(id);
-	_N.Saved[id] = obj.cloneNode(false);
-	_N.Saved[id].selectedIndex = obj.selectedIndex;
 }
 function _NSetProperty(id, property, value)
 {
@@ -46,146 +40,130 @@ function _NSetProperty(id, property, value)
 	_NSave(id, property, value);
 	return value;
 }
-function _NChangeInit(id, property)
-{
-	if(!_N.Changes[id])
-		_N.Changes[id] = [];
-	if(!_N.Changes[id][property])
-		_N.Changes[id][property] = [];	
-}
 function _NChange(id, property, value)
 {
 	_NChangeByObj(_N(id), property, value);
 }
 function _NChangeByObj(obj, property, value)
 {
-	if(!obj)
-		return;
-	switch(property)
-	{
-		case "KeyPress":
-		case "ReturnKey":
-		case "TypePause":
-			obj.onkeypress = _NKeyEvntsPress;
-		case "onblur":
-		case "onchange":
-		case "onclick":
-		case "ondblclick":
-		case "onfocus":
-		case "onelapsed":
-		case "oninput":
-		case "onmouseout":
-		case "onmouseover":
-		case "onmouseup":
-		case "onload":
-		case "onpaste":
-		case "onscroll":
-		case "onunload":
-			eval("obj." + property + " = function(event) {" + value + ";}");
-			break;
-		case "oncontextmenu":
-			eval("obj.oncontextmenu = function(event) {" + value + "; if(obj.ContextMenu) _NCMShow(event, obj); return false;}");
-			break;
-		case "onmousedown":
-			eval("obj.onmousedown = function(event) {" + value + "; if(obj.Shifts && obj.Shifts.length!=0 && !_N.ShiftObjArray) _NShftSta(event, obj.Shifts);}");
-			break;
-		case "DragCatch":
-			if(value == "")
-			{
-				for(var i=0; i<_N.Catchers.length; ++i)
-					if(_N.Catchers[i] == obj.id)
-					{
-						_N.Catchers.splice(i, 1);
-						break;
-					}
-			}
-			else
-				_N.Catchers.push(obj.id);
-			eval("obj.DragCatch = function(event) {" + value + ";}");
-			break;
-		case "href":
-			obj.href = value=="#" ? "javascript:void(0);" : value;
-			break;
-		case "Shifts":
-			if(!obj.onmousedown)
-				_NChangeByObj(obj, "onmousedown", "");
-		case "ChildrenArray":
-			eval("obj." + property + " = " + value + ";");
-			break;
-		case "ContextMenu":
-			if(!obj.oncontextmenu)
-				_NChangeByObj(obj, "oncontextmenu", "");
-				obj.ContextMenu = value;
-			break;
-		case "Group":
-			if(obj.Group = _N(value))
-			{
-				//alert("Group set for " + obj.id);
-				obj.Group.Elements.push(obj.id);
-				//if(obj.Selected)
-				//	obj.Group.PrevSelectedElement = obj.id;
-			}
-			break;
-		case "Selected":
-			//alert("Selected set for " + obj.id + " to " + (value?"true":"false"));
-			if(obj.Selected==true != value)
-			{
-				if(obj.Group)
-					obj.Group.PrevSelectedElement = obj.Group.GetSelectedElement();
-				_NSave(obj.id,'Selected',obj.Selected=value);
-				if(!_N.Request)
+	if(obj)
+		switch(property)
+		{
+			case "KeyPress":
+			case "ReturnKey":
+			case "TypePause":
+				obj.onkeypress = _NKeyEvntsPress;
+			case "onblur":
+			case "onchange":
+			case "onclick":
+			case "ondblclick":
+			case "onfocus":
+			case "onelapsed":
+			case "oninput":
+			case "onmouseout":
+			case "onmouseover":
+			case "onmouseup":
+			case "onload":
+			case "onpaste":
+			case "onscroll":
+			case "onunload":
+				eval("obj." + property + " = function(event) {" + value + ";}");
+				break;
+			case "oncontextmenu":
+				eval("obj.oncontextmenu = function(event) {" + value + "; if(obj.ContextMenu) _NCMShow(event, obj); return false;}");
+				break;
+			case "onmousedown":
+				eval("obj.onmousedown = function(event) {" + value + "; if(obj.Shifts && obj.Shifts.length!=0 && !_N.ShiftObjArray) _NShftSta(event, obj.Shifts);}");
+				break;
+			case "DragCatch":
+				if(value != "")
+					_N.Catchers.push(obj.id);
+				else
+					for(var i=0; i<_N.Catchers.length; ++i)
+						if(_N.Catchers[i] == obj.id)
+						{
+							_N.Catchers.splice(i, 1);
+							break;
+						}
+				eval("obj.DragCatch = function(event) {" + value + ";}");
+				break;
+			case "href":
+				obj.href = value=="#" ? "javascript:void(0);" : value;
+				break;
+			case "Shifts":
+				if(!obj.onmousedown)
+					_NChangeByObj(obj, "onmousedown", "");
+			case "ChildrenArray":
+				eval("obj." + property + " = " + value + ";");
+				break;
+			case "ContextMenu":
+				if(!obj.oncontextmenu)
+					_NChangeByObj(obj, "oncontextmenu", "");
+					obj.ContextMenu = value;
+				break;
+			case "Group":
+				if(obj.Group = _N(value))
+					obj.Group.Elements.push(obj.id);
+				break;
+			case "Selected":
+				if(obj.Selected==true != value)
 				{
-					if(value)
+					if(obj.Group)
+						obj.Group.PrevSelectedElement = obj.Group.GetSelectedElement();
+					_NSave(obj.id,"Selected",obj.Selected=value);
+					if(!_N.Request)
 					{
-						if(obj.Select)
-							obj.Select();
+						if(value)
+						{
+							if(obj.Select)
+								obj.Select();
+						}
+						else
+							if(obj.Deselect)
+								obj.Deselect();
+						if(obj.Group && obj.Group.onchange)
+							obj.Group.onchange();
 					}
-					else
-						if(obj.Deselect)
-							obj.Deselect();
-					if(obj.Group && obj.Group.onchange)
-						obj.Group.onchange();
 				}
-			}
-			//alert(obj.Group ? obj.Group.PrevSelectedElement : "no group");
-			break;
-		case "style.zIndex":
-			if(value > _N.HighestZ)
-				_N.HighestZ = value;
-			if(value < _N.LowestZ)
-				_N.LowestZ = value;
-			obj.style.zIndex = obj.BuoyantParentId == null ? value : value + 9999;
-			break;
-		case "style.left":
-			if(!obj.BuoyantParentId)
-			{
-				obj.style.left = value;
-				if(obj.BuoyantChildren)
-					for(var i=0; i<obj.BuoyantChildren.length; ++i)
-						_NByntMv(obj.BuoyantChildren[i]);
-			}
-			else
-			{
-				obj.BuoyantLeft = parseInt(value);
-				_NByntMv(obj.id);
-			}
-			break;
-		case "style.top":
-			if(!obj.BuoyantParentId)
-			{
-				obj.style.top = value;
-				if(obj.BuoyantChildren)
-					for(var i=0; i<obj.BuoyantChildren.length; ++i)
-						_NByntMv(obj.BuoyantChildren[i]);
-			}
-			else
-			{
-				obj.BuoyantTop = parseInt(value);
-				_NByntMv(obj.id);
-			}
-		default:
-			eval("obj." + property + " = value;");
-	}
+				break;
+			case "style.zIndex":
+				if(value > _N.HighestZ)
+					_N.HighestZ = value;
+				if(value < _N.LowestZ)
+					_N.LowestZ = value;
+				obj.style.zIndex = obj.BuoyantParentId == null ? value : value + 9999;
+				break;
+			case "style.left":
+				if(!obj.BuoyantParentId)
+				{
+					obj.style.left = value;
+					if(obj.BuoyantChildren)
+						for(var i=0; i<obj.BuoyantChildren.length; ++i)
+							_NByntMv(obj.BuoyantChildren[i]);
+				}
+				else
+				{
+					obj.BuoyantLeft = parseInt(value);
+					_NByntMv(obj.id);
+				}
+				break;
+			case "style.top":
+				if(!obj.BuoyantParentId)
+				{
+					obj.style.top = value;
+					if(obj.BuoyantChildren)
+						for(var i=0; i<obj.BuoyantChildren.length; ++i)
+							_NByntMv(obj.BuoyantChildren[i]);
+				}
+				else
+				{
+					obj.BuoyantTop = parseInt(value);
+					_NByntMv(obj.id);
+				}
+			default:
+				eval("obj." + property + " = value;");
+		}
+	return value;
 }
 function _NSave(id, property, value)
 {
@@ -194,32 +172,29 @@ function _NSave(id, property, value)
 	var obj = _N(id);
 	if(typeof value == "undefined")
 		eval("value = obj."+property+";");
+	if(!_N.Changes[id])
+		_N.Changes[id] = [];
 	switch(property)
 	{
 		case "value":
-			_NChangeInit(id, "value");
-			_N.Changes[id][property][0] = (typeof value == "string" ? value.replace(/&/g, "~da~").replace(/\+/g, "~dp~") : value);
+			_N.Changes[id][property] = typeof value == "string" ? value.replace(/&/g, "~da~").replace(/\+/g, "~dp~") : value;
 			break;
 		case "style.left":
 		case "style.top":
 		case "style.width":
 		case "style.height":
-			_NChangeInit(id, property);
-			_N.Changes[id][property][0] = parseInt(value);
+			_N.Changes[id][property] = parseInt(value);
 			break;
 		case "style.visibility":
 		case "style.display":
-			_NChangeInit(id, "Visible");
 			var obj = _N(id);
-			_N.Changes[id]["Visible"][0] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
+			_N.Changes[id]["Visible"] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
 			break;
 		case "style.opacity":
-			_NChangeInit(id, "Opacity");
-			_N.Changes[id]["Opacity"][0] = value * 100;
+			_N.Changes[id]["Opacity"] = value * 100;
 			break;
 		default:
-			_NChangeInit(id, property);
-			_N.Changes[id][property][0] = typeof value == "boolean" ? (value ? 1 : 0) : value;
+			_N.Changes[id][property] = typeof value == "boolean" ? (value ? 1 : 0) : value;
 	}
 }
 function _NBodyScrollState()
@@ -254,19 +229,17 @@ function _NBodySizeState()
 }
 function _NSetP(id, nameValuePairs)
 {
-	var i = 0, obj = _N(id);
-	while(i<nameValuePairs.length)
-	{
-		_NChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
-		_N.Saved[id][nameValuePairs[i++]] = nameValuePairs[i++];
-	}
+	var i = -1, obj = _N(id), count = nameValuePairs.length;
+	while(++i<count)
+		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(obj, nameValuePairs[i], nameValuePairs[++i]);
 }
-function _NAdd(addTo, tag, nameValuePairs, beforeId)
+function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 {
-	var ele = document.createElement(tag), i=0;
+	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1;
 	ele.style.position = "absolute";
-	while(i<nameValuePairs.length)
-		_NChangeByObj(ele, nameValuePairs[i++], nameValuePairs[i++]);
+	_N.Saved[ele.id = id] = [];
+	while(++i<count)
+		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(ele, nameValuePairs[i], nameValuePairs[++i]);
 	addTo = _N(addTo);
 	if(typeof beforeId == "undefined")
 		addTo.appendChild(ele);
@@ -278,7 +251,6 @@ function _NAdd(addTo, tag, nameValuePairs, beforeId)
 		else
 			addTo.appendChild(ele);
 	}
-	_NSaveControl(ele.id);
 }
 function _NAdopt(id, parentId)
 {
@@ -290,7 +262,7 @@ function _NRem(id)
 {
 	var ele = _N(id);
 	ele.parentNode.removeChild(ele);
-	_N("Graveyard").appendChild(ele);
+	_N("NGraveyard").appendChild(ele);
 	if(ele.BuoyantChildren)
 		for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRem(ele.BuoyantChildren[i]);
@@ -301,7 +273,7 @@ function _NRem(id)
 function _NRes(id, parentId)
 {
 	var ele = _N(id);
-	_N("Graveyard").removeChild(ele);
+	_N("NGraveyard").removeChild(ele);
 	_N(parentId).appendChild(ele);
     if(ele.BuoyantChildren)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
@@ -346,10 +318,10 @@ function _NChangeString()
 	{
 		change = id;
 		for(property in _N.Changes[id])
-			if(_N.Changes[id][property][0] != _N.Saved[id][property])
+			if(_N.Changes[id][property] != _N.Saved[id][property])
 			{
-				change += "~d1~" + property.replace("style.", "") + "~d1~" + _N.Changes[id][property][0];
-				_N.Saved[id][property] = _N.Changes[id][property][0];
+				change += "~d1~" + property.replace("style.", "") + "~d1~" + _N.Changes[id][property];
+				_N.Saved[id][property] = _N.Changes[id][property];
 			}
 		if(change != id)
 			changes += change + "~d0~";
@@ -364,10 +336,12 @@ function _NEventVarsString(event)
 		str += "MouseX~d0~"+event.pageX+"~d0~MouseY~d0~"+event.pageY+"~d0~";
 	if(_N.EventVars.FocusedComponent)
 	{
-		var obj = _N(_N.EventVars.FocusedComponent);
+		var obj = _N(_N.EventVars.FocusedComponent), selText;
         try
 		{
-			str += "FocusedComponent~d0~"+_N.EventVars.FocusedComponent+"~d0~SelectedText~d0~"+obj.value.substring(obj.selectionStart, obj.selectionEnd)+"~d0~";
+			str += "FocusedComponent~d0~"+_N.EventVars.FocusedComponent+"~d0~";
+			if(selText = obj.value.substring(obj.selectionStart, obj.selectionEnd))
+				str += "SelectedText~d0~"+selText+"~d0~";
 		}
 		catch(err)	{}
 		finally
@@ -387,7 +361,7 @@ function _NProcessResponse(response)
 		var s = document.createElement("SCRIPT");
 		s.type = "text/javascript";
 		s.text = response[0];
-		document.getElementsByTagName('head')[0].appendChild(s);
+		document.getElementsByTagName("head")[0].appendChild(s);
 		eval(response[0]);
 	}
 	if(_N.DebugMode == "Full")
@@ -458,8 +432,8 @@ function _NServer(eventType, id, event)
         if(eventType != "Unload")
     	    _N.Request.onreadystatechange = _NReqStateChange;
 	    _N.Request.open("POST", window.location.href, eventType!="Unload");
-	    _N.Request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	    _N.Request.setRequestHeader('Remote-Scripting', 'NOLOH');
+	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 	    _N.Request.send(str);
 	}
 }

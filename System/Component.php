@@ -240,7 +240,6 @@ abstract class Component extends Object
 		$this->ShowStatus = null;
 		if(isset($_SESSION['_NControlQueueRoot'][$this->Id]))
 			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
-		return '\'id\',\''.$this->Id.'\'';
 	}
 	
 	function NoScriptShowChildren($indent)

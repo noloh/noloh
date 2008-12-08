@@ -62,10 +62,10 @@ class CheckBox extends CheckControl implements MultiGroupable
 			$_SESSION['_NScriptSrcs']['CheckBox.js'] = true;
 		}
 		parent::Show();
-		$initialProperties = '\'id\',\''.$this->Id.'I\',\'type\',\'checkbox\',\'defaultChecked\','.($this->Checked?'true':'false').parent::GetEventString(null);
+		$initialProperties = '\'type\',\'checkbox\',\'defaultChecked\','.($this->Checked?'true':'false').parent::GetEventString(null);
         //if($this->GroupName === null)
         //    $initialProperties .= ',\'name\',\''.$this->Id.'\'';
-		NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id);
+		NolohInternal::Show('INPUT', $initialProperties, $this, $this->Id, $this->Id.'I');
 
         /*
 		$initialProperties = parent::Show();

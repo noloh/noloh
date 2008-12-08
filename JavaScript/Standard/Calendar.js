@@ -44,7 +44,6 @@ function _NCalShow(id, viewMonth, viewYear, selectDate, selectMonth, selectYear)
 	cal.ViewDate = new Date();
 	cal.ViewDate.setFullYear(viewYear, viewMonth, 1);
 	cal.SelectDate.setFullYear(selectYear, selectMonth, selectDate);
-	_NSaveControl(id);
 	_NCalPrint(id);
 }
 function _NCalPrint(id)

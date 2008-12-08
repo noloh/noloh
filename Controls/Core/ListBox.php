@@ -149,9 +149,7 @@ class ListBox extends ListControl
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
 		AddNolohScriptSrc('ListControl.js');
-		$initialProperties = parent::Show();
-		$initialProperties .= ',\'multiple\',\'true\'';
-		$initialProperties .= $this->GetEventString(null);
+		$initialProperties = parent::Show() . '\'multiple\',\'true\'' . $this->GetEventString(null);
 		NolohInternal::Show('SELECT', $initialProperties, $this);
 		AddScript('_NLstCtrSaveSelInds("'.$this->Id.'");', Priority::Low);
 	}

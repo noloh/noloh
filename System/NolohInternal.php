@@ -46,31 +46,42 @@ final class NolohInternal
 		}
 	}
 	
-	public static function Show($tag, $initialProperties, $obj, $addTo = null)
+	public static function Show($tag, $initialProperties, $obj, $addTo = null, $newId = null)
 	{
 		$objId = $obj->Id;
-		$parent = $obj->GetParent();
 
-		$propertiesString = self::GetPropertiesString($objId);
-		if($propertiesString != '')
-			$initialProperties .= ',' . $propertiesString;
-			
-		if($addTo == null)
+		$setProperties = self::GetPropertiesString($objId);
+		if($initialProperties)
+			if($setProperties)
+				$properties = $initialProperties . ',' . $propertiesString;
+			else 
+				$properties = $initialProperties;
+		elseif($setProperties)
+			$properties = $setProperties;
+		else 
+			$properties = '';
+
+		if($addTo === null)
+		{
+			$parent = $obj->GetParent();
 			if($obj->GetBuoyant())
 			{
-				$addTo = 'N1';
+				$addTo = $_SESSION['_NStartUpPageId'];
 				AddScript('_NByntSta(\''.$objId.'\',\''.$parent->GetAddId($obj).'\')', Priority::Low);
 				unset($_SESSION['_NFunctionQueue'][$objId]['_NByntStp']);
 			}
 			else
 				$addTo = $parent ? $parent->GetAddId($obj) : $obj->GetParentId();
+		}
+		elseif($newId)
+			$objId = $newId;
 		if(isset($_SESSION['_NControlInserts'][$objId]))
 		{
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',['.$initialProperties.'],\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'],\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
 			unset($_SESSION['_NControlInserts'][$objId]);
 		}
 		else
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',['.$initialProperties.'])', Priority::High);
+			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'])', Priority::High);
 	}
 	
 	public static function Bury($obj)
@@ -80,7 +91,7 @@ final class NolohInternal
 	
 	public static function Resurrect($obj)
 	{
-		AddScript('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? 'N1' : $obj->GetParent()->GetAddId($obj)).'\')', Priority::High);
+		AddScript('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? $_SESSION['_NStartUpPageId'] : $obj->GetParent()->GetAddId($obj)).'\')', Priority::High);
 	}
 
     public static function Adoption($obj)
@@ -127,9 +138,8 @@ final class NolohInternal
 		foreach($_SESSION['_NPropertyQueue'] as $objId => $nameValPairs)
 		{
 			$obj = &GetComponentById($objId);
-			if($obj!=null && $obj->GetShowStatus())
+			if($obj!==null && $obj->GetShowStatus())
 				AddScript('_NSetP(\''.$objId.'\',['.self::GetPropertiesString($objId, $nameValPairs).'])');
-			
 			else 
 			{
 				$splitStr = explode('i', $objId, 2);
@@ -149,7 +159,7 @@ final class NolohInternal
 	public static function SetProperty($name, $value, $obj)
 	{
         $objId = is_object($obj) ? $obj->Id : $obj;
-		if($GLOBALS['_NQueueDisabled'] != $objId)
+		if($GLOBALS['_NQueueDisabled'] !== $objId)
 		{
 			if(!isset($_SESSION['_NPropertyQueue'][$objId]))
 				$_SESSION['_NPropertyQueue'][$objId] = array();
@@ -162,7 +172,7 @@ final class NolohInternal
 		foreach($_SESSION['_NFunctionQueue'] as $objId => $nameParam)
 		{
 			$obj = &GetComponentById($objId);
-			if($obj != null)
+			if($obj !== null)
 			//{
 				if($obj->GetShowStatus())
 				{

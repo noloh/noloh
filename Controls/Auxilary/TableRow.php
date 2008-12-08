@@ -23,9 +23,7 @@ class TableRow extends Control
 	 */
 	function Show()
 	{
-		$intialProperties = parent::Show();
-		//$intialProperties .= ",'style.border','0px'";
-		NolohInternal::Show("TR", $intialProperties, $this, $this->ParentId."InnerTBody");
+		NolohInternal::Show('TR', parent::Show(), $this, $this->ParentId.'InnerTBody');
 	}
 	/**
 	 * @ignore

@@ -17,7 +17,7 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
 	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 	var graveyard = document.createElement("DIV");
-	graveyard.id = "Graveyard";
+	graveyard.id = "NGraveyard";
 	graveyard.style.display = "none";
 	document.body.appendChild(graveyard);
 	if(location.hash=="")
@@ -26,7 +26,7 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	_N.URL = location.href;
 	try
 	{
-		var d=_N('NBackButton').contentWindow.document;
+		var d=_N("NBackButton").contentWindow.document;
 	}
 	catch(e)
 	{
@@ -38,12 +38,12 @@ function _NInit(loadLblId, loadImgId, debugMode)
 		d.open();
 		d.write(location.href);
 		d.close();
-		_N.URLChecker = setInterval('_NCheckURL()', 500);
+		_N.URLChecker = setInterval("_NCheckURL()", 500);
 	}
 }
 function _NCheckURL()
 {
-	var inner = _N('NBackButton').contentWindow.document.body.innerText;
+	var inner = _N("NBackButton").contentWindow.document.body.innerText;
 	if((_N.Hash != location.hash && _N.Hash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_N.URL != inner))
 	{
 		clearInterval(_N.URLChecker);
@@ -57,19 +57,19 @@ function _NCheckURL()
 		else
 		{
 			var targetURL = location.href;
-			var d=_N('NBackButton').contentWindow.document;
+			var d=_N("NBackButton").contentWindow.document;
 			d.open();
 			d.write(location.href);
 			d.close();
 			_N.HistoryLength = history.length;
 		}
-		_N.Request.open("POST", (targetURL.indexOf('#/')==-1 ? targetURL.replace(_N.Hash,'')+(targetURL.indexOf('?')==-1?'?':'&') : targetURL.replace('#/',targetURL.indexOf('?')==-1?'?':'&')+'&')
-           	+ '_NVisit=0&_NApp' + _NApp + '&_NWidth=' + document.documentElement.clientWidth + '&_NHeight=' + document.documentElement.clientHeight, true);
+		_N.Request.open("POST", (targetURL.indexOf("#/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#/",targetURL.indexOf("?")==-1?"?":"&")+"&")
+           	+ "_NVisit=0&_NApp" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight, true);
 		location = targetURL;
 		_N.Hash = location.hash;
 		_N.URL = location.href;
-		_N.Request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		_N.Request.setRequestHeader('Remote-Scripting', 'NOLOH');
+		_N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		_N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 		_N.Request.send(str);
 		_N("N1").innerHTML = "";
 	}
@@ -77,10 +77,10 @@ function _NCheckURL()
 function _NSetURL(hash, id)
 {
 	_N.URLTokenLink = id;
-	location = document.URL.split('#',1)[0] + "#/" + hash;
+	location = document.URL.split("#",1)[0] + "#/" + hash;
 	_N.Hash = location.hash;
 	_N.URL=location.href;
-	var d=_N('NBackButton').contentWindow.document;
+	var d=_N("NBackButton").contentWindow.document;
 	d.open();
 	d.write(location.href);
 	d.close();
@@ -93,25 +93,11 @@ function _NSetTitle(title)
 {
 	document.title = _N.Title = title;
 }
-function _NSaveControl(id)
-{
-	var obj = _N(id);
-	_N.Saved[id] = obj.cloneNode(false);
-	_N.Saved[id].selectedIndex = obj.selectedIndex;
-
-}
 function _NSetProperty(id, property, value)
 {
 	_NChange(id, property, value);
 	_NSave(id, property, value);
 	return value;
-}
-function _NChangeInit(id, property)
-{
-	if(!_N.Changes[id])
-		_N.Changes[id] = [];
-	if(!_N.Changes[id][property])
-		_N.Changes[id][property] = [];
 }
 function _NChange(id, property, value)
 {
@@ -119,161 +105,155 @@ function _NChange(id, property, value)
 }
 function _NChangeByObj(obj, property, value)
 {
-	if(!obj)
-		return;
-	switch(property)
-	{
-		case "KeyPress":
-		case "ReturnKey":
-		case "TypePause":
-			obj.onkeypress = _NKeyEvntsPress;
-			obj.onkeyup = _NKeyEvntsUp;
-		case "onblur":
-		case "onchange":
-		case "onclick":
-		case "ondblclick":
-		case "onfocus":
-		case "onelapsed":
-		case "oninput":
-		case "onmouseout":
-		case "onmouseover":
-		case "onmouseup":
-		case "onload":
-		case "onpaste":
-		case "onscroll":
-		case "onunload":
-			eval("obj." + property + " = function(event) {" + value + ";}");
-			break;
-		case "oncontextmenu":
-			eval("obj.oncontextmenu = function(event) {" + value + "; if(obj.ContextMenu) _NCMShow(obj); return false;}");
-			break;
-		case "onmousedown":
-			eval("obj.onmousedown = function(event) {" + value + "; if(obj.Shifts && obj.Shifts.length!=0) _NShftSta(obj.Shifts);}");
-			break;
-		case "DragCatch":
-			if(value == "")
-			{
-				for(var i=0; i<_N.Catchers.length; ++i)
-					if(_N.Catchers[i] == obj.id)
-					{
-						_N.Catchers.splice(i, 1);
-						break;
-					}
-			}
-			else
-				_N.Catchers.push(obj.id);
-			eval("obj.DragCatch = function(event) {" + value + ";}");
-			break;
-		case "href":
-			obj.href = value=="#" ? "javascript:void(0);" : value;
-			break;
-		case "Shifts":
-			if(!obj.onmousedown)
-				_NChangeByObj(obj, "onmousedown", "");
-		case "ChildrenArray":
-			eval("obj." + property + " = " + value + ";");
-			break;
-		case "Group":
-			if(obj.Group = _N(value))
-				obj.Group.Elements.push(obj.id);
-			break;
-		case "Selected":
-			if(obj.Selected==true != value)
-			{
-				if(obj.Group)
-					obj.Group.PrevSelectedElement = obj.Group.GetSelectedElement();
-				_NSave(obj.id,'Selected',obj.Selected=value);
-				if(!_N.Request)
+	if(obj)
+		switch(property)
+		{
+			case "KeyPress":
+			case "ReturnKey":
+			case "TypePause":
+				obj.onkeypress = _NKeyEvntsPress;
+				obj.onkeyup = _NKeyEvntsUp;
+			case "onblur":
+			case "onchange":
+			case "onclick":
+			case "ondblclick":
+			case "onfocus":
+			case "onelapsed":
+			case "oninput":
+			case "onmouseout":
+			case "onmouseover":
+			case "onmouseup":
+			case "onload":
+			case "onpaste":
+			case "onscroll":
+			case "onunload":
+				eval("obj." + property + " = function(event) {" + value + ";}");
+				break;
+			case "oncontextmenu":
+				eval("obj.oncontextmenu = function(event) {" + value + "; if(obj.ContextMenu) _NCMShow(obj); return false;}");
+				break;
+			case "onmousedown":
+				eval("obj.onmousedown = function(event) {" + value + "; if(obj.Shifts && obj.Shifts.length!=0) _NShftSta(obj.Shifts);}");
+				break;
+			case "DragCatch":
+				if(value != "")
+					_N.Catchers.push(obj.id);
+				else
+					for(var i=0; i<_N.Catchers.length; ++i)
+						if(_N.Catchers[i] == obj.id)
+						{
+							_N.Catchers.splice(i, 1);
+							break;
+						}
+				eval("obj.DragCatch = function(event) {" + value + ";}");
+				break;
+			case "href":
+				obj.href = value=="#" ? "javascript:void(0);" : value;
+				break;
+			case "Shifts":
+				if(!obj.onmousedown)
+					_NChangeByObj(obj, "onmousedown", "");
+			case "ChildrenArray":
+				eval("obj." + property + " = " + value + ";");
+				break;
+			case "Group":
+				if(obj.Group = _N(value))
+					obj.Group.Elements.push(obj.id);
+				break;
+			case "Selected":
+				if(obj.Selected==true != value)
 				{
-					if(value)
+					if(obj.Group)
+						obj.Group.PrevSelectedElement = obj.Group.GetSelectedElement();
+					_NSave(obj.id,"Selected",obj.Selected=value);
+					if(!_N.Request)
 					{
-						if(obj.Select)
-							obj.Select();
+						if(value)
+						{
+							if(obj.Select)
+								obj.Select();
+						}
+						else
+							if(obj.Deselect)
+								obj.Deselect();
+						if(obj.Group && obj.Group.onchange)
+							obj.Group.onchange();
 					}
-					else
-						if(obj.Deselect)
-							obj.Deselect();
-					if(obj.Group && obj.Group.onchange)
-						obj.Group.onchange();
 				}
-			}
-			break;
-		case "style.zIndex":
-			if(value > _N.HighestZ)
-				_N.HighestZ = value;
-			if(value < _N.LowestZ)
-				_N.LowestZ = value;
-			obj.style.zIndex = obj.BuoyantParentId == null ? value : value + 9999;
-			break;
-		case "style.left":
-			if(!obj.BuoyantParentId)
-			{
-				obj.style.left = value;
-				if(obj.BuoyantChildren)
-					for(var i=0; i<obj.BuoyantChildren.length; ++i)
-						_NByntMv(obj.BuoyantChildren[i]);
-			}
-			else
-			{
-				obj.BuoyantLeft = parseInt(value);
-				_NByntMv(obj.id);
-			}
-			break;
-		case "style.top":
-			if(!obj.BuoyantParentId)
-			{
-				obj.style.top = value;
-				if(obj.BuoyantChildren)
-					for(var i=0; i<obj.BuoyantChildren.length; ++i)
-						_NByntMv(obj.BuoyantChildren[i]);
-			}
-			else
-			{
-				obj.BuoyantTop = parseInt(value);
-				_NByntMv(obj.id);
-			}
-			break;
-		case "ContextMenu":
-			if(!obj.oncontextmenu)
-				_NChangeByObj(obj, "oncontextmenu", "");
-		default:
-			eval("obj." + property + " = value;");
-	}
+				break;
+			case "style.zIndex":
+				if(value > _N.HighestZ)
+					_N.HighestZ = value;
+				if(value < _N.LowestZ)
+					_N.LowestZ = value;
+				obj.style.zIndex = obj.BuoyantParentId == null ? value : value + 9999;
+				break;
+			case "style.left":
+				if(!obj.BuoyantParentId)
+				{
+					obj.style.left = value;
+					if(obj.BuoyantChildren)
+						for(var i=0; i<obj.BuoyantChildren.length; ++i)
+							_NByntMv(obj.BuoyantChildren[i]);
+				}
+				else
+				{
+					obj.BuoyantLeft = parseInt(value);
+					_NByntMv(obj.id);
+				}
+				break;
+			case "style.top":
+				if(!obj.BuoyantParentId)
+				{
+					obj.style.top = value;
+					if(obj.BuoyantChildren)
+						for(var i=0; i<obj.BuoyantChildren.length; ++i)
+							_NByntMv(obj.BuoyantChildren[i]);
+				}
+				else
+				{
+					obj.BuoyantTop = parseInt(value);
+					_NByntMv(obj.id);
+				}
+				break;
+			case "ContextMenu":
+				if(!obj.oncontextmenu)
+					_NChangeByObj(obj, "oncontextmenu", "");
+			default:
+				eval("obj." + property + " = value;");
+		}
+	return value;
 }
 function _NSave(id, property, value)
 {
 	if(id.indexOf("_") >= 0)
 		return;
-	_NChangeInit(id, property);
 	var obj = _N(id);
 	if(typeof value == "undefined")
 		eval("value = obj."+property+";");
+	if(!_N.Changes[id])
+		_N.Changes[id] = [];
 	switch(property)
 	{
 		case "value":
-			_NChangeInit(id, "value");
-			_N.Changes[id][property][0] = (typeof value == "string" ? value.replace(/&/g, "~da~").replace(/\+/g, "~dp~") : value);
+			_N.Changes[id][property] = typeof value == "string" ? value.replace(/&/g, "~da~").replace(/\+/g, "~dp~") : value;
 			break;
 		case "style.left":
 		case "style.top":
 		case "style.width":
 		case "style.height":
-			_NChangeInit(id, property);
-			_N.Changes[id][property][0] = parseInt(value);
+			_N.Changes[id][property] = parseInt(value);
 			break;
 		case "style.visibility":
 		case "style.display":
-			_NChangeInit(id, "Visible");
 			var obj = _N(id);
-			_N.Changes[id]["Visible"][0] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
+			_N.Changes[id]["Visible"] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
 			break;
 		case "style.filter":
-			_NChangeInit(id, "Opacity");
-			_N.Changes[id]["Opacity"][0] = parseInt(value.substring(14));
+			_N.Changes[id]["Opacity"] = parseInt(value.substring(14));
 			break;
 		default:
-			_NChangeInit(id, property);
-			_N.Changes[id][property][0] = typeof value == "boolean" ? (value ? 1 : 0) : value;
+			_N.Changes[id][property] = typeof value == "boolean" ? (value ? 1 : 0) : value;
 	}
 }
 function _NBodyScrollState()
@@ -308,19 +288,17 @@ function _NBodySizeState()
 }
 function _NSetP(id, nameValuePairs)
 {
-	var i = 0, obj = _N(id);
-	while(i<nameValuePairs.length)
-	{
-		_NChangeByObj(obj, nameValuePairs[i], nameValuePairs[i+1]);
-		_N.Saved[id][nameValuePairs[i++]] = nameValuePairs[i++];
-	}
+	var i = -1, obj = _N(id), count = nameValuePairs.length;
+	while(++i<count)
+		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(obj, nameValuePairs[i], nameValuePairs[++i]);
 }
-function _NAdd(addTo, tag, nameValuePairs, beforeId)
+function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 {
-	var ele = document.createElement(tag), i=0;
+	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1;
 	ele.style.position = "absolute";
-	while(i<nameValuePairs.length)
-		_NChangeByObj(ele, nameValuePairs[i++], nameValuePairs[i++]);
+	_N.Saved[ele.id = id] = [];
+	while(++i<count)
+		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(ele, nameValuePairs[i], nameValuePairs[++i]);
 	addTo = _N(addTo);
 	if(typeof beforeId == "undefined")
 		addTo.appendChild(ele);
@@ -332,7 +310,6 @@ function _NAdd(addTo, tag, nameValuePairs, beforeId)
 		else
 			addTo.appendChild(ele);
 	}
-	_NSaveControl(ele.id);
 }
 function _NAdopt(id, parentId)
 {
@@ -344,7 +321,7 @@ function _NRem(id)
 {
 	var ele = _N(id);
 	ele.parentNode.removeChild(ele);
-	_N("Graveyard").appendChild(ele);
+	_N("NGraveyard").appendChild(ele);
     if(ele.BuoyantChildren)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRem(ele.BuoyantChildren[i]);
@@ -355,7 +332,7 @@ function _NRem(id)
 function _NRes(id, parentId)
 {
 	var ele = _N(id);
-	_N("Graveyard").removeChild(ele);
+	_N("NGraveyard").removeChild(ele);
 	_N(parentId).appendChild(ele);
     if(ele.BuoyantChildren)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
@@ -400,10 +377,10 @@ function _NChangeString()
 	{
 		change = id;
 		for(property in _N.Changes[id])
-			if(_N.Changes[id][property][0] != _N.Saved[id][property])
+			if(_N.Changes[id][property] != _N.Saved[id][property])
 			{
-				change += "~d1~" + property.replace("style.", "") + "~d1~" + _N.Changes[id][property][0];
-				_N.Saved[id][property] = _N.Changes[id][property][0];
+				change += "~d1~" + property.replace("style.", "") + "~d1~" + _N.Changes[id][property];
+				_N.Saved[id][property] = _N.Changes[id][property];
 			}
 		if(change != id)
 			changes += change + "~d0~";
@@ -413,13 +390,15 @@ function _NChangeString()
 }
 function _NEventVarsString()
 {
-	var key, str = "";
+	var key, str = "", selText;
 	if(window.event)
 		str += "MouseX~d0~"+(window.event.clientX+document.documentElement.scrollLeft)+
 			"~d0~MouseY~d0~"+(window.event.clientY+document.documentElement.scrollTop)+"~d0~";
 	if(_N.EventVars.FocusedComponent)
 	{
-		str += "FocusedComponent~d0~"+_N.EventVars.FocusedComponent+"~d0~SelectedText~d0~"+document.selection.createRange().text+"~d0~";
+		str += "FocusedComponent~d0~"+_N.EventVars.FocusedComponent+"~d0~";
+		if(selText = document.selection.createRange().text)
+			str += "SelectedText~d0~"+selText+"~d0~";
 		delete _N.EventVars.FocusedComponent;
 	}
 	for(key in _N.EventVars)
@@ -434,7 +413,7 @@ function _NProcessResponse(response)
 		var s = document.createElement("SCRIPT");
 		s.type = "text/javascript";
 		s.text = response[0];
-		document.getElementsByTagName('head')[0].appendChild(s);
+		document.getElementsByTagName("head")[0].appendChild(s);
 	}
 	if(_N.DebugMode == "Full")
 	{
@@ -458,7 +437,7 @@ function _NUnServer()
 	_N(_N.LoadImg).style.visibility = "hidden";
 	_N(_N.LoadLbl).style.visibility = "hidden";
 	_N.Request = null;
-	_N.URLChecker = setInterval('_NCheckURL()', 500);
+	_N.URLChecker = setInterval("_NCheckURL()", 500);
 }
 function _NReqStateChange()
 {
@@ -504,8 +483,8 @@ function _NServer(eventType, id)
         if(eventType != "Unload")
 	        _N.Request.onreadystatechange = _NReqStateChange;
 	    _N.Request.open("POST", document.URL.split("#", 1)[0], true);
-	    _N.Request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	    _N.Request.setRequestHeader('Remote-Scripting', 'NOLOH');
+	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 	    _N.Request.send(str);
 	}
 }

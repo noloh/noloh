@@ -47,11 +47,11 @@ class TableColumn extends Panel
 	function Show()
 	{
 		$initialProperties = Control::Show();
-		NolohInternal::Show("TD", $initialProperties, $this);
+		NolohInternal::Show('TD', $initialProperties, $this);
 //		$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
 		//$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
-		$initialProperties = "'id','{$this->Id}IC','style.position','relative','style.overflow','hidden','style.width','100%'";
-		NolohInternal::Show("DIV", $initialProperties, $this, $this->Id);
+		$initialProperties = "'style.position','relative','style.overflow','hidden','style.width','100%'";
+		NolohInternal::Show('DIV', $initialProperties, $this, $this->Id, $this->Id.'IC');
 	}
 }
 

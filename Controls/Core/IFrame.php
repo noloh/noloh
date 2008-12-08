@@ -123,8 +123,7 @@ class IFrame extends Control
 	*/
 	function Show()
 	{
-		$initialProperties = parent::Show();
-		$initialProperties .= ',\'frameBorder\',\'no\'';
+		$initialProperties = parent::Show() . '\'frameBorder\',\'no\'';
 		if(UserAgent::IsIE())
 			NolohInternal::Show('<IFRAME name="'.$this->Id.'">', $initialProperties, $this);
 		else
