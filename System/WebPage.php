@@ -55,12 +55,13 @@ abstract class WebPage extends Component
 	 * @param string $title The WebPage's title, i.e., the text appearing in the browser's title bar across the top
 	 * @param string $keywords Keywords can be used by search engines to help better archive your application, but are not necessary to take advantage of NOLOH's built-in SearchEngineFriendly capabilities.
 	 * @param string $description Description can be used by search engines to help better archive your application, but are not necessary to take advantage of NOLOH's built-in SearchEngineFriendly capabilities.
+	 * @param string $favIconPath A Path to an image to be used as the browser favicon
 	 * @return WebPage
 	 */
-	function WebPage($title = 'Unititled Document', $keywords = '', $description = '')
+	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null)
 	{
 		if($_SESSION['_NVisit'] === -1)
-			throw new Exception($title, $GLOBALS['_NApp']);
+			throw new Exception($title . '~d0~' . $favIconPath, $GLOBALS['_NApp']);
 		parent::Component();
 		parent::Show();
 		$_SESSION['_NStartUpPageId'] = $this->Id;
@@ -95,13 +96,14 @@ abstract class WebPage extends Component
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
 			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\',' . ($GLOBALS['_NDebugMode']==='Full'?'"Full"':($GLOBALS['_NDebugMode']?'true':'false')) . ')', Priority::High);
 		//AddScript('_NSaveControl(\''.$this->Id.'\')');
+		$GLOBALS['_NFavIcon'] = $favIconPath;
 	}
 	/**
 	 * @ignore
 	 */
 	function AddCSSFile($path)
 	{
-		$initialProperties = '\'id\',\''.hash('md5',$path).'\',\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
+		$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
 		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
 		$this->CSSFiles->Add($path, true, true);
 	}
@@ -126,14 +128,6 @@ abstract class WebPage extends Component
 		foreach($this->CSSFiles as $index => $path)
 			$this->RemoveCSSFileAt($index);
 		$this->CSSFiles->Clear(true);
-	}
-	 /** @ignore
-	 */
-	function SetFavIcon()
-	{
-	}
-	function GetFavIcon()
-	{
 	}
 	/**
 	 * Returns the WebPage's title, i.e., the text appearing in the browser's title bar across the top
@@ -294,7 +288,7 @@ abstract class WebPage extends Component
 	/**
 	 * @ignore
 	 */
-	static function SkeletalShow($title, $unsupportedURL)
+	static function SkeletalShow($title, $unsupportedURL, $favIcon)
 	{
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
@@ -315,7 +309,8 @@ abstract class WebPage extends Component
 				//'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
 				'' : 
 				(';url='.$unsupportedURL.''),
-  '"></NOSCRIPT>
+  '"></NOSCRIPT>', $favIcon?'
+    <LINK rel="shortcut icon" href="'.$favIcon.'"></LINK>':'','
   </HEAD>',
 UserAgent::IsIE() ? '
   <BODY>
@@ -336,11 +331,10 @@ UserAgent::IsIE6() ? '
   {
   	if(req.readyState == 4)
   	{
-	    var head = document.getElementById("NHead");
 	    var script = document.createElement("SCRIPT");
 	    script.type = "text/javascript";
 	    script.text = req.responseText;
-	    head.appendChild(script);
+	    document.getElementById("NHead").appendChild(script);
   	}
   }
   
@@ -349,11 +343,10 @@ UserAgent::IsIE6() ? '
   req.open("POST", ' . $url . ', true);
   req.send("");'
 : '
-  var head = document.getElementById("NHead");
   var script = document.createElement("SCRIPT");
   script.type = "text/javascript";
   script.src = ' . $url . ';
-  head.appendChild(script);', '
+  document.getElementById("NHead").appendChild(script);', '
 </SCRIPT>';
 	}
 	/**
@@ -389,6 +382,9 @@ UserAgent::IsIE6() ? '
 	foreach($this->CSSFiles as $path)
 		echo '
     <LINK rel="stylesheet" type="text/css" href="', $path, '"></LINK>';
+	if($GLOBALS['_NFavIcon'])
+		echo '
+	<LINK rel="shortcut icon" href="' . $GLOBALS['_NFavIcon'] . '"></LINK>';
 	echo '
   </HEAD>
   <BODY lang="en"';
