@@ -53,9 +53,9 @@ final class NolohInternal
 		$setProperties = self::GetPropertiesString($objId);
 		if($initialProperties)
 			if($setProperties)
-				$properties = $initialProperties . ',' . $propertiesString;
+				$properties = ltrim($initialProperties, ',') . ',' . $setProperties;
 			else 
-				$properties = $initialProperties;
+				$properties = ltrim($initialProperties, ',');
 		elseif($setProperties)
 			$properties = $setProperties;
 		else 
