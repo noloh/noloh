@@ -12,6 +12,7 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	_N.LoadLbl = loadLblId;
 	_N.LoadImg = loadImgId;
 	_N.DebugMode = debugMode;
+	_N.Saved[document.body.id] = [];
 	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);
 	_NSetProperty(document.body.id, "Height", document.documentElement.clientHeight);
 	var graveyard = document.createElement("DIV");
