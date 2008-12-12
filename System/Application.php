@@ -243,7 +243,10 @@ final class Application extends Object
 				catch(Exception $e)
 				{
 					if($e->getCode() === $GLOBALS['_NApp'])
-						WebPage::SkeletalShow($e->getMessage(), $unsupportedURL);
+					{
+						$info = explode('~d0~', $e->getMessage());
+						WebPage::SkeletalShow($info[0], $unsupportedURL, $info[1]);
+					}
 					else 
 						BloodyMurder('An exception has been thrown from the constructor of your WebPage or a function called by it, and not caught. ' . $e->getMessage());
 				}

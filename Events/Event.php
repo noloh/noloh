@@ -120,6 +120,9 @@ class Event extends Object implements ArrayAccess
 	function Event($eventArray=array(), $handles=array())
 	{
 		$this->ExecuteFunction = $eventArray;
+		if(is_array($eventArray))
+			foreach($eventArray as $index => $event)
+				$event->Handles[] = array($this, $index);
 		$this->Handles = $handles;
 	}
 	/**
@@ -266,10 +269,17 @@ class Event extends Object implements ArrayAccess
 	function offsetSet($index, $val)
 	{
 		if(get_class($this) === 'Event')
-			if($index !== null)
+			if($index !== null) 
 			{
+				// I'm multiple Events and you add to a specific index
+				if(isset($this->ExecuteFunction[$index]))
+				{
+					$whatWasThereHandled = &$this->ExecuteFunction[$index]->Handles;
+					if(($handleIndex = array_search(array(), $whatWasThereHandled)) !== false);
+						array_splice($whatWasThereHandled, $handleIndex, 1);
+				}
 				$this->ExecuteFunction[$index] = $val;
-				$val->Handles[] = array($this);
+				$val->Handles[] = array($this, $index);
 				if(count($this->ExecuteFunction) === 1)
 					foreach($this->Handles as $pair)
 						if(is_string($pair[0]))
@@ -282,7 +292,9 @@ class Event extends Object implements ArrayAccess
 					$this->UpdateClient();
 			}
 			else 
+				// I'm multiple Events and you append to next index
 				if(count($this->ExecuteFunction) === 0)
+					// I was empty (created by GetEvent) and need to become the value
 					foreach($this->Handles as $pair)
 						if(is_string($pair[0]))
 							GetComponentById($pair[0])->SetEvent($val, $pair[1]);
@@ -292,27 +304,23 @@ class Event extends Object implements ArrayAccess
 							GetComponentById($pair[0][0])->SetEvent($val, $pair[1], $pair[0][1]);
 				else 
 				{
+					// I was non-empty and need to just append
 					$this->ExecuteFunction[] = $val;
 					$val->Handles[] = array($this);
 					$this->UpdateClient();
 				}
 		else
 		{
-			if($index === null)
-				$event = new Event(array($this, $val), $this->Handles);
-			else 
-				$event = new Event(array($this, $index => $val), $this->Handles);
+			// I'm a ClientEvent or ServerEvent and should become a multiple Event
+			$event = new Event($index === null ? array($this, $val) : array($this, $index => $val), $this->Handles);
 			$this->Handles = array(array($event, 0));
 			foreach($event->Handles as $pair)
-			{
-				//System::Log($pair);
 				if(is_string($pair[0]))
 					GetComponentById($pair[0])->SetEvent($event, $pair[1]);
 				elseif(is_object($pair[0]))
 					$pair[0][$pair[1]] = $event;
 				else 
 					GetComponentById($pair[0][0])->SetEvent($event, $pair[1], $pair[0][1]);
-			}
 		}
 	}
 	/**

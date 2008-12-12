@@ -197,12 +197,18 @@ abstract class Component extends Object
 	 */
 	function SetEvent($eventObj, $eventType)
 	{
+		$handle = array($this->Id, $eventType);
 		if($this->EventSpace === null)
 			$this->EventSpace = array();
+		elseif($this->EventSpace[$eventType])
+		{
+			$handles = &$this->EventSpace[$eventType]->Handles;
+			if(($index = array_search($handle, $handles)) !== false);
+				array_splice($handles, $index, 1);
+		}
 		$this->EventSpace[$eventType] = $eventObj;
-		$pair = array($this->Id, $eventType);
-		if($eventObj != null && !in_array($pair, $eventObj->Handles, true))
-			$eventObj->Handles[] = $pair;
+		if($eventObj != null && !in_array($handle, $eventObj->Handles, true))
+			$eventObj->Handles[] = $handle;
 		$this->UpdateEvent($eventType);
 		return $eventObj;
 	}
