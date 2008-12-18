@@ -11,6 +11,8 @@ final class NolohInternal
         while (list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
 			self::ShowControl(GetComponentById($objId), $bool);
 			//self::ShowControl($control=&GetComponentById($objId), GetComponentById($control->GetParentId()), $bool);
+		if(isset($GLOBALS['_NAddedSomething']))
+			AddScript('_NQ()', Priority::High);
 	}
 
 	public static function ShowControl($control/*, $parent*/, $bool)
@@ -82,6 +84,7 @@ final class NolohInternal
 		}
 		else
 			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'])', Priority::High);
+		$GLOBALS['_NAddedSomething'] = true;
 	}
 	
 	public static function Bury($obj)

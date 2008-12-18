@@ -1,6 +1,8 @@
 _N.Saved = [];
 _N.Changes = [];
 _N.EventVars = [];
+_N.Incubator = [];
+_N.IncubatorRoots = [];
 _N.Visit = -1;
 _N.HighestZ = 0;
 _N.LowestZ = 0;
@@ -234,13 +236,19 @@ function _NSetP(id, nameValuePairs)
 	while(++i<count)
 		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(obj, nameValuePairs[i], nameValuePairs[++i]);
 }
-function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
+function _NQ()
 {
-	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1;
-	ele.style.position = "absolute";
-	_N.Saved[ele.id = id] = [];
-	while(++i<count)
-		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(ele, nameValuePairs[i], nameValuePairs[++i]);
+	var id, info;
+	for(id in _N.IncubatorRoots)
+	{
+		info = _N.IncubatorRoots[id];
+		_NAddAct(_N.Incubator[id], info[0], info[1]);
+	}
+	_N.Incubator = [];
+	_N.IncubatorRoots = [];
+}
+function _NAddAct(ele, addTo, beforeId)
+{
 	addTo = _N(addTo);
 	if(typeof beforeId == "undefined")
 		addTo.appendChild(ele);
@@ -252,6 +260,19 @@ function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 		else
 			addTo.appendChild(ele);
 	}
+}
+function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
+{
+	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1;
+	ele.style.position = "absolute";
+	_N.Saved[ele.id = id] = [];
+	while(++i<count)
+		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(ele, nameValuePairs[i], nameValuePairs[++i]);
+	_N.Incubator[id] = ele;
+	if(_N.Incubator[addTo] || addTo == "NHead")
+		_NAddAct(ele, addTo, beforeId);
+	else
+		_N.IncubatorRoots[id] = [addTo, beforeId];
 }
 function _NAdopt(id, parentId)
 {

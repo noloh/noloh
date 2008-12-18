@@ -3,9 +3,10 @@
 function _N(id)
 {
 	var obj;
-	if(obj = document.getElementById(id))
-		return obj;
-	return _N[id];
+	if(obj = document.getElementById(id));
+	else if(obj = _N.Incubator[id]);
+	else obj = _N[id];
+	return obj;
 }
 function BringToFront(id)
 {
