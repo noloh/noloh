@@ -1144,6 +1144,8 @@ abstract class Control extends Component
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
 		{
+			if($nm === 'CSSFloat')
+				$nm = UserAgent::IsIE() ? 'styleFloat' : 'cssFloat';
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
 			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
@@ -1163,16 +1165,18 @@ abstract class Control extends Component
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass')
 		{
+			if($nm === 'CSSFloat')
+				$nm = UserAgent::IsIE() ? 'styleFloat' : 'cssFloat';
 			if($this->CSSPropertyArray == null)
 				$this->CSSPropertyArray = array();
 			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
 			$key = strtolower($key[0]) . substr($key, 1);
 			$this->CSSPropertyArray[$key] = $val;
 			NolohInternal::SetProperty('style.'.$key, $val, $this);
+			return $val;
 		}
 		else
 			return parent::__set($nm, $val);
-		return $val;
 	}
 }
 
