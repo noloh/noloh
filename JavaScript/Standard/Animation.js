@@ -13,7 +13,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	this.Obj = id == "N1" ? document.documentElement : _N(id);
 	if(isNaN(to))
 	{
-		this.Destination = 0;
+		this.Destination = prpty=="style.left"?-this.Obj.offsetWidth: prpty=="style.top"?-this.Obj.offsetHeight: 0;
 		if(to == "Oblivion")
 			this.Oblivion = true;
 		else if(to == "Hiding")
@@ -83,17 +83,16 @@ _NAni.prototype.FinishingTouches = function()
 		_NBodyScrollState();
 	else if(this.Property == "opacity" && this.Destination == 100)
 		this.Obj.style.opacity = '';
-	else if(this.Destination == 0)
-		if(this.Oblivion)
-		{
-			_NRem(this.ObjId);
-			_NSetProperty(this.ObjId, '_NOblivion', 1);
-		}
-		else if(this.Hiding)
-		{
-			this.Obj._NHiding = true;
-			_NSetProperty(this.ObjId, 'style.display', 'none');
-		}
+	else if(this.Oblivion)
+	{
+		_NRem(this.ObjId);
+		_NSetProperty(this.ObjId, '_NOblivion', 1);
+	}
+	else if(this.Hiding)
+	{
+		this.Obj._NHiding = true;
+		_NSetProperty(this.ObjId, 'style.display', 'none');
+	}
 }
 _NAni.prototype.CleanUp = function()
 {
