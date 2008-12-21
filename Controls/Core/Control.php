@@ -644,11 +644,11 @@ abstract class Control extends Component
 		if($bool != $this->GetSelected())
 		{
 			//QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
-			NolohInternal::SetProperty('Selected', (int)$bool, $this);
 			if($this->GroupName !== null)
-				$group = $group = GetComponentById($this->GroupName);
+				$group = GetComponentById($this->GroupName);
 			if($bool && $group && $this instanceof Groupable)
-				GetComponentById($this->GroupName)->Deselect();
+				$group->Deselect();
+			NolohInternal::SetProperty('Selected', (int)$bool, $this);
 			$this->Selected = $bool ? true : null;
 			$event = $this->GetEvent($bool ? 'Select' : 'Deselect');
 			if(!$event->Blank())
