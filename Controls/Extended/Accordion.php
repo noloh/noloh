@@ -10,39 +10,42 @@ class Accordion extends Panel
 {
 	public $AccordionParts;
 	private $SelectedIndex;
+	private $PartGroup;
 	
 	function Accordion($left, $top, $width, $height)
 	{
 		parent::Panel($left, $top, $width, $height, $this);
+		$this->PartGroup = new Group();
+		$this->PartGroup->ParentId = $this->Id;
+		NolohInternal::SetProperty('TitleHeight', 0, $this);
 		$this->AccordionParts = &$this->Controls;
 		$this->AccordionParts->AddFunctionName = 'AddAccordionPart';
 		$this->AccordionParts->RemoveAtFunctionName = 'RemoveAccordionPartAt';
 	}
-	function SetSelectedIndex($index, $override=false)
+	function SetSelectedIndex($index)
 	{
-		if($this->GetSelectedIndex() != $index || $override)
-		{
-			$this->SelectedIndex = $index;
-			QueueClientFunction($this, '_NExpandAccordPt', array("'$this->Id'",  "'{$this->AccordionParts[$this->SelectedIndex]->Id}'"), true, Priority::Low);
-		}
+		if($this->GetSelectedIndex() != $index)
+			$this->AccordionParts[$index]->SetSelected(true);
 	}
 	function GetSelectedIndex()
 	{
-		return (($this->SelectedIndex == null)?-1:$this->SelectedIndex);
+		return $this->PartGroup->GetSelectedIndex();
 	}
 	/**
 	 * @ignore
 	 */
 	function AddAccordionPart($accordionPart)
 	{
-		$tmpCount = $this->AccordionParts->Count();
+		$count = $this->AccordionParts->Count();
 		if(is_string($accordionPart))
 			$accordionPart = new AccordionPart($accordionPart);
-		$accordionPart->TitlePanel->Click = new ClientEvent("_NExpandAccordPt('$this->Id', '$accordionPart->Id');");
+		NolohInternal::SetProperty('Accord', $this->Id, $accordionPart);
+//		$accordionPart->SetGroupName($this->PartGroup->Id);
+		$this->PartGroup->Add($accordionPart);
 		$this->AccordionParts->Add($accordionPart, true, true);
-		QueueClientFunction($this, '_NAddAccordPt', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
-		if($tmpCount == 0)
-			$this->SetSelectedIndex(0);
+		QueueClientFunction($this, '_NAccPtAdd', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
+//		if($count == 0)
+//			$this->SetSelectedIndex(0);
 	}
 	/**
 	 * @ignore
@@ -52,9 +55,9 @@ class Accordion extends Panel
 		$tmpCount = $this->AccordionParts->Count();
 		if(is_string($accordionPart))
 			$accordionPart = new AccordionPart($accordionPart);
-		$accordionPart->TitlePanel->Click = new ClientEvent("_NExpandAccordPt('$this->Id', '$accordionPart->Id');");
+//		$accordionPart->TitlePanel->Click = new ClientEvent("_NAccPtExpd('$this->Id', '$accordionPart->Id');");
 		$this->AccordionParts->Insert($accordionPart, $index);
-		QueueClientFunction($this, '_NAddAccordPt', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
+		QueueClientFunction($this, '_NAccPtAdd', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
 		if($tmpCount == 0)
 			$this->SetSelectedIndex(0);
 	}
@@ -63,7 +66,7 @@ class Accordion extends Panel
 	 */
 	function RemoveAccordionPartAt($index)
 	{
-		QueueClientFunction($this, '_NRmAccordPt', array("'$this->Id'", "$index"), false, Priority::High);
+		QueueClientFunction($this, '_NAccPtRm', array("'$this->Id'", "$index"), false, Priority::High);
 		$this->AccordionParts->RemoveAt($index, true);
 		if($this->SelectedIndex == $index)
 			$this->SetSelectedIndex(0, true);
@@ -71,9 +74,17 @@ class Accordion extends Panel
 	/**
 	 * @ignore
 	 */
+	function Skin($background=null, $titleImage=null, $arrow=null)
+	{
+		//$backColor
+	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		AddNolohScriptSrc('Accordion.js');
+		AddNolohScriptSrc('Animation.js', true);
 		parent::Show();
 	}
 }
