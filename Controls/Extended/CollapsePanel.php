@@ -6,28 +6,46 @@
  * 
  * @package Controls/Extended
  */
-class CollapsePanel extends Panel
+class CollapsePanel extends Panel implements Groupable
 {
-	private $TitlePanel;
-	private $BodyPanel;
-	private $ToggleButton;
+	protected $TitlePanel;
+	protected $BodyPanel;
+	protected $ToggleButton;
+	private $TogglesOff;
+	
 	/*TODO Trigger Events when Expanded and Collapsed. Function to expand or collapse, such as Collapse(), Expand(), Toggle()*/
 	
 	function CollapsePanel($text='', $left=0, $top=0, $width=200, $height=200, $titleHeight=28)
 	{
+		$this->BodyPanel = new Panel(0, 0, '100%', null);
 		parent::Panel($left, $top, null, null);
+		parent::SetSelected(true);
+		parent::SetScrolling(false);
+		$select = parent::GetSelect();
+		$select['User'] = new Event();
+		$select['System'] = new Event();
+		$deselect = parent::GetDeselect();
+		$deselect['User'] = new Event();
+		$deselect['System'] = new Event();
+		
+		$this->SetTogglesOff(true);
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
-		$this->BodyPanel = new Panel(0, 0, null, null);
 		$this->TitlePanel->ParentId = $this->Id;
 		$this->BodyPanel->ParentId = $this->Id; 
 		$this->Controls = &$this->BodyPanel->Controls;
+		//$this->BodyPanel->Shifts[] = Shift::With($this, Shift::Height);
 		$this->TitlePanel->Layout = $this->BodyPanel->Layout = Layout::Relative;
 		$this->SetTitleBackground();
 		$this->SetText($text);
-		$this->TitlePanel->Click['Collapse'] = new ClientEvent('_NTglClpsePanel', $this->Id, $this->TitlePanel->Id, $this->BodyPanel->Id);
 		$this->SetToggleButton();
+		$this->TitlePanel->Click['Collapse'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', _N('{$this->Id}').Tgl?_N('{$this->Id}').Selected!=true:true);");
+		$select['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id');");
+		$deselect['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id', true);");
 		$this->SetWidth($width);
 		$this->SetHeight($height);
+		$this->Shifts[] = Shift::SizeWith($this->BodyPanel);
+		NolohInternal::SetProperty('Top', $this->TitlePanel->Id, $this);
+		NolohInternal::SetProperty('Body', $this->BodyPanel->Id, $this);
 	}
 	/**
 	 * Gets the Panel object for the body part of the CollapsePanel. This is the actual Panel that the Controls of CollapsePanel are added to.
@@ -38,23 +56,31 @@ class CollapsePanel extends Panel
 	{
 		if($rolloverImage == null)
 		{
-			$imagePath = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_up.png';
-			$rolloverImage = new RolloverImage($imagePath, $imagePath, null, 6);
-			$rolloverImage->SelectedSrc = NOLOHConfig::GetNOLOHPath().'Images/Std/arrow_down.png';
+			$imagePath = System::ImagePath() . 'Std/arrow_up.png';
+			$rolloverImage = new RolloverImage($imagePath, $imagePath, 5, 6);
+			$rolloverImage->SelectedSrc = System::ImagePath() . 'Std/arrow_down.png';
 			
 		}
 		if($rolloverImage->SelectedSrc != null)
 		{
-			$rolloverImage->SetSelected(true);
-			$this->TitlePanel->Click['Collapse1'] = $rolloverImage->Click['Select'];
-			unset($rolloverImage->Click['Select']);
+			$rolloverImage->SetTogglesOff(true);
+			$rolloverImage->SetSelected($this->Selected);
+			$select = parent::GetSelect();
+			$deselect = parent::GetDeselect();
+//			$deselect['System'][] = $select['System'][] = new ClientEvent("_NSetProperty('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
+			//unset($select['System']['Button']);
+			//unset($deselect['System']['Button']);
+			$select['System']['Button'] = new ClientEvent("_NSetProperty('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
+			$deselect['System']['Button'] = new ClientEvent("_NSetProperty('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
+//			$select['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSetProperty('{$rolloverImage->Id}','Selected',  true);");
+//			$deselect['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSetProperty('{$rolloverImage->Id}','Selected',  false);");
 		}
-		$rolloverImage->SetTogglesOff(true);
+		$rolloverImage->Click->Enabled = false;
+		
 		if($this->ToggleButton != null)
 			$this->ToggleButton->ParentId = null;
 		$this->ToggleButton = &$rolloverImage;
 		$this->ToggleButton->ReflectAxis('x');
-//		$this->ToggleButton->SetSelected(true);
 		$this->ToggleButton->ParentId = $this->TitlePanel->Id;
 	}
 	function GetToggleButton()
@@ -98,47 +124,50 @@ class CollapsePanel extends Panel
 			}
 		}
 		else
-			$tmpGlossy = new RolloverImage(NOLOHConfig::GetNOLOHPath().'Images/Std/HeadBlue.gif', NOLOHConfig::GetNOLOHPath().'Images/Std/HeadOrange.gif', 0, 0, '100%', $this->TitlePanel->GetHeight());
+			$tmpGlossy = new RolloverImage(System::ImagePath() . 'Std/HeadBlue.gif', System::ImagePath() . 'Std/HeadOrange.gif', 0, 0, '100%', $this->TitlePanel->GetHeight());
 		$this->TitlePanel->Controls['Glossy'] = $tmpGlossy;
 	}
-	/*function SetWidth($width, $toggleMargin = 5)
-	{
-		parent::SetWidth($width);
-		$this->ToggleButton->SetLeft($toggleMargin);
-	}*/
 	function SetCollapsed($bool)
 	{
-		$this->ToggleButton->SetSelected(false);
-//		Alert($this->ToggleButton->Selected);
-//		$this->TitlePanel->Click->Exec();
-		QueueClientFunction($this, '_NTglClpsePanel', array('\''.$this->Id.'\'', '\''.$this->TitlePanel->Id.'\'', '\''.$this->BodyPanel->Id.'\'', $bool?'true':'false'));
+		//System::Log('SetCollapsed');
+		$this->ToggleButton->SetSelected(!$bool);
+		if(!$this->GetShowStatus())
+			NolohInternal::SetProperty('Animates', 1, $this);
+		$this->SetSelected(!$bool);
+		//QueueClientFunction($this, '_NClpsPnlTgl', array('\''.$this->Id.'\'', $bool?'true':'false'), true, Priority::Low);
 	}
 	/**
 	 * @ignore
 	 */
-	function SetHeight($newHeight)
+	function SetHeight($height)
 	{
-		parent::SetHeight($newHeight);
-		NolohInternal::SetProperty('Hgt', $this->GetHeight(), $this);
+		parent::SetHeight($height);
+		//if($height > $this->TitlePanel->GetHeight() /*&& $height != null*/)
+			QueueClientFunction($this, '_NClpsPnlInHgt', array('\''.$this->Id.'\''/*, true, Priority::Low*/));
+		//NolohInternal::SetProperty('Hgt', $height, $this);
 	}
- 	/** Returns the Expand Event, which gets launched when the CollapsePanel expands open
-     * @return Event
-     */
-	function GetExpand()							{return $this->GetEvent('Expand');}
-	/**
-	 * Sets the Expand Event, which gets launched when a the CollapsePanel expands open
-	 * @param Event $scroll
-	 */
-	function SetExpand($expand)						{$this->SetEvent($expand, 'Expand');}
- 	/** Returns the Collapse Event, which gets launched when the CollapsePanel collapses close
-     * @return Event
-     */
-	function GetCollapse()							{return $this->GetEvent('Collapse');}
-	/**
-	 * Sets the Collapse Event, which gets launched when a the CollapsePanel collapses close
-	 * @param Event $scroll
-	 */
-	function SetCollapse($collapse)						{$this->SetEvent($collapse, 'Collapse');}
+	function GetSelect()
+	{
+		$select = parent::GetSelect();
+		return $select['User'];
+	}
+	function SetSelect($event)
+	{
+		$select = parent::GetSelect();
+		$select['User'] = $event;
+	}
+	function GetDeselect()
+	{
+		$deselect = parent::GetDeselect();
+		return $deselect['User'];
+	}
+	function SetDeselect($event)
+	{
+		$deselect = parent::GetDeselect();
+		$deselect['User'] = $event;
+	}
+	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
+	function GetTogglesOff()			{return ($this->TogglesOff==true);}	
 	function GetTitleBackground()
 	{
 		if(isset($this->TitlePanel->Controls['Glossy']))
@@ -151,9 +180,17 @@ class CollapsePanel extends Panel
 	/**
 	 * @ignore
 	 */
+	function SetScrolling($scrollType)
+	{
+		$this->BodyPanel->SetScrolling($scrollType);
+	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
         parent::Show();
+		AddNolohScriptSrc('Animation.js', true);
 		AddNolohScriptSrc('CollapsePanel.js');
 	}
 }
