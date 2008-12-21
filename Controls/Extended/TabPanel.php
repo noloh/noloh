@@ -42,27 +42,6 @@ class TabPanel extends Panel
 		$this->Controls->Add($this->Body);
 		$this->TabBar->Controls->Add($this->Tabs);
 	}
-	/*public function SetWidth($newWidth)
-	{
-		parent::SetWidth($newWidth);
-		$this->TabPanelBar->SetWidth($newWidth);
-		$this->TabPagesPanel->SetWidth($newWidth);
-	}
-	public function SetHeight($newHeight)
-	{
-		parent::SetHeight($newHeight);
-		$this->TabPagesPanel->SetHeight($newHeight - $this->TabPanelBar->GetHeight());
-	}*/
-	/*function GetEventString($eventTypeAsString)
-	{
-		if($eventTypeAsString === null)
-			return ',\'onchange\',\''.$this->GetEventString('Change').'\'';
-		
-		$preStr = '';
-		if($eventTypeAsString == 'Change')
-			$preStr = '_NTbPgSt("'.$this->Id.'","' . $this->Tabs->Id . '");';
-		return $preStr . parent::GetEventString($eventTypeAsString);
-	}*/
 	/**
 	 * @ignore
 	 */
@@ -95,11 +74,20 @@ class TabPanel extends Panel
 			$this->TabPanelBar->Height = $temp->Height;
 			$this->TabPagesPanel->Height = ($this->Height - $this->TabPanelBar->Height);
 		}*/
-		$rolloverTab->Left = (($tmpCount = $this->Tabs->Count()) > 0)?$this->Tabs[$tmpCount - 1]->GetRight():0;
+		if(($tabHeight = $rolloverTab->GetHeight()) != $this->TabBar->GetHeight())
+		{
+			$this->TabBar->SetHeight($tabHeight);
+			$this->SetHeight($this->Height);
+		}
+		$rolloverTab->Layout = Layout::Relative;
+		$rolloverTab->CSSFloat = 'left';
+		//
+		//$rolloverTab->Left = (($tmpCount = $this->Tabs->Count()) > 0)?$this->Tabs[$tmpCount - 1]->GetRight():0;
+		$count = $this->Tabs->Count();
 		$this->Tabs->Add($rolloverTab);
 		$this->Body->Controls->Add($tabPage, true, true);
 		NolohInternal::SetProperty('TabPg', $tabPage->Id, $rolloverTab);
-		if($tmpCount == 0)
+		if($count == 0)
 			$this->SetSelectedIndex(0);
 		else
 			$tabPage->Visible = System::Vacuous;
