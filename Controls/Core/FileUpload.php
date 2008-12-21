@@ -62,7 +62,7 @@ class FileUpload extends Control
 	function Show()
 	{
 		AddNolohScriptSrc('FileUpload.js', true);
-		$initialProperties = parent::Show() . '\'marginWidth\',0,\'marginHeight\',0,\'frameBorder\',0,\'scrolling\',\'no\',\'name\',\''.$this->Id.'\',\'src\',\''.$_SERVER['PHP_SELF'].'?_NFileUpload='.$this->Id.'_NApp='.$GLOBALS['_NApp'].'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight().'\'';
+		$initialProperties = parent::Show() . '\'marginWidth\',0,\'marginHeight\',0,\'frameBorder\',0,\'scrolling\',\'no\',\'name\',\''.$this->Id.'\',\'src\',\''.$_SERVER['PHP_SELF'].'?_NFileUpload='.$this->Id.'&_NApp='.$GLOBALS['_NApp'].'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight().'\'';
 		NolohInternal::Show('IFRAME', $initialProperties, $this);
 	}
 	/**
@@ -72,7 +72,7 @@ class FileUpload extends Control
 	{
 		echo '
 			<BODY onLoad="parent._NRdyBox(\'',$id,'\');">
-				<FORM id="frm" action="',$_SERVER['PHP_SELF'],'?_NFileUpload=',$id,'_NApp=',$GLOBALS['_NApp'],'&_NWidth=',$width,'&_NHeight=',$height,'" method="post" enctype="multipart/form-data">
+				<FORM id="frm" action="',$_SERVER['PHP_SELF'],'?_NFileUpload=',$id,'&_NApp=',$GLOBALS['_NApp'],'&_NWidth=',$width,'&_NHeight=',$height,'" method="post" enctype="multipart/form-data">
 			   		<INPUT name="_NFile" type="file" style="', UserAgent::IsIE()?'position:absolute; ':'', 'width:',$width,'px; height:',$height,'px;"></INPUT>
 			  	</FORM>
 			</BODY>

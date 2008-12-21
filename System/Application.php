@@ -401,20 +401,25 @@ final class Application extends Object
 	
 	private function HandleServerEvent()
 	{
-		$splitEvent = explode('@', $_POST['_NEvents']);
-		$obj = GetComponentById($splitEvent[1]);
-		if($obj != null)
-        {
-            $execClientEvents = false;
-			$obj->{$splitEvent[0]}->Exec($execClientEvents);
-			if($splitEvent[1] === $_SESSION['_NStartUpPageId'] && $splitEvent[0] === 'Unload')
-			{
-				session_destroy();
-				exit();
-			}
-        }
-		else 
-			GetComponentById(substr($splitEvent[1], 0, strpos($splitEvent[1], 'i')))->ExecEvent($splitEvent[0], $splitEvent[1]);
+		$events = explode(',', $_POST['_NEvents']);
+		$eventCount = count($events);
+		for($i=0; $i<$eventCount; ++$i)
+		{
+			$eventInfo = explode('@', $events[$i]);
+			if($obj = GetComponentById($eventInfo[1]))
+	        {
+	            $execClientEvents = false;
+				//$obj->{$eventInfo[0]}->Exec($execClientEvents);
+				$obj->GetEvent($eventInfo[0])->Exec($execClientEvents);
+				if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
+				{
+					session_destroy();
+					exit();
+				}
+	        }
+			else 
+				GetComponentById(substr($eventInfo[1], 0, strpos($eventInfo[1], 'i')))->ExecEvent($eventInfo[0], $eventInfo[1]);
+		}
 	}
 
 	private function HandleTokens()

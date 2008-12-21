@@ -10,36 +10,23 @@ final class NolohInternal
 	{
         while (list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
 			self::ShowControl(GetComponentById($objId), $bool);
-			//self::ShowControl($control=&GetComponentById($objId), GetComponentById($control->GetParentId()), $bool);
 		if(isset($GLOBALS['_NAddedSomething']))
 			AddScript('_NQ()', Priority::High);
 	}
 
-	public static function ShowControl($control/*, $parent*/, $bool)
+	public static function ShowControl($control, $bool)
 	{
-		/*if(!$parent)
+		if($bool)
 		{
-			$parent = GetComponentById(substr($str = $control->GetParentId(), 0, strpos($str, 'i')));
-			if(!$parent)
-			{
-				$control->SecondGuessParent();
-				return;
-			}
+			if($control->GetShowStatus()===0)
+				$control->Show();
+            elseif($control->GetShowStatus()===1)
+            	$control->Adopt();
+			elseif($control->GetShowStatus()===2)
+				$control->Resurrect();
 		}
-		if($parent->GetShowStatus()!==0)
-		{*/
-			if($bool)
-			{
-				if($control->GetShowStatus()===0)
-					$control->Show();
-                elseif($control->GetShowStatus()===1)
-                	$control->Adopt();
-				elseif($control->GetShowStatus()===2)
-					$control->Resurrect();
-			}
-			elseif($control->GetShowStatus()!==0)
-				$control->Bury();
-		//}
+		elseif($control->GetShowStatus()!==0)
+			$control->Bury();
 		if(isset($_SESSION['_NControlQueueDeep'][$control->Id]))
 		{
 			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$control->Id]))
@@ -120,7 +107,7 @@ final class NolohInternal
 				if(isset(Event::$Conversion[$name]))
 					$nameValPairsString .= '\''.Event::$Conversion[$name].'\',\''.GetComponentById($objId)->GetEventString($val[0]).'\',';
 				else 
-					$nameValPairsString .= '\''.$name.'\',' . 'function(event) {' . GetComponentById($objId)->GetEventString($val[0]) . '},';
+					$nameValPairsString .= '\''.$name.'\',' . '_NEvent(\'' . GetComponentById($objId)->GetEventString($val[0]) . '\',\'' . $objId . '\'),';
 			}
 			elseif(is_bool($val))
 				$nameValPairsString .= '\''.$name.'\','.($val?'true':'false').',';

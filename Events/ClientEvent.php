@@ -28,7 +28,8 @@ class ClientEvent extends Event
 	 */
 	static function GenerateString($eventType, $str)
 	{
-		return isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $str) : $str;
+		return str_replace('\'', '\\\'', $str);
+		//return isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $str) : $str;
 		//return addslashes(str_replace("'", stripslashes("\""), $str));
 		//return $str;
 	}

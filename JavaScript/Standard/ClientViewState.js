@@ -1,9 +1,11 @@
 _N.Saved = [];
 _N.Changes = [];
 _N.EventVars = [];
+_N.SEQ = [];
 _N.Incubator = [];
 _N.IncubatorRoots = [];
 _N.Visit = -1;
+_N.EventDepth = 0;
 _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
@@ -70,13 +72,13 @@ function _NChangeByObj(obj, property, value)
 			case "onpaste":
 			case "onscroll":
 			case "onunload":
-				eval("obj." + property + " = function(event) {" + value + ";}");
+				obj[property] = _NEvent(value, obj);
 				break;
 			case "oncontextmenu":
-				eval("obj.oncontextmenu = function(event) {" + value + "; if(obj.ContextMenu) _NCMShow(event, obj); return false;}");
+				obj.oncontextmenu = _NEvent(value + "; if(obj.ContextMenu) _NCMShow(event, obj); return false;", obj);
 				break;
 			case "onmousedown":
-				eval("obj.onmousedown = function(event) {" + value + "; if(obj.Shifts && obj.Shifts.length!=0 && !_N.ShiftObjArray) _NShftSta(event, obj.Shifts);}");
+				obj.onmousedown = _NEvent(value + "; if(obj.Shifts && obj.Shifts.length && !_N.ShiftObjArray) _NShftSta(event, obj.Shifts);", obj);
 				break;
 			case "DragCatch":
 				if(value != "")
@@ -88,7 +90,7 @@ function _NChangeByObj(obj, property, value)
 							_N.Catchers.splice(i, 1);
 							break;
 						}
-				eval("obj.DragCatch = function(event) {" + value + ";}");
+				obj.DragCatch = _NEvent(value, obj);
 				break;
 			case "href":
 				obj.href = value=="#" ? "javascript:void(0);" : value;
@@ -112,21 +114,22 @@ function _NChangeByObj(obj, property, value)
 				if(obj.Selected==true != value)
 				{
 					if(obj.Group)
-						obj.Group.PrevSelectedElement = obj.Group.GetSelectedElement();
-					_NSave(obj.id,"Selected",obj.Selected=value);
-					if(!_N.Request)
 					{
-						if(value)
-						{
-							if(obj.Select)
-								obj.Select();
-						}
-						else
-							if(obj.Deselect)
-								obj.Deselect();
-						if(obj.Group && obj.Group.onchange)
-							obj.Group.onchange();
+						var selEle = obj.Group.GetSelectedElement();
+						if((value && selEle) || selEle==obj.id)
+							obj.Group.PrevSelectedElement = selEle;
 					}
+					_NSave(obj.id,"Selected",obj.Selected=value);
+					if(value)
+					{
+						if(obj.Select)
+							obj.Select();
+					}
+					else
+						if(obj.Deselect)
+							obj.Deselect();
+					if(obj.Group && obj.Group.onchange)
+						obj.Group.onchange();
 				}
 				break;
 			case "style.zIndex":
@@ -168,9 +171,15 @@ function _NChangeByObj(obj, property, value)
 		}
 	return value;
 }
+function _NEvent(code, obj)
+{
+	var id = typeof obj == "object" ? obj.id : obj;
+	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {event=e; ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}}");
+	return func;
+}
 function _NSave(id, property, value)
 {
-	if(id.indexOf("_") >= 0)
+	if(id.indexOf("_") >= 0 || id==_N.QueueDisabled)
 		return;
 	var obj = _N(id);
 	if(typeof value == "undefined")
@@ -202,14 +211,14 @@ function _NSave(id, property, value)
 }
 function _NBodyScrollState()
 {
-	var X = Math.max(document.body.scrollLeft, document.documentElement.scrollLeft)+1;
-	var Y = Math.max(document.body.scrollTop, document.documentElement.scrollTop)+1;
+	var x = Math.max(document.body.scrollLeft, document.documentElement.scrollLeft)+1;
+	var y = Math.max(document.body.scrollTop, document.documentElement.scrollTop)+1;
 	var loadImg = _N(_N.LoadImg);
-	loadImg.style.left = X+"px";
-	loadImg.style.top = Y+"px";	
+	loadImg.style.left = x+"px";
+	loadImg.style.top = y+"px";	
 	var loadLbl = _N(_N.LoadLbl);
-	loadLbl.style.left = X+30+"px";
-	loadLbl.style.top = Y+6+"px";
+	loadLbl.style.left = x+30+"px";
+	loadLbl.style.top = y+6+"px";
 }
 function _NBodySizeState()
 {
@@ -232,9 +241,11 @@ function _NBodySizeState()
 }
 function _NSetP(id, nameValuePairs)
 {
+	_N.QueueDisabled = id;
 	var i = -1, obj = _N(id), count = nameValuePairs.length;
 	while(++i<count)
 		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(obj, nameValuePairs[i], nameValuePairs[++i]);
+	delete _N.QueueDisabled;
 }
 function _NQ()
 {
@@ -263,6 +274,7 @@ function _NAddAct(ele, addTo, beforeId)
 }
 function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 {
+	_N.QueueDisabled = id;
 	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1;
 	ele.style.position = "absolute";
 	_N.Saved[ele.id = id] = [];
@@ -273,6 +285,7 @@ function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 		_NAddAct(ele, addTo, beforeId);
 	else
 		_N.IncubatorRoots[id] = [addTo, beforeId];
+	delete _N.QueueDisabled;
 }
 function _NAdopt(id, parentId)
 {
@@ -409,6 +422,7 @@ function _NUnServer(loadImg, loadLbl)
 	_N.LoadLbl = loadLbl;
 	_N(_N.LoadImg).style.visibility = "hidden";
 	_N(_N.LoadLbl).style.visibility = "hidden";
+	_N.SEQ = [];
 	_N.Request = null;
 }
 function _NReqStateChange()
@@ -438,11 +452,26 @@ function _NReqStateChange()
 	        }
 	}
 }
-function _NServer(eventType, id, event)
+function _NSE(eventType, id, uploads)
+{
+	_N.SEQ.push([eventType, id]);
+	if(uploads)
+		_N.Uploads.splice(-1, 0, uploads);
+}
+function _NServer()
 {
 	if(!_N.Request)
 	{
-		var str = "_NChanges="+_NChangeString()+"&_NEventVars="+_NEventVarsString(event)+"&_NEvents="+eventType+"@"+id+"&_NVisit="+ ++_N.Visit+"&_NApp="+_NApp;
+		var notUnload = true;
+		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NChanges="+_NChangeString()+"&_NEventVars="+_NEventVarsString(event)+"&_NEvents=";
+		var sECount = _N.SEQ.length;
+		for(var i=0; i<sECount; ++i)
+		{
+			if(_N.SEQ[i][0] == "Unload")
+				notUnload = false;
+			str += _N.SEQ[i][0] + "@" + _N.SEQ[i][1] + ",";
+		}
+		str = str.substr(0, str.length-1);
 		if(_N.URLTokenLink)
 		{
 			str += "&_NTokenLink="+_N.URLTokenLink;
@@ -451,9 +480,9 @@ function _NServer(eventType, id, event)
 	    _N.Request = new XMLHttpRequest();
 		_N(_N.LoadImg).style.visibility = "visible";
 		_N(_N.LoadLbl).style.visibility = "visible";
-        if(eventType != "Unload")
+        if(notUnload)
     	    _N.Request.onreadystatechange = _NReqStateChange;
-	    _N.Request.open("POST", window.location.href, eventType!="Unload");
+	    _N.Request.open("POST", window.location.href, notUnload);
 	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 	    _N.Request.send(str);

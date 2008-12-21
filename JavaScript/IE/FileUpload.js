@@ -1,27 +1,22 @@
-_N.Upload = [];
-_N.Upload.FileUploadObjIds = [];
+_N.Uploads = [];
 function _NRdyBox(id)
 {
-	if(_N.Upload.FileUploadObjIds.length > 0)
+	if(_N.Uploads.length)
 	{
 		_N(id).UploadComplete = true;
-		for(var i=0; i<_N.Upload.FileUploadObjIds.length; ++i)
-			if(_N(_N.Upload.FileUploadObjIds[i]).UploadComplete == false)
+		for(var i=0; i<_N.Uploads.length; ++i)
+			if(_N(_N.Uploads[i]).UploadComplete == false)
 				return;
-		_NServer(_N.Upload.EventType, _N.Upload.Id);
-		_N.Upload = [];
-		_N.Upload.FileUploadObjIds = [];
+		_NServer();
+		_N.Uploads = [];
 	}
 }
-function _NServerWUpl(eventType, id, fileUploadObjIds)
+function _NServerWUpl()
 {
 	clearInterval(_N.URLChecker);
-	_N.Upload.EventType = eventType;
-	_N.Upload.Id = id;
-	_N.Upload.FileUploadObjIds = fileUploadObjIds;
-	for(var i=0; i<fileUploadObjIds.length; ++i)
+	for(var i=0; i<_N.Uploads.length; ++i)
 	{
-		iFrame = _N(fileUploadObjIds[i]);
+		iFrame = _N(_N.Uploads[i]);
 		iFrame.UploadComplete = false;
 		iFrame.contentWindow.document.getElementById("frm").submit();
 	}

@@ -64,9 +64,10 @@ class ServerEvent extends Event
 	 */
 	static function GenerateString($eventType, $objId, $uploadArray)
 	{
-		return count($uploadArray) === 0
-			? '_NServer("' . $eventType . '","' . $objId . '",event);'
-			: '_NServerWUpl("' . $eventType . '","' . $objId . '",[' . implode(',', $uploadArray) . '],event);';
+		return '_NSE("' . $eventType . '","' . $objId .
+			(count($uploadArray)
+				? '",[' . implode(',', $uploadArray) . ']);'
+				: '");');
 	}
 	/**
 	 * Constructor
@@ -188,5 +189,4 @@ class ServerEvent extends Event
 			return parent::__get($nm);
 	}
 }
-
 ?>
