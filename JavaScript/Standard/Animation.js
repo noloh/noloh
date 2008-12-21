@@ -93,6 +93,8 @@ _NAni.prototype.FinishingTouches = function()
 		this.Obj._NHiding = true;
 		_NSetProperty(this.ObjId, 'style.display', 'none');
 	}
+	if(this.Obj.AnimationStop)
+		this.Obj.AnimationStop();
 }
 _NAni.prototype.CleanUp = function()
 {
@@ -104,8 +106,6 @@ _NAni.prototype.CleanUp = function()
 	}
 	else
 		_NAni.Active[this.Index] = null;
-	if(this.Obj.AnimationStop)
-		this.Obj.AnimationStop();
 }
 function _NAniStepAll()
 {
