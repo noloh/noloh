@@ -61,6 +61,11 @@ class DataCommand extends Object
 
 		if ($this->Connection && preg_match('/^.*?\((.+?)\);\s*$/i', $sql, $matches)) 
 		{
+			//preg_match_all('/\'[^\']*\'|[^,]+/i', $matches[1], $result, PREG_PATTERN_ORDER);
+			// Phill: I think there was a \' problem in the above RegEx. I have changed to what I think is the solution. Didn't really test.
+			//preg_match_all('/\'(?:[^\'\\]|\\.)*?\'|[^,]+/i', $matches[1], $result, PREG_PATTERN_ORDER);
+			/* Your solution doesn't work, and broke my code, I don't know why you think there's a \' problem. This takes in sql that has to
+			 have quotes escaped in a particular way. So I'm reinstating the above code*/
 			preg_match_all('/\'[^\']*\'|[^,]+/i', $matches[1], $result, PREG_PATTERN_ORDER);
 			$params = $result[0];
 			$count = count($params);
