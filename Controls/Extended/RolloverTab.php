@@ -41,6 +41,10 @@ class RolloverTab extends Panel implements Groupable
 			
 			{
 				$this->TextObject = $text;
+				//Currently won't work for all Groupable objects, must make sure it has a TogglesOff
+				if($this->TextObject instanceof Groupable)
+					$this->TextObject->TogglesOff = true;
+					
 				if($this->TextObject instanceof Label)
 				{
 					$this->TextObject->Width = $this->Width;
@@ -65,7 +69,7 @@ class RolloverTab extends Panel implements Groupable
 		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
-		NolohInternal::SetProperty('Cur', 'Out', $this);
+		//NolohInternal::SetProperty('Cur', 'Out', $this);
 	}
 	/**
 	 * @ignore
@@ -185,8 +189,12 @@ class RolloverTab extends Panel implements Groupable
 			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', true);");
 			$select = parent::GetSelect();
 			$select['System'] = new ClientEvent("_NRlTbChg('{$this->Id}','Slct');");
+			if($this->TextObject instanceof Groupable)
+				$select['System'][] = new ClientEvent("_NSetProperty('{$this->TextObject->Id}','Selected', true);");
 			$deselect = parent::GetDeselect();
 			$deselect['System'] = new ClientEvent("_NRlTbChg('{$this->Id}','Out');");
+			if($this->TextObject instanceof Groupable)
+				$deselect['System'][] = new ClientEvent("_NSetProperty('{$this->TextObject->Id}','Selected', false);");
 //			$this->Select = new ClientEvent("_NRlTbChg('{$this->Id}', 'Slct');");
 		}
 	}
@@ -257,6 +265,7 @@ class RolloverTab extends Panel implements Groupable
 			if($bool)
 			{
 				$this->OutTab->Visible = $this->OverTab->Visible = $this->DownTab->Visible = System::Vacuous;
+				NolohInternal::SetProperty('Cur', 'Slct', $this);
 				$this->SelectedTab->Visible = true;
 			}
 			else

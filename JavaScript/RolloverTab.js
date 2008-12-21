@@ -1,6 +1,9 @@
 function _NRlTbChg(rlOvrTb, state)
 {
 	var tab = _N(rlOvrTb);
+	if(!tab.Cur)
+		tab.Cur = 'Out';
+		
 	if(tab.Selected && state != 'Slct' || tab.Cur == state)
 		return;
 	if(tab.Cur != null)
