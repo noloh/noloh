@@ -193,9 +193,12 @@ class MarkupRegion extends Control
 	 * @param string $class The name of the CSS class
 	 * @return string
 	 */
-	static function StyleText($text, $class)
+	static function StyleText($text, $class, $newLine = false)
 	{
-		return '<span class=\''.$class.'\'>'.$text.'</span>';
+		$styled = '<span class=\''.$class.'\'>'.$text.'</span>';
+		if($newLine)
+			$styled .= '<br/>';
+		return $styled;
 	}
 	/**
 	 * @ignore
