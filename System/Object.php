@@ -38,6 +38,15 @@
 abstract class Object
 {
 	/**
+	 * Returns whether or not the object has a specified property, in the sense of either variables or a Get method.
+	 * @param string $property
+	 * @return boolean
+	 */
+	function HasProperty($property)
+	{
+		return property_exists($this, $property) || method_exists($this, $property);
+	}
+	/**
 	* @ignore
 	*/
 	function __get($nm)
@@ -51,7 +60,7 @@ abstract class Object
 			if(method_exists($this, $func))
 				return $this->$func();
 			else
-				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only.');
+				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
 		}
 	}
 	/**
@@ -74,7 +83,7 @@ abstract class Object
 				return $val;
 			}
 			else
-				BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only.');
+				BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only in the class ' . get_class($this) . '.');
 		}
 	}
 	/**
@@ -88,7 +97,7 @@ abstract class Object
 			if(property_exists($this, $prop))
 				return $this->$prop;
 			else 
-				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist.');
+				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
 		elseif(strpos($nm, 'Set') === 0)
 		{
@@ -96,10 +105,10 @@ abstract class Object
 			if(property_exists($this, $prop))
 				return $this->$prop = $args[0];
 			else 
-				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist.');
+				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
 		else 
-			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope.');
+			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope of the class ' . get_class($this) . '.');
 	}
 }
 
