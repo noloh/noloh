@@ -11,51 +11,6 @@ function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Dis
 	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 }
 /**
-* @ignore
-*/
-function _NOBErrorHandler($buffer)
-{
-	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
-		trigger_error('~_NINFO~');
-	elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
-		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
-}
-/**
- * @ignore
- */
-function _NErrorHandler($number, $string, $file, $line)
-{
-	ob_end_clean();
-	setcookie('_NAppCookie', false, 0, '/');
-	if(strpos($string, '~OB~') === 0)
-	{
-		$splitStr = explode('~', $string);
-		$string = $splitStr[3];
-		$file = $splitStr[4];
-		$line = $splitStr[5];
-	}
-	elseif($string === '~_NINFO~')
-	{
-		setcookie('_NPHPInfo', true);
-		Application::Reset(true, false);
-	}
-	$gzip = defined('FORCE_GZIP');
-	if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
-		ob_start('ob_gzhandler');
-	if(!in_array('Cache-Control: no-cache', headers_list(), true))
-		++$_SESSION['_NVisit'];
-	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line"));
-	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
-	if($gzip)
-		ob_end_flush();
-	flush();
-	global $OmniscientBeing;
-	$_SESSION['_NScript'] = array('', '', '');
-	$_SESSION['_NScriptSrc'] = '';
-	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-    exit();
-}
-/**
  * @ignore
  */
 function _NPHPInfo($info)
@@ -63,14 +18,14 @@ function _NPHPInfo($info)
 	$info = str_replace(array("\n", "\r", "'"), array('','',"\\'"), $info);
 	$loc = strpos($info, '</table>') + 8;
 	$text = substr($info, 0, $loc) .
-		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . System::ImagePath() . 'nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
+		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . ((NOLOHConfig::NOLOHURL)?NOLOHConfig::NOLOHURL:GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), ComputeNOLOHPath())) . '/Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
 		substr($info, $loc);
 	session_destroy();
 	return $text;
 }
 /**
-* @package System
-*/
+ * @package System
+ */
 final class Application extends Object
 {
 	private $WebPage;
@@ -157,7 +112,7 @@ final class Application extends Object
 			if(isset($_POST['_NTokenLink']))
 				GetComponentById($_POST['_NTokenLink'])->SetAllTokens();
 			if(!empty($_POST['_NEvents']))
-				$this->HandleServerEvent();
+				$this->HandleServerEvents();
 			foreach($_SESSION['_NFiles'] as $key => $val)
 			{
 				unlink($_SESSION['_NFiles'][$key]['tmp_name']);
@@ -341,26 +296,6 @@ final class Application extends Object
 					Event::$$name = $varInfo[++$i];
 			}
 		}
-		/*
-		if(isset($_POST['_NKey']))
-			Event::$Key = $_POST['_NKey'];
-		if(isset($_POST['_NCaught']))
-			Event::$Caught = $this->ExplodeDragCatch($_POST['_NCaught']);
-        if(isset($_POST['_NFocus']))
-        {
-			Event::$FocusedComponent = $_POST['_NFocus'];
-            Event::$SelectedText = $_POST['_NSelectedText'];
-        }
-		if(isset($_POST['_NCMSource']))
-			ContextMenu::$Source = GetComponentById($_POST['_NCMSource']);
-		if(isset($_POST['_NMouseX']))
-		{
-			Event::$MouseX = $_POST['_NMouseX'];
-			Event::$MouseY = $_POST['_NMouseY'];
-		}
-		if(isset($_POST['_NFlashArgs']))
-			Event::$FlashArgs = explode('~d3~', $_POST['_NFlashArgs']);
-		*/
 	}
 
 	private function HandleClientChanges()
@@ -399,7 +334,7 @@ final class Application extends Object
 		$GLOBALS['_NQueueDisabled'] = null;
 	}
 	
-	private function HandleServerEvent()
+	private function HandleServerEvents()
 	{
 		$events = explode(',', $_POST['_NEvents']);
 		$eventCount = count($events);
@@ -409,7 +344,6 @@ final class Application extends Object
 			if($obj = GetComponentById($eventInfo[1]))
 	        {
 	            $execClientEvents = false;
-				//$obj->{$eventInfo[0]}->Exec($execClientEvents);
 				$obj->GetEvent($eventInfo[0])->Exec($execClientEvents);
 				if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
 				{
@@ -554,6 +488,16 @@ final class Application extends Object
 			$objs[] = GetComponentById($objectsIdArray[$i]);
 		return $objs;
 	}
+	/*
+	function __destruct()
+	{
+		if(isset($GLOBALS['_NDEATH']))
+		{
+			ob_end_flush();
+			//echo "eh";
+		}
+	}
+	*/
 }
 
 ?>

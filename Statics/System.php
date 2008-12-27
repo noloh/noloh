@@ -67,9 +67,9 @@ final class System
 	 */
 	const Vacuous = null;
 	/**
-	* System::Unhandled is used in connection with {@link SetStartUpPage} as the fifth, $debugMode, parameter to 
-	* indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.
-	*/
+	 * System::Unhandled is used in connection with {@link SetStartUpPage} as the fifth, $debugMode, parameter to 
+	 * indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.
+	 */
 	const Unhandled = 'Unhandled';
 	/**
 	 * System::Horizontal is used in connection with the Scrolling property to indicate the presence of Horizontal scrollbars.
@@ -79,6 +79,10 @@ final class System
 	 * System::Horizontal is used in connection with the Scrolling property to indicate the presence of Horizontal scrollbars.
 	 */
 	const Vertical = 'vertical';
+	/**
+	 * @ignore
+	 */
+	const Kernel = 'Kernel';
 	/**
 	 * @ignore
 	 */
@@ -142,7 +146,7 @@ final class System
  	* Returns the full system path to NOLOH
  	* @return string
  	*/
-	static function NOLOHPath(){return $_SESSION['_NPath'];}
+	static function NOLOHPath()		{return $_SESSION['_NPath'];}
 	/**
  	* Returns the relative system path to NOLOH
  	* @return string
