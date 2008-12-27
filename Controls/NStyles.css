@@ -50,6 +50,10 @@
 	border:2px ridge;
 	overflow:auto;
 }
+.NClickable
+{
+	cursor:pointer;
+}
 .NLabel
 {
 	word-wrap:break-word;

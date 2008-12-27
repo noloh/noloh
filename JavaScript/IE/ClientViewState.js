@@ -113,6 +113,10 @@ function _NChangeByObj(obj, property, value)
 	if(obj)
 		switch(property)
 		{
+			case "onclick":
+				obj.onclick = _NEvent(value, obj);
+				obj.className = value ? "NClickable " + obj.className : obj.className.replace(/NClickable/g, "");
+				break;
 			case "KeyPress":
 			case "ReturnKey":
 			case "TypePause":
@@ -120,7 +124,6 @@ function _NChangeByObj(obj, property, value)
 				obj.onkeyup = _NKeyEvntsUp;
 			case "onblur":
 			case "onchange":
-			case "onclick":
 			case "ondblclick":
 			case "onfocus":
 			case "onelapsed":
@@ -221,6 +224,9 @@ function _NChangeByObj(obj, property, value)
 					obj.BuoyantTop = parseInt(value);
 					_NByntMv(obj.id);
 				}
+				break;
+			case "className":
+				obj.className = obj.className.indexOf("NClickable")!=-1 ? "NClickable " + value : value;
 				break;
 			case "ContextMenu":
 				if(!obj.oncontextmenu)
