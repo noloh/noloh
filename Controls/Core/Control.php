@@ -954,31 +954,31 @@ abstract class Control extends Component
 	{
 		if($shift[1] === 7)
 		{
-			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id]['_NShftWth']))
-				array_push($_SESSION['_NFunctionQueue'][$this->Id]['_NShftWth'][0], $shift[2], '[\''.$this->Id.'\',' . $shift[3]);
+			if(isset($_SESSION['_NFunctionQueue'][$id = $shift[0]]) && isset($_SESSION['_NFunctionQueue'][$id]['_NShftWth']))
+				array_push($_SESSION['_NFunctionQueue'][$id]['_NShftWth'][0], $shift[2], '[\''.$this->Id.'\',' . $shift[3]);
 			else
 			{
 				AddNolohScriptSrc('Shift.js', true);
-				QueueClientFunction($this, '_NShftWth', array('\''.$shift[0].'\'', $shift[2], '[\''.$this->Id.'\',' . $shift[3]));
+				QueueClientFunction(GetComponentById($id), '_NShftWth', array('\''.$id.'\'', $shift[2], '[\''.$this->Id.'\',' . $shift[3]));
 			}
 			if(isset($shift[4]))
 			{
-				array_push($_SESSION['_NFunctionQueue'][$this->Id]['_NShftWth'][0], $shift[4], '[\''.$this->Id.'\',' . $shift[5]);
+				array_push($_SESSION['_NFunctionQueue'][$id]['_NShftWth'][0], $shift[4], '[\''.$this->Id.'\',' . $shift[5]);
 				unset($shift[4], $shift[5]);
 			}
 		}
 		else
 		{
-			$fncStr = '_N(\''.$this->Id.'\').Shifts.push';
-			if(isset($_SESSION['_NFunctionQueue'][$this->Id]) && isset($_SESSION['_NFunctionQueue'][$this->Id][$fncStr]))
-				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[2];
+			$fncStr = '_N(\'' . ($id = $this->Id) . '\').Shifts.push';
+			if(isset($_SESSION['_NFunctionQueue'][$id]) && isset($_SESSION['_NFunctionQueue'][$id][$fncStr]))
+				$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = $shift[2];
 			else 
 			{
 				AddNolohScriptSrc('Shift.js', true);
 				QueueClientFunction($this, $fncStr, array($shift[2]));
 			}
 			if(isset($shift[3]))
-				$_SESSION['_NFunctionQueue'][$this->Id][$fncStr][0][] = $shift[3];
+				$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = $shift[3];
 		}
 		unset($shift[2], $shift[3]);
 	}
