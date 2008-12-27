@@ -3,39 +3,49 @@ function _NShftSta(event, objArray)
 {
 	_N.ShiftObjArray = objArray;
 	_N.ShiftObjArray.Ghosts = [];
+	_N.ShiftObjArray.ObjsWithStart = [];
 	_N.ShiftObjArray.ObjsWithStop = [];
 	_N.ShiftObjArray.ActualCount = [];
 	_N.ShiftObjArray.HasMoved = false;
 	_N.ShiftObjArray.CursorX = event.clientX + window.pageXOffset;
 	_N.ShiftObjArray.CursorY = event.clientY + window.pageYOffset;
-	
-	var obj, deltaZIndex, tmpCount = _N.ShiftObjArray.length;
-	if(tmpCount > 0)
-		deltaZIndex = ++_N.HighestZ + tmpCount - _N(_N.ShiftObjArray[0][0]).style.zIndex;
-	for(var i=0; i<tmpCount; ++i)
-	{
-		obj = _N(_N.ShiftObjArray[i][0]);
-		if(obj.ShiftStart)
-			obj.ShiftStart();
-		if(obj.ShiftStop)
-			_N.ShiftObjArray.ObjsWithStop.push(obj);
-		if(_N.ShiftObjArray[i][4])
-		{
-			obj = _N(_N.ShiftObjArray[i][0]).cloneNode(true);
-			obj.style.position = "absolute";
-			obj.style.left = _NFindX(_N.ShiftObjArray[i][0]) + "px";
-			obj.style.top = _NFindY(_N.ShiftObjArray[i][0]) + "px";
-			obj.style.opacity = ".5";
-			_N.ShiftObjArray[i][0] = obj.id = _N.ShiftObjArray[i][0] + "_Ghost";
-			document.body.appendChild(obj);
-			_N.ShiftObjArray.Ghosts.push(i);
-		}
-		_N.ShiftObjArray.ActualCount[_N.ShiftObjArray[i][7] = _N.ShiftObjArray[i][1] + _N.ShiftObjArray[i][0]] = parseInt(_N.ShiftObjArray[i][1]==1?obj.style.width: _N.ShiftObjArray[i][1]==2?obj.style.height: _N.ShiftObjArray[i][1]==4?obj.style.left: obj.style.top);
-		_NSetProperty(obj.id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
-	}
+	document.addEventListener("mousemove", _NShftFirstGo, true);
 	document.addEventListener("mousemove", _NShftGo, true);
     document.addEventListener("mouseup", _NShftStp, true);
     event.preventDefault();
+}
+function _NShftFirstGo()
+{
+	var id, obj, deltaZIndex, count = _N.ShiftObjArray.length;
+	if(count > 0)
+		deltaZIndex = ++_N.HighestZ + count - _N(_N.ShiftObjArray[0][0]).style.zIndex;
+	for(var i=0; i<count; ++i)
+	{
+		obj = _N(id = _N.ShiftObjArray[i][0]);
+		if(obj.ShiftStart && !_N.ShiftObjArray.ObjsWithStart[id])
+		{
+			obj.ShiftStart();
+			_N.ShiftObjArray.ObjsWithStart[id] = true;
+		}
+		if(obj.ShiftStop && !_N.ShiftObjArray.ObjsWithStop[id])
+			_N.ShiftObjArray.ObjsWithStop[id] = obj;
+		if(_N.ShiftObjArray[i][4])
+		{
+			obj = obj.cloneNode(true);
+			obj.style.position = "absolute";
+			obj.style.left = _NFindX(id) + "px";
+			obj.style.top = _NFindY(id) + "px";
+			obj.style.opacity = ".5";
+			_N.ShiftObjArray[i][0] = id = obj.id = id + "_Ghost";
+			document.body.appendChild(obj);
+			_N.ShiftObjArray.Ghosts.push(i);
+		}
+		_N.ShiftObjArray.ActualCount[_N.ShiftObjArray[i][7] = _N.ShiftObjArray[i][1] + id] = parseInt(_N.ShiftObjArray[i][1]==1?obj.style.width: _N.ShiftObjArray[i][1]==2?obj.style.height: _N.ShiftObjArray[i][1]==4?obj.style.left: obj.style.top);
+		_NSetProperty(id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
+	}
+	delete _N.ShiftObjArray.ObjsWithStart;
+	_N.ShiftObjArray.HasMoved = true;
+	document.removeEventListener("mousemove", _NShftFirstGo, true);
 }
 function _NShftGo(event)
 {
@@ -45,7 +55,6 @@ function _NShftGo(event)
 	var deltaY = yPos - _N.ShiftObjArray.CursorY;
 	_N.ShiftObjArray.CursorX = xPos;
 	_N.ShiftObjArray.CursorY = yPos;
-	_N.ShiftObjArray.HasMoved = true;
 	_NShftObjs(_N.ShiftObjArray, deltaX, deltaY);
 	event.preventDefault();
 }
@@ -98,14 +107,14 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 }
 function _NShftStp(event)
 {
-	var tmpCount;
-	if((tmpCount = _N.Catchers.length) && _N.ShiftObjArray.HasMoved)
+	var count;
+	if((count = _N.Catchers.length) && _N.ShiftObjArray.HasMoved)
 	{
 		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
 		_N.EventVars.Caught = [];
 		DroppedX = event.clientX + window.pageXOffset;
 		DroppedY = event.clientY + window.pageYOffset;
-		for(var i=0; i<tmpCount; ++i)
+		for(var i=0; i<count; ++i)
 			if(_NAvail(_N.Catchers[i]))
 			{
 				Catcher = _N(_N.Catchers[i]);
@@ -122,28 +131,29 @@ function _NShftStp(event)
 				}
 			}
 	}
-	tmpCount = _N.ShiftObjArray.Ghosts.length;
-	for(i=0; i<tmpCount; ++i)
+	count = _N.ShiftObjArray.Ghosts.length;
+	for(i=0; i<count; ++i)
 	{
 		j = _N.ShiftObjArray.Ghosts[i];
 		document.body.removeChild(_N(_N.ShiftObjArray[j][0]));
 		_N.ShiftObjArray[j][0] = _N.ShiftObjArray[j][0].replace("_Ghost", "");
 	}
-	if(!_N.ShiftObjArray.HasMoved)
+	if(_N.ShiftObjArray.HasMoved)
+		for(var id in _N.ShiftObjArray.ObjsWithStop)
+			_N.ShiftObjArray.ObjsWithStop[id].ShiftStop();
+	else
 	{
 		var obj;
-		tmpCount = _N.ShiftObjArray.length;
-		for(i=0; i<tmpCount; ++i)
+		count = _N.ShiftObjArray.length;
+		for(i=0; i<count; ++i)
 		{
 			obj = _N(_N.ShiftObjArray[i][0]);
 			if(obj.onclick)
 				obj.onclick.call(obj, event);
 		}
 	}
-	tmpCount = _N.ShiftObjArray.ObjsWithStop.length;
-	for(i=0; i<tmpCount; ++i)
-		_N.ShiftObjArray.ObjsWithStop[i].ShiftStop();
 	_N.ShiftObjArray = null;
+	document.removeEventListener("mousemove", _NShftFirstGo, true);
 	document.removeEventListener("mousemove", _NShftGo, true);
 	document.removeEventListener("mouseup", _NShftStp, true);
 }
