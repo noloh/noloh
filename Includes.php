@@ -114,6 +114,8 @@ function _NAutoLoad($class)
 		require($_NPath . $_NAutoLoad[$class]);
 	elseif(function_exists('__autoload'))
 		__autoload($class);
+	else 
+		BloodyMurder('The class ' . $class . ' is not defined.');
 }
 
 spl_autoload_register('_NAutoLoad');
