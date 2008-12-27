@@ -62,3 +62,4 @@ class Container extends Component
 		$this->NoScriptShowChildren($indent);
 	}
 }
+?>
