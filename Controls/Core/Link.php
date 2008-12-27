@@ -138,7 +138,7 @@ class Link extends Label
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString === 'Click' && $this->Control !== null)
+		if($eventTypeAsString === 'Click' && $this->Control !== null && $this->Target === null)
 		{
 			if($this->Destination === null)
 				return '_NSetURL("' . URL::TokenString($this->Tokens) . '","' . $this->Id . '");' . parent::GetEventString($eventTypeAsString) . 'this.blur();';
@@ -158,6 +158,7 @@ class Link extends Label
 	{
 		$this->Target = ($targetType == self::Self)?null:$targetType;
 		NolohInternal::SetProperty('target', $targetType, $this);
+		$this->UpdateEvent('Click');
 	}
 	/**
 	 * Returns the Control to be used as the Link, instead of a string of text.
