@@ -17,7 +17,7 @@ class TableColumn extends Panel
 	}
 	function AddControl($control)
 	{
-		$this->Controls->Add($control, true, true);
+		$this->Controls->Add($control, true);
 		$control->Layout = Layout::Relative;
 	}
 	public function GetControl()
@@ -29,10 +29,15 @@ class TableColumn extends Panel
 	public function SetControl($object=null)
 	{
 		if($object != null)
+		{
+			if(is_string($object))
+				$object = new Label($object, 0, 0, null, null);
+				
 			if($this->Controls->Count() > 0)
 				$this->Controls->Elements[0] = $object;
 			else
 				$this->Controls->Add($object);
+		}
 	}
 	/**
 	 * @ignore
