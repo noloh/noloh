@@ -66,55 +66,46 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */ 
 	function ArrayList($elements=null)
 	{
-		if($elements == null)
+		if($elements === null)
 			$this->Elements = array();
-		elseif(is_array($elements))
-		{
-			$elementsCount = count($elements);
-			for($i=0; $i<$elementsCount; ++$i)
-				$this->PreAdd($elements[$i]);
-			$this->Elements = $elements;
-		}
+		elseif(is_array($elements) || $elements instanceof Iterator)
+			foreach($elements as $index => $val)
+				$this->offsetSet($index, $val);
 	}
 	/**
 	 * @ignore
 	 */
 	protected function PreAdd($element)
 	{
-		/*if($element instanceof Control && $element->GetZIndex() == null)
-			$element->_NSetZIndex(++$_SESSION['_NHighestZ']);*/
 		if($this->ParentId !== null && $element instanceof Component)
 			$element->SetParentId($this->ParentId);
 	}
 	/**
 	 * Adds an element to the ArrayList.
 	 * @param mixed $element The element to be added 
-	 * @param boolean $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
 	 * @return mixed The element that has been added
 	 */
-	function Add($element, $setsByReference = true)
+	function Add($element)
 	{
 		$this->PreAdd($element);
-		if($setsByReference)
-			$this->Elements[] = &$element;
-		else 
-			$this->Elements[] = $element;
+		$this->Elements[] = &$element;
 		return $element;
 	}
 	/**
-	 * Adds an unlimited number elements to the ArrayList.
+	 * Adds an unlimited number elements to the ArrayList, or the contents (keys will not be preserved) of one array if that is the lone parameter.
 	 * @param mixed ... Unlimited number of elements to be added
-	 * <pre>$arrayList->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</pre>
+	 * <pre>
+	 * // The following two statements have the same effect.
+	 * $arrayList->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);
+	 * $arrayList->AddRange(array($firstElement, $secondElement, $thirdElement, $fourthElement));
+	 * </pre>
 	 */
 	function AddRange($dotDotDot)
 	{
 		$numArgs = func_num_args();
-		$args = func_get_args();
-		for($i = 0; $i < $numArgs; ++$i)
-			if($args[$i] instanceof Component)
-				$this->Add(GetComponentById($args[$i]->Id));
-			else 
-				$this->Add($args[$i]);
+		$args = $numArgs === 1 && (is_array($dotDotDot) || $dotDotDot instanceof Iterator) ? $dotDotDot : func_get_args();
+		foreach($args as $val)
+			$this->Add($val);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, not overwriting what was previously there.
@@ -147,12 +138,12 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	function Insert($element, $index)
 	{
 		$oldElements = $this->Elements;
-		if($this->ParentId != null && $element instanceof Component && isset($oldElements[$index]) && $oldElements[$index] instanceof Component)
+		if($this->ParentId !== null && $element instanceof Component && isset($oldElements[$index]) && $oldElements[$index] instanceof Component)
 			$_SESSION['_NControlInserts'][$element->Id] = $oldElements[$index]->Id;
 		if(is_numeric($index))
 		{
 			$this->Elements = array_slice($oldElements, 0, $index);
-			$this->Add($element, true, true);
+			$this->Add($element, true);
 			$this->Elements = array_merge($this->Elements, array_slice($oldElements, $index));
 		}
 		elseif(is_string($index))
@@ -210,7 +201,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	function Remove($element)
 	{
 		$idx = $this->IndexOf($element);
-		if($idx != -1)
+		if($idx !== -1)
 		{
 			if(func_num_args()===1 || !func_get_arg(1))
 				$this->RemoveAt($idx);

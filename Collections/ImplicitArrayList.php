@@ -24,7 +24,7 @@
  * 	{
  * 		Alert("An Item with a value of " . $item->Value . " has been added!");
  * 		// Will perform the actual add on the ArrayList, ignoring the fact that it's Implicit
- * 		$this->Items->Add($item, true, true);
+ * 		$this->Items->Add($item, true);
  * 	}
  * }
  * </pre>
@@ -78,15 +78,14 @@ class ImplicitArrayList extends ArrayList
 	}
 	/**
 	 * Adds an element to the ArrayList.
-	 * @param mixed $element The element to be added 
-	 * @param boolean $setsByReference Indicates whether the ArrayList sets by reference as opossed to by value
+	 * @param mixed $element The element to be added
 	 * @param boolean $onlyAdd Specifies whether or not you want a default ArrayList Add, or the overidden AddFunction to be called
 	 * @return mixed The element that has been added
 	 */
-	function Add($object, $passByReference = true, $onlyAdd = false)
+	function Add($object, $onlyAdd = false)
 	{
-		if($this->AddFunctionName=='' || $onlyAdd)
-			return parent::Add($object, $passByReference);
+		if(!$this->AddFunctionName || $onlyAdd)
+			return parent::Add($object);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->AddFunctionName}($object);
 		else
@@ -102,7 +101,7 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function Insert($object, $index, $onlyInsert = false)
 	{
-		if($this->InsertFunctionName=='' || $onlyInsert)
+		if(!$this->InsertFunctionName || $onlyInsert)
 			return parent::Insert($object, $index);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->InsertFunctionName}($object, $index);
@@ -119,7 +118,7 @@ class ImplicitArrayList extends ArrayList
 	 */
     function PositionalInsert($object, $index, $position, $onlyInsert = false)
     {
-		if($this->InsertFunctionName=='' || $onlyInsert)
+		if(!$this->InsertFunctionName || $onlyInsert)
 			return parent::PositionalInsert($object, $index, $position);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->InsertFunctionName}($object, $position);
@@ -134,7 +133,7 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function Remove($object, $onlyRemove = false)
 	{
-		if($this->RemoveFunctionName=='' || $onlyRemove)
+		if(!$this->RemoveFunctionName || $onlyRemove)
 			return parent::Remove($object, $onlyRemove);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->RemoveFunctionName}($object);
@@ -149,7 +148,7 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function RemoveAt($index, $onlyRemove = false)
 	{
-		if($this->RemoveAtFunctionName=='' || $onlyRemove)
+		if(!$this->RemoveAtFunctionName || $onlyRemove)
 			return parent::RemoveAt($index);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->RemoveAtFunctionName}($index);
@@ -162,7 +161,7 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function Clear($onlyClear = false)
 	{
-		if($this->ClearFunctionName=='' || $onlyClear)
+		if(!$this->ClearFunctionName || $onlyClear)
 			return parent::Clear();
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->ClearFunctionName}();
