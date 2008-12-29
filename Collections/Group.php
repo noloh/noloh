@@ -177,7 +177,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function GetSelectedValue()
 	{
 		if(($element = $this->GetSelectedElement()) != null)
-			return ($tmpValue = $element->Value) == null?$element->Text:$tmpValue;
+			return ((method_exists($element, 'GetValue') || property_exists($element, 'Value')) && ($tmpValue = $element->Value !== null))?$tmpValue:$element->Text;
 		else
 			return null;
 	}
@@ -190,7 +190,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		$array = array();
 		foreach($this->Groupees as $index => $groupee)
 			if($groupee->GetSelected())
-				$array[] = ($tmpValue = $element->Value) == null?$element->Text:$tmpValue;
+//				$array[] = ($tmpValue = $element->Value) == null?$element->Text:$tmpValue;
+				$array[] = ((method_exists($groupee, 'GetValue') || property_exists($groupee, 'Value')) && ($tmpValue = $groupee->Value !== null))?$tmpValue:$groupee->Text;
 		return $array;
 	}
 	/**

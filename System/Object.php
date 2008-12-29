@@ -44,7 +44,7 @@ abstract class Object
 	 */
 	function HasProperty($property)
 	{
-		return property_exists($this, $property) || method_exists($this, $property);
+		return property_exists($this, $property) || method_exists($this, 'Get'.$property);
 	}
 	/**
 	* @ignore
