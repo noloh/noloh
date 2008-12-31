@@ -169,6 +169,7 @@ function _NChangeByObj(obj, property, value)
 					obj.BuoyantTop = parseInt(value);
 					_NByntMv(obj.id);
 				}
+				break;
 			case "className":
 				obj.className = obj.className.indexOf("NClickable")!=-1 ? "NClickable " + value : value;
 				break;
@@ -180,7 +181,7 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {event=e; ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}}");
+	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {event=e; ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}");
 	return func;
 }
 function _NSave(id, property, value)

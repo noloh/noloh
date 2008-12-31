@@ -239,7 +239,7 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}}");
+	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}");
 	return func;
 }
 function _NSave(id, property, value)
