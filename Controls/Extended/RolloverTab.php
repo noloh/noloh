@@ -65,7 +65,7 @@ class RolloverTab extends Panel implements Groupable
 //			$this->SetSelectedTab(new Tab(System::ImagePath() . 'Std/TabActRndLeft.gif', System::ImagePath() . 'Std/TabActCenter.gif', System::ImagePath() . 'Std/TabActRndRight.gif'));
 		else
 			$this->SetSelectedTab($selectedTab);
-		$this->Cursor = Cursor::Arrow;
+		//$this->Cursor = Cursor::Arrow;
 		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
