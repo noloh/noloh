@@ -42,7 +42,7 @@ class Accordion extends Panel
 		NolohInternal::SetProperty('Accord', $this->Id, $accordionPart);
 //		$accordionPart->SetGroupName($this->PartGroup->Id);
 		$this->PartGroup->Add($accordionPart);
-		$this->AccordionParts->Add($accordionPart, true, true);
+		$this->AccordionParts->Add($accordionPart, true);
 		QueueClientFunction($this, '_NAccPtAdd', array("'$this->Id'", "'{$accordionPart->Id}'"), false);
 //		if($count == 0)
 //			$this->SetSelectedIndex(0);

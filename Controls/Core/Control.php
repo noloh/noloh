@@ -988,7 +988,7 @@ abstract class Control extends Component
 	function AddShift($shift)
 	{
 		$this->AddShiftHelper($shift);
-		$this->Shifts->Add($shift, true, true);
+		$this->Shifts->Add($shift, true);
 	}
 	/**
 	 * @ignore

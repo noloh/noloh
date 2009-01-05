@@ -105,7 +105,7 @@ abstract class WebPage extends Component
 	{
 		$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
 		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
-		$this->CSSFiles->Add($path, true, true);
+		$this->CSSFiles->Add($path, true);
 	}
 	/**
 	 * @ignore

@@ -85,7 +85,7 @@ class TabPanel extends Panel
 		//$rolloverTab->Left = (($tmpCount = $this->Tabs->Count()) > 0)?$this->Tabs[$tmpCount - 1]->GetRight():0;
 		$count = $this->Tabs->Count();
 		$this->Tabs->Add($rolloverTab);
-		$this->Body->Controls->Add($tabPage, true, true);
+		$this->Body->Controls->Add($tabPage, true);
 		NolohInternal::SetProperty('TabPg', $tabPage->Id, $rolloverTab);
 		if($count == 0)
 			$this->SetSelectedIndex(0);

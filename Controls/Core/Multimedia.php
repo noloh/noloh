@@ -126,7 +126,7 @@ class Multimedia extends Control
 //			NolohInternal::Show('PARAM', $initialProperties, $this, $this->Id);
 //		}
 		$this->QueueResetInnerString();
-		$this->Parameters->Add($item, true, true);
+		$this->Parameters->Add($item, true);
 	}
 	/**
 	 * @ignore
@@ -150,7 +150,7 @@ class Multimedia extends Control
 	function AddFlashVar($flashVar)
 	{
 		$this->QueueResetInnerString();
-		$this->FlashVars->Add($flashVar, true, true);
+		$this->FlashVars->Add($flashVar, true);
 	}
 	/**
 	 * @ignore

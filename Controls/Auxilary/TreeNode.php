@@ -100,7 +100,7 @@ class TreeNode extends Panel
 		if(!($node instanceof TreeNode))
 			$node = new TreeNode($node);
 		$this->AddNodeHelper($node);
-		$this->ChildrenPanel->Controls->Add($node, true, true);
+		$this->ChildrenPanel->Controls->Add($node, true);
 		return $node;
 	}
 	/**
@@ -118,7 +118,7 @@ class TreeNode extends Panel
 		else
 		{
 			$this->AddNodeHelper($node);
-			$this->ChildrenPanel->Controls->Add($node, true, true);
+			$this->ChildrenPanel->Controls->Add($node, true);
 		}
 		return $node;
 	}

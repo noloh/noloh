@@ -186,7 +186,7 @@ class Panel extends Control
 	 */
 	function ImplicitAdd($object)
 	{
-		$this->Controls->Add($object, true, true);
+		$this->Controls->Add($object, true);
 		QueueClientFunction($this, '_NStrPnlAdd', array('\'' . $this->Id . '\'', '\'' . $object->Id . '\''), false);
 	}
 	/**

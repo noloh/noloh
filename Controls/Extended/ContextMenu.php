@@ -59,7 +59,7 @@ class ContextMenu extends Menu
 		}
 		else
 			$menuItem->SetWidth($this->Width);
-		$this->MenuItems->Add($menuItem, true, true);
+		$this->MenuItems->Add($menuItem, true);
 		$this->Height += $menuItem->GetHeight();
 		return $menuItem;
 	}
