@@ -477,7 +477,6 @@ function _NUnServer()
 {
 	_N(_N.LoadImg).style.visibility = "hidden";
 	_N(_N.LoadLbl).style.visibility = "hidden";
-	_N.SEQ = [];
 	_N.Request = null;
 	_N.URLChecker = setInterval("_NCheckURL()", 500);
 }
@@ -528,6 +527,7 @@ function _NServer()
 				notUnload = false;
 			str += _N.SEQ[i][0] + "@" + _N.SEQ[i][1] + ",";
 		}
+		_N.SEQ = [];
 		str = str.substr(0, str.length-1);
 		if(_N.URLTokenLink)
 		{
