@@ -2,7 +2,7 @@
 
 function _NAni(id, prpty, to, duration, units, easing, from, fps)
 {
-	var count= _NAni.Active.length;
+	var display=false, count= _NAni.Active.length;
 	for(var i=0; i<count; ++i)
 		if(_NAni.Active[i] && _NAni.Active[i].ObjId == id && _NAni.Active[i].Property == prpty)
 		{
@@ -22,6 +22,21 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	else
 		this.Destination = to;
 	this.Property = prpty;
+	if(from == "Hiding")
+	{
+		from = null;
+		display = true;
+	}
+	if(this.Obj._NHiding)
+	{
+		this.Obj._NHiding = null;
+		display = true;
+	}
+	if(display)
+	{
+		_NSetProperty(this.ObjId, 'style.display', '');
+		_NSetProperty(this.ObjId, 'style.visibility', 'inherit');
+	}
 	this.From = from == null ? (prpty == "opacity" ? (this.Obj.style.opacity?this.Obj.style.opacity*100:100) : parseInt(eval("this.Obj."+prpty+";"))) : from;
 	if(isNaN(this.From))
 		this.From = prpty=="style.width"?this.Obj.offsetWidth: prpty=="style.height"?this.Obj.offsetHeight: prpty=="style.left"?this.Obj.offsetLeft: prpty=="style.top"?this.Obj.offsetTop: 0;
@@ -33,11 +48,6 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	this.LastDelta = 0;
 	if(this.Obj.ShiftsWith)
 		this.ShiftType = prpty=="style.width"?1: prpty=="style.height"?2: prpty=="style.left"?4: 5;
-	if(this.Obj._NHiding)
-	{
-		this.Obj._NHiding = null;
-		_NSetProperty(this.ObjId, 'style.display', '');
-	}
 	if(this.Obj.AnimationStart)
 		this.Obj.AnimationStart();
 	++_NAni.ActiveCount;
