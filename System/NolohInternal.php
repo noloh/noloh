@@ -163,7 +163,6 @@ final class NolohInternal
 		{
 			$obj = &GetComponentById($objId);
 			if($obj !== null)
-			//{
 				if($obj->GetShowStatus())
 				{
 					foreach($nameParam as $idx => $val)
@@ -173,9 +172,6 @@ final class NolohInternal
 							AddScript($val[0].'('.implode(',',$val[1]).')', $val[2]);
 					unset($_SESSION['_NFunctionQueue'][$objId]);
 				}
-			//}
-			//else
-			//	Alert("Null Object: " . serialize($nameParam));
 		}
 	}
 	

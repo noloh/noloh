@@ -89,7 +89,7 @@ class CheckListBox extends ListControl
 				$newCheckBox->SetTop($top);
 			}
 		}
-		$this->Items->Add($checkItem, true, true);
+		$this->Items->Add($checkItem, true);
 		$this->CheckBoxes->Add($newCheckBox);
 		return $item;
 	}

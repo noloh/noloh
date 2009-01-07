@@ -46,7 +46,7 @@ class CheckListView extends ListView
 			$this->Columns->Add($tmpColumn = &new ColumnHeader($text, $tmpRight, $width, $this->ColumnsPanel->GetHeight()), true, true);
 		elseif($text instanceof ColumnHeader)
 		{
-			$this->Columns->Add($tmpColumn = &$text, true, true);
+			$this->Columns->Add($tmpColumn = &$text, true);
 			if($text->GetLeft() == System::Auto)
 				$text->SetLeft($tmpRight);
 		}
