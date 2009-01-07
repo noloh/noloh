@@ -9,6 +9,7 @@ _N.EventDepth = 0;
 _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
+event = null;
 function _NInit(loadLblId, loadImgId, debugMode)
 {
 	window.onscroll = _NBodyScrollState;
@@ -181,7 +182,7 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {event=e; ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}");
+	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {if(e) event=e; var liq=(event && event.target.id=='"+id+"'); ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}");
 	return func;
 }
 function _NSave(id, property, value)

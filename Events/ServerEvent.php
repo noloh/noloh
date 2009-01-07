@@ -62,12 +62,16 @@ class ServerEvent extends Event
 	/**
 	 * @ignore
 	 */
-	static function GenerateString($eventType, $objId, $uploadArray)
+	static function GenerateString($eventType, $objId, $uploadArray, $liquids)
 	{
-		return '_NSE("' . $eventType . '","' . $objId .
+		$str = '_NSE("' . $eventType . '","' . $objId .
 			(count($uploadArray)
 				? '",[' . implode(',', $uploadArray) . ']);'
 				: '");');
+		//return $allLiquid ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : $str;			
+		return $liquids === 0 ? $str : 
+			($liquids === 1 ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : 
+			('if(liq) _N.EventVars.LiquidExec=1;' . $str));
 	}
 	/**
 	 * Constructor
@@ -98,10 +102,13 @@ class ServerEvent extends Event
 	/**
 	 * @ignore
 	 */
-	function GetInfo(&$arr, &$onlyClientEvents)
+	function GetInfo(&$arr, &$onlyClientEvents, $parentLiquid = false, &$liquidClientEvent = '')
 	{
 		$onlyClientEvents = false;
-		return $this->Uploads->Count()==0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
+		++$arr[2];
+		if($parentLiquid || $this->Liquid)
+			++$arr[3];
+		return $this->Uploads->Count()===0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
 	}
 	/**
 	 * @ignore
@@ -109,7 +116,7 @@ class ServerEvent extends Event
 	function GetEventString($eventType, $objsId)
 	{
 		return $this->GetEnabled()
-			? ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds())
+			? ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid)
 			: '';
 	}
 	/**
@@ -134,11 +141,12 @@ class ServerEvent extends Event
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */
-	function Exec(&$execClientEvents=true)
+	function Exec(&$execClientEvents=true, $liquidParent=false)
 	{
-		if($GLOBALS['_NQueueDisabled'] || $this->Enabled===false)
-			return;
-		$execClientEvents = true;		
+		if($GLOBALS['_NQueueDisabled'] || $this->Enabled===false 
+			|| (($liquidParent||$this->Liquid) && isset($GLOBALS['_NSEFromClient']) && !Event::$LiquidExec))
+				return;
+		$execClientEvents = true;
 		
 		$runThisString = 'return ';
 		if(is_object($this->Owner))
@@ -165,7 +173,6 @@ class ServerEvent extends Event
 		$source = Event::$Source;
 		$handles = array();
 		$this->GetDeepHandles($handles);
-		//Alert(count($handles));
 		if(count($handles) == 1)
 			Event::$Source = &$handles[0];
 		else
@@ -181,7 +188,7 @@ class ServerEvent extends Event
 	{
 		if($nm == 'Uploads')
 		{
-			if($this->Uploads == null)
+			if($this->Uploads === null)
 				$this->Uploads = new ArrayList();
 			return $this->Uploads;
 		}

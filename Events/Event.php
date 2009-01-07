@@ -44,11 +44,18 @@ class Event extends Object implements ArrayAccess
 	 * @ignore
 	 */
 	protected $Enabled;
+	
+	private $Liquid;
 
 	/**
 	* When relevant, the object on which the event is happening
 	*/
 	public static $Source;
+	/**
+	* When a ServerEvent is used as a callback for Bind(), this will contain the data pertaining to the particular iteration.
+	* @var string
+	*/
+    public static $BoundData;
     /**
 	 * When relevant, the Component that was focused {@see Control::Focus}
 	 * @var string
@@ -84,10 +91,10 @@ class Event extends Object implements ArrayAccess
 	*/
     public static $SelectedText;
     /**
-	* When a ServerEvent is used as a callback for Bind(), this will contain the data pertaining to the particular iteration.
-	* @var string
-	*/
-    public static $BoundData;
+     * @ignore
+     */
+    public static $LiquidExec;
+    
 	
 	/**
 	 * @ignore
@@ -128,11 +135,22 @@ class Event extends Object implements ArrayAccess
 	/**
 	 * @ignore
 	 */
-	function GetInfo(&$arr, &$onlyClientEvents)
+	function GetInfo(&$arr, &$onlyClientEvents, $parentLiquid = false, &$liquidClientEvent = '')
 	{
+		if($parentLiquid)
+			$liquid = true;
+		elseif($this->Liquid)
+			$liquid = $becameLiquid = true;
+		else 
+			$liquid = false;
 		foreach($this->ExecuteFunction as $event)
 			if(is_object($event) && $event->GetEnabled())
-				$event->GetInfo($arr, $onlyClientEvents);
+				$event->GetInfo($arr, $onlyClientEvents, $liquid, $liquidClientEvent);
+		if($becameLiquid && $liquidClientEvent)
+		{
+			$arr[0] .= 'if(liq){' . $liquidClientEvent . '} ';
+			$liquidClientEvent = '';
+		}
 		return $arr;
 	}
 	/**
@@ -143,14 +161,13 @@ class Event extends Object implements ArrayAccess
 		if($this->GetEnabled())
 		{
 			$onlyClientEvents = true;
-            $arr = array('',array());
+            $arr = array('', array(), 0, 0);
 			$info = $this->GetInfo($arr, $onlyClientEvents);
 			$ret = '';
-			if($info[0] != '')
-//				$ret .= isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $info[0]) : $info[0];
+			if($info[0] !== '')
 				$ret .= ClientEvent::GenerateString($eventType, $info[0]);
 			if(!$onlyClientEvents)
-				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1]);
+				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3]===0?0 : $info[2]===$info[3]?1 : 2);
 			return $ret;
 		}
 		else 
@@ -161,11 +178,11 @@ class Event extends Object implements ArrayAccess
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */
-	function Exec(&$execClientEvents=true)
+	function Exec(&$execClientEvents=true, $liquidParent=false)
 	{
 		foreach($this->ExecuteFunction as $event)
 			if($event->GetEnabled())
-				$event->Exec($execClientEvents);
+				$event->Exec($execClientEvents, $liquidParent || $this->Liquid);
 	}
 	/**
 	 * @ignore
@@ -181,12 +198,12 @@ class Event extends Object implements ArrayAccess
 				GetComponentById($pair[0][0])->UpdateEvent($pair[1], $pair[0][1]);
 	}
 	/**
-	 * Gets whether or not the Event is enabled. A Disabled event will not launch, and execing it has no effect.
+	 * Returns whether or not the Event is enabled. A Disabled event will not launch, and execing it has no effect.
 	 * @return boolean
 	 */
 	function GetEnabled()
 	{
-		return $this->Enabled===null;
+		return $this->Enabled === null;
 	}
 	/**
 	 * Sets whether or not the Event is enabled. A Disabled event will not launch, and execing it has no effect.
@@ -195,6 +212,23 @@ class Event extends Object implements ArrayAccess
 	function SetEnabled($bool)
 	{
 		$this->Enabled = ($bool ? null : false);
+		$this->UpdateClient();
+	}
+	/**
+	 * Returns whether or not the Event is Liquid. A Liquid Event will only launch if the user interacted directly with the object, not as a result of bubbling. Bubbles pass through liquids without affecting or launching them.
+	 * @return boolean
+	 */
+	function GetLiquid()
+	{
+		return $this->Liquid !== null;
+	}
+	/**
+	 * Sets whether or not the Event is Liquid. A Liquid Event will only launch if the user interacted directly with the object, not as a result of bubbling. Bubbles pass through liquids without affecting or launching them.
+	 * @param boolean $bool
+	 */
+	function SetLiquid($bool)
+	{
+		$this->Liquid = ($bool ? true : null);
 		$this->UpdateClient();
 	}
 	/**
@@ -210,7 +244,7 @@ class Event extends Object implements ArrayAccess
 	 */
 	function Blank()
 	{
-		return count($this->ExecuteFunction)==0;
+		return count($this->ExecuteFunction) === 0;
 	}
 	/**
 	 * Returns true if one of the Controls that it handles has been shown and false otherwise

@@ -29,9 +29,6 @@ class ClientEvent extends Event
 	static function GenerateString($eventType, $str)
 	{
 		return str_replace('\'', '\\\'', $str);
-		//return isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $str) : $str;
-		//return addslashes(str_replace("'", stripslashes("\""), $str));
-		//return $str;
 	}
 	/**
 	 * Constructor.
@@ -52,7 +49,6 @@ class ClientEvent extends Event
 		}
 		else
 			parent::Event(str_replace("\n", ' ', $allCodeAsString));
-		//parent::Event(str_replace(array("\n", '\''), array(' ', '\\\''), $allCodeAsString));
 	}
 	/**
 	 * @ignore
@@ -60,8 +56,6 @@ class ClientEvent extends Event
 	static public function ClientFormat($param)
 	{
 		if(is_string($param))
-			//return '\''.str_replace('\'', '\\\'', $param).'\'';
-			//return '"'.str_replace('"', '\\\\"', $param).'"';
 			return '"'.str_replace(array('"', "\n"), array('\\\\"', ' '), $param).'"';
 		elseif(is_int($param) || is_float($param))
 			return $param;
@@ -84,10 +78,15 @@ class ClientEvent extends Event
 	/**
 	 * @ignore
 	 */
-	function GetInfo(&$arr, $onlyClientEvents)
+	function GetInfo(&$arr, &$onlyClientEvents, $parentLiquid = false, &$liquidClientEvent = '')
 	{
 		if($onlyClientEvents)
-			$arr[0] .= $this->ExecuteFunction;
+			if($parentLiquid)
+				$liquidClientEvent .= $this->ExecuteFunction;
+			elseif($this->Liquid)
+				$arr[0] .= 'if(liq){' . $this->ExecuteFunction . '} ';
+			else
+				$arr[0] .= $this->ExecuteFunction;
 		return $arr;
 	}
 	/**
@@ -96,7 +95,7 @@ class ClientEvent extends Event
 	function GetEventString($eventType, $objsId)
 	{
 		return $this->GetEnabled() 
-			? ClientEvent::GenerateString($eventType, $this->ExecuteFunction)
+			? ClientEvent::GenerateString($eventType, $this->Liquid?'if(liq){'.$this->ExecuteFunction.'}':$this->ExecuteFunction)
 	//		? (isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $this->ExecuteFunction) : $this->ExecuteFunction)
 	//		? $this->ParseToJS($eventType, $ObjsId)
 			: '';

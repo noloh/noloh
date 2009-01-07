@@ -29,7 +29,6 @@ function _NPHPInfo($info)
 final class Application extends Object
 {
 	private $WebPage;
-
 	/**
 	 * Specifies which WebPage class will serve as the initial start-up point of your application
 	 * @param string $className The name of the class that extends WebPage, as a string
@@ -42,7 +41,6 @@ final class Application extends Object
 	{
 		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
 	}
-	
 	/**
 	 * Resets Application to original state
 	 * @param boolean $clearURLTokens Whether the URL Tokens will be cleared out
@@ -338,6 +336,7 @@ final class Application extends Object
 	{
 		$events = explode(',', $_POST['_NEvents']);
 		$eventCount = count($events);
+		$GLOBALS['_NSEFromClient'] = true;
 		for($i=0; $i<$eventCount; ++$i)
 		{
 			$eventInfo = explode('@', $events[$i]);
@@ -354,6 +353,7 @@ final class Application extends Object
 			else 
 				GetComponentById(substr($eventInfo[1], 0, strpos($eventInfo[1], 'i')))->ExecEvent($eventInfo[0], $eventInfo[1]);
 		}
+		unset($GLOBALS['_NSEFromClient']);
 	}
 
 	private function HandleTokens()
