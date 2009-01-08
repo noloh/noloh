@@ -643,26 +643,30 @@ abstract class Control extends Component
 			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
 		if($bool != $this->GetSelected())
 		{
-			//QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'Selected\'', (int)$bool), false);
 			if($this->GroupName !== null)
 				$group = GetComponentById($this->GroupName);
 			if($bool && $group && $this instanceof Groupable)
+			{
+				$GLOBALS['_NGroupDeselecting'] = $this->GroupName;
 				$group->Deselect();
+				unset($GLOBALS['_NGroupDeselecting']);
+			}
 			NolohInternal::SetProperty('Selected', (int)$bool, $this);
 			$this->Selected = $bool ? true : null;
 			$event = $this->GetEvent($bool ? 'Select' : 'Deselect');
 			if(!$event->Blank())
 				$event->Exec();
-			if($group)
+			if($group && (!isset($GLOBALS['_NGroupDeselecting']) || $GLOBALS['_NGroupDeselecting'] !== $this->GroupName))
 			{
 				$change = $group->GetEvent('Change');
 				if(!$change->Blank())
 					$change->Exec();
 			}
 		}
+		return $bool;
 	}
 	/**
-	 * Returns the id of the Group. This only makes sense in the context of Controls implementing Groupable or
+	 * Returns the Id of the Group. This only makes sense in the context of Controls implementing Groupable or
 	 * MultiGroupable and Added to a Group.
 	 * @return string
 	 */
@@ -671,7 +675,7 @@ abstract class Control extends Component
 		return $this->GroupName;
 	}
 	/**
-	 * Sets the id of the Group. This only makes sense in the context of Controls implementing Groupable or
+	 * Sets the Id of the Group. This only makes sense in the context of Controls implementing Groupable or
 	 * MultiGroupable and Added to a Group.
 	 * @param string $groupName
 	 */
