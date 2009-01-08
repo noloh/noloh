@@ -121,8 +121,8 @@ final class Animate
 		$numArgs = func_num_args();
 		if($numArgs >= 5)
 			++$numArgs;
-		Animate::Property($control, 'style.left', $toLeft, $duration, 'px', $easing, $from, $fps, $numArgs);
-		Animate::Property($control, 'style.top', $toTop, $duration, 'px', $easing, $from, $fps, $numArgs);
+		Animate::Property($control, 'style.left', $toLeft, $duration, 'px', $easing, $fromLeft, $fps, $numArgs);
+		Animate::Property($control, 'style.top', $toTop, $duration, 'px', $easing, $fromTop, $fps, $numArgs);
 	}
 	/**
 	 * Animates a specified Control's size horizontally
@@ -168,8 +168,8 @@ final class Animate
 		$numArgs = func_num_args();
 		if($numArgs >= 5)
 			++$numArgs;
-		Animate::Property($control, 'style.width', $toWidth, $duration, 'px', $easing, $from, $fps, $numArgs);
-		Animate::Property($control, 'style.height', $toHeight, $duration, 'px', $easing, $from, $fps, $numArgs);
+		Animate::Property($control, 'style.width', $toWidth, $duration, 'px', $easing, $fromWidth, $fps, $numArgs);
+		Animate::Property($control, 'style.height', $toHeight, $duration, 'px', $easing, $fromHeight, $fps, $numArgs);
 	}
 	/**
 	 * Animates a specified Control's scrollbar horizontally
