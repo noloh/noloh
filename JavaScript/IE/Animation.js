@@ -2,12 +2,16 @@
 
 function _NAni(id, prpty, to, duration, units, easing, from, fps)
 {
-	var display=false, count= _NAni.Active.length;
+	var display=false, triggerStart=true, count= _NAni.Active.length;
 	for(var i=0; i<count; ++i)
-		if(_NAni.Active[i] && _NAni.Active[i].ObjId == id && _NAni.Active[i].Property == prpty)
+		if(_NAni.Active[i] && _NAni.Active[i].ObjId == id)
 		{
-			_NAni.Active[i].CleanUp();
-			break;
+			triggerStart = false;
+			if(_NAni.Active[i].Property == prpty)
+			{
+				_NAni.Active[i].CleanUp();
+				break;
+			}
 		}
 	this.ObjId = id;
 	this.Obj = id == "N1" ? document.documentElement : _N(id);
@@ -48,7 +52,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	this.LastDelta = 0;
 	if(this.Obj.ShiftsWith)
 		this.ShiftType = prpty=="style.width"?1: prpty=="style.height"?2: prpty=="style.left"?4: 5;
-	if(this.Obj.AnimationStart)
+	if(this.Obj.AnimationStart && triggerStart)
 		this.Obj.AnimationStart();
 	++_NAni.ActiveCount;
 	_NAni.Active.push(this);
@@ -106,7 +110,13 @@ _NAni.prototype.FinishingTouches = function()
 		_NSetProperty(this.ObjId, 'style.display', 'none');
 	}
 	if(this.Obj.AnimationStop)
+	{
+		var count= _NAni.Active.length;
+		for(var i=0; i<count; ++i)
+			if(_NAni.Active[i] && _NAni.Active[i].ObjId == this.ObjId && i != this.Index)
+				return;
 		this.Obj.AnimationStop();
+	}
 }
 _NAni.prototype.CleanUp = function()
 {
