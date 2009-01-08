@@ -53,33 +53,33 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	/**
 	 * Adds an element to the Group.
 	 * @param mixed $element The element to be added 
-	 * @param boolean $setByReference Indicates whether the Group sets by reference as opossed to by value
 	 * @return mixed The element that has been added
 	 */
-	function Add($element, $setByReference = true)
+	function Add($element)
 	{
 		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
 			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 		$element->SetGroupName($this->Id);
 		/*if($this->GetShowStatus())
 			NolohInternal::SetProperty('Group', $this->Id, $element);*/
-		$this->Groupees->Add($element, $setByReference);
+		$this->Groupees->Add($element);
 		return $element;
 	}
 	/**
-	 * Adds an unlimited number elements to the Group.
-	 * <pre>$group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);</pre>
+	 * Adds an unlimited number elements to the Group, or the contents (keys will not be preserved) of one array if that is the lone parameter.
 	 * @param mixed ... Unlimited number of elements to be added
+	 * <pre>
+	 * // The following two statements have the same effect.
+	 * $group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);
+	 * $group->AddRange(array($firstElement, $secondElement, $thirdElement, $fourthElement));
+	 * </pre>
 	 */
 	function AddRange($dotDotDot)
 	{
-		$args = func_get_args();
-		$numArgs = count($args);
-		for($i = 0; $i < $numArgs; ++$i)
-			if($args[$i] instanceof Component)
-				$this->Add(GetComponentById($args[$i]->Id));
-			else 
-				$this->Add($args[$i]);
+		$numArgs = func_num_args();
+		$args = $numArgs === 1 && (is_array($dotDotDot) || $dotDotDot instanceof Iterator) ? $dotDotDot : func_get_args();
+		foreach($args as $val)
+			$this->Add($val);
 	}
 	/**
 	 * Inserts an element into a particular index of the Group, not overwriting what was previously there.
@@ -165,7 +165,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function SetSelectedIndex($index)
 	{
-		if($index == -1 || $index === null)
+		if($index === -1 || $index === null)
 			$this->Deselect(true);
 		else
 			$this->SetSelectedElement($this->Groupees[$index]);
@@ -218,7 +218,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(!isset($GLOBALS['_NGroupSelecting'.$this->Id]))
 		{
 			$oldElement = $this->GetSelectedElement();
-			if($oldElement != null && ($deselectMultiGroupables || !($oldElement instanceof MultiGroupable)))
+			if($oldElement !== null && ($deselectMultiGroupables || !($oldElement instanceof MultiGroupable)))
 				$oldElement->SetSelected(false);
 		}
 	}
@@ -229,9 +229,12 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function GetSelectedElement()
 	{
 		$tmpIndex = $this->GetSelectedIndex();
-		return $tmpIndex != -1?$this->Groupees->Elements[$tmpIndex]:null;
+		return $tmpIndex !== -1 ? $this->Groupees->Elements[$tmpIndex] : null;
 	}
-	
+	/**
+	 * Returns an array of all Selected elements
+	 * @return array
+	 */
 	function GetSelectedElements()
 	{
 		$array = array();
@@ -262,9 +265,12 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function GetSelectedText()
 	{
-		return ($element = $this->GetSelectedElement()) != null ? $element->GetText() : '';
+		return ($element = $this->GetSelectedElement()) !== null ? $element->GetText() : '';
 	}
-	
+	/**
+	 * Returns an array of all selected texts
+	 * @return array
+	 */
 	function GetSelectedTexts()
 	{
 		$array = array();
@@ -379,9 +385,11 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function offsetSet($index, $val)		
 	{
 		if($index === null)
-			$this->Add($val, true);
+			$this->Add($val);
 		else
 		{
+			if(!($val instanceof Groupable || $val instanceof MultiGroupable))
+				BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
 			$val->SetGroupName($this->Id);
 			/*if($this->GetShowStatus())
 				NolohInternal::SetProperty('Group', $this->Id, $val);*/
