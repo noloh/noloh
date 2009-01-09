@@ -113,13 +113,20 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return $this->Groupees->Remove($element);		
 	}
 	/**
-	 * Removes an element at a particular index. 
+	 * Removes an element at a particular index. An element must exist there or an error is given.
 	 * If the index is an integer, the Group is reindexed to fill in the gap.
 	 * @param integer|string $index The index of the element to be removed
+	 * @return The element that was removed
 	 */
 	function RemoveAt($index)
 	{
-		$this->Remove($this->Groupees->Elements[$index]);
+		if(isset($this->Groupees->Elements[$index]))
+		{
+			$this->Remove($element = $this->Groupees->Elements[$index]);
+			return $element;
+		}
+		else 
+			BloodyMurder('Index ' . $index . ' does not exist and cannot be removed from the group');
 	}
 	/**
 	 * Clears the Group.
@@ -148,7 +155,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return -1;
 	}
 	/**
-	 * Returns an array of selected indices
+	 * Returns an array of selected indices, itself indexed numerically.
 	 * @return array
 	 */
 	function GetSelectedIndices()
@@ -160,43 +167,48 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return $array;
 	}
 	/**
-	 * Selects the element which is at a particular index, or Deselects if the parameter is -1 or null
+	 * Selects the element which is at a particular index, or Deselects if the parameter is -1 or null. If attempting to set, be sure that an element exists at that index, or an error will be given.
 	 * @param integer|string $index
+	 * @return $element The element that is selected
 	 */
 	function SetSelectedIndex($index)
 	{
 		if($index === -1 || $index === null)
 			$this->Deselect(true);
-		else
-			$this->SetSelectedElement($this->Groupees[$index]);
+		elseif(isset($this->Groupees[$index]))
+		{
+			$this->SetSelectedElement($element = $this->Groupees[$index]);
+			return $element;
+		}
+		BloodyMurder('Index ' . $index . ' does not exist and cannot be selected in a group.');
 	}
 	/**
-	 * Returns the Value of the first selected element of the Group, or null if it is not found
+	 * Returns the Value of the first selected element of the Group, or its Text if the element has a null Value, or null if no element is selected.
 	 * @return mixed
 	 */
 	function GetSelectedValue()
 	{
-		if(($element = $this->GetSelectedElement()) != null)
-			return ($element->HasProperty('Value') && ($tmpValue = $element->Value !== null))?$tmpValue:$element->Text;
+		if(($element = $this->GetSelectedElement()) !== null)
+			return ($element->HasProperty('Value') && (($tmpValue = $element->Value) !== null))?$tmpValue:$element->Text;
 		else
 			return null;
 	}
 	/**
-	 * Returns an array of selected values
+	 * Returns an array of selected values, indexed numerically.
 	 * @return array
 	 */
 	function GetSelectedValues()
 	{
 		$array = array();
-		foreach($this->Groupees as $index => $groupee)
+		foreach($this->Groupees as $groupee)
 			if($groupee->GetSelected())
-//				$array[] = ($tmpValue = $element->Value) == null?$element->Text:$tmpValue;
-				$array[] = ((method_exists($groupee, 'GetValue') || property_exists($groupee, 'Value')) && ($tmpValue = $groupee->Value !== null))?$tmpValue:$groupee->Text;
+				$array[] = ($groupee->HasProperty('Value') && (($tmpValue = $groupee->Value) !== null))?$tmpValue:$groupee->Text;
 		return $array;
 	}
 	/**
-	 * Selects the first element which has a particular Value
-	 * @param string $value
+	 * Selects the first element which has a particular Value, or if an element does not have a Value property, its Text is compared instead.
+	 * @param string $value The Value to be selected
+	 * @return mixed The element that was selected, or null if no matches were found
 	 */
 	function SetSelectedValue($value)
 	{
@@ -208,10 +220,12 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			}
 			elseif($groupee->GetText() == $value)
 				return $this->SetSelectedElement($groupee);
+		return null;
 	}
 	/**
 	 * Deselects the first Selected element
 	 * @param boolean $deselectMultiGroupables
+	 * @return mixed The element that was deselected, or null if nothing was selected
 	 */
 	function Deselect($deselectMultiGroupables = false)
 	{
@@ -219,11 +233,15 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		{
 			$oldElement = $this->GetSelectedElement();
 			if($oldElement !== null && ($deselectMultiGroupables || !($oldElement instanceof MultiGroupable)))
+			{
 				$oldElement->SetSelected(false);
+				return $oldElement;
+			}
 		}
+		return null;
 	}
 	/**
-	 * Returns the first element that is Selected, or null if none are
+	 * Returns the first element that is Selected, or null if no matches are found.
 	 * @return mixed
 	 */
 	function GetSelectedElement()
@@ -232,20 +250,21 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return $tmpIndex !== -1 ? $this->Groupees->Elements[$tmpIndex] : null;
 	}
 	/**
-	 * Returns an array of all Selected elements
+	 * Returns an array of all Selected elements, indexed numerically.
 	 * @return array
 	 */
 	function GetSelectedElements()
 	{
 		$array = array();
-		foreach($this->Groupees as $index => $groupee)
+		foreach($this->Groupees as $groupee)
 			if($groupee->GetSelected())
 				$array[] = $groupee;
 		return $array;
 	}
 	/**
-	 * Selects a particular element
+	 * Selects a particular element.
 	 * @param mixed $element
+	 * @return mixed The element that was selected
 	 */
 	function SetSelectedElement($element)
 	{
@@ -257,10 +276,11 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			//	$oldElement->SetSelected(false);
 			$element->SetSelected(true);
 			unset($GLOBALS['_NGroupSelecting'.$this->Id]);
-		}	
+		}
+		return $element;
 	}
 	/**
-	 * Returns Text of the first element of the Group, or the empty string if it is not found
+	 * Returns Text of the first Selected element of the Group, or the empty string if no matches are found.
 	 * @return string
 	 */
 	function GetSelectedText()
@@ -268,19 +288,19 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return ($element = $this->GetSelectedElement()) !== null ? $element->GetText() : '';
 	}
 	/**
-	 * Returns an array of all selected texts
+	 * Returns an array of all selected texts, indexed numerically.
 	 * @return array
 	 */
 	function GetSelectedTexts()
 	{
 		$array = array();
-		foreach($this->Groupees as $index => $groupee)
+		foreach($this->Groupees as $groupee)
 			if($groupee->GetSelected())
 				$array[] = $groupee->Text;
 		return $array;
 	}
 	/**
-	 * Selects the first element which has a particular Text
+	 * Selects the first element with a specified Text.
 	 * @param string $text
 	 */
 	function SetSelectedText($text)
