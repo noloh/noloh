@@ -72,7 +72,7 @@ class TreeList extends Panel
 	function SetSelectedTreeNode($treeNode)
 	{
 		$this->SelectedTreeNodes = array($treeNode->Id);
-		QueueClientFunction($treeNode, '_NTreeSlct', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\'', 'Object()'));
+		QueueClientFunction($treeNode, '_NTreeSlct', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\''));
 		$treeNode->ExpandToShow();
 	}
 	function GetSelectedTreeNodes()

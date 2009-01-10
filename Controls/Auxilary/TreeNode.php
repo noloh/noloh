@@ -261,7 +261,7 @@ class TreeNode extends Panel
 	{
 		$this->TreeListId = $newId;
 		NolohInternal::SetProperty('ListId', $newId, $this);
-		$this->Element->Click['_N'] = new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
+		$this->Element->Click['_N'] = new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'");');
 	}
 	/**
 	 * @ignore
@@ -361,7 +361,7 @@ class TreeNode extends Panel
 	
 	function SetSelected($bool)
 	{
-		if($this->TreeListId != null)
+		if($this->TreeListId !== null)
 		{
 			if($bool)
 				GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);

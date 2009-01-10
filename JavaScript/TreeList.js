@@ -4,7 +4,7 @@ function _NTreeInit(id)
 	tree.SelectedElements = [];
 	tree.SelectedNodes = "";
 }
-function _NTreeSlct(nodeId, elementId, event)
+function _NTreeSlct(nodeId, elementId)
 {
 	var node = _N(nodeId);
 	var tree = _N(node.ListId);
@@ -14,7 +14,7 @@ function _NTreeSlct(nodeId, elementId, event)
 	else if (window.getSelection)
 		window.getSelection().removeAllRanges();
 	
-	if(event.ctrlKey)
+	if(!event || event.ctrlKey)
 	{
 		var elementsLength = tree.SelectedElements.length;
 		for(var i=0; i<elementsLength; ++i)
