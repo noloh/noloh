@@ -509,6 +509,14 @@ function _NReqStateChange()
 }
 function _NSE(eventType, id, uploads)
 {
+	if(_N.SEQ.Started != null)
+	{
+		for(var i=_N.SEQ.Started; i<_N.SEQ.length; ++i)
+			if(_N.SEQ[i][0] == eventType && _N.SEQ[i][1] == id)
+				_N.SEQ.splice(i--, 1);
+	}
+	else
+		_N.SEQ.Started = _N.SEQ.length;
 	_N.SEQ.push([eventType, id]);
 	if(uploads)
 		_N.Uploads.splice(-1, 0, uploads);
