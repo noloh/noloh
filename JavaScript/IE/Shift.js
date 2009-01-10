@@ -10,7 +10,6 @@ function _NShftSta(objArray)
 	_N.ShiftObjArray.CursorX = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
 	_N.ShiftObjArray.CursorY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
 	document.attachEvent("onmousemove", _NShftFirstGo);
-	document.attachEvent("onmousemove", _NShftGo);
 	document.attachEvent("onmouseup", _NShftStp);
 	window.event.cancelBubble = true;
 	window.event.returnValue = false;
@@ -47,6 +46,7 @@ function _NShftFirstGo()
 	delete _N.ShiftObjArray.ObjsWithStart;
 	_N.ShiftObjArray.HasMoved = true;
 	document.detachEvent("onmousemove", _NShftFirstGo);
+	document.attachEvent("onmousemove", _NShftGo);
 }
 function _NShftGo()
 {
@@ -80,16 +80,19 @@ function _NShftProcObj(info, propNum, propStr, axis, startPx, delta, shiftsWith,
 {
 	if(delta)
 	{
-		var maxBound;
+		startPx = parseInt(startPx);
+		var maxBound, minBound = info[2]?info[2]:startPx<0?null:0;
 		if(opposite)
 		{
 			var tmp, parent = _N(info[0]).parentNode;
-			maxBound = Math.max((axis ? (parent.id == "N1" ? parent.Width : (tmp=parent.style.width)?parseInt(tmp):(parent.offsetWidth-(isNaN(tmp=parseInt(parent.style.borderLeftWidth))?0:(2*tmp))))
-									  : (parent.id == "N1" ? parent.Height : (tmp=parent.style.height)?parseInt(tmp):(parent.offsetHeight-(isNaN(tmp=parseInt(parent.style.borderTopWidth))?0:(2*tmp))))) - parseInt(opposite), 0);
+			maxBound = (axis ? (parent.id == "N1" ? parent.Width : (tmp=parent.style.width)?parseInt(tmp):(parent.offsetWidth-(isNaN(tmp=parseInt(parent.style.borderLeftWidth))?0:(2*tmp))))
+							 : (parent.id == "N1" ? parent.Height : (tmp=parent.style.height)?parseInt(tmp):(parent.offsetHeight-(isNaN(tmp=parseInt(parent.style.borderTopWidth))?0:(2*tmp))))) - parseInt(opposite);
+			if(startPx > maxBound)
+				maxBound = null;
 		}
 		else
 			maxBound = info[3];
-		if((delta = _NShftObj(info[0], propStr, parseInt(startPx), delta, info[2]?info[2]:0, maxBound, info[5], info[6], info[7]))
+		if((delta = _NShftObj(info[0], propStr, startPx, delta, minBound, maxBound, info[5], info[6], info[7]))
 			&& shiftsWith && shiftsWith[propNum])
 				_NShftObjs(shiftsWith[propNum], delta, delta);
 	}
@@ -141,8 +144,11 @@ function _NShftStp()
 		_N.ShiftObjArray[j][0] = _N.ShiftObjArray[j][0].replace("_Ghost", "");
 	}
 	if(_N.ShiftObjArray.HasMoved)
+	{
 		for(var id in _N.ShiftObjArray.ObjsWithStop)
 			_N.ShiftObjArray.ObjsWithStop[id].ShiftStop();
+		document.detachEvent("onmousemove", _NShftGo);
+	}
 	else
 	{
 		var obj;
@@ -153,10 +159,9 @@ function _NShftStp()
 			if(obj.onclick)
 				obj.onclick.call(obj, event);
 		}
+		document.detachEvent("onmousemove", _NShftFirstGo);
 	}
 	_N.ShiftObjArray = null;
-	document.detachEvent("onmousemove", _NShftFirstGo);
-	document.detachEvent("onmousemove", _NShftGo);
 	document.detachEvent("onmouseup", _NShftStp);
 }
 function _NShftWth(objectId)
