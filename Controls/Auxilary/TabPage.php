@@ -10,18 +10,19 @@ class TabPage extends Panel
 {
 	private $RolloverTab;
 	
-	function TabPage($tabName='TabPage', $rolloverTab = null)
+	function TabPage($tabName='TabPage')
 	{
 		parent::Panel(0, 0, '100%', '100%');
-		$this->Text = $tabName;
-		$this->SetRolloverTab($rolloverTab);
+		$this->SetRolloverTab($tabName);
 	}
 	public function SetRolloverTab($rolloverTab = null)
 	{
-		if($rolloverTab == null)
-			$rolloverTab = new RolloverTab($this->Text, null, null);
+		if(is_string($rolloverTab))
+			$rolloverTab = new RolloverTab($rolloverTab);
 		$this->RolloverTab = $rolloverTab;
 	}
 	public function GetRolloverTab(){return $this->RolloverTab;}
+	public function SetText($text)	{$this->RolloverTab->SetText($text);}
+	public function GetText()		{return $this->RolloverTab->GetText();}
 }
 ?>

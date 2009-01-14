@@ -99,13 +99,13 @@ class RolloverTab extends Panel implements Groupable
 	/**
 	 * @ignore
 	 */
-	function GetText()	{return $this->TextObject->Text;}
+	function GetText()	{return $this->TextObject->GetText();}
 	/**
 	 * @ignore
 	 */
 	function SetText($text)
 	{
-		$this->TextObject->Text = $text;
+		$this->TextObject->SetText($text);
 	}
 	/**
 	 * @ignore

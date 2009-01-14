@@ -26,7 +26,7 @@ class TabPanel extends Panel
 		$this->Tabs = new Group();
 		$this->Tabs->Change = new ClientEvent('_NTbPgSt', $this->Id, $this->Tabs->Id);
 		
-		$this->TabBar = new Panel(0, 0, '100%', 25);
+		$this->TabBar = new Panel(0, 0, '100%', 0);
 		$this->Body = new Panel(0, 0, '100%', null, $this);
 		
 		$this->SetWidth($width);
@@ -74,7 +74,9 @@ class TabPanel extends Panel
 			$this->TabPanelBar->Height = $temp->Height;
 			$this->TabPagesPanel->Height = ($this->Height - $this->TabPanelBar->Height);
 		}*/
-		if(($tabHeight = $rolloverTab->GetHeight()) != $this->TabBar->GetHeight())
+		$tabHeight = $rolloverTab->GetHeight();
+		
+		if($tabHeight > $this->TabBar->GetHeight())
 		{
 			$this->TabBar->SetHeight($tabHeight);
 			$this->SetHeight($this->Height);
