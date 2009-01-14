@@ -53,6 +53,7 @@ class ColumnHeader extends Panel
 			$this->OrderArrow = new Image($arrowPath, $this->GetWidth() - 17, 12);
 			$this->OrderArrow->ParentId = $this->Id;
 			$this->SizeHandle->Shifts[] = Shift::Left($this->OrderArrow);
+//			$this->SizeHandle->Shifts[] = Shift::Width($this);
 //			$this->OrderArrow->Shifts[] = Shift::With($this, Shift::Left);
 		}
 		else
