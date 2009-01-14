@@ -12,7 +12,7 @@ class Menu extends Panel
 	public $MenuItems;
 	public $Type = 'Click';
 	
-	function Menu($left = 0, $top = 0, $width = 0)
+	function Menu($left = 0, $top = 0, $width = 0, $behavior=self::MouseOver)
 	{
 		parent::Panel($left, $top, $width, 18, $this);
 		$this->BackColor = '#F1F1ED';
@@ -27,20 +27,35 @@ class Menu extends Panel
 	{
 		if(is_string($menuItem))
 			$menuItem = new MenuItem($menuItem);
-		$tmpCount = $this->MenuItems->Count();
-		if($tmpCount > 0)
-			$menuItem->SetLeft($this->MenuItems->Elements[$tmpCount -1]->GetRight());
-		else
-			$menuItem->SetLeft(0);
+
+		$left = (($count = $this->MenuItems->Count()) > 0)?$this->MenuItems->Elements[$count -1]->GetRight():0;
+		$menuItem->SetLeft($left);
+		
 		$menuItem->MenuItemsPanel->SetLeft(0);
 		$menuItem->MenuItemsPanel->SetTop($menuItem->GetBottom());
-		$menuItem->CSSText_Align = 'center';
+		$menuItem->CSSTextAlign = 'center';
 		$menuItem->MenuItemsPanel->Buoyant = true;
-		$this->MenuItems->Add($menuItem, true, true);
+		$this->MenuItems->Add($menuItem, true);
 		$menuItem->SetWidth($menuItem->GetWidth());
 		
 		NolohInternal::SetProperty('IsMnu','true', $menuItem);
 		return $menuItem;
+	}
+	function SetTrigger($trigger, $showDelay=0)
+	{
+		
+	}
+	function SetChecked($bool)
+	{
+	}
+	/**
+	 * Sets the orientation of the Menu. This determines whether the menu will be stacked horizontally or vertically.
+	 *
+	 * @param mixed $orientation
+	 */
+	function SetOrientation($orientation)
+	{
+		
 	}
 }
 ?>
