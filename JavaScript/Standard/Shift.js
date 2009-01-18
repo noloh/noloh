@@ -113,24 +113,25 @@ function _NShftStp(event)
 	var count;
 	if((count = _N.Catchers.length) && _N.ShiftObjArray.HasMoved)
 	{
-		var Catcher, CatcherLeft, CatcherTop, DroppedX, DroppedY, j;
+		var catcher, catcherLeft, catcherTop, droppedX, droppedY, j, id, tmp, caught = [];
 		_N.EventVars.Caught = [];
-		DroppedX = event.clientX + window.pageXOffset;
-		DroppedY = event.clientY + window.pageYOffset;
+		droppedX = event.clientX + window.pageXOffset;
+		droppedY = event.clientY + window.pageYOffset;
 		for(var i=0; i<count; ++i)
 			if(_NAvail(_N.Catchers[i]))
 			{
-				Catcher = _N(_N.Catchers[i]);
-				CatcherX = _NFindX(_N.Catchers[i]);
-				CatcherY = _NFindY(_N.Catchers[i]);
-				if(DroppedX >= CatcherX && DroppedX < CatcherX + (Catcher.style.width==""?80:parseInt(Catcher.style.width,10)) && DroppedY >= CatcherY && DroppedY < CatcherY + (Catcher.style.height==""?20:parseInt(Catcher.style.height,10)))
+				catcher = _N(_N.Catchers[i]);
+				catcherX = _NFindX(_N.Catchers[i]);
+				catcherY = _NFindY(_N.Catchers[i]);
+				if(droppedX >= catcherX && droppedX < catcherX + ((tmp=catcher.style.width)==""?(tmp=catcher.offsetWidth?tmp:80):parseInt(tmp)) && droppedY >= catcherY && droppedY < catcherY + ((tmp=catcher.style.height)==""?(tmp=catcher.offsetHeight?tmp:20):parseInt(tmp)))
 					for(j=0; j<_N.ShiftObjArray.length; ++j)
-						if(4 <= _N.ShiftObjArray[j][1] && _N.ShiftObjArray[j][1] <= 6 && _N.Catchers[i]!=_N.ShiftObjArray[j][0].replace("_Ghost",""))
-							_N.EventVars.Caught.push(_N.ShiftObjArray[j][0].replace("_Ghost",""));
+						if(4 <= _N.ShiftObjArray[j][1] && _N.ShiftObjArray[j][1] <= 6 && _N.Catchers[i]!=(id=_N.ShiftObjArray[j][0].replace("_Ghost","")) && !caught[id])
+							_N.EventVars.Caught.push(caught[id] = id);
 				if(_N.EventVars.Caught.length)
 				{
-					Catcher.DragCatch();
-					delete _N.EventVars.Caught;
+					catcher.DragCatch();
+					if(!_N.SEQ.length)
+						delete _N.EventVars.Caught;
 				}
 			}
 	}
