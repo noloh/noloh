@@ -321,12 +321,14 @@ final class Application extends Object
 			for($i = 0; $i < $numComponents; ++$i)
 			{
 				$changes = explode('~d1~', $componentChanges[$i]);
-				$GLOBALS['_NQueueDisabled'] = $changes[0];
-				$component = &GetComponentById($changes[0]);
-				$changeCount = count($changes);
-				$j = 0;
-				while(++$j < $changeCount)
-					$component->{isset($lookUp[$prop = $changes[$j]]) ? $lookUp[$prop] : ('Set'.$prop)}($changes[++$j]);
+				if($component = &GetComponentById($changes[0]))
+				{
+					$GLOBALS['_NQueueDisabled'] = $changes[0];
+					$changeCount = count($changes);
+					$j = 0;
+					while(++$j < $changeCount)
+						$component->{isset($lookUp[$prop = $changes[$j]]) ? $lookUp[$prop] : ('Set'.$prop)}($changes[++$j]);
+				}
 			}
 		}
 		$GLOBALS['_NQueueDisabled'] = null;
