@@ -138,8 +138,8 @@ abstract class CheckControl extends Control
 		parent::SetSelected($bool);
 		if($this->GetShowStatus() !== 0)
 			QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"checked"', $bool?1:0));
-		return;
-
+		return $bool;
+		/*
 		$newChecked = $bool ? true : null;
 		if($this->Checked != $newChecked)
 		{
@@ -158,6 +158,7 @@ abstract class CheckControl extends Control
 				$group->Change->Exec();
 		}
 		return $newChecked;
+		*/
 	}
 	/*
 	function SetLeft($newLeft)

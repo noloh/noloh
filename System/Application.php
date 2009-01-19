@@ -342,7 +342,7 @@ final class Application extends Object
 		for($i=0; $i<$eventCount; ++$i)
 		{
 			$eventInfo = explode('@', $events[$i]);
-			if($obj = GetComponentById($eventInfo[1]))
+			if($obj = &GetComponentById($eventInfo[1]))
 	        {
 	            $execClientEvents = false;
 				$obj->GetEvent($eventInfo[0])->Exec($execClientEvents);

@@ -369,7 +369,7 @@ class Event extends Object implements ArrayAccess
 	 */
 	function __get($nm)
 	{
-		if($nm == 'Uploads' && is_array($this->ExecuteFunction))
+		if($nm === 'Uploads' && is_array($this->ExecuteFunction))
 		{
 			foreach($this->ExecuteFunction as $event)
 				if($event instanceof ServerEvent)
