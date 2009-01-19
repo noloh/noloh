@@ -239,7 +239,7 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {var liq=(event.srcElement.id=='"+id+"'); ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}");
+	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {var liq=(event.srcElement.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}}");
 	return func;
 }
 function _NSave(id, property, value)
@@ -473,6 +473,10 @@ function _NProcessResponse(response)
 	else
 		eval(response[1]);
 }
+function _NAlertError()
+{
+	alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
+}
 function _NUnServer()
 {
 	_N(_N.LoadImg).style.visibility = "hidden";
@@ -485,7 +489,7 @@ function _NReqStateChange()
 	if(_N.Request.readyState == 4)
 	{
    		var response = _N.Request.responseText.split("/*_N*/", 2);
-   		if(typeof _N.DebugMode == "undefined")
+   		if(typeof _N.DebugMode == null)
 		{
 			_NProcessResponse(response);
 			_NUnServer();
@@ -498,7 +502,7 @@ function _NReqStateChange()
 	   		}
 	   		catch(err)
 	   		{
-				alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
+				_NAlertError(err);
 	   		}
 	        finally
 	        {

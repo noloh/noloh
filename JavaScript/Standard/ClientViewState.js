@@ -182,7 +182,7 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {if(e) event=e; var liq=(event && event.target.id=='"+id+"'); ++_N.EventDepth;" + code + "; if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}");
+	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {if(e) event=e; var liq=(event && event.target.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}}");
 	return func;
 }
 function _NSave(id, property, value)
@@ -424,6 +424,10 @@ function _NProcessResponse(response)
 	else
 		eval(response[1]);
 }
+function _NAlertError(err)
+{
+	alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
+}
 function _NUnServer(loadImg, loadLbl)
 {
 	_N.LoadImg = loadImg;
@@ -439,7 +443,7 @@ function _NReqStateChange()
    		var response = _N.Request.responseText.split("/*_N*/", 2);
         var loadImg = _N.LoadImg;
         var loadLbl = _N.LoadLbl;
-		if(typeof _N.DebugMode == "undefined")
+		if(typeof _N.DebugMode == null)
 		{
 			_NProcessResponse(response);
 			_NUnServer(loadImg, loadLbl);
@@ -451,7 +455,7 @@ function _NReqStateChange()
 	   		}
 	   		catch(err)
 	   		{
-				alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
+				_NAlertError(err);
 	   		}
 	        finally
 	        {
