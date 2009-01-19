@@ -148,6 +148,7 @@ class ServerEvent extends Event
 				return;
 		$execClientEvents = true;
 		
+		/*
 		$runThisString = 'return ';
 		if(is_object($this->Owner))
 			if($this->Owner instanceof Pointer)
@@ -169,15 +170,25 @@ class ServerEvent extends Event
 		}
 		else 
 			$runThisString .= ';';
+		*/
 		
 		$source = Event::$Source;
 		$handles = array();
 		$this->GetDeepHandles($handles);
-		if(count($handles) == 1)
+		if(count($handles) === 1)
 			Event::$Source = &$handles[0];
 		else
 			Event::$Source = $handles;
-		$return = eval($runThisString);
+		
+		if(is_object($this->Owner))
+			if($this->Owner instanceof Pointer)
+				$callBack = array($this->Owner->Dereference(), $this->ExecuteFunction);
+			else
+				$callBack = array($this->Owner, $this->ExecuteFunction);
+		else 
+			$callBack = $this->ExecuteFunction;
+		$return = call_user_func_array($callBack, $this->Parameters);
+		
 		Event::$Source = &$source;
 		return $return;
 	}
