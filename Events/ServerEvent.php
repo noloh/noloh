@@ -185,6 +185,8 @@ class ServerEvent extends Event
 				$callBack = array($this->Owner->Dereference(), $this->ExecuteFunction);
 			else
 				$callBack = array($this->Owner, $this->ExecuteFunction);
+		elseif(is_string($this->Owner))
+			$callBack = array($this->Owner, $this->ExecuteFunction);
 		else 
 			$callBack = $this->ExecuteFunction;
 		$return = call_user_func_array($callBack, $this->Parameters);
