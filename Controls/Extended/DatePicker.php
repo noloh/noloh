@@ -92,7 +92,7 @@ class DatePicker extends Panel
 	function SetTimestamp($timestamp)
 	{
 		$this->Calendar->SetTimestamp($timestamp);
-		QueueClientFunction($this, '_N(\''.$this->Calendar->Id.'\').onchange', array());
+		//QueueClientFunction($this, '_N(\''.$this->Calendar->Id.'\').onchange', array());
 	}
 	/**
 	 * Returns the currently used format of the display of the DatePicker

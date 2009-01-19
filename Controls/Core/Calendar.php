@@ -101,7 +101,7 @@ class Calendar extends Panel
 	function SetViewMonth($viewMonth)
 	{
 		$this->ViewMonth = $viewMonth;
-		$this->UpdateClient();
+		$this->UpdateClient(false);
 	}
 	/**
 	 * Returns the year that is currently being viewed, which is not necessarily the same as the one that is selected.
@@ -118,7 +118,7 @@ class Calendar extends Panel
 	function SetViewYear($viewYear)
 	{
 		$this->ViewYear = $viewYear;
-		$this->UpdateClient();
+		$this->UpdateClient(false);
 	}
 	/**
 	 * Returns the selected date
@@ -229,9 +229,11 @@ class Calendar extends Panel
 	/**
 	 * @ignore
 	 */
-	function UpdateClient()
+	function UpdateClient($triggerChange = true)
 	{
 		QueueClientFunction($this, '_NCalShow', array('\''.$this->Id.'\'', $this->ViewMonth, $this->ViewYear, $this->Date, $this->Month, $this->Year), true, Priority::High);
+		if($triggerChange && !$this->GetChange()->Blank())
+			$this->GetChange()->Exec();
 	}
 	/**
 	 * @ignore
