@@ -82,9 +82,9 @@ class ListView extends Panel
 		}
 //		$column->SetLayout(Layout::Relative);
 //		$column->CSScssFloat = 'left';
-		if(($right = $column->GetRight()) > $this->GetWidth())
-			$this->InnerPanel->SetWidth($right);
-
+//		if(($right = $column->GetRight()) > $this->GetWidth())
+		$right = $column->GetRight();
+		$this->InnerPanel->SetWidth($right);
 		$this->MakeColumnShift($column);
 		$column->SetListView($this->Id);
 		$this->ColumnsPanel->BringToFront();
@@ -251,6 +251,8 @@ class ListView extends Panel
 //				$this->HeightSpacer->SetVisible(false);
 				$this->HeightSpacer->ParentId = $this->BodyPanelsHolder->Id;
 			}
+			else
+				$this->HeightSpacer->SetHeight($numRows * 20);
 			$this->ApproxCount = $numRows;
 			$sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
 			$this->DataSource = new DataCommand($dataSource->GetConnection(), $sql, $dataSource->ResultType);
@@ -324,6 +326,8 @@ class ListView extends Panel
 					$this->DataFetch['Bind']->Enabled = false;
 				elseif($this->GetDataFetch('Bind')->Blank())
 					$this->DataFetch['Bind'] = new ServerEvent($this, 'Bind');
+				else
+					$this->DataFetch['Bind']->Enabled = true;
 			}
 			$this->CurrentOffset = $offset + $limit;
 		}
