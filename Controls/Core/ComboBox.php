@@ -75,6 +75,88 @@ class ComboBox extends ListControl
 	}
 	/**
 	 * @ignore
+	 * 
+	 * constraints
+	 *field, array(text, key) or array(array(field, false), array(text, key)) or array(array(field, false), array(field, key), field or array(field))) 
+	 */
+	function Bind($dataSource, $constraints=null, $title='- Select Item -', $rowCallback=null)
+	{
+		$this->Items->Clear();
+		if($title)
+		{
+			if($title instanceof Item)
+				$this->Items->Add($title);
+			else
+				$this->Items->Add(new Item($title, null));
+		}
+			
+		$textField = null;
+		$keyField = null;	
+		
+		if(isset($constraints))
+		{
+			if(is_array($constraints))
+			{
+				$count = count($constraints);
+				$properties = array(null, null);
+				
+				for($i=0; $i < $count; ++$i)
+				{
+					if(is_array($constraints[$i]))
+					{
+						/*$currentProperty = 0;
+						//0=>text, 1=>key
+						foreach($constraints[$i] as $constraint => $value)
+						{
+							if(is_string($constraint))
+							{
+								$constraint = strtolower($constraint);
+								if(strtolower($constraint) == 'name')
+									$properties[0] = $value;
+								elseif(strtolower($constraint) == 'title')
+									$properties[1] = $value;
+								elseif(strtolower($constraint) == 'width')
+									$properties[2] = $value;
+							}
+							else
+								$properties[$currentProperty++] = $value;
+						}*/
+					}
+					else
+						$properties[$i] = $constraints[$i];
+					
+					/*if($properties[1] !== false)
+					{
+						$this->DataColumns[] = $i;
+						$this->AddColumn($properties[1], $properties[2]);
+					}
+					if($properties[0])
+						$columns[] = $properties[0];
+					*/
+				}
+				if(isset($properties[0]))
+					$textField = $properties[0];
+				if(isset($properties[1]))
+					$keyField = $properties[1];
+			}
+			else
+				$textField = $constraints;	
+		}
+			
+				
+		if($dataSource instanceof DataReader || is_array($dataSource))
+		{
+			foreach($dataSource as $row)
+				if($keyField)
+					$this->Items->Add(new Item($row[$textField], $row[$keyField]));
+				elseif($textField)
+					$this->Items->Add($row[$textField]);
+				else
+					$this->Items->Add($row);
+		}			
+	}
+	/**
+	 * @ignore
 	 */
 	function Show()
 	{
