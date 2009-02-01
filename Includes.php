@@ -112,6 +112,8 @@ function _NAutoLoad($class)
 	
 	if(isset($_NAutoLoad[$class]))
 		require($_NPath . $_NAutoLoad[$class]);
+	elseif(is_dir($dir = ($_NPath . 'Nodules/' . $class)))
+		require($dir . '/' . $class . '.php');
 	elseif(function_exists('__autoload'))
 		__autoload($class);
 	else 
