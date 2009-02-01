@@ -5,7 +5,7 @@ function _NCMShow(event, obj)
 	contextMenu.style.left = event.pageX + "px";
 	contextMenu.style.top = event.pageY + "px";
 	_N.EventVars.ContextMenuSource = obj.id;
-	window.addEventListener("click", _NCMHide, true);
+	document.addEventListener("click", _NCMHide, false);
 }
 function _NCMHide(event)
 {
@@ -13,7 +13,8 @@ function _NCMHide(event)
 	{
 		var contextMenu = _N(_N(_N.EventVars.ContextMenuSource).ContextMenu);
 		contextMenu.style.visibility = "hidden";
-		_N.EventVars.ContextMenuSource = null;
+		if(!_N.SEQ.length)
+			delete _N.EventVars.ContextMenuSource;
 		window.removeEventListener("click", _NCMHide, true);
 	}
 }

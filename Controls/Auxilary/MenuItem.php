@@ -28,10 +28,10 @@ class MenuItem extends Panel
 			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 20);
 			$this->TextLabel->CSSClass = 'NMnuItm';
 		}
+		$this->MenuItemsPanel = new Panel(0, 0, 0, 0, $this);
 		$this->SetWidth($this->TextLabel->GetWidth() + 15);
 		$this->TextLabel->SetWidth('100%');
 		$this->TextLabel->Cursor = Cursor::Arrow;
-		$this->MenuItemsPanel = new Panel($this->GetRight(), 0, 0, 0, $this);
 		$this->MenuItemsPanel->Scrolling = System::Full;
 		$this->MenuItemsPanel->Border = '1px solid #B3B9C7';
 		$this->MenuItemsPanel->BackColor = 'white';
@@ -77,23 +77,23 @@ class MenuItem extends Panel
 		//$menuItem->Layout = Layout::Relative;
 		//$menuItem->SetWidth('100%');
 		//Alert($this->MenuItemsPanel->GetWidth() . ' | ' . $menuItem->GetWidth());
-		if($this->MenuItemsPanel->GetWidth() < ($tmpWidth = $menuItem->GetWidth()))
+		if($this->MenuItemsPanel->GetWidth() < ($width = $menuItem->GetWidth()))
 		{
-			$this->MenuItemsPanel->SetWidth($tmpWidth);
+			$this->MenuItemsPanel->SetWidth($width);
 			//Alert($this->MenuItemsPanel->GetWidth());
-			$tmpCount = $this->MenuItemsPanel->Controls->Count();
-			for($i=0; $i<$tmpCount; ++$i)
-				$this->MenuItemsPanel->Controls->Elements[$i]->SetWidth($menuItem->Width); 
-			$menuItem->MenuItemsPanel->SetLeft($menuItem->GetWidth());
+			$count = $this->MenuItemsPanel->Controls->Count();
+			for($i=0; $i<$count; ++$i)
+				$this->MenuItemsPanel->Controls->Elements[$i]->SetWidth($width); 
+			$menuItem->MenuItemsPanel->SetLeft($width);
 		}
 		else
 			$menuItem->SetWidth($this->MenuItemsPanel->Width);
 		$this->MenuItemsPanel->Height += $menuItem->GetHeight();
 		$this->MenuItemsPanel->Controls->Add($menuItem, true);
-		$tmpId = $this->MenuItemsPanel->Id;
-		$fncStr = '_N(\''.$tmpId .'\').ChildrenArray.splice';
-		if(isset($_SESSION['_NFunctionQueue'][$tmpId]) && isset($_SESSION['_NFunctionQueue'][$tmpId][$fncStr]))
-			$_SESSION['_NFunctionQueue'][$tmpId][$fncStr][0][] = "'{$menuItem->Id}'";
+		$id = $this->MenuItemsPanel->Id;
+		$fncStr = '_N(\''.$id .'\').ChildrenArray.splice';
+		if(isset($_SESSION['_NFunctionQueue'][$id]) && isset($_SESSION['_NFunctionQueue'][$id][$fncStr]))
+			$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = "'{$menuItem->Id}'";
 		else 
 			QueueClientFunction($this->MenuItemsPanel, $fncStr, array(-1, 0, "'{$menuItem->Id}'"));
 
@@ -140,11 +140,12 @@ class MenuItem extends Panel
 	{
 		parent::SetWidth($width);
 		$parent = $this->GetParent();
-		if($parent != null && $parent instanceof Menu)
+		if($parent != null && !($parent instanceof ContextMenu) && $parent instanceof Menu)
 		{
 			if($this->MenuItemsPanel->GetWidth() < $width)
 			{
 				$this->MenuItemsPanel->SetWidth($width);
+				if(isset($this->MenuItems))
 				foreach($this->MenuItems as $menuItem)
 					$menuItem->SetWidth($width);
 			}

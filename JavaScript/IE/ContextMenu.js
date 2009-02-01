@@ -13,7 +13,8 @@ function _NCMHide()
 	{
 		var contextMenu = _N(_N(_N.EventVars.ContextMenuSource).ContextMenu);
 		contextMenu.style.visibility = "hidden";
-		_N.EventVars.ContextMenuSource = null;
+		if(!_N.SEQ.length)
+			delete _N.EventVars.ContextMenuSource;
 		document.detachEvent("onclick", _NCMHide);
 	}
 }
