@@ -109,7 +109,7 @@ final class System
 	static function Log($what, $toFireBug=false)
 	{
 		if($GLOBALS['_NDebugMode'])
-			if($toFireBug)
+			if($toFireBug === true)
 			{
 				if(UserAgent::GetBrowser() === 'ff')
 					AddScript('try{console.log(' . ClientEvent::ClientFormat($text) . ');} catch(e){};');

@@ -184,7 +184,7 @@ final class Application extends Object
 		$_SESSION['_NRPath'] = (NOLOHConfig::NOLOHURL)?NOLOHConfig::NOLOHURL:GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), System::NOLOHPath());
 		UserAgent::LoadInformation();
 		if($trulyFirst)
-			if($_SESSION['_NBrowser'] == 'other' && $_SESSION['_NOS'] == 'other')
+			if($_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other')
 				$this->SearchEngineRun();
 			else 
 			{
@@ -212,13 +212,13 @@ final class Application extends Object
 			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
 			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit'])))
 		{
-			if(!isset($_POST['_NEvents']) || $_POST['_NEvents'] != ('Unload@'.$_SESSION['_NStartUpPageId']))
+			if(!isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['_NEvents']) || !isset($_SESSION['_NVisit']) || isset($_GET['_NWidth']))
 					self::Reset(false, false);
 				$this->TheComingOfTheOmniscientBeing();
 				$webPage = WebPage::That();
-				if($webPage != null && !$webPage->GetUnload()->Blank())
+				if($webPage !== null && !$webPage->GetUnload()->Blank())
 					$webPage->Unload->Exec();
 				self::UnsetNolohSessionVars();
 				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);

@@ -89,6 +89,7 @@ class ListView extends Panel
 		$column->SetListView($this->Id);
 		$this->ColumnsPanel->BringToFront();
 		$column->SizeHandle->ShiftStart = new ClientEvent("_NLVResizeStart('{$this->Line->Id}', '$column->Id', '{$this->InnerPanel->Id}');");
+//		$column->SizeHandle->ShiftStart = new ClientEvent("_NLVResizeStart('{$this->Line->Id}', '$column->Id', '{$this->InnerPanel->Id}');return;");
 		$column->SizeHandle->ShiftStop = new ClientEvent('_NLVResizeEnd');
 //		$this->Line->Shifts[] = Shift::With($column->SizeHandle, Shift::Left);
 		$this->Line->Shifts[] = Shift::LeftWith($column->SizeHandle, Shift::Left);
