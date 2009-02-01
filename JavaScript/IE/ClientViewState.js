@@ -128,7 +128,6 @@ function _NChangeByObj(obj, property, value)
 			case "onfocus":
 			case "onelapsed":
 			case "oninput":
-			case "onmouseout":
 			case "onmouseover":
 			case "onmouseup":
 			case "onload":
@@ -142,6 +141,9 @@ function _NChangeByObj(obj, property, value)
 				break;
 			case "onmousedown":
 				obj.onmousedown = _NEvent(value + "; if(obj.Shifts && obj.Shifts.length!=0) _NShftSta(obj.Shifts);", obj);
+				break;
+			case "onmouseout":
+				obj.onmouseout = _NEvent("var to = event.toElement; do {if(to.id == obj.id) return; to = to.parentNode;} while(to && to.id);" + value, obj);
 				break;
 			case "DragCatch":
 				if(value != "")
