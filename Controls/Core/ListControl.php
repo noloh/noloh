@@ -44,6 +44,8 @@ abstract class ListControl extends Control
 		//NolohInternal::SetProperty("options[$index].selected", true, $this);
 		//$tmpIndex = $index == "first"?0:$index;	
 		//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
+		if(!isset($this->Items[$index]))
+			BloodyMurder('Trying to set index ' . $index . ' to selected of the ' . get_class($this) . ' of id ' . $this->Id . ', but no such index exists.');
 		QueueClientFunction($this, '_NLstCtrSel', array('\''.$this->Id.'\'', $index), false);
 		if(/*$this->GetSelectedIndex() !== $index && */!$this->Change->Blank() /*&& $index != "first"*/)
 			$this->Change->Exec();
