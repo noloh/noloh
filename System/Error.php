@@ -97,10 +97,15 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
-	$trace = _NFirstNonNOLOHBacktrace();
-	if($trace)
-		_NErrorHandler(0, $message, $trace['file'], $trace['line']);
+	if(!($trace = _NFirstNonNOLOHBacktrace()))
+		$trace['file'] = $trace['line'] = '?';
+	if($_SESSION['_NVisit'] === -1)
+	{
+		echo $message;
+		session_destroy();
+		exit();
+	}
 	else
-		_NErrorHandler(0, $message, '?', '?');
+		_NErrorHandler(0, $message, $trace['file'], $trace['line']);
 }
 ?>

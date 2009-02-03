@@ -63,7 +63,7 @@ final class Application extends Object
 			self::UnsetNolohSessionVars();
 		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
 		$browser = GetBrowser();
-		if($browser=='ie' || $browser=='ff')
+		if($browser==='ie' || $browser==='ff')
 			if($clearURLTokens)
 				echo 'window.location.replace(', $url, ');';
 			else
@@ -188,7 +188,6 @@ final class Application extends Object
 				$this->SearchEngineRun();
 			else 
 			{
-				setcookie('_NAppCookie', $GLOBALS['_NApp'], 0, '/');
 				try
 				{
 					$webPage = new $className();
@@ -197,12 +196,14 @@ final class Application extends Object
 				{
 					if($e->getCode() === $GLOBALS['_NApp'])
 					{
+						setcookie('_NAppCookie', $GLOBALS['_NApp'], 0, '/');
 						$info = explode('~d0~', $e->getMessage());
 						WebPage::SkeletalShow($info[0], $unsupportedURL, $info[1]);
+						return;
 					}
-					else 
-						BloodyMurder('An exception has been thrown from the constructor of your WebPage or a function called by it, and not caught. ' . $e->getMessage());
 				}
+				echo 'Critical error: WebPage not properly constructed.';
+				session_destroy();
 			}
 	}
 	
