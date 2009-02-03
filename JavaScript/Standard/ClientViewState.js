@@ -84,7 +84,7 @@ function _NChangeByObj(obj, property, value)
 				obj.onmousedown = _NEvent(value + "; if(obj.Shifts && obj.Shifts.length && !_N.ShiftObjArray) _NShftSta(event, obj.Shifts);", obj);
 				break;
 			case "onmouseout":
-				obj.onmouseout = _NEvent("var to = event.relatedTarget; do {if(to.id == obj.id) return; to = to.parentNode;} while(to && to.id);" + value, obj);
+				obj.onmouseout = _NEvent("var to = event.relatedTarget, runWhile = true; try{to;to.id;} catch(err) {runWhile=false;} if(runWhile) while(to && to.id) {if(to.id == obj.id) return; to = to.parentNode;} " + value, obj);
 				break;
 			case "DragCatch":
 				if(value != "")
