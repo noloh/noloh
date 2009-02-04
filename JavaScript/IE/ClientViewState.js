@@ -244,6 +244,10 @@ function _NEvent(code, obj)
 	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {var liq=(event.srcElement.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}}");
 	return func;
 }
+function _NNoBubble()
+{
+	window.event.cancelBubble = true;
+}
 function _NSave(id, property, value)
 {
 	if(id.indexOf("_") >= 0 || id==_N.QueueDisabled)

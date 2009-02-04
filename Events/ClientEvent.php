@@ -87,6 +87,8 @@ class ClientEvent extends Event
 				$arr[0] .= 'if(liq){' . $this->ExecuteFunction . '} ';
 			else
 				$arr[0] .= $this->ExecuteFunction;
+		if($this->Bubbles === false)
+			$arr[4] = false;
 		return $arr;
 	}
 	/**
@@ -94,11 +96,14 @@ class ClientEvent extends Event
 	 */
 	function GetEventString($eventType, $objsId)
 	{
-		return $this->GetEnabled() 
-			? ClientEvent::GenerateString($eventType, $this->Liquid?'if(liq){'.$this->ExecuteFunction.'}':$this->ExecuteFunction)
-	//		? (isset(Event::$Conversion[$eventType]) ? str_replace('\'', '\\\'', $this->ExecuteFunction) : $this->ExecuteFunction)
-	//		? $this->ParseToJS($eventType, $ObjsId)
-			: '';
+		if($this->GetEnabled())
+		{
+			$txt = ClientEvent::GenerateString($eventType, $this->Liquid?'if(liq){'.$this->ExecuteFunction.'}':$this->ExecuteFunction);
+			if($this->Bubbles === false)
+				$txt .= '_NNoBubble();';
+			return $txt;
+		}
+		return '';
 	}
 	/**
 	 * @ignore

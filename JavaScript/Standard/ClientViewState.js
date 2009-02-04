@@ -187,6 +187,11 @@ function _NEvent(code, obj)
 	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {if(e) event=e; var liq=(event && event.target.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}}");
 	return func;
 }
+function _NNoBubble()
+{
+	if(event)
+		event.stopPropagation();
+}
 function _NSave(id, property, value)
 {
 	if(id.indexOf("_") >= 0 || id==_N.QueueDisabled)

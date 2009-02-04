@@ -108,6 +108,8 @@ class ServerEvent extends Event
 		++$arr[2];
 		if($parentLiquid || $this->Liquid)
 			++$arr[3];
+		if($this->Bubbles === false)
+			$arr[4] = false;
 		return $this->Uploads->Count()===0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
 	}
 	/**
@@ -115,9 +117,14 @@ class ServerEvent extends Event
 	 */
 	function GetEventString($eventType, $objsId)
 	{
-		return $this->GetEnabled()
-			? ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid)
-			: '';
+		if($this->GetEnabled())
+		{
+			$txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid);
+			if($this->Bubbles === false)
+				$txt .= '_NNoBubble();';
+			return $txt;
+		}
+		return '';
 	}
 	/**
 	 * @ignore

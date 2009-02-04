@@ -44,8 +44,14 @@ class Event extends Object implements ArrayAccess
 	 * @ignore
 	 */
 	protected $Enabled;
-	
-	private $Liquid;
+	/**
+	 * @ignore
+	 */
+	protected $Liquid;
+	/**
+	 * @ignore
+	 */
+	protected $Bubbles;
 
 	/**
 	* When relevant, the object on which the event is happening
@@ -143,6 +149,8 @@ class Event extends Object implements ArrayAccess
 			$liquid = $becameLiquid = true;
 		else 
 			$liquid = false;
+		if($this->Bubbles === false)
+			$arr[4] = false;
 		foreach($this->ExecuteFunction as $event)
 			if(is_object($event) && $event->GetEnabled())
 				$event->GetInfo($arr, $onlyClientEvents, $liquid, $liquidClientEvent);
@@ -168,6 +176,8 @@ class Event extends Object implements ArrayAccess
 				$ret .= ClientEvent::GenerateString($eventType, $info[0]);
 			if(!$onlyClientEvents)
 				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3]===0?0 : $info[2]===$info[3]?1 : 2);
+			if(isset($arr[4]))
+				$ret .= '_NNoBubble();';
 			return $ret;
 		}
 		else 
@@ -229,6 +239,23 @@ class Event extends Object implements ArrayAccess
 	function SetLiquid($bool)
 	{
 		$this->Liquid = ($bool ? true : null);
+		$this->UpdateClient();
+	}
+	/**
+	 * Returns whether or not the Event will bubble up to other Events.
+	 * @return boolean
+	 */
+	function GetBubbles()
+	{
+		return $this->Bubbles === null;
+	}
+	/**
+	 * Sets whether or not the Event will bubble up to other Events.
+	 * @param boolean $bool
+	 */
+	function SetBubbles($bool)
+	{
+		$this->Bubbles = ($bool ? null : false);
 		$this->UpdateClient();
 	}
 	/**
