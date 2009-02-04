@@ -18,8 +18,6 @@
  * }     	
  * </pre>
  * 
- * @property string $Src The source file of this image
- * 
  * @package Controls/Core
  */
 class Image extends Control 
@@ -27,17 +25,17 @@ class Image extends Control
 	private $Src;
     private $Magician;
 	/**
-	* Constructor.
-	* Be sure to call this from the constructor of any class that extends Button
- 	* Example
- 	*	<pre> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</pre>
- 	* @param string $src
-	* @param integer $left
-	* @param integer $top
-	* @param integer $width
-	* @param integer $height
-	*/
-	function Image($src='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)  
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Image
+ 	 * Example
+ 	 *	<pre> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</pre>
+ 	 * @param string $src
+	 * @param integer $left
+	 * @param integer $top
+	 * @param integer $width
+	 * @param integer $height
+	 */
+	function Image($src='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
 	{
 		parent::Control($left, $top, null, null);
 		if(!empty($src))
@@ -46,24 +44,24 @@ class Image extends Control
 		$this->SetHeight($height);
 	}
 	/**
-	* Gets the Src of the Image
-
-	* @return string
- 	*/
+	 * Gets the Src of the Image
+	 * @return string
+ 	 */
 	function GetSrc()
 	{
 		return $this->Src;
 	}
 	/**
-	*Sets the Src of the Image.
-
-	*The path is relative to your main file 
-	*<b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
-	*@param string $src
-	*@return string 
-	*/
+	 * Sets the Src of the Image.
+	 * The path is relative to your main file 
+	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
+	 * @param string $src
+	 * @return string 
+	 */
 	function SetSrc($newSrc, $adjustSize=false)
 	{
+		//if(!is_file($newSrc))
+		//	BloodyMurder('The Src ' . $newSrc . ' does not exist.');
 		$this->Src = $newSrc;
 		if($this->Magician)
 			$this->SetMagicianSrc();
@@ -91,11 +89,8 @@ class Image extends Control
 		return $newSrc;
 	}
 	/**
-	*Gets the Width of the Image.
-
-	*@param string $unit Units you would like the width in, either px, or "%".
-	*@return mixed
-	*/
+	 * @ignore
+	 */
 	function GetWidth($unit='px')
 	{
 		if($unit == '%')
@@ -107,11 +102,8 @@ class Image extends Control
 			return parent::GetWidth();
 	}
 	/**
-	*Sets the Width of the Image.
-
-	*<b>!Important!</b> If Overriding, make sure to call parent::SetWidth($newWidth)
-	*@param integer $width
-	*/
+	 * @ignore
+	 */
 	function SetWidth($width)
 	{
 		$tmpWidth = $width;
@@ -134,11 +126,8 @@ class Image extends Control
 		parent::SetWidth($tmpWidth);
 	}
 	/**
-	*Gets the Width of the Image.
-
-	*@param string $unit Units you would like the height in, either px, or "%".
-	*@return mixed
-	*/
+	 * @ignore
+	 */
 	function GetHeight($unit='px')
 	{
 		if($unit == '%')
@@ -150,11 +139,8 @@ class Image extends Control
 			return parent::GetHeight();
 	}
 	/**
-	*Sets the Height of the Image.
-
-	*<b>!Important!</b> If Overriding, make sure to call parent::SetHeight($newHeight)
-	*@param integer $height
-	*/
+	 * @ignore
+	 */
 	function SetHeight($height)
 	{
 		$tmpHeight = $height;
@@ -211,8 +197,8 @@ class Image extends Control
         //$this->Magician = array($className, $functionName);
     }
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	private function SetMagicianSrc()
 	{
 		if($this->Src)
@@ -221,8 +207,8 @@ class Image extends Control
 			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))).'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight(), $this);
 	}
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	function Show()
 	{
 		NolohInternal::Show('IMG', parent::Show(), $this);
@@ -245,7 +231,7 @@ class Image extends Control
 	}
 	/**
 	 *@ignore 
-	*/
+	 */
 	static function MagicGeneration($src, $class, $function, $params, $width=300, $height=200)
 	{
 		if($src != '')

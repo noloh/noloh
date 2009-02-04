@@ -10,7 +10,7 @@ function _NOBErrorHandler($buffer)
 {
 	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
 		trigger_error('~_NINFO~');
-	elseif(preg_match('/(.*): (.*?) in (.*?) on line ([0-9]+)/s', $buffer, $matches))
+	elseif(preg_match('/(.*): (.*) in (.*) on line ([0-9]+)/s', $buffer, $matches))
 		//if($GLOBALS['_NDebugMode'] === 'Kernel')
 			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$matches[3].'~OB~'.$matches[4]);
 		//else
@@ -50,23 +50,22 @@ function _NErrorHandler($number, $string, $file, $line)
 		setcookie('_NPHPInfo', true);
 		Application::Reset(true, false);
 	}
-	
-	//$GLOBALS['_NDEATH'] = true;
-	//exit();
-	
-	/*
-	ob_start();
-	//echo serialize(debug_backtrace());
-	debug_print_backtrace();
-	$string = ob_get_contents();
-	ob_end_clean();
-	*/
+	if($GLOBALS['_NDebugMode'] !== 'Kernel')
+	{
+		if($trace = _NFirstNonNOLOHBacktrace())
+		{
+			$file = $trace['file'];
+			$line = $trace['line'];
+		}
+		else 
+			$file = $line = null;
+	}
 	$gzip = defined('FORCE_GZIP');
 	if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
 		ob_start('ob_gzhandler');
 	if(!in_array('Cache-Control: no-cache', headers_list(), true))
 		++$_SESSION['_NVisit'];
-	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string)."\\nin $file\\non line $line"));
+	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin $file\\non line $line":'')));
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
 	if($gzip)
 		ob_end_flush();
@@ -97,8 +96,6 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
-	if(!($trace = _NFirstNonNOLOHBacktrace()))
-		$trace['file'] = $trace['line'] = '?';
 	if($_SESSION['_NVisit'] === -1)
 	{
 		echo $message;
@@ -106,6 +103,6 @@ function BloodyMurder($message)
 		exit();
 	}
 	else
-		_NErrorHandler(0, $message, $trace['file'], $trace['line']);
+		_NErrorHandler(0, $message, 0, 0);
 }
 ?>
