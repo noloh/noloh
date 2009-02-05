@@ -188,7 +188,7 @@ function _NChangeByObj(obj, property, value)
 					else
 						if(obj.Deselect)
 							obj.Deselect();
-					if(obj.Group && obj.Group.onchange)
+					if(obj.Group && obj.Group.onchange && _N.QueueDisabled!=obj.id)
 						obj.Group.onchange();
 				}
 				break;
