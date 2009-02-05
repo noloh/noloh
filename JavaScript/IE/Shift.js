@@ -149,6 +149,9 @@ function _NShftStp()
 		for(var id in _N.ShiftObjArray.ObjsWithStop)
 			_N.ShiftObjArray.ObjsWithStop[id].ShiftStop();
 		document.detachEvent("onmousemove", _NShftGo);
+		window.event.returnValue = false;
+		_N.DisableClicks = true;
+		window.setTimeout(function() {delete _N.DisableClicks;}, 0);
 	}
 	else
 	{
