@@ -180,7 +180,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 			$this->SetSelectedElement($element = $this->Groupees[$index]);
 			return $element;
 		}
-		BloodyMurder('Index ' . $index . ' does not exist and cannot be selected in a group.');
+		else
+			BloodyMurder('Index ' . $index . ' does not exist and cannot be selected in a group.');
 	}
 	/**
 	 * Returns the Value of the first selected element of the Group, or its Text if the element has a null Value, or null if no element is selected.

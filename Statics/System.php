@@ -143,15 +143,18 @@ final class System
 			}
 	}
 	/**
- 	* Returns the full system path to NOLOH
- 	* @return string
- 	*/
+ 	 * Returns the full system path to NOLOH
+ 	 * @return string
+ 	 */
 	static function NOLOHPath()		{return $_SESSION['_NPath'];}
 	/**
- 	* Returns the relative system path to NOLOH
- 	* @return string
- 	*/
+ 	 * Returns the relative system path to NOLOH
+ 	 * @return string
+ 	 */
 	static function RelativePath()	{return $_SESSION['_NRPath'];}
+	/**
+	 * @ignore
+	 */
 	static function ImagePath()		{return self::RelativePath() . '/Images/';}
 }
 
