@@ -61,7 +61,11 @@ abstract class WebPage extends Component
 	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null)
 	{
 		if($_SESSION['_NVisit'] === -1)
-			throw new Exception($title . '~d0~' . $favIconPath, $GLOBALS['_NApp']);
+		{
+			$GLOBALS['_NTitle'] = $title;
+			$GLOBALS['_NFavIcon'] = $favIconPath;
+			throw new Exception('Fatal cookie behavior.', $GLOBALS['_NApp']);
+		}
 		parent::Component();
 		parent::Show();
 		$_SESSION['_NStartUpPageId'] = $this->Id;
@@ -325,7 +329,7 @@ UserAgent::IsIE() ? '
 
 <SCRIPT type="text/javascript">
   _NApp = ', $GLOBALS['_NApp'], ';
-  document.cookie = "_NAppCookie=; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/";', 
+  document.cookie = "_NAppCookie=0;";', 
 UserAgent::IsIE6() ? '
   function _NIe6Init()
   {

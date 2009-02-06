@@ -37,7 +37,7 @@ function _NOBErrorHandler($buffer)
 function _NErrorHandler($number, $string, $file, $line)
 {
 	ob_end_clean();
-	setcookie('_NAppCookie', false, 0, '/');
+	setcookie('_NAppCookie', false);
 	if(strpos($string, '~OB~') === 0)
 	{
 		$matches = explode('~OB~', $string);

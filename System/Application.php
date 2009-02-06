@@ -77,7 +77,6 @@ final class Application extends Object
 	 */
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
-		//ini_set('session.gc_probability', '100');
 		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
@@ -196,13 +195,18 @@ final class Application extends Object
 				{
 					if($e->getCode() === $GLOBALS['_NApp'])
 					{
-						setcookie('_NAppCookie', $GLOBALS['_NApp'], 0, '/');
-						$info = explode('~d0~', $e->getMessage());
-						WebPage::SkeletalShow($info[0], $unsupportedURL, $info[1]);
+						setcookie('_NAppCookie', $GLOBALS['_NApp']);
+						header('Cache-Control: no-cache');
+						header('Pragma: no-cache');
+						WebPage::SkeletalShow($GLOBALS['_NTitle'], $unsupportedURL, $GLOBALS['_NFavIcon']);
 						return;
 					}
+					else 
+					{
+						$message = $e->getMessage();
+					}
 				}
-				echo 'Critical error: WebPage not properly constructed.';
+				echo 'Critical error: Could not construct WebPage.<br>', $message ? $message : 'Please make sure the WebPage constructor is properly called from the ' . $className . ' constructor.';
 				session_destroy();
 			}
 	}
@@ -420,6 +424,7 @@ final class Application extends Object
 		//header('Cache-Control: no-store');
 		if(++$_SESSION['_NVisit'] === 0)
 		{
+			setcookie('_NAppCookie', false);
 			$GLOBALS['_NWidth'] = $_GET['_NWidth'];
 			$GLOBALS['_NHeight'] = $_GET['_NHeight'];
 			$this->HandleTokens();
