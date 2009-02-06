@@ -6,7 +6,7 @@ function _NKeyEvntsPress()
 	if(this.KeyPress)
 	{
 		_N.EventVars.Key = Math.max(event.keyCode, event.charCode);
-		this.KeyPress());
+		this.KeyPress();
 	}
 	if(this.TypePause && (event.keyCode < 37 || event.keyCode > 40))
 	{
