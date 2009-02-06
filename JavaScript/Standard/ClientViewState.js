@@ -62,7 +62,7 @@ function _NChangeByObj(obj, property, value)
 			case "KeyPress":
 			case "ReturnKey":
 			case "TypePause":
-				obj.onkeypress = _NKeyEvntsPress;
+				obj.onkeypress = _NEvent('_NKeyEvntsPress.call(obj)', obj);
 			case "onblur":
 			case "onchange":
 			case "ondblclick":
