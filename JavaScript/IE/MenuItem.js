@@ -22,7 +22,7 @@ function _NMnuTglSubItms(mnuItmId)
 	else
 		_NHideChldrn(tmpParent.SlctMnuItm);
 }
-function _NMnuTglOut(event)
+function _NMnuTglOut()
 {
 	var mnuItmLbl = _N(event.srcElement.id);
 	var mnuItm = mnuItmLbl.parentNode;
@@ -37,7 +37,7 @@ function _NMnuTglOut(event)
 		//mnuItm.removeEventListener("mouseout", _NMnuTglOut, true);
 	}
 }
-function _NMnuHideChldrn(event)
+function _NMnuHideChldrn()
 {
 	_N(MnuItmGlobal).parentNode.IsClk = false;
 	_NHideChldrn(MnuItmGlobal, true, true);

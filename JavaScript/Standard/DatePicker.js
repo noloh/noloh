@@ -8,7 +8,7 @@ function _NDPShow(calid, comboid, format)
 	var ds = _NCalDtStr(calid,format);
 	_N(comboid).options[0] = new Option(ds,ds);
 }
-function _NDPTglOn(calId, comboId, event)
+function _NDPTglOn(calId, comboId)
 {
 	var obj=_N(calId);
 	if(obj.style.display == 'none')

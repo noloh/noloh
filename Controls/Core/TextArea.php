@@ -106,12 +106,12 @@ class TextArea extends Control
 	{
 		if($eventTypeAsString === null)
 			return ',\'onchange\',\''.$this->GetEventString('Change').'\',\'onfocus\',\''.$this->GetEventString('Focus')/*."','onblur','".$this->GetEventString('LoseFocus')*/."'" .
-				(GetBrowser()=='ie'
+				(UserAgent::IsIE()
 				?
 					',\'onkeypress\',\'_NTAPress("'.$this->Id.'",this.MaxLength);\'' .
 					',\'onpaste\',\'_NTAPaste("'.$this->Id.'",this.MaxLength);\''
 				:
-					',\'onkeypress\',\'_NTAPress(event);\'');
+					',\'onkeypress\',\'_NTAPress();\'');
 
 		$preStr = '';
         switch($eventTypeAsString)

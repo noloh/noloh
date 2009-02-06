@@ -7,7 +7,7 @@ function _NLVModScroll(listViewId, columnPanelId, innerPanelId)
 	if(listView.scrollTop + listView.clientHeight >= _N(innerPanelId).offsetHeight && listView.parentNode.DataFetch)
 		listView.parentNode.DataFetch();
 }
-function _NLVSlct(id, event)
+function _NLVSlct(id)
 {
 	var row = _N(id);
 	var panel = row.parentNode;

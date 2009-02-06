@@ -82,7 +82,7 @@ class Calendar extends Panel
 			{
 				$this->Controls->Add($lbl = &new Label('', $j*31, 33+23*$i, 31));
 				$lbl->SetCSSClass('NCalCell');
-				$lbl->SetMouseUp(new ClientEvent('_NCalSlctDt(event,\''.$this->Id.'\');'));
+				$lbl->SetMouseUp(new ClientEvent('_NCalSlctDt(\''.$this->Id.'\');'));
 			}
 		$this->SetTimestamp($timestamp);
 	}

@@ -52,15 +52,15 @@ class DatePicker extends Panel
         {
             case 'ie':
                 $this->PullDown->Click = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\');');
-                $this->Calendar->Click = new ClientEvent('window.event.cancelBubble=true;');
+                $this->Calendar->Click = new ClientEvent('_NNoBubble();');
                 break;
             case 'sa':
-                $this->PullDown->MouseDown = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);return false;');
-                $this->Calendar->MouseDown = new ClientEvent('event.stopPropagation();');
+                $this->PullDown->MouseDown = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\');return false;');
+                $this->Calendar->MouseDown = new ClientEvent('_NNoBubble();');
                 break;
             default:
-                $this->PullDown->Click = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\',event);');
-                $this->Calendar->Click = new ClientEvent('event.stopPropagation();');
+                $this->PullDown->Click = new ClientEvent('_NDPTglOn(\''.$this->Calendar->Id.'\',\''.$this->PullDown->Id.'\');');
+                $this->Calendar->Click = new ClientEvent('_NNoBubble();');
         }
 		$this->Controls->Add($this->PullDown);
 		$this->Controls->Add($this->Calendar);

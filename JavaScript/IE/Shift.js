@@ -161,7 +161,7 @@ function _NShftStp()
 		{
 			obj = _N(_N.ShiftObjArray[i][0]);
 			if(obj.onclick)
-				obj.onclick.call(obj, event);
+				obj.onclick();
 		}
 		document.detachEvent("onmousemove", _NShftFirstGo);
 	}

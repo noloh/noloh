@@ -281,7 +281,7 @@ class TreeNode extends Panel
 		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
 		$this->Element->Click['_N'] = $this->TreeListId==null 
 			? new ClientEvent('')
-			: new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'",'.(GetBrowser()=='ie'?'window.':'').'event);');
+			: new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'");');
 		$this->Element->Click[] = $newClick;
 	}
 	/**
@@ -366,7 +366,6 @@ class TreeNode extends Panel
 			if($bool)
 				GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
 			//GetComponentById($this->TreeListId)->;
-//			QueueClientFunction($this, '_NTreeSlct', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''/*, (GetBrowser()=='ie'?'window.':'').'event'*/));
 			//if($bool)
 			//	QueueClientFunction($this, '_NTreeSlct', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\'', 'Object()'));
 			//$this->Click->Exec();
@@ -379,7 +378,7 @@ class TreeNode extends Panel
 	 */
 	function AddShift($shift)
 	{
-		$this->MouseDown[] = new ClientEvent('_N(\''.$this->Element->Id.'\').onclick.call(' . (GetBrowser()=='ie'?'':'this, event') . ');');
+		$this->MouseDown[] = new ClientEvent('_N(\''.$this->Element->Id.'\').onclick();');
 		parent::AddShift($shift);
 	}
 }

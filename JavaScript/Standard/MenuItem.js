@@ -28,7 +28,7 @@ function _NMnuTglSubItms(mnuItmId)
 	else
 		_NHideChldrn(parent.SlctMnuItm);
 }
-function _NTimeToggle(event)
+function _NTimeToggle()
 {
 	//console.log('mouseout triggered of ' + event.currentTarget.id); 
 	//var menu = event.currentTarget;

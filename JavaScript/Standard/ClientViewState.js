@@ -78,10 +78,10 @@ function _NChangeByObj(obj, property, value)
 				obj[property] = _NEvent(value, obj);
 				break;
 			case "oncontextmenu":
-				obj.oncontextmenu = _NEvent(value + "; if(obj.ContextMenu) _NCMShow(event, obj); return false;", obj);
+				obj.oncontextmenu = _NEvent(value + "; if(obj.ContextMenu) _NCMShow(obj); return false;", obj);
 				break;
 			case "onmousedown":
-				obj.onmousedown = _NEvent(value + "; if(obj.Shifts && obj.Shifts.length && !_N.ShiftObjArray) _NShftSta(event, obj.Shifts);", obj);
+				obj.onmousedown = _NEvent(value + "; if(obj.Shifts && obj.Shifts.length && !_N.ShiftObjArray) _NShftSta(obj.Shifts);", obj);
 				break;
 			case "onmouseout":
 				obj.onmouseout = _NEvent("var to = event.relatedTarget, runWhile = true; try{to;to.id;} catch(err) {runWhile=false;} if(runWhile) while(to && to.id) {if(to.id == obj.id) return; to = to.parentNode;} " + value, obj);
@@ -387,7 +387,7 @@ function _NChangeString()
 	_N.Changes = [];
 	return changes.substring(0, changes.length-4);
 }
-function _NEventVarsString(event)
+function _NEventVarsString()
 {
 	var key, str = "";
 	if(event)
@@ -497,7 +497,7 @@ function _NServer()
 	if(!_N.Request)
 	{
 		var notUnload = true;
-		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NChanges="+_NChangeString()+"&_NEventVars="+_NEventVarsString(event)+"&_NEvents=";
+		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NChanges="+_NChangeString()+"&_NEventVars="+_NEventVarsString()+"&_NEvents=";
 		var sECount = _N.SEQ.length;
 		for(var i=0; i<sECount; ++i)
 		{

@@ -24,7 +24,7 @@ function _NCalNYr(id)
 	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()+1));
 	_NCalPrint(id);
 }
-function _NCalSlctDt(event, calid)
+function _NCalSlctDt(calid)
 {
 	var cal = _N(calid);
 	var lab = window.event.srcElement;

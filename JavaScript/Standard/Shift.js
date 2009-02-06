@@ -1,5 +1,5 @@
 _N.Catchers = [];
-function _NShftSta(event, objArray)
+function _NShftSta(objArray)
 {
 	_N.ShiftObjArray = objArray;
 	_N.ShiftObjArray.Ghosts = [];
@@ -13,11 +13,12 @@ function _NShftSta(event, objArray)
     document.addEventListener("mouseup", _NShftStp, true);
     event.preventDefault();
 }
-function _NShftFirstGo()
+function _NShftFirstGo(e)
 {
 	var id, obj, deltaZIndex, count = _N.ShiftObjArray.length;
 	if(count > 0)
 		deltaZIndex = ++_N.HighestZ + count - _N(_N.ShiftObjArray[0][0]).style.zIndex;
+	event = e;
 	for(var i=0; i<count; ++i)
 	{
 		obj = _N(id = _N.ShiftObjArray[i][0]);
@@ -44,11 +45,13 @@ function _NShftFirstGo()
 	}
 	delete _N.ShiftObjArray.ObjsWithStart;
 	_N.ShiftObjArray.HasMoved = true;
+	event = null;
 	document.removeEventListener("mousemove", _NShftFirstGo, true);
 	document.addEventListener("mousemove", _NShftGo, true);
 }
-function _NShftGo(event)
+function _NShftGo(e)
 {
+	event = e;
 	var xPos = event.clientX + window.pageXOffset;
 	var yPos = event.clientY + window.pageYOffset;
 	var deltaX = xPos - _N.ShiftObjArray.CursorX;
@@ -57,6 +60,7 @@ function _NShftGo(event)
 	_N.ShiftObjArray.CursorY = yPos;
 	_NShftObjs(_N.ShiftObjArray, deltaX, deltaY);
 	event.preventDefault();
+	event = null;
 }
 function _NShftObjs(objects, deltaX, deltaY)
 {
@@ -108,8 +112,9 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 	_NSetProperty(id, property, Math.round(finalCoord) + "px");
 	return finalCoord - start;
 }
-function _NShftStp(event)
+function _NShftStp(e)
 {
+	event = e;
 	var count;
 	if((count = _N.Catchers.length) && _N.ShiftObjArray.HasMoved)
 	{
@@ -156,12 +161,13 @@ function _NShftStp(event)
 		{
 			obj = _N(_N.ShiftObjArray[i][0]);
 			if(obj.onclick)
-				obj.onclick.call(obj, event);
+				obj.onclick.call(obj);
 		}
 		document.removeEventListener("mousemove", _NShftFirstGo, true);
 	}
 	_N.ShiftObjArray = null;
 	document.removeEventListener("mouseup", _NShftStp, true);
+	event = null;
 }
 function _NShftWth(objectId)
 {

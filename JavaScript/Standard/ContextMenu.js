@@ -1,4 +1,4 @@
-function _NCMShow(event, obj)
+function _NCMShow(obj)
 {
 	var contextMenu = _N(obj.ContextMenu);
 	contextMenu.style.visibility = "visible";

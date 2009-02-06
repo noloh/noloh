@@ -88,8 +88,8 @@ class ListViewItem extends Panel //extends Component
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString == 'Click') 
-			return '_NLVSlct("' . $this->Id . '"' . (!UserAgent::IsIE()?', event':'') . ');' . parent::GetEventString($eventTypeAsString);
+		if($eventTypeAsString === 'Click') 
+			return '_NLVSlct("' . $this->Id . '");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
 }		

@@ -1,4 +1,4 @@
-function _NTAPress(event)
+function _NTAPress()
 {
 	var obj = event.target;
 	obj.cachedStart = obj.selectionStart;
@@ -9,7 +9,7 @@ function _NTAInput(event)
 	var obj = event.target;
 	if(obj.value.length > obj.MaxLength && obj.MaxLength != -1)
 	{
-		_NTAPress(event);
+		_NTAPress();
 		var pos = obj.MaxLength - obj.cachedRight.length;
 		obj.value = Obj.value.substr(0, pos) + obj.cachedRight;
 		obj.selectionStart = pos;
