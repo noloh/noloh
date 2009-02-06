@@ -328,7 +328,10 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		AddScript('_N.'.$this->Id.'=new _NGroup();', Priority::High);
 		$listCount = count($this->WaitingList);
 		for($i=0; $i<$listCount; ++$i)
-			NolohInternal::SetProperty('Group', $this->Id, GetComponentById($this->WaitingList[$i]));
+		{
+			$obj = &GetComponentById($this->WaitingList[$i]);
+			NolohInternal::SetProperty($obj instanceof Groupable ? 'Group' : 'GroupM', $this->Id, $obj);
+		}
 		$this->WaitingList = null;
 	}
 	/**

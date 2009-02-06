@@ -166,6 +166,8 @@ function _NChangeByObj(obj, property, value)
 			case "ChildrenArray":
 				eval("obj." + property + " = " + value + ";");
 				break;
+			case "GroupM":
+				obj._NMultiGroupable = true;
 			case "Group":
 				if(obj.Group = _N(value))
 					obj.Group.Elements.push(obj.id);
@@ -175,9 +177,15 @@ function _NChangeByObj(obj, property, value)
 				{
 					if(obj.Group)
 					{
-						var selEle = obj.Group.GetSelectedElement();
-						if((value && selEle) || selEle==obj.id)
-							obj.Group.PrevSelectedElement = selEle;
+						var selId = obj.Group.GetSelectedElement(), selEle;
+						if((value && selId) || selId==obj.id)
+							obj.Group.PrevSelectedElement = selId;
+						if(selId && value && !obj._NMultiGroupable && (selEle = _N(selId)) && !selEle._NMultiGroupable)
+						{
+							_NSave(selId,"Selected",selEle.Selected=false);
+							if(selEle.Deselect && _N.QueueDisabled!=obj.id)
+								selEle.Deselect();
+						}
 					}
 					_NSave(obj.id,"Selected",obj.Selected=value);
 					if(value)

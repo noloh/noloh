@@ -682,11 +682,11 @@ abstract class Control extends Component
 	function SetGroupName($groupName)
 	{
 		if($this->GroupName && !$groupName)
-			NolohInternal::SetProperty('Group', '', $this);
+			NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', '', $this);
 		$this->GroupName = $groupName;
 		if($group = GetComponentById($groupName))
 			if($group->GetShowStatus())
-				NolohInternal::SetProperty('Group', $groupName, $this);
+				NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', $groupName, $this);
 			else 
 				$group->WaitingList[] = $this->Id;
 	}
