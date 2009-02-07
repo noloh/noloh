@@ -83,6 +83,9 @@ class TextBox extends Control
 	{
 		parent::SetText($text);
 		NolohInternal::SetProperty('value', $text, $this);
+		$change = $this->GetChange();
+		if(!$change->Blank())
+			$change->Exec();
 	}
 	/**
 	 * Returns the regular expression  which filters out user input. E.g., '/^\d*$/' indicates numeric only
@@ -119,11 +122,11 @@ class TextBox extends Control
 			return ',\'onchange\',\''.$this->GetEventString('Change').'\',\'onfocus\',\''.$this->GetEventString('Focus').'\'';
 
 		$preStr = '';
-		if($eventTypeAsString == 'Click' || $eventTypeAsString == 'Change' || $eventTypeAsString == 'DoubleClick' || $eventTypeAsString == 'LoseFocus')
+		if($eventTypeAsString === 'Change' || $eventTypeAsString === 'Click' || $eventTypeAsString === 'DoubleClick' || $eventTypeAsString === 'LoseFocus')
 			$preStr = '_NSave("'.$this->Id.'","value");';
-        elseif($eventTypeAsString == 'Focus')
+        elseif($eventTypeAsString === 'Focus')
             $preStr = '_N.EventVars.FocusedComponent="'.$this->Id.'";';
-        elseif($eventTypeAsString == 'KeyPress' && $this->Filter)
+        elseif($eventTypeAsString === 'KeyPress' && $this->Filter)
         {
         	preg_match('/^(.)\^?(.*?)\$?\1([a-zA-Z]*)$/', $this->Filter, $matches);
         	$preStr = '_NFilter('.$this->Id.'","'.str_replace('\\','\\\\\\\\',$matches[2]).'","'.$matches[3].'");';

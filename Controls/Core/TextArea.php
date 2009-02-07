@@ -54,6 +54,9 @@ class TextArea extends Control
 	{
 		parent::SetText($text);
 		QueueClientFunction($this, '_NTATxt', array('\''.$this->Id.'\'', '\''.preg_replace("(\r\n|\n|\r)", '<Nendl>', addslashes($text)).'\''));
+		$change = $this->GetChange();
+		if(!$change->Blank())
+			$change->Exec();
 	}
 	/*function GetScrollLeft()
 	{
