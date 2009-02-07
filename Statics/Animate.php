@@ -66,6 +66,8 @@ final class Animate
 			$args[4] = '\'' . $units . '\'';
 			if($numArgs > 6 && $from===null)
 				$args[6] = 'null';
+			else 
+				NolohInternal::SetProperty($property, $from.$units, $control);
 		}
 		QueueClientFunction($control, 'new _NAni', $args, false, Priority::Low);
 	}
