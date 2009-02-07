@@ -199,6 +199,11 @@ function _NChangeByObj(obj, property, value)
 					if(obj.Group && obj.Group.onchange && _N.QueueDisabled!=obj.id)
 						obj.Group.onchange();
 				}
+				else
+				{
+					event.cancelBubble = true;
+					event.returnValue = false;
+				}
 				break;
 			case "style.zIndex":
 				if(value > _N.HighestZ)

@@ -145,6 +145,11 @@ function _NChangeByObj(obj, property, value)
 					if(obj.Group && obj.Group.onchange && _N.QueueDisabled!=obj.id)
 						obj.Group.onchange();
 				}
+				else if(event)
+				{
+					event.preventDefault();
+					_NNoBubble();
+				}
 				break;
 			case "style.zIndex":
 				if(value > _N.HighestZ)
@@ -390,7 +395,7 @@ function _NChangeString()
 function _NEventVarsString()
 {
 	var key, str = "";
-	if(event)
+	if(event && event.pageX)
 		str += "MouseX~d0~"+event.pageX+"~d0~MouseY~d0~"+event.pageY+"~d0~";
 	if(_N.EventVars.FocusedComponent)
 	{
