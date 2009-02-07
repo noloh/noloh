@@ -357,8 +357,8 @@ final class Application extends Object
 					exit();
 				}
 	        }
-			else 
-				GetComponentById(substr($eventInfo[1], 0, strpos($eventInfo[1], 'i')))->ExecEvent($eventInfo[0], $eventInfo[1]);
+			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
+				GetComponentById(substr($eventInfo[1], 0, $pos))->ExecEvent($eventInfo[0], $eventInfo[1]);
 		}
 		unset($GLOBALS['_NSEFromClient']);
 	}
