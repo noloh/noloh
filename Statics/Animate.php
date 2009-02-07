@@ -68,7 +68,7 @@ final class Animate
 				if($from===null)
 					$args[6] = 'null';
 				elseif($property === 'scrollLeft' || $property === 'scrollTop')
-					QueueClientFunction($control, '_NChange', array('"'.$control.'"', '"'.$property.'"', $from), false);
+					QueueClientFunction($control, '_NChange', array('"'.$control->Id.'"', '"'.$property.'"', $from), false);
 				else
 					NolohInternal::SetProperty($property, $from.$units, $control);
 		}
