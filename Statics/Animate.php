@@ -64,10 +64,13 @@ final class Animate
 		if($numArgs > 4)
 		{
 			$args[4] = '\'' . $units . '\'';
-			if($numArgs > 6 && $from===null)
-				$args[6] = 'null';
-			else 
-				NolohInternal::SetProperty($property, $from.$units, $control);
+			if($numArgs > 6)
+				if($from===null)
+					$args[6] = 'null';
+				elseif($property === 'scrollLeft' || $property === 'scrollTop')
+					QueueClientFunction($control, '_NChange', array('"'.$control.'"', '"'.$property.'"', $from), false);
+				else
+					NolohInternal::SetProperty($property, $from.$units, $control);
 		}
 		QueueClientFunction($control, 'new _NAni', $args, false, Priority::Low);
 	}
