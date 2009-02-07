@@ -493,7 +493,7 @@ function _NProcessResponse(response)
 	else
 		eval(response[1]);
 }
-function _NAlertError()
+function _NAlertError(err)
 {
 	alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
 }
