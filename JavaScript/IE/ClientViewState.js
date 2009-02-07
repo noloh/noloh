@@ -199,10 +199,10 @@ function _NChangeByObj(obj, property, value)
 					if(obj.Group && obj.Group.onchange && _N.QueueDisabled!=obj.id)
 						obj.Group.onchange();
 				}
-				else
+				else if(event)
 				{
-					event.cancelBubble = true;
-					event.returnValue = false;
+					window.event.cancelBubble = true;
+					window.event.returnValue = false;
 				}
 				break;
 			case "style.zIndex":
@@ -259,7 +259,8 @@ function _NEvent(code, obj)
 }
 function _NNoBubble()
 {
-	window.event.cancelBubble = true;
+	if(window.event)
+		window.event.cancelBubble = true;
 }
 function _NSave(id, property, value)
 {
