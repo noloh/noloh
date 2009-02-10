@@ -6,12 +6,12 @@ function _NRlImgTgl(id, state)
 	if(img.Selected && state != 'Slct' || img.Cur == state)
 		return;
 		
-	if(state == 'Slct' && img.Cur != 'Slct' && img.Group)
+	/*if(state == 'Slct' && img.Cur != 'Slct' && img.Group)
 	{
 		var prevImg = img.Group.PrevSelectedElement;
 		if(prevImg != null)
 			_NSetProperty(prevImg, 'Selected', false);
-	}
+	}*/
 	img.src = img[state];
 	img.Cur = state;
 	if(img.onchange)

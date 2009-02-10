@@ -4,12 +4,12 @@ function _NRlLblTgl(id, state)
 	if(lbl.Selected && state != 'Slct' || lbl.Cur == state)
 		return;
 	
-	if(state == 'Slct' && lbl.Cur != 'Slct' && lbl.Group)
+	/*if(state == 'Slct' && lbl.Cur != 'Slct' && lbl.Group)
 	{
 		var prevLbl = lbl.Group.PrevSelectedElement;
 		if(prevLbl != null)
 			_NSetProperty(prevLbl, 'Selected', false);
-	}
+	}*/
 	_NRlLblSetClr(id, lbl[state]);
 	lbl.Cur = state;
 	if(lbl.onchange)

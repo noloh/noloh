@@ -6,6 +6,7 @@ function _NRlTbChg(rlOvrTb, state)
 		
 	if(tab.Selected && state != 'Slct' || tab.Cur == state)
 		return;
+	
 	if(tab.Cur != null)
 	{
 		_N(tab[tab.Cur]).style.display = 'none';
@@ -14,12 +15,12 @@ function _NRlTbChg(rlOvrTb, state)
 	}
 	if(state == 'Slct')
 	{
-		if(tab.Group)
+		/*if(tab.Group)
 		{
 			var prevTab = tab.Group.PrevSelectedElement;
 			if(prevTab != null)
 				_NSetProperty(prevTab, 'Selected', false);
-		}
+		}*/
 		_N(tab.Out).style.display = 'none';
 		_N(tab.Slct).style.display = '';
 	}

@@ -13,8 +13,8 @@ function _NAccPtExpd(accordPart)
 	var prevPart = part.Group.PrevSelectedElement;
 	//console.log(part.Group);
 	//console.log(prevPart);
-	if(prevPart && prevPart != accordPart)
-		_NSetProperty(prevPart, 'Selected', false);
+	/*if(prevPart && prevPart != accordPart)
+		_NSetProperty(prevPart, 'Selected', false);*/
 	part.InHgt = (parseInt(_N(part.Accord).style.height) - _N(part.Accord).TitleHeight);
 	//console.log((_N(part.Top.offsetHeight) + _N(accord).TitleHeight) + ' is the height');
 }
