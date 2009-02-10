@@ -155,7 +155,12 @@ final class System
 	/**
 	 * @ignore
 	 */
-	static function ImagePath()		{return self::RelativePath() . '/Images/';}
+	static function AssetPath()		{return $_SESSION['_NRAPath'];}
+	/**
+	 * @ignore
+	 */
+	static function ImagePath()		{return self::AssetPath() . '/Images/';}
+	
 }
 
 ?>

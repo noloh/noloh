@@ -180,7 +180,15 @@ final class Application extends Object
 		$_SESSION['_NHighestZ'] = 0;
 		$_SESSION['_NLowestZ'] = 0;
 		$_SESSION['_NPath'] = ComputeNOLOHPath();
-		$_SESSION['_NRPath'] = (NOLOHConfig::NOLOHURL)?NOLOHConfig::NOLOHURL:GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), System::NOLOHPath());
+		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath']);
+		$_SESSION['_NRAPath'] = NOLOHConfig::NOLOHURL ? 
+			NOLOHConfig::NOLOHURL : 
+			(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ? 
+				GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
+				$_SESSION['_NRPath']);
+		if($home)
+			$_SESSION['_NUserDir'] = true;
+		
 		UserAgent::LoadInformation();
 		if($trulyFirst)
 			if($_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other')

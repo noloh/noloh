@@ -77,7 +77,7 @@ abstract class WebPage extends Component
 		$this->Keywords = $keywords;
 		$this->Description = $description;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
-		$this->CSSFiles->Add(System::RelativePath() .'/Controls/NStyles.css');
+		$this->CSSFiles->Add(System::AssetPath() .'/Controls/NStyles.css');
 		$this->LoadImg = new Image(System::ImagePath() . 'loading.gif', 1, 1, 30, 30);
 		$this->LoadImg->CSSClass = 'NLoad';
 		$this->LoadImg->SetParentId($this->Id);
