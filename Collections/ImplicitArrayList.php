@@ -84,7 +84,12 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function Add($object, $onlyAdd = false)
 	{
-		if(!$this->AddFunctionName || $onlyAdd)
+		if($onlyAdd)
+			if(isset($GLOBALS['_NImplArrInsert']))
+				return parent::Insert($object, $GLOBALS['_NImplArrInsert']);
+			else 
+				return parent::Add($object);
+		elseif(!$this->AddFunctionName)
 			return parent::Add($object);
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->AddFunctionName}($object);
@@ -101,8 +106,20 @@ class ImplicitArrayList extends ArrayList
 	 */
 	function Insert($object, $index, $onlyInsert = false)
 	{
-		if(!$this->InsertFunctionName || $onlyInsert)
+		if($onlyInsert)
 			return parent::Insert($object, $index);
+		elseif(!$this->InsertFunctionName)
+		{
+			if($this->AddFunctionName)
+			{
+				$GLOBALS['_NImplArrInsert'] = $index;
+				$this->Add($object);
+				unset($GLOBALS['_NImplArrInsert']);
+				return $object;
+			}
+			else
+				return parent::Insert($object, $index);
+		}
 		elseif(is_object($this->Source))
 			return $this->Source->{$this->InsertFunctionName}($object, $index);
 		else
