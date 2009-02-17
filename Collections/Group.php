@@ -106,11 +106,14 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	  */
 	function Remove($element)
 	{
-		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
-			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
-		$element->SetGroupName(null);
-		//NolohInternal::SetProperty('Group', '', $element);
-		return $this->Groupees->Remove($element);		
+		if($this->Groupees->Remove($element))
+		{
+			$element->SetGroupName(null);
+			if($element->GetSelected() && !$this->Change->Blank())
+				$this->Change->Exec();
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Removes an element at a particular index. An element must exist there or an error is given.
@@ -123,6 +126,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		if(isset($this->Groupees->Elements[$index]))
 		{
 			$this->Remove($element = $this->Groupees->Elements[$index]);
+			if($element->GetSelected() && !$this->Change->Blank())
+				$this->Change->Exec();
 			return $element;
 		}
 		else 
@@ -133,6 +138,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function Clear()
 	{
+		$change = $this->Change;
 		AddScript('_N.'.$this->Id.'.Elements=[];', Priority::High);
 		//AddScript('window.'.$this->Id.'.=new Group();', Priority::High);
 		//QueueClientFunction($this, 'window.'.$this->Id.'.Elements=Array', array(), true, Priority::High);
@@ -140,6 +146,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		{
 			//NolohInternal::SetProperty('Group', '', $groupee);
 			$groupee->SetGroupName(null);
+			if($groupee->GetSelected() && !$change->Blank())
+				$change->Exec();
 		}
 		$this->Groupees->Clear();
 	}
