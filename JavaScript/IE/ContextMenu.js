@@ -1,20 +1,20 @@
 function _NCMShow(obj)
 {
-	var contextMenu = _N(obj.ContextMenu);
-	contextMenu.style.visibility = "visible";
-	contextMenu.style.left = window.event.clientX + document.documentElement.scrollLeft + "px";
-	contextMenu.style.top = window.event.clientY + document.documentElement.scrollTop + "px";
+	_NCMHide();
+	var id = _N.ContextMenu = obj.ContextMenu, contextMenu = _N(id);
+	contextMenu.style.display = "";
+	_NSetProperty(id, "style.left", window.event.clientX + document.documentElement.scrollLeft + "px");
+	_NSetProperty(id, "style.top", window.event.clientY + document.documentElement.scrollTop + "px");
 	_N.EventVars.ContextMenuSource = obj.id;
-	document.attachEvent("onclick", _NCMHide);
+	_NClickOff(id, _NCMHide);
+	_NNoBubble();
 }
 function _NCMHide()
 {
-	if(_N.EventVars.ContextMenuSource)
+	if(_N.ContextMenu)
 	{
-		var contextMenu = _N(_N(_N.EventVars.ContextMenuSource).ContextMenu);
-		contextMenu.style.visibility = "hidden";
 		if(!_N.SEQ.length)
 			delete _N.EventVars.ContextMenuSource;
-		document.detachEvent("onclick", _NCMHide);
+		delete _N.ContextMenu;
 	}
 }

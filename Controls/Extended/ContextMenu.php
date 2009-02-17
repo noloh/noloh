@@ -34,7 +34,7 @@ class ContextMenu extends Menu
 		parent::Menu();
 		$this->SetHeight(0);
 		$this->SetBorder('1px solid #A0A0A0');
-		$this->SetVisible(false);
+		$this->SetVisible(System::Vacuous);
 	}
 	/**
 	 * @ignore
@@ -66,6 +66,7 @@ class ContextMenu extends Menu
 	function Show()
 	{
 		AddNolohScriptSrc('ContextMenu.js', true);
+		AddNolohScriptSrc('ClickOff.js', true);
 		parent::Show();
 	}
 }
