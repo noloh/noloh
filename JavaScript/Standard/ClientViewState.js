@@ -396,15 +396,14 @@ function _NChangeString()
 }
 function _NEventVarsString()
 {
-	var key, str = "";
-	if(event && event.pageX)
-		str += "MouseX~d0~"+event.pageX+"~d0~MouseY~d0~"+event.pageY+"~d0~";
-	if(_N.EventVars.FocusedComponent)
+	var key, str = "", id;
+	if(id = _N.EventVars.FocusedComponent)
 	{
-		var obj = _N(_N.EventVars.FocusedComponent), selText;
+		var obj = _N(id), selText;
+		_NSave(id, "value");
         try
 		{
-			str += "FocusedComponent~d0~"+_N.EventVars.FocusedComponent+"~d0~";
+			str += "FocusedComponent~d0~"+id+"~d0~";
 			if(selText = obj.value.substring(obj.selectionStart, obj.selectionEnd))
 				str += "SelectedText~d0~"+selText+"~d0~";
 		}
@@ -487,6 +486,11 @@ function _NReqStateChange()
 }
 function _NSE(eventType, id, uploads)
 {
+	if(!_N.EventVars.MouseX && event)
+	{
+		_N.EventVars.MouseX = event.pageX;
+		_N.EventVars.MouseY = event.pageY;
+	}
 	if(_N.SEQ.Started != null)
 	{
 		for(var i=_N.SEQ.Started; i<_N.SEQ.length; ++i)
@@ -504,7 +508,7 @@ function _NServer()
 	if(!_N.Request)
 	{
 		var notUnload = true;
-		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NChanges="+_NChangeString()+"&_NEventVars="+_NEventVarsString()+"&_NEvents=";
+		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 		var sECount = _N.SEQ.length;
 		for(var i=0; i<sECount; ++i)
 		{
