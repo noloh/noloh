@@ -695,8 +695,7 @@ abstract class Control extends Component
 	 */
 	function Set_NText($text)
 	{
-		$this->Text = str_replace(array('~da~','~dp~'), array('&','+'), $text);
-		//$this->Text = str_replace('~da~', '&', $text);
+		$this->SetText(str_replace(array('~da~','~dp~'), array('&','+'), $text));
 	}
 	/**
 	 * @ignore
