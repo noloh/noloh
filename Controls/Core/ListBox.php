@@ -132,7 +132,7 @@ class ListBox extends ListControl
 	{
 		$preStr = '';
 		if($eventTypeAsString == 'Change')
-			$preStr = '_NSave("'.$this->Id.'","_NSelectedIndices",_NExpllSelInds(this.options));';
+			$preStr = '_NSave("'.$this->Id.'","_NSelectedIndices",_NLstCtrExplSelInds(this.options));';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	/**
