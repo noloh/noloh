@@ -114,7 +114,7 @@ function _NChangeByObj(obj, property, value)
 		switch(property)
 		{
 			case "onclick":
-				obj.onclick = _NEvent("if(!_N.DisableClicks) {" + value + "}", obj);
+				obj.onclick = _NEvent("if(!_N.DisableClicks && (!event || event.button!=2)) {" + value + "}", obj);
 				obj.className = value ? "NClickable " + obj.className : obj.className.replace(/NClickable/g, "");
 				break;
 			case "KeyPress":
@@ -129,18 +129,20 @@ function _NChangeByObj(obj, property, value)
 			case "onelapsed":
 			case "oninput":
 			case "onmouseover":
-			case "onmouseup":
 			case "onload":
 			case "onpaste":
 			case "onscroll":
 			case "onunload":
 				obj[property] = _NEvent(value, obj);
 				break;
+			case "onmouseup":
+				obj.onmouseup = _NEvent("if(!event || event.button!=2) {" + value + "}", obj);
+				break;
 			case "oncontextmenu":
 				obj.oncontextmenu = _NEvent(value + "; if(obj.ContextMenu) _NCMShow(obj); return false;", obj);
 				break;
 			case "onmousedown":
-				obj.onmousedown = _NEvent(value + "; if(obj.Shifts && obj.Shifts.length!=0) _NShftSta(obj.Shifts);", obj);
+				obj.onmousedown = _NEvent("if(!event || event.button!=2) {" + value + "; if(obj.Shifts && obj.Shifts.length!=0) _NShftSta(obj.Shifts);}", obj);
 				break;
 			case "onmouseout":
 				obj.onmouseout = _NEvent("var to = event.toElement; while(to && to.id) {if(to.id == obj.id) return; to = to.parentNode;} " + value, obj);
