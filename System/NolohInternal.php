@@ -134,7 +134,7 @@ final class NolohInternal
 			{
 				$splitStr = explode('i', $objId, 2);
 				$markupPanel = &GetComponentById($splitStr[0]);
-				if($markupPanel!=null && $markupPanel->GetShowStatus())
+				if($markupPanel!==null && $markupPanel->GetShowStatus())
 				{
 					AddNolohScriptSrc('Eventee.js');
 					$nameValPairsString = '';

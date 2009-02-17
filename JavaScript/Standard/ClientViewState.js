@@ -62,7 +62,7 @@ function _NChangeByObj(obj, property, value)
 			case "KeyPress":
 			case "ReturnKey":
 			case "TypePause":
-				obj.onkeypress = _NEvent('_NKeyEvntsPress.call(obj)', obj);
+				obj.onkeypress = _NEvent("_NKeyEvntsPress.call(obj);", obj);
 			case "onblur":
 			case "onchange":
 			case "ondblclick":
@@ -161,31 +161,31 @@ function _NChangeByObj(obj, property, value)
 				obj.style.zIndex = obj.BuoyantParentId == null ? value : value + 9999;
 				break;
 			case "style.left":
-				if(!obj.BuoyantParentId)
+				if(obj.BuoyantParentId)
+				{
+					obj.BuoyantLeft = parseInt(value);
+					_NByntMv(obj.id);
+				}
+				else
 				{
 					obj.style.left = value;
 					if(obj.BuoyantChildren)
 						for(var i=0; i<obj.BuoyantChildren.length; ++i)
 							_NByntMv(obj.BuoyantChildren[i]);
 				}
-				else
-				{
-					obj.BuoyantLeft = parseInt(value);
-					_NByntMv(obj.id);
-				}
 				break;
 			case "style.top":
-				if(!obj.BuoyantParentId)
+				if(obj.BuoyantParentId)
+				{
+					obj.BuoyantTop = parseInt(value);
+					_NByntMv(obj.id);
+				}
+				else
 				{
 					obj.style.top = value;
 					if(obj.BuoyantChildren)
 						for(var i=0; i<obj.BuoyantChildren.length; ++i)
 							_NByntMv(obj.BuoyantChildren[i]);
-				}
-				else
-				{
-					obj.BuoyantTop = parseInt(value);
-					_NByntMv(obj.id);
 				}
 				break;
 			case "className":
