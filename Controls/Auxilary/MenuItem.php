@@ -25,7 +25,7 @@ class MenuItem extends Panel
 			$this->TextLabel = $textOrControl;
 		else
 		{
-			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 20);
+			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 18);
 			$this->TextLabel->CSSClass = 'NMnuItm';
 		}
 		$this->MenuItemsPanel = new Panel(0, 0, 0, 0, $this);
