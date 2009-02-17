@@ -81,11 +81,15 @@ class TextBox extends Control
 	 */
 	function SetText($text)
 	{
+		$oldText = $this->GetText();
 		parent::SetText($text);
 		NolohInternal::SetProperty('value', $text, $this);
-		$change = $this->GetChange();
-		if(!$change->Blank())
-			$change->Exec();
+		if($oldText != $text)
+		{
+			$change = $this->GetChange();
+			if(!$change->Blank())
+				$change->Exec();
+		}
 	}
 	/**
 	 * Returns the regular expression  which filters out user input. E.g., '/^\d*$/' indicates numeric only
@@ -139,7 +143,6 @@ class TextBox extends Control
 	function Show()
 	{
 		$initialProperties = parent::Show() . '\'type\',\'' . ($this->Password?'password\'':'text\'') . $this->GetEventString(null);
-
 		//$tempStr = str_repeat("  ", $IndentLevel) . "<INPUT "  . $parentShow . "' ";
 		//if(!is_null($this->Text))
 		//if(!empty($this->MaxLength))
