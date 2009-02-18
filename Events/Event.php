@@ -184,7 +184,7 @@ class Event extends Object implements ArrayAccess
 			return '';
 	}
 	/**
-	 * Launches the particular event. That is, all the events of this multiple event will be triggered. If 
+	 * Launches the particular event. That is, all the events of this multiple event will be triggered.
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */

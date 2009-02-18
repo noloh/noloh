@@ -2,15 +2,39 @@
 /**
  * TreeNode class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A TreeNode is a Control Auxiliary to TreeList. For more information, see TreeList.
+ * 
+ * A TreeNode can have other TreeNodes as sub-nodes, in which case it can either be open or closed.
+ * If it does not have sub-nodes, then it is called a "leaf." The three different states: leaf, 
+ * open, or closed, each have different Icon Srcs that visually indicate to the user information
+ * about the TreeNode. These Srcs have defaults but can also be customized.
+ * 
+ * A TreeNode can also be Selected or not. A TreeList, in turn, has many functions that allow one to
+ * return information about the Selected TreeNodes.
  * 
  * @package Controls/Auxiliary
  */
 class TreeNode extends Panel
 {
+	/**
+	 * The ArrayList of all inner TreeNodes.
+	 * @var ArrayList
+	 */
 	public $TreeNodes;
+	/**
+	 * The RolloverImage which looks like a plus/minus switch that toggles whether the TreeNode is open.
+	 * @var RolloverImage
+	 */
 	public $PlusMinus;
+	/**
+	 * The Image next to the TreeNode that visually suggests whether the TreeNode is a leaf node, or if not, if it is open or closed.
+	 * @var Image
+	 */
 	public $Icon;
+	/**
+	 * The Panel holding the sub-nodes of the TreeNode which is shown or hidden depending on whether the TreeNode is open or closed.
+	 * @var Panel
+	 */
 	public $ChildrenPanel;
 	private $Element;
 	private $LeafSrc;
@@ -41,7 +65,15 @@ class TreeNode extends Panel
 	{
 		return System::ImagePath() . 'folder_open.gif';
 	}
-	
+	/**
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends TreeNode
+ 	 * Example
+ 	 *	<pre> $node = new TreeNode('Some Text');</pre>
+	 * @param mixed $element
+	 * @param integer $left
+	 * @return TreeNode
+	 */
 	function TreeNode($element, $left=10)
 	{
 		parent::Panel($left, 0, 0, null);
@@ -172,12 +204,18 @@ class TreeNode extends Panel
 		for($i=0; $i<$controlCount; ++$i)
 			$elements[$i]->ForgetListDeeply();
 	}
-
+	/**
+	 * Returns the TreeNode's element that is displayed as the caption. This object is most typically a Label.
+	 * @return Control
+	 */
 	function GetElement()
 	{
 		return $this->Element;
 	}
-	
+	/**
+	 * Sets the TreeNode's element that is displayed as the caption. This object is most typically a Label.
+	 * @param Control $element
+	 */
 	function SetElement($element)
 	{
 		if(is_object($element))
@@ -204,12 +242,17 @@ class TreeNode extends Panel
 		$this->Element->SetLayout(1);
 		$this->Element->SetCursor(Cursor::Hand);
 	}
-	
+	/**
+	 * Returns the TreeNode, if any, having this TreeNode as a sub-node.
+	 * @return TreeNode
+	 */
 	function GetParentNode()
 	{
 		return GetComponentById($this->ParentNodeId);
 	}
-
+	/**
+	 * @ignore
+	 */
 	function GetRightBottomChildId()
 	{
 		if($this->ChildrenPanel->Controls->Count() > 0)
@@ -217,7 +260,10 @@ class TreeNode extends Panel
 		else 
 			return $this->Id;
 	}
-	// Note: The legacy is strict; a node is not considered in its own legacy
+	/**
+	 * Returns the number of TreeNodes that are its sub-nodes recursively. Note: The legacy is strict; a TreeNode is not considered in its own legacy.
+	 * @return integer
+	 */
 	function GetLegacyLength()
 	{
 		$legacyLength = 0;
@@ -226,7 +272,10 @@ class TreeNode extends Panel
 			$legacyLength += $this->ChildrenPanel->Controls->Elements[$i]->GetLegacyLength();
 		return $legacyLength + $childCount;
 	}
-
+	/**
+	 * Expands the TreeNode, and if specified, all of its sub-nodes recursively.
+	 * @param boolean $deep
+	 */
 	function Expand($deep = false)
 	{
 		$this->PlusMinus->SetSelected(true);
@@ -239,7 +288,9 @@ class TreeNode extends Panel
 				$this->ChildrenPanel->Controls->Elements[$i]->Expand(true, false);
 		}
 	}
-	
+	/**
+	 * Expands the ParentNodes recursively so that this TreeNode is displayed.
+	 */
 	function ExpandToShow()
 	{
 		if($this->ParentNodeId)
@@ -249,7 +300,10 @@ class TreeNode extends Panel
 			$parentNode->ExpandToShow();
 		}
 	}
-	
+	/**
+	 * Returns the Id of the TreeList, if any, that has this TreeNode as one of its sub-nodes, recursively.
+	 * @return string
+	 */
 	function GetTreeListId()
 	{
 		return $this->TreeListId;
@@ -299,66 +353,96 @@ class TreeNode extends Panel
 		if($this->Element != null)
 			$this->Element->SetText($text);
 	}
-	
+	/**
+	 * Returns the Value of the TreeNode, or, if it does not exist, the Text of the TreeNode.
+	 * @return string
+	 */
 	function GetValue()
 	{
 		return $this->Value ? $this->Value : $this->Text;
 	}
-	
+	/**
+	 * Sets the Value of the TreeNode.
+	 * @param string $value
+	 */
 	function SetValue($value)
 	{
 		$this->Value = $value;
 	}
-	
+	/**
+	 * Returns the Src of the TreeNode Icon when the TreeNode has no sub-nodes.
+	 * @return string
+	 */
 	function GetLeafSrc()
 	{
 		return $this->LeafSrc;
 	}
-	
-	function SetLeafSrc($newSrc)
+	/**
+	 * Sets the Src of the TreeNode Icon when the TreeNode has no sub-nodes.
+	 * @param string $src
+	 */
+	function SetLeafSrc($src)
 	{
-		if($newSrc == null)
-			$newSrc = TreeNode::GetDefaultLeafSrc();
-		$this->LeafSrc = $newSrc;
+		if($src == null)
+			$src = TreeNode::GetDefaultLeafSrc();
+		$this->LeafSrc = $src;
 		if($this->ChildrenPanel->Controls->Count() == 0)
-			$this->Icon->Src = $newSrc;
+			$this->Icon->Src = $src;
 	}
-	
+	/**
+	 * Returns the Src of the TreeNode Icon when the TreeNode has sub-nodes and is closed.
+	 * @return string
+	 */
 	function GetCloseSrc()
 	{
 		return $this->CloseSrc;
 	}
-	
-	function SetCloseSrc($newSrc)
+	/**
+	 * Sets the Src of the TreeNode Icon when the TreeNode has sub-nodes and is closed.
+	 * @param string $src
+	 */
+	function SetCloseSrc($src)
 	{
-		if($newSrc == null)
-			$newSrc = TreeNode::GetDefaultCloseSrc();
-		$this->CloseSrc = $newSrc;
-		NolohInternal::SetProperty('CloseSrc', $newSrc, $this);
+		if($src == null)
+			$src = TreeNode::GetDefaultCloseSrc();
+		$this->CloseSrc = $src;
+		NolohInternal::SetProperty('CloseSrc', $src, $this);
 		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->Visible !== true)
-			$this->Icon->SetSrc($newSrc);
+			$this->Icon->SetSrc($src);
 	}
-	
+	/**
+	 * Returns the Src of the TreeNode Icon when the TreeNode has sub-nodes and is open.
+	 * @return string
+	 */
 	function GetOpenSrc()
 	{
 		return $this->OpenSrc;
 	}
-	
-	function SetOpenSrc($newSrc)
+	/**
+	 * Sets the Src of the TreeNode Icon when the TreeNode has sub-nodes and is open.
+	 * @param string $src
+	 */
+	function SetOpenSrc($src)
 	{
-		if($newSrc == null)
-			$newSrc = TreeNode::GetDefaultOpenSrc();
-		$this->OpenSrc = $newSrc;
-		NolohInternal::SetProperty('OpenSrc', $newSrc, $this);
+		if($src == null)
+			$src = TreeNode::GetDefaultOpenSrc();
+		$this->OpenSrc = $src;
+		NolohInternal::SetProperty('OpenSrc', $src, $this);
 		if($this->ChildrenPanel->Controls->Count() != 0 && $this->ChildrenPanel->Visible === true)
-			$this->Icon->SetSrc($newSrc);
+			$this->Icon->SetSrc($src);
 	}
-	
+	/**
+	 * Returns whether or not the TreeNode is Selected.
+	 * @return boolean
+	 */
 	function GetSelected()
 	{
 		return $this->TreeListId != null && in_array($this, GetComponentById($this->TreeListId)->GetSelectedTreeNodes(), true);
 	}
-	
+	/**
+	 * Sets whether or not the TreeNode is Selected.
+	 * @param boolean $bool
+	 */
 	function SetSelected($bool)
 	{
 		if($this->TreeListId !== null)
