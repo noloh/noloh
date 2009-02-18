@@ -32,7 +32,7 @@ class RichMarkupRegion extends MarkupRegion
 		$this->Eventees = array();
 		$this->Larvae = array();
 		foreach($this->ComponentSpace as $component)
-			$component->SecondGuessShowStatus();
+			$component->SecondGuessParent();
 		$this->ComponentSpace = array();
 		//$this->MarkupString = $markupStringOrFile;
         Control::SetText($markupStringOrFile);
@@ -74,7 +74,6 @@ class RichMarkupRegion extends MarkupRegion
 		++$this->ItemCount;
 		$id = $this->Id . 'i' . $this->ItemCount;
 	
-		
 		if(strcasecmp($matches[1], 'larva') === 0)
 		{
 			$this->Larvae[$id] = array($matches[4], $matches[5]);

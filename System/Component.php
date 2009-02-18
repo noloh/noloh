@@ -59,23 +59,18 @@ abstract class Component extends Object
 		return $this->ShowStatus === null ? 1 : $this->ShowStatus;
 	}
 	/**
-	* @ignore
-	*/
-	function SecondGuessShowStatus()
-	{
-		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
-			$this->ShowStatus = 0;
-	}
-	/**
 	 * @ignore
 	 */
 	function SecondGuessParent()
 	{
 		if($this->ParentId != null && GetComponentById($this->ParentId) == null)
 		{
+			$regionId = substr($this->ParentId, 0, strpos($this->ParentId, 'i'));
+			if(GetComponentById($regionId))
+				unset($_SESSION['_NControlQueueDeep'][$regionId][$this->Id]);
+			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
 			$this->ParentId = null;
-			unset($_SESSION['_NControlQueue'][$this->Id]);
-			//unset($_SESSION['_NControlQueue'][$id]);
+			$this->ShowStatus = 0;
 		}
 	}
 	/**
@@ -247,7 +242,9 @@ abstract class Component extends Object
 		if(isset($_SESSION['_NControlQueueRoot'][$this->Id]))
 			unset($_SESSION['_NControlQueueRoot'][$this->Id]);
 	}
-	
+	/**
+	 * @ignore
+	 */
 	function NoScriptShowChildren($indent)
 	{
 		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))

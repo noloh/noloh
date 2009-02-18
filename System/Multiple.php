@@ -179,14 +179,6 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 	/**
 	 * @ignore
 	 */
-	function SecondGuessShowStatus()
-	{
-		parent::SecondGuessShowStatus();
-		reset($this->SubObjects)->SecondGuessShowStatus();
-	}
-	/**
-	 * @ignore
-	 */
 	function SecondGuessParent()
 	{
 		parent::SecondGuessParent();
