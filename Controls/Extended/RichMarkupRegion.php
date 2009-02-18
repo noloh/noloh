@@ -77,7 +77,7 @@ class RichMarkupRegion extends MarkupRegion
 		if(strcasecmp($matches[1], 'larva') === 0)
 		{
 			$this->Larvae[$id] = array($matches[4], $matches[5]);
-			return '<div id=<NQt2>' . $id . '<NQt2>' . $matches[2].$matches[6].'>'.$matches[7].'</div>';
+			return '<div class=<NQt2>NLarva<NQt2> id=<NQt2>' . $id . '<NQt2>' . $matches[2].$matches[6].'>'.$matches[7].'</div>';
 		}
 		else 
 		{
