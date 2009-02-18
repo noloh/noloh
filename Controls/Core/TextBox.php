@@ -133,7 +133,7 @@ class TextBox extends Control
         elseif($eventTypeAsString === 'KeyPress' && $this->Filter)
         {
         	preg_match('/^(.)\^?(.*?)\$?\1([a-zA-Z]*)$/', $this->Filter, $matches);
-        	$preStr = '_NFilter('.$this->Id.'","'.str_replace('\\','\\\\\\\\',$matches[2]).'","'.$matches[3].'");';
+        	$preStr = '_NFilter("'.$this->Id.'","'.str_replace('\\','\\\\\\\\',$matches[2]).'","'.$matches[3].'");';
         }
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}

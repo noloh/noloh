@@ -1,6 +1,9 @@
 function _NFilter(id, filter, flags)
 {
-	var newVal = _N(id).value + String.fromCharCode(event.which);
-	if (event.which != 8 && !newVal.match(new RegExp('^' + filter + '$', flags)))
-		event.preventDefault();
+	if(event.charCode)
+	{
+		var newVal = _N(id).value + String.fromCharCode(event.charCode);
+		if (event.which != 8 && !newVal.match(new RegExp('^' + filter + '$', flags)))
+			event.preventDefault();
+	}
 }
