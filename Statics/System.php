@@ -103,44 +103,47 @@ final class System
 	}
 	/**
 	 * System::Log will log any piece of information to a debug window, along with a system timestamp. This function is useful for debugging.
-	 * @param mixed $what The information to be logged
-	 * @param boolean $toFireBug If set to true and the user has the Firebug extension for Firefox, Log will alternatively log to the console.
+	 * @param mixed $what,... The information to be logged, as an unlimited number of parameters
 	 */
-	static function Log($what, $toFireBug=false)
+	static function Log($what, $dotDotDot=null)
 	{
 		if($GLOBALS['_NDebugMode'])
-			if($toFireBug === true)
+		{
+			$webPage = WebPage::That();
+			$debugWindow = $webPage->DebugWindow;
+			if($debugWindow)
 			{
-				if(UserAgent::GetBrowser() === 'ff')
-					AddScript('try{console.log(' . ClientEvent::ClientFormat($text) . ');} catch(e){};');
+				$display = $debugWindow->Controls['Display'];
+				$old = true;
 			}
-			elseif($GLOBALS['_NDebugMode'])
+			else
 			{
-				$webPage = WebPage::That();
-				$debugWindow = $webPage->DebugWindow;
-				if($debugWindow)
-				{
-					$display = $debugWindow->Controls['Display'];
-					$old = true;
-				}
-				else
-				{
-					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
-					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
-					//$display->CSSFontFamily = 'consolas, monospace';
-					$old = false;
-					$debugWindow->Buoyant = true;
-				}
-				$debugWindow->ParentId = $webPage->Id;
-				$debugWindow->Visible = true;
-				$stamp = date('h:i:s') . substr(microtime(), 1, 5);
-				$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ' . self::LogFormat($what);
-				if(!isset($GLOBALS['_NDebugScrollAnim']))
-				{
-					Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
-					$GLOBALS['_NDebugScrollAnim'] = true;
-				}
+				$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
+				$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
+				//$display->CSSFontFamily = 'consolas, monospace';
+				$old = false;
+				$debugWindow->Buoyant = true;
 			}
+			$debugWindow->ParentId = $webPage->Id;
+			$debugWindow->Visible = true;
+			$stamp = date('h:i:s') . substr(microtime(), 1, 5);
+			$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ';
+			if(($count = func_num_args()) > 1)
+			{
+				$display->Text .= '<UL>';
+				$args = func_get_args();
+				for($i=0; $i < $count; ++$i)
+					$display->Text .= '<LI>' . self::LogFormat($args[$i]) . '</LI>';
+				$display->Text .= '</UL>';
+			}
+			else 
+				 $display->Text .= self::LogFormat($what);
+			if(!isset($GLOBALS['_NDebugScrollAnim']))
+			{
+				Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
+				$GLOBALS['_NDebugScrollAnim'] = true;
+			}
+		}
 	}
 	/**
  	 * Returns the full system path to NOLOH
