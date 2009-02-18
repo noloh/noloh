@@ -38,6 +38,10 @@
 abstract class Object
 {
 	/**
+	 * @ignore
+	 */
+	function Object()	{}
+	/**
 	 * Returns whether or not the object has a specified property, in the sense of either variables or a Get method.
 	 * @param string $property
 	 * @return boolean
