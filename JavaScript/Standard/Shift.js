@@ -1,50 +1,52 @@
 _N.Catchers = [];
 function _NShftSta(objArray)
 {
-	_N.ShiftObjArray = objArray;
-	_N.ShiftObjArray.Ghosts = [];
-	_N.ShiftObjArray.ObjsWithStart = [];
-	_N.ShiftObjArray.ObjsWithStop = [];
-	_N.ShiftObjArray.ActualCount = [];
-	_N.ShiftObjArray.HasMoved = false;
-	_N.ShiftObjArray.CursorX = event.clientX + window.pageXOffset;
-	_N.ShiftObjArray.CursorY = event.clientY + window.pageYOffset;
+	if(_N.ClickOffId)
+		_NClickOffClick(event);
+	_N.Shifts = objArray;
+	_N.Shifts.Ghosts = [];
+	_N.Shifts.ObjsWithStart = [];
+	_N.Shifts.ObjsWithStop = [];
+	_N.Shifts.ActualCount = [];
+	_N.Shifts.HasMoved = false;
+	_N.Shifts.CursorX = event.clientX + window.pageXOffset;
+	_N.Shifts.CursorY = event.clientY + window.pageYOffset;
 	document.addEventListener("mousemove", _NShftFirstGo, true);
     document.addEventListener("mouseup", _NShftStp, true);
     event.preventDefault();
 }
 function _NShftFirstGo(e)
 {
-	var id, obj, deltaZIndex, count = _N.ShiftObjArray.length;
+	var id, obj, deltaZIndex, count = _N.Shifts.length;
 	if(count > 0)
-		deltaZIndex = ++_N.HighestZ + count - _N(_N.ShiftObjArray[0][0]).style.zIndex;
+		deltaZIndex = ++_N.HighestZ + count - _N(_N.Shifts[0][0]).style.zIndex;
 	event = e;
 	for(var i=0; i<count; ++i)
 	{
-		obj = _N(id = _N.ShiftObjArray[i][0]);
-		if(obj.ShiftStart && !_N.ShiftObjArray.ObjsWithStart[id])
+		obj = _N(id = _N.Shifts[i][0]);
+		if(obj.ShiftStart && !_N.Shifts.ObjsWithStart[id])
 		{
 			obj.ShiftStart();
-			_N.ShiftObjArray.ObjsWithStart[id] = true;
+			_N.Shifts.ObjsWithStart[id] = true;
 		}
-		if(obj.ShiftStop && !_N.ShiftObjArray.ObjsWithStop[id])
-			_N.ShiftObjArray.ObjsWithStop[id] = obj;
-		if(_N.ShiftObjArray[i][4])
+		if(obj.ShiftStop && !_N.Shifts.ObjsWithStop[id])
+			_N.Shifts.ObjsWithStop[id] = obj;
+		if(_N.Shifts[i][4])
 		{
 			obj = obj.cloneNode(true);
 			obj.style.position = "absolute";
 			obj.style.left = _NFindX(id) + "px";
 			obj.style.top = _NFindY(id) + "px";
 			obj.style.opacity = ".5";
-			_N.ShiftObjArray[i][0] = id = obj.id = id + "_Ghost";
+			_N.Shifts[i][0] = id = obj.id = id + "_Ghost";
 			document.body.appendChild(obj);
-			_N.ShiftObjArray.Ghosts.push(i);
+			_N.Shifts.Ghosts.push(i);
 		}
-		_N.ShiftObjArray.ActualCount[_N.ShiftObjArray[i][7] = _N.ShiftObjArray[i][1] + id] = parseInt(_N.ShiftObjArray[i][1]==1?obj.style.width: _N.ShiftObjArray[i][1]==2?obj.style.height: _N.ShiftObjArray[i][1]==4?obj.style.left: obj.style.top);
+		_N.Shifts.ActualCount[_N.Shifts[i][7] = _N.Shifts[i][1] + id] = parseInt(_N.Shifts[i][1]==1?obj.style.width: _N.Shifts[i][1]==2?obj.style.height: _N.Shifts[i][1]==4?obj.style.left: obj.style.top);
 		_NSetProperty(id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
 	}
-	delete _N.ShiftObjArray.ObjsWithStart;
-	_N.ShiftObjArray.HasMoved = true;
+	delete _N.Shifts.ObjsWithStart;
+	_N.Shifts.HasMoved = true;
 	event = null;
 	document.removeEventListener("mousemove", _NShftFirstGo, true);
 	document.addEventListener("mousemove", _NShftGo, true);
@@ -54,11 +56,11 @@ function _NShftGo(e)
 	event = e;
 	var xPos = event.clientX + window.pageXOffset;
 	var yPos = event.clientY + window.pageYOffset;
-	var deltaX = xPos - _N.ShiftObjArray.CursorX;
-	var deltaY = yPos - _N.ShiftObjArray.CursorY;
-	_N.ShiftObjArray.CursorX = xPos;
-	_N.ShiftObjArray.CursorY = yPos;
-	_NShftObjs(_N.ShiftObjArray, deltaX, deltaY);
+	var deltaX = xPos - _N.Shifts.CursorX;
+	var deltaY = yPos - _N.Shifts.CursorY;
+	_N.Shifts.CursorX = xPos;
+	_N.Shifts.CursorY = yPos;
+	_NShftObjs(_N.Shifts, deltaX, deltaY);
 	event.preventDefault();
 	event = null;
 }
@@ -69,54 +71,81 @@ function _NShftObjs(objects, deltaX, deltaY)
 	{
 		obj = _N(objects[i][0]);
 		if(objects[i][1] == 1)
-			_NShftProcObj(objects[i], 1, "style.width", 1, (tmp=obj.style.width)?tmp:obj.offsetWidth, deltaX, obj.ShiftsWith, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.left)?tmp:obj.offsetLeft);
+			_NShftProcObj(obj, objects[i], 1, "style.width", 1, (tmp=obj.style.width)?tmp:obj.offsetWidth, deltaX, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.left)?tmp:obj.offsetLeft);
 		else if(objects[i][1] == 2)
-			_NShftProcObj(objects[i], 2, "style.height", 0, (tmp=obj.style.height)?tmp:obj.offsetHeight, deltaY, obj.ShiftsWith, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.top)?tmp:obj.offsetTop);
+			_NShftProcObj(obj, objects[i], 2, "style.height", 0, (tmp=obj.style.height)?tmp:obj.offsetHeight, deltaY, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.top)?tmp:obj.offsetTop);
 		else if(objects[i][1] == 4)
-			_NShftProcObj(objects[i], 4, "style.left", 1, (tmp=obj.style.left)?tmp:obj.offsetLeft, deltaX, obj.ShiftsWith, objects[i][3]?null:(tmp=obj.style.width)?tmp:obj.offsetWidth);
+			_NShftProcObj(obj, objects[i], 4, "style.left", 1, (tmp=obj.style.left)?tmp:obj.offsetLeft, deltaX, objects[i][3]?null:(tmp=obj.style.width)?tmp:obj.offsetWidth);
 		else
-			_NShftProcObj(objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, obj.ShiftsWith, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
+			_NShftProcObj(obj, objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
 	}
 }
-function _NShftProcObj(info, propNum, propStr, axis, startPx, delta, shiftsWith, opposite)
+function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposite)
 {
 	if(delta)
 	{
 		startPx = parseInt(startPx);
-		var maxBound, minBound = info[2]?info[2]:startPx<0?null:0;
+		var maxBound, minBound = info[2]==null?(startPx<0?null:0):(info[2]=="N"?null:info[2]), shiftsWith, tmp;
 		if(opposite)
 		{
-			var tmp, parent = _N(info[0]).parentNode;
+			var parent = obj.parentNode;
 			maxBound = (axis ? (parent.id == "N1" ? parent.Width : (tmp=parent.style.width)?parseInt(tmp):(parent.offsetWidth-(isNaN(tmp=parseInt(parent.style.borderLeftWidth))?0:(2*tmp))))
 							 : (parent.id == "N1" ? parent.Height : (tmp=parent.style.height)?parseInt(tmp):(parent.offsetHeight-(isNaN(tmp=parseInt(parent.style.borderTopWidth))?0:(2*tmp))))) - parseInt(opposite);
 			if(startPx > maxBound)
 				maxBound = null;
 		}
 		else
-			maxBound = info[3];
-		if((delta = _NShftObj(info[0], propStr, startPx, delta, minBound, maxBound, info[5], info[6], info[7]))
-			&& shiftsWith && shiftsWith[propNum])
-				_NShftObjs(shiftsWith[propNum], delta, delta);
+			maxBound = info[3] == "N" ? null : info[3];
+		if(info[7])
+			delta = _NShftObj(info[0], propStr, startPx, delta, minBound, maxBound, info[5], info[6], _N.Shifts.ActualCount, info[7]);
+		else
+		{
+			if(obj._NApparentCount[propNum] != startPx)
+				obj._NApparentCount[propNum] = obj._NActualCount[propNum] = startPx;
+			delta = _NShftObj(info[0], propStr, startPx, delta, minBound, maxBound, info[5], info[6], obj._NActualCount, propNum);
+			obj._NApparentCount[propNum] += delta;
+		}
+		if(tmp = _N.ChangeForReflect)
+		{
+			var finalCoord = parseInt(propNum == 1 ? obj.style.left : obj.style.top) + (tmp=="D" ? (-delta) : tmp);
+			_NSetProperty(info[0], propNum == 1 ? "style.left" : "style.top", finalCoord + "px");
+			delete _N.ChangeForReflect;
+		}
+		if(delta && (shiftsWith=obj.ShiftsWith) && shiftsWith[propNum])
+			_NShftObjs(shiftsWith[propNum], delta, delta);
 	}
 }
-function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, actualIdx)
+function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, arr, idx)
 {
 	var change = ratio ? (delta * ratio) : delta;
-	var finalCoord = actualIdx ? (_N.ShiftObjArray.ActualCount[actualIdx] += change) : (start + change);
-	if(grid)
-		finalCoord = _NRound(finalCoord, grid);
-	if(minBound != null && finalCoord < minBound)
-		finalCoord = minBound;
-	else if(maxBound != null && finalCoord >= maxBound)
+	var finalCoord = arr[idx] += change;
+	finalCoord = grid ? _NRound(finalCoord, grid, start) : Math.round(finalCoord);
+	if(minBound != null)
+	{
+		if(minBound == "R")
+		{
+			var last = _NRound(arr[idx]-change, grid, start);
+			if(finalCoord<0 && last>=0)
+				_N.ChangeForReflect = finalCoord;
+			else if(finalCoord>=0 && last<0)
+				_N.ChangeForReflect = start;
+			else if(finalCoord < 0)
+				_N.ChangeForReflect = 'D';
+			finalCoord = Math.abs(finalCoord);
+		}
+		else if(finalCoord < minBound)
+			finalCoord = minBound;
+	}
+	else if(maxBound != null && finalCoord > maxBound)
 		finalCoord = maxBound;
-	_NSetProperty(id, property, Math.round(finalCoord) + "px");
+	_NSetProperty(id, property, finalCoord + "px");
 	return finalCoord - start;
 }
 function _NShftStp(e)
 {
 	event = e;
 	var count;
-	if((count = _N.Catchers.length) && _N.ShiftObjArray.HasMoved)
+	if((count = _N.Catchers.length) && _N.Shifts.HasMoved)
 	{
 		var catcher, catcherLeft, catcherTop, droppedX, droppedY, j, id, tmp, caught = [];
 		_N.EventVars.Caught = [];
@@ -128,60 +157,71 @@ function _NShftStp(e)
 				catcher = _N(_N.Catchers[i]);
 				catcherX = _NFindX(_N.Catchers[i]);
 				catcherY = _NFindY(_N.Catchers[i]);
-				if(droppedX >= catcherX && droppedX < catcherX + ((tmp=catcher.style.width)==""?(tmp=catcher.offsetWidth?tmp:80):parseInt(tmp)) && droppedY >= catcherY && droppedY < catcherY + ((tmp=catcher.style.height)==""?(tmp=catcher.offsetHeight?tmp:20):parseInt(tmp)))
-					for(j=0; j<_N.ShiftObjArray.length; ++j)
-						if(4 <= _N.ShiftObjArray[j][1] && _N.ShiftObjArray[j][1] <= 6 && _N.Catchers[i]!=(id=_N.ShiftObjArray[j][0].replace("_Ghost","")) && !caught[id])
-							_N.EventVars.Caught.push(caught[id] = id);
-				if(_N.EventVars.Caught.length)
+				if(droppedX >= catcherX && droppedX < catcherX + ((tmp=catcher.style.width)==""?((tmp=catcher.offsetWidth)?tmp:80):parseInt(tmp)) && droppedY >= catcherY && droppedY < catcherY + ((tmp=catcher.style.height)==""?((tmp=catcher.offsetHeight)?tmp:20):parseInt(tmp)))
 				{
-					catcher.DragCatch();
-					if(!_N.SEQ.length)
-						delete _N.EventVars.Caught;
+					for(j=0; j<_N.Shifts.length; ++j)
+						if(4 <= _N.Shifts[j][1] && _N.Shifts[j][1] <= 6 && _N.Catchers[i]!=(id=_N.Shifts[j][0].replace("_Ghost","")) && !caught[id])
+							_N.EventVars.Caught.push(caught[id] = id);
+					if(_N.EventVars.Caught.length)
+					{
+						catcher.DragCatch();
+						_N.EventVars.Caught = [];
+					}
 				}
 			}
+		delete _N.EventVars.Caught;
 	}
-	count = _N.ShiftObjArray.Ghosts.length;
+	count = _N.Shifts.Ghosts.length;
 	for(i=0; i<count; ++i)
 	{
-		j = _N.ShiftObjArray.Ghosts[i];
-		document.body.removeChild(_N(_N.ShiftObjArray[j][0]));
-		_N.ShiftObjArray[j][0] = _N.ShiftObjArray[j][0].replace("_Ghost", "");
+		j = _N.Shifts.Ghosts[i];
+		document.body.removeChild(_N(_N.Shifts[j][0]));
+		_N.Shifts[j][0] = _N.Shifts[j][0].replace("_Ghost", "");
 	}
-	if(_N.ShiftObjArray.HasMoved)
+	if(_N.Shifts.HasMoved)
 	{
-		for(var id in _N.ShiftObjArray.ObjsWithStop)
-			_N.ShiftObjArray.ObjsWithStop[id].ShiftStop();
+		for(var id in _N.Shifts.ObjsWithStop)
+			_N.Shifts.ObjsWithStop[id].ShiftStop();
 		document.removeEventListener("mousemove", _NShftGo, true);
 	}
 	else
 	{
 		var obj;
-		count = _N.ShiftObjArray.length;
+		count = _N.Shifts.length;
 		for(i=0; i<count; ++i)
 		{
-			obj = _N(_N.ShiftObjArray[i][0]);
+			obj = _N(_N.Shifts[i][0]);
 			if(obj.onclick)
 				obj.onclick.call(obj);
 		}
 		document.removeEventListener("mousemove", _NShftFirstGo, true);
 	}
-	_N.ShiftObjArray = null;
+	_N.Shifts = null;
 	document.removeEventListener("mouseup", _NShftStp, true);
 	event = null;
 }
-function _NShftWth(objectId)
+function _NShftWth(id)
 {
-	var tmpObj = _N(objectId), count = arguments.length, i=0;
-	if(tmpObj.ShiftsWith == null)
-		tmpObj.ShiftsWith = [];
+	var obj = _N(id), innerObj, count = arguments.length, i=0;
+	if(obj.ShiftsWith == null)
+		obj.ShiftsWith = [];
 	while(++i<count)
-		if(tmpObj.ShiftsWith[arguments[i]] == null)
-			tmpObj.ShiftsWith[arguments[i]] = [arguments[++i]];
+	{
+		if(obj.ShiftsWith[arguments[i]] == null)
+			obj.ShiftsWith[arguments[i]] = [arguments[++i]];
 		else
-			tmpObj.ShiftsWith[arguments[i]].push(arguments[++i]);
+			obj.ShiftsWith[arguments[i]].push(arguments[++i]);
+		if((innerObj = _N(arguments[i][0])) && !innerObj._NActualCount)
+		{
+			innerObj._NActualCount = [];
+			innerObj._NApparentCount = [];
+		}
+	}
 }
-function _NRound(number, toTheNearest)
+function _NRound(number, toTheNearest, modLeft)
 {
-	var mod = number % toTheNearest;
-	return (mod >= toTheNearest/2) ? (number - mod + toTheNearest) : (number - mod);
+	var mod = (modLeft?(number-modLeft):number) % toTheNearest;
+	if(mod < 0)
+		mod += toTheNearest;
+	return (mod >= toTheNearest/2) ? (number + toTheNearest - mod) : (number - mod);
 }

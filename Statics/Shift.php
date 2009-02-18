@@ -5,22 +5,32 @@
  * Shift class
  *
  * The Shift class contains various static functions and constants that when added to the Shifts
- * ArrayList of any Control, allows the Control to be moved with another. Shift::With indicates
- * that a Control will Shift when another Control is Shifted or Animated, while the other Shifts
- * indicate a dragging behavior. 
- * 
+ * ArrayList of any Control, allows that Control to be moved with another. The Shift static functions 
+ * fall into two distinct categories, whose differences are crucial to understand for a mastery of Shifts:
+ * <ol>
+ * <li>Those whose names are properties (e.g., Shift::Left) always define a dragging behavior. Only one of
+ * these functions should be defined per drag.
  * <pre>
- * // Makes a panel draggable.
+ * // Makes a Panel draggable.
  * $panel->Shifts[] = Shift::Location($panel);
- * // Makes an image resize a panel.
+ * // Makes an Image resize a Panel.
  * $image->Shifts[] = Shift::Size($panel);
- * // Similarly, makes a panel resize with an image.
+ * </li>
+ * <li>Those whose names end in 'With' (e.g., Shift::LeftWith) specifies how a Control will behave when
+ * another Control is either Shifted <b>or</b> Animated. Notice that good object-oriented techniques
+ * imply that in most cases, Shift Withs should be defined rather than regular Shifts. The reason being 
+ * that a complex object should know "internally" how its components should stand to one another, and then a 
+ * single Shift per drag behavior can be applied externally without having to specify the individual components. 
+ * In addition, the With functions work with the Animate functions. 
+ * <pre>
+ * // Makes a Panel resize with an Image, but without defining a dragging behavior on that Image.
  * $panel->Shifts[] = Shift::SizeWith($image);
  * </pre>
+ * </li>
+ * </ol>
  * 
  * If the ShiftStart and ShiftStop Events for that Control have been defined, they will be launched when
  * the animation starts and stops, respectfully.
- * If min and max bounds have not been set, the default behavior will be bounding to the size of the parent object.
  * 
  * @package Statics
  */
@@ -63,6 +73,14 @@ final class Shift
 	 */
 	const Mirror = 0;
 	/**
+	 * A possible value for a min or max bound, Parent specifies that a Control will be bound by the space available in its Parent container.
+	 */
+	const Parent = 'P';
+	/**
+	 * A possible value for the min only of Width or Height, Reflect specifies that negative values will reflect the Control through its location.
+	 */
+	const Reflect = '"R"';
+	/**
 	 * @ignore
 	 */
 	const All = 7;
@@ -78,12 +96,13 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function Width($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	static function Width($control, $min=Shift::Parent, $max=Shift::Parent, $type=Shift::Normal, $ratio=1, $grid=1)
 	{
 		$id = $control->Id;
 		if(func_num_args()>1)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
 			$str = '["'.$id.'",1,' . implode(',', $args) . ']';
 		}
@@ -101,12 +120,13 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function Height($control, $min=1, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	static function Height($control, $min=Shift::Parent, $max=Shift::Parent, $type=Shift::Normal, $ratio=1, $grid=1)
 	{
 		$id = $control->Id;
 		if(func_num_args()>1)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
 			$str = '["'.$id.'",2,' . implode(',', $args) . ']';
 		}
@@ -126,19 +146,27 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function Size($control, $minWidth=1, $maxWidth=null, $minHeight=1, $maxHeight=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	static function Size($control, $minWidth=Shift::Parent, $maxWidth=Shift::Parent, $minHeight=Shift::Parent, $maxHeight=Shift::Parent, $type=Shift::Normal, $ratio=1, $grid=1)
 	{
 		$id = $control->Id;
 		$numArgs = func_num_args();
 		if($numArgs > 1)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 1, 2);
 			unset($args[0], $args[3], $args[4]);
 			$str1 = '["'.$id.'",1,' . implode(',', $args) . ']';
-			if($numArgs > 3)
+			if($numArgs >= 4)
+			{
 				$args[1] = $minHeight;
-			if($numArgs > 4)
-				$args[2] = $maxHeight;
+				if($numArgs >= 5)
+					$args[2] = $maxHeight;
+				else 
+					unset($args[2]);
+				self::BoundsToClient($args, 1, 2);
+			}
+			else 
+				unset($args[1], $args[2]);
 			$str2 = '["'.$id.'",2,' . implode(',', $args) . ']';
 		}
 		else 
@@ -158,12 +186,13 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function Left($control, $min=0, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	static function Left($control, $min=Shift::Parent, $max=Shift::Parent, $type=Shift::Normal, $ratio=1, $grid=1)
 	{
 		$id = $control->Id;
 		if(func_num_args()>1)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
 			$str = '["'.$id.'",4,' . implode(',', $args) . ']';
 		}
@@ -181,12 +210,13 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function Top($control, $min=0, $max=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	static function Top($control, $min=Shift::Parent, $max=Shift::Parent, $type=Shift::Normal, $ratio=1, $grid=1)
 	{
 		$id = $control->Id;
 		if(func_num_args()>1)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
 			$str = '["'.$id.'",5,' . implode(',', $args) . ']';
 		}
@@ -206,19 +236,27 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function Location($control, $minLeft=0, $maxLeft=null, $minTop=0, $maxTop=null, $type=Shift::Normal, $ratio=1, $grid=1)
+	static function Location($control, $minLeft=Shift::Parent, $maxLeft=Shift::Parent, $minTop=Shift::Parent, $maxTop=Shift::Parent, $type=Shift::Normal, $ratio=1, $grid=1)
 	{
 		$id = $control->Id;
 		$numArgs = func_num_args();
 		if($numArgs > 1)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 1, 2);
 			unset($args[0], $args[3], $args[4]);
 			$str1 = '["'.$id.'",4,' . implode(',', $args) . ']';
-			if($numArgs > 3)
+			if($numArgs >= 4)
+			{
 				$args[1] = $minTop;
-			if($numArgs > 4)
-				$args[2] = $maxTop;
+				if($numArgs >= 5)
+					$args[2] = $maxTop;
+				else 
+					unset($args[2]);
+				self::BoundsToClient($args, 1, 2);
+			}
+			else 
+				unset($args[1], $args[2]);
 			$str2 = '["'.$id.'",5,' . implode(',', $args) . ']';
 		}
 		else 
@@ -229,7 +267,8 @@ final class Shift
 		return array($control->Id, 6, $str1, $str2);
 	}
 	/**
-	 * Allows a property of one Control to move with the property of another Control. DEPRECATED: Please use the Shift::___With functions instead.
+	 * Allows a property of one Control to move with the property of another Control. 
+	 * <b>DEPRECATED</b>: Please use the Shift::{Property}With functions instead (e.g., Shift::LeftWith, etc...). While basic Shift::With functionality is supported for historical reasons, it does not have as much functionality as the Shift::{Property}With counter-parts.
 	 * @param Component $object The Control to be shifted with.
 	 * @param mixed $shiftMeType A Shift constant specifying what property of a Control will be changed.
 	 * @param mixed $shiftWithType A Shift constant specifying what property the Control will change with.
@@ -239,13 +278,14 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function With(Component $object, $shiftMeType, $shiftWithType=Shift::Mirror, $min=null, $max=null, $ratio=null, $grid=1)
+	static function With(Component $object, $shiftMeType, $shiftWithType=Shift::Mirror, $min=Shift::Parent, $max=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 3)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 3, 4);
 			unset($args[0], $args[2]);
 			if($numArgs >= 6)
 				array_splice($args, 3, 0, $shiftWithType);
@@ -298,13 +338,14 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function WidthWith(Component $object, $shiftWithType=Shift::Width, $min=null, $max=null, $ratio=null, $grid=1)
+	static function WidthWith(Component $object, $shiftWithType=Shift::Width, $min=Shift::Parent, $max=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 2)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 2, 3);
 			unset($args[0], $args[1]);
 			if($numArgs >= 5)
 				array_splice($args, 2, 0, $shiftWithType);
@@ -330,13 +371,14 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function HeightWith(Component $object, $shiftWithType=Shift::Height, $min=null, $max=null, $ratio=null, $grid=1)
+	static function HeightWith(Component $object, $shiftWithType=Shift::Height, $min=Shift::Parent, $max=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 2)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 2, 3);
 			unset($args[0], $args[1]);
 			if($numArgs >= 5)
 				array_splice($args, 2, 0, $shiftWithType);
@@ -364,23 +406,35 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function SizeWith(Component $object, $shiftWithType=Shift::Size, $minWidth=null, $minHeight=null, $maxWidth=null, $maxHeight=null, $ratio=null, $grid=1)
+	static function SizeWith(Component $object, $shiftWithType=Shift::Size, $minWidth=Shift::Parent, $maxWidth=Shift::Parent, $minHeight=Shift::Parent, $maxHeight=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 2)
 		{
 			$args = func_get_args();
-			unset($args[0], $args[1], $args[3], $args[5]);
-			if($numArgs >= 6)
+			self::BoundsToClient($args, 2, 3);
+			unset($args[0], $args[1], $args[4], $args[5]);
+			if($numArgs >= 7)
 				array_splice($args, 2, 0, $shiftWithType);
 			$str1 = '1,' . implode(',', $args) . ']';
-			if($numArgs >= 4)
+			if($numArgs >= 7)
 			{
 				$args[0] = $minHeight;
-				if($numArgs >= 6)
-					$args[1] = $maxHeight;
+				$args[1] = $maxHeight;
+				self::BoundsToClient($args, 0, 1);
 			}
+			elseif($numArgs >= 5)
+			{
+				$args[2] = $minHeight;
+				if($numArgs >= 6)
+					$args[3] = $maxHeight;
+				else 
+					unset($args[3]);
+				self::BoundsToClient($args, 2, 3);
+			}
+			else 
+				unset($args[2], $args[3]);
 			$str2 = '2,' . implode(',', $args) . ']';
 			if(!$shiftWithType || $shiftWithType === 3)
 				array_push($array, 1, $str1, 2, $str2);
@@ -403,13 +457,14 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function LeftWith(Component $object, $shiftWithType=Shift::Left, $min=null, $max=null, $ratio=null, $grid=1)
+	static function LeftWith(Component $object, $shiftWithType=Shift::Left, $min=Shift::Parent, $max=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 2)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 2, 3);
 			unset($args[0], $args[1]);
 			if($numArgs >= 5)
 				array_splice($args, 2, 0, $shiftWithType);
@@ -435,13 +490,14 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function TopWith(Component $object, $shiftWithType=Shift::Top, $min=null, $max=null, $ratio=null, $grid=1)
+	static function TopWith(Component $object, $shiftWithType=Shift::Top, $min=Shift::Parent, $max=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 2)
 		{
 			$args = func_get_args();
+			self::BoundsToClient($args, 2, 3);
 			unset($args[0], $args[1]);
 			if($numArgs >= 5)
 				array_splice($args, 2, 0, $shiftWithType);
@@ -469,23 +525,34 @@ final class Shift
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
 	 */
-	static function LocationWith(Component $object, $shiftWithType=Shift::Location, $minLeft=null, $minTop=null, $maxLeft=null, $maxTop=null, $ratio=null, $grid=1)
+	static function LocationWith(Component $object, $shiftWithType=Shift::Location, $minLeft=Shift::Parent, $maxLeft=Shift::Parent, $minTop=Shift::Parent, $maxTop=Shift::Parent, $ratio=1, $grid=1)
 	{
 		$array = array($object->Id, 7);
 		$numArgs = func_num_args();
 		if($numArgs >= 2)
 		{
 			$args = func_get_args();
-			unset($args[0], $args[1], $args[3], $args[5]);
-			if($numArgs >= 6)
+			unset($args[0], $args[1], $args[3], $args[4]);
+			if($numArgs >= 7)
 				array_splice($args, 2, 0, $shiftWithType);
 			$str1 = '4,' . implode(',', $args) . ']';
-			if($numArgs >= 4)
+			if($numArgs >= 7)
 			{
 				$args[0] = $minTop;
-				if($numArgs >= 6)
-					$args[1] = $maxTop;
+				$args[1] = $maxTop;
+				self::BoundsToClient($args, 0, 1);
 			}
+			elseif($numArgs >= 5)
+			{
+				$args[2] = $minTop;
+				if($numArgs >= 6)
+					$args[3] = $maxTop;
+				else 
+					unset($args[3]);
+				self::BoundsToClient($args, 2, 3);
+			}
+			else 
+				unset($args[2], $args[3]);
 			$str2 = '5,' . implode(',', $args) . ']';
 			if(!$shiftWithType || $shiftWithType === 6)
 				array_push($array, 4, $str1, 5, $str2);
@@ -497,6 +564,24 @@ final class Shift
 		else 
 			array_push($array, 4, '4]', 5, '5]');
 		return $array;
+	}
+	/**
+	 * @ignore
+	 */
+	static function BoundsToClient(&$args, $minIdx, $maxIdx)
+	{
+		if(array_key_exists($minIdx, $args))
+		{
+			if(($tmp = $args[$minIdx]) === 'P')
+				$args[$minIdx] = '';
+			elseif($tmp === null)
+				$args[$minIdx] = '"N"';
+			if(array_key_exists($maxIdx, $args))
+				if(($tmp = $args[$maxIdx]) === 'P')
+					$args[$maxIdx] = '';
+				elseif($tmp === null)
+					$args[$maxIdx] = '"N"';
+		}
 	}
 }
 ?>
