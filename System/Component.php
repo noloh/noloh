@@ -290,6 +290,10 @@ abstract class Component extends Object
 	 */
 	function SearchEngineShow()		{}
 	/**
+	 * @ignore
+	 */
+	function NoScriptShow()			{}
+	/**
 	* @ignore
 	*/
 	function __sleep()
