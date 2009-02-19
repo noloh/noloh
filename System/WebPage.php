@@ -69,8 +69,8 @@ abstract class WebPage extends Component
 		parent::Component();
 		parent::Show();
 		$_SESSION['_NStartUpPageId'] = $this->Id;
-		$this->Width = $GLOBALS['_NWidth'];
-		$this->Height = $GLOBALS['_NHeight'];
+		$this->Width = isset($GLOBALS['_NWidth']) ? $GLOBALS['_NWidth'] : 1024;
+		$this->Height = isset($GLOBALS['_NHeight']) ? $GLOBALS['_NHeight'] : 768;
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->Title = $title;
