@@ -201,7 +201,7 @@ final class Application extends Object
 				}
 				catch(Exception $e)
 				{
-					if($e->getCode() === $GLOBALS['_NApp'])
+					if($e->getCode() == $GLOBALS['_NApp'])
 					{
 						setcookie('_NAppCookie', $GLOBALS['_NApp']);
 						header('Cache-Control: no-cache');
