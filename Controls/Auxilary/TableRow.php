@@ -41,8 +41,7 @@ class TableRow extends Control
 	 */
 	function SearchEngineShow()
 	{
-		foreach($this->Columns as $column)
-			$column->SearchEngineShow();
+		$this->SearchEngineShowChildren();
 	}
 }
 ?>

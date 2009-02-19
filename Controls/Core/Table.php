@@ -124,8 +124,7 @@ class Table extends Control
 	 */
 	function SearchEngineShow()
 	{
-		foreach($this->Rows as $row)
-			$row->SearchEngineShow();
+		$this->SearchEngineShowChildren();
 	}
 }
 ?>

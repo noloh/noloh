@@ -163,8 +163,7 @@ class Form extends Component
 	 */
 	function SearchEngineShow()
 	{
-		foreach($this->Controls as $control)
-			$control->SearchEngineShow();
+		$this->SearchEngineShowChildren();
 	}
 	/**
 	 * @ignore

@@ -194,8 +194,7 @@ class Panel extends Control
 	 */
 	function SearchEngineShow()
 	{
-		foreach($this->Controls as $control)
-			$control->SearchEngineShow();
+		$this->SearchEngineShowChildren();
 	}
 	/**
 	 * @ignore

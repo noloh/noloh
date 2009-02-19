@@ -362,8 +362,8 @@ UserAgent::IsIE6() ? '
 			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '"></META>',
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,
 			'"></META></HEAD><BODY lang="en">';
-		foreach($this->Controls as $control)
-			$control->SearchEngineShow();
+		foreach($_SESSION['_NControlQueueRoot'] as $id => $true)
+			GetComponentById($id)->SearchEngineShow();
 		echo ' <BR>', $tokenLinks, ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>';
 	}
 	/**

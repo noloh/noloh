@@ -245,6 +245,15 @@ abstract class Component extends Object
 	/**
 	 * @ignore
 	 */
+	function SearchEngineShowChildren()
+	{
+		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
+			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $true)
+				GetComponentById($id)->SearchEngineShow();
+	}
+	/**
+	 * @ignore
+	 */
 	function NoScriptShowChildren($indent)
 	{
 		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
