@@ -430,7 +430,8 @@ function _NProcessResponse(response)
 	}
 	if(_N.DebugMode == "Full")
 	{
-		var r = response[1].match(/((?:[^'";]|'(?:[^\\]|\\.)*?'|"(?:[^\\]|\\.)*?")*?);/mg);
+		var reg = new RegEx('((?:(?=/\*)/\*.*?\*/|((?!/\*)(?:[^\'";]|\'(?:[^\'\\]|\\.)*?\'|"(?:[^"\\]|\\.)*?")))+?);');
+		var r = response[1].match(reg);
 		for(var i=0; i<r.length; ++i)
 		try
 		{
