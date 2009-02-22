@@ -49,6 +49,7 @@ abstract class WebPage extends Component
 	private $Width;
 	private $Height;
 	private $BackColor;
+	private $CSSPropertyArray;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends WebPage.
@@ -421,6 +422,41 @@ UserAgent::IsIE6() ? '
 	function GetAddId()
 	{
 		return $this->Id;
+	}
+	/**
+	 * @ignore
+	 */
+	function &__get($nm)
+	{
+		if(strpos($nm, 'CSS') === 0)
+		{
+			if($this->CSSPropertyArray == null)
+				$this->CSSPropertyArray = array();
+			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
+			$key = strtolower($key[0]) . substr($key, 1);
+			$ret = &$this->CSSPropertyArray[$key];
+		}
+		else 
+			$ret = parent::__get($nm);
+		return $ret;
+	}
+	/**
+	 * @ignore
+	 */
+	function __set($nm, $val)
+	{
+		if(strpos($nm, 'CSS') === 0)
+		{
+			if($this->CSSPropertyArray == null)
+				$this->CSSPropertyArray = array();
+			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
+			$key = strtolower($key[0]) . substr($key, 1);
+			$this->CSSPropertyArray[$key] = $val;
+			NolohInternal::SetProperty('style.'.$key, $val, $this);
+			return $val;
+		}
+		else
+			return parent::__set($nm, $val);
 	}
 }
 
