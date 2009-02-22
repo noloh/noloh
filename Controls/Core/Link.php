@@ -73,7 +73,7 @@ class Link extends Label
 	 */
 	function GetDestination()
 	{
-		return $this->Destination;
+		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ((!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['SERVER_ADDR'] . $_SERVER['PHP_SELF'].'#/'.URL::TokenString($this->Tokens)) : $this->Destination;
 	}
 	/**
 	 * Sets the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
@@ -129,8 +129,7 @@ class Link extends Label
 	 */
 	function UpdateTokens()
 	{
-		NolohInternal::SetProperty('href', $this->Destination===null?('#/'.URL::TokenString($this->Tokens)):$this->Destination, $this);
-		//NolohInternal::SetProperty('href', $destination===null?('#/'.URL::TokenString($this->Tokens)):$destination, $this);
+		NolohInternal::SetProperty('href', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ('#/'.URL::TokenString($this->Tokens)) : $this->Destination, $this);
 		$this->UpdateEvent('Click');
 	}
 	/**
@@ -254,7 +253,7 @@ class Link extends Label
 		$str = Control::NoScriptShow($indent);
 		if($str !== false)
 		{
-			echo $indent, '<A href="', $this->Destination===null?($_SERVER['PHP_SELF'].'?'.URL::TokenString($this->Tokens)):$this->Destination, '" ', $str, '>';
+			echo $indent, '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.URL::TokenString($this->Tokens)) : $this->Destination, '" ', $str, '>';
 			if($this->Control)
 			{
 				echo "\n";
