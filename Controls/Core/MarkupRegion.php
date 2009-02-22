@@ -222,7 +222,7 @@ class MarkupRegion extends Control
 	{
 		$str = Control::NoScriptShow($indent);
 		if($str !== false)
-			echo $indent, '<DIV ', $str, ">\n", is_file($this->Text)?file_get_contents($this->Text):$this->Text, $indent, "</DIV>\n";
+			echo $indent, '<DIV ', $str, ">\n", is_file($this->Text)?file_get_contents($this->Text):$this->Text, "\n", $indent, "</DIV>\n";
 	}
 }
 

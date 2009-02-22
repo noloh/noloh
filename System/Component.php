@@ -248,8 +248,12 @@ abstract class Component extends Object
 	function SearchEngineShowChildren()
 	{
 		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
-			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $true)
-				GetComponentById($id)->SearchEngineShow();
+			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $show)
+			{
+				$obj = GetComponentById($id);
+				if($show && $obj)
+					$obj->SearchEngineShow();
+			}
 	}
 	/**
 	 * @ignore
@@ -257,8 +261,12 @@ abstract class Component extends Object
 	function NoScriptShowChildren($indent)
 	{
 		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
-			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $true)
-				GetComponentById($id)->NoScriptShow($indent);
+			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $show)
+			{
+				$obj = GetComponentById($id);
+				if($show && $obj)
+					$obj->NoScriptShow($indent);
+			}
 	}
 	/**
 	 * The opposite of Showing. If the Component has a client-side aspect, it will be removed from the client.

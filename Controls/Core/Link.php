@@ -235,6 +235,20 @@ class Link extends Label
 	/**
 	 * @ignore
 	 */
+	function SearchEngineShow()
+	{
+		if($this->Destination)
+			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.URL::TokenString($this->Tokens)) : $this->Destination, '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
+		else 
+		{
+			parent::SearchEngineShow();
+			if($this->Control)
+				$this->Control->SearchEngineShow();
+		}
+	}
+	/**
+	 * @ignore
+	 */
 	function NoScriptShow($indent)
 	{
 		$str = Control::NoScriptShow($indent);

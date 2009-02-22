@@ -188,5 +188,26 @@ class RichMarkupRegion extends MarkupRegion
 		AddScript('_NMkupSet(\''.$this->Id.'\',\''.$this->TempString.'\')', Priority::High);
 		$this->TempString = null;
 	}
+	/**
+	 * @ignore
+	 */
+	public function SearchEngineShow()
+	{
+		echo $this->TempString, ' ';
+		foreach($this->ComponentSpace as $larvaId => $component)
+			if($component instanceof Component)
+				$component->SearchEngineShow();
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShow($indent)
+	{
+		// Needs to parse TempString to get the Larvae, check if it is morphed in ComponentSpace
+		// and show the Component inside the tag!
+		$str = Control::NoScriptShow($indent);
+		if($str !== false)
+			echo $indent, '<DIV ', $str, ">\n", $this->TempString, "\n", $indent, "</DIV>\n";
+	}
 }
 ?>
