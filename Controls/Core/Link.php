@@ -18,7 +18,6 @@
  * 
  * @package Controls/Core
  */
-
 class Link extends Label
 {
 	/**
@@ -26,9 +25,14 @@ class Link extends Label
 	 */
 	const Blank = '_blank';
 	/**
-	 * @ignore
+	 * A possible and default value for the Target property, Self indicates that the Link will open in the same window.
 	 */
 	const Self = '_self';
+	/**
+	 * A possible value for the Target property, NewWindow indicates that the Link will open either in a new browser window or a new tab, depending on the user's browser settings.
+	 */
+	const NewWindow = '_blank';
+	
 	
 	private $Destination;
 	private $Target;
@@ -39,7 +43,7 @@ class Link extends Label
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Link
  	* Example
- 	*	<pre> $tempVar = new Link(null, 0, 0, 80, 24);</pre>
+ 	*	<pre> $link = new Link(URL::Tokens, 'Click here', 0, 0, 80, 24);</pre>
  	* @param mixed $destination Either a URL string or URL::Tokens if you want the link to change tokens
  	* @param string|Control $textOrControl
 	* @param integer $left The left coordinate of this element
@@ -137,7 +141,7 @@ class Link extends Label
 	 */
 	function GetEventString($eventTypeAsString)
 	{
-		if($eventTypeAsString === 'Click' && $this->Control !== null && $this->Target === null)
+		if($eventTypeAsString === 'Click' && ($this->Control !== null || $this->Text !== null) && $this->Target === null)
 		{
 			if($this->Destination === null)
 				return '_NSetURL("' . URL::TokenString($this->Tokens) . '","' . $this->Id . '");' . parent::GetEventString($eventTypeAsString) . 'this.blur();';
@@ -190,11 +194,12 @@ class Link extends Label
 	function SetText($text)
 	{
 		parent::SetText($text);
-		if($this->Control != null)
+		if($this->Control)
 		{
 			$this->Control->SetParentId(null);
 			Control::SetWidth($this->Width);
 			Control::SetHeight($this->Height);
+			$this->Control = null;
 		}
 		$this->CSSClass = str_replace('NLnkCtrl', '', $this->CSSClass);
 		$this->UpdateEvent('Click');
@@ -204,14 +209,14 @@ class Link extends Label
 	 */
 	function GetWidth()
 	{
-		return $this->Control == null ? parent::GetWidth() : $this->Control->GetWidth();
+		return $this->Control === null ? parent::GetWidth() : $this->Control->GetWidth();
 	}
 	/**
 	 * @ignore
 	 */
 	function GetHeight()
 	{
-		return $this->Control == null ? parent::GetHeight() : $this->Control->GetHeight();
+		return $this->Control === null ? parent::GetHeight() : $this->Control->GetHeight();
 	}
 	/**
 	 * @ignore
@@ -223,12 +228,10 @@ class Link extends Label
 		unset($GLOBALS['_NTokenUpdate'], $GLOBALS['_NInitialURLTokens']);
 	}
 	/**
-	* @ignore
-	*/	
+	 * @ignore
+	 */	
 	function Show()
 	{
-		//$initialProperties = Control::Show();
-		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
 		NolohInternal::Show('A', Control::Show(), $this);
 	}
 	/**
