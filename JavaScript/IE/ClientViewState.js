@@ -41,7 +41,7 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	finally
 	{
 		d.open();
-		d.write(location.href);
+		d.write(location.href.replace('&', '&amp;'));
 		d.close();
 		_N.URLChecker = setInterval("_NCheckURL()", 500);
 	}
@@ -64,7 +64,7 @@ function _NCheckURL()
 			var targetURL = location.href;
 			var d=_N("NBackButton").contentWindow.document;
 			d.open();
-			d.write(location.href);
+			d.write(location.href.replace('&', '&amp;'));
 			d.close();
 			_N.HistoryLength = history.length;
 		}
@@ -84,10 +84,10 @@ function _NSetURL(hash, id)
 	_N.URLTokenLink = id;
 	location = document.URL.split("#",1)[0] + "#/" + hash;
 	_N.Hash = location.hash;
-	_N.URL=location.href;
+	_N.URL = location.href;
 	var d=_N("NBackButton").contentWindow.document;
 	d.open();
-	d.write(location.href);
+	d.write(location.href.replace('&', '&amp;'));
 	d.close();
 	_N.HistoryLength = history.length;
 	setTimeout(function() {document.title = _N.Title;}, 2000);
