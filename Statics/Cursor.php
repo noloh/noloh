@@ -23,6 +23,8 @@ final class Cursor
 	const Text = 'text';
 	const WestResize = 'w-resize';
 	const Wait = 'wait';
+	const ColumnResize = 'col-resize';
+	const RowResize = 'row-resize';
 	
 	private function Cursor(){}
 	/**
