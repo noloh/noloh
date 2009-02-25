@@ -108,6 +108,7 @@ class Event extends Object implements ArrayAccess
 	public static $Conversion = array(
 		'Change' => 'onchange',
 		'Click' => 'onclick',
+		'Deselect' => 'Deselect',
 		'DoubleClick' => 'ondblclick',
 		'DragCatch' => 'DragCatch',
 		'Focus' => 'onfocus',
@@ -121,6 +122,7 @@ class Event extends Object implements ArrayAccess
 		'RightClick' => 'oncontextmenu',
 		'Load' => 'onload',
 		'Scroll' => 'onscroll',
+		'Select' => 'Select',
 		'TypePause' => 'TypePause',
         'Unload' => 'onunload'
 	);

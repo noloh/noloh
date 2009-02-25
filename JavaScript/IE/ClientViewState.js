@@ -133,6 +133,8 @@ function _NChangeByObj(obj, property, value)
 			case "onpaste":
 			case "onscroll":
 			case "onunload":
+			case "Select":
+			case "Deselect":
 				obj[property] = _NEvent(value, obj);
 				break;
 			case "onmouseup":
@@ -481,15 +483,15 @@ function _NProcessResponse(response)
 		var reg = new RegEx('((?:(?=/\*)/\*.*?\*/|((?!/\*)(?:[^\'";]|\'(?:[^\'\\]|\\.)*?\'|"(?:[^"\\]|\\.)*?")))+?);');
 		var r = response[1].match(reg);
 		for(var i=0; i<r.length; ++i)
-		try
-		{
-			eval(r[i]);
-		}
-		catch(err)
-		{
-			alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description + "\nProcessing statement: " + r[i]);
-			i=r.length;
-		}
+			try
+			{
+				eval(r[i]);
+			}
+			catch(err)
+			{
+				alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description + "\nProcessing statement: " + r[i]);
+				i=r.length;
+			}
 	}
 	else
 		eval(response[1]);
