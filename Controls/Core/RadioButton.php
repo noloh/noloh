@@ -24,11 +24,11 @@ class RadioButton extends CheckControl implements Groupable
 	function RadioButton($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
 		parent::CheckControl($text, $left, $top, $width, $height);
-		$this->Caption->Click = new ClientEvent('_N("'.$this->Id.'I").click();');
+		//$this->Caption->Click = new ClientEvent('_N("'.$this->Id.'I").click();');
 	}
 	/**
 	 * @ignore
-	 */
+	 *
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === 'Click')
@@ -42,8 +42,8 @@ class RadioButton extends CheckControl implements Groupable
 	function Show()
 	{
 		parent::Show();
-		AddNolohScriptSrc('RadioButton.js');
-		$initialProperties = '\'type\',\'radio\',\'defaultChecked\','.($this->Checked?1:0).parent::GetEventString(null);
+		//AddNolohScriptSrc('RadioButton.js');
+		$initialProperties = '\'type\',\'radio\',\'defaultChecked\','.($this->Checked?1:0).',\'onclick\',\'_NChkCtrlTgl("'.$this->Id.'",false);\'';
 		if($_SESSION['_NIsIE'])
 			NolohInternal::Show('<INPUT name="'.($this->GroupName?$this->GroupName:$this->Id).'">', $initialProperties, $this, $this->Id, $this->Id.'I');
 		else
@@ -63,5 +63,5 @@ class RadioButton extends CheckControl implements Groupable
 			echo $indent, '<INPUT type="radio" ', $str, '>', $this->Text, "</INPUT>\n";
 	}
 }
-	
+
 ?>

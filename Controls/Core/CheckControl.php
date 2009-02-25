@@ -32,7 +32,6 @@ abstract class CheckControl extends Control
 	function CheckControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
 		parent::Control($left, $top, $width, $height);
-		//$this->Caption = is_object($text) ? $text : new Label(null, 23, 0, null, null);
 		if(is_object($text) && !($text instanceof Item))
 			$this->Caption = $text;
 		else
@@ -46,10 +45,9 @@ abstract class CheckControl extends Control
 			if($height === System::Auto)
 				$this->SetHeight($this->Caption->Height);
 		}
-		//parent::Control($left, $top, $width, $height);
-		$this->Caption->Cursor = Cursor::Hand;
+		//$this->Caption->Cursor = Cursor::Hand;
 		$this->Caption->SetParentId($this->Id);
-//		$this->GroupName = $this->Id;
+		$this->Caption->Click = new ClientEvent('_N("'.$this->Id.'I").click();');
 	}
 	/**
 	 * @ignore
@@ -101,7 +99,7 @@ abstract class CheckControl extends Control
 		parent::SetGroupName($newGroupName);
 		//$this->GroupName = $newGroupName;
         //if($this->GetShowStatus !== 0)
-		QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
+		//QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
 		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
 	}
@@ -132,7 +130,7 @@ abstract class CheckControl extends Control
 	/**
 	 * An Alias for SetChecked
 	 * @param boolean $bool
-	 */
+	 *
 	function SetSelected($bool)
 	{
 		parent::SetSelected($bool);
@@ -158,7 +156,7 @@ abstract class CheckControl extends Control
 				$group->Change->Exec();
 		}
 		return $newChecked;
-		*/
+		*
 	}
 	/*
 	function SetLeft($newLeft)
@@ -224,8 +222,11 @@ abstract class CheckControl extends Control
 	function GetEventString($eventTypeAsString)
 	{
 		if($eventTypeAsString === null)
-		//	return ',\'onclick\',\''.$this->GetEventString('Click').'this.blur();\'';
-			return ',\'onclick\',\''.$this->GetEventString('Click').'this.blur();\'';
+			return ',\'Select\',\''.$this->GetEventString('Select').'\',\'Deselect\',\''.$this->GetEventString('Deselect').'\'';
+		if($eventTypeAsString === 'Select')
+			return '_NChkCtrl("' . $this->Id . '", true);' . parent::GetEventString($eventTypeAsString);
+		if($eventTypeAsString === 'Deselect')
+			return '_NChkCtrl("' . $this->Id . '", false);' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
 	/**
@@ -233,7 +234,8 @@ abstract class CheckControl extends Control
 	 */
 	function Show()
 	{
-		NolohInternal::Show('DIV', parent::Show().'\'style.overflow\',\'hidden\''/*.self::GetEventString(null)*/, $this);
+		AddNolohScriptSrc('CheckControl.js');
+		NolohInternal::Show('DIV', parent::Show().'\'style.overflow\',\'hidden\''.self::GetEventString(null), $this);
 		//$this->Caption->Show();
 		//return $parentShow;
 	}
