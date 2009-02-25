@@ -1122,7 +1122,13 @@ abstract class Control extends Component
 		if(isset($_SESSION['_NPropertyQueue'][$this->Id]))
 			foreach($_SESSION['_NPropertyQueue'][$this->Id] as $name => $val)
 				if(strpos($name, 'style.') === 0 && $val !== '')
-					$str .= substr($name, 6) . ':' . $val . ';';
+				{
+					$strLen = strlen($name);
+					$str .= $name[6];
+					for($i=7; $i<$strLen; ++$i)
+						$str .= 'A' <= $name[$i] && $name[$i] <= 'Z' ? '-' . $name[$i] : $name[$i];
+					$str .= ':' . $val . ';';
+				}
 		/*
 		if($this->Left !== null)
 			$str .= (isset($_SESSION['_NPropertyQueue'][$this->Id]['style.right'])?'right:':'left:') . $this->Left . (is_numeric($this->Left)?'px':'') . ';';
@@ -1145,7 +1151,7 @@ abstract class Control extends Component
 	 */
 	function &__get($nm)
 	{
-		if(strpos($nm, 'CSS') === 0 && $nm != 'CSSFile' && $nm != 'CSSClass')
+		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass')
 		{
 			if($nm === 'CSSFloat')
 				$nm = UserAgent::IsIE() ? 'styleFloat' : 'cssFloat';
