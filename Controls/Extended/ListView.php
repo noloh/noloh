@@ -64,6 +64,13 @@ class ListView extends Panel
 		$this->ModifyScroll();
 	}
 	function GetColumns(){return $this->Columns;}
+	function SetHeight($height)
+	{
+		parent::SetHeight($height);
+		$columnHeight = $this->ColumnsPanel->Height;
+		if($height >= $columnHeight)
+			$this->BodyPanelsHolder->Height = $height - $columnHeight;
+	}
 	/**
 	 * @ignore
 	 */
