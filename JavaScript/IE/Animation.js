@@ -98,7 +98,7 @@ _NAni.prototype.FinishingTouches = function()
 	if(this.ObjId == "N1")
 		_NBodyScrollState();
 	else if(this.Property == "opacity" && this.Destination == 100)
-		this.Obj.filter = '';
+		this.Obj.style.filter = '';
 	else if(this.Oblivion)
 	{
 		_NRem(this.ObjId);
