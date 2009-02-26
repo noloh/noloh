@@ -145,6 +145,8 @@ class Link extends Label
 		{
 			if($this->Destination === null)
 				return '_NSetURL("' . URL::TokenString($this->Tokens) . '","' . $this->Id . '");' . parent::GetEventString($eventTypeAsString) . 'this.blur();';
+			elseif($this->Destination === '#')
+				return parent::GetEventString($eventTypeAsString) . 'return false;';
 			else
 				return parent::GetEventString($eventTypeAsString) . 'location="' . $this->Destination . '";';
 		}
