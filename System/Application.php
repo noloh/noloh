@@ -269,15 +269,26 @@ final class Application extends Object
 		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['_NOmniscientBeing']) : $_SESSION['_NOmniscientBeing']);
 		unset($_SESSION['_NOmniscientBeing']);
 		$idArrayStr = '';
+		$idShftWithArr = array();
 		foreach($_SESSION['_NGarbage'] as $id => $nothing)
 		{
 			$control = &$OmniscientBeing[$id];
 			if($control instanceof Control && !isset($_SESSION['_NGarbage'][$control->GetParentId()]) && $control->GetShowStatus()!==0)
+			{
 				$idArrayStr .= '\'' . $id . '\',';
+				if($shifts = $control->_NGetShifts())
+					foreach($shifts as $shift)
+						if($shift[1] === 7 && !isset($_SESSION['_NGarbage'][$shftId = $shift[0]]) && !isset($idShftWithArr[$shftId]))
+							$idShftWithArr[$shftId] = '\'' . $shftId . '\'';
+			}
 			unset($OmniscientBeing[$id]);
 		}
-		if($idArrayStr != '')
+		if($idArrayStr !== '')
+		{
 			AddScript('_NGCAsc([' . rtrim($idArrayStr, ',') . '])', Priority::Low);
+			if($idShftWithArr)
+				AddScript('_NShftGC(' . implode(',', $idShftWithArr) . ')', Priority::Low);
+		}
 		$_SESSION['_NGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['_NStartUpPageId']);
 	}

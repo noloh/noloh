@@ -26,7 +26,7 @@ function _NShftFirstGo()
 		obj = _N(id = _N.Shifts[i][0]);
 		if(obj.ShiftStart && !_N.Shifts.ObjsWithStart[id])
 		{
-			obj.ShiftStart();
+			obj.ShiftStart.call(obj);
 			_N.Shifts.ObjsWithStart[id] = true;
 		}
 		if(obj.ShiftStop && !_N.Shifts.ObjsWithStop[id])
@@ -111,11 +111,12 @@ function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposi
 		}
 		if(delta)
 		{
-			if(shiftsWith=obj.ShiftsWith && shiftsWith[propNum])
+			if((shiftsWith=obj.ShiftsWith) && shiftsWith[propNum])
 				_NShftObjs(shiftsWith[propNum], delta, delta);
 			if(obj.ShiftStep)
 				obj.ShiftStep.call(obj);
 		}
+	}
 }
 function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, arr, idx)
 {
@@ -145,7 +146,7 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 }
 function _NShftStp()
 {
-	var count;
+	var count, obj;
 	if((count = _N.Catchers.length) && _N.Shifts.HasMoved)
 	{
 		var catcher, catcherLeft, catcherTop, droppedX, droppedY, j, id, tmp, caught = [];
@@ -163,9 +164,9 @@ function _NShftStp()
 					for(j=0; j<_N.Shifts.length; ++j)
 						if(4 <= _N.Shifts[j][1] && _N.Shifts[j][1] <= 6 && _N.Catchers[i]!=(id=_N.Shifts[j][0].replace("_Ghost","")) && !caught[id])
 							_N.EventVars.Caught.push(caught[id] = id);
-				if(_N.EventVars.Caught.length)
-				{
-					catcher.DragCatch();
+					if(_N.EventVars.Caught.length)
+					{
+						catcher.DragCatch.call(catcher);
 						_N.EventVars.Caught = [];
 					}
 				}
@@ -182,7 +183,10 @@ function _NShftStp()
 	if(_N.Shifts.HasMoved)
 	{
 		for(var id in _N.Shifts.ObjsWithStop)
-			_N.Shifts.ObjsWithStop[id].ShiftStop();
+		{
+			obj = _N.Shifts.ObjsWithStop[id];
+			obj.ShiftStop.call(obj);
+		}
 		document.detachEvent("onmousemove", _NShftGo);
 		window.event.returnValue = false;
 		_N.DisableClicks = true;
@@ -190,13 +194,12 @@ function _NShftStp()
 	}
 	else
 	{
-		var obj;
 		count = _N.Shifts.length;
 		for(i=0; i<count; ++i)
 		{
 			obj = _N(_N.Shifts[i][0]);
 			if(obj.onclick)
-				obj.onclick();
+				obj.onclick.call(obj);
 		}
 		document.detachEvent("onmousemove", _NShftFirstGo);
 	}
@@ -219,6 +222,20 @@ function _NShftWth(id)
 			innerObj._NActualCount = [];
 			innerObj._NApparentCount = [];
 		}
+	}
+}
+function _NShftGC()
+{
+	for(var i=0, count=arguments.length; i < count; ++i)
+	{
+		var shiftsWith = _N(arguments[i]).ShiftsWith, type;
+		for(type in shiftsWith)
+			for(var j=0, innerCount = shiftsWith[type].length; j < innerCount; ++j)
+				if(!_N(shiftsWith[type][j][0]))
+				{
+					shiftsWith[type].splice(j--, 1);
+					--innerCount;
+				}
 	}
 }
 function _NRound(number, toTheNearest, modLeft)
