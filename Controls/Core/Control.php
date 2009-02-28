@@ -717,6 +717,16 @@ abstract class Control extends Component
      */
     function SetAnimationStart($animationStart)		{$this->SetEvent($animationStart, 'AnimationStart');}
     /**
+     * Returns the AnimationStep Event, which gets launched whenever this Control is animated one frame.
+     * @return Event
+     */
+    function GetAnimationStep()						{return $this->GetEvent('AnimationStep');}
+    /**
+     * Sets the AnimationStep Event, which gets launched whenever this Control is animated one frame.
+     * @param Event
+     */
+    function SetAnimationStep($animationStep)		{$this->SetEvent($animationStep, 'AnimationStep');}
+    /**
      * Returns the AnimationStop Event, which gets launched whenever this Control finishes getting animated.
      * @return Event
      */
@@ -906,6 +916,16 @@ abstract class Control extends Component
 	 * @param Event $select
 	 */
 	function SetSelect($select)						{$this->SetEvent($select, 'Select');}
+	/**
+	 * Returns the ShiftStep Event, which gets launched when a user shifts this Control enough to make a visual difference
+	 * @return Event
+	 */
+	function GetShiftStep()							{return $this->GetEvent('ShiftStep');}
+	/**
+	 * Sets the ShiftStep Event, which gets launched when a user shifts this Control enough to make a visual difference
+	 * @param Event $shiftStop
+	 */
+	function SetShiftStep($shiftStep)				{$this->SetEvent($shiftStep, 'ShiftStep');}
 	/**
 	 * Returns the ShiftStop Event, which gets launched when a user stops shifting this Control
 	 * @return Event

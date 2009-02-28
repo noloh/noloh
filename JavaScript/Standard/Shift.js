@@ -61,7 +61,7 @@ function _NShftGo(e)
 	_N.Shifts.CursorX = xPos;
 	_N.Shifts.CursorY = yPos;
 	_NShftObjs(_N.Shifts, deltaX, deltaY);
-	event.preventDefault();
+	e.preventDefault();
 	event = null;
 }
 function _NShftObjs(objects, deltaX, deltaY)
@@ -111,8 +111,13 @@ function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposi
 			_NSetProperty(info[0], propNum == 1 ? "style.left" : "style.top", finalCoord + "px");
 			delete _N.ChangeForReflect;
 		}
-		if(delta && (shiftsWith=obj.ShiftsWith) && shiftsWith[propNum])
-			_NShftObjs(shiftsWith[propNum], delta, delta);
+		if(delta)
+		{
+			if(shiftsWith=obj.ShiftsWith && shiftsWith[propNum])
+				_NShftObjs(shiftsWith[propNum], delta, delta);
+			if(obj.ShiftStep)
+				obj.ShiftStep.call(obj);
+		}
 	}
 }
 function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, arr, idx)

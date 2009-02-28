@@ -92,6 +92,8 @@ _NAni.prototype.Move = function(delta)
 				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], 0, delta - this.LastDelta);
 		this.LastDelta = delta;
 	}
+	if(this.Obj.AnimationStep)
+		this.Obj.AnimationStep.call(this.Obj);
 }
 _NAni.prototype.FinishingTouches = function()
 {
