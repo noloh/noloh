@@ -88,15 +88,15 @@ final class System
 	 */
 	static function LogFormat($what, $addQuotes=false)
 	{
-		if(is_object($what))
-			return (string)$what . ' ' . get_class($what) . ' object';
-		elseif(is_array($what))
+		if(($isArray = is_array($what)) || $what instanceof Iterator)
 		{
-			$text = 'array(';
+			$text = ($isArray ? 'array' : get_class($what)) . '(';
 			foreach($what as $key => $val)
 				$text .= $key . ' => ' . self::LogFormat($val, true) . ', ';
 			return rtrim($text,', ') . ')';
 		}
+		elseif(is_object($what))
+			return (string)$what . ' ' . get_class($what) . ' object';
 		elseif(!is_string($what) || $addQuotes)
 			return ClientEvent::ClientFormat($what);
 		return $what;
