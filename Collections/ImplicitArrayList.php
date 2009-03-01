@@ -31,7 +31,7 @@
  * 
  * @package Collections
  */
-class ImplicitArrayList extends ArrayList 
+class ImplicitArrayList extends ArrayList
 {
 	private $Source;
 	/**
@@ -91,10 +91,10 @@ class ImplicitArrayList extends ArrayList
 				return parent::Add($object);
 		elseif(!$this->AddFunctionName)
 			return parent::Add($object);
-		elseif(is_object($this->Source))
-			return $this->Source->{$this->AddFunctionName}($object);
-		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->AddFunctionName}($object);
+		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
+			return $src->{$this->AddFunctionName}($object);
+		elseif(class_exists($this->Source))
+			call_user_func(array($this->Source, $this->AddFunctionName), $object);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, not overwriting what was previously there.
@@ -120,10 +120,10 @@ class ImplicitArrayList extends ArrayList
 			else
 				return parent::Insert($object, $index);
 		}
-		elseif(is_object($this->Source))
-			return $this->Source->{$this->InsertFunctionName}($object, $index);
-		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $index);
+		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
+			return $src->{$this->InsertFunctionName}($object, $index);
+		elseif(class_exists($this->Source))
+			call_user_func(array($this->Source, $this->InsertFunctionName), $object, $index);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, as well as a particular position, in the sense of the order in which foreach iterates
@@ -152,10 +152,10 @@ class ImplicitArrayList extends ArrayList
 	{
 		if(!$this->RemoveFunctionName || $onlyRemove)
 			return parent::Remove($object, $onlyRemove);
-		elseif(is_object($this->Source))
-			return $this->Source->{$this->RemoveFunctionName}($object);
-		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveFunctionName}($object);
+		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
+			return $src->{$this->RemoveFunctionName}($object);
+		elseif(class_exists($this->Source))
+			call_user_func(array($this->Source, $this->RemoveFunctionName), $object);
 	}
 	/**
 	 * Removes an element at a particular index. 
@@ -167,10 +167,10 @@ class ImplicitArrayList extends ArrayList
 	{
 		if(!$this->RemoveAtFunctionName || $onlyRemove)
 			return parent::RemoveAt($index);
-		elseif(is_object($this->Source))
-			return $this->Source->{$this->RemoveAtFunctionName}($index);
-		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->RemoveAtFunctionName}($index);		
+		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
+			return $src->{$this->RemoveAtFunctionName}($index);
+		elseif(class_exists($this->Source))
+			call_user_func(array($this->Source, $this->RemoveAtFunctionName), $index);
 	}
 	/**
 	 * Clears the ArrayList.
@@ -180,10 +180,10 @@ class ImplicitArrayList extends ArrayList
 	{
 		if(!$this->ClearFunctionName || $onlyClear)
 			return parent::Clear();
-		elseif(is_object($this->Source))
-			return $this->Source->{$this->ClearFunctionName}();
-		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->ClearFunctionName}();
+		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
+			return $src->{$this->ClearFunctionName}();
+		elseif(class_exists($this->Source))
+			call_user_func(array($this->Source, $this->ClearFunctionName));
 	}
 	/**
 	 * @ignore
