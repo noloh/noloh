@@ -141,7 +141,7 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 		else if(finalCoord < minBound)
 			finalCoord = minBound;
 	}
-	else if(maxBound != null && finalCoord > maxBound)
+	if(maxBound != null && finalCoord > maxBound)
 		finalCoord = maxBound;
 	_NSetProperty(id, property, finalCoord + "px");
 	return finalCoord - start;
