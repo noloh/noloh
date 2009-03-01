@@ -267,37 +267,44 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		return count($this->Elements);
 	}
 	/**
-	 * @ignore
+	 * Resets the internal pointer of the ArrayList, analogous to the PHP native function reset().
 	 */
-	public function rewind() 
+	public function Reset() 
 	{
-		reset($this->Elements);
+		return reset($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
-	public function current() 
+	public function Rewind() 
+	{
+		return reset($this->Elements);
+	}
+	/**
+	 * Returns the value of the ArrayList at the current internal pointer, analogous to the PHP native function current().
+	 */
+	public function Current() 
 	{
 		return current($this->Elements);
 	}
 	/**
-	 * @ignore
+	 * Returns the key of the ArrayList at the current internal pointer, analogous to the PHP native function key().
 	 */
-	public function key() 
+	public function Key() 
 	{
 		return key($this->Elements);
 	}
 	/**
-	 * @ignore
+	 * Returns the value of the ArrayList at the next internal pointer and advances the pointer, analogous to the PHP native function next().
 	 */
-	public function next() 
+	public function Next() 
 	{
 		return next($this->Elements);
 	}
 	/**
 	 * @ignore
 	 */
-	public function valid() 
+	public function Valid() 
 	{
 		return $this->current() !== false;
 	}
