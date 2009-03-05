@@ -204,8 +204,6 @@ final class Application extends Object
 					if($e->getCode() == $GLOBALS['_NApp'])
 					{
 						setcookie('_NAppCookie', $GLOBALS['_NApp']);
-						header('Cache-Control: no-cache');
-						header('Pragma: no-cache');
 						WebPage::SkeletalShow($GLOBALS['_NTitle'], $unsupportedURL, $GLOBALS['_NFavIcon']);
 						return;
 					}

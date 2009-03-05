@@ -295,6 +295,10 @@ abstract class WebPage extends Component
 	 */
 	static function SkeletalShow($title, $unsupportedURL, $favIcon)
 	{
+		header('Cache-Control: no-cache, must-revalidate, max-age=0');
+		//header('Cache-Control: no-cache');
+		//header('Pragma: no-cache');
+		header('Content-Type: text/html');
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
