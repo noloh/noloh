@@ -314,10 +314,10 @@ function _NBodySizeState()
 	var body = _N("N1");
 	if(body.ShiftsWith)
 	{
-		var deltaX = document.documentElement.clientWidth - body.Width;
-		var deltaY = document.documentElement.clientHeight - body.Height;
-		for(var i in body.ShiftsWith)
-			_NShftObjs(body.ShiftsWith[i], deltaX, deltaY);
+		if(body.ShiftsWith[1])
+			_NShftObjs(body.ShiftsWith[1], document.documentElement.clientWidth - body.Width, 0);
+		if(body.ShiftsWith[2])
+			_NShftObjs(body.ShiftsWith[2], 0, document.documentElement.clientHeight - body.Height);
 	}
 	if(body.BuoyantChildren)
 	{
