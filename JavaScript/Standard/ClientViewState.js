@@ -20,8 +20,8 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	_N.Saved[document.body.id] = [];
 	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);
 	_NSetProperty(document.body.id, "Height", document.documentElement.clientHeight);
-	_N.BodyOffsetWidth = window.outerWidth;
-	_N.BodyOffsetHeight = window.outerHeight;
+	_N.WindowWidth = window.outerWidth;
+	_N.WindowHeight = window.outerHeight;
 	var graveyard = document.createElement("DIV");
 	graveyard.id = "NGraveyard";
 	graveyard.style.display = "none";
@@ -256,13 +256,13 @@ function _NBodyScrollState()
 }
 function _NBodySizeState()
 {
-	var body = document.body;
+	var body = document.body, tmp;
 	if(body.ShiftsWith)
 	{
 		if(body.ShiftsWith[1])
-			_NShftObjs(body.ShiftsWith[1], window.outerWidth - _N.BodyOffsetWidth, 0);
+			_NShftObjs(body.ShiftsWith[1], window.outerWidth - _N.WindowWidth, 0);
 		if(body.ShiftsWith[2])
-			_NShftObjs(body.ShiftsWith[2], 0, window.outerHeight - _N.BodyOffsetHeight);
+			_NShftObjs(body.ShiftsWith[2], 0, (tmp = window.outerHeight - _N.WindowHeight)?tmp:(document.documentElement.clientHeight - body.Height));
 	}
 	if(body.BuoyantChildren)
 	{
@@ -272,8 +272,8 @@ function _NBodySizeState()
 	}
 	_NSetProperty(body.id, "Width", document.documentElement.clientWidth);
 	_NSetProperty(body.id, "Height", document.documentElement.clientHeight);
-	_N.BodyOffsetWidth = window.outerWidth;
-	_N.BodyOffsetHeight = window.outerHeight;
+	_N.WindowWidth = window.outerWidth;
+	_N.WindowHeight = window.outerHeight;
 }
 function _NSetP(id, nameValuePairs)
 {
