@@ -64,6 +64,16 @@ class MarkupRegion extends Control
 		return ($Height == System::Auto || $Height == System::AutoHtmlTrim)? $this->CachedHeight : $Height;
 	}
 	/**
+     * Returns the Scroll Event, which gets launched when a user scrolls through the MarkupRegion
+     * @return Event
+     */
+	function GetScroll()							{return $this->GetEvent('Scroll');}
+	/**
+	 * Sets the Scroll Event, which gets launched when a user scrolls through the MarkupRegion
+	 * @param Event $scroll
+	 */
+	function SetScroll($scroll)						{$this->SetEvent($scroll, 'Scroll');}
+	/**
 	 * Returns the kind of scroll bars the MarkupRegion will have, if any
 	 * @return mixed
 	 */
@@ -188,6 +198,8 @@ class MarkupRegion extends Control
 		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 	}
 	/**
+	 * @deprecated Use System::Style() instead.
+	 * 
 	 * Styles a string of text by giving it a CSS class
 	 * @param string $text The string to be styled
 	 * @param string $class The name of the CSS class
