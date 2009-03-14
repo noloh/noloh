@@ -102,6 +102,20 @@ final class System
 		return $what;
 	}
 	/**
+	 * Styles a string of text by giving it a CSS class
+	 * @param string $text The string to be styled
+	 * @param string $class The name of the CSS class
+	 * @return string
+	 */
+	static function Style($text, $class, $newLine = false)
+	{
+		$tag = is_string($newLine)?$newLine:'span';
+		$styled = '<' . $tag . ' class=\''.$class.'\'>'.$text.'</' . $tag . '>';
+		if($newLine === true)
+			$styled .= '<br/>';
+		return $styled;
+	}
+	/**
 	 * System::Log will log any piece of information to a debug window, along with a system timestamp. This function is useful for debugging.
 	 * @param mixed $what,... The information to be logged, as an unlimited number of parameters
 	 */
@@ -163,7 +177,6 @@ final class System
 	 * @ignore
 	 */
 	static function ImagePath()		{return self::AssetPath() . '/Images/';}
-	
 }
 
 ?>
