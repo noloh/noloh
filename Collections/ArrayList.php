@@ -143,6 +143,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		if(is_numeric($index))
 		{
 			$this->Elements = array_slice($oldElements, 0, $index);
+			unset($GLOBALS['_NImplArrInsert']);
 			$this->Add($element, true);
 			$this->Elements = array_merge($this->Elements, array_slice($oldElements, $index));
 		}
