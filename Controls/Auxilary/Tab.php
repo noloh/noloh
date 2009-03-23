@@ -2,41 +2,59 @@
 /**
  * Tab class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A Tab is a an object that consists of three images, a left image, a center image, and a right iamge. 
+ * This allows a Tab to Scale properly with it's Width and makes it perfect for situations where you need
+ * Tab like object that scales with variable text. Tabs are usually used in conjuction with RolloverTabs,
+ * but they can be used independently.
  * 
  * @package Controls/Auxiliary
  */
 class Tab extends Panel
 {
+	/**
+	 * @var mixed string|Image A string to the source, or an Image object used for the left part of this Tab.
+	 */
 	public $LeftImage;
+	/**
+	 * @var mixed string|Image A string to the source, or an Image object used for the center part of this Tab.
+	 */
 	public $MainImage;
+	/**
+	 * @var mixed string|Image A string to the source, or an Image object used for the right part of this Tab.
+	 */
 	public $RightImage;
-	
-	function Tab($leftImageSrc=null, $mainImageSrc, $rightImageSrc=null)
+	/**
+	 * Constructor of Tab
+	 * 
+	 * @param mixed string|Image $leftImage A string to the source, or an Image object used for the left part of this Tab.
+	 * @param mixed string|Image $mainImageSrc A string to the source, or an Image object used for the center part of this Tab.
+	 * @param mixed string|Image $rightImageSrc A string to the source, or an Image object used for the right part of this Tab.
+	 */
+	function Tab($leftImage=null, $mainImage, $rightImage=null)
 	{
 		$width = 0;
-		if($leftImageSrc)
+		if($leftImage)
 		{
-			if($leftImageSrc instanceof Image)
-				$this->LeftImage = $leftImageSrc;
+			if($leftImage instanceof Image)
+				$this->LeftImage = $leftImage;
 			else
-				$this->LeftImage = new Image($leftImageSrc);
+				$this->LeftImage = new Image($leftImage);
 			$width += $this->LeftImage->GetWidth();
 		}
-		if($mainImageSrc)
+		if($mainImage)
 		{
-			if($mainImageSrc instanceof Image)
-				$this->MainImage = $mainImageSrc;
+			if($mainImage instanceof Image)
+				$this->MainImage = $mainImage;
 			else
-				$this->MainImage = new Image($mainImageSrc);
+				$this->MainImage = new Image($mainImage);
 			$width += $this->MainImage->GetWidth();
 		}
-		if($rightImageSrc)
+		if($rightImage)
 		{
-			if($rightImageSrc instanceof Image)
-				$this->RightImage = $rightImageSrc;
+			if($rightImage instanceof Image)
+				$this->RightImage = $rightImage;
 			else
-				$this->RightImage = new Image($rightImageSrc);
+				$this->RightImage = new Image($rightImage);
 			$width += $this->RightImage->GetWidth();
 		}
 		parent::Panel(0,0, $width, $this->MainImage->GetHeight());		

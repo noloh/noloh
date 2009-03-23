@@ -216,9 +216,10 @@ abstract class Control extends Component
 	/**
 	 * Returns the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being set via the property syntax, Location should be set to an array of the Width and Height values, and the get always returns an array.
- 	 * <pre> $object->SetSize(300, 400);
- 	 *       //or as a property being set to an array.
- 	 *       $object->Size = array(300, 400);
+ 	 * <pre> 
+ 	 * $object->SetSize(300, 400);
+ 	 * //or as a property being set to an array.
+ 	 * $object->Size = array(300, 400);
  	 * </pre>
 	 * @return array
 	 */
@@ -229,9 +230,10 @@ abstract class Control extends Component
 	/**
 	 * Sets the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being set via the property syntax, Location should be set to an array of the Width and Height values, and the get always returns an array.
-	 * <pre> $object->SetSize(300, 400);
- 	 *       //or as a property being set to an array.
- 	 *       $object->Size = array(300, 400);
+	 * <pre> 
+	 * $object->SetSize(300, 400);
+ 	 * //or as a property being set to an array.
+ 	 * $object->Size = array(300, 400);
  	 * </pre>
 	 * @param integer|string $width
 	 * @param integer|string $height
@@ -298,9 +300,10 @@ abstract class Control extends Component
 	/**
 	 * Returns the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being set via the property syntax, Location should be set to an array of the left and top values, and the get always returns an array.
- 	 * <pre> $object->SetLocation(100, 200);
- 	 *       //or as a property being set to an array.
- 	 *       $object->Location = array(100, 200);
+ 	 * <pre> 
+ 	 * $object->SetLocation(100, 200);
+ 	 * //or as a property being set to an array.
+ 	 * $object->Location = array(100, 200);
  	 * </pre>
 	 * @param integer|string $left
 	 * @param integer|string $top
@@ -312,9 +315,10 @@ abstract class Control extends Component
 	/**
 	 * Sets the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being used set the property syntax, Location should be set to an array of the left and top values, and the get always returns an array.
- 	 * <pre> $object->SetLocation(100, 200);
- 	 *       //or as a property being set to an array.
- 	 *       $object->Location = array(100, 200);
+ 	 * <pre> 
+ 	 * $object->SetLocation(100, 200);
+ 	 * //or as a property being set to an array.
+ 	 * $object->Location = array(100, 200);
  	 * </pre>
 	 * @param integer|string $left
 	 * @param integer|string $top

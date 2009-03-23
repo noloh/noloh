@@ -44,6 +44,11 @@ final class URL
 	 */
 	const Tokens = null;
 	/**
+	 * An ArrayList of values to be used for a neat, slash-separated chain of tokens. Note that this only makes sense in the context of a URL::Display token mode.
+	 * @var ArrayList
+	 */
+	static $TokenChain;
+	/**
 	 * @ignore
 	 */
 	private function URL() {}

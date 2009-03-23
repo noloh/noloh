@@ -2,14 +2,24 @@
 /**
  * TableRow class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A TableRow is a Row within a Table objet.
+ * 
+ * The following is an example of using a TableRow in conjunction with Table and TableColumn:
+ * <pre>
+ *     $table = new Table();
+ *     $table->Rows->Add($row = new TableRow());
+ *     $row->Columns->AddRange('Column 1', 'Column2');
+ * </pre>
  * 
  * @package Controls/Auxiliary
  */
 class TableRow extends Control
 {
+	/**
+	 * An ArrayList holding the Columns of this TableRow
+	 * @var ArrayList
+	 */
 	public $Columns;
-	public $Span;
 	
 	function TableRow($columns = null)
 	{
@@ -22,6 +32,9 @@ class TableRow extends Control
 			foreach($columns as $column)
 				$this->AddColumn($column);
 	}
+	/**
+	 * @ignore
+	 */
 	public function AddColumn($column)
 	{	
 		if(!($column instanceof TableColumn))

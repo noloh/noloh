@@ -2,17 +2,47 @@
 /**
  * ListViewItem class
  * 
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A ListViewItem represents a row in a ListView. Similar to an Item, a ListViewItem also has a Value that
+ * can be used to store a value associated with this row. A possible use for this is to store the id of a row
+ * retrieved from a database whose contents are populated in this ListViewItem.
  * 
  * @package Controls/Auxiliary
  */
 class ListViewItem extends Panel //extends Component
 {
 	public $Checked;
+	/**
+	 * SubItems make up the contents of a row. You can think of a SubItem
+	 * as equivalent to a column of the Row.
+	 * 
+	 * The following is an example of how SubItems are used in association
+	 * with this ListViewItem and a ListView.
+	 * <pre>
+	 * 	   $listView = new ListView();
+	 *     $listView->Columns->AddRange('Car Brand', 'Color');
+	 *     $listViewItem = new ListViewItem();
+	 *     $listViewItem->SubItems->AddRange('Toyota', 'Red');
+	 *     $listView->ListViewItems->Add($listViewItem);
+	 * </pre>
+	 *    
+	 * Please also note that an array of SubItems can be passed in
+	 * either at the instantiation stage, or through the ArrayList AddRange
+	 * <pre>
+	 *     $listViewItem = new ListViewItem(array('Toyota', 'Red'));
+	 *     //Or
+	 *     $listViewItem = nw ListViewItem();
+	 *     $listViewItem->AddRange(array('Toyota', 'Red'));
+	 * </pre>
+	 */
 	public $SubItems;
 	private $ListViewId;
 	private $Value;
-		
+	/**
+	 * Constructor for ListViewItem
+	 * @param mixed $objOrText An optional initial SubItem for the ListViewItem.
+	 * This can also be an Array of SubItems.
+	 * @param integer $height The height of the ListViewItem within the ArrayList
+	 */	
 	function ListViewItem($objOrText = null, $height=20)
 	{
 		parent::Panel(null, null, '100%', $height, $this);
@@ -22,6 +52,10 @@ class ListViewItem extends Panel //extends Component
 		if($objOrText != null)
 			$this->AddSubItem($objOrText);
 	}
+	/**
+	 * Returns the ListView that this ListViewItem is associated with
+	 * @return ListView
+	 */
 	function GetListView()
 	{
 		if($this->ListViewId != null)
@@ -29,7 +63,18 @@ class ListViewItem extends Panel //extends Component
 	}
 	function SetListView($listView)	{$this->ListViewId = $listView->Id;}
 	/**
-	 * @ignore
+	 * Adds a SubItem to the SubItems ArrayList of this ListViewItem. 
+	 * It's unnecessary to call this function directly as SubItems should be
+	 * added through the SubItems ArrayList.
+	 * 
+	 * <pre>
+	 *	   //If within a ListViewItem class
+	 *     $this->SubItems->Add('This is a test');
+	 *     
+	 *     //Otherwise
+	 *     $listViewItem = new ListViewItem();
+	 *     $listViewItem->SubItems->Add('This is a test');
+	 * </pre>
 	 */
 	function AddSubItem($objOrText=null)
 	{
@@ -74,10 +119,18 @@ class ListViewItem extends Panel //extends Component
 		$object->SetCSSClass('NLVSubItem');
 		return $object;
 	}
+	/**
+	 * Sets the Value of this ListViewItem.
+	 * @param mixed $value
+	 */
 	function SetValue($value)	{$this->Value = $value;}
+	/**
+	 * Returns the Value of this ListViewItem
+	 * @return $mixed; 
+	 */
 	function GetValue()			{return $this->Value;}
 	/**
-	 * @ignore
+	 * Removes this ListViewItem from the ListView that it's in.
 	 */
 	function Remove()
 	{

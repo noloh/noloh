@@ -2,7 +2,23 @@
 /**
  * DataCommand class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A DataCommand object stores and executes SQL queries that can be executed against a database. 
+ * In most cases DataCommand's are generated automatically through Data::$Links.
+ * 
+ * The following is an example of manually creating and executing a DataCommand:
+ * <pre>
+ *	   $connection = new DataConnection(Data::Postgres, 'new_york_people');
+ *     $command = new DataCommand($connection, 'SELECT * FROM people');
+ *     $people = $command->Execute();
+ * </pre>
+ * 
+ * A more likely implementation of DataCommand that's transparent to the develper:
+ * We assume that the People Data::$Link was alredy defined previously in our program.
+ * <pre>
+ * 	   $people = Data::$Links->People->ExecSQL('SELECT * FROM people');
+ * </pre>
+ * 
+ * Please see the article on Data::$Links for more information.
  * 
  * @package Data
  */
@@ -12,7 +28,13 @@ class DataCommand extends Object
 	private $SqlStatement;
 	private $Callback;
 	public $ResultType;
-	
+	/**
+	 * Constructor of the DataCommand class
+	 * 
+	 * @param DataConnection $connection A DataConnection object that has your database connection information.
+	 * @param string $sql The SQL statement you wish to execute.
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
+	 */
 	function DataCommand($connection = null, $sql = '', $resultType = Data::Both)
 	{
 		$this->Connection = $connection;
@@ -23,9 +45,33 @@ class DataCommand extends Object
 	function GetCallback()				{return $this->Callback;}
 	function GetConnection()			{return $this->Connection;}
 	function SetConnection($connection)	{$this->Connection = $connection;}
+	/**
+	 * @return string Returns the SQL statement that this command will execute.
+	 */
+	function GetSQL()					{return $this->SqlStatement;}
+	/**
+	 * Sets the SQL staetment that this command will execute.
+	 * @param string @sql The SQL statement that this command will execute.
+	 */
+	function SetSQL($sql)				{$this->SqlStatement = $sql;}
+	/**
+	 * @deprecated use GetSQL() instead.
+	 * 
+	 * @return string Returns the SQL statement that this command will execute.
+	 */
 	function GetSqlStatement()			{return $this->SqlStatement;}
+	/**
+	 * @deprecated use SetSQL() instead.
+	 * @param string @sql Sets The SQL statement that this command will execute.
+	 */
 	function SetSqlStatement($sql)		{$this->SqlStatement = $sql;}
-	
+	/**
+	 *	Executes your SQL statement aginst the database whose connection information
+	 *  is stored in this class's Connection property.
+	 *
+	 *	@return mixed If command executes successfully it returns a DataReader object 
+	 *	containing the resulting data of the query. Otherwise the function will return false.
+	 */
 	function Execute($resultType = null)
 	{
 		if($this->Connection != null && $this->SqlStatement != null)

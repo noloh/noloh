@@ -2,12 +2,24 @@
 /**
  * AccordianPart class
  * 
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * Each section of an Accordion is an AccordionPart. 
+ * AccordionParts should be treated like a Panel when adding or removing object.
+ * 
+ * Example Usage:
+ * <pre>
+ * $accordion = new Accordion();
+ * $accordion->AccordionParts->Add(new AccordionPart('Section 1'));
+ * </pre>
  * 
  * @package Controls/Auxiliary
  */
 class AccordionPart extends CollapsePanel implements Groupable
 {
+	/**
+	 * Constructor
+	 * @param string $title The title you wish to display in the titlebar.
+	 * @param int $titleHeight The height of the titlebar.
+	 */
 	function AccordionPart($title, $titleHeight = 28)
 	{
 		parent::CollapsePanel($title, 0, 0, '100%', 28, $titleHeight);

@@ -2,7 +2,27 @@
 /**
  * DataReader class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A DataReader object is used to store data retrieved from a database. A DataReader object
+ * can also be treated as if it were an array in many circumstances. DataReaders are usually
+ * used in conjuction with Data::$Links and rarely need to be instantiated on their own.
+ * 
+ * <pre>
+ *     $data = Data::$Links->Database1->ExecView('v_get_all_users');
+ *     //In the above line Data::$Links returns a DataReader object containing
+ *     //the resulting data from our query
+ *     //We can now access the information container in our $data DataReader as though
+ *     //it were an array.
+ *     foreach($data as $user)
+ *         foreach($user as $field => $value)
+ *             System::Log("The value of $field  is $value);
+ *             
+ *     //Furthermore, if we just wanted a specific column of a specific row we can access
+ *     //it in the following way:
+ *     $name = $user[10]['username'];
+ *     //Assuming the $data result has a username column and an 11th row, our $name
+ *     //variable would now contain the corresponding username.
+ * </pre>
+ *
  * 
  * @package Data
  */
@@ -11,6 +31,12 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	public $Data;
 	public $ResultType;
 	
+	/**
+	 * @param mixed Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type The type of the database.
+	 * @param resource $resource A resource representing the data returned from the database.
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Determines how your data columns are indexed .
+	 * @param $callBack
+	 */
 	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null)
 	{
 		$this->ResultType = $type;
@@ -87,7 +113,9 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		return count($this->Data);
 	}
 	/**
-	 * @ignore
+	 * The number of rows in your dataset.
+	 * 
+	 * @return integer;
 	 */
 	function GetCount()
 	{
