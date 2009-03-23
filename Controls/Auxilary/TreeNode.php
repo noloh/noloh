@@ -315,7 +315,7 @@ class TreeNode extends Panel
 	{
 		$this->TreeListId = $newId;
 		NolohInternal::SetProperty('ListId', $newId, $this);
-		$this->Element->Click['_N'] = new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'");');
+		$this->Element->Click['_N'] = new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
 	}
 	/**
 	 * @ignore
@@ -335,7 +335,7 @@ class TreeNode extends Panel
 		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
 		$this->Element->Click['_N'] = $this->TreeListId==null 
 			? new ClientEvent('')
-			: new ClientEvent('_NTreeSlct("'.$this->Id.'","'.$this->Element->Id.'");');
+			: new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
 		$this->Element->Click[] = $newClick;
 	}
 	/**
@@ -437,7 +437,7 @@ class TreeNode extends Panel
 	 */
 	function GetSelected()
 	{
-		return $this->TreeListId != null && in_array($this, GetComponentById($this->TreeListId)->GetSelectedTreeNodes(), true);
+		return $this->TreeListId !== null && in_array($this, GetComponentById($this->TreeListId)->GetSelectedTreeNodes(), true);
 	}
 	/**
 	 * Sets whether or not the TreeNode is Selected.
@@ -447,12 +447,22 @@ class TreeNode extends Panel
 	{
 		if($this->TreeListId !== null)
 		{
-			if($bool)
-				GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
+			$selectedTreeNodes = &GetComponentById($this->TreeListId)->_NGetSelectedTreeNodeIds();
+			$pos = array_search($this->Id, $selectedTreeNodes, true);
+			//if($bool)
+			if($bool === ($pos===false))
+			{
+				if($bool)
+					$selectedTreeNodes[] = $this->Id;
+				else
+					array_splice($selectedTreeNodes, $pos, 1);
+				//GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
+				QueueClientFunction($this, '_NTreeSlctTgl', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''), false);
 			//GetComponentById($this->TreeListId)->;
 			//if($bool)
 			//	QueueClientFunction($this, '_NTreeSlct', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\'', 'Object()'));
 			//$this->Click->Exec();
+			}
 		}
 		else
 			BloodyMurder('You must add the TreeNode to the TreeList before selecting it.');
@@ -462,7 +472,8 @@ class TreeNode extends Panel
 	 */
 	function AddShift($shift)
 	{
-		$this->MouseDown[] = new ClientEvent('_N(\''.$this->Element->Id.'\').onclick();');
+		//if(!isset($this->MouseDown['_N']))
+			$this->MouseDown['_N'] = new ClientEvent('_NTreeSlctOne', $this->Id, $this->Element->Id);
 		parent::AddShift($shift);
 	}
 }

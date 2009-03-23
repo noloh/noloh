@@ -39,6 +39,7 @@ class TreeList extends Panel
 	function TreeList($left=0, $top=0, $width=200, $height=500)
 	{
 		parent::Panel($left, $top, $width, $height, $this);
+		$this->SelectedTreeNodes = array();
 		$this->SetScrolling(System::Auto);
 		$this->TreeNodes = &$this->Controls;
 		$this->TreeNodes->AddFunctionName = 'AddTreeNode';
@@ -103,7 +104,7 @@ class TreeList extends Panel
 	function SetSelectedTreeNode($treeNode)
 	{
 		$this->SelectedTreeNodes = array($treeNode->Id);
-		QueueClientFunction($treeNode, '_NTreeSlct', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\''));
+		QueueClientFunction($treeNode, '_NTreeSlctOne', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\''));
 		$treeNode->ExpandToShow();
 	}
 	/**
@@ -141,8 +142,9 @@ class TreeList extends Panel
 	 */
 	function SetSelectedValueHelper($value, $node)
 	{
-		if($node->GetValue() == $value)
-			$node->Selected = true;
+		$node->Selected = ($node->GetValue() == $value);
+		//if($node->Selected = ($node->GetValue() == $value))
+		//	$this->SelectedTreeNodes[] = $node->Id;
 		foreach($node->TreeNodes as $treeNode)
 			self::SetSelectedValueHelper($value, $treeNode);
 	}
@@ -169,10 +171,18 @@ class TreeList extends Panel
 	 */
 	function SetSelectedTextHelper($text, $node)
 	{
-		if($node->GetText() == $text)
-			$node->Selected = true;
+		$node->Selected = ($node->GetText() == $text);
+		//if($node->Selected = ($node->GetText() == $text))
+		//	$this->SelectedTreeNodes[] = $node->Id;
 		foreach($node->TreeNodes as $treeNode)
 			self::SetSelectedTextHelper($text, $treeNode);
+	}
+	/**
+	 * @ignore
+	 */
+	function &_NGetSelectedTreeNodeIds()
+	{
+		return $this->SelectedTreeNodes;
 	}
 	/**
 	 * Sets the Src of each internal TreeNode that has sub-nodes and is open to the specified location.
