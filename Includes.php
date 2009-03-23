@@ -86,6 +86,7 @@ function _NAutoLoad($class)
 			'TabPanel' => 			'Controls/Extended/TabPanel.php',
 			'TransferPanel' => 		'Controls/Extended/TransferPanel.php',
 			'TreeList' => 			'Controls/Extended/TreeList.php',
+			'Paginator' => 			'Controls/Extended/Paginator.php',
 			'WindowPanel' => 		'Controls/Extended/WindowPanel.php',
 			
 			// Auxiliary
