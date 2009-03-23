@@ -33,12 +33,13 @@ class Link extends Label
 	 */
 	const NewWindow = '_blank';
 	
-	
 	private $Destination;
 	private $Target;
 	private $Control;
 	private $Tokens;
+	private $TokenChain;
 	private $RemoveSubsequents;
+	private $RemoveSubsequents2;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Link
@@ -68,6 +69,7 @@ class Link extends Label
 		$this->SetDestination($destination);
 		$this->Tokens = array();
 		$this->RemoveSubsequents = array();
+		$this->RemoveSubsequents2 = array();
 	}
 	/**
 	 * Returns the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
@@ -77,7 +79,7 @@ class Link extends Label
 	 */
 	function GetDestination()
 	{
-		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ((!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['SERVER_ADDR'] . $_SERVER['PHP_SELF'].'#/'.URL::TokenString($this->Tokens)) : $this->Destination;
+		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ((!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['SERVER_ADDR'] . $_SESSION['_NURL'].'#/'.$this->TokenString()) : $this->Destination;
 	}
 	/**
 	 * Sets the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
@@ -111,46 +113,94 @@ class Link extends Label
 	{
 		if($GLOBALS['_NURLTokenMode'] && (!isset($this->Tokens[$tokenName]) || $this->Tokens[$tokenName]!=$tokenValue))
 		{
-			/*if($tokenValue === null)
-				unset($this->Tokens[$tokenName]);
-			else*/
-				$this->Tokens[$tokenName] = $tokenValue;
-				$this->RemoveSubsequents[$tokenName] = $removeSubsequentTokens;
-			/*
-			if($removeSubsequentTokens)
-			{
-				reset($this->Tokens);
-				for($position=1; key($this->Tokens)!=$tokenName; ++$position)
-					next($this->Tokens);
-				array_splice($this->Tokens, $position);
-			}*/
-			$this->UpdateTokens();
+			$this->Tokens[$tokenName] = $tokenValue;
+			$this->RemoveSubsequents[$tokenName] = $removeSubsequentTokens;
+			$this->QueueUpdateTokens();
 		}
 		return $tokenValue;
 	}
 	/**
 	 * @ignore
 	 */
+	function GetChainToken($index, $defaultValue=null)
+	{
+		return isset($this->TokenChain[$index]) && $GLOBALS['_NURLTokenMode'] ? $this->TokenChain[$index] : $defaultValue;
+	}
+	/**
+	 * @ignore
+	 */
+	function SetChainToken($index, $tokenValue, $removeSubsequentTokens=false)
+	{
+		$chain = &$this->GetTokenChain()->Elements;
+		if($GLOBALS['_NURLTokenMode'] && (!isset($chain[$index]) || $chain[$index]!=$tokenValue))
+		{
+			$chain[$index] = $tokenValue;
+			$this->RemoveSubsequents2[$index] = $removeSubsequentTokens;
+			$this->QueueUpdateTokens();
+		}
+		return $tokenValue;
+	}
+	/**
+	 * @ignore
+	 */
+	function GetTokenChain()
+	{
+		if(!$this->TokenChain)
+			$this->TokenChain = new ImplicitArrayList($this, 'AddChainToken', 'RemoveChainTokenAt', 'ClearChainTokens');
+		return $this->TokenChain;
+	}
+	/**
+	 * @ignore
+	 */
+	function AddChainToken($value)
+	{
+		$this->QueueUpdateTokens();
+		$this->TokenChain->Add($value, true);
+	}
+	/**
+	 * @ignore
+	 */
+	function RemoveChainTokenAt($index)
+	{
+		$this->QueueUpdateTokens();
+		$this->TokenChain->RemoveAt($index, true);
+	}
+	/**
+	 * @ignore
+	 */
+	function ClearChainTokens()
+	{
+		$this->QueueUpdateTokens();
+		$this->TokenChain->Clear(true);
+	}
+	/**
+	 * @ignore
+	 */
+	function QueueUpdateTokens()
+	{
+		$GLOBALS['_NQueuedLinks'][$this->Id] = true;
+	}
+	/**
+	 * @ignore
+	 */
 	function UpdateTokens()
 	{
-		NolohInternal::SetProperty('href', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ('#/'.URL::TokenString($this->Tokens)) : $this->Destination, $this);
+		NolohInternal::SetProperty('href', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ('#/'.$this->TokenString()) : $this->Destination, $this);
 		$this->UpdateEvent('Click');
 	}
 	/**
 	 * @ignore
 	 */
-	function GetEventString($eventTypeAsString)
+	function TokenString()
 	{
-		if($eventTypeAsString === 'Click' && ($this->Control !== null || $this->Text !== null) && $this->Target === null)
-		{
-			if($this->Destination === null)
-				return '_NSetURL("' . URL::TokenString($this->Tokens) . '","' . $this->Id . '");' . parent::GetEventString($eventTypeAsString) . 'this.blur();';
-			elseif($this->Destination === '#')
-				return parent::GetEventString($eventTypeAsString) . 'return false;';
-			else
-				return parent::GetEventString($eventTypeAsString) . 'location="' . $this->Destination . '";';
-		}
-		return parent::GetEventString($eventTypeAsString);
+		$tokens = array_merge($_SESSION['_NTokens']);
+		foreach($this->Tokens as $key => $val)
+			URL::SetTokenHelper($tokens, $key, $val, $this->RemoveSubsequents[$key]);
+		$chain = array_merge(URL::$TokenChain->Elements);
+		if($this->TokenChain)
+			foreach($this->TokenChain as $key => $val)
+				URL::SetTokenHelper($chain, $key, $val, $this->RemoveSubsequents2[$key]);
+		return URL::TokenString($chain, $tokens);
 	}
 	/**
 	 * @ignore
@@ -223,11 +273,16 @@ class Link extends Label
 	/**
 	 * @ignore
 	 */
-	function SetAllTokens()
+	function GetEventString($eventTypeAsString)
 	{
-		foreach($this->Tokens as $key => $val)
-			URL::SetToken($key, $val, $this->RemoveSubsequents[$key]);
-		unset($GLOBALS['_NTokenUpdate'], $GLOBALS['_NInitialURLTokens']);
+		if($eventTypeAsString === 'Click' && ($this->Control !== null || $this->Text !== null) && $this->Target === null)
+		{
+			return parent::GetEventString($eventTypeAsString) .
+				($this->Destination === '#' ? 'return false;' :
+				($this->Destination === null ? '_NSetTokens("'.$this->TokenString().'","'.$this->Id.'");this.blur();'
+					: ('_NSetURL("'.$this->Destination.'","'.$this->Id.'");')));
+		}
+		return parent::GetEventString($eventTypeAsString);
 	}
 	/**
 	 * @ignore
@@ -242,7 +297,7 @@ class Link extends Label
 	function SearchEngineShow()
 	{
 		if($this->Destination)
-			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.URL::TokenString($this->Tokens)) : $this->Destination, '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
+			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.$this->TokenString()) : $this->Destination, '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
 		else 
 		{
 			parent::SearchEngineShow();
@@ -258,7 +313,7 @@ class Link extends Label
 		$str = Control::NoScriptShow($indent);
 		if($str !== false)
 		{
-			echo $indent, '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.URL::TokenString($this->Tokens)) : $this->Destination, '" ', $str, '>';
+			echo $indent, '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SESSION['_NURL'].'?'.$this->TokenString()) : $this->Destination, '" ', $str, '>';
 			if($this->Control)
 			{
 				echo "\n";

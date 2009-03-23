@@ -79,10 +79,10 @@ function _NCheckURL()
 		_N("N1").innerHTML = "";
 	}
 }
-function _NSetURL(hash, id)
+function _NSetURL(url, id)
 {
 	_N.URLTokenLink = id;
-	location = document.URL.split("#",1)[0] + "#/" + hash;
+	location = url;
 	_N.Hash = location.hash;
 	_N.URL = location.href;
 	var d=_N("NBackButton").contentWindow.document;
@@ -93,6 +93,10 @@ function _NSetURL(hash, id)
 	setTimeout(function() {document.title = _N.Title;}, 2000);
 	if(_N.Tracker)
 		eval(_N.Tracker);
+}
+function _NSetTokens(hash, id)
+{
+	_NSetURL(document.URL.split("#",1)[0] + "#/" + hash, id);
 }
 function _NSetTitle(title)
 {

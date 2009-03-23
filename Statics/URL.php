@@ -74,17 +74,42 @@ final class URL
 		if($GLOBALS['_NURLTokenMode'] && (!isset($_SESSION['_NTokens'][$tokenName]) || $_SESSION['_NTokens'][$tokenName]!=$tokenValue))
 		{
 			self::QueueUpdateTokens();
-			if($tokenValue === null)
-				unset($_SESSION['_NTokens'][$tokenName]);
-			else
-				$_SESSION['_NTokens'][$tokenName] = $tokenValue;
-			if($removeSubsequentTokens)
-			{
-				reset($_SESSION['_NTokens']);
-				for($position=1; key($_SESSION['_NTokens'])!=$tokenName; ++$position)
-					next($_SESSION['_NTokens']);
-				array_splice($_SESSION['_NTokens'], $position);
-			}
+			self::SetTokenHelper($_SESSION['_NTokens'], $tokenName, $tokenValue, $removeSubsequentTokens);
+		}
+		return $tokenValue;
+	}
+	
+	static function SetTokenHelper(&$tokenArray, $tokenName, $tokenValue, $removeSubsequentTokens=false)
+	{
+		if($tokenValue === null)
+			unset($tokenArray[$tokenName]);
+		else
+			$tokenArray[$tokenName] = $tokenValue;
+		if($removeSubsequentTokens)
+		{
+			reset($tokenArray);
+			for($position=1; key($tokenArray)!=$tokenName; ++$position)
+				next($tokenArray);
+			array_splice($tokenArray, $position);
+		}
+	}
+	/**
+	 * @ignore
+	 */
+	function GetChainToken($index, $default=null)
+	{
+		return (isset(URL::$TokenChain[$index]) && $GLOBALS['_NURLTokenMode'])?URL::$TokenChain[$index]:$default;
+	}
+	/**
+	 * @ignore
+	 */
+	function SetChainToken($index, $tokenValue, $removeSubsequentTokens=false)
+	{
+		$chainElements = &self::$TokenChain->Elements;
+		if($GLOBALS['_NURLTokenMode'] && (!isset($chainElements[$tokenName]) || $chainElements[$index]!=$tokenValue))
+		{
+			self::QueueUpdateTokens();
+			self::SetTokenHelper($chainElements, $index, $tokenValue, $removeSubsequentTokens);
 		}
 		return $tokenValue;
 	}
@@ -103,9 +128,23 @@ final class URL
 	/**
 	 * @ignore
 	 */
-	static function TokenString($keyValuePairs)
+	static function Clean($string, $lowercase = false)
+	{
+		$string = trim(preg_replace(array('/([a-z])\'([a-z])/i', '/[^0-9a-z]+/i'), array('$1$2', '-'), htmlspecialchars_decode($string)), '-');
+		return $lowercase?strtolower($string):$string;
+	}
+	/**
+	 * @ignore
+	 */
+	static function TokenString($tokenChain, $keyValuePairs)
 	{
 		$str = '';
+		if(count($tokenChain)/* > 1*/)
+		{
+			foreach($tokenChain as $val)
+				$str .= urlencode($val) . '/';
+			$str .= '&';
+		}
 		foreach($keyValuePairs as $key => $val)
 			$str .= urlencode($key) . '=' . urlencode($val) . '&';
 		$str = rtrim($str, '&');
@@ -114,9 +153,12 @@ final class URL
 	/**
 	 * @ignore
 	 */
-	static function TokenDisplayText($keyValuePairs)
+	static function TokenDisplayText($tokenChain, $keyValuePairs)
 	{
 		$str = '';
+		if(count($tokenChain)/* > 1*/)
+			foreach($tokenChain as $val)
+				$str .= $val . ' ';
 		foreach($keyValuePairs as $val)
 			$str .= $val . ' ';
 		$str = rtrim($str);
@@ -131,7 +173,7 @@ final class URL
 		{
 			$GLOBALS['_NTokenUpdate'] = true;
 			if($GLOBALS['_NTokenTrailsExpiration'])
-				$GLOBALS['_NInitialURLTokens'] = self::TokenString($_SESSION['_NTokens']);
+				$GLOBALS['_NInitialURLTokens'] = self::TokenString(self::$TokenChain, $_SESSION['_NTokens']);
 		}
 	}
 	/**
@@ -139,9 +181,10 @@ final class URL
 	 */
 	static function UpdateTokens()
 	{
-		$tokenString = self::TokenString($_SESSION['_NTokens']);
-		AddScript('_NSetURL(\''.$tokenString.'\')', Priority::Low);
-		self::UpdateTrails('?' . $tokenString, $GLOBALS['_NURLTokenMode']==2?$tokenString:self::TokenDisplayText($_SESSION['_NTokens']));
+		$tokenString = self::TokenString(self::$TokenChain, $_SESSION['_NTokens']);
+		AddScript('_NSetTokens(\''.$tokenString.'\')', Priority::Low);
+		self::UpdateTrails('?' . $tokenString, $GLOBALS['_NURLTokenMode']==2?$tokenString:self::TokenDisplayText(self::$TokenChain, $_SESSION['_NTokens']));
+		$_SESSION['_NTokenChain'] = serialize(self::$TokenChain);
 	}
 	/**
 	 * Redirects to another URL
@@ -152,7 +195,7 @@ final class URL
 	{
 		AddScript('location="'.$url.'";');
 		if(!isset($GLOBALS['_NInitialURLTokens']))
-			$GLOBALS['_NInitialURLTokens'] = self::TokenString($_SESSION['_NTokens']);
+			$GLOBALS['_NInitialURLTokens'] = self::TokenString(self::$TokenChain, $_SESSION['_NTokens']);
 		self::UpdateTrails($url, $searchEngineLinkText?$searchEngineLinkText:$url);
 	}
 	/**
@@ -255,6 +298,30 @@ final class URL
 				$second = strpos($_SERVER['HTTP_USER_AGENT'], 'konqueror') === false ? 'D' : 'B';
 				Alert('Please press ' . $first . '+' . $second . ' to bookmark this application.');
 		}
+	}
+	/**
+	 * @ignore
+	 */
+	static function AddChainToken($value)
+	{
+		self::QueueUpdateTokens();
+		self::$TokenChain->Add($value, true);
+	}
+	/**
+	 * @ignore
+	 */
+	static function RemoveChainTokenAt($index)
+	{
+		self::QueueUpdateTokens();
+		self::$TokenChain->RemoveAt($index, true);
+	}
+	/**
+	 * @ignore
+	 */
+	static function ClearChainTokens()
+	{
+		self::QueueUpdateTokens();
+		self::$TokenChain->Clear(true);
 	}
 }
 

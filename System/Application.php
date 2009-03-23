@@ -107,7 +107,7 @@ final class Application extends Object
 			foreach($_SESSION['_NFiles'] as $key => $val)
 				GetComponentById($key)->File = new File($val);
 			if(isset($_POST['_NTokenLink']))
-				GetComponentById($_POST['_NTokenLink'])->SetAllTokens();
+				$this->HandleTokens();
 			if(!empty($_POST['_NEvents']))
 				$this->HandleServerEvents();
 			foreach($_SESSION['_NFiles'] as $key => $val)
@@ -145,6 +145,7 @@ final class Application extends Object
 			$_SESSION['_NStartUpPageClass'],
 			$_SESSION['_NURL'],
 			$_SESSION['_NTokens'],
+			$_SESSION['_NTokenChain'],
 			$_SESSION['_NHighestZ'],
 			$_SESSION['_NLowestZ']);
 	}
@@ -175,10 +176,10 @@ final class Application extends Object
 		$_SESSION['_NFileSend'] = array();
 		$_SESSION['_NGarbage'] = array();
 		$_SESSION['_NStartUpPageClass'] = $className;
-		$_SESSION['_NURL'] = $_SERVER['PHP_SELF'];
 		$_SESSION['_NTokens'] = array();
 		$_SESSION['_NHighestZ'] = 0;
 		$_SESSION['_NLowestZ'] = 0;
+		$_SESSION['_NURL'] = $_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'];
 		$_SESSION['_NPath'] = ComputeNOLOHPath();
 		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath']);
 		$_SESSION['_NRAPath'] = NOLOHConfig::NOLOHURL ? 
@@ -188,7 +189,6 @@ final class Application extends Object
 				$_SESSION['_NRPath']);
 		if($home)
 			$_SESSION['_NUserDir'] = true;
-		
 		UserAgent::LoadInformation();
 		if($trulyFirst)
 			if($_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other')
@@ -289,6 +289,8 @@ final class Application extends Object
 		}
 		$_SESSION['_NGarbage'] = array();
 		$this->WebPage = GetComponentById($_SESSION['_NStartUpPageId']);
+		if(isset($_SESSION['_NTokenChain']))
+			URL::$TokenChain = unserialize($_SESSION['_NTokenChain']);
 	}
 	
 	private function HandleEventVars()
@@ -379,14 +381,29 @@ final class Application extends Object
 		}
 		unset($GLOBALS['_NSEFromClient']);
 	}
-
-	private function HandleTokens()
+	/**
+	 * @ignore
+	 */
+	public function HandleTokens()
 	{
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
 		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight']);
 		if($GLOBALS['_NURLTokenMode'] == 1)
+		{
+			URL::$TokenChain = $tokenChain = new ImplicitArrayList('URL', 'AddChainToken', 'RemoveChainTokenAt', 'ClearChainTokens');
+			if(reset($_GET) === '')
+			{
+				$tokenChain->Elements = explode('/', 
+					trim((($ampPos = strpos($_SERVER['QUERY_STRING'], '&')) === false)
+						? $_SERVER['QUERY_STRING']
+						: substr($_SERVER['QUERY_STRING'], 0, strpos($_SERVER['QUERY_STRING'], 
+					'&')), '/'));
+				unset($_GET[key($_GET)]);
+			}
+			$_SESSION['_NTokenChain'] = serialize($tokenChain);
 			$_SESSION['_NTokens'] = $_GET;
+		}
 		elseif($GLOBALS['_NURLTokenMode'] == 2)
 		{
 			$keys = array_keys($_GET);
@@ -456,6 +473,7 @@ final class Application extends Object
 		header('Content-Type: text/javascript');
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
 			URL::UpdateTokens();
+		NolohInternal::LinkTokensQueue();
 		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();
 		NolohInternal::FunctionQueue();
@@ -490,7 +508,7 @@ final class Application extends Object
 		$file = getcwd().'/NOLOHSearchTrails.dat';
 		if(file_exists($file))
 		{
-			$tokenString = URL::TokenString($_SESSION['_NTokens']);
+			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $info)

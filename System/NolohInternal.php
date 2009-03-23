@@ -182,5 +182,12 @@ final class NolohInternal
 			if($GLOBALS['_NClientEventExecs'][$i]->GetShowStatus())
 				$GLOBALS['_NClientEventExecs'][$i]->AddToScript();
 	}
+	
+	public static function LinkTokensQueue()
+	{
+		if(isset($GLOBALS['_NQueuedLinks']))
+			foreach($GLOBALS['_NQueuedLinks'] as $id => $nothing)
+				GetComponentById($id)->UpdateTokens();
+	}
 }
 ?>

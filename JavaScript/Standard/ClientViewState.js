@@ -34,13 +34,17 @@ function _NCheckURL()
 	if(_N.Hash != location.hash && (location.hash=="" || location.hash.charAt(1)=="/") && (_N.Hash=="" || _N.Hash.charAt(1)=="/"))
 		location.reload(true);
 }
-function _NSetURL(hash, id)
+function _NSetURL(url, id)
 {
 	_N.URLTokenLink = id;
-	location = document.URL.split("#",1)[0] + "#/" + hash;
+	location = url;
 	_N.Hash = location.hash;
 	if(_N.Tracker)
 		eval(_N.Tracker);
+}
+function _NSetTokens(hash, id)
+{
+	_NSetURL(document.URL.split("#",1)[0] + "#/" + hash, id);
 }
 function _NSetProperty(id, property, value)
 {
