@@ -55,7 +55,7 @@ class IFrame extends Control
 	 */
 	function SetSrc($src)
 	{
-		$this->Src = $newSrc;
+		$this->Src = $src;
 		NolohInternal::SetProperty('src', $src, $this);
 	}
 	/**
