@@ -43,7 +43,7 @@ function _NInit(loadLblId, loadImgId, debugMode)
 		d.open();
 		d.write(location.href.replace('&', '&amp;'));
 		d.close();
-		_N.URLChecker = setInterval("_NCheckURL()", 500);
+		_N.URLChecker = setInterval(_NCheckURL, 500);
 	}
 }
 function _NCheckURL()
@@ -505,7 +505,7 @@ function _NUnServer()
 	_N(_N.LoadImg).style.visibility = "hidden";
 	_N(_N.LoadLbl).style.visibility = "hidden";
 	_N.Request = null;
-	_N.URLChecker = setInterval("_NCheckURL()", 500);
+	_N.URLChecker = setInterval(_NCheckURL, 500);
 }
 function _NReqStateChange()
 {
@@ -558,9 +558,8 @@ function _NServer()
 	if(!_N.Request)
 	{
 		clearInterval(_N.URLChecker);
-		var notUnload = true;
+		var url = location.href, notUnload = true, sECount = _N.SEQ.length;
 		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
-		var sECount = _N.SEQ.length;
 		for(var i=0; i<sECount; ++i)
 		{
 			if(_N.SEQ[i][0] == "Unload")
@@ -579,7 +578,7 @@ function _NServer()
 		_N(_N.LoadLbl).style.visibility = "visible";
         if(notUnload)
 	        _N.Request.onreadystatechange = _NReqStateChange;
-	    _N.Request.open("POST", document.URL.split("#", 1)[0], true);
+	    _N.Request.open("POST", url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"), true);
 	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 	    _N.Request.send(str);

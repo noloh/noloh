@@ -27,7 +27,7 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	graveyard.style.display = "none";
 	document.body.appendChild(graveyard);
 	_N.Hash = location.hash;
-	_N.URLChecker = setInterval("_NCheckURL()", 500);
+	_N.URLChecker = setInterval(_NCheckURL, 500);
 }
 function _NCheckURL()
 {
@@ -514,9 +514,8 @@ function _NServer()
 {
 	if(!_N.Request)
 	{
-		var notUnload = true;
+		var url = location.href, notUnload = true, sECount = _N.SEQ.length;
 		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
-		var sECount = _N.SEQ.length;
 		for(var i=0; i<sECount; ++i)
 		{
 			if(_N.SEQ[i][0] == "Unload")
@@ -535,7 +534,7 @@ function _NServer()
 		_N(_N.LoadLbl).style.visibility = "visible";
         if(notUnload)
     	    _N.Request.onreadystatechange = _NReqStateChange;
-	    _N.Request.open("POST", window.location.href, notUnload);
+	    _N.Request.open("POST", url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"), notUnload);
 	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 	    _N.Request.send(str);
