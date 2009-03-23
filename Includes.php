@@ -14,6 +14,7 @@ require($_NPath . 'System/NolohInternal.php');
 require($_NPath . 'System/Pointer.php');
 require($_NPath . 'System/WebPage.php');
 require($_NPath . 'Collections/ArrayList.php');
+require($_NPath . 'Collections/ImplicitArrayList.php');
 require($_NPath . 'Controls/Core/Control.php');
 require($_NPath . 'Events/Event.php');
 require($_NPath . 'Events/ClientEvent.php');
@@ -36,7 +37,6 @@ function _NAutoLoad($class)
 			'Container' => 			'Collections/Container.php',
 			'ControlPair' => 		'Collections/ControlPair.php',
 			'Group' => 				'Collections/Group.php',
-			'ImplicitArrayList' => 	'Collections/ImplicitArrayList.php',
 			'Item' => 				'Collections/Item.php',
 			
 			// Data
@@ -118,7 +118,8 @@ function _NAutoLoad($class)
 	elseif(function_exists('__autoload'))
 		__autoload($class);
 	else 
-		BloodyMurder('The class ' . $class . ' is not defined.');
+		require($class . '.php');
+	//	BloodyMurder('The class ' . $class . ' is not defined.');
 }
 
 spl_autoload_register('_NAutoLoad');
