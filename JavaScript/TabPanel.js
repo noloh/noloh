@@ -1,4 +1,4 @@
-function _NTbPgSt(tabControl, group)
+function _NTbPgSt(group)
 {
 	var grp = _N(group), tab = grp.GetSelectedElement();
 	if(tab = _N(tab))
