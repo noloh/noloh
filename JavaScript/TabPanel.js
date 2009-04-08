@@ -1,17 +1,12 @@
 function _NTbPgSt(tabControl, group)
 {
-	var grp = _N(group);
-	var tab = grp.GetSelectedElement();
-	if(tab != null)
+	var grp = _N(group), tab = grp.GetSelectedElement();
+	if(tab = _N(tab))
 	{
-		tab = _N(tab);
-		var tabControl = _N(tabControl);
-		if(tabControl.CurTabPg != null)
-			_NSetProperty(tabControl.CurTabPg, 'style.display', 'none');
+		var prevTab = grp.PrevSelectedElement;
+		if(prevTab != null)
+			_NSetProperty(_N(prevTab).TabPg, 'style.display', 'none');
 		if(tab.TabPg != null)
-		{
 			_NSetProperty(tab.TabPg, 'style.display', '');
-			tabControl.CurTabPg = tab.TabPg;
-		}
 	}
 }
