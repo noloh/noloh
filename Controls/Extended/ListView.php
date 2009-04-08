@@ -78,18 +78,20 @@ class ListView extends Panel
 	{
 		$count = $this->Columns->Count();
 		if(is_string($text) || is_int($text))
-			$this->Columns->Add($column = &new ColumnHeader($text, ($count > 0)?$this->Columns[$count-1]->GetRight():0, $width, $this->ColumnsPanel->GetHeight()), true, true);
+			$this->Columns->Add($column = &new ColumnHeader($text, (($count > 0)?$this->Columns[$count - 1]->GetRight():0), $width, $this->ColumnsPanel->GetHeight()), true, true);
 //			$this->Columns->Add($column = &new ColumnHeader($text, 0, $width, $this->ColumnsPanel->GetHeight()), true, true);
 		elseif($text instanceof ColumnHeader)
 		{
 			$this->Columns->Add($column = &$text, true);
 			if($text->GetLeft() == System::Auto)
-				$text->SetLeft($tmpCount > 0?$this->Columns[$count-1]->GetRight():0);
+				$text->SetLeft($count > 0?$this->Columns[$count - 1]->GetRight():0);
 //			$text->SetLeft(0);
 		}
+		if($column)
+		{
 //		$column->SetLayout(Layout::Relative);
 //		$column->CSScssFloat = 'left';
-//		if(($right = $column->GetRight()) > $this->GetWidth())
+		if(($right = $column->GetRight()) > $this->GetWidth())
 		$right = $column->GetRight();
 		$this->InnerPanel->SetWidth($right);
 		$this->MakeColumnShift($column);
@@ -100,7 +102,7 @@ class ListView extends Panel
 		$column->SizeHandle->ShiftStop = new ClientEvent('_NLVResizeEnd');
 //		$this->Line->Shifts[] = Shift::With($column->SizeHandle, Shift::Left);
 		$this->Line->Shifts[] = Shift::LeftWith($column->SizeHandle, Shift::Left);
-		
+		}
 		foreach($this->LVItemsQueue as $key => $listViewItem)
 			if($this->Update($listViewItem))
 				unset($this->LVItemsQueue[$key]);
@@ -303,13 +305,22 @@ class ListView extends Panel
 				}
 				else
 					$properties[0] = $properties[1] = $constraints[$i];
-				if($properties[1] !== false)
+				/*if($properties[1] !== false)
 				{
 					$this->DataColumns[] = $i;
 					$this->AddColumn($properties[1], $properties[2]);
+				}*/
+				if($properties[0] || $properties[1])
+				{
+				if($properties[1] !== false)
+				{
+						$title = ($properties[1] != false)?$properties[1]:$properties[0];
+						$this->AddColumn($title, $properties[2]);
+					$this->DataColumns[] = $i;
 				}
 				if($properties[0])
 					$columns[] = $properties[0];
+				}			
 			}
 		}
 		if($this->DataSource instanceof DataCommand)

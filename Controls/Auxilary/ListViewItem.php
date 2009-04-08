@@ -106,7 +106,7 @@ class ListViewItem extends Panel //extends Component
 	}
 	private function CreateSubItem($objectOrText)
 	{
-		if(is_string($objectOrText) || $objectOrText == null)
+		if(!is_object($objectOrText) || $objectOrText == null)
 			$object = new Label($objectOrText, null, 0, null, '100%');
 		else
 		{
