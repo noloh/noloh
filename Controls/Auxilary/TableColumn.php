@@ -82,7 +82,8 @@ class TableColumn extends Panel
 		NolohInternal::Show('TD', $initialProperties, $this);
 //		$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
 		//$initialProperties = "'id','{$this->Id}InnerCol','style.position','relative','style.overflow','hidden'";
-		$initialProperties = "'style.position','relative','style.overflow','hidden','style.width','100%'";
+//		$initialProperties = "'style.position','relative','style.overflow','hidden','style.width','100%'";
+		$initialProperties = "'style.position','relative','style.overflow','hidden'";
 		NolohInternal::Show('DIV', $initialProperties, $this, $this->Id, $this->Id.'IC');
 	}
 }
