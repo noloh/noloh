@@ -88,6 +88,10 @@ class DataConnection extends Object
 			$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $this->Password);
 			mysql_select_db($this->DatabaseName, $this->ActiveConnection);
 		}
+		elseif($this->Type == Data::MSSQL)
+		{
+			$this->ActiveConnection = mssql_connect($this->Host, $this->Username, $this->Password);
+		}
 		return $this->ActiveConnection;
 	}
 	/**
@@ -101,6 +105,8 @@ class DataConnection extends Object
 				return pg_close($this->ActiveConnection);
 			elseif($this->Type == Data::MySQL)
 				return mysql_close($this->ActiveConnection);
+			elseif($this->Type == Data::MSSQL)
+				return mssql_close($this->ActiveConnection);
 		return false;
 	}
 	/*
@@ -120,16 +126,35 @@ class DataConnection extends Object
 		if($spName == null)
 			return null;
 			
+		if($this->Type != Data::MSSQL)
+		{
 		$query = 'SELECT ';
+			$begin = '(';
+			$end = ')';
+		}
+		else
+		{
+			$query = 'EXEC ';
+			$begin = ' ';
+			$end = '';
+		}
 		if($this->Type == Data::Postgres)
 			$query .= ' * FROM ';
-		$query .= $spName . '(';
+		$query .= $spName . $begin;
 		$numArgs = count($paramsArray);
 		if($this->Type == Data::Postgres)
 		{
 			for($i = 0; $i < $numArgs; ++$i)
 			{
 				$tmpArg = self::ConvertTypeToPostgres($paramsArray[$i]);
+				$query .= $tmpArg . ",";		
+			}
+		}
+		elseif($this->Type == Data::MSSQL)
+		{
+			for($i = 0; $i < $numArgs; ++$i)
+			{
+				$tmpArg = self::ConvertTypeToMSSQL($paramsArray[$i]);
 				$query .= $tmpArg . ",";		
 			}
 		}
@@ -143,9 +168,10 @@ class DataConnection extends Object
 			}
 			$this->Close();
 		}
+		
 		if($numArgs > 0)
 			$query = rtrim($query, ',');
-		$query .= ");";
+		$query .= $end . ';';
 		return $query;
 	}
 	/**
@@ -190,7 +216,25 @@ class DataConnection extends Object
 		if(is_string($value))
 		{
 			$value = mysql_real_escape_string($value, $resource);
-			$tmpArg = "$quote" . $value ."$quote";
+			$tmpArg = $quote . $value . $quote;
+		}
+		elseif(is_int($value))
+			$tmpArg = (int)$value;
+		elseif(is_double($value))
+			$tmpArg = (double)$value;
+		elseif(is_bool($value))
+			$tmpArg = ($value)?'true':'false';
+		elseif($value === null || $value == 'null') 
+			$tmpArg = 'null';
+		return $tmpArg;
+	}
+	private static function ConvertTypeToMSSQL($value, $quote='"')
+	{
+		if(is_string($value))
+		{
+			$value = str_replace("'", "''", $value);
+//			$value = mysql_real_escape_string($value, $resource);
+			$tmpArg = $quote . $value . $quote;
 		}
 		elseif(is_int($value))
 			$tmpArg = (int)$value;

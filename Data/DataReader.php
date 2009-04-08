@@ -105,6 +105,19 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			for ($i=0; $i < $numRows; ++$i)
 				$this->Data[] =  mysql_fetch_array($resource, $resultType);
 		}
+		elseif($type == Data::MSSQL)
+		{
+			if($resultType == Data::Both)
+				$resultType = MSSQL_BOTH;
+			elseif($resultType == Data::Assoc)
+				$resultType = MSSQL_ASSOC;
+			else
+				$resultType = MSSQL_NUM;
+		
+			$numRows = mssql_num_rows($resource);
+			for ($i=0; $i < $numRows; ++$i)
+				$this->Data[] =  mssql_fetch_array($resource, $resultType);
+		}
 		if(!$this->Data)
 			$this->Data = array();
 	}

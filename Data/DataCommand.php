@@ -81,12 +81,11 @@ class DataCommand extends Object
 				$resource = pg_query($this->Connection->Connect(), $this->SqlStatement);
 			elseif($type == Data::MySQL)
 			{
-//				if(is_resource($this->Connection))
-//					$tmpResource = $this->Connection;
-//				else
 				$resource = $this->Connection->Connect();
 				$resource = mysql_query($this->SqlStatement, $resource);
 			}
+			elseif($type == Data::MSSQL)
+				$resource = mssql_query($this->SqlStatement, $this->Connection->Connect());
 				
 			if(!$resource)
 			{
@@ -94,6 +93,8 @@ class DataCommand extends Object
 					BloodyMurder(pg_last_error());
 				elseif($type == Data::MySQL)
 					BloodyMurder(mysql_error());
+				elseif($type == Data::MSSQL)
+					BloodyMurder(mssql_get_last_message);
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;
@@ -104,7 +105,6 @@ class DataCommand extends Object
 	function ReplaceParam($index, $value)
 	{
 		$sql = $this->SqlStatement;
-
 		if ($this->Connection && preg_match('/^.*?\((.+?)\);\s*$/i', $sql, $matches)) 
 		{
 			//preg_match_all('/\'[^\']*\'|[^,]+/i', $matches[1], $result, PREG_PATTERN_ORDER);
@@ -131,6 +131,9 @@ class DataCommand extends Object
 			$this->SetSqlStatement($query);
 		}
 	}
+	/**
+	 * @ignore
+	 */
     function Callback($object, $functionName, $paramsAsDotDotDot = null)
     {
     	$offset = 0;
