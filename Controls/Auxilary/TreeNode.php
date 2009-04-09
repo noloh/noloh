@@ -453,7 +453,10 @@ class TreeNode extends Panel
 			if($bool === ($pos===false))
 			{
 				if($bool)
+				{
 					$selectedTreeNodes[] = $this->Id;
+					$this->ExpandToShow();
+				}
 				else
 					array_splice($selectedTreeNodes, $pos, 1);
 				//GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
