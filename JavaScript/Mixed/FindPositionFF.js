@@ -1,33 +1,35 @@
-function _NFindX(objId)
+function _NFindX(objId, relativeId)
 {
-	var currLeft = 0, lastBorder = 0, tmpBorder;
-	var obj = _N(objId);
+	var currLeft = 0, /*lastBorder = 0, */border = 0, obj = _N(objId);
 	if (obj.offsetParent)
-		while (obj.offsetParent)
+		//while (obj.offsetParent)
+		while (obj.offsetParent && ((!relativeId) || (obj.id != relativeId)))
 		{
 			currLeft += obj.offsetLeft;
 			obj = obj.offsetParent;
-			if(!isNaN(tmpBorder = parseInt(obj.style.borderLeftWidth)))
-				currLeft += lastBorder = tmpBorder;
+			if(!isNaN(border = parseInt(obj.style.borderLeftWidth)))
+				currLeft += /*lastBorder = */(2*border);
 		}
 	else if (obj.x)
 		currLeft += obj.x;
-	return currLeft + lastBorder;
+	return currLeft;
+//	return relativeId?currLeft:(currLeft + lastBorder);
 }
-
-function _NFindY(objId)
+function _NFindY(objId, relativeId)
 {
-	var currTop = 0, lastBorder = 0;
-	var obj = _N(objId);
+	var currTop = 0, /*lastBorder = 0, */border = 0, obj = _N(objId);
 	if (obj.offsetParent)
-		while (obj.offsetParent)
+//		while (obj.offsetParent)
+		while (obj.offsetParent && ((!relativeId) || (obj.id != relativeId)))
 		{
 			currTop += obj.offsetTop;
 			obj = obj.offsetParent;
-			if(!isNaN(tmpBorder = parseInt(obj.style.borderTopWidth)))
-				currTop += lastBorder = tmpBorder;
+			if(!isNaN(border = parseInt(obj.style.borderTopWidth)))
+				currTop += /*lastBorder = */(2*border);
 		}
 	else if (obj.y)
 		currTop += obj.y;
-	return currTop + lastBorder;
+	return currTop;
+//	return relativeId?currTop:(currTop + lastBorder);
+//	return currTop + lastBorder;
 }

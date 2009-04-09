@@ -188,7 +188,8 @@ final class Animate
 	static function ScrollLeft($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		if($to instanceof Control)
-			$to = '_N(\''. $to->Id .'\').offsetLeft';
+//			$to = '_N(\''. $to->Id .'\').offsetLeft';
+			$to = '_NFindX(\''. $to->Id .'\',\''. $control->Id .'\')';
 		elseif($to === Layout::Left)
 			$to = 0;
 		elseif($to === Layout::Right)
@@ -212,7 +213,8 @@ final class Animate
 	static function ScrollTop($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		if($to instanceof Control)
-			$to = '_N(\''. $to->Id .'\').offsetLeft';
+//			$to = '_N(\''. $to->Id .'\').offsetTop';
+			$to = '_NFindY(\''. $to->Id .'\',\''. $control->Id .'\')';
 		elseif($to === Layout::Top)
 			$to = 0;
 		elseif($to === Layout::Bottom)
