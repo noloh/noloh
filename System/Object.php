@@ -51,6 +51,15 @@ abstract class Object
 		return property_exists($this, $property) || method_exists($this, 'Get'.$property);
 	}
 	/**
+	 * Returns whether or not the object has a specified method. Identical to PHP's native method_exists function.
+	 * @param string $method
+	 * @return boolean
+	 */
+	function HasMethod($method)
+	{
+		return method_exists($this, $method);
+	}
+	/**
 	* @ignore
 	*/
 	function __get($nm)
