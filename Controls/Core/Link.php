@@ -79,7 +79,7 @@ class Link extends Label
 	 */
 	function GetDestination()
 	{
-		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ((!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['SERVER_ADDR'] . $_SESSION['_NURL'].'#/'.$this->TokenString()) : $this->Destination;
+		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ((!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'].'#/'.$this->TokenString()) : $this->Destination;
 	}
 	/**
 	 * Sets the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
