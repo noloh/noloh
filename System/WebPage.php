@@ -295,7 +295,8 @@ abstract class WebPage extends Component
 	 */
 	static function SkeletalShow($title, $unsupportedURL, $favIcon)
 	{
-		header('Cache-Control: no-cache, must-revalidate, max-age=0');
+		header('Cache-Control: no-store');
+		//header('Cache-Control: no-cache, must-revalidate, max-age=0');
 		//header('Cache-Control: no-cache');
 		//header('Pragma: no-cache');
 		header('Content-Type: text/html');
