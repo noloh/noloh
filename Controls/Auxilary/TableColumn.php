@@ -15,6 +15,8 @@
  */
 class TableColumn extends Panel
 {
+	private $ColumnSpan;
+	private $RowSpan;
 	/**
 	 * Constructor of TableColumn
 	 * @param mixed $object Optional text or an object that will reside in this Column.
@@ -65,6 +67,42 @@ class TableColumn extends Panel
 			else
 				$this->Controls->Add($object);
 		}
+	}
+	/**
+	 * Returns the number of columns that this Column will span over.
+	 * @return integer
+	 */
+	function GetColumnSpan()
+	{
+		return $this->ColumnSpan===null ? 1 : $this->ColumnSpan;
+	}
+	/**
+	 * Sets the number of columns that this Column will span over.
+	 * @param integer $span
+	 */
+	function SetColumnSpan($span)
+	{
+		$this->ColumnSpan = (int)$span;
+		NolohInternal::SetProperty('colSpan', $this->ColumnSpan, $this);
+		return $span;
+	}
+	/**
+	 * Returns the number of rows that this Column will span over.
+	 * @return integer
+	 */
+	function GetRowSpan()
+	{
+		return $this->RowSpan===null ? 1 : $this->RowSpan;
+	}
+	/**
+	 * Sets the number of rows that this Column will span over.
+	 * @param integer $span
+	 */
+	function SetRowSpan($span)
+	{
+		$this->RowSpan = (int)$span;
+		NolohInternal::SetProperty('rowSpan', $this->RowSpan, $this);
+		return $span;
 	}
 	/**
 	 * @ignore

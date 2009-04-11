@@ -19,6 +19,10 @@ class Table extends Control
 	private $BuiltMatrix;
 	private $ScrollLeft;
 	private $ScrollTop;
+	private $CellBorderCollapse;
+	private $CellBorder;
+	private $CellSpacing;
+	private $CellPadding;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Table
@@ -102,6 +106,78 @@ class Table extends Control
     	else
         	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
+    }
+    /**
+     * Returns whether the border, spacing, and padding of each cells are collapsed and ignored. Note: it is true by default.
+     * @return boolean
+     */
+    function GetCellBorderCollapse()
+    {
+    	return $this->CellBorderCollapse === null;
+    }
+    /**
+     * Sets whether the border, spacing, and padding of each cells are collapsed and ignored. Note: it is true by default.
+     * @param boolean $bool
+     */
+    function SetCellBorderCollapse($bool)
+    {
+    	$this->CellBorderCollapse = $bool ? null : $bool;
+    	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"style.borderCollapse"', '"'.($bool?'collapse':'separate').'"'), false);
+    	return $bool;
+    }
+    /**
+     * Returns the width of the border given to each cell, in pixels. Note: CellBorderCollapse must be set to false to witness an effect.
+     * @return integer
+     */
+    function GetCellBorder()
+    {
+    	return $this->CellBorder ? $this->CellBorder : 0;
+    }
+    /**
+     * Sets the width of the border given to each cell, in pixels. Note: CellBorderCollapse must be set to false to witness an effect.
+     * @param integer $border
+     */
+    function SetCellBorder($border)
+    {
+    	$this->CellBorder = (int)$border;
+    	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"border"', '"'.$this->CellBorder.'"'), false);
+    	return border;
+    }
+    /**
+     * Returns the width of the spacing between each cell, in pixels. Note: CellBorderCollapse must be set to false to witness an effect.
+     * @return integer
+     */
+    function GetCellSpacing()
+    {
+    	return $this->CellSpacing ? $this->CellSpacing : 0;
+    }
+    /**
+     * Sets the width of the spacing between each cell, in pixels. Note: CellBorderCollapse must be set to false to witness an effect.
+     * @param integer $spacing
+     */
+    function SetCellSpacing($spacing)
+    {
+    	$this->CellSpacing = (int)$spacing;
+    	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"cellSpacing"', '"'.$this->CellSpacing.'"'), false);
+    	return $spacing;
+    }
+    /**
+     * Returns the width of the padding between each cell, in pixels. Note: CellBorderCollapse must be set to false to witness an effect.
+     * @return integer
+     */
+    function GetCellPadding()
+    {
+    	return $this->CellPadding ? $this->CellPadding : 0;
+    }
+    /**
+     * Sets the width of the padding between each cell, in pixels. Note: CellBorderCollapse must be set to false to witness an effect.
+     * @param integer $padding
+     */
+    function SetCellPadding($padding)
+    {
+    	$this->CellPadding = (int)$padding;
+    	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"cellPadding"', '"'.$this->CellPadding.'"'), false);
+    	return $padding;
     }
     /**
      * @ignore
