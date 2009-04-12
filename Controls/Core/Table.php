@@ -158,7 +158,7 @@ class Table extends Control
     function SetCellSpacing($spacing)
     {
     	$this->CellSpacing = (int)$spacing;
-    	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"cellSpacing"', '"'.$this->CellSpacing.'"'), false);
+    	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"cellSpacing"', $this->CellSpacing), false);
     	return $spacing;
     }
     /**
