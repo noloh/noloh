@@ -25,7 +25,7 @@ function _NClpsPnlTgl(id, clpse)
 		if(pnl.Animates == 1)
 		{
 			if(!pnl.NullHgt)
-				_NSetProperty(pnl.Body, "style.height", 0 + 'px');
+				_NSetProperty(pnl.Body, "style.height", '0px');
 			_NSetProperty(id, "style.height", _N(pnl.Top).offsetHeight + 'px');
 			pnl.Animates = null;
 		}
@@ -33,7 +33,7 @@ function _NClpsPnlTgl(id, clpse)
 		{
 			if(!body.OrigHgt)
 				body.OrigHgt = body.offsetHeight;
-	
+			pnl.style.minHeight = _N(pnl.Top).offsetHeight + 'px';
 			new _NAni(pnl.Body, "style.height", 'Hiding', 500);
 		}
 		pnl.Opn = false;
@@ -51,6 +51,6 @@ function _NClpsPnlInHgt(id)
 	{
 		if(pnl.NullHgt)
 			delete pnl.NullHgt;
-		_NSetProperty(pnl.Body, 'style.height', (pnl.InHgt = pnl.clientHeight - _N(pnl.Top).offsetHeight) + 'px');
+		_NSetProperty(pnl.Body, 'style.height', (pnl.InHgt = pnl.offsetheightHeight - _N(pnl.Top).offsetHeight) + 'px');
 	}
 }
