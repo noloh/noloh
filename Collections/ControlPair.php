@@ -67,7 +67,8 @@ class ControlPair extends Container
 	function SetControl1($obj)
 	{
 		$left = $this->GetLeft();
-		$this->Controls->Remove($this->Control1);
+		if($this->Control1)
+			$this->Controls->Remove($this->Control1);
 		$this->Control1 = $obj;
 		$this->SetLeft($left);
 		$this->Controls->Add($this->Control1);
@@ -86,7 +87,8 @@ class ControlPair extends Container
 	 */
 	function SetControl2($obj)
 	{
-		$this->Controls->Remove($this->Control2);
+		if($this->Control2)
+			$this->Controls->Remove($this->Control2);
 		$this->Control2 = $obj;
 		$this->SetLeft($this->GetLeft());
 		$this->SetTop($this->GetTop());
@@ -118,6 +120,13 @@ class ControlPair extends Container
 	/**
 	 * @ignore
 	 */
+	function GetLeft()
+	{
+		return $this->Control1->GetLeft();
+	}
+	/**
+	 * @ignore
+	 */
 	function SetLeft($left)
 	{
 		if($this->Layout == self::Horizontal)
@@ -134,6 +143,13 @@ class ControlPair extends Container
 	/**
 	 * @ignore
 	 */
+	function GetTop()
+	{
+		return $this->Control1->GetTop();
+	}
+	/**
+	 * @ignore
+	 */
 	function SetTop($top)
 	{
 		if($this->Layout == self::Horizontal)
@@ -146,20 +162,6 @@ class ControlPair extends Container
 			$this->Control1->SetTop($top + $this->Control1->GetTop());
 			$this->Control2->SetTop($this->Control1->GetBottom() + $this->Margin + $this->Control2->GetTop());
 		}
-	}
-	/**
-	 * @ignore
-	 */
-	function GetLeft()
-	{
-		return $this->Control1->GetLeft();
-	}
-	/**
-	 * @ignore
-	 */
-	function GetTop()
-	{
-		return $this->Control1->GetTop();
 	}
 	/**
 	 * @ignore
@@ -200,6 +202,13 @@ class ControlPair extends Container
 				return $obj1Height;
 			else
 				return $obj2Height;
+	}
+	/**
+	 * @ignore
+	 */
+	function GetLayout()
+	{
+		return $this->Layout;
 	}
 	/**
 	 * @ignore
