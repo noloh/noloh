@@ -517,7 +517,8 @@ final class Application extends Object
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $info)
-					$tokenLinks .= '<A href="' . ($key[0]=='?'?($_SERVER['PHP_SELF'].$key):$key) . '">' . $info[0] . '</a>, ';
+					if(time()-$info[1]<$GLOBALS['_NTokenTrailsExpiration']*86400)
+						$tokenLinks .= '<A href="' . ($key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</a>, ';
 		}
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		ob_flush();

@@ -177,6 +177,10 @@ final class System
 	 * @ignore
 	 */
 	static function ImagePath()		{return self::AssetPath() . '/Images/';}
+	/**
+	 * @ignore
+	 */
+	static function FullAppPath()	{return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
 }
 
 ?>
