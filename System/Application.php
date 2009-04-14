@@ -77,6 +77,7 @@ final class Application extends Object
 	 */
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
+		
 		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
@@ -107,7 +108,7 @@ final class Application extends Object
 			foreach($_SESSION['_NFiles'] as $key => $val)
 				GetComponentById($key)->File = new File($val);
 			if(isset($_POST['_NTokenLink']))
-				$this->HandleTokens();
+				$this->HandleLinkToTokens();
 			if(!empty($_POST['_NEvents']))
 				$this->HandleServerEvents();
 			foreach($_SESSION['_NFiles'] as $key => $val)
@@ -449,7 +450,11 @@ final class Application extends Object
 			}
 		}
 	}
-
+	private function HandleLinkToTokens()
+	{
+		URL::QueueUpdateTokens();
+		$this->HandleTokens();
+	}
 	private function Run()
 	{
 		global $OmniscientBeing;
