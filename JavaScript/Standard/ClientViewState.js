@@ -362,17 +362,14 @@ function _NAsc(id)
 	var ele = _N(id);
 	if(ele)
     {
+    	if(ele.BuoyantParentId)
+    		_NByntFrgt(id, _N(ele.BuoyantParentId));
         if(ele.BuoyantChildren)
         	for(var i=0; i<ele.BuoyantChildren.length; ++i)
         	{
         		_NAsc(ele.BuoyantChildren[i]);
         		var parent = ele.parentNode;
-        		do
-				{
-					if(parent.BuoyantChildren)
-						parent.BuoyantChildren.splice(parent.BuoyantChildren.indexOf(ele.BuoyantChildren[i]), 1);
-					parent = parent.parentNode;
-				}while (parent && parent.id);
+        		_NByntFrgt(ele.BuoyantChildren[i], parent);
         	}
 		if(ele.TimerChildren)
 			for(var i=0; i<ele.TimerChildren.length; ++i)
