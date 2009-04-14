@@ -207,7 +207,7 @@ final class URL
 		{
 			$initialURLString = $GLOBALS['_NInitialURLTokens'];
 			$file = getcwd().'/NOLOHSearchTrails.dat';
-			if(file_exists($file) && (time()-filemtime($file)<$GLOBALS['_NTokenTrailsExpiration']*86400))
+			if(file_exists($file)/* && (time()-filemtime($file)<$GLOBALS['_NTokenTrailsExpiration']*86400)*/)
 			{
 				$trails = unserialize(base64_decode(file_get_contents($file)));
 				if($trails === false)
