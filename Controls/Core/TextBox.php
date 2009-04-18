@@ -106,6 +106,7 @@ class TextBox extends Control
 	function SetFilter($filter)
 	{
 		AddNolohScriptSrc('Filter.js', true);
+		AddNolohScriptSrc('KeyEvents.js', true);
 		$this->Filter = $filter;
 		$this->UpdateEvent('KeyPress');
 	}
