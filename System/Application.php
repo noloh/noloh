@@ -77,7 +77,6 @@ final class Application extends Object
 	 */
 	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
 	{
-		
 		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 		session_start();
 		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
@@ -367,15 +366,16 @@ final class Application extends Object
 		for($i=0; $i<$eventCount; ++$i)
 		{
 			$eventInfo = explode('@', $events[$i]);
+			if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
+			{
+				setcookie(session_name(), session_id(), time()-42000, '/');
+				session_destroy();
+				exit();
+			}
 			if($obj = &GetComponentById($eventInfo[1]))
 	        {
 	            $execClientEvents = false;
-				$obj->GetEvent($eventInfo[0])->Exec($execClientEvents);
-				if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
-				{
-					session_destroy();
-					exit();
-				}
+	            $obj->GetEvent($eventInfo[0])->Exec($execClientEvents);
 	        }
 			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
 				GetComponentById(substr($eventInfo[1], 0, $pos))->ExecEvent($eventInfo[0], $eventInfo[1]);

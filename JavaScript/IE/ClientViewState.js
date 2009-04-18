@@ -262,7 +262,7 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {var liq=(event && event.srcElement.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}}");
+	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {var liq=(event && event.srcElement && event.srcElement.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}}");
 	return func;
 }
 function _NNoBubble()
@@ -553,6 +553,8 @@ function _NSE(eventType, id, uploads)
 	_N.SEQ.push([eventType, id]);
 	if(uploads)
 		_N.Uploads.splice(-1, 0, uploads);
+	if(eventType == "Unload")
+		_NServer();
 }
 function _NServer()
 {

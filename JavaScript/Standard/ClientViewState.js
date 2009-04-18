@@ -510,6 +510,8 @@ function _NSE(eventType, id, uploads)
 	_N.SEQ.push([eventType, id]);
 	if(uploads)
 		_N.Uploads.splice(-1, 0, uploads);
+	if(eventType == "Unload")
+		_NServer();
 }
 function _NServer()
 {
