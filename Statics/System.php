@@ -84,6 +84,20 @@ final class System
 	 */
 	const Kernel = 'Kernel';
 	/**
+	 * Adds one (or more) directories containing the php files that define your application class(es).
+	 * For example, if you have a class Foo, defined in Components/Foo.php, then you need only call System::IncludePaths('Components') before you can use the Foo class, without needing to write your own include/require statements. Note, however, that you must follow this class and filename naming convention to use this method.
+	 * NOLOH is smart enough to include these files on-demand only when they need to be used, and does NOT include every possible file in the beginning.
+	 * For paths that are not absolute, they are assumed to be relative to your working directory (where the first php script that is requested by the browser is, typically the one that has your start-up WebPage class)
+	 * @param $string,... $pathsAsDotDotDot An unlimited number of parameters specifying paths to directories
+	 */
+	static function IncludePaths($pathsAsDotDotDot)
+	{
+		$paths = explode(PATH_SEPARATOR, get_include_path());
+		$funcArgs = func_get_args();
+		$paths = array_merge($paths, $funcArgs);
+	    set_include_path(implode(PATH_SEPARATOR, $paths));
+	}
+	/**
 	 * @ignore
 	 */
 	static function LogFormat($what, $addQuotes=false)
