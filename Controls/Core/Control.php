@@ -1113,6 +1113,13 @@ abstract class Control extends Component
 		$this->_NSetZIndex(--$_SESSION['_NLowestZ']);
 	}
 	/**
+	 * Gives this Control the active Focus.
+	 */
+	function Focus()
+	{
+		QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+	}
+	/**
 	 * @ignore
 	 */
 	function GetAddId()
