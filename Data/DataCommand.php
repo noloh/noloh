@@ -27,13 +27,17 @@ class DataCommand extends Object
 	private $Connection;
 	private $SqlStatement;
 	private $Callback;
+	/**
+	 * The format of the data column indices returned by the function.
+	 * @var Data::Assoc|Data::Numeric|Data::Both
+	 */ 
 	public $ResultType;
 	/**
 	 * Constructor of the DataCommand class
 	 * 
 	 * @param DataConnection $connection A DataConnection object that has your database connection information.
 	 * @param string $sql The SQL statement you wish to execute.
-	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
+	 * @param Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 */
 	function DataCommand($connection = null, $sql = '', $resultType = Data::Both)
 	{
@@ -42,35 +46,50 @@ class DataCommand extends Object
 		if($resultType)
 			$this->ResultType = $resultType;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetCallback()				{return $this->Callback;}
+	/**
+	 * Gets the DataConnection used when executing the command's statement.
+	 * @return string 
+	 */
 	function GetConnection()			{return $this->Connection;}
+	/**
+	 * Sets the DataConnection used when executing the command's statement.
+	 * @param DataConnection
+	 */
 	function SetConnection($connection)	{$this->Connection = $connection;}
 	/**
-	 * @return string Returns the SQL statement that this command will execute.
+	 * Returns the SQL statement that this command will execute.
+	 * @return string 
 	 */
 	function GetSQL()					{return $this->SqlStatement;}
 	/**
-	 * Sets the SQL staetment that this command will execute.
-	 * @param string @sql The SQL statement that this command will execute.
+	 * Sets the SQL statement that this command will execute.
+	 * @param string $sql The SQL statement that this command will execute.
 	 */
 	function SetSQL($sql)				{$this->SqlStatement = $sql;}
 	/**
+	 * Returns the SQL statement that this command will execute.
 	 * @deprecated use GetSQL() instead.
-	 * 
-	 * @return string Returns the SQL statement that this command will execute.
+	 * @return string 
 	 */
 	function GetSqlStatement()			{return $this->SqlStatement;}
 	/**
+	 * Sets the SQL statement that this command will execute.
 	 * @deprecated use SetSQL() instead.
-	 * @param string @sql Sets The SQL statement that this command will execute.
+	 * @param string $sql 
 	 */
 	function SetSqlStatement($sql)		{$this->SqlStatement = $sql;}
 	/**
 	 *	Executes your SQL statement aginst the database whose connection information
 	 *  is stored in this class's Connection property.
-	 *
-	 *	@return mixed If command executes successfully it returns a DataReader object 
+	 *  
+	 *  If command executes successfully it returns a DataReader object 
 	 *	containing the resulting data of the query. Otherwise the function will return false.
+	 *	@param Data::Assoc|Data::Numeric|Data::Both $resultType The format of the data column indices returned by the function.
+	 *	@return mixed 
 	 */
 	function Execute($resultType = null)
 	{
@@ -102,6 +121,19 @@ class DataCommand extends Object
 		}
 		return false;
 	}
+	/**
+	 * Replaces the parameter to your database function specified by the index
+	 * 
+	 * <pre>
+	 * $command = Data::$Links->MyDb->CreateCommand('sp_get_people', 'Johnny', '10065');
+	 * $results1 = $command->Execute();
+	 * //Now we can replace the zipcode param
+	 * $command->ReplaceParam(-1, '11219');
+	 * $results2 = $command->Execute();
+	 * </pre>
+	 * @param integer The number of the parameter, negative numbers denote distance from end.
+	 *
+	 */
 	function ReplaceParam($index, $value)
 	{
 		$sql = $this->SqlStatement;

@@ -27,32 +27,39 @@
 class DataConnection extends Object
 {
 	/**
-	 * @var string The username used to connect to your database
+	 * The username used to connect to your database
+	 * @var string 
 	 */
 	public $Username;
 	/**
-	 * @var string The name of your database
+	 * The name of your database
+	 * @var string 
 	 */
 	public $DatabaseName;
 	/**
-	 * @var string The password used to connect to your datbase
+	 * The password used to connect to your database
+	 * @var string 
 	 */
 	public $Password;
 	/**
-	 * @var mixed Your database host, e.g; localhost, http://www.noloh.com, etc.
+	 * Your database host, e.g; localhost, http://www.noloh.com, etc.
+	 * @var mixed 
 	 */
 	public $Host;
 	/**
-	 * @var mixed The port you use to connect to your database. 
+	 * The port you use to connect to your database.
+	 * @var mixed  
 	 */
 	public $Port;
 	/**
-	 * @var resource Your database link identifier resource.
+	 * Your database link identifier resource.
+	 * @var resource 
 	 */
 	public $ActiveConnection;
-	private $Type;
-	
+	private $Type;	
 	/**
+	 * Constructor
+	 * Be sure to call this from the constructor of any class that extends DataConnection.
 	 * @param mixed Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type The type of the database you're connecting to.
 	 * @param string $databaseName The name of your database
 	 * @param string $username The username used to connect to your database
@@ -71,7 +78,8 @@ class DataConnection extends Object
 	}
 	/**
 	 * Attempts to create a connection to your database.
-	 * @return resource The database link identifier.
+	 * Returns The database link identifier.
+	 * @return resource 
 	 */
 	function Connect()
 	{
@@ -90,13 +98,15 @@ class DataConnection extends Object
 		}
 		elseif($this->Type == Data::MSSQL)
 		{
-			$this->ActiveConnection = mssql_connect($this->Host, $this->Username, $this->Password);
+			$host = $this->Port?$this->Host . ':' . $this->Port:$this->Host;
+			$this->ActiveConnection = mssql_connect($host, $this->Username, $this->Password);
 		}
 		return $this->ActiveConnection;
 	}
 	/**
 	 * Attempts to close the connection to your database. Note: In most circumstances, this is done automatically.
-	 * @return bool Whether the connection was closed successfully.
+	 * Returns whether the connection closed successfully.
+	 * @return bool
 	 */
 	function Close()
 	{
@@ -110,13 +120,13 @@ class DataConnection extends Object
 		return false;
 	}
 	/*
-	 * @param mixed Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type The type of the database you're connecting to.
+	 * Sets the type of the database you're connecting to.
+	 * @param Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type
 	 */
 	function SetType($type)	{$this->Type = $type;}
 	/**
-	 * 
-	 *
-	 * @return Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC The currently set type.
+	 * Gets the type of the database you're connecting to.
+	 * @return Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC 
 	 */
 	function GetType()		{return $this->Type;}
 	
@@ -256,12 +266,7 @@ class DataConnection extends Object
 		return $tmpArr;
 	}
 	/**
-	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
-	 * @param string $sqlString The SQL query.
-	 * 
-	 * @return DataReader A DataReader containing the resulting data of your query.
-	 * 
-	 * Note: The first parameter is optional, we can execute this funciton in the following 2 ways:
+	 * * Note: The first parameter is optional, we can execute this funciton in the following 2 ways:
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL(Data::Assoc, 'SELECT * FROM people');
 	 * </pre>
@@ -269,6 +274,11 @@ class DataConnection extends Object
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people');
 	 * </pre>
+	 * 
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
+	 * @param string $sqlString The SQL query.
+	 * 
+	 * @return DataReader A DataReader containing the resulting data of your query.
 	 */
 	function ExecSQL($resultType, $sqlString='')
 	{
@@ -288,12 +298,6 @@ class DataConnection extends Object
 	 * Executes a stored procedure or stored function in your database. You can natively pass in as many parameters to your function as you wish
 	 * through the dotdotdot syntactic sugar.
 	 * 
-	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
-	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
-	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.sp_get_convertibles'.
-	 * @param mixed $paramsDotDotDot Optional: The parameters of your function. NOLOH takes care of formatting the value properly for your database.
-	 * @return DataReader A DataReader containing the resulting data of your query.
-	 * 
 	 * Note: The first parameter is optional, we can execute this function in the following ways:
 	 * <pre>
 	 *     $city = 'Brooklyn';
@@ -312,6 +316,12 @@ class DataConnection extends Object
 	 * </pre>
 	 * 
 	 * Please see the Data::$Links article for more information and examples.
+	 * 
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
+	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
+	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.sp_get_convertibles'.
+	 * @param mixed $paramsDotDotDot Optional: The parameters of your function. NOLOH takes care of formatting the value properly for your database.
+	 * @return DataReader A DataReader containing the resulting data of your query.
 	 */
 	function ExecFunction($spName, $paramsDotDotDot = null)
 	{
@@ -330,14 +340,7 @@ class DataConnection extends Object
 	/**
 	 * Executes a view in your database. 
 	 * 
-	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
-	 * @param string $view The name of the database stored procedure or stored function that you wish to execute. Note: If your database
-	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.v_get_all_convertibles'.
-	 * @param integer $offset An optional offset to return results that are offset this many rows.
-	 * @param integer $limit An optional limit to cap the number of rows you wish to return.
-	 * @return DataReader A DataReader containing the resulting data of your query.
 	 * 
-	 * Note: The first parameter is optional, we can execute this function in the following ways:
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecFunction(Data::Assoc, 'v_get_all_people');
 	 * </pre>
@@ -352,6 +355,14 @@ class DataConnection extends Object
 	 * </pre>
 	 * 
 	 * Please see the Data::$Links article for more information and examples.
+	 * 
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
+	 * @param string $view The name of the database stored procedure or stored function that you wish to execute. Note: If your database
+	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.v_get_all_convertibles'.
+	 * @param integer $offset An optional offset to return results that are offset this many rows.
+	 * @param integer $limit An optional limit to cap the number of rows you wish to return.
+	 * @return DataReader A DataReader containing the resulting data of your query.
+	 * 
 	 */
 	function ExecView($view, $offset=null, $limit=null)
 	{
@@ -381,12 +392,7 @@ class DataConnection extends Object
 	 * Creates a command based on a stored procedure or stored function in your database. You can natively pass in as many parameters to your function as you wish
 	 * through the dotdotdot syntactic sugar.
 	 * 
-	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
-	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
-	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.sp_get_convertibles'.
-	 * @param mixed $paramsDotDotDot Optional: The parameters of your function. NOLOH takes care of formatting the value properly for your database.
-	 * @return DataCommand A DataCommand to be executed later. This can also be used in conjuction with Bind functions in certain Controls.
-	 * 
+	 *
 	 * Note: The first parameter is optional, we can execute this function in the following ways:
 	 * <pre>
 	 *     $city = 'Brooklyn';
@@ -416,6 +422,12 @@ class DataConnection extends Object
 	 * </pre>
 	 * 
 	 * Please see the Data::$Links article for more information and examples.
+	 * 
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
+	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
+	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.sp_get_convertibles'.
+	 * @param mixed $paramsDotDotDot Optional: The parameters of your function. NOLOH takes care of formatting the value properly for your database.
+	 * @return DataCommand A DataCommand to be executed later. This can also be used in conjuction with Bind functions in certain Controls.
 	 */
 	function CreateCommand($spName, $paramsDotDotDot)
 	{
