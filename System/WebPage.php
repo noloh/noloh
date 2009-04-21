@@ -193,6 +193,38 @@ abstract class WebPage extends Component
 		QueueClientFunction($this, 'document.bgColor=\''.$backColor.'\';void', array(0));
 	}
 	/**
+	 * Returns the Control that NOLOH will display when a ServerEvent is launched as a visual indicator to the user.
+	 * @return Control
+	 */
+	function GetLoadIndicator()
+	{
+		return $this->LoadIndicator;
+	}
+	/**
+	 * Sets the Control that NOLOH will display when a ServerEvent is launched as a visual indicator to the user.
+	 * @param Control $control
+	 */
+	function SetLoadIndicator($control)
+	{
+		if($this->LoadIndicator !== $control)
+		{
+			if($control == null)
+				QueueClientFunction($this, '_NSetLoadIndi', array());
+			elseif(!is_object($control))
+				BloodyMurder('LoadIndicator must be an instance of Control. A ' . gettype($control) . ' was passed in instead.');
+			elseif(!($control instanceof Control))
+				BloodyMurder('LoadIndicator must be an instance of Control. A ' . get_class($control) . ' was passed in instead.');
+			else
+			{
+				$control->ParentId = $this->Id;
+				QueueClientFunction($this, '_NSetLoadIndi', array('"'.$control->Id.'"'), true, Priority::Low);
+			}
+			if($this->LoadIndicator)
+				$this->LoadIndicator->ParentId = null;
+			$this->LoadIndicator = $control;
+		}
+	}
+	/**
 	 * @ignore
 	 */
 	function CSSSwitch($browsers)
