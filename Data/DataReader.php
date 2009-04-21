@@ -116,9 +116,24 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			else
 				$resultType = MSSQL_NUM;
 		
-			$numRows = mssql_num_rows($resource);
-			for ($i=0; $i < $numRows; ++$i)
-				$this->Data[] =  mssql_fetch_array($resource, $resultType);
+			$count = -1;
+			$data = array();
+			do
+			{
+				++$count;
+				$data[$count] = array();
+				while($row = mssql_fetch_array($resource, $resultType))
+					$data[$count][] = $row;
+			}while (mssql_next_result($resource));
+			mssql_free_result($resource);
+			
+			if($count > 0)
+				$this->Data = $data;
+			else
+				$this->Data = $data[0];		
+//			$numRows = mssql_num_rows($resource);
+//			for ($i=0; $i < $numRows; ++$i)
+//				$this->Data[] =  mssql_fetch_array($resource, $resultType);
 		}
 		if(!$this->Data)
 			$this->Data = array();
