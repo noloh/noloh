@@ -10,13 +10,12 @@ _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
 _N.HistoryLength = history.length;
-function _NInit(loadLblId, loadImgId, debugMode)
+function _NInit(loadIndicator, debugMode)
 {
 	window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
+	_NSetLoadIndi(loadIndicator);
 	_N.Title = document.title;
-	_N.LoadLbl = loadLblId;
-	_N.LoadImg = loadImgId;
 	_N.DebugMode = debugMode;
 	_N.Saved["N1"] = [];
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
@@ -46,6 +45,13 @@ function _NInit(loadLblId, loadImgId, debugMode)
 		_N.URLChecker = setInterval(_NCheckURL, 500);
 	}
 }
+function _NSetLoadIndi(id)
+{
+	_N.LoadIndicator = id;
+	var loadIndicator = _N(id);
+	if(loadIndicator)
+		loadIndicator.style.visibility = "hidden";
+}
 function _NCheckURL()
 {
 	var inner = _N("NBackButton").contentWindow.document.body.innerText;
@@ -54,8 +60,7 @@ function _NCheckURL()
 		clearInterval(_N.URLChecker);
 		var str = "_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp + "&_NSkeletonless=true";
 		_N.Request = new ActiveXObject("Microsoft.XMLHTTP");
-		_N(_N.LoadImg).style.visibility = "visible";
-		_N(_N.LoadLbl).style.visibility = "visible";
+		_N(_N.LoadIndicator).style.visibility = "visible";
 		_N.Request.onreadystatechange = _NReqStateChange;
 		if(_N.HistoryLength+1==history.length)
 			var targetURL = inner;
@@ -304,14 +309,11 @@ function _NSave(id, property, value)
 }
 function _NBodyScrollState()
 {
-	var x = document.documentElement.scrollLeft+1;
-	var y = document.documentElement.scrollTop+1;
-	var loadImg = _N(_N.LoadImg);
-	loadImg.style.left = x+"px";
-	loadImg.style.top = y+"px";	
-	var loadLbl = _N(_N.LoadLbl);
-	loadLbl.style.left = x+30+"px";
-	loadLbl.style.top = y+6+"px";
+	var x = document.documentElement.scrollLeft,
+		 y = document.documentElement.scrollTop,
+		 loadIndicator = _N(_N.LoadIndicator);
+	loadIndicator.style.left = x+7+"px";
+	loadIndicator.style.top = y+7+"px";
 }
 function _NBodySizeState()
 {
@@ -503,8 +505,7 @@ function _NAlertError(err)
 }
 function _NUnServer()
 {
-	_N(_N.LoadImg).style.visibility = "hidden";
-	_N(_N.LoadLbl).style.visibility = "hidden";
+	_N(_N.LoadIndicator).style.visibility = "hidden";
 	_N.Request = null;
 	_N.URLChecker = setInterval(_NCheckURL, 500);
 }
@@ -577,8 +578,7 @@ function _NServer()
 			_N.URLTokenLink = null;
 		}
 	    _N.Request = new ActiveXObject("Microsoft.XMLHTTP");
-		_N(_N.LoadImg).style.visibility = "visible";
-		_N(_N.LoadLbl).style.visibility = "visible";
+		_N(_N.LoadIndicator).style.visibility = "visible";
         if(notUnload)
 	        _N.Request.onreadystatechange = _NReqStateChange;
 	    _N.Request.open("POST", url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"), true);

@@ -10,12 +10,11 @@ _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
 event = null;
-function _NInit(loadLblId, loadImgId, debugMode)
+function _NInit(loadIndicator, debugMode)
 {
 	window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
-	_N.LoadLbl = loadLblId;
-	_N.LoadImg = loadImgId;
+	_NSetLoadIndi(loadIndicator);
 	_N.DebugMode = debugMode;
 	_N.Saved[document.body.id] = [];
 	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);
@@ -28,6 +27,13 @@ function _NInit(loadLblId, loadImgId, debugMode)
 	document.body.appendChild(graveyard);
 	_N.Hash = location.hash;
 	_N.URLChecker = setInterval(_NCheckURL, 500);
+}
+function _NSetLoadIndi(id)
+{
+	_N.LoadIndicator = id;
+	var loadIndicator = _N(id);
+	if(loadIndicator)
+		loadIndicator.style.visibility = "hidden";
 }
 function _NCheckURL()
 {
@@ -249,14 +255,11 @@ function _NSave(id, property, value)
 }
 function _NBodyScrollState()
 {
-	var x = Math.max(document.body.scrollLeft, document.documentElement.scrollLeft)+1;
-	var y = Math.max(document.body.scrollTop, document.documentElement.scrollTop)+1;
-	var loadImg = _N(_N.LoadImg);
-	loadImg.style.left = x+"px";
-	loadImg.style.top = y+"px";	
-	var loadLbl = _N(_N.LoadLbl);
-	loadLbl.style.left = x+30+"px";
-	loadLbl.style.top = y+6+"px";
+	var x = Math.max(document.body.scrollLeft, document.documentElement.scrollLeft),
+		 y = Math.max(document.body.scrollTop, document.documentElement.scrollTop),
+		 loadIndicator = _N(_N.LoadIndicator);
+	loadIndicator.style.left = x+7+"px";
+	loadIndicator.style.top = y+7+"px";
 }
 function _NBodySizeState()
 {
@@ -457,25 +460,21 @@ function _NAlertError(err)
 {
 	alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
 }
-function _NUnServer(loadImg, loadLbl)
+function _NUnServer(loadIndicator)
 {
-	_N.LoadImg = loadImg;
-	_N.LoadLbl = loadLbl;
-	_N(_N.LoadImg).style.visibility = "hidden";
-	_N(_N.LoadLbl).style.visibility = "hidden";
+	_N.LoadIndicator = loadIndicator;
+	_N(loadIndicator).style.visibility = "hidden";
 	_N.Request = null;
 }
 function _NReqStateChange()
 {
 	if(_N.Request.readyState == 4)
 	{
-   		var response = _N.Request.responseText.split("/*_N*/", 2);
-        var loadImg = _N.LoadImg;
-        var loadLbl = _N.LoadLbl;
+   		var response = _N.Request.responseText.split("/*_N*/", 2), loadIndicator = _N.LoadIndicator;
 		if(typeof _N.DebugMode == null)
 		{
 			_NProcessResponse(response);
-			_NUnServer(loadImg, loadLbl);
+			_NUnServer(loadIndicator);
 		}
 		else
 	   		try
@@ -488,7 +487,7 @@ function _NReqStateChange()
 	   		}
 	        finally
 	        {
-				_NUnServer(loadImg, loadLbl);
+				_NUnServer(loadIndicator);
 	        }
 	}
 }
@@ -533,8 +532,7 @@ function _NServer()
 			_N.URLTokenLink = null;
 		}
 	    _N.Request = new XMLHttpRequest();
-		_N(_N.LoadImg).style.visibility = "visible";
-		_N(_N.LoadLbl).style.visibility = "visible";
+		_N(_N.LoadIndicator).style.visibility = "visible";
         if(notUnload)
     	    _N.Request.onreadystatechange = _NReqStateChange;
 	    _N.Request.open("POST", url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"), notUnload);
