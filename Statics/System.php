@@ -172,6 +172,7 @@ final class System
 				$GLOBALS['_NDebugScrollAnim'] = true;
 			}
 		}
+		return $what;
 	}
 	/**
  	 * Returns the full system path to NOLOH
