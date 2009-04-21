@@ -212,8 +212,8 @@ class RichMarkupRegion extends MarkupRegion
 	 */
 	public function SearchEngineShow()
 	{
-		echo $this->TempString, ' ';
-		foreach($this->ComponentSpace as $larvaId => $component)
+		echo str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $this->TempString), ' ';
+		foreach($this->ComponentSpace as $component)
 			if($component instanceof Component)
 				$component->SearchEngineShow();
 	}
@@ -226,7 +226,10 @@ class RichMarkupRegion extends MarkupRegion
 		// and show the Component inside the tag!
 		$str = Control::NoScriptShow($indent);
 		if($str !== false)
-			echo $indent, '<DIV ', $str, ">\n", $this->TempString, "\n", $indent, "</DIV>\n";
+		{
+			$text = str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $this->TempString);
+			echo $indent, '<DIV ', $str, ">\n", $text, "\n", $indent, "</DIV>\n";
+		}
 	}
 }
 ?>
