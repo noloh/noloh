@@ -29,7 +29,7 @@ class TabPage extends Panel
 	 */
 	public function SetRolloverTab($rolloverTab = null)
 	{
-		if(is_string($rolloverTab))
+		if(!is_object($rolloverTab))
 			$rolloverTab = new RolloverTab($rolloverTab);
 		$this->RolloverTab = $rolloverTab;
 	}
