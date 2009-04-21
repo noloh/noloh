@@ -2,19 +2,52 @@
 /**
  * WindowPanel class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
- * 
+ * A Control used to display a Window. A WindowPanel has a TitleBar used to display it's text. A WindowPanel can also be dragged, resized and closed.
+ *
+ * <pre>
+ * $window = new WindowPanel('Surfing in the bahamas');
+ * //Adds an Image to the BodyPanel of the WindowPanel
+ * $window->Controls->Add(new Image('surfing.jpg'));
+ * </pre>
  * @package Controls/Extended
  */
 class WindowPanel extends Panel
 {
+	/**
+	 * The Label used to display the Text of the WindowPanel
+	 * @var Label
+	 */
 	public $TitleBar;
+	/**
+	 * The Panel used to display all the Controls of the WindowPanel. All Controls are added to this Panel
+	 * @var Panel
+	 */
 	public $BodyPanel;
+	/**
+	 * @ignore
+	 */
 	public $MinimizeImage;
+	/**
+	 * @ignore
+	 */
 	public $RestoreImage;
+	/*
+	 * The RolloverImage used for the Close button of the WindowPanel
+	 * @var RolloverImage
+	 */
 	public $CloseImage;
+    /*
+	 * The Image used for the resize handle of the WindowPanel
+	 * @var Image
+	 */
 	public $ResizeImage;
+	/**
+	 * @ignore
+	 */
 	public $WindowStyle;
+	/**
+	 * @ignore
+	 */
 	public $WindowPanelComponents;
 	private $WindowShade;
 	private $MaximizeBox;
@@ -25,7 +58,15 @@ class WindowPanel extends Panel
 	private $OldHeight;
 	private $ThemeBorder;
 	private $BorderSize;
-	
+	/**
+	 * Constructor
+	 * 
+	 * @param string $title The Text displayed in the TitleBar
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */
 	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
@@ -92,6 +133,9 @@ class WindowPanel extends Panel
 		
 		$this->SetWindowShade(true);
 	}
+	/**
+     * @ignore
+	 */
 	function SetWindowShade($bool)
 	{
 		return;
@@ -109,6 +153,10 @@ class WindowPanel extends Panel
 		else
 			$this->TitleBar->DoubleClick['WinShade'] = null;
 	}
+	/**
+	 * @ignore
+	 */
+	function GetWindowShade()	{return $this->WindowShade;}
 	private function SetBodyBorder($border)
 	{
 		$this->BodyPanel->CSSBorder_Bottom = $border;
@@ -121,6 +169,9 @@ class WindowPanel extends Panel
 			$this->Menu->CSSBorder_Right = $border;
 		}
 	}
+	/**
+     * @ignore
+	 */
 	function Skin($border=null, $corners=null, $buttons=null, $resizeHandle=null)
 	{
 		if($border != null)
@@ -167,7 +218,6 @@ class WindowPanel extends Panel
 		$this->SetWidth($this->Width);
 		$this->SetHeight($this->Height);
 	}
-	function GetWindowShade()	{return $this->WindowShade;}
 	/**
 	 * @ignore
 	 */
@@ -176,8 +226,24 @@ class WindowPanel extends Panel
 	 * @ignore
 	 */
 	function GetText(){return $this->TitleBar->GetText();}
+	/*
+	 * Returns the Menu assigned to the WindowPanel
+	 * @return Menu 
+	 */
 	function GetMenu()	{return $this->Menu;}
-	function SetMenu(Menu $mainMenu)
+	/**
+	 * Sets the Menu assigned to the WindowPanel
+	 * <pre>
+	 * $window = new WindowPanel('People');
+	 * $menu = new Menu();
+	 * $add = $menu->MenuItems->Add('Add');
+	 * $add->MenuItems->Add('Person');
+	 * $window->Menu = $menu;
+	 * </pre>
+	 * @param Menu
+	 * @return Menu
+	 */
+	function SetMenu(Menu $menu)
 	{
 		$this->Menu = $menu;
 		$this->Menu->CSSBorder_Left = $this->ThemeBorder;
@@ -191,21 +257,39 @@ class WindowPanel extends Panel
 		$this->BodyPanel->Height -= $menu->Height;
 		return $this->Menu;
 	}
+	/**
+	 * Closes the WindowPanel. This removes the WindowPanel from the Controls of it's Parent
+	 */
 	function Close()
 	{
 		$this->GetParent()->Controls->Remove($this);
 	}
+	/**
+	 * @ignore
+	 */
 	function Minimize(){}
+	/**
+	 * @ignore
+	 */
 	function GetMaximizeBox()
 	{
 		return $this->MaximizeBox == null;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetMaximizeBox($bool)
 	{
 		$this->MaximizeBox = $bool ? null : false;
 //		$this->RestoreImage->ServerVisible = $bool;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetMinimizable()	{return $this->MinimizeBox == null;}
+	/**
+	 * @ignore
+	 */
 	function SetMinimizable($bool)
 	{
 		if(!$this->MinimizeImage)
@@ -286,6 +370,9 @@ class WindowPanel extends Panel
 		$this->ResizeImage->ReflectAxis('x');
 		$this->ResizeImage->ReflectAxis('y');
 	}
+	/**
+	 * @ignore
+	 */
 	function SetBackColor($color)	{$this->BodyPanel->SetBackColor($color);}
 	/**
 	 * @ignore

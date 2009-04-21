@@ -28,8 +28,8 @@ class Table extends Control
 	 * Be sure to call this from the constructor of any class that extends Table
 	 * @param integer $left The left coordinate of this element
 	 * @param integer $top The top coordinate of this element
-	 * @param integer $width The width coordinate of this element
-	 * @param integer $height The height coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
 	 * @return Table
 	 */
 	function Table($left=0, $top=0, $width=500, $height=500)

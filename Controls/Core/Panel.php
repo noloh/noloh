@@ -24,8 +24,8 @@ class Panel extends Control
 	 * Be sure to call this from the constructor of any class that extends Panel
 	 * @param integer $left The Left coordinate of this element
 	 * @param integer $top The Top coordinate of this element
-	 * @param integer $width The Width coordinate of this element
-	 * @param integer $height The Height coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
 	 * @param Control $implicitObject If you want an ImplicitArrayList instantiated instead of a regular ArrayList, this parameter signifies the implicit object, usually $this
 	 * @return Panel
 	 */

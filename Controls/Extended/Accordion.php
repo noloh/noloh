@@ -2,17 +2,41 @@
 /**
  * Accordian class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * An Accordion is a Group of AccordionParts where at most one AccordionPart is expanded. Selecting an AccordionPart will deselect the previously selected AccordionPart.
  * 
  * @package Controls/Extended
  */
 class Accordion extends Panel
 {
+	/**
+	* An ArrayList of AccordionParts that will be Shown when added, provided the Accordion has also been Shown.
+	* 
+	* AccordionParts are an ArrayList and can be added, removed, or inserted. See ArrayList for more information.
+	* 
+	* <pre>
+	* //Adding an AccordionPart through a string
+	* $accordion->AccordionParts->Add('Section 1');
+	* //Adding multiple AccordionParts through strings
+	* $accordion->AccordionParts->AddRange('Section 1', 'Section2');
+	* //Adding an AccordionPart to AccordionParts:
+	* $accordion->AccordionParts->Add(new AccordionPart('Section 1'));
+	* //Adding multiple AccordionParts through AddRange()
+	*  $accordion->AccordionParts->AddRange(new AccordionPart('Section 1'), new AccordionPart('Section 2'));
+	* </pre>
+	* @var ArrayList
+	*/
 	public $AccordionParts;
 	private $SelectedIndex;
 	private $PartGroup;
-	
-	function Accordion($left, $top, $width, $height)
+	/**
+	 * Constructor
+	 * 
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */
+	function Accordion($left=0, $top=0, $width=200, $height=300)
 	{
 		parent::Panel($left, $top, $width, $height, $this);
 		$this->PartGroup = new Group();
@@ -22,11 +46,19 @@ class Accordion extends Panel
 		$this->AccordionParts->AddFunctionName = 'AddAccordionPart';
 		$this->AccordionParts->RemoveAtFunctionName = 'RemoveAccordionPartAt';
 	}
+	/**
+	 * Selects an AccordionPArt whose index in the AccordionPars ArrayList matches the parameter
+	 * @param integer $index
+	 */
 	function SetSelectedIndex($index)
 	{
 		if($this->GetSelectedIndex() != $index)
 			$this->AccordionParts[$index]->SetSelected(true);
 	}
+	/**
+	 * Returns the index of the first selected Accordionpart
+	 * @return integer
+	 */
 	function GetSelectedIndex()
 	{
 		return $this->PartGroup->GetSelectedIndex();

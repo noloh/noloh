@@ -132,6 +132,7 @@ final class System
 	/**
 	 * System::Log will log any piece of information to a debug window, along with a system timestamp. This function is useful for debugging.
 	 * @param mixed $what,... The information to be logged, as an unlimited number of parameters
+	 * @return mixed
 	 */
 	static function Log($what, $dotDotDot=null)
 	{

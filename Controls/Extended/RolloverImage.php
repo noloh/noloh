@@ -2,8 +2,24 @@
 /**
  * RolloverImage class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A RolloverImage is an Image that allows for Out, Over Down, and Selected states. 
  * 
+ * Basic Example:
+ * <pre>
+ * $navButton = new RolloverImage('navOut.gif'. 'navOver.gif');
+ * //optional Down state
+ * $navButton->DownPath = 'navDown.gif;
+ * </pre>
+ * When using RolloverImages as part of a Group, you can set the Selected state.
+ * <pre>
+ * $group = new Group();
+ * $home = new RolloverImage('homeOut.gif'. 'homeOver.gif');
+ * $home->SelectedPath = 'homeSelected.gif';
+ * $about = new RolloverImage('aboutOut.gif'. 'aboutOver.gif');
+ * $about->SelectedPath = 'aboutSelected.gif';
+ * 
+ * $group->AddRange($home, $about);
+ * </pre>
  * @package Controls/Extended
  */
 class RolloverImage extends Image implements Groupable
@@ -13,10 +29,19 @@ class RolloverImage extends Image implements Groupable
 	private $DownSrc;
 	private $SelectedSrc;
 	private $TogglesOff;
-	
-	function RolloverImage($outSrc=null, $overSrc=null, $left=0, $top=0, $width=System::Auto, $height=System::Auto)
+	/**
+	 * Constructor
+	 * 
+	 * @param string $outPath The path to the image for the Out state, can be a url, or file path relative to the index.php file of your application.
+	 * @param string $overPath The path to the image for the Over state, can be a url, or file path relative to the index.php file of your application.
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element, by default the proper measurement is calculated for you. Use # to denote a percentage of the image width, ex. 50# for 50% of the full Image width.
+	 * @param integer $height The Height dimension of this element, by default the proper measurement is calculated for you. Use # to denote a percentage of the image height, ex. 50# for 50% of the full Image height.
+	 */
+	function RolloverImage($outPath=null, $overPath=null, $left=0, $top=0, $width=System::Auto, $height=System::Auto)
 	{
-		parent::Image($outSrc, $left, $top, $width, $height);
+		parent::Image($outPath, $left, $top, $width, $height);
 		$click = parent::GetClick();
 		$click['System'] = new Event();
 		$click['User'] = new Event();
@@ -27,46 +52,114 @@ class RolloverImage extends Image implements Groupable
 		$deselect['System'] = new Event();
 		$deselect['User'] = new Event();
 		
-		$this->SetOverSrc($overSrc);
+		$this->SetOverPath($overPath);
 	}
-	function GetOutSrc()								{return $this->Src;}
+	/**
+	 * Returns the path to the image that is shown during the out state
+	 * @return string
+	 */
+	function GetPath()								{return $this->Src;}
+	/**
+	 * Returns the path to the image that is shown during the over state
+	 * @return string
+	 */
+	function GetOverPath()								{return $this->OverSrc;}
+	/**
+	 * Returns the path to the image that is shown during the down state
+	 * @return string
+	 */
+	function GetDownPath()								{return $this->DownSrc;}
+	/**
+	 * Returns the path to the image that is shown during the selected state
+	 * @return string
+	 */
+	function GetSelectedPath()							{return $this->SelectedSrc;}
+	/**
+	 * @deprecated use Path instead
+	 * 
+	 * Returns the path to the image that is shown during the out state
+	 * @return string
+	 */
+	function GetSrc()								{return $this->Src;}
+	/**
+	 * @deprecated use OverPath instead
+	 * 
+	 * Returns the path to the image that is shown during the over state
+	 * @return string
+	 */
 	function GetOverSrc()								{return $this->OverSrc;}
+	/**
+	 * @deprecated use DownPath instead
+	 * 
+	 * Returns the path to the image that is shown during the down state
+	 * @return string
+	 */
 	function GetDownSrc()								{return $this->DownSrc;}
+	/**
+	 * @deprecated use SelectedPath instead
+	 * 
+	 * Returns the path to the image that is shown during the selected state
+	 * @return string
+	 */
 	function GetSelectedSrc()							{return $this->SelectedSrc;}
-	
-	function SetSrc($outSrc)
+	/**
+	 * Sets the path to the image that is shown during the out state
+	 * The path is relative to your main file 
+	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
+	 * @param string $outPath
+	 * @return string 
+	 */
+	function SetPath($outPath)
 	{
-		parent::SetSrc($outSrc);
-		$this->OutSrc = $outSrc;
-		NolohInternal::SetProperty('Out', $outSrc, $this);
-		if($outSrc)
+		parent::SetPath($outPath);
+		$this->OutSrc = $outPath;
+		NolohInternal::SetProperty('Out', $outPath, $this);
+		if($outPath)
 			$this->MouseOut['Out'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Out');
 	}
-	function SetOverSrc($overSrc)
+	/**
+	 * Sets the path to the image that is shown during the over state
+	 * The path is relative to your main file 
+	 * @param string $overPath
+	 * @return string 
+	 */
+	function SetOverPath($overPath)
 	{
-		if($overSrc)
+		if($overPath)
 		{
-			$this->OverSrc = $overSrc;
-			NolohInternal::SetProperty('Ovr', $overSrc, $this);
+			$this->OverSrc = $overPath;
+			NolohInternal::SetProperty('Ovr', $overPath, $this);
 			$this->MouseOver['Over'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Ovr');
 		}
 	}
-	function SetDownSrc($downSrc)
+	/**
+	 * Sets the path to the image that is shown during the down state
+	 * The path is relative to your main file 
+	 * @param string $downPath
+	 * @return string 
+	 */
+	function SetDownPath($downPath)
 	{
-		if($downSrc)
+		if($downPath)
 		{
-			$this->DownSrc = $downSrc;
-			NolohInternal::SetProperty('Dwn', $downSrc, $this);
+			$this->DownSrc = $downPath;
+			NolohInternal::SetProperty('Dwn', $downPath, $this);
 		
 			$this->MouseDown['Down'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Dwn');
 			$this->MouseUp['Down'] = new ClientEvent('_NRlImgTgl', $this->Id, 'Out');
 		}
 	}
-	function SetSelectedSrc($selectSrc)
+	/**
+	 * Sets the path to the image that is shown during the selected state
+	 * The path is relative to your main file 
+	 * @param string $selectedPath
+	 * @return string 
+	 */
+	function SetSelectedPath($selectedPath)
 	{
-		$this->SelectedSrc = $selectSrc;
-		NolohInternal::SetProperty('Slct', $selectSrc, $this);
-		if($selectSrc)
+		$this->SelectedSrc = $selectedPath;
+		NolohInternal::SetProperty('Slct', $selectedPath, $this);
+		if($selectedPath)
 		{
 			$click = parent::GetClick();
 			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
@@ -76,39 +169,101 @@ class RolloverImage extends Image implements Groupable
 			$deselect['System'] = new ClientEvent("_NRlImgTgl('{$this->Id}','Out');");
 		}
 	}
+	 /**
+	 * @deprecated use Path instead
+	 *  
+	 * Sets the path to the image that is shown during the out state
+	 * The path is relative to your main file 
+	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
+	 * @param string $outSrc
+	 * @return string 
+	 */
+	function SetSrc($outSrc)	{$this->SetPath($outSrc);}
+	/**
+	 * @deprecated use OverPath instead
+	 * Sets the path to the image that is shown during the over state
+	 * The path is relative to your main file 
+	 * @param string $overSrc
+	 * @return string 
+	 */
+	function SetOverSrc($overSrc)	{$this->SetOverPath($overSrc);}
+	/**
+	 * @deprecated use DownPath instead
+	 * Sets the path to the image that is shown during the down state
+	 * The path is relative to your main file 
+	 * @param string $downSrc
+	 * @return string 
+	 */
+	function SetDownSrc($downSrc)	{$this->SetDownPath($downSrc);}
+	/**
+	 * @deprecated use SelectedPath instead
+	 * Sets the path to the image that is shown during the selected state
+	 * The path is relative to your main file 
+	 * @param string $selectedSrc
+	 * @return string 
+	 */
+	function SetSelectedSrc($selectedSrc)	{$this->SetSelectedPath($selectedSrc);}
+	/**
+	 * @ignore
+	 */
 	function GetClick()
 	{
 		$click = parent::GetClick();
 		return $click['User'];
 	}
+	/**
+	 * @ignore
+	 */
 	function SetClick($event)
 	{
 		$click = parent::GetClick();
 		$click['User'] = $event;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetSelect()
 	{
 		$select = parent::GetSelect();
 		return $select['User'];
 	}
+	/**
+	 * @ignore
+	 */
 	function SetSelect($event)
 	{
 		$select = parent::GetSelect();
 		$select['User'] = $event;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetDeselect()
 	{
 		$deselect = parent::GetDeselect();
 		return $deselect['User'];
 	}
+	/**
+	 * @ignore
+	 */
 	function SetDeselect($event)
 	{
 		$deselect = parent::GetDeselect();
 		$deselect['User'] = $event;
 	}	
-	//function GetSelected()				{return $this->Selected != null;}
+	/**
+	 * Sets whether the CollapsePanel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 * 
+	 * @param boolean $bool
+	 */
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
+	/**
+	 * Returns whether the CollapsePanel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 */
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
+	/**
+	 * @ignore
+	 */
 	function SetSelected($bool)
 	{			
 		if($this->GetSelected() != $bool)

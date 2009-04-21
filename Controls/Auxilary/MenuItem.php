@@ -2,7 +2,7 @@
 /**
  * MenuItem class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * MenuItem represents an Item in a Menu.
  * 
  * @package Controls/Auxiliary
  */
@@ -10,14 +10,44 @@ class MenuItem extends Panel
 {
 	//public $RolloverImage;
 	private $Checked;
-	public $DefaultItem;
+//	public $DefaultItem;
+	/**
+	 * The Panel containing the MenuItem's SubItems.
+	 * @var Panel
+	 */
 	public $MenuItemsPanel;
+	/**
+	* An ArrayList of MenuItems that will be Shown when added, provided the Menu has also been Shown.
+	* 
+	* MenuItems are an ArrayList and can be added, removed, or inserted. See ArrayList for more information.
+	* 
+	* $menu = new Menu();
+	* $add = $menu->MenuItems->Add('Add');
+	* We can now $add MenuItems directly to the MenuItem
+	* <pre>
+	* //Adding a MenuItem through a string
+	* $add->MenuItems->Add('Boiler');
+	* //Adding multiple MenuItems through strings
+	* $add->MenuItems->Add->AddRange('Sink', 'Door');
+	* //Adding a MenuItem to MenuItems:
+	* $add->MenuItems->Add->Add(new MenuItem('Sink'));
+	* //Adding multiple MenuItems through AddRange()
+	* $add->MenuItems->Add->AddRange(new MenuItem('Sink'), new MenuItem('Door'));
+	* </pre>
+	* @var ArrayList
+	*/
 	public $MenuItems;
 	private $TextLabel;
 	private $Icon;
 	private $Arrow;
 	
 	//TODO: Click to hide concept, show delay, hide delay, auto display sub menu on over, or click
+	/**
+	 * Constructor
+	 * 
+	 * @param string|Control $textOrControl
+	 * @param integer $height The Height of this element
+	 */
 	function MenuItem($textOrControl, $height=18)
 	{
 		parent::Panel(null, null, null, $height);
@@ -99,18 +129,39 @@ class MenuItem extends Panel
 
 		return $menuItem;
 	}
+	/**
+	 * Returns the Label in which the Text for this MenuItem is displayed.
+	 */
 	function GetTextLabel()	{return $this->TextLabel;}
+	/**
+	 * @ignore
+	 */
 	function SetChecked($bool)
 	{
 		
 	}
+	/**
+	 * @ignore
+	 */
 	function GetChecked()	{return $this->Checked;}
+	/**
+	 * @ignore
+	 */
 	function SetTrigger($trigger)
 	{
 		
 	}
+	/**
+	 * @ignore
+	 */
 	function GetTrigger()	{return $this->Trigger;}
+	/**
+	 * @ignore
+	 */
 	function GetIcon()		{return $this->Icon;}
+	/**
+	 * @ignore
+	 */
 	function SetIcon($image)
 	{
 		$this->Icon = $image;

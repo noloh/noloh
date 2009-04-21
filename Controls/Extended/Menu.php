@@ -2,17 +2,51 @@
 /**
  * Menu class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A Menu is a drop down list of MenuItems. A MenuItem also contains MenuItems, thus allowing for extensive cascading Menus.
  * 
  * @package Controls/Extended
  */
 class Menu extends Panel
 {
-	const Click = 'Click', MouseOver = 'Over';
+	/**
+	 * @ignore
+	 */
+	const Click = 'Click';
+	/**
+	 * @ignore
+	 */
+	const MouseOver = 'Over';
+	/**
+	* An ArrayList of MenuItems that will be Shown when added, provided the Menu has also been Shown.
+	* 
+	* MenuItems are an ArrayList and can be added, removed, or inserted. See ArrayList for more information.
+	* 
+	* <pre>
+	* //Adding an MenuItem through a string
+	* $menu->MenuItems->Add('Option 1');
+	* //Adding multiple MenuItems through strings
+	* $menu->MenuItems->Add->AddRange('Option 1', 'Option 2');
+	* //Adding a MenuItem to MenuItems:
+	* $menu->MenuItems->Add->Add(new MenuItem('Option 1'));
+	* //Adding multiple MenuItems through AddRange()
+	* $menu->MenuItems->Add->AddRange(new MenuItem('Option 1'), new MenuItem('Section 2'));
+	* </pre>
+	* @var ArrayList
+	*/
 	public $MenuItems;
+	/**
+	 * @ignore
+	 */
 	public $Type = 'Click';
-	
-	function Menu($left = 0, $top = 0, $width = 0, $behavior=self::MouseOver)
+	/**
+	 * Constructor
+	 * 
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */
+	function Menu($left = 0, $top = 0, $width = 0/*, $behavior=self::MouseOver*/)
 	{
 		parent::Panel($left, $top, $width, 18, $this);
 		$this->BackColor = '#F1F1ED';
@@ -41,14 +75,22 @@ class Menu extends Panel
 		NolohInternal::SetProperty('IsMnu','true', $menuItem);
 		return $menuItem;
 	}
+	/**
+	 * @ignore
+	 */
 	function SetTrigger($trigger, $showDelay=0)
 	{
 		
 	}
+	/**
+	 * @ignore
+	 */
 	function SetChecked($bool)
 	{
 	}
 	/**
+	 * @ignore
+	 *
 	 * Sets the orientation of the Menu. This determines whether the menu will be stacked horizontally or vertically.
 	 *
 	 * @param mixed $orientation

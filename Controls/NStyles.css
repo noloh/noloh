@@ -60,18 +60,20 @@
 	word-wrap:break-word;
 	overflow:hidden;
 }
-.NLoadLbl
+.NLoadIndiLabel
 {
-	background:#ea9c38;
-	color:#011f43;
-	font-family:arial;
+	background:white;
+	color:#011F43;
+	font-family:verdana,helvetica,arial;
+	font-size:9.5pt;
+	font-style:italic;
 	font-weight:bold;
-}
-.NLoad
-{
+	letter-spacing:0.05em;
 	cursor:wait;
-	visibility:hidden;
 	z-index:999999;
+	padding-left:5px;
+	padding-right:5px;
+	padding-bottom:1px;
 }
 a img
 {

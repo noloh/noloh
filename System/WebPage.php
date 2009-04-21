@@ -34,21 +34,12 @@ abstract class WebPage extends Component
 	 * @ignore
 	 */
 	public $DebugWindow;
-	/**
-	 * NOLOH's loading Image that is displayed when a ServerEvent is taking place
-	 * @var Image
-	 */
-	protected $LoadImg;
-	/**
-	 * NOLOH's loading Label that is displayed when a ServerEvent is taking place
-	 * @var Label
-	 */
-	protected $LoadLbl;
 	
 	private $Title;
 	private $Width;
 	private $Height;
 	private $BackColor;
+	private $LoadIndicator;
 	private $CSSPropertyArray;
 	/**
 	 * Constructor.
@@ -79,14 +70,10 @@ abstract class WebPage extends Component
 		$this->Description = $description;
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
 		$this->CSSFiles->Add(System::AssetPath() .'/Controls/NStyles.css');
-		$this->LoadImg = new Image(System::ImagePath() . 'loading.gif', 1, 1, 30, 30);
-		$this->LoadImg->CSSClass = 'NLoad';
-		$this->LoadImg->SetParentId($this->Id);
-		$this->LoadLbl = new Label('&nbsp;Loading...', 31, 7);
-		$this->LoadLbl->SetParentId($this->Id);
-		$this->LoadLbl->Opacity = 70;
-		$this->LoadLbl->CSSClass = 'NLoad NLoadLbl';
-		unset($_SESSION['_NPropertyQueue'][$this->LoadLbl->Id]['style.zIndex'],$_SESSION['_NPropertyQueue'][$this->LoadImg->Id]['style.zIndex']);
+		$this->SetLoadIndicator($loadIndicator = new Label('Loading...', 7, 7, null, null));
+		$loadIndicator->Opacity = 75;
+		$loadIndicator->CSSClass = 'NLoadIndiLabel';
+		unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		$unload = parent::GetEvent('Unload');
 		$unload['User'] = new ClientEvent('');
 		$unload['System'] = new ServerEvent(null, 'isset', true);
@@ -99,7 +86,7 @@ abstract class WebPage extends Component
 			case 'op': 						AddNolohScriptSrc('Mixed/FindPositionOp.js');
 		}
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
-			AddScript('_NInit(\''.$this->LoadLbl->Id.'\',\''.$this->LoadImg->Id.'\',' . ($GLOBALS['_NDebugMode']==='Full'?'"Full"':($GLOBALS['_NDebugMode']?'true':'false')) . ')', Priority::High);
+			AddScript('_NInit(\''.$this->LoadIndicator->Id.'\',' . ($GLOBALS['_NDebugMode']==='Full'?'"Full"':($GLOBALS['_NDebugMode']?'true':'false')) . ')', Priority::High);
 		//AddScript('_NSaveControl(\''.$this->Id.'\')');
 		$GLOBALS['_NFavIcon'] = $favIconPath;
 	}

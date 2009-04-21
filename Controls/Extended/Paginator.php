@@ -1,4 +1,7 @@
-<?php 
+<?php
+/**
+ * @internal
+ */
 class Paginator extends RichMarkupRegion implements Countable
 {
 	const First = '{first}', Last = '{last}', Prev = '{prev}', Next = '{next}', Pages = '{pages}', Status = '{status}',

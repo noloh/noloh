@@ -23,8 +23,8 @@ class MarkupRegion extends Control
 	 * @param string|file $markupStringOrFile A string of mark-up or a path to a file containing mark-up
 	 * @param integer $left The Left coordinate of this element
 	 * @param integer $top The Top coordinate of this element
-	 * @param integer $width The Width coordinate of this element
-	 * @param integer $height The Height coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
 	 * @return MarkupRegion
 	 */
 	function MarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
@@ -198,9 +198,8 @@ class MarkupRegion extends Control
 		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 	}
 	/**
-	 * @deprecated Use System::Style() instead.
-	 * 
 	 * Styles a string of text by giving it a CSS class
+	 * @deprecated Use System::Style() instead.
 	 * @param string $text The string to be styled
 	 * @param string $class The name of the CSS class
 	 * @return string

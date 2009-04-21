@@ -2,7 +2,7 @@
 /**
  * RichMarkupRegion class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A RichMarkupRegion is an enhanced MarkupRegion that allows for static text to communicate with your NOLOH application. A RichMarkupRegion is unique in that it's objects can be created dynamically from NOLOH, in addition to being able to have these objects communicate with NOLOH. 
  * 
  * @package Controls/Extended
  */
@@ -17,7 +17,15 @@ class RichMarkupRegion extends MarkupRegion
 	private $Larvae;
 	private $TempString;
 	private $ItemCount;
-	
+	/**
+	 * Constructor
+	 * 
+	 * @param string $markupStringOrFile A string of text or the path to a file you wish to parse and display in your RichMarkupRegion
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */
 	function RichMarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
 		$this->ComponentSpace = array();
@@ -57,7 +65,6 @@ class RichMarkupRegion extends MarkupRegion
 //		file_put_contents('/tmp/snakeinthegrass2', var_export($this->Eventees, true));
 		
 	}
-	// New one's. Has issues.
 	private function ParseItems($text)
 	{
 //		do
@@ -85,6 +92,10 @@ class RichMarkupRegion extends MarkupRegion
 			return '<'.$matches[1].$matches[2]. 'id=<NQt2>'.$id.'<NQt2>'.$matches[6].'>'.$matches[7].'</'.$matches[1].'>';
 		}
 	}
+	/**
+	 * Returns an array of Eventee objects
+	 * @return array
+	 */
 	public function GetEventees($byValue=null)
 	{
 		$eventees = array();
@@ -104,6 +115,10 @@ class RichMarkupRegion extends MarkupRegion
 					$eventees[] = &new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
 		return $eventees;
 	}
+	/**
+	 * Returns an array of Larva objects
+	 * @return array
+	 */
 	public function GetLarvae($byValue=null)
 	{
 		$larvae = array();
@@ -117,6 +132,10 @@ class RichMarkupRegion extends MarkupRegion
 					$larvae[] = new Larva($id, $info[0], $info[1], $this->Id);
 		return $larvae;
 	}
+	/**
+	 * Returns an array of both Eventee and Larva objects
+	 * @return array
+	 */
 	public function GetMarkupItems($byValue=null)
 	{
 		return array_merge($this->GetEventees($byValue), $this->GetLarvae($byValue));

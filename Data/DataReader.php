@@ -28,10 +28,20 @@
  */
 class DataReader extends Object implements ArrayAccess, Countable, Iterator
 {
+	/**
+	 * An array containing the results of your DataCommand
+	 * @var array 
+	 */
 	public $Data;
+	/**
+	 * Determines how your data columns are indexed
+	 * @var Data::Assoc|Data::Numeric|Data::Both 
+	 */
 	public $ResultType;
 	
 	/**
+	 * Constructor
+	 * Be sure to call this from the constructor of any class that extends DataReader.
 	 * @param mixed Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type The type of the database.
 	 * @param resource $resource A resource representing the data returned from the database.
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Determines how your data columns are indexed .
@@ -138,6 +148,9 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		if(!$this->Data)
 			$this->Data = array();
 	}
+	/**
+	 * @ignore
+	 */
 	function Count()
 	{
 		return count($this->Data);

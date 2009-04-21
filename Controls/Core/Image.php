@@ -29,40 +29,46 @@ class Image extends Control
 	 * Be sure to call this from the constructor of any class that extends Image
  	 * Example
  	 *	<pre> $tempVar = new Image("Images/NOLOHLogo.gif", 0, 10);</pre>
- 	 * @param string $src
+ 	 * @param string $path
 	 * @param integer $left
 	 * @param integer $top
 	 * @param integer $width
 	 * @param integer $height
 	 */
-	function Image($src='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
+	function Image($path='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
 	{
 		parent::Control($left, $top, null, null);
-		if(!empty($src))
-			$this->SetSrc($src);
+		if(!empty($path))
+			$this->SetPath($path);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 	}
 	/**
-	 * Gets the Src of the Image
+	 * Gets the path of the Image
 	 * @return string
  	 */
-	function GetSrc()
+	function GetPath()
 	{
 		return $this->Src;
 	}
 	/**
-	 * Sets the Src of the Image.
+	 * @deprecated Use Path instead
+	 * Gets the path of the Image
+	 * @return string
+	 */
+	function GetSrc()	{return $this->GetPath();}
+	/**
+	 * Sets the path of the Image.
 	 * The path is relative to your main file 
 	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
-	 * @param string $src
+	 * @param string $path
 	 * @return string 
 	 */
-	function SetSrc($newSrc, $adjustSize=false)
+	function SetPath($path, $adjustSize=false)
 	{
 		//if(!is_file($newSrc))
 		//	BloodyMurder('The Src ' . $newSrc . ' does not exist.');
-		$this->Src = $newSrc;
+		$this->Src = $path;
 		if($this->Magician)
 			$this->SetMagicianSrc();
 		/*elseif(UserAgent::IsIE6() && preg_match('/\.png$/i', $newSrc))
@@ -74,7 +80,7 @@ class Image extends Control
 			//AddScript("alert(_N('$this->Id').style.filter);", Priority::Low);
 		}*/
 		else
-			NolohInternal::SetProperty('src', $newSrc, $this);
+			NolohInternal::SetProperty('src', $path, $this);
         //NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
 		if($adjustSize)
 		{
@@ -86,8 +92,18 @@ class Image extends Control
 			$newSrc = NOLOHConfig::NOLOHURL . '/Images/' . $matches[1];
 			NolohInternal::SetProperty('src', $newSrc, $this);
 		}*/
-		return $newSrc;
+		return $path;
 	}
+	/**
+	 * @deprecated Use Path instead
+	 * 
+	 * Sets the path of the Image
+	 * The path is relative to your main file 
+	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
+	 * @param string $path
+	 * @return string 
+	 */
+	function SetSrc($path, $adjustSize=false)	{return $this->SetPath($path, $adjustSize);}
 	/**
 	 * @ignore
 	 */
@@ -192,20 +208,24 @@ class Image extends Control
     function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
 		$this->Magician = func_get_args();
-		$this->SetMagicianSrc();
+		$this->SetMagicianPath();
         //NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
         //$this->Magician = array($className, $functionName);
     }
 	/**
 	 * @ignore
 	 */
-	private function SetMagicianSrc()
+	private function SetMagicianPath()
 	{
 		if($this->Src)
 			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))), $this);
 		else
 			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))).'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight(), $this);
 	}
+	/**
+	 * @ignore
+	 */
+	private function SetMagicianSrc()	{$this->SetMagicianPath();}
 	/**
 	 * @ignore
 	 */

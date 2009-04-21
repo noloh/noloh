@@ -2,8 +2,19 @@
 /**
  * RolloverTab class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A RolloverTab is a Panel that displays text over a an object, usually a Tab, although objects other Objects can also be specified. A RolloverTab is usually used in Group situations and thus has an Out, Over, Down, and Selected states.
  * 
+ * The following is an example of RolloverTabs being used within a Group
+ * <pre>
+ * $group = new Group();
+ * $tabOut = new Tab('left.gif', 'center.gif', 'right.gif');
+ * $tabSelected = new Tab('leftSelected.gif', 'centerSelected.gif', 'rightSelected.gif');
+ * 
+ * $home = new RolloverTab('Home', $tabOut, $tabSelected);
+ * $about = new RolloverImage('About', $tabOut, $tabSelected, $home->Right);
+ * 
+ * $group->AddRange($tabOut, $tabSelected);
+ * </pre>
  * @package Controls/Extended
  */
 class RolloverTab extends Panel implements Groupable
@@ -14,9 +25,21 @@ class RolloverTab extends Panel implements Groupable
 	private $SelectedTab;
 	//private $Selected;
 	
-	//private $GroupName;
+	/**
+	 * The object used to display your text. This defaults to a Label, but other objects such as a RolloverLabel can be used so that when the RolloverTab's state is changed, the TextObject's state is also changed.
+	 * @var $mixed
+	 */
 	public $TextObject;
-	
+	/**
+	 * '
+	 * @param string|Control $text The objects used to display the RolloverTab's text
+	 * @param mixed $outTab The Control displayed during the out state
+	 * @param mixed $selectedTab The Control displayed during the selected state
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */
 	function RolloverTab($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::AutoHtmlTrim, $height = null)
 	{
 		parent::Panel($left, $top, null, null);
@@ -126,11 +149,30 @@ class RolloverTab extends Panel implements Groupable
 		if($this->TextObject != null)
 			$this->TextObject->Height = $height;
 	}
+	/**
+     * Returns the Control which is displayed during the Out state
+     * @return mixed
+	 */
 	function GetOutTab()								{return $this->OutTab;}
+	/**
+     * Returns the Control which is displayed during the Over state
+     * @return mixed
+	 */
 	function GetOverTab()								{return $this->OverTab;}
+	/**
+     * Returns the Control which is displayed during the Down state
+     * @return mixed
+	 */
 	function GetDownTab()								{return $this->DownTab;}
+	/**
+     * Returns the Control which is displayed during the Selected state
+     * @return mixed
+	 */
 	function GetSelectedTab()							{return $this->SelectedTab;}
-	
+	/**
+	 * Sets the Control which is displayed during the Out state
+	 * @param mixed $outTab
+	 */
 	function SetOutTab($outTab)
 	{
 		if(!empty($outTab))
@@ -144,6 +186,10 @@ class RolloverTab extends Panel implements Groupable
 			$this->MouseOut['Out'] = new ClientEvent("_NRlTbChg('{$this->Id}','Out');");
 		}
 	}
+	/**
+	 * Sets the Control which is displayed during the Over state
+	 * @param mixed $overTab
+	 */
 	function SetOverTab($overTab)
 	{
 		if(!empty($overTab))
@@ -158,6 +204,10 @@ class RolloverTab extends Panel implements Groupable
 			$this->MouseOver['Over'] = new ClientEvent("_NRlTbChg('{$this->Id}','Ovr');");
 		}
 	}
+	/**
+	 * Sets the Control which is displayed during the Down state
+	 * @param mixed $downTab
+	 */
 	function SetDownTab($downTab)
 	{
 		if(!empty($downTab))
@@ -172,6 +222,10 @@ class RolloverTab extends Panel implements Groupable
 			$this->MouseDown['Down'] = new ClientEvent("_NRlTbChg('{$this->Id}','Dwn');");
 		}
 	}	
+	/**
+	 * Sets the Control which is displayed during the Selected state
+	 * @param mixed $selectedTab
+	 */
 	function SetSelectedTab($selectedTab)
 	{
 		if(!empty($selectedTab))
@@ -198,34 +252,52 @@ class RolloverTab extends Panel implements Groupable
 //			$this->Select = new ClientEvent("_NRlTbChg('{$this->Id}', 'Slct');");
 		}
 	}
+	/**
+	 * @ignore
+	 */
 	function GetClick()
 	{
 //		Control::AddSystemHandler(Event::Click, new ClientEvent())
 		$click = parent::GetClick();
 		return $click['User'];
 	}
+	/**
+	 * @ignore
+	 */
 	function SetClick($event)
 	{
 		$click = parent::GetClick();
 		$click['User'] = $event;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetSelect()
 	{
 //		Control::AddSystemHandler(Event::Click, new ClientEvent())
 		$select = parent::GetSelect();
 		return $select['User'];
 	}
+	/**
+	 * @ignore
+	 */
 	function SetSelect($event)
 	{
 		$select = parent::GetSelect();
 		$select['User'] = $event;
 	}
+	/**
+	 * @ignore
+	 */
 	function GetDeelect()
 	{
 //		Control::AddSystemHandler(Event::Click, new ClientEvent())
 		$deselect = parent::GetDeselect();
 		return $deselect['User'];
 	}
+	/**
+	 * @ignore
+	 */
 	function SetDeselect($event)
 	{
 		$deselect = parent::GetDeselect();
@@ -244,6 +316,9 @@ class RolloverTab extends Panel implements Groupable
 	 *//*
 	function SetGroupName($groupName)	{$this->GroupName = $groupName;}*/
 	//function GetSelected()				{return $this->Selected != null;}
+	/**
+	 * @ignore
+	 */
 	function SetSelected($bool)
 	{
 		if($this->GetSelected() != $bool)
