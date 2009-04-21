@@ -98,6 +98,7 @@ class WindowPanel extends Panel
 		$this->WindowShade = $bool;
 		if($bool)
 		{
+			AddNolohScriptSrc('Animation.js', true);
 			if(!isset($this->TitleBar->DoubleClick['WinShade']))
 				$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NClpsPnlTgl('{$this->Id}');");
 				//$this->TitleBar->DoubleClick['WinShade'] = new ClientEvent("_NClpsPnlTgl('{$this->Id}','{$this->TitleBar->Id}', '{$this->BodyPanel->Id}');");
@@ -178,7 +179,7 @@ class WindowPanel extends Panel
 	function GetMenu()	{return $this->Menu;}
 	function SetMenu(Menu $mainMenu)
 	{
-		$this->Menu = $mainMenu;
+		$this->Menu = $menu;
 		$this->Menu->CSSBorder_Left = $this->ThemeBorder;
 		$this->Menu->CSSBorder_Right = $this->ThemeBorder;
 		$this->Menu->SetWidth($this->Width - ($this->BorderSize << 1));
@@ -186,8 +187,9 @@ class WindowPanel extends Panel
 		$this->Menu->SetTop($this->TitleBar->Bottom);
 		$this->ResizeImage->Shifts[] = Shift::Width($this->Menu);
 		$this->BodyPanel->SetTop($this->Menu->Bottom);
-		$this->WindowPanelComponents->Add($mainMenu);
-		$this->BodyPanel->Height -= $mainMenu->Height;
+		$this->WindowPanelComponents->Add($menu);
+		$this->BodyPanel->Height -= $menu->Height;
+		return $this->Menu;
 	}
 	function Close()
 	{
@@ -295,9 +297,22 @@ class WindowPanel extends Panel
 	function Show()
 	{
         parent::Show();
-        if($this->WindowShade)
-        	AddNolohScriptSrc('Animation.js', true);
 		AddNolohScriptSrc('CollapsePanel.js');
+	}
+	/**
+	 * @ignore
+	 */
+	function NoScriptShowChildren($indent)
+	{
+		$bodyId = $this->BodyPanel->Id;
+		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
+			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $show)
+				if($this->GetAddId(GetComponentById($id)) === $bodyId)
+				{
+					$_SESSION['_NControlQueueDeep'][$bodyId][$id] = $show;
+					unset($_SESSION['_NControlQueueDeep'][$this->Id][$id]);
+				}
+		parent::NoScriptShowChildren($indent);
 	}
 }
 
