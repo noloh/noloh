@@ -311,7 +311,7 @@ abstract class WebPage extends Component
 <!-- Powered by NOLOH -->
 <!--  www.noloh.com  -->
 
-<HTML>
+<HTML lang="en">
   <HEAD id="NHead">
     <TITLE>', $title, '</TITLE>
     <NOSCRIPT><META http-equiv="refresh" content="0',
@@ -364,10 +364,10 @@ UserAgent::IsIE6() ? '
 	 */
 	function SearchEngineShow($tokenLinks)
 	{
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML><HEAD><TITLE>', $this->Title, '</TITLE>',
+		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><TITLE>', $this->Title, '</TITLE>',
 			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '"></META>',
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,
-			'"></META></HEAD><BODY lang="en">';
+			'"></META></HEAD><BODY>';
 		foreach($_SESSION['_NControlQueueRoot'] as $id => $show)
 		{
 			$obj = GetComponentById($id);
@@ -390,7 +390,7 @@ UserAgent::IsIE6() ? '
 <!-- Powered by NOLOH -->
 <!--  www.noloh.com  -->
 
-<HTML>
+<HTML lang="en">
   <HEAD>
     <TITLE>', $this->Title, '</TITLE>';
 	foreach($this->CSSFiles as $path)
@@ -401,7 +401,7 @@ UserAgent::IsIE6() ? '
 	<LINK rel="shortcut icon" href="' . $GLOBALS['_NFavIcon'] . '"></LINK>';
 	echo '
   </HEAD>
-  <BODY lang="en"';
+  <BODY';
 		if($this->BackColor)
 			echo ' bgcolor="', $this->BackColor, '"';
 		echo ">\n";
