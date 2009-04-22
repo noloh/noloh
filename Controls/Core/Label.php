@@ -13,11 +13,11 @@ class Label extends Control
 	/**
 	 * @ignore
 	 */
-	public $CachedWidth;
+	public $_NCaW;
 	/**
 	 * @ignore
 	 */
-	public $CachedHeight;
+	public $_NCaH;
 	private $Align;
 	private $VAlign;
 	private $Bold;
@@ -88,9 +88,9 @@ class Label extends Control
 		$width = parent::GetWidth();
 		if($width === System::Auto || $width === System::AutoHtmlTrim)
 		{
-			if($this->CachedWidth === null)
+			if($this->_NCaW === null)
 				$this->AutoWidthHeight();
-			return $this->CachedWidth;
+			return $this->_NCaW;
 		}
 		else 
 			return $width;
@@ -111,9 +111,9 @@ class Label extends Control
 		$height = parent::GetHeight();
 		if($height === System::Auto || $height === System::AutoHtmlTrim)
 		{
-			if($this->CachedHeight === null)
+			if($this->_NCaH === null)
 				$this->AutoWidthHeight();
-			return $this->CachedHeight;
+			return $this->_NCaH;
 		}
 		else 
 			return $height;
@@ -129,8 +129,8 @@ class Label extends Control
 	
 	private function ResetCache()
 	{
-		$this->CachedWidth = null;
-		$this->CachedHeight = null;
+		$this->_NCaW = null;
+		$this->_NCaH = null;
 		$width = parent::GetWidth();
 		$height = parent::GetHeight();
 		if($width==System::Auto || $width==System::AutoHtmlTrim || $height==System::Auto || $height==System::AutoHtmlTrim)
@@ -310,13 +310,13 @@ class Label extends Control
 			return;
 		if($width == System::Auto || $width == System::AutoHtmlTrim)
 		{
-			$this->CachedWidth = $widthHeight[0];
-			//NolohInternal::SetProperty('style.width', $this->CachedWidth.'px', $this);
+			$this->_NCaW = $widthHeight[0];
+			//NolohInternal::SetProperty('style.width', $this->_NCaW.'px', $this);
 		}
 		if($height == System::Auto || $height == System::AutoHtmlTrim)
 		{
-			$this->CachedHeight = $widthHeight[1];
-			//NolohInternal::SetProperty('style.height', $this->CachedHeight.'px', $this);
+			$this->_NCaH = $widthHeight[1];
+			//NolohInternal::SetProperty('style.height', $this->_NCaH.'px', $this);
 		}
 		//if(isset($_SESSION['_NFunctionQueue'][$this->Id]))
 		//	unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
