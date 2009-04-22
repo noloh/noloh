@@ -329,11 +329,7 @@ function _NBodySizeState()
 			_NShftObjs(body.ShiftsWith[2], 0, document.documentElement.clientHeight - body.Height);
 	}
 	if(body.BuoyantChildren)
-	{
-		var buoyantCount = body.BuoyantChildren.length;
-		for(var i=0; i<buoyantCount; ++i)
-			_NByntMv(body.BuoyantChildren[i]);
-	}
+		_NByntMvCh(body);
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
 	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 }

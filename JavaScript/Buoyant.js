@@ -42,7 +42,8 @@ function _NByntMv(id)
 }
 function _NByntMvCh(obj)
 {
-	for(var i=0; i<obj.BuoyantChildren.length; ++i)
+	var count = obj.BuoyantChildren.length;
+	for(var i=0; i<count; ++i)
 		_NByntMv(obj.BuoyantChildren[i]);
 }
 function _NByntFrgt(id, parent)

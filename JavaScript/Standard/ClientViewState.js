@@ -275,11 +275,7 @@ function _NBodySizeState()
 			_NShftObjs(body.ShiftsWith[2], 0, (tmp = window.outerHeight - _N.WindowHeight)?tmp:(document.documentElement.clientHeight - body.Height));
 	}
 	if(body.BuoyantChildren)
-	{
-		var buoyantCount = body.BuoyantChildren.length;
-		for(var i=0; i<buoyantCount; ++i)
-			_NByntMv(body.BuoyantChildren[i]);
-	}
+		_NByntMvCh(body);
 	_NSetProperty(body.id, "Width", document.documentElement.clientWidth);
 	_NSetProperty(body.id, "Height", document.documentElement.clientHeight);
 	_N.WindowWidth = window.outerWidth;
