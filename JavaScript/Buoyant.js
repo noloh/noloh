@@ -40,6 +40,11 @@ function _NByntMv(id)
 	obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
 	obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
 }
+function _NByntMvCh(obj)
+{
+	for(var i=0; i<obj.BuoyantChildren.length; ++i)
+		_NByntMv(obj.BuoyantChildren[i]);
+}
 function _NByntFrgt(id, parent)
 {
 	do

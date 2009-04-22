@@ -184,8 +184,7 @@ function _NChangeByObj(obj, property, value)
 				{
 					obj.style.left = value;
 					if(obj.BuoyantChildren)
-						for(var i=0; i<obj.BuoyantChildren.length; ++i)
-							_NByntMv(obj.BuoyantChildren[i]);
+						_NByntMvCh(obj);
 				}
 				break;
 			case "style.top":
@@ -198,9 +197,13 @@ function _NChangeByObj(obj, property, value)
 				{
 					obj.style.top = value;
 					if(obj.BuoyantChildren)
-						for(var i=0; i<obj.BuoyantChildren.length; ++i)
-							_NByntMv(obj.BuoyantChildren[i]);
+						_NByntMvCh(obj);
 				}
+				break;
+			case "style.display":
+				obj.style.display = value;
+				if(obj.BuoyantChildren && !value)
+					_NByntMvCh(obj);
 				break;
 			case "className":
 				obj.className = obj.className.indexOf("NClickable")!=-1 ? "NClickable " + value : value;
