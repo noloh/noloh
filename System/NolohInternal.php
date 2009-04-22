@@ -167,9 +167,15 @@ final class NolohInternal
 				{
 					foreach($nameParam as $idx => $val)
 						if(is_string($idx))
-							AddScript($idx.'('.implode(',',$val[0]).')', $val[1]);
+							if($val[0] === null)
+								AddScript($idx, $val[1]);
+							else
+								AddScript($idx.'('.implode(',',$val[0]).')', $val[1]);
 						else
-							AddScript($val[0].'('.implode(',',$val[1]).')', $val[2]);
+							if($val[0] === null)
+								AddScript($val[0], $val[2]);
+							else
+								AddScript($val[0].'('.implode(',',$val[1]).')', $val[2]);
 					unset($_SESSION['_NFunctionQueue'][$objId]);
 				}
 		}
