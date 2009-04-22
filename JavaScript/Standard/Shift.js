@@ -191,6 +191,8 @@ function _NShftStp(e)
 			obj.ShiftStop.call(obj);
 		}
 		document.removeEventListener("mousemove", _NShftGo, true);
+		_N.DisableClicks = true;
+		window.setTimeout(function() {delete _N.DisableClicks;}, 0);
 	}
 	else
 	{

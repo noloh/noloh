@@ -68,7 +68,7 @@ function _NChangeByObj(obj, property, value)
 		switch(property)
 		{
 			case "onclick":
-				obj.onclick = _NEvent("if(!event || event.button!=2) {" + value + "}", obj);
+				obj.onclick = _NEvent("if(!_N.DisableClicks && (!event || event.button!=2)) {" + value + "}", obj);
 				obj.className = value ? "NClickable " + obj.className : obj.className.replace(/NClickable/g, "");
 				break;
 			case "KeyPress":
