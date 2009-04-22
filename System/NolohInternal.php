@@ -172,7 +172,7 @@ final class NolohInternal
 							else
 								AddScript($idx.'('.implode(',',$val[0]).')', $val[1]);
 						else
-							if($val[0] === null)
+							if($val[1] === null)
 								AddScript($val[0], $val[2]);
 							else
 								AddScript($val[0].'('.implode(',',$val[1]).')', $val[2]);
