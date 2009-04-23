@@ -1,9 +1,10 @@
-_N.Saved = [];
-_N.Changes = [];
-_N.EventVars = [];
+_N.Saved = {};
+_N.Changes = {};
+_N.EventVars = {};
 _N.SEQ = [];
-_N.Incubator = [];
-_N.IncubatorRoots = [];
+_N.Incubator = {};
+_N.IncubatorRoots = {};
+_N.IncubatorRootsIns = {};
 _N.Visit = -1;
 _N.EventDepth = 0;
 _N.HighestZ = 0;
@@ -17,7 +18,7 @@ function _NInit(loadIndicator, debugMode)
 	_NSetLoadIndi(loadIndicator);
 	_N.Title = document.title;
 	_N.DebugMode = debugMode;
-	_N.Saved["N1"] = [];
+	_N.Saved["N1"] = {};
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
 	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 	var graveyard = document.createElement("DIV");
@@ -286,7 +287,7 @@ function _NSave(id, property, value)
 	if(typeof value == "undefined")
 		eval("value = obj."+property+";");
 	if(!_N.Changes[id])
-		_N.Changes[id] = [];
+		_N.Changes[id] = {};
 	switch(property)
 	{
 		case "value":
@@ -336,26 +337,29 @@ function _NBodySizeState()
 function _NSetP(id, nameValuePairs)
 {
 	_N.QueueDisabled = id;
-	var i = -1, obj = _N(id), count = nameValuePairs.length;
+	var i = -1, obj = _N(id), count = nameValuePairs.length, cachedSave = _N.Saved[id];
 	while(++i<count)
-		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(obj, nameValuePairs[i], nameValuePairs[++i]);
+		cachedSave[nameValuePairs[i]] = _NChangeByObj(obj, nameValuePairs[i], nameValuePairs[++i]);
 	delete _N.QueueDisabled;
 }
 function _NQ()
 {
-	var id, info;
-	for(id in _N.IncubatorRoots)
+	var addTo, info, roots = _N.IncubatorRoots;
+	for(addTo in roots)
+		_N(addTo).appendChild(roots[addTo]);
+	for(id in _N.IncubatorRootsIns)
 	{
-		info = _N.IncubatorRoots[id];
-		_NAddAct(_N.Incubator[id], info[0], info[1]);
+		info = _N.IncubatorRootsIns[id];
+		_NAddAct(_N.IncubatorIns[id], info[0], info[1]);
 	}
-	_N.Incubator = [];
-	_N.IncubatorRoots = [];
+	_N.Incubator = {};
+	_N.IncubatorRoots = {};
+	_N.IncubatorRootsIns = {};
 }
 function _NAddAct(ele, addTo, beforeId)
 {
 	addTo = _N(addTo);
-	if(typeof beforeId == "undefined")
+	if(!beforeId)
 		addTo.appendChild(ele);
 	else
 	{
@@ -369,16 +373,22 @@ function _NAddAct(ele, addTo, beforeId)
 function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 {
 	_N.QueueDisabled = id;
-	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1;
+	var ele = document.createElement(tag), count = nameValuePairs.length, i=-1, cachedSave;
 	ele.style.position = "absolute";
-	_N.Saved[ele.id = id] = [];
+	cachedSave = _N.Saved[ele.id = id] = {};
 	while(++i<count)
-		_N.Saved[id][nameValuePairs[i]] = _NChangeByObj(ele, nameValuePairs[i], nameValuePairs[++i]);
+		cachedSave[nameValuePairs[i]] = _NChangeByObj(ele, nameValuePairs[i], nameValuePairs[++i]);
 	_N.Incubator[id] = ele;
 	if(_N.Incubator[addTo] || addTo == "NHead")
 		_NAddAct(ele, addTo, beforeId);
+	else if(beforeId)
+		_N.IncubatorRootsIns[id] = [addTo, beforeId];
 	else
-		_N.IncubatorRoots[id] = [addTo, beforeId];
+	{
+		if(!_N.IncubatorRoots[addTo])
+			_N.IncubatorRoots[addTo] = document.createDocumentFragment();
+		_N.IncubatorRoots[addTo].appendChild(ele);
+	}
 	delete _N.QueueDisabled;
 }
 function _NAdopt(id, parentId)
@@ -452,7 +462,7 @@ function _NChangeString()
 		if(change != id)
 			changes += change + "~d0~";
 	}
-	_N.Changes = [];
+	_N.Changes = {};
 	return changes.substring(0, changes.length-4);
 }
 function _NEventVarsString()
@@ -468,7 +478,7 @@ function _NEventVarsString()
 	}
 	for(key in _N.EventVars)
 		str += key + "~d0~" + (typeof _N.EventVars[key] == "object" ? _N.EventVars[key].join(",") : _N.EventVars[key]) + "~d0~";
-	_N.EventVars = [];
+	_N.EventVars = {};
 	return str.substring(0, str.length-4);
 }
 function _NProcessResponse(response)
