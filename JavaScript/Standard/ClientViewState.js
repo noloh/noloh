@@ -332,7 +332,11 @@ function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 	else if(beforeId)
 		_N.IncubatorRootsIns[id] = [addTo, beforeId];
 	else
-		_N.IncubatorRoots[id] = [addTo, beforeId];
+	{
+		if(!_N.IncubatorRoots[addTo])
+			_N.IncubatorRoots[addTo] = document.createDocumentFragment();
+		_N.IncubatorRoots[addTo].appendChild(ele);
+	}
 	delete _N.QueueDisabled;
 }
 function _NAdopt(id, parentId)
