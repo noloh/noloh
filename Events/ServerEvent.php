@@ -50,10 +50,9 @@ class ServerEvent extends Event
 	private $Owner;
 	/**
 	 * An ArrayList holding the FileUpload objects that the Event will upload when launched from the client
-	 * @access public
 	 * @var ArrayList
 	 */
-	private $Uploads;
+	protected $Uploads;
 	/**
 	 * @ignore
 	 */
