@@ -16,7 +16,8 @@ function _NRdyBox(id)
 function _NServerWUpl()
 {
 	_N.UploadEvent = event;
-	for(var i=0; i<_N.Uploads.length; ++i)
+	var iFrame, i;
+	for(i=0; i<_N.Uploads.length; ++i)
 	{
 		iFrame = _N(_N.Uploads[i]);
 		iFrame.UploadComplete = false;

@@ -14,7 +14,8 @@ function _NRdyBox(id)
 function _NServerWUpl()
 {
 	clearInterval(_N.URLChecker);
-	for(var i=0; i<_N.Uploads.length; ++i)
+	var iFrame, i;
+	for(i=0; i<_N.Uploads.length; ++i)
 	{
 		iFrame = _N(_N.Uploads[i]);
 		iFrame.UploadComplete = false;

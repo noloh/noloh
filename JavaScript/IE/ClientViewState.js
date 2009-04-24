@@ -562,7 +562,7 @@ function _NSE(eventType, id, uploads)
 		_N.SEQ.Started = _N.SEQ.length;
 	_N.SEQ.push([eventType, id]);
 	if(uploads)
-		_N.Uploads.splice(-1, 0, uploads);
+		_N.Uploads = _N.Uploads.concat(uploads);
 	if(eventType == "Unload")
 		_NServer();
 }
