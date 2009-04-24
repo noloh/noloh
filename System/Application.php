@@ -28,6 +28,10 @@ function _NPHPInfo($info)
  */
 final class Application extends Object
 {
+	/**
+	 * @ignore
+	 */
+	const Name = '@APPNAME';
 	private $WebPage;
 	/**
 	 * Specifies which WebPage class will serve as the initial start-up point of your application
