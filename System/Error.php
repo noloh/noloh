@@ -11,12 +11,12 @@ function _NOBErrorHandler($buffer)
 	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
 		trigger_error('~_NINFO~');
 	elseif(preg_match('/(.*): (.*) in (.*) on line ([0-9]+)/s', $buffer, $matches))
-		//if($GLOBALS['_NDebugMode'] === 'Kernel')
+		if($GLOBALS['_NDebugMode'] === 'Kernel')
 			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$matches[3].'~OB~'.$matches[4]);
-		//else
-		//{
-			//if($trace = _NFirstNonNOLOHBacktrace())
-			//	trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['file']);
+		else
+		{
+			$trace = _NFirstNonNOLOHBacktrace();
+			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['line']);
 			
 			//return false;
 			//trigger_error(serialize(error_get_last()));
@@ -25,7 +25,8 @@ function _NOBErrorHandler($buffer)
 			//return new Exception('lol', 0);
 			//trigger_error('HAH');
 			//trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
-		//}
+			//_NErrorHandler($matches[2], $matches[3], $matches[4]);
+		}
 	/*elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
 		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);*/
 	//else 
@@ -50,15 +51,11 @@ function _NErrorHandler($number, $string, $file, $line)
 		setcookie('_NPHPInfo', true);
 		Application::Reset(true, false);
 	}
-	if($GLOBALS['_NDebugMode'] !== 'Kernel')
+	elseif($GLOBALS['_NDebugMode'] !== 'Kernel')
 	{
-		if($trace = _NFirstNonNOLOHBacktrace())
-		{
-			$file = $trace['file'];
-			$line = $trace['line'];
-		}
-		else 
-			$file = $line = null;
+		$trace = _NFirstNonNOLOHBacktrace();
+		$file = $trace['file'];
+		$line = $trace['line'];
 	}
 	$gzip = defined('FORCE_GZIP');
 	if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
@@ -88,7 +85,10 @@ function _NFirstNonNOLOHBacktrace()
 	for($i=0; $i<$backtraceCount; ++$i)
 		if(isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
 			return $backtrace[$i];
-	return false;
+	$errorLast = error_get_last();
+	if(isset($errorLast['file']) && strpos($errorLast, $_NPath) === false)
+		return $errorLast;
+	return array('file' => null, 'line' => null);
 }
 /**
  * Terminates the application {@see PHP_Manual#die}
@@ -103,6 +103,15 @@ function BloodyMurder($message)
 		exit();
 	}
 	else
-		_NErrorHandler(0, $message, 0, 0);
+	{
+		if($GLOBALS['_NDebugMode'] === 'Kernel')
+		{
+			$trace = debug_backtrace();
+			$trace = $trace[0];
+		}
+		else 
+			$trace = _NFirstNonNOLOHBacktrace();
+		_NErrorHandler(0, $message, $trace['file'], $trace['line']);
+	}
 }
 ?>
