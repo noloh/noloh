@@ -55,6 +55,7 @@ class Event extends Object implements ArrayAccess
 
 	/**
 	* When relevant, the object on which the event is happening
+	* @var Component
 	*/
 	public static $Source;
 	/**
@@ -64,7 +65,7 @@ class Event extends Object implements ArrayAccess
     public static $BoundData;
     /**
 	 * When relevant, the Component that was focused {@see Control::Focus}
-	 * @var string
+	 * @var Component
 	 */
     public static $FocusedComponent;
     /**

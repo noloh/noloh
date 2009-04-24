@@ -20,7 +20,7 @@ class RolloverLabel extends Label implements Groupable
 	private $SelectedColor;
 	private $TogglesOff;
 	/**
-	 * 
+	 * Constructor 
 	 * @param string $text The text displayed in the Label
 	 * @param string|array $outColor The color displayed during the out state
 	 * @param string|array $overColor The color displayed during the over state
@@ -137,12 +137,12 @@ class RolloverLabel extends Label implements Groupable
 	}	
 	/**
 	 * Sets whether the RollvoerLabel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
-	 * 
 	 * @param boolean $bool
 	 */
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
 	/**
 	 * Returns whether the RoloverLabel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 * @return boolean
 	 */
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	/**

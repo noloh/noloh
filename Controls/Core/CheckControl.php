@@ -18,6 +18,9 @@ abstract class CheckControl extends Control
 	public $Caption;
 	//private $GroupName;
 	//private $Checked;
+	/**
+	 * @ignore
+	 */
 	protected $Value;
 	/**
 	 * Constructor.
@@ -84,13 +87,14 @@ abstract class CheckControl extends Control
 	{
 		$this->Value = $value;
 	}
-	/**
+	/*
 	 * @ignore
 	 *
 	function GetGroupName()
 	{
 		return $this->GroupName;
-	}
+	}*/
+	
 	/**
 	 * @ignore
 	 */
@@ -104,7 +108,8 @@ abstract class CheckControl extends Control
 		//$this->HtmlName = $newGroupName;
 	}
 	/**
-	 * Returns whether or not this element is checked
+	 * Returns whether or not this element is checked.
+	 * An alias for Selected.
 	 * @return boolean
 	 */
 	function GetChecked()
@@ -112,14 +117,15 @@ abstract class CheckControl extends Control
 		return $this->GetSelected();
 	}
 	/**
-	 * Sets whether or not this element is checked
+	 * Sets whether or not this element is checked.
+	 * An Alias for Selected.
 	 * @param boolean $bool
 	 */
 	function SetChecked($bool)
 	{
 		return $this->SetSelected($bool);
 	}
-	/**
+	/*
 	 * An alias for GetChecked
 	 * @return boolean
 	 *
@@ -196,7 +202,7 @@ abstract class CheckControl extends Control
 //	{
 //		$this->Caption->CSSClass = $className;
 //	}
-	/**
+	/*
 	 * @ignore
 	 *
 	function GetChange()
@@ -215,7 +221,8 @@ abstract class CheckControl extends Control
 		if($oldChange->Blank())
 			QueueClientFunction($this, '_NChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
 		return parent::SetChange($change);
-	}
+	}*/
+	
 	/**
 	 * @ignore
 	 */

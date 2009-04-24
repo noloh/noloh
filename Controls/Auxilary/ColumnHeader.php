@@ -23,9 +23,14 @@
  */
 class ColumnHeader extends Panel
 {
-	/*
+	/**
+	 * @ignore
 	 */
-	const Ascending = 0, Descending = 1;
+	const Ascending = 0;
+	/**
+	 * @ignore
+	 */
+	const Descending = 1;
 	private $Order;
 	private $ListViewId;
 	private $SizeHandle;
@@ -64,7 +69,7 @@ class ColumnHeader extends Panel
 	/**
 	 * Returns the object that orders the columns. The default OrderArrow
 	 * is an Image object.
-	 * @return Object The object that sorts the column
+	 * @return Image The object that sorts the column
 	 */
 	function GetOrderArrow()	{return $this->OrderArrow;}
 	/**
@@ -77,6 +82,10 @@ class ColumnHeader extends Panel
 	 * @return string The text to diplay in the the column
 	 */
 	function GetText()		{return $this->Caption->GetText();}
+	/**
+	 * Returns the object used to resize the Columns
+	 * @return Image
+	 */
 	public function GetSizeHandle()	{return $this->SizeHandle;}
 	/**
 	 * Sorts the contents of the attached ListView by this Column.
@@ -102,7 +111,7 @@ class ColumnHeader extends Panel
 	}
 	/**
 	 * Associates this ColumnHeader with a ListView
-	 * @oaram mixed string|ListView $listViewId The ID or object of the ListView
+	 * @param string|ListView $listViewId The ID or object of the ListView
 	 * you wish to associate this ColumnHeader with.
 	 */
 	function SetListView($listViewId)

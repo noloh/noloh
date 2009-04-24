@@ -167,7 +167,7 @@ class CollapsePanel extends Panel implements Groupable
 	 * Sets whether the CollapsePanel is collapsed or not.
 	 * 
 	 * This is an alias for !Selected
-	 * @deprecated 
+	 * @deprecated Use Selected instead
 	 * @param boolean $bool
 	 */
 	function SetCollapsed($bool)

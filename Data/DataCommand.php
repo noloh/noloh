@@ -57,7 +57,7 @@ class DataCommand extends Object
 	function GetConnection()			{return $this->Connection;}
 	/**
 	 * Sets the DataConnection used when executing the command's statement.
-	 * @param DataConnection
+	 * @param DataConnection $connection
 	 */
 	function SetConnection($connection)	{$this->Connection = $connection;}
 	/**
@@ -131,8 +131,8 @@ class DataCommand extends Object
 	 * $command->ReplaceParam(-1, '11219');
 	 * $results2 = $command->Execute();
 	 * </pre>
-	 * @param integer The number of the parameter, negative numbers denote distance from end.
-	 *
+	 * @param integer $index The number of the parameter, negative numbers denote distance from end.
+	 * @param mixed $value
 	 */
 	function ReplaceParam($index, $value)
 	{

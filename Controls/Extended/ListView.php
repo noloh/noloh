@@ -29,7 +29,7 @@ class ListView extends Panel
 	 * @ignore
 	 */
 	const Ascending = true; 
-		/**
+	/**
 	 * @ignore
 	 */
 	const Descending = false;
@@ -52,10 +52,21 @@ class ListView extends Panel
 	private $ApproxCount;
 	private $HeightSpacer;
 	private $DataColumns;
-	
+	/**
+	 * @ignore
+	 */
 	protected $ColumnsPanel;
+	/**
+	 * @ignore
+	 */
 	protected $LVItemsQueue = array();
+	/**
+	 * @ignore
+	 */
 	protected $InnerPanel;
+	/**
+	 * @ignore
+	 */
 	protected $Line;
 	/**
 	 * Returns the Panel containing the ListView's ColumnHeaders
@@ -152,6 +163,9 @@ class ListView extends Panel
 			if($this->Update($listViewItem))
 				unset($this->LVItemsQueue[$key]);
 	}
+	/**
+	 * @ignore
+	 */
 	protected function MakeColumnShift($column)
 	{
 		if(($count = $this->Columns->Count) > 1){
@@ -299,7 +313,6 @@ class ListView extends Panel
 	}
 	/**
 	 * Returns the number of rows of the dataset the ListView is bound to.
-	 *
 	 * @return integer
 	 */
 	public function GetBoundCount()	{return $this->ApproxCount;}

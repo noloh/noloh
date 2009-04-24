@@ -78,7 +78,6 @@ class TabPanel extends Panel
 	}
 	/**
 	 * Returns index of the currently selected TabPage
-	 * 
 	 * @return mixed
 	 */
 	public function GetSelectedIndex()	
@@ -86,19 +85,20 @@ class TabPanel extends Panel
 		return $this->Tabs->GetSelectedIndex();
 	}
 	/**
-	 *  Returns the currently selected TabPage
-	 *  @return TabPage
+	 * Returns the currently selected TabPage
+	 * @return TabPage
 	 */
 	public function GetSelectedTabPage()	{return $this->Tabs->GetSelectedIndex();}
 	/**
-	 * @deprecated Use SelectedTabPage instead
 	 * Returns the currently selected TabPage
+	 * @deprecated Use SelectedTabPage instead
+	 * @return TabPage
 	 */
 	public function GetSelectedTab()	{return $this->GetSelectedTabPage();}
 	/**
 	 * Sets the currently selected TabPage
 	 * @param TabPage $tabPage
-	 * @return TabPage;
+	 * @return TabPage
 	 */
 	public function SetSelectedTabPage($tabPage)
 	{
@@ -111,7 +111,7 @@ class TabPanel extends Panel
 	/**
 	 * Sets an TabPage of a particular index as selected
 	 * @param integer $index
-	 * @return integer;
+	 * @return integer
 	 */
 	public function SetSelectedIndex($selectedIndex)
 	{

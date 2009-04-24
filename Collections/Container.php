@@ -18,17 +18,17 @@ class Container extends Component
 	 */
 	public $Controls;
 	/**
-	* Constructor.
-	* Be sure to call this from the constructor of any class that extends Container
-	* @return Container
-	*/
+	 * Constructor.
+	 * Be sure to call this from the constructor of any class that extends Container
+	 * @return Container
+	 */
 	function Container()
 	{
 		parent::Component();
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 	}
-		/**
+	/**
 	 * @ignore
 	 */
 	function Bury()

@@ -20,7 +20,11 @@ class TableRow extends Control
 	 * @var ArrayList
 	 */
 	public $Columns;
-	
+	/**
+	 * Constructor
+	 * @param array $columns
+	 * @return TableRow
+	 */
 	function TableRow($columns = null)
 	{
 		parent::Control(0, 0, null, null);

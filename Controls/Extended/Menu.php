@@ -88,12 +88,12 @@ class Menu extends Panel
 	function SetChecked($bool)
 	{
 	}
-	/**
-	 * @ignore
-	 *
-	 * Sets the orientation of the Menu. This determines whether the menu will be stacked horizontally or vertically.
+	 /* Sets the orientation of the Menu. This determines whether the menu will be stacked horizontally or vertically.
 	 *
 	 * @param mixed $orientation
+	 */
+	 /**
+	 * @ignore
 	 */
 	function SetOrientation($orientation)
 	{

@@ -769,7 +769,7 @@ abstract class Control extends Component
 	function GetDeselect()							{return $this->GetEvent('Deselect');}
 	/**
 	 * Returns the Deselect Event, which gets launched when this Control gets deselected, which makes sense only in the context of Groupable Controls
-	 * @param Event $select
+	 * @param Event $deselect
 	 */
 	function SetDeselect($deselect)					{$this->SetEvent($deselect, 'Deselect');}
 	/**
@@ -927,7 +927,7 @@ abstract class Control extends Component
 	function GetShiftStep()							{return $this->GetEvent('ShiftStep');}
 	/**
 	 * Sets the ShiftStep Event, which gets launched when a user shifts this Control enough to make a visual difference
-	 * @param Event $shiftStop
+	 * @param Event $shiftStep
 	 */
 	function SetShiftStep($shiftStep)				{$this->SetEvent($shiftStep, 'ShiftStep');}
 	/**

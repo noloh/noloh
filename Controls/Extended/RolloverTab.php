@@ -31,7 +31,7 @@ class RolloverTab extends Panel implements Groupable
 	 */
 	public $TextObject;
 	/**
-	 * '
+	 * Constructor
 	 * @param string|Control $text The objects used to display the RolloverTab's text
 	 * @param mixed $outTab The Control displayed during the out state
 	 * @param mixed $selectedTab The Control displayed during the selected state

@@ -62,7 +62,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends ArrayList.
-	 * @param array An array representing the initial elements.
+	 * @param array $elements An array representing the initial elements.
 	 */ 
 	function ArrayList($elements=null)
 	{
@@ -93,7 +93,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Adds an unlimited number elements to the ArrayList, or the contents (keys will not be preserved) of one array if that is the lone parameter.
-	 * @param mixed ... Unlimited number of elements to be added
+	 * @param mixed,... $dotDotDot Unlimited number of elements to be added
 	 * <pre>
 	 * // The following two statements have the same effect.
 	 * $arrayList->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);
@@ -269,6 +269,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Resets the internal pointer of the ArrayList, analogous to the PHP native function reset().
+	 * @return mixed
 	 */
 	public function Reset() 
 	{
@@ -283,6 +284,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Returns the value of the ArrayList at the current internal pointer, analogous to the PHP native function current().
+	 * @return mixed
 	 */
 	public function Current() 
 	{
@@ -290,6 +292,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Returns the key of the ArrayList at the current internal pointer, analogous to the PHP native function key().
+	 * @return mixed
 	 */
 	public function Key() 
 	{
@@ -297,6 +300,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Returns the value of the ArrayList at the next internal pointer and advances the pointer, analogous to the PHP native function next().
+	 * @return mixed
 	 */
 	public function Next() 
 	{

@@ -33,7 +33,7 @@ class ClientEvent extends Event
 	/**
 	 * Constructor.
 	 * @param string $allCodeAsString Either the full JavaScript code to be executed or the name of a JavaScript function as a string
-	 * @param mixed $params,... the optional params to be passed to your JavaScript function 
+	 * @param mixed,... $params the optional params to be passed to your JavaScript function 
 	 */
 	function ClientEvent($allCodeAsString, $params=null)
 	{
@@ -112,7 +112,7 @@ class ClientEvent extends Event
 	{
 		return false;
 	}
-	/**
+	/*
 	 * @ignore
 	 *
 	function ParseToJS($eventTypeAsString, $ObjsId)
@@ -132,7 +132,7 @@ class ClientEvent extends Event
 					$Code .= $this->ExecuteFunction[$i]->ParseToJS($eventTypeAsString."->ExecuteFunction[$i]", $ObjsId);
 			return $Code;
 		}
-	}/
+	}*/
 	
 	/**
 	 * Launches the particular event. That is, the client will be notified to execute the given JavaScript.

@@ -75,30 +75,26 @@ class RolloverImage extends Image implements Groupable
 	 */
 	function GetSelectedPath()							{return $this->SelectedSrc;}
 	/**
-	 * @deprecated use Path instead
-	 * 
 	 * Returns the path to the image that is shown during the out state
+	 * @deprecated use Path instead
 	 * @return string
 	 */
 	function GetSrc()								{return $this->Src;}
 	/**
-	 * @deprecated use OverPath instead
-	 * 
 	 * Returns the path to the image that is shown during the over state
+	 * @deprecated use OverPath instead
 	 * @return string
 	 */
 	function GetOverSrc()								{return $this->OverSrc;}
 	/**
-	 * @deprecated use DownPath instead
-	 * 
 	 * Returns the path to the image that is shown during the down state
+	 * @deprecated use DownPath instead
 	 * @return string
 	 */
 	function GetDownSrc()								{return $this->DownSrc;}
 	/**
-	 * @deprecated use SelectedPath instead
-	 * 
 	 * Returns the path to the image that is shown during the selected state
+	 * @deprecated use SelectedPath instead
 	 * @return string
 	 */
 	function GetSelectedSrc()							{return $this->SelectedSrc;}
@@ -170,35 +166,34 @@ class RolloverImage extends Image implements Groupable
 		}
 	}
 	 /**
-	 * @deprecated use Path instead
-	 *  
 	 * Sets the path to the image that is shown during the out state
 	 * The path is relative to your main file 
 	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
+	 * @deprecated use Path instead
 	 * @param string $outSrc
 	 * @return string 
 	 */
 	function SetSrc($outSrc)	{$this->SetPath($outSrc);}
 	/**
-	 * @deprecated use OverPath instead
 	 * Sets the path to the image that is shown during the over state
 	 * The path is relative to your main file 
+	 * @deprecated use OverPath instead
 	 * @param string $overSrc
 	 * @return string 
 	 */
 	function SetOverSrc($overSrc)	{$this->SetOverPath($overSrc);}
 	/**
-	 * @deprecated use DownPath instead
 	 * Sets the path to the image that is shown during the down state
 	 * The path is relative to your main file 
+	 * @deprecated use DownPath instead
 	 * @param string $downSrc
 	 * @return string 
 	 */
 	function SetDownSrc($downSrc)	{$this->SetDownPath($downSrc);}
 	/**
-	 * @deprecated use SelectedPath instead
 	 * Sets the path to the image that is shown during the selected state
 	 * The path is relative to your main file 
+	 * @deprecated use SelectedPath instead
 	 * @param string $selectedSrc
 	 * @return string 
 	 */
@@ -253,12 +248,12 @@ class RolloverImage extends Image implements Groupable
 	}	
 	/**
 	 * Sets whether the CollapsePanel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
-	 * 
 	 * @param boolean $bool
 	 */
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
 	/**
 	 * Returns whether the CollapsePanel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 * @return boolean
 	 */
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	/**

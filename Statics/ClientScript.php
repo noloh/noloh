@@ -15,7 +15,7 @@ final class ClientScript
 	/**
 	 * Adds Javascript code to be run immediately on the client.<br>
 	 * {@see ClientScript::AddSource} to add script files as opposed to code, or {$see ClientScript::Queue} to run code when a specific object has shown.
-	 * @param string $script Valid string of JavaScript code.
+	 * @param string $code Valid string of JavaScript code.
 	 * @param Priority::High|Priority::Medium|Priority::Low $priority Determines the order in which scripts run. Can be: Priority::Low, Priority::Medium, or Priority::High 
 	 */
 	static function Add($code, $priority=Priority::Medium)

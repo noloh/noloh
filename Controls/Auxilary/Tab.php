@@ -12,21 +12,24 @@
 class Tab extends Panel
 {
 	/**
-	 * @var mixed string|Image A string to the source, or an Image object used for the left part of this Tab.
+	 * A string to the source, or an Image object used for the left part of this Tab.
+	 * @var Image 
 	 */
 	public $LeftImage;
 	/**
-	 * @var mixed string|Image A string to the source, or an Image object used for the center part of this Tab.
+	 * A string to the source, or an Image object used for the center part of this Tab.
+	 * @var Image 
 	 */
 	public $MainImage;
 	/**
-	 * @var mixed string|Image A string to the source, or an Image object used for the right part of this Tab.
+	 * A string to the source, or an Image object used for the right part of this Tab.
+	 * @var Image 
 	 */
 	public $RightImage;
 	/**
 	 * Constructor of Tab
 	 * 
-	 * @param mixed string|Image $leftImage A string to the source, or an Image object used for the left part of this Tab.
+	 * @param mixed string|Image $leftImageSrc A string to the source, or an Image object used for the left part of this Tab.
 	 * @param mixed string|Image $mainImageSrc A string to the source, or an Image object used for the center part of this Tab.
 	 * @param mixed string|Image $rightImageSrc A string to the source, or an Image object used for the right part of this Tab.
 	 */

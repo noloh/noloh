@@ -164,8 +164,8 @@ final class Animate
 	 * @param mixed $toHeight The vertical destination to which the Height will go. Can be an integer, Animate::Oblivion or Animate::Hiding.
 	 * @param integer $duration The number of milliseconds it will take for the animation to complete
 	 * @param mixed $easing The type of easing motion associated with this animation. See the Animate constants for more details.
-	 * @param integer $fromLeft If you would like the Left to begin somewhere other than its current value
-	 * @param integer $fromTop If you would like the Top to begin somewhere other than its current value
+	 * @param integer $fromWidth If you would like the Left to begin somewhere other than its current value
+	 * @param integer $fromHeight If you would like the Top to begin somewhere other than its current value
 	 * @param integer $fps The frame rate of this animation
 	 */
 	static function Size($control, $toWidth, $toHeight, $duration=1000, $easing=Animate::Quadratic, $fromWidth=null, $fromHeight=null, $fps=30)

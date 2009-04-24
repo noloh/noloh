@@ -10,6 +10,9 @@
  */
 class ListViewItem extends Panel //extends Component
 {
+	/**
+	 * @ignore
+	 */
 	public $Checked;
 	/**
 	 * SubItems make up the contents of a row. You can think of a SubItem
@@ -33,6 +36,7 @@ class ListViewItem extends Panel //extends Component
 	 *     $listViewItem = nw ListViewItem();
 	 *     $listViewItem->AddRange(array('Toyota', 'Red'));
 	 * </pre>
+	 * @var ArrayList
 	 */
 	public $SubItems;
 	private $ListViewId;
@@ -61,6 +65,10 @@ class ListViewItem extends Panel //extends Component
 		if($this->ListViewId != null)
 			return GetComponentById($this->ListViewId);
 	}
+	/**
+	 * Sets the ListView that this ListViewItem is associated with
+	 * @param ListView $listView
+	 */
 	function SetListView($listView)	{$this->ListViewId = $listView->Id;}
 	/**
 	 * Adds a SubItem to the SubItems ArrayList of this ListViewItem. 
@@ -75,6 +83,7 @@ class ListViewItem extends Panel //extends Component
 	 *     $listViewItem = new ListViewItem();
 	 *     $listViewItem->SubItems->Add('This is a test');
 	 * </pre>
+	 * @param string|array|Control $objOrText
 	 */
 	function AddSubItem($objOrText=null)
 	{
@@ -126,7 +135,7 @@ class ListViewItem extends Panel //extends Component
 	function SetValue($value)	{$this->Value = $value;}
 	/**
 	 * Returns the Value of this ListViewItem
-	 * @return $mixed; 
+	 * @return mixed
 	 */
 	function GetValue()			{return $this->Value;}
 	/**

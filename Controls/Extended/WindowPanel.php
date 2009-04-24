@@ -31,12 +31,12 @@ class WindowPanel extends Panel
 	 * @ignore
 	 */
 	public $RestoreImage;
-	/*
+	/**
 	 * The RolloverImage used for the Close button of the WindowPanel
 	 * @var RolloverImage
 	 */
 	public $CloseImage;
-    /*
+    /**
 	 * The Image used for the resize handle of the WindowPanel
 	 * @var Image
 	 */
@@ -226,7 +226,7 @@ class WindowPanel extends Panel
 	 * @ignore
 	 */
 	function GetText(){return $this->TitleBar->GetText();}
-	/*
+	/**
 	 * Returns the Menu assigned to the WindowPanel
 	 * @return Menu 
 	 */
@@ -334,14 +334,14 @@ class WindowPanel extends Panel
 			NolohInternal::SetProperty('Hgt', $height, $this);
 	}
 	/**
-	*Returns the the width of the BodyPanel.
-	*@return mixed 
-	*/
+	 * Returns the width of the BodyPanel.
+	 * @return mixed 
+	 */
 	function GetInnerWidth()	{return $this->BodyPanel->GetWidth();}
 	/**
-	*Returns the the height of the BodyPanel.
-	*@return mixed 
-	*/
+	 * Returns the the height of the BodyPanel.
+	 * @return mixed 
+	 */
 	function GetInnerHeight()	{return $this->BodyPanel->GetHeight();}
 	/**
 	 * @ignore

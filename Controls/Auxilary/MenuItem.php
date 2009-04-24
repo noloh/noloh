@@ -2,7 +2,7 @@
 /**
  * MenuItem class
  *
- * MenuItem represents an Item in a Menu.
+ * MenuItem represents an option in a Menu.
  * 
  * @package Controls/Auxiliary
  */
@@ -131,6 +131,7 @@ class MenuItem extends Panel
 	}
 	/**
 	 * Returns the Label in which the Text for this MenuItem is displayed.
+	 * @return Label
 	 */
 	function GetTextLabel()	{return $this->TextLabel;}
 	/**
@@ -233,23 +234,39 @@ class MenuItem extends Panel
 	 */
 	function SetClick($event)				{$this->TextLabel->SetClick($event);}
 	//function SetLayout($Layout)		{$this->TextLabel->SetLayout($Layout);}
+	/**
+	 * Sets the color of the MenuItem's text under normal circumstances
+	 * @param string $color
+	 */
 	function SetOutTextColor($color='#001E42')	
 	{
 		$this->TextLabel->SetColor($color);
-		NolohInternal::SetProperty('OtTxtClr', "$color", $this->TextLabel);
+		NolohInternal::SetProperty('OtTxtClr', $color, $this->TextLabel);
 	}
+	/**
+	 * Sets the color of the MenuItem's text when the mouse cursor is over it
+	 * @param string $color
+	 */
 	function SetOverTextColor($color='#FFFFFF')
 	{
-		NolohInternal::SetProperty('OvTxtClr', "$color", $this->TextLabel);
+		NolohInternal::SetProperty('OvTxtClr', $color, $this->TextLabel);
 	}
+	/**
+	 * Sets the background color of the MenuItem under normal circumstances
+	 * @param string $color
+	 */
 	function SetOutBackColor($color='transparent')	
 	{
 		$this->TextLabel->SetBackColor($color);
-		NolohInternal::SetProperty('OtBckClr', "$color", $this->TextLabel);
+		NolohInternal::SetProperty('OtBckClr', $color, $this->TextLabel);
 	}
+	/**
+	 * Sets the background color of the MenuItem when the mouse cursor is over it
+	 * @param string $color
+	 */
 	function SetOverBackColor($color='#07254A')
 	{
-		NolohInternal::SetProperty('OvBckClr', "$color", $this->TextLabel);
+		NolohInternal::SetProperty('OvBckClr', $color, $this->TextLabel);
 	}
 	/**
 	 * @ignore

@@ -112,7 +112,6 @@ class CheckListBox extends ListControl
 	 * Clears the Items ArrayList. 
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Clear()</pre>
-	 * @param Item $item
 	 */
 	function ClearItems()
 	{
@@ -136,9 +135,9 @@ class CheckListBox extends ListControl
 	 * @param integer $index
 	 * @param boolean $select Indicates whether the Item should be selected or deseleted
 	 */
-	function SetSelectedIndex($idx, $select=true)
+	function SetSelectedIndex($index, $select=true)
 	{
-		$this->CheckBoxes[$idx]->Checked = $select;
+		$this->CheckBoxes[$index]->Checked = $select;
 	}
 	/**
 	 * Returns an array of all the indices of the selected Items
@@ -158,9 +157,9 @@ class CheckListBox extends ListControl
 	 * @param array|ArrayList $selectedIndices
 	 * @param boolean $select Indicates whether the Item should be selected or deseleted
 	 */
-	function SetSelectedIndices($array, $select=true)
+	function SetSelectedIndices($selectedIndices, $select=true)
 	{
-		foreach($array as $idx)
+		foreach($selectedIndices as $idx)
 			$this->SetSelectedIndex($idx, $select);
 	}
 	/**
@@ -181,14 +180,14 @@ class CheckListBox extends ListControl
 	 * @param boolean $select Indicates whether the Item should be selected or deseleted
 	 * @return mixed If found, the value passed in; otherwise null.
 	 */
-	function SetSelectedValue($val, $bool=true)
+	function SetSelectedValue($value, $select=true)
 	{
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->Items->Elements[$i]->Value == $val)
+			if($this->Items->Elements[$i]->Value == $value)
 			{
-				$this->CheckBoxes[$i]->Checked = $bool;
-				return $val;
+				$this->CheckBoxes[$i]->Checked = $select;
+				return $value;
 			}
 		return null;
 	}
@@ -205,16 +204,16 @@ class CheckListBox extends ListControl
 		return $checkedArray;
 	}
 	/**
-	* Selects or deselects those and only those Items whose values are elements of the specified array.
-	* @param array $array
-	* @param boolean $select Indicates whether the Items should be selected or deseleted
-	*/
-	function SetSelectedValues($array, $bool=true)
+	 * Selects or deselects those and only those Items whose values are elements of the specified array.
+	 * @param array $array
+	 * @param boolean $select Indicates whether the Items should be selected or deseleted
+	 */
+	function SetSelectedValues($array, $select=true)
 	{
 		foreach($array as $val)
-			$this->SetSelectedValue($val, $bool);
+			$this->SetSelectedValue($val, $select);
 	}
-		/**
+	/**
 	 * Gets the Text of a selected Item
 	 * @return string
 	 */
@@ -228,18 +227,18 @@ class CheckListBox extends ListControl
 	 * Note:This sets the SelectedIndex to the <b>FIRST</b> occurence of the Value in the Items ArrayList
 	 * <br> Can also be called as a property
 	 * <pre>$this->SelectedText= 42;</pre>
-	 * @param string $value
+	 * @param string $text
 	 * @param boolean $select Indicates whether the Item should be selected or deseleted
 	 * @return mixed If found, the value passed in; otherwise null.
 	 */
-	function SetSelectedText($text, $bool=true)
+	function SetSelectedText($text, $select=true)
 	{
 		$checkBoxCount = $this->CheckBoxes->Count();
 		for($i=0; $i<$checkBoxCount; $i++)
-			if($this->Items->Elements[$i]->Text == $val)
+			if($this->Items->Elements[$i]->Text == $text)
 			{
-				$this->CheckBoxes[$i]->Checked = $bool;
-				return $val;
+				$this->CheckBoxes[$i]->Checked = $select;
+				return $text;
 			}
 		return null;
 	}
@@ -260,10 +259,10 @@ class CheckListBox extends ListControl
 	* @param array $array
 	* @param boolean $select Indicates whether the Items should be selected or deseleted
 	*/
-	function SetSelectedTexts($array, $bool=true)
+	function SetSelectedTexts($array, $select=true)
 	{
 		foreach($array as $val)
-			$this->SetSelectedText($val, $bool);
+			$this->SetSelectedText($val, $select);
 	}
 	/**
 	 * @ignore

@@ -82,19 +82,19 @@ class ImplicitArrayList extends ArrayList
 	 * @param boolean $onlyAdd Specifies whether or not you want a default ArrayList Add, or the overidden AddFunction to be called
 	 * @return mixed The element that has been added
 	 */
-	function Add($object, $onlyAdd = false)
+	function Add($element, $onlyAdd = false)
 	{
 		if($onlyAdd)
 			if(isset($GLOBALS['_NImplArrInsert']))
-				return parent::Insert($object, $GLOBALS['_NImplArrInsert']);
+				return parent::Insert($element, $GLOBALS['_NImplArrInsert']);
 			else 
-				return parent::Add($object);
+				return parent::Add($element);
 		elseif(!$this->AddFunctionName)
-			return parent::Add($object);
+			return parent::Add($element);
 		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
-			return $src->{$this->AddFunctionName}($object);
+			return $src->{$this->AddFunctionName}($element);
 		elseif(class_exists($this->Source))
-			call_user_func(array($this->Source, $this->AddFunctionName), $object);
+			call_user_func(array($this->Source, $this->AddFunctionName), $element);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, not overwriting what was previously there.
@@ -104,26 +104,26 @@ class ImplicitArrayList extends ArrayList
 	 * @param boolean $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
 	 * @return mixed The element that has been added
 	 */
-	function Insert($object, $index, $onlyInsert = false)
+	function Insert($element, $index, $onlyInsert = false)
 	{
 		if($onlyInsert)
-			return parent::Insert($object, $index);
+			return parent::Insert($element, $index);
 		elseif(!$this->InsertFunctionName)
 		{
 			if($this->AddFunctionName)
 			{
 				$GLOBALS['_NImplArrInsert'] = $index;
-				$this->Add($object);
+				$this->Add($element);
 				unset($GLOBALS['_NImplArrInsert']);
-				return $object;
+				return $element;
 			}
 			else
-				return parent::Insert($object, $index);
+				return parent::Insert($element, $index);
 		}
 		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
-			return $src->{$this->InsertFunctionName}($object, $index);
+			return $src->{$this->InsertFunctionName}($element, $index);
 		elseif(class_exists($this->Source))
-			call_user_func(array($this->Source, $this->InsertFunctionName), $object, $index);
+			call_user_func(array($this->Source, $this->InsertFunctionName), $element, $index);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, as well as a particular position, in the sense of the order in which foreach iterates
@@ -133,14 +133,14 @@ class ImplicitArrayList extends ArrayList
 	 * @param boolean $onlyInsert Specifies whether or not you want a default ArrayList Insert, or the overidden InsertFunction to be called
 	 * @return mixed The Element that has been inserted
 	 */
-    function PositionalInsert($object, $index, $position, $onlyInsert = false)
+    function PositionalInsert($element, $index, $position, $onlyInsert = false)
     {
 		if(!$this->InsertFunctionName || $onlyInsert)
-			return parent::PositionalInsert($object, $index, $position);
+			return parent::PositionalInsert($element, $index, $position);
 		elseif(is_object($this->Source))
-			return $this->Source->{$this->InsertFunctionName}($object, $position);
+			return $this->Source->{$this->InsertFunctionName}($element, $position);
 		else
-			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($object, $position);
+			return GetComponentById($this->Source==null?$this->ParentId:$this->Source)->{$this->InsertFunctionName}($element, $position);
     }
 	/**
 	 * Removes a particular element of the ArrayList.
@@ -148,20 +148,20 @@ class ImplicitArrayList extends ArrayList
 	 * @param boolean $onlyRemove Specifies whether or not you want a default ArrayList Remove, or the overidden RemoveFunction to be called
 	 * @return boolean Whether the remove was successful
 	 */
-	function Remove($object, $onlyRemove = false)
+	function Remove($element, $onlyRemove = false)
 	{
 		if(!$this->RemoveFunctionName || $onlyRemove)
-			return parent::Remove($object, $onlyRemove);
+			return parent::Remove($element, $onlyRemove);
 		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
-			return $src->{$this->RemoveFunctionName}($object);
+			return $src->{$this->RemoveFunctionName}($element);
 		elseif(class_exists($this->Source))
-			call_user_func(array($this->Source, $this->RemoveFunctionName), $object);
+			call_user_func(array($this->Source, $this->RemoveFunctionName), $element);
 	}
 	/**
 	 * Removes an element at a particular index. 
 	 * If the index is an integer, the ArrayList is reindexed to fill in the gap.
 	 * @param integer|string $index The index of the element to be removed
-	 * @param boolean $onlyRemoveAt Specifies whether or not you want a default ArrayList RemoveAt, or the overidden RemoveAtFunction to be called
+	 * @param boolean $onlyRemove Specifies whether or not you want a default ArrayList RemoveAt, or the overidden RemoveAtFunction to be called
 	 */
 	function RemoveAt($index, $onlyRemove = false)
 	{

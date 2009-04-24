@@ -93,7 +93,7 @@ class ListBox extends ListControl
 	}
 	/**
 	 * Selects those and only those Items whose value in the Items ArrayList is an element of the specified array.
-	 * @param array|ArrayList $selectedIndices
+	 * @param array|ArrayList $selectedValues
 	 */
 	function SetSelectedValues($selectedValues)
 	{
@@ -120,6 +120,9 @@ class ListBox extends ListControl
 			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
 		}
 	}
+	/**
+	 * Deselects all of the ListBox's Items
+	 */
 	function ClearSelected()
 	{
 		$this->SelectedIndices = array();

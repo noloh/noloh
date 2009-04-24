@@ -78,7 +78,9 @@ final class URL
 		}
 		return $tokenValue;
 	}
-	
+	/**
+	 * @ignore
+	 */
 	static function SetTokenHelper(&$tokenArray, $tokenName, $tokenValue, $removeSubsequentTokens=false)
 	{
 		if($tokenValue === null)

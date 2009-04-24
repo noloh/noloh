@@ -52,16 +52,16 @@ class Image extends Control
 		return $this->Src;
 	}
 	/**
-	 * @deprecated Use Path instead
 	 * Gets the path of the Image
+	 * @deprecated Use Path instead
 	 * @return string
 	 */
 	function GetSrc()	{return $this->GetPath();}
 	/**
 	 * Sets the path of the Image.
 	 * The path is relative to your main file 
-	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
 	 * @param string $path
+	 * @param boolean $adjustSize
 	 * @return string 
 	 */
 	function SetPath($path, $adjustSize=false)
@@ -95,12 +95,11 @@ class Image extends Control
 		return $path;
 	}
 	/**
-	 * @deprecated Use Path instead
-	 * 
 	 * Sets the path of the Image
 	 * The path is relative to your main file 
-	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
+	 * @deprecated Use Path instead
 	 * @param string $path
+	 * @param boolean $adjustSize
 	 * @return string 
 	 */
 	function SetSrc($path, $adjustSize=false)	{return $this->SetPath($path, $adjustSize);}
@@ -250,7 +249,7 @@ class Image extends Control
 			echo $indent, '<IMG src="', $this->Src, '" ', $str, "></IMG>\n";
 	}
 	/**
-	 *@ignore 
+	 * @ignore 
 	 */
 	static function MagicGeneration($src, $class, $function, $params, $width=300, $height=200)
 	{
@@ -282,7 +281,7 @@ class Image extends Control
 			imagedestroy($im);
 		}
 	}
-	/**
+	/*
 	 * ShiftColor can be used to dynamically rotate the colors of your image. This is useful for skinning objects.
 	 * ShiftColor maintains all transparency and gradients. For instance, if you have a gradient image that has a blue base you can change
 	 * that image to be based on whichever color you wish and it will maintain the look and feel of the image.
@@ -303,6 +302,9 @@ class Image extends Control
 	 * @param string $toColor The color that you would like the image to be based on.
 	 * @param string $fromColor The color that you would like the rotation to start from. This is useful if you wish to preserve certain colors
 	 * or have a different starting based. By default the color range begins from the darkest color in your image.
+	 */
+	/**
+	 * @ignore
 	 */
 	static function ShiftColor($image, $toColor, $fromColor=null)
 	{

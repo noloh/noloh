@@ -35,9 +35,6 @@
  */
 class Eventee extends MarkupItem 
 {
-	/**
-	 * @ignore
-	 */
 	private $ATag;
 	/**
 	 * @ignore

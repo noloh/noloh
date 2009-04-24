@@ -45,7 +45,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	 * @param mixed Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type The type of the database.
 	 * @param resource $resource A resource representing the data returned from the database.
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Determines how your data columns are indexed .
-	 * @param $callBack
+	 * @param ServerEvent $callBack
 	 */
 	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null)
 	{
@@ -158,7 +158,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	/**
 	 * The number of rows in your dataset.
 	 * 
-	 * @return integer;
+	 * @return integer
 	 */
 	function GetCount()
 	{

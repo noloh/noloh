@@ -23,9 +23,7 @@
 abstract class MarkupItem extends Object
 {
 	/**
-	 * A unique Id
-	 * @access protected
-	 * @var string
+	 * @ignore
 	 */
 	protected $Id;
 	private $Keyword;
@@ -67,6 +65,7 @@ abstract class MarkupItem extends Object
 	}
 	/**
 	 * A unique Id for the MarkupItem
+	 * @return string
 	 */
 	function GetId()
 	{

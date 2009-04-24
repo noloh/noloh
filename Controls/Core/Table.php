@@ -67,7 +67,7 @@ class Table extends Control
 	}
 	/**
 	 * Returns the position of the horizontal scrollbar
-	 * @param integer $scrollTop
+	 * @return integer
 	 */
 	function GetScrollLeft()
 	{
@@ -75,7 +75,7 @@ class Table extends Control
 	}
 	/**
 	 * Sets the position of the horinzontal scrollbar
-	 * @param integer $scrollTop
+	 * @param integer $scrollLeft
 	 */
     function SetScrollLeft($scrollLeft)
     {
@@ -88,7 +88,7 @@ class Table extends Control
     }
     /**
 	 * Returns the position of the vertical scrollbar
-	 * @param integer $scrollTop
+	 * @return integer
 	 */
     function GetScrollTop()
     {

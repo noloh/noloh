@@ -23,15 +23,17 @@ interface Groupable
 {
 	/**
 	 * Returns whether or not the Groupable element is currently Selected.
+	 * @return boolean
 	 */
 	function GetSelected();
 	/**
 	 * Sets whether or not the Groupable element is currently Selected.
-	 * @param bool $bool
+	 * @param boolean $bool
 	 */
 	function SetSelected($bool);
 	/**
 	 * Returns the Group to which this Element belongs.
+	 * @return string
 	 */
 	function GetGroupName();
 	/**

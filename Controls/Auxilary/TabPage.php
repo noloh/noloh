@@ -16,16 +16,21 @@
 class TabPage extends Panel 
 {
 	private $RolloverTab;
-	
+	/**
+	 * Constructor
+	 * @param string|Control $tabName
+	 * @return TabPage
+	 */
 	function TabPage($tabName='TabPage')
 	{
 		parent::Panel(0, 0, '100%', '100%');
 		$this->SetRolloverTab($tabName);
 	}
-	/*
+	/**
 	 * Assigns the RolloverTab to be used with the TabPage. 
 	 * This is useful in situations where you prefer to set a custom look and feel
 	 * for the RolloverTab.
+	 * @param RolloverTab $rolloverTab
 	 */
 	public function SetRolloverTab($rolloverTab = null)
 	{
@@ -38,7 +43,13 @@ class TabPage extends Panel
 	 * @return RolloverTab
 	 */
 	public function GetRolloverTab(){return $this->RolloverTab;}
+	/**
+	 * @ignore
+	 */
 	public function SetText($text)	{$this->RolloverTab->SetText($text);}
+	/**
+	 * @ignore
+	 */
 	public function GetText()		{return $this->RolloverTab->GetText();}
 }
 ?>

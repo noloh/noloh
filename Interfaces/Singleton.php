@@ -23,6 +23,7 @@ interface Singleton
 	 * <pre>
 	 * static function That()		{return parent::That(__CLASS__);}
 	 * </pre>
+	 * @return Component
 	 */
 	static function That();
 }

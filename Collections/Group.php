@@ -67,7 +67,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	}
 	/**
 	 * Adds an unlimited number elements to the Group, or the contents (keys will not be preserved) of one array if that is the lone parameter.
-	 * @param mixed ... Unlimited number of elements to be added
+	 * @param mixed,... $dotDotDot Unlimited number of elements to be added
 	 * <pre>
 	 * // The following two statements have the same effect.
 	 * $group->AddRange($firstElement, $secondElement, $thirdElement, $fourthElement);
@@ -119,7 +119,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 * Removes an element at a particular index. An element must exist there or an error is given.
 	 * If the index is an integer, the Group is reindexed to fill in the gap.
 	 * @param integer|string $index The index of the element to be removed
-	 * @return The element that was removed
+	 * @return mixed The element that was removed
 	 */
 	function RemoveAt($index)
 	{
@@ -163,7 +163,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return -1;
 	}
 	/**
-	 * Returns an array of selected indices, itself indexed numerically.
+	 * Returns an array of selected indices, indexed numerically.
 	 * @return array
 	 */
 	function GetSelectedIndices()

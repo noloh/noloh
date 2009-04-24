@@ -103,9 +103,6 @@ class TreeNode extends Panel
 		$this->Controls->Add($this->Element);
 		$this->Controls->Add($this->ChildrenPanel);
 	}
-	/**
-	 * @ignore
-	 */
 	private function AddNodeHelper($node)
 	{
 		//$node->SetWidth($this->Width-20);
@@ -193,9 +190,6 @@ class TreeNode extends Panel
 			$node->SetTreeListId($treeListId);
 		}
 	}
-	/**
-	 * @ignore
-	 */
 	private function ForgetListDeeply()
 	{
 		$this->SetTreeListId(null);
@@ -289,7 +283,8 @@ class TreeNode extends Panel
 		}
 	}
 	/**
-	 * Expands the ParentNodes recursively so that this TreeNode is displayed.
+	 * Expands the Parent TreeNodes recursively so that this TreeNode is displayed. If successful, returns this TreeNode, but if it fails, returns false.
+	 * @return boolean|TreeNode
 	 */
 	function ExpandToShow()
 	{
