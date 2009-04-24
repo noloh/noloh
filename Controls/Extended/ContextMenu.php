@@ -32,6 +32,7 @@ class ContextMenu extends Menu
 	function ContextMenu()
 	{
 		parent::Menu();
+		$this->Buoyant = true;
 		$this->SetHeight(0);
 		$this->SetBorder('1px solid #A0A0A0');
 		$this->SetVisible(System::Vacuous);
@@ -39,11 +40,14 @@ class ContextMenu extends Menu
 	/**
 	 * @ignore
 	 */
-	function AddMenuItem(MenuItem $menuItem)
+	function AddMenuItem($menuItem)
 	{
+		if(!is_object($menuItem))
+			$menuItem = new MenuItem($menuItem);
+			
 		$menuItem->Layout = Layout::Relative;
 		$menuItem->SetLeft(0);
-		//$menuItem->MenuItemsPanel->Buoyant = true;
+//		$menuItem->MenuItemsPanel->Buoyant = true;
 		if($this->GetWidth() < ($width = $menuItem->GetWidth()))
 		{
 			$this->SetWidth($width);
