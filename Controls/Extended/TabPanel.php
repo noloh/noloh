@@ -2,24 +2,50 @@
 /**
  * TabPanel class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * A TabPanel is a Panel with a TabBar that allows you to navigate quickly between several TabPages. 
+ * 
+ * <pre>
+ * $tabPanel = new TabPanel();
+ * $tabPanel->TabPages->Add($people = new TabPage('People'));
+ * $tabPanel->TabPages->Add($business = new TabPage('Businesses'));
+ * 
+ * //Now we can add some things to our TabPages
+ * $people->Controls->Add(...);
+ * $business->Controls->Add(...);
+ * 
+ * //Now we add the TabPanel to some Panel's Controls 
+ * $this->Controls->Add($tabPanel);
+ * </pre>
  * 
  * @package Controls/Extended
  */
 class TabPanel extends Panel
 {
-	const Top = 'Top';
-	const Bottom = 'Bottom';
-	
+	/**
+	 * The Panel containing the TabPanel's RolloverTabs
+	 * @var Panel
+	 */
 	public $TabBar;
+	/**
+	 * The Panel used to display all TabPages of the TabPanel. All TabPages are automatically added to this Panel
+	 * @var Panel
+	 */
 	public $Body;
+	/**
+	 * An ArrayList containing the TabPanel's TabPages. TabPages are added to this ArrayList for displaying in the TabPanel.
+	 * @var ArrayList
+	 */
 	public $TabPages;
-	public $Tabs;
+	private $Tabs;
 	
 	private $TabAlignment = 'Top';
-	private $SelectedIndex = -1;
-	
-		
+	/**
+	 * Constructor
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */	
 	function TabPanel($left = 0, $top = 0, $width = 500, $height = 500)
 	{
 		parent::Panel($left, $top, null, null);
@@ -50,30 +76,57 @@ class TabPanel extends Panel
 		parent::SetHeight($height);
 		$this->Body->SetHeight($height-$this->TabBar->GetHeight());
 	}
+	/**
+	 * Returns index of the currently selected TabPage
+	 * 
+	 * @return mixed
+	 */
 	public function GetSelectedIndex()	
 	{
 		return $this->Tabs->GetSelectedIndex();
 	}
-	public function GetSelectedTab()	{return $this->TabPages->Elements[$this->SelectedIndex];}
-	public function SetSelectedTab($tabPage)
+	/**
+	 *  Returns the currently selected TabPage
+	 *  @return TabPage
+	 */
+	public function GetSelectedTabPage()	{return $this->Tabs->GetSelectedIndex();}
+	/**
+	 * @deprecated Use SelectedTabPage instead
+	 * Returns the currently selected TabPage
+	 */
+	public function GetSelectedTab()	{return $this->GetSelectedTabPage();}
+	/**
+	 * Sets the currently selected TabPage
+	 * @param TabPage $tabPage
+	 * @return TabPage;
+	 */
+	public function SetSelectedTabPage($tabPage)
 	{
 		if(is_string($tabPage))
 			$this->SetSelectedIndex($this->TabPanelBar->Controls->IndexOf(GetComponentById($tabPage)));
 		else 
 			$this->SetSelectedIndex($this->TabPages->IndexOf($tabPage));
+		return $tabPage;
 	}
+	/**
+	 * Sets an TabPage of a particular index as selected
+	 * @param integer $index
+	 * @return integer;
+	 */
 	public function SetSelectedIndex($selectedIndex)
 	{
 		$this->Tabs->SetSelectedIndex($selectedIndex);
+		return $selectedIndex;
 	}
+	/**
+	 * @ignore
+	 */
 	public function AddTabPage($tabPage)
 	{	
+		if(!is_object($tabPage))
+			$tabPage = new TabPage($tabPage);
+		
 		$rolloverTab = $tabPage->GetRolloverTab();
-/*		if($this->TabPanelBar->Controls->Count < 1)
-		{
-			$this->TabPanelBar->Height = $temp->Height;
-			$this->TabPagesPanel->Height = ($this->Height - $this->TabPanelBar->Height);
-		}*/
 		$tabHeight = $rolloverTab->GetHeight();
 		
 		if($tabHeight > $this->TabBar->GetHeight())
@@ -83,8 +136,7 @@ class TabPanel extends Panel
 		}
 		$rolloverTab->Layout = Layout::Relative;
 		$rolloverTab->CSSFloat = 'left';
-		//
-		//$rolloverTab->Left = (($tmpCount = $this->Tabs->Count()) > 0)?$this->Tabs[$tmpCount - 1]->GetRight():0;
+
 		$count = $this->Tabs->Count();
 		$this->Tabs->Add($rolloverTab);
 		$this->Body->Controls->Add($tabPage, true);
@@ -108,17 +160,25 @@ class TabPanel extends Panel
 	{
 		$this->Tabs->Change['user'] = $event;
 	}
-	public function GetTabAlignment(){return $this->TabAlignment;}
-	public function SetTabAlignment($tabAlignment)
+	/**
+	 * Gets the orientation of the TabPanel's TabBar
+	 * @return Layout::Top|Layout::Bottom
+	 */
+	public function GetTabOrientation(){return $this->TabAlignment;}
+	/**
+	 * Sets the orientation of the TabPanel's TabBar
+	 * @param Layout::Top|Layout::Bottom
+	 */
+	public function SetTabOrientation($orientation)
 	{
 		$this->TabAlignment = $tabAlignment;
-		if($this->TabAlignment == 'Top')
+		if($this->TabAlignment == Layout::Top)
 		{
 			$this->TabBar->Left = 0;
 			$this->TabBar->Top = 0; 
 			$this->Body->Top = $this->TabPanelBar->Height;
 		}
-		else if($this->TabAlignment == 'Bottom')
+		else if($this->TabAlignment == Layout::Bottom)
 		{
 			$this->TabBar->Left = 0;
 			$this->TabBar->Top = $this->TabPagesPanel->Height;

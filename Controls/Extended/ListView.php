@@ -2,14 +2,41 @@
 /**
  * ListView class
  *
- * We're sorry, but this class doesn't have a description yet. We're working very hard on our documentation so check back soon!
+ * ListViews are used to present information in a tabular, sortable, grid. ListView's rows are made up of ListViewItems which can be popoulated with any object. In addition, ListView can be directly bound to data sources using it's Bind functionality.
  * 
+ * See the Data Binding article for more information.
+ * 
+ * Basic example of instantiation and using a ListView:
+ * <pre>
+ * $listView = new ListView();
+ * $listView->Columns->AddRange('First Name', 'Last Name', 'Address')
+ * 
+ * //Lets assume that people is an associative array containing a list of people
+ * $people = array(...);
+ * 
+ * foreach($people as $person)
+ * {
+ *     $row = new ListViewItem();
+ *     $row->SubItems->AddRange($person['fname'], $person['lname'], $person['address']);
+ *     $listView->ListViewItems->Add($row);
+ * }
+ * </pre>
  * @package Controls/Extended
  */
 class ListView extends Panel
 {
-	const Ascending = true, Descending = false;
-	
+	/**
+	 * @ignore
+	 */
+	const Ascending = true; 
+		/**
+	 * @ignore
+	 */
+	const Descending = false;
+	/**
+	 * An ArrayList containing the ListView's ListViewItems. ListViewitems should be added to this ArrayList
+	 * @var ArrayList
+	 */
 	public $ListViewItems;
 	private $Columns;
 	private $CurrentOffset;
@@ -30,8 +57,19 @@ class ListView extends Panel
 	protected $LVItemsQueue = array();
 	protected $InnerPanel;
 	protected $Line;
-	
+	/**
+	 * Returns the Panel containing the ListView's ColumnHeaders
+	 * @return Panel
+	 */
 	function GetColumnPanel(){return $this->ColumnsPanel;}
+	/**
+	 * Constructor
+	 * 
+	 * @param integer $left The Left coordinate of this element
+	 * @param integer $top The Top coordinate of this element
+	 * @param integer $width The Width dimension of this element
+	 * @param integer $height The Height dimension of this element
+	 */
 	function ListView($left, $top, $width, $height)
 	{
 		parent::Panel($left, $top, $width, $height)/*, $this)*/;
@@ -63,7 +101,14 @@ class ListView extends Panel
 		$this->Controls->AddRange($this->ColumnsPanel, /*$this->InnerPanel*/ $this->BodyPanelsHolder);
 		$this->ModifyScroll();
 	}
+	/**
+	 * Returns an ArrayList containing the ColumnHeaders of the ListView. ColumnHeaders should be added to this ArrayList
+	 * @return ArrayList
+	 */
 	function GetColumns(){return $this->Columns;}
+	/**
+	 * @ignore
+	 */
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
@@ -112,8 +157,8 @@ class ListView extends Panel
 		if(($count = $this->Columns->Count) > 1){
 			//$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2]);//, Shift::Mirror, 1, null, -1);
 //			$column->Shifts[] = Shift::With($this->Columns[$count - 2], Shift::Left);//, Shift::Mirror, 1, null, -1);
-			$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Width);//, Shift::Mirror, 1, null, -1);
-			$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2]);//, Shift::Mirror, 1, null, -1);
+			$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Width, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
+			$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Left, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
 //			$column->Shifts[] = Shift::LeftWith($this->Line);//, Shift::Mirror, 1, null, -1);
 		}
 		$column->SizeHandle->Shifts[] = Shift::Left($column->SizeHandle);
@@ -221,16 +266,25 @@ class ListView extends Panel
 		$this->ListViewItems->Clear(true);
 		$this->LVItemsQueue = array();
 	}
+	/**
+	 * Clears both the Columns and ListViewItems of the ListView
+	 */
 	public function Clear()
 	{
 		$this->ClearListViewItems(false);
 		$this->Columns->Clear();
 	}
+	/**
+	 * @ignore
+	 */
 	function GetDataFetch()
 	{
 		//$this->SetCursor($this->BodyPanelsHolder->GetCursor());
 		return $this->GetEvent('DataFetch');
 	}	
+	/**
+	 * @ignore
+	 */
 	function SetDataFetch($newEvent)
 	{
 		$this->SetEvent($newEvent, 'DataFetch');
@@ -243,8 +297,37 @@ class ListView extends Panel
 		AddNolohScriptSrc('ListView.js');
 		parent::Show();
 	}
+	/**
+	 * Returns the number of rows of the dataset the ListView is bound to.
+	 *
+	 * @return integer
+	 */
+	public function GetBoundCount()	{return $this->ApproxCount;}
+	/**
+	 * @ignore
+	 */
 	public function GetApproxCount()	{return $this->ApproxCount;}
-	public function Bind($dataSource=null, $constraints=null, $limit=50, $offset=0, $rowCallback=null, $storeInMemory = false)
+	/**
+	 * Binds a ListView to a data source. See the Data Binding article for more information.
+	 * 
+	 * Rather than execute our database function directly, we'll create a 
+	 * command to be used with our Bind. While we can pass in a result set 
+	 * from an ExecFunction, passing a command is more efficient since Bind 
+	 * will only retrieve the necessary rows instead of all resulting rows.
+	 * <pre>
+	 * $people = Data::$Links->MyDB->CreateCommand('sp_get_people', 10065);
+	 * //Instantiates a ListView
+	 * $listView = new ListView();
+	 * $listView->Bind($people, array('firstname', 'lastname', 'phone'));
+	 * </pre>
+	 * 
+	 * @param mixed $dataSource The data source you wish to bind to. In most cases this is a DataCommand object
+	 * @param array $constraints An array of constraints to be bound to
+	 * @param integer $limit The number of rows to return at a time
+	 * @param integer $offset The offset of the first row
+	 * @param ServerEvent $rowCallback The ServerEvent to be called for each row, this allows increased control of your row
+	 */
+	public function Bind($dataSource=null, $constraints=null, $limit=50, $offset=0, $rowCallback=null/*, $storeInMemory = false*/)
 	{
 		$data = null;
 		if($dataSource != null)
@@ -371,6 +454,10 @@ class ListView extends Panel
 				$this->Columns->Add($columns[$i]);
 		}		
 	}
+	/**
+	 * Sorts the ListView on a particular column
+	 * @param integer|ColumnHeader $column Either the index of the Column or the actual ColumnHeader object you wish to sort on 
+	 */
 	public function Sort($column, $order=true)
 	{
 		if($column instanceof ColumnHeader)
@@ -421,10 +508,17 @@ class ListView extends Panel
 		$clientArray = rtrim($clientArray, ',') . ']';
 		QueueClientFunction($this, '_NLVSort', array('"'.$this->InnerPanel->Id.'",'.$clientArray));
 	}
+	/**
+	 * @ignore
+	 */
 	public function Set_NSelectedRows($rows)
 	{
 		$this->SelectedRows = explode('~d2~', rtrim($rows, '~d2'));
 	}
+	/**
+	 * Returns an array of the currently Selected ListViewItems
+	 * @return array
+	 */
 	public function GetSelectedListViewItems()
 	{
 		$listViewItems = array();
@@ -434,6 +528,24 @@ class ListView extends Panel
 			
 		return $listViewItems;
 	}
+	/**
+	 * Returns an array of values for the currently Selected ListViewItems
+	 * @return array
+	 */
+	public function GetSelectedValues()
+	{
+		$values = array();
+		$count = count($this->SelectedRows);
+		for($i=0; $i < $count; ++$i)
+			$values[] = GetComponentById($this->SelectedRows[$i])->GetValue();
+			
+		return $values;
+	}
+	/**
+	 * Sets whether Rows are Selectable. This allows for row selecting, in addition to ctrl click functionality.
+	 * @param bool $mode Whether the ListView is Selectable
+	 * @param string $cssClass The CSS class you wish to use on the row when selected.
+	 */
 	public function SetSelectable($mode, $cssClass = 'NLVSelect')
 	{
 		if($mode)
