@@ -74,7 +74,7 @@ class DatePicker extends Panel
 		return $this->Calendar->GetFullDate();
 	}
 	/**
-	 * Gets the currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
+	 * Gets the currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
 	 * @return integer
 	 */
 	function GetTimestamp()
@@ -87,7 +87,7 @@ class DatePicker extends Panel
 	 * // Sets the $datePicker to Monday, January 12, 1970
 	 * $datePicker->Timestamp = 1000000;
 	 * </pre>
-	 * @param integer $TimestampTime
+	 * @param integer $timestamp
 	 */
 	function SetTimestamp($timestamp)
 	{

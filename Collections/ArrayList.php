@@ -21,7 +21,7 @@
  * 
  * 
  * Moreover, an ArrayList is capable of setting the Parent of an added Component, thus allowing it to display correctly. 
- * This is useful for more advanced functionality. {@see Component::GetParent()} 
+ * This is useful for more advanced functionality. {@link Component::GetParent()} 
  * 
  * <pre>
  * class Sample extends Control

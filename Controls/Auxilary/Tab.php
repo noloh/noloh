@@ -29,11 +29,11 @@ class Tab extends Panel
 	/**
 	 * Constructor of Tab
 	 * 
-	 * @param mixed string|Image $leftImageSrc A string to the source, or an Image object used for the left part of this Tab.
-	 * @param mixed string|Image $mainImageSrc A string to the source, or an Image object used for the center part of this Tab.
-	 * @param mixed string|Image $rightImageSrc A string to the source, or an Image object used for the right part of this Tab.
+	 * @param mixed string|Image $leftImage A string to the source, or an Image object used for the left part of this Tab.
+	 * @param mixed string|Image $mainImage A string to the source, or an Image object used for the center part of this Tab.
+	 * @param mixed string|Image $rightImage A string to the source, or an Image object used for the right part of this Tab.
 	 */
-	function Tab($leftImage=null, $mainImage, $rightImage=null)
+	function Tab($leftImage=null, $mainImage=null, $rightImage=null)
 	{
 		$width = 0;
 		if($leftImage)

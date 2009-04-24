@@ -206,7 +206,7 @@ class TreeList extends Panel
 	}
 	/**
 	 * Sets the Src of each internal TreeNode that has sub-nodes and is closed to the specified location.
-	 * @param string $closedSrc
+	 * @param string $closeSrc
 	 */
 	function SetCloseSrc($closeSrc)
 	{

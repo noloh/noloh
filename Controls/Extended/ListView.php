@@ -470,8 +470,9 @@ class ListView extends Panel
 	/**
 	 * Sorts the ListView on a particular column
 	 * @param integer|ColumnHeader $column Either the index of the Column or the actual ColumnHeader object you wish to sort on 
+	 * @param boolean $ascending 
 	 */
-	public function Sort($column, $order=true)
+	public function Sort($column, $ascending=true)
 	{
 		if($column instanceof ColumnHeader)
 			$index = $this->Columns->IndexOf($column);
@@ -495,7 +496,7 @@ class ListView extends Panel
 			else
 				$sortColumn = $index + 1;
 			$result .= ' ORDER BY ' . $sortColumn;
-			if(!$order)
+			if(!$ascending)
 				$result .= ' DESC';
 			$this->DataSource->SetSqlStatement($result);
 			$this->ListViewItems->Clear();
@@ -509,7 +510,7 @@ class ListView extends Panel
 		
 		foreach($this->ListViewItems->Elements as $key => $listViewItem)
 			$rows[$key] = $listViewItem->SubItems[$index]->GetText();	
-		if(!$order)
+		if(!$ascending)
 			asort($rows);
 		else
 			arsort($rows);

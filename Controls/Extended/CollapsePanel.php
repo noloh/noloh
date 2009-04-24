@@ -11,18 +11,15 @@
 class CollapsePanel extends Panel implements Groupable
 {
 	/**
-	 * The title part of a CollapsePanel
-	 * @var Panel 
+	 * @ignore
 	 */
 	protected $TitlePanel;
 	/**
-	 * The body part of a CollapsePanel
-	 * @var Panel
+	 * @ignore
 	 */
 	protected $BodyPanel;
 	/**
-	 * The image usually located in the TitlePanel which indicates whether the CollapsePanel is expanded or collapsed.
-	 * @var RolloverImage
+	 * @ignore
 	 */
 	protected $ToggleButton;
 	private $TogglesOff;
