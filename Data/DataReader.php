@@ -169,7 +169,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	public function rewind() 
 	{
-		reset($this->Data);
+		return reset($this->Data);
 	}
 	/**
 	 * @ignore
