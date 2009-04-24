@@ -204,7 +204,7 @@ class ControlPair extends Panel
 	function GetWidth()
 	{
 		if($this->Orientation == self::Horizontal)
-			return $this->Control1->GetWidth() + $this->Control2->GetWidth() + $this->Margin;
+			return $this->Control1->GetWidth() + $this->Control2->GetWidth() + $this->Margin->GetWidth();
 		else
 			if(($obj1Width = $this->Control1->GetWidth()) > ($obj2Width = $this->Control2->GetWidth()))
 				return $obj1Width;
@@ -217,7 +217,7 @@ class ControlPair extends Panel
 	function GetHeight()
 	{
 		if($this->Orientation == self::Vertical)
-			return $this->Control1->GetHeight() + $this->Control2->GetHeight() + $this->Margin;
+			return $this->Control1->GetHeight() + $this->Control2->GetHeight() + $this->Margin->GetHeight();
 		else
 			if(($obj1Height = $this->Control1->GetHeight()) > ($obj2Height = $this->Control2->GetHeight()))
 				return $obj1Height;
