@@ -297,8 +297,10 @@ class TreeNode extends Panel
 		{
 			$parentNode = GetComponentById($this->ParentNodeId);
 			$parentNode->Expand();
-			$parentNode->ExpandToShow();
+			if($parentNode->ExpandToShow())
+				return $this;
 		}
+		return false;
 	}
 	/**
 	 * Returns the Id of the TreeList, if any, that has this TreeNode as one of its sub-nodes, recursively.
