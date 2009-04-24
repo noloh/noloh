@@ -6,7 +6,7 @@
  * 
  * @package Collections
  */
-class ControlPair extends Container
+class ControlPair extends Panel
 {
 	/**
 	 * Represents that the two Controls should be horizontally next to each other, i.e., side by side
@@ -19,8 +19,8 @@ class ControlPair extends Container
 	
 	private $Control1;
 	private $Control2;
-	private $Margin = 5;
-	private $Layout;
+	private $Orientation;
+	private $Margin;
 	
 	/*TODO
 	Allow for setting of Pixel/Ratio, SetRatio()
@@ -33,24 +33,26 @@ class ControlPair extends Container
 	 * @param mixed $secondControl If it is null, the second Control will be a TextBox
 	 * @param integer $left
 	 * @param integer $top
-	 * @param ControlPair::Horizontal|ControlPair::Vertical $layout
+	 * @param ControlPair::Horizontal|ControlPair::Vertical $orientation
 	 * @param integer $margin
 	 * @return ControlPair
 	 */
-	function ControlPair($firstControl, $secondControl=null, $left=0, $top=0, $layout=ControlPair::Horizontal, $margin = 0)
+	function ControlPair($firstControl, $secondControl=null, $left=0, $top=0, $orientation=ControlPair::Horizontal, $margin = 0)
 	{
-		parent::Container();
+		parent::Panel($left, $top, null, null);
 		if(is_string($firstControl))
 			$firstControl = new Label($firstControl, 0, 0, System::Auto);
-		$this->Control1 = $firstControl;
+		$this->SetControl1($firstControl);
+//		$this->Control1 = $firstControl;
+		$this->SetMargin($margin);
 		if($secondControl === null)
 			$secondControl = new TextBox(0, 0);
-		$this->Control2 = $secondControl;
-		$this->Layout = $layout;
-		$this->Margin = $margin;
-		$this->SetLeft($left);
-		$this->SetTop($top);
-		$this->Controls->AddRange($firstControl, $secondControl);
+		$this->SetControl2($secondControl);
+//		$this->Control2 = $secondControl;
+		$this->SetOrientation($orientation);
+		
+//		$this->SetLeft($left);
+//		$this->SetTop($top);
 	}
 	/**
 	 * Returns the first Control
@@ -66,11 +68,12 @@ class ControlPair extends Container
 	 */
 	function SetControl1($obj)
 	{
-		$left = $this->GetLeft();
+//		$left = $this->GetLeft();
+		$obj->Layout = Layout::Relative;
 		if($this->Control1)
 			$this->Controls->Remove($this->Control1);
 		$this->Control1 = $obj;
-		$this->SetLeft($left);
+//		$this->SetLeft($left);
 		$this->Controls->Add($this->Control1);
 	}
 	/**
@@ -87,11 +90,12 @@ class ControlPair extends Container
 	 */
 	function SetControl2($obj)
 	{
+		$obj->Layout = Layout::Relative;
 		if($this->Control2)
 			$this->Controls->Remove($this->Control2);
 		$this->Control2 = $obj;
-		$this->SetLeft($this->GetLeft());
-		$this->SetTop($this->GetTop());
+//		$this->SetLeft($this->GetLeft());
+//		$this->SetTop($this->GetTop());
 		$this->Controls->Add($this->Control2);
 	}
 	/**
@@ -100,7 +104,12 @@ class ControlPair extends Container
 	 */
 	function GetMargin()	
 	{
-		return $this->Margin;
+		if(isset($this->Margin))
+			if($this->Orientation == self::Horizontal)
+				return $this->Margin->GetWidth();
+			else
+				return $this->Margin->GetHeight();
+		return 0;
 	}
 	/**
 	 * Sets the spacing between the two Controls
@@ -108,26 +117,38 @@ class ControlPair extends Container
 	 */
 	function SetMargin($margin)
 	{
-		if($this->Margin != $margin)
+		if($this->GetMargin() !== $margin || !isset($this->Margin))
 		{
-			$this->Margin = $margin;
-			if($this->Layout == self::Horizontal)
-				$this->SetLeft($this->GetTop());
+			if(!isset($this->Margin))
+			{
+				$this->Margin = new Label('', 0, 0, null, null);
+				$this->Margin->Layout = Layout::Relative;
+				$this->Controls->Add($this->Margin);
+			}
+			if($this->Orientation == self::Horizontal)
+			{
+				$this->Margin->SetWidth($margin);
+				$this->Margin->SetHeight(1);
+			}
 			else
-				$this->SetTop($this->GetTop());
+			{
+				$this->Margin->SetHeight($margin);
+				$this->Margin->SetWidth('100%');
+			}
 		}
+		return $margin;
 	}
 	/**
 	 * @ignore
 	 */
-	function GetLeft()
+	/*function GetLeft()
 	{
 		return $this->Control1->GetLeft();
-	}
+	}*/
 	/**
 	 * @ignore
 	 */
-	function SetLeft($left)
+	/*function SetLeft($left)
 	{
 		if($this->Layout == self::Horizontal)
 		{
@@ -139,18 +160,18 @@ class ControlPair extends Container
 			$this->Control1->SetLeft($left + $this->Control1->GetLeft());
 			$this->Control2->SetLeft($left + $this->Control2->GetLeft());
 		}
-	}
+	}*/
 	/**
 	 * @ignore
 	 */
-	function GetTop()
+	/*function GetTop()
 	{
 		return $this->Control1->GetTop();
-	}
+	}*/
 	/**
 	 * @ignore
 	 */
-	function SetTop($top)
+	/*function SetTop($top)
 	{
 		if($this->Layout == self::Horizontal)
 		{
@@ -162,7 +183,7 @@ class ControlPair extends Container
 			$this->Control1->SetTop($top + $this->Control1->GetTop());
 			$this->Control2->SetTop($this->Control1->GetBottom() + $this->Margin + $this->Control2->GetTop());
 		}
-	}
+	}*/
 	/**
 	 * @ignore
 	 */
@@ -182,7 +203,7 @@ class ControlPair extends Container
 	 */
 	function GetWidth()
 	{
-		if($this->Layout == self::Horizontal)
+		if($this->Orientation == self::Horizontal)
 			return $this->Control1->GetWidth() + $this->Control2->GetWidth() + $this->Margin;
 		else
 			if(($obj1Width = $this->Control1->GetWidth()) > ($obj2Width = $this->Control2->GetWidth()))
@@ -195,7 +216,7 @@ class ControlPair extends Container
 	 */
 	function GetHeight()
 	{
-		if($this->Layout == self::Vertical)
+		if($this->Orientation == self::Vertical)
 			return $this->Control1->GetHeight() + $this->Control2->GetHeight() + $this->Margin;
 		else
 			if(($obj1Height = $this->Control1->GetHeight()) > ($obj2Height = $this->Control2->GetHeight()))
@@ -206,21 +227,46 @@ class ControlPair extends Container
 	/**
 	 * @ignore
 	 */
-	function GetLayout()
+	function GetOrientation()
 	{
-		return $this->Layout;
+		return $this->Orientation;
 	}
 	/**
 	 * @ignore
 	 */
-	function SetLayout($layout)
+	function SetOrientation($orientation)
 	{
-		if($this->Layout != $layout)
+		if($this->Orientation !== $orientation)
+		{
+			$original = $this->Orientation;
+//			System::Log($orientation);
+			$this->Margin->CSSFloat = 'left';
+			if($orientation == self::Horizontal)
+			{
+				$this->Control1->CSSFloat = 'left';
+				$this->Control2->CSSFloat = 'left';
+				
+			}
+			else
+			{
+//				$this->Margin->CSSFloat = 'left';
+				$this->Control1->CSSFloat = '';
+				$this->Control2->CSSFloat = 'left';
+			}
+			$margin = $this->GetMargin();
+			$this->Orientation = $orientation;
+			$this->SetMargin($margin);
+//			}
+//			else
+//				$this->Orientation = $orientation;
+		}
+		/*if($this->Layout != $layout)
 		{
 			$this->Layout = $layout;
 			$this->SetTop($this->GetTop());
 			$this->SetLeft($this->GetLeft());
-		}
+		}*/	
+		return $this->Orientation;
 	}
 	/**
 	 * @ignore
@@ -241,9 +287,9 @@ class ControlPair extends Container
 	/**
 	 * @ignore
 	 */
-	function SetCSSClass($className)
+	/*function SetCSSClass($className)
 	{
 		$this->Control1->SetCSSClass($className);
-	}
+	}*/
 }
 ?>
