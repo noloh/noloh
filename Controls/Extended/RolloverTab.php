@@ -289,7 +289,7 @@ class RolloverTab extends Panel implements Groupable
 	/**
 	 * @ignore
 	 */
-	function GetDeelect()
+	function GetDeselect()
 	{
 //		Control::AddSystemHandler(Event::Click, new ClientEvent())
 		$deselect = parent::GetDeselect();
