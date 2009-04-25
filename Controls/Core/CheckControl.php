@@ -95,9 +95,9 @@ abstract class CheckControl extends Control
 		return $this->GroupName;
 	}*/
 	
-	/**
+	/*
 	 * @ignore
-	 */
+	 *
 	function SetGroupName($newGroupName)
 	{
 		parent::SetGroupName($newGroupName);
@@ -106,7 +106,7 @@ abstract class CheckControl extends Control
 		//QueueClientFunction($this, '_NChange', array('"'.$this->Id.'I"', '"name"', '"'.$newGroupName.'"'));
 		//NolohInternal::SetProperty('name', $newGroupName, $this);
 		//$this->HtmlName = $newGroupName;
-	}
+	}*/
 	/**
 	 * Returns whether or not this element is checked.
 	 * An alias for Selected.
@@ -125,6 +125,15 @@ abstract class CheckControl extends Control
 	{
 		return $this->SetSelected($bool);
 	}
+	/**
+	 * @ignore
+	 */
+	function SetSelected($bool)
+	{
+		parent::SetSelected($bool);
+		ClientScript::Queue($this, '_NChkCtrl', array($this, $bool), true);
+	}
+	
 	/*
 	 * An alias for GetChecked
 	 * @return boolean
