@@ -292,13 +292,13 @@ function _NSetP(id, nameValuePairs)
 }
 function _NQ()
 {
-	var addTo, info, roots = _N.IncubatorRoots;
+	var addTo, id, info, roots = _N.IncubatorRoots;
 	for(addTo in roots)
 		_N(addTo).appendChild(roots[addTo]);
 	for(id in _N.IncubatorRootsIns)
 	{
 		info = _N.IncubatorRootsIns[id];
-		_NAddAct(_N.IncubatorIns[id], info[0], info[1]);
+		_NAddAct(_N.Incubator[id], info[0], info[1]);
 	}
 	_N.Incubator = {};
 	_N.IncubatorRoots = {};
