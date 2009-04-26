@@ -479,7 +479,7 @@ final class Application extends Object
 				return $this->WebPage->NoScriptShow();
 			AddScript('_N.Request=null;', Priority::Low);
 		}
-		header('Content-Type: text/javascript');
+		header('Content-Type: text/javascript; charset=UTF-8');
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
 			URL::UpdateTokens();
 		NolohInternal::LinkTokensQueue();

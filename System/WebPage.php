@@ -318,7 +318,8 @@ abstract class WebPage extends Component
 		//header('Cache-Control: no-cache, must-revalidate, max-age=0');
 		//header('Cache-Control: no-cache');
 		//header('Pragma: no-cache');
-		header('Content-Type: text/html');
+		header('Content-Type: text/html; charset=UTF-8');
+		//header('Content-Type: text/html; charset=ISO-8859-1');
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
