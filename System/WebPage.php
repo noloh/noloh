@@ -385,9 +385,9 @@ UserAgent::IsIE6() ? '
 	function SearchEngineShow($tokenLinks)
 	{
 		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><TITLE>', $this->Title, '</TITLE>',
-			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '"></META>',
+			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '">',
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,
-			'"></META></HEAD><BODY>';
+			'"></HEAD><BODY>';
 		foreach($_SESSION['_NControlQueueRoot'] as $id => $show)
 		{
 			$obj = GetComponentById($id);
