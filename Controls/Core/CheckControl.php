@@ -130,8 +130,14 @@ abstract class CheckControl extends Control
 	 */
 	function SetSelected($bool)
 	{
-		parent::SetSelected($bool);
-		ClientScript::Queue($this, '_NChkCtrl', array($this, $bool), true);
+		if($this->GetSelected() != $bool)
+		{
+			parent::SetSelected($bool);
+			if(!$this->GetChange()->Blank())
+				$this->GetChange()->Exec();
+			ClientScript::Queue($this, '_NChkCtrl', array($this, $bool, 1), true);
+		}
+		return $bool;
 	}
 	
 	/*
