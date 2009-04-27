@@ -44,7 +44,14 @@ final class Layout
 	 * A possible value for the VAlign property of some Controls.
 	 */
 	const Bottom = 'bottom';
-	
+	/**
+	 * A constant for descriminating between the horizontal or vertical axes. E.g., for the Orientation of a ControlPair.
+	 */
+	const Horizontal = 0;
+	/**
+	 * A constant for descriminating between the horizontal or vertical axes. E.g., for the Orientation of a ControlPair.
+	 */
+	const Vertical = 1;
 	
 	private function Layout(){}
 }
