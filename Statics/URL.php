@@ -2,7 +2,7 @@
 /**
  * URL class
  *
- * The URL class contains constants and static functions pertaining to tokens in the context of Bookmarks.
+ * The URL class contains constants and static functions pertaining to web addresses, especially tokens in the context of Bookmarks.
  * 
  * For more information, please see
  * @link /Tutorials/BookmarkFriendly.html

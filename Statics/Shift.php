@@ -268,7 +268,6 @@ final class Shift
 	}
 	/**
 	 * Allows a property of one Control to move with the property of another Control. 
-	 * <b>DEPRECATED</b>: Please use the Shift::{Property}With functions instead (e.g., Shift::LeftWith, etc...). While basic Shift::With functionality is supported for historical reasons, it does not have as much functionality as the Shift::{Property}With counter-parts.
 	 * @param Component $object The Control to be shifted with.
 	 * @param mixed $shiftMeType A Shift constant specifying what property of a Control will be changed.
 	 * @param mixed $shiftWithType A Shift constant specifying what property the Control will change with.
@@ -277,6 +276,7 @@ final class Shift
 	 * @param float $ratio The ratio of the movement of the Control to the movement of the mouse, useful for changing the speed or direction of the movement.
 	 * @param integer $grid Indicates the minimum number of pixels that the Control will be moved to create a jumpy, discrete as opossed to a continuous motion.
 	 * @return Shift
+	 * @deprecated Please use the Shift::{Property}With functions instead (e.g., Shift::LeftWith, etc...). While basic Shift::With functionality is supported for historical reasons, it does not have as much functionality as the Shift::{Property}With counter-parts.
 	 */
 	static function With(Component $object, $shiftMeType, $shiftWithType=Shift::Mirror, $min=Shift::Parent, $max=Shift::Parent, $ratio=1, $grid=1)
 	{

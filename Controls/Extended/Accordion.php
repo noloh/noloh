@@ -2,7 +2,9 @@
 /**
  * Accordian class
  *
- * An Accordion is a Group of AccordionParts where at most one AccordionPart is expanded. Selecting an AccordionPart will deselect the previously selected AccordionPart.
+ * An Accordion is a Group of AccordionParts where at most one AccordionPart is expanded. 
+ * From a user interface perspective, it is a device for organizing information into collapsible sections.
+ * Selecting an AccordionPart will deselect the previously selected AccordionPart.
  * 
  * @package Controls/Extended
  */

@@ -2,8 +2,12 @@
 /**
  * ContextMenu class
  *
- * A ContextMenu is a Menu that can appear when right-clicking a Control by assigning a ContextMenu object to some existing Control's
- * ContextMenu property.
+ * A ContextMenu is a Menu that can appear when a user right-clicks some Control. It is typically
+ * used for giving the user a choice of actions that can be performed, or options that can be set,
+ * on that particular Control.
+ * 
+ * It is used by assigning an instance of the ContextMenu class to some Control's
+ * ContextMenu property, as follows:
  * 
  * <pre>
  * // Instantiate a new Button
@@ -13,6 +17,27 @@
  * // Add some MenuItems
  * $but->ContextMenu->MenuItems->Add(new MenuItem('First Item Text'));
  * $but->ContextMenu->MenuItems->Add(new MenuItem('Second Item Text'));
+ * </pre>
+ * 
+ * In addition, the same instance of ContextMenu can be given to several different Controls, if those
+ * Controls have the same list of options associated with them. One can then retrieve which Control
+ * was the Source of the Event by using the ContextMenu::$Source static variable, as follows:
+ * 
+ * <pre>
+ * // Instantiate a ContextMenu and give it a MenuItem
+ * $menu = new ContextMenu();
+ * $menu->MenuItems->Add($menuItem new MenuItem('Perform action'));
+ * $menuItem->Click = new ServerEvent($this, 'Action');
+ * // Use this ContextMenu for some two Buttons, which we assume are already defined
+ * $but1->ContextMenu = $menu;
+ * $but2->ContextMenu = $menu;
+ * // ... 
+ * // Define the function which gets called for the Click Event
+ * function Action()
+ * {
+ * 	// Displays some basic debug information about which Button the action was performed on
+ * 	System::Log(ContextMenu::$Source);
+ * }
  * </pre>
  * 
  * @package Controls/Extended

@@ -3,6 +3,19 @@
  * UserAgent class
  *
  * This class has static functions that pertain to retrieving user agent's information, such as browser and operating system.
+ * As NOLOH automatically handles browser and operating system based inconsistencies, it is extremely rare and discouraged
+ * that someone would need to uses this class to retrieve that information themselves. It is, however, still available for
+ * certain uses, e.g., tracking and statistical information about your users to a database or file.
+ * 
+ * Examples:
+ * 
+ * <pre>
+ * put_file_contents('/tmp/users.dat', UserAgent::GetOperatingSystem(), FILE_APPEND);
+ * </pre>
+ * 
+ * <pre>
+ * Alert('Congratulations on using this app in ' . UserAgent::GetBrowser() . '! That is by far the hardest browser to develop for without NOLOH!';
+ * </pre>
  * 
  * @package Statics
  */

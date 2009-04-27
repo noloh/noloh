@@ -3,7 +3,7 @@
  * System class
  *
  * The System class contains various constants used by various parts of NOLOH, especially constants having to do with the
- * physical properties of controls such as size.
+ * physical properties of controls such as size. The System class can also act as a source of many miscellaneous static functions within NOLOH.
  * 
  * @package Statics
  */

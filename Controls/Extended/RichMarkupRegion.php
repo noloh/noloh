@@ -2,7 +2,9 @@
 /**
  * RichMarkupRegion class
  *
- * A RichMarkupRegion is an enhanced MarkupRegion that allows for static text to communicate with your NOLOH application. A RichMarkupRegion is unique in that it's objects can be created dynamically from NOLOH, in addition to being able to have these objects communicate with NOLOH. 
+ * A RichMarkupRegion is an enhanced MarkupRegion that allows for static text to communicate with your NOLOH application. A RichMarkupRegion is unique in that its objects can be created dynamically from NOLOH, in addition to being able to have these objects communicate with NOLOH via ServerEvents. 
+ * 
+ * For more information and for a better understanding of the proper uses and techniques associated with RichMarkupRegion, please refer to the RichMarkupRegion article under the articles section of the documentation.
  * 
  * @package Controls/Extended
  */

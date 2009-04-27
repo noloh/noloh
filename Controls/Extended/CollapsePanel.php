@@ -2,8 +2,8 @@
 /**
  * CollapsePanel
  *
- * A CollapsePanel is a panel that can expand or collapse it's body section. This is usually initiated by clicking on
- * the title part of the CollapsePanel. A CollapsePanel also has a RolloverImage located in it's TitlePanel whose state corresponds
+ * A CollapsePanel is a Panel that can expand or collapse its body section. This is usually initiated by clicking on
+ * the title part of the CollapsePanel. A CollapsePanel also has a RolloverImage located in its TitlePanel whose state corresponds
  * to whether the CollapsePanel is expanded or collapsed.
  * 
  * @package Controls/Extended

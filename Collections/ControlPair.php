@@ -284,7 +284,7 @@ class ControlPair extends Panel implements ArrayAccess
 	/**
 	 * Returns the Second Control
 	 * @return Control
-	 * @deprecated Use GetSecond instead
+	 * @deprecated Use GetSecond() instead
 	 */
 	function GetControl2()	
 	{
@@ -293,7 +293,7 @@ class ControlPair extends Panel implements ArrayAccess
 	/**
 	 * Sets the Second Control
 	 * @param Control $obj
-	 * @deprecated Use SetSecond instead
+	 * @deprecated Use SetSecond() instead
 	 */
 	function SetControl2($obj)
 	{

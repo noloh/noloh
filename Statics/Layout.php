@@ -4,6 +4,15 @@
  *
  * The Layout class contains constants that relates to the way by which Controls are positioned.
  * 
+ * Most often, they are associated with a Control's Layout property, as follows:
+ * 
+ * <pre>
+ * $button->Layout = Layout::Relative;
+ * </pre>
+ * 
+ * But they are also sometimes associated with some Control's Align or VAlign properties, or a ControlPair's Orientation property.
+ * Thus, it is a ubiquitous source of position-related constants.
+ * 
  * @package Statics
  */
 final class Layout

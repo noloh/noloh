@@ -2,7 +2,7 @@
 /**
  * DatePicker class
  *
- * DatePicker is a Panel with a {@see Calendar} that can be pulled up and down via a drop-down, and keeps track of the date selected.
+ * DatePicker is a Panel with a {@see Calendar} that can be pulled up and down via a drop-down, and displays the date selected.
  *
  * For example:
  * <pre>

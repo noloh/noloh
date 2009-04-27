@@ -2,7 +2,7 @@
 /**
  * TabPanel class
  *
- * A TabPanel is a Panel with a TabBar that allows you to navigate quickly between several TabPages. 
+ * A TabPanel is a Panel with a TabBar that allows you to navigate quickly between several TabPages.
  * 
  * <pre>
  * $tabPanel = new TabPanel();

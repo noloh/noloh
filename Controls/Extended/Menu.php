@@ -2,7 +2,7 @@
 /**
  * Menu class
  *
- * A Menu is a drop down list of MenuItems. A MenuItem also contains MenuItems, thus allowing for extensive cascading Menus.
+ * A Menu is a drop down list of MenuItems. Each MenuItem itself can also contain MenuItems, thus allowing for extensive cascading Menus.
  * 
  * @package Controls/Extended
  */

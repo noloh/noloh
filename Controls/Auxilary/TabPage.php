@@ -5,11 +5,11 @@
  * A TabPage represents a Tab and Panel in the TabPanel Control.
  * 
  * <pre>
- *     $tabPanel = new TabPanel();
- *     $cars = new TabPage('Cars');
- *     $trains = new TabPage('Trains');
+ * $tabPanel = new TabPanel();
+ * $cars = new TabPage('Cars');
+ * $trains = new TabPage('Trains');
  *     
- *     $tabPanel->TabPages->AddRange($cars, $trains);
+ * $tabPanel->TabPages->AddRange($cars, $trains);
  * </pre>
  * @package Controls/Auxiliary
  */
@@ -18,13 +18,13 @@ class TabPage extends Panel
 	private $RolloverTab;
 	/**
 	 * Constructor
-	 * @param string|Control $tabName
+	 * @param string|Control $text
 	 * @return TabPage
 	 */
-	function TabPage($tabName='TabPage')
+	function TabPage($text='TabPage')
 	{
 		parent::Panel(0, 0, '100%', '100%');
-		$this->SetRolloverTab($tabName);
+		$this->SetRolloverTab($text);
 	}
 	/**
 	 * Assigns the RolloverTab to be used with the TabPage. 

@@ -2,7 +2,7 @@
 /**
  * ListView class
  *
- * ListViews are used to present information in a tabular, sortable, grid. ListView's rows are made up of ListViewItems which can be popoulated with any object. In addition, ListView can be directly bound to data sources using it's Bind functionality.
+ * ListViews are used to present information in a tabular, sortable, grid. ListView's rows are made up of ListViewItems which can be popoulated with any object. In addition, a ListView can be directly bound to data sources using its Bind functionality.
  * 
  * See the Data Binding article for more information.
  * 
@@ -11,7 +11,7 @@
  * $listView = new ListView();
  * $listView->Columns->AddRange('First Name', 'Last Name', 'Address')
  * 
- * //Lets assume that people is an associative array containing a list of people
+ * // Lets assume that people is an associative array containing a list of people
  * $people = array(...);
  * 
  * foreach($people as $person)

@@ -6,9 +6,9 @@
  * 
  * The following is an example of using a TableRow in conjunction with Table and TableColumn:
  * <pre>
- *     $table = new Table();
- *     $table->Rows->Add($row = new TableRow());
- *     $row->Columns->AddRange('Column 1', 'Column2');
+ * $table = new Table();
+ * $table->Rows->Add($row = new TableRow());
+ * $row->Columns->AddRange('Column 1', 'Column2');
  * </pre>
  * 
  * @package Controls/Auxiliary
