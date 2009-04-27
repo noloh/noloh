@@ -46,7 +46,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 		this.From = prpty=="style.width"?this.Obj.offsetWidth: prpty=="style.height"?this.Obj.offsetHeight: prpty=="style.left"?this.Obj.offsetLeft: prpty=="style.top"?this.Obj.offsetTop: 0;
 	this.Difference = this.Destination - this.From;
 	this.Index = _NAni.Active.length;
-	this.Duration = duration ? duration : 1000;
+	this.Duration = isNaN(duration) ? 1000 : duration;
 	this.Change = easing ? (easing==1?_NAniLinear : easing==2?_NAniQuadratic : _NAniCubic) : _NAniQuadratic;
 	this.Units = (units==null&&units!="") ? "px" : units;
 	this.LastDelta = 0;
@@ -57,7 +57,9 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	++_NAni.ActiveCount;
 	_NAni.Active.push(this);
 	this.StartTime = new Date().getTime();
-	if(!_NAni.Timer)
+	if(!this.Duration)
+		this.Step();
+	else if(!_NAni.Timer)
 		_NAni.Timer = setInterval(_NAniStepAll, Math.round(1000/ (fps?fps:30)));
 }
 _NAni.Active = [];
