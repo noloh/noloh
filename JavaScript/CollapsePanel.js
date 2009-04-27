@@ -1,56 +1,31 @@
 function _NClpsPnlTgl(id, clpse)
 {
-	var pnl = _N(id), body = _N(pnl.Body);
+	var pnl = _N(id);
 	
-	if(pnl.NullHgt && !body.AnimationStop)
-		body.AnimationStop = function() {if(pnl.Opn) pnl.style.height = ''; body.style.height = ''; body.OrigHgt = body.AnimationStop = null;}
-			
+	if(!pnl.AnimationStop)
+		pnl.AnimationStop = function(){
+			if(pnl.Opn && !pnl.Hgt)
+				_NSetProperty(id, 'style.height', '');
+			pnl.AnimationStop = null;
+		}	
 	if(clpse == false || pnl.Opn == false)
-	{
-		if(pnl.NullHgt)
+	{	
+		if(!pnl.Hgt)
 		{
-			if(!body.OrigHgt)
-			{
-				body.style.display = '';
-				body.OrigHgt = body.offsetHeight;
-				body.style.height = '0px';
-			}
-			pnl.InHgt = body.OrigHgt;
+			var body = _N(pnl.Body);
+			body.style.display = '';
+			pnl.NullHgt = body.offsetHeight + _N(pnl.Top).offsetHeight;
 		}
-		new _NAni(pnl.Body, "style.height", pnl.InHgt, 500);
+		new _NAni(id, "style.height", ((pnl.Hgt)?pnl.Hgt:pnl.NullHgt), 500);
+		new _NAni(pnl.Body, "opacity", 100, 500);
 		pnl.Opn = true;
 	}
 	else if(pnl.Opn != false || clpse)
 	{
-		if(pnl.Animates == 1)
-		{
-			if(!pnl.NullHgt)
-				_NSetProperty(pnl.Body, "style.height", '0px');
-			_NSetProperty(id, "style.height", _N(pnl.Top).offsetHeight + 'px');
-			pnl.Animates = null;
-		}
-		else
-		{
-			if(!body.OrigHgt)
-				body.OrigHgt = body.offsetHeight;
-			pnl.style.minHeight = _N(pnl.Top).offsetHeight + 'px';
-			new _NAni(pnl.Body, "style.height", 'Hiding', 500);
-		}
+		pnl.style.minHeight = _N(pnl.Top).offsetHeight + 'px';
+		var time = (pnl.InitClpse)?(pnl.InitClpse = 0):500;
+		new _NAni(id, "style.height", _N(pnl.Top).offsetHeight, time);
+		new _NAni(pnl.Body, "opacity", 'Hiding', time);
 		pnl.Opn = false;
-	}
-}
-function _NClpsPnlInHgt(id)
-{
-	var pnl = _N(id);
-	if(pnl.style.height == '')
-	{	
-		pnl.NullHgt = true;
-		pnl.InHgt = _N(pnl.Body).offsetHeight;
-	}
-	else
-	{
-		if(pnl.NullHgt)
-			delete pnl.NullHgt;
-		_NSetProperty(pnl.Body, 'style.height', (pnl.InHgt = pnl.offsetheightHeight - _N(pnl.Top).offsetHeight) + 'px');
 	}
 }

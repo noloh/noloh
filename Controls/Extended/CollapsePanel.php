@@ -63,7 +63,7 @@ class CollapsePanel extends Panel implements Groupable
 		$deselect['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id', true);");
 		$this->SetWidth($width);
 		$this->SetHeight($height);
-		$this->Shifts[] = Shift::SizeWith($this->BodyPanel);
+//		$this->Shifts[] = Shift::SizeWith($this->BodyPanel, Shift::Size, null, null, null, null);
 		NolohInternal::SetProperty('Top', $this->TitlePanel->Id, $this);
 		NolohInternal::SetProperty('Body', $this->BodyPanel->Id, $this);
 	}
@@ -170,10 +170,24 @@ class CollapsePanel extends Panel implements Groupable
 	function SetCollapsed($bool)
 	{
 		//System::Log('SetCollapsed');
-		$this->ToggleButton->SetSelected(!$bool);
-		if(!$this->GetShowStatus())
-			NolohInternal::SetProperty('Animates', 1, $this);
+//		$this->ToggleButton->SetSelected(!$bool);
+//		if(!$this->GetShowStatus())
+//			NolohInternal::SetProperty('Animates', 1, $this);
 		$this->SetSelected(!$bool);
+		//QueueClientFunction($this, '_NClpsPnlTgl', array('\''.$this->Id.'\'', $bool?'true':'false'), true, Priority::Low);
+	}
+	/**
+	 * @ignore
+	 */
+	function SetSelected($bool)
+	{
+		parent::SetSelected($bool);
+		if(!$bool && !$this->GetShowStatus())
+		//System::Log('SetCollapsed');
+//			ClientScript::Set($this, 'InitClpse', 200, '_N');
+			ClientScript::Set($this, 'InitClpse', true, null); //Blame Phil
+//			NolohInternal::SetProperty('Animates', 1, $this);
+//		$this->SetSelected(!$bool);
 		//QueueClientFunction($this, '_NClpsPnlTgl', array('\''.$this->Id.'\'', $bool?'true':'false'), true, Priority::Low);
 	}
 	/**
@@ -183,7 +197,10 @@ class CollapsePanel extends Panel implements Groupable
 	{
 		parent::SetHeight($height);
 		//if($height > $this->TitlePanel->GetHeight() /*&& $height != null*/)
-			QueueClientFunction($this, '_NClpsPnlInHgt', array('\''.$this->Id.'\''/*, true, Priority::Low*/));
+//			ClientScript::Set($this, 'Hgt', $height, '_N');
+			ClientScript::Set($this, 'Hgt', $height, null);
+//			ClientScript::Queue($this, '_NClpsPnlInHgt', $this);
+//			QueueClientFunction($this, '_NClpsPnlInHgt', array('\''.$this->Id.'\''/*, true, Priority::Low*/));
 		//NolohInternal::SetProperty('Hgt', $height, $this);
 	}
 	/**
