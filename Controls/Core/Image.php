@@ -53,8 +53,8 @@ class Image extends Control
 	}
 	/**
 	 * Gets the path of the Image
-	 * @deprecated Use Path instead
 	 * @return string
+	 * @deprecated Use Path instead
 	 */
 	function GetSrc()	{return $this->GetPath();}
 	/**
@@ -97,10 +97,10 @@ class Image extends Control
 	/**
 	 * Sets the path of the Image
 	 * The path is relative to your main file 
-	 * @deprecated Use Path instead
 	 * @param string $path
 	 * @param boolean $adjustSize
 	 * @return string 
+	 * @deprecated Use Path instead
 	 */
 	function SetSrc($path, $adjustSize=false)	{return $this->SetPath($path, $adjustSize);}
 	/**

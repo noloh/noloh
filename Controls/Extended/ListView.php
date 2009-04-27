@@ -285,7 +285,7 @@ class ListView extends Panel
 	 */
 	public function Clear()
 	{
-		$this->ClearListViewItems(false);
+		$this->ClearListViewItems();
 		$this->Columns->Clear();
 	}
 	/**
