@@ -143,16 +143,17 @@ class ComboBox extends ListControl
 				$textField = $constraints;	
 		}
 			
-				
 		if($dataSource instanceof DataReader || is_array($dataSource))
 		{
 			foreach($dataSource as $row)
-				if($keyField)
+			{
+				if($keyField !== null)
 					$this->Items->Add(new Item($row[$textField], $row[$keyField]));
-				elseif($textField)
+				elseif($textField !== null)
 					$this->Items->Add($row[$textField]);
 				else
 					$this->Items->Add($row);
+			}
 		}			
 	}
 	/**
