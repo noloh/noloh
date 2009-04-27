@@ -6,97 +6,111 @@
  * 
  * @package Collections
  */
-class ControlPair extends Panel
+class ControlPair extends Panel implements ArrayAccess
 {
 	/**
 	 * Represents that the two Controls should be horizontally next to each other, i.e., side by side
+	 * @deprecated Use Layout::Horizontal instead
 	 */
 	const Horizontal = 0;
 	/**
 	 * Represents that the two Controls should be vertically next to each other, i.e., top to bottom
+	 * @deprecated Use Layout::Vertical instead
 	 */
 	const Vertical = 1;
 	
-	private $Control1;
-	private $Control2;
+	private $First;
+	private $Second;
 	private $Orientation;
 	private $Margin;
 	
 	/*TODO
 	Allow for setting of Pixel/Ratio, SetRatio()
 	*/
-	
+
 	/**
 	 * Constructor.
+	 * If a string is passed as $firstControl, it will instantiate a new Label for you, and if
+	 * null is passed as $secondControl, it will instantiate a new TextBox for you. Otherwise,
+	 * if Controls are passed in, it will simply use the parameters.
 	 * Be sure to call this from the constructor of any class that extends ControlPair.
 	 * @param mixed $firstControl If it is a string, the first Control will be a Label
 	 * @param mixed $secondControl If it is null, the second Control will be a TextBox
 	 * @param integer $left
 	 * @param integer $top
-	 * @param ControlPair::Horizontal|ControlPair::Vertical $orientation
+	 * @param Layout::Horizontal|Layout::Vertical $orientation
 	 * @param integer $margin
 	 * @return ControlPair
 	 */
-	function ControlPair($firstControl, $secondControl=null, $left=0, $top=0, $orientation=ControlPair::Horizontal, $margin = 0)
+	function ControlPair($firstControl, $secondControl=null, $left=0, $top=0, $orientation=Layout::Horizontal, $margin = 0)
 	{
 		parent::Panel($left, $top, null, null);
-		if(is_string($firstControl))
+		if(!is_object($firstControl))
 			$firstControl = new Label($firstControl, 0, 0, System::Auto);
-		$this->SetControl1($firstControl);
-//		$this->Control1 = $firstControl;
+		$this->SetFirst($firstControl);
+//		$this->First = $firstControl;
 		$this->SetMargin($margin);
 		if($secondControl === null)
 			$secondControl = new TextBox(0, 0);
-		$this->SetControl2($secondControl);
-//		$this->Control2 = $secondControl;
+		$this->SetSecond($secondControl);
+//		$this->Second = $secondControl;
 		$this->SetOrientation($orientation);
 		
 //		$this->SetLeft($left);
 //		$this->SetTop($top);
 	}
 	/**
-	 * Returns the first Control
+	 * Returns the First Control
 	 * @return Control
 	 */
-	function GetControl1()	
+	function GetFirst()	
 	{
-		return $this->Control1;
+		return $this->First;
 	}
 	/**
-	 * Sets the first Control
+	 * Sets the First Control
 	 * @param Control $obj
+	 * @return Control
 	 */
-	function SetControl1($obj)
+	function SetFirst($obj)
 	{
 //		$left = $this->GetLeft();
 		$obj->Layout = Layout::Relative;
-		if($this->Control1)
-			$this->Controls->Remove($this->Control1);
-		$this->Control1 = $obj;
+		if($this->First)
+		{
+			$this->Controls->Remove($this->First);
+			$this->Controls->Insert($obj, 0);
+			if($orientation == Layout::Horizontal)
+				$obj->CSSFloat = 'left';
+		}
+		else 
+			$this->Controls->Add($obj);
+		return $this->First = $obj;
 //		$this->SetLeft($left);
-		$this->Controls->Add($this->Control1);
+		
 	}
 	/**
-	 * Returns the second Control
+	 * Returns the Second Control
 	 * @return Control
 	 */
-	function GetControl2()	
+	function GetSecond()	
 	{
-		return $this->Control2;
+		return $this->Second;
 	}
 	/**
-	 * Sets the second Control
+	 * Sets the Second Control
 	 * @param Control $obj
+	 * @return Control
 	 */
-	function SetControl2($obj)
+	function SetSecond($obj)
 	{
 		$obj->Layout = Layout::Relative;
-		if($this->Control2)
-			$this->Controls->Remove($this->Control2);
-		$this->Control2 = $obj;
+		if($this->Second)
+			$this->Controls->Remove($this->Second);
+		$this->Controls->Add($obj);
+		return $this->Second = $obj;
 //		$this->SetLeft($this->GetLeft());
 //		$this->SetTop($this->GetTop());
-		$this->Controls->Add($this->Control2);
 	}
 	/**
 	 * Returns the spacing between the two Controls
@@ -105,7 +119,7 @@ class ControlPair extends Panel
 	function GetMargin()	
 	{
 		if(isset($this->Margin))
-			if($this->Orientation == self::Horizontal)
+			if($this->Orientation == Layout::Horizontal)
 				return $this->Margin->GetWidth();
 			else
 				return $this->Margin->GetHeight();
@@ -114,76 +128,81 @@ class ControlPair extends Panel
 	/**
 	 * Sets the spacing between the two Controls
 	 * @param integer $margin
+	 * @return integer
 	 */
 	function SetMargin($margin)
 	{
-		if($this->GetMargin() !== $margin || !isset($this->Margin))
+		$isSet = isset($this->Margin);
+		if($this->GetMargin() !== $margin || !$isSet)
 		{
-			if(!isset($this->Margin))
+			if($isSet)
+				if($this->Orientation == Layout::Horizontal)
+					$this->OrganizeMarginHor($margin);
+				else
+					$this->OrganizeMarginVer($margin);
+			else
 			{
 				$this->Margin = new Label('', 0, 0, null, null);
 				$this->Margin->Layout = Layout::Relative;
 				$this->Controls->Add($this->Margin);
 			}
-			if($this->Orientation == self::Horizontal)
-			{
-				$this->Margin->SetWidth($margin);
-				$this->Margin->SetHeight(1);
-			}
-			else
-			{
-				$this->Margin->SetHeight($margin);
-				$this->Margin->SetWidth('100%');
-			}
 		}
 		return $margin;
 	}
-	/**
-	 * @ignore
-	 */
-	/*function GetLeft()
+	private function OrganizeMarginHor($width)
 	{
-		return $this->Control1->GetLeft();
-	}*/
-	/**
-	 * @ignore
-	 */
-	/*function SetLeft($left)
+		$this->Margin->SetWidth($width);
+		$this->Margin->SetHeight(1);
+	}
+	private function OrganizeMarginVer($height)
 	{
-		if($this->Layout == self::Horizontal)
-		{
-			$this->Control1->SetLeft($left + $this->Control1->GetLeft());
-			$this->Control2->SetLeft($this->Control1->GetRight() + $this->Margin + $this->Control2->GetLeft());
-		}
-		else
-		{
-			$this->Control1->SetLeft($left + $this->Control1->GetLeft());
-			$this->Control2->SetLeft($left + $this->Control2->GetLeft());
-		}
-	}*/
+		$this->Margin->SetHeight($height);
+		$this->Margin->SetWidth('100%');
+	}
 	/**
-	 * @ignore
+	 * Returns how the two Controls will appear next to each other
+	 * @return Layout::Horizontal|Layout::Vertical
 	 */
-	/*function GetTop()
+	function GetOrientation()
 	{
-		return $this->Control1->GetTop();
-	}*/
+		return $this->Orientation;
+	}
 	/**
-	 * @ignore
+	 * Sets how the two Controls will appear next to each other
+	 * @param Layout::Horizontal|Layout::Vertical $orientation
 	 */
-	/*function SetTop($top)
+	function SetOrientation($orientation)
 	{
-		if($this->Layout == self::Horizontal)
+		if($this->Orientation !== $orientation)
 		{
-			$this->Control1->SetTop($top + $this->Control1->GetTop());
-			$this->Control2->SetTop($top + $this->Control2->GetTop());
+			$original = $this->Orientation;
+			$this->Margin->CSSFloat = 'left';
+			if($orientation == Layout::Horizontal)
+			{
+				$this->First->CSSFloat = 'left';
+				$this->Second->CSSFloat = '';
+				$this->OrganizeMarginHor($this->Margin->GetWidth());
+			}
+			else
+			{
+//				$this->Margin->CSSFloat = 'left';
+				$this->First->CSSFloat = '';
+				$this->Second->CSSFloat = 'left';
+				$this->OrganizeMarginVer($this->Margin->GetHeight());
+			}
+			//$this->SetMargin($margin);
+//			}
+//			else
+			$this->Orientation = $orientation;
 		}
-		else
+		/*if($this->Layout != $layout)
 		{
-			$this->Control1->SetTop($top + $this->Control1->GetTop());
-			$this->Control2->SetTop($this->Control1->GetBottom() + $this->Margin + $this->Control2->GetTop());
-		}
-	}*/
+			$this->Layout = $layout;
+			$this->SetTop($this->GetTop());
+			$this->SetLeft($this->GetLeft());
+		}*/	
+		return $orientation;
+	}
 	/**
 	 * @ignore
 	 */
@@ -203,10 +222,10 @@ class ControlPair extends Panel
 	 */
 	function GetWidth()
 	{
-		if($this->Orientation == self::Horizontal)
-			return $this->Control1->GetWidth() + $this->Control2->GetWidth() + $this->Margin->GetWidth();
+		if($this->Orientation == Layout::Horizontal)
+			return $this->First->GetWidth() + $this->Second->GetWidth() + $this->Margin->GetWidth();
 		else
-			if(($obj1Width = $this->Control1->GetWidth()) > ($obj2Width = $this->Control2->GetWidth()))
+			if(($obj1Width = $this->First->GetWidth()) > ($obj2Width = $this->Second->GetWidth()))
 				return $obj1Width;
 			else
 				return $obj2Width;
@@ -216,80 +235,104 @@ class ControlPair extends Panel
 	 */
 	function GetHeight()
 	{
-		if($this->Orientation == self::Vertical)
-			return $this->Control1->GetHeight() + $this->Control2->GetHeight() + $this->Margin->GetHeight();
+		if($this->Orientation == Layout::Vertical)
+			return $this->First->GetHeight() + $this->Second->GetHeight() + $this->Margin->GetHeight();
 		else
-			if(($obj1Height = $this->Control1->GetHeight()) > ($obj2Height = $this->Control2->GetHeight()))
+			if(($obj1Height = $this->First->GetHeight()) > ($obj2Height = $this->Second->GetHeight()))
 				return $obj1Height;
 			else
 				return $obj2Height;
 	}
 	/**
-	 * @ignore
+	 * Returns the Text property of the Second Control
+	 * @return string
 	 */
-	function GetOrientation()
+	function GetValue()	{return $this->Second->GetText();}
+	/**
+	 * Sets the Text property of the Second Control
+	 * @param string $value
+	 */
+	function SetValue($value)	{$this->Second->SetText($value);}
+	/**
+	 * Returns the Text property of the First Control
+	 * @return string
+	 */
+	function GetText()	{return $this->First->GetText();}
+	/**
+	 * Sets the Text property of the First Control
+	 * @param string $text
+	 */
+	function SetText($text)	{$this->First->SetText($text);}
+	/**
+	 * Returns the First Control
+	 * @return Control
+	 * @deprecated Use GetFirst() instead
+	 */
+	function GetControl1()	
 	{
-		return $this->Orientation;
+		return $this->GetFirst();
+	}
+	/**
+	 * Sets the First Control
+	 * @param Control $obj
+	 * @deprecated Use SetFirst() instead
+	 */
+	function SetControl1($obj)
+	{
+		return $this->SetFirst($obj);
+	}
+	/**
+	 * Returns the Second Control
+	 * @return Control
+	 * @deprecated Use GetSecond instead
+	 */
+	function GetControl2()	
+	{
+		return $this->GetSecond();
+	}
+	/**
+	 * Sets the Second Control
+	 * @param Control $obj
+	 * @deprecated Use SetSecond instead
+	 */
+	function SetControl2($obj)
+	{
+		return $this->SetSecond($obj);
 	}
 	/**
 	 * @ignore
 	 */
-	function SetOrientation($orientation)
+	function offsetExists($key)
 	{
-		if($this->Orientation !== $orientation)
-		{
-			$original = $this->Orientation;
-//			System::Log($orientation);
-			$this->Margin->CSSFloat = 'left';
-			if($orientation == self::Horizontal)
-			{
-				$this->Control1->CSSFloat = 'left';
-				$this->Control2->CSSFloat = 'left';
-				
-			}
-			else
-			{
-//				$this->Margin->CSSFloat = 'left';
-				$this->Control1->CSSFloat = '';
-				$this->Control2->CSSFloat = 'left';
-			}
-			$margin = $this->GetMargin();
-			$this->Orientation = $orientation;
-			$this->SetMargin($margin);
-//			}
-//			else
-//				$this->Orientation = $orientation;
-		}
-		/*if($this->Layout != $layout)
-		{
-			$this->Layout = $layout;
-			$this->SetTop($this->GetTop());
-			$this->SetLeft($this->GetLeft());
-		}*/	
-		return $this->Orientation;
+		return ($key ? $this->Second : $this->First) != null;
 	}
 	/**
 	 * @ignore
 	 */
-	function GetValue()	{return $this->Control2->GetText();}
+	function offsetGet($index)
+	{
+		return key ? $this->GetSecond() : $this->GetFirst();
+	}
 	/**
 	 * @ignore
 	 */
-	function SetValue($value)	{$this->Control2->SetText($value);}
+	function offsetSet($index, $val)
+	{		
+		return $key ? $this->SetSecond($val) : $this->SetFirst($val);
+	}
 	/**
 	 * @ignore
 	 */
-	function GetText()	{return $this->Control1->GetText();}
-	/**
-	 * @ignore
-	 */
-	function SetText($text)	{$this->Control1->SetText($text);}
+	function offsetUnset($index)
+	{
+		return $key ? $this->SetSecond(null) : $this->SetFirst(null);
+	}
 	/**
 	 * @ignore
 	 */
 	/*function SetCSSClass($className)
 	{
-		$this->Control1->SetCSSClass($className);
+		$this->First->SetCSSClass($className);
 	}*/
 }
 ?>
