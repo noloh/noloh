@@ -328,8 +328,9 @@ abstract class WebPage extends Component
 		echo 
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
-<!-- Powered by NOLOH -->
-<!--  www.noloh.com  -->
+<!-- Powered by NOLOH  -->
+<!--   www.noloh.com   -->
+<!--      '.GetNOLOHVersion().'      -->
 
 <HTML lang="en">
   <HEAD id="NHead">
