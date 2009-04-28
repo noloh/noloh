@@ -130,6 +130,25 @@ class ControlPair extends Panel implements ArrayAccess
 	 * @param integer $margin
 	 * @return integer
 	 */
+/*	function SetMargin($margin)
+	{
+		$notSet = !isset($this->Margin);
+		if($this->GetMargin() !== $margin || $notSet)
+		{
+//			System::Log($margin);
+			if($notSet)
+			{
+				$this->Margin = new Label('', 0, 0, $margin, $margin);
+				$this->Margin->Layout = Layout::Relative;
+				$this->Controls->Add($this->Margin);
+			}
+			if($this->Orientation == Layout::Vertical)
+				$this->OrganizeMarginVer($margin);
+			else	
+				$this->OrganizeMarginHor($margin);
+		}
+		return $margin;
+	}*/
 	function SetMargin($margin)
 	{
 		$isSet = isset($this->Margin);
@@ -142,7 +161,7 @@ class ControlPair extends Panel implements ArrayAccess
 					$this->OrganizeMarginVer($margin);
 			else
 			{
-				$this->Margin = new Label('', 0, 0, null, null);
+				$this->Margin = new Label('', 0, 0, $margin, $margin);
 				$this->Margin->Layout = Layout::Relative;
 				$this->Controls->Add($this->Margin);
 			}
@@ -175,20 +194,20 @@ class ControlPair extends Panel implements ArrayAccess
 	{
 		if($this->Orientation !== $orientation)
 		{
-			$original = $this->Orientation;
+//			$original = $this->Orientation;
 			$this->Margin->CSSFloat = 'left';
 			if($orientation == Layout::Horizontal)
 			{
 				$this->First->CSSFloat = 'left';
 				$this->Second->CSSFloat = '';
-				$this->OrganizeMarginHor($this->Margin->GetWidth());
+				$this->OrganizeMarginHor($this->Margin->GetHeight());
 			}
 			else
 			{
 //				$this->Margin->CSSFloat = 'left';
 				$this->First->CSSFloat = '';
 				$this->Second->CSSFloat = 'left';
-				$this->OrganizeMarginVer($this->Margin->GetHeight());
+				$this->OrganizeMarginVer($this->Margin->GetWidth());
 			}
 			//$this->SetMargin($margin);
 //			}
