@@ -119,6 +119,16 @@ class TextBox extends Control
         return Event::$FocusedComponent->Id == $this->Id ? Event::$SelectedText : '';
     }
     /**
+	 * Gives the TextBox the active Focus. Optionally, its Text can also be highlighted.
+	 * @param boolean $highlight
+	 */
+	function Focus($highlight = true)
+	{
+		parent::Focus();
+		if($highlight)
+			QueueClientFunction($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+	}
+    /**
      * @ignore
      */
 	function GetEventString($eventTypeAsString)
