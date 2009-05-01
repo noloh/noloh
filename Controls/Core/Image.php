@@ -237,7 +237,7 @@ class Image extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), '></IMG> ';
+		echo '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), '> ';
 	}
 	/**
 	 * @ignore
@@ -246,7 +246,7 @@ class Image extends Control
 	{
 		$str = parent::NoScriptShow($indent);
 		if($str !== false)
-			echo $indent, '<IMG src="', $this->Src, '" ', $str, "></IMG>\n";
+			echo $indent, '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), $str?(' '.$str):'', ">\n";
 	}
 	/**
 	 * @ignore 
