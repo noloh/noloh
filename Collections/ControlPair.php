@@ -52,6 +52,8 @@ class ControlPair extends Panel implements ArrayAccess
 		$this->SetMargin($margin);
 		if($secondControl === null)
 			$secondControl = new TextBox(0, 0);
+		elseif(is_string($secondControl))
+			$secondControl = new $secondControl(0, 0);
 		$this->SetSecond($secondControl);
 //		$this->Second = $secondControl;
 		$this->SetOrientation($orientation);
