@@ -15,7 +15,7 @@ function _NAccPtExpd(accordPart)
 	//console.log(prevPart);
 	/*if(prevPart && prevPart != accordPart)
 		_NSetProperty(prevPart, 'Selected', false);*/
-	part.InHgt = (parseInt(_N(part.Accord).style.height) - _N(part.Accord).TitleHeight);
+	part.Hgt = (parseInt(_N(part.Accord).offsetHeight) - _N(part.Accord).TitleHeight);
 	//console.log((_N(part.Top.offsetHeight) + _N(accord).TitleHeight) + ' is the height');
 }
 function _NAccPtRm(accordion, index)
