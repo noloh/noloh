@@ -99,10 +99,7 @@ class DataCommand extends Object
 			if($type == Data::Postgres)
 				$resource = pg_query($this->Connection->Connect(), $this->SqlStatement);
 			elseif($type == Data::MySQL)
-			{
-				$resource = $this->Connection->Connect();
-				$resource = mysql_query($this->SqlStatement, $resource);
-			}
+				$resource = mysql_query($this->SqlStatement, $this->Connection->Connect());
 			elseif($type == Data::MSSQL)
 				$resource = mssql_query($this->SqlStatement, $this->Connection->Connect());
 				

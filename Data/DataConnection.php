@@ -100,6 +100,7 @@ class DataConnection extends Object
 		{
 			$host = $this->Port?$this->Host . ':' . $this->Port:$this->Host;
 			$this->ActiveConnection = mssql_connect($host, $this->Username, $this->Password);
+			mssql_select_db($this->DatabaseName, $this->ActiveConnection);
 		}
 		return $this->ActiveConnection;
 	}
