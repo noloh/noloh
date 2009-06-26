@@ -9,14 +9,8 @@ function _NAccPtAdd(accordion, accordionPart)
 function _NAccPtExpd(accordPart)
 {
 	var part = _N(accordPart);
-	//console.log(part.Group);
 	var prevPart = part.Group.PrevSelectedElement;
-	//console.log(part.Group);
-	//console.log(prevPart);
-	/*if(prevPart && prevPart != accordPart)
-		_NSetProperty(prevPart, 'Selected', false);*/
-	part.Hgt = (parseInt(_N(part.Accord).offsetHeight) - _N(part.Accord).TitleHeight);
-	//console.log((_N(part.Top.offsetHeight) + _N(accord).TitleHeight) + ' is the height');
+	part.Hgt = (parseInt(_N(part.Accord).offsetHeight) - _N(part.Accord).TitleHeight + _N(part.Top).offsetHeight);
 }
 function _NAccPtRm(accordion, index)
 {
