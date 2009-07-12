@@ -52,6 +52,7 @@ class Label extends Control
 	{
 		parent::SetText($text);
 		$this->ResetCache();
+		//NolohInternal::SetProperty('innerHTML', $text, $this);
 		NolohInternal::SetProperty('innerHTML', preg_replace('(\r\n|\n|\r)', '<BR>', $text), $this);
 		//QueueClientFunction($this, "SetLabelText", array("'$this->Id'", "'".preg_replace("(\r\n|\n|\r)", "<Nendl>", $newText)."'"));
 	}
@@ -330,6 +331,14 @@ class Label extends Control
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
 		NolohInternal::Show('DIV', parent::Show(), $this);
 		//return $initialProperties;
+	}
+	/**
+	 * @ignore
+	 */
+	function SearchEngineShow()
+	{
+		if($this->Text)
+			echo '<P>', $this->Text, '</P>';
 	}
 	/**
 	 * @ignore

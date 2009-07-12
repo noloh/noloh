@@ -1131,7 +1131,8 @@ abstract class Control extends Component
 	 */
 	function SearchEngineShow()
 	{
-		echo $this->Text, ' ';
+		if($this->Text)
+			echo $this->Text, ' ';
 	}
 	/**
 	 * @ignore
