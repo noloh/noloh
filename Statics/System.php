@@ -135,7 +135,7 @@ final class System
 	 * @param string $msg Message to be Alerted
 	 * @return string
 	 */
-	function Alert($msg)
+	static function Alert($msg)
 	{
 		AddScript('alert("' . str_replace(array('\\',"\n","\r",'"'),array('\\\\','\n','\r','\"'),$msg) . '")');
 		return $msg;
@@ -145,7 +145,7 @@ final class System
 	 * @param string $path
 	 * @return string
 	 */
-	function GetAbsolutePath($path)
+	static function GetAbsolutePath($path)
 	{
 		if(isset($_SESSION['_NUserDir']) && strpos($path, System::AssetPath())===0)
 			return System::RelativePath() . substr($path, strlen(System::AssetPath()));
@@ -163,7 +163,7 @@ final class System
 	 * @param string $toDirectory
 	 * @return string
 	 */
-	function GetRelativePath($fromDirectory, $toDirectory)
+	static function GetRelativePath($fromDirectory, $toDirectory)
 	{
 		$fromDirectory = rtrim($fromDirectory, '/');
 		$toLength = strlen($toDirectory);
@@ -237,28 +237,38 @@ final class System
 		}
 		return $what;
 	}
+	
 	/**
  	 * Returns the full system path to NOLOH
  	 * @return string
  	 */
-	static function NOLOHPath()		{return $_SESSION['_NPath'];}
+	static function GetNOLOHPath()			{return self::NOLOHPath();}
 	/**
  	 * Returns the relative system path to NOLOH
  	 * @return string
  	 */
-	static function RelativePath()	{return $_SESSION['_NRPath'];}
+	static function GetNOLOHRelativePath()	{return self::RelativePath();}	
+	
+	/**
+ 	 * @ignore
+ 	 */
+	static function NOLOHPath()				{return $_SESSION['_NPath'];}
+	/**
+ 	 * @ignore
+ 	 */
+	static function RelativePath()			{return $_SESSION['_NRPath'];}
 	/**
 	 * @ignore
 	 */
-	static function AssetPath()		{return $_SESSION['_NRAPath'];}
+	static function AssetPath()				{return $_SESSION['_NRAPath'];}
 	/**
 	 * @ignore
 	 */
-	static function ImagePath()		{return self::AssetPath() . '/Images/';}
+	static function ImagePath()				{return self::AssetPath() . '/Images/';}
 	/**
-	 * Returns the full, URL path to the application
+	 * @ignore
 	 */
-	static function FullAppPath()	{return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
+	static function FullAppPath()			{return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
 }
 
 ?>

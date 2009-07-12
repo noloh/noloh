@@ -79,8 +79,10 @@ final class Application extends Object
 		exit();
 	}
 	/**
-	 * @ignore
+	 * Returns the full, URL path to the application
+	 * @return string
 	 */
+	static function GetURL()	{return System::FullAppPath();}
 	private function Application($config)
 	{
 		$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
@@ -152,7 +154,6 @@ final class Application extends Object
 			$_SESSION['_NHighestZ'],
 			$_SESSION['_NLowestZ']);
 	}
-	
 	private function HandleFirstRun($trulyFirst=true)
 	{
 		if(isset($_COOKIE['_NPHPInfo']))
@@ -223,7 +224,6 @@ final class Application extends Object
 				session_destroy();
 			}
 	}
-	
 	private function HandleForcedReset()
 	{
 		if(!isset($_SESSION['_NVisit']) || 
@@ -247,7 +247,6 @@ final class Application extends Object
 			return true;
 		return false;
 	}
-	
 	private function HandleIENavigation()
 	{
 		$srcs = $_SESSION['_NScriptSrcs'];
@@ -256,7 +255,6 @@ final class Application extends Object
 		$_SESSION['_NScriptSrcs'] = $srcs;
 		AddScript('_N.Visit=-1', Priority::High);
 	}
-	
 	private function HandleDebugMode()
 	{
 		$debugMode = Configuration::That()->DebugMode;
@@ -268,7 +266,6 @@ final class Application extends Object
 			ob_start('_NOBErrorHandler');
 		}
 	}
-	
 	private function TheComingOfTheOmniscientBeing()
 	{
 		global $OmniscientBeing;
@@ -300,7 +297,6 @@ final class Application extends Object
 		if(isset($_SESSION['_NTokenChain']))
 			URL::$TokenChain = unserialize($_SESSION['_NTokenChain']);
 	}
-	
 	private function HandleEventVars()
 	{
 		$varInfo = explode('~d0~', $_POST['_NEventVars']);
@@ -327,7 +323,6 @@ final class Application extends Object
 			}
 		}
 	}
-
 	private function HandleClientChanges()
 	{
 		if(!empty($_POST['_NChanges']))
@@ -365,7 +360,6 @@ final class Application extends Object
 		}
 		$GLOBALS['_NQueueDisabled'] = null;
 	}
-	
 	private function HandleServerEvents()
 	{
 		$events = explode(',', $_POST['_NEvents']);
@@ -509,7 +503,6 @@ final class Application extends Object
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['_NGarbage']);
 	}
-
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
@@ -535,7 +528,6 @@ final class Application extends Object
 				$connection->Close();
 		session_destroy();
 	}
-
 	private function ExplodeDragCatch($objectsString)
 	{
 		$objs = array();
