@@ -111,11 +111,12 @@ final class ClientScript
 				$args = func_get_args();
 				$numArgs = func_num_args();
 				$paramsArray = array($component->Id, $property, $value);
+				$startClass = Configuration::That()->StartClass;
 				if($numArgs === 3)
-					array_push($paramsArray, $_SESSION['_NStartUpPageClass']);
+					array_push($paramsArray, $startClass);
 				else
 					for($i=3; $i<$numArgs; ++$i)
-						array_push($paramsArray, $args[$i] === Application::Name ? $_SESSION['_NStartUpPageClass'] : $args[$i]);
+						array_push($paramsArray, $args[$i] === Application::Name ? $startClass : $args[$i]);
 				self::Queue($component, '_NSfSet', $paramsArray, false, Priority::High);
 			}
 		}

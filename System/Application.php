@@ -1,29 +1,11 @@
 <?php
 /**
- * @package System
- */
-
-global $OmniscientBeing;
-
-// DEPRECATED! Use Application::SetStartUpPage instead.
-function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=14, $debugMode=true)
-{
-	new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
-}
-/**
- * @ignore
- */
-function _NPHPInfo($info)
-{
-	$info = str_replace(array("\n", "\r", "'"), array('','',"\\'"), $info);
-	$loc = strpos($info, '</table>') + 8;
-	$text = substr($info, 0, $loc) .
-		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . ((NOLOHConfig::NOLOHURL)?NOLOHConfig::NOLOHURL:GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), ComputeNOLOHPath())) . '/Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
-		substr($info, $loc);
-	session_destroy();
-	return $text;
-}
-/**
+ * Application class
+ * 
+ * The Application class contains static methods that control the application from a very general perspective.
+ * It is perhaps best known for the important Start method, though it serves a number of critical
+ * internal purposes as well.
+ * 
  * @package System
  */
 final class Application extends Object
@@ -34,16 +16,36 @@ final class Application extends Object
 	const Name = '@APPNAME';
 	private $WebPage;
 	/**
-	 * Specifies which WebPage class will serve as the initial start-up point of your application
-	 * @param string $className The name of the class that extends WebPage, as a string
-	 * @param string $unsupportedURL If a user's browser is not supported, or he does not have JavaScript enabled, this will be the URL of the error page to which he is navigated. A value of null will use NOLOH's to create a more degraded, non-JavaScript application
-	 * @param mixed $urlTokenMode Specifies how URL tokens are displayed. Possible values are URL::Display, URL::Encrypt, or URL::Disable
-	 * @param integer $tokenTrailsExpiration Specifies the number of days until token search trails file expires. Please see Search Engine Friendly documentation for more information
-	 * @param mixed $debugMode Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
+	 * Starts the Application, optionally with some Configuration parameters.
+	 * @param mixed,... $dotDotDot 
+	 * @return Configuration
 	 */
-	public static function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=14, $debugMode=true)
+	public static function Start($dotDotDot=null)
 	{
-		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
+		if($GLOBALS['_NApp'])
+			return Configuration::That();
+		else
+		{
+			session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
+			session_start();
+			if(isset($_SESSION['_NConfiguration']))
+				$config = $_SESSION['_NConfiguration'];
+			else 
+			{
+				$args = func_get_args();
+				if(count($args) === 1 && $args[0] instanceof Configuration)
+					$config = $args[0];
+				else 
+				{
+					$reflect = new ReflectionClass('Configuration');
+					$config = $reflect->newInstanceArgs($args);
+				}
+				$_SESSION['_NConfiguration'] = $config;
+			}
+			new Application($config);
+			return $config;
+		}
+		return false;
 	}
 	/**
 	 * Resets Application to original state
@@ -79,12 +81,10 @@ final class Application extends Object
 	/**
 	 * @ignore
 	 */
-	public function Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
+	private function Application($config)
 	{
-		session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
-		session_start();
-		$GLOBALS['_NURLTokenMode'] = $urlTokenMode;
-		$GLOBALS['_NTokenTrailsExpiration'] = $tokenTrailsExpiration;
+		$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
+		$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
 		if(isset($_GET['_NImage']))
 			if(empty($_GET['_NWidth']))
 				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
@@ -97,10 +97,10 @@ final class Application extends Object
 		elseif(isset($_SESSION['_NVisit']) || isset($_POST['_NVisit']))
 		{
 			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
-				$this->HandleIENavigation($className, $unsupportedURL);
-			elseif($this->HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode))
+				$this->HandleIENavigation();
+			elseif($this->HandleForcedReset())
 				return;
-			$this->HandleDebugMode($debugMode);
+			$this->HandleDebugMode();
 			if(isset($_SESSION['_NOmniscientBeing']))
 				$this->TheComingOfTheOmniscientBeing();
 			if(!empty($_POST['_NEventVars']))
@@ -123,7 +123,7 @@ final class Application extends Object
 			$this->Run();
 		}
 		else
-			$this->HandleFirstRun($className, $unsupportedURL);
+			$this->HandleFirstRun();
 	}
 	/**
 	 * @ignore
@@ -146,7 +146,6 @@ final class Application extends Object
 			$_SESSION['_NFiles'],
 			$_SESSION['_NFileSend'],
 			$_SESSION['_NGarbage'],
-			$_SESSION['_NStartUpPageClass'],
 			$_SESSION['_NURL'],
 			$_SESSION['_NTokens'],
 			$_SESSION['_NTokenChain'],
@@ -154,7 +153,7 @@ final class Application extends Object
 			$_SESSION['_NLowestZ']);
 	}
 	
-	private function HandleFirstRun($className, $unsupportedURL, $trulyFirst=true)
+	private function HandleFirstRun($trulyFirst=true)
 	{
 		if(isset($_COOKIE['_NPHPInfo']))
 		{
@@ -179,15 +178,17 @@ final class Application extends Object
 		$_SESSION['_NFiles'] = array();
 		$_SESSION['_NFileSend'] = array();
 		$_SESSION['_NGarbage'] = array();
-		$_SESSION['_NStartUpPageClass'] = $className;
 		$_SESSION['_NTokens'] = array();
 		$_SESSION['_NHighestZ'] = 0;
 		$_SESSION['_NLowestZ'] = 0;
 		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
 		$_SESSION['_NPath'] = ComputeNOLOHPath();
 		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath']);
-		$_SESSION['_NRAPath'] = NOLOHConfig::NOLOHURL ? 
-			NOLOHConfig::NOLOHURL : 
+		$_SESSION['_NRAPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : 
+			/*(str_repeat('../', substr_count($_SESSION['_NURL'], '/', strlen(dirname($_SESSION['_NURL']))+1)) 
+				. (($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ? 
+				GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
+				$_SESSION['_NRPath']));*/
 			(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ? 
 				GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
 				$_SESSION['_NRPath']);
@@ -199,6 +200,8 @@ final class Application extends Object
 				$this->SearchEngineRun();
 			else 
 			{
+				$config = Configuration::That();
+				$className = $config->StartClass;
 				try
 				{
 					$webPage = new $className();
@@ -208,7 +211,7 @@ final class Application extends Object
 					if($e->getCode() == $GLOBALS['_NApp'])
 					{
 						setcookie('_NAppCookie', $GLOBALS['_NApp']);
-						WebPage::SkeletalShow($GLOBALS['_NTitle'], $unsupportedURL, $GLOBALS['_NFavIcon']);
+						WebPage::SkeletalShow($GLOBALS['_NTitle'], $config->UnsupportedURL, $GLOBALS['_NFavIcon']);
 						return;
 					}
 					else 
@@ -221,7 +224,7 @@ final class Application extends Object
 			}
 	}
 	
-	private function HandleForcedReset($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode)
+	private function HandleForcedReset()
 	{
 		if(!isset($_SESSION['_NVisit']) || 
 			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
@@ -236,7 +239,7 @@ final class Application extends Object
 				if($webPage !== null && !$webPage->GetUnload()->Blank())
 					$webPage->Unload->Exec();
 				self::UnsetNolohSessionVars();
-				self::SetStartUpPage($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
+				self::Start(Configuration::That());
 			}
 			return true;//!isset($_COOKIE['_NApp']);
 		}
@@ -245,17 +248,18 @@ final class Application extends Object
 		return false;
 	}
 	
-	private function HandleIENavigation($className, $unsupportedURL)
+	private function HandleIENavigation()
 	{
 		$srcs = $_SESSION['_NScriptSrcs'];
 		self::UnsetNolohSessionVars();
-		$this->HandleFirstRun($className, $unsupportedURL, false);
+		$this->HandleFirstRun(false);
 		$_SESSION['_NScriptSrcs'] = $srcs;
 		AddScript('_NVisit=-1', Priority::High);
 	}
 	
-	private function HandleDebugMode($debugMode)
+	private function HandleDebugMode()
 	{
+		$debugMode = Configuration::That()->DebugMode;
 		if($debugMode !== 'Unhandled')
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
@@ -471,7 +475,7 @@ final class Application extends Object
 			$GLOBALS['_NWidth'] = $_GET['_NWidth'];
 			$GLOBALS['_NHeight'] = $_GET['_NHeight'];
 			$this->HandleTokens();
-			$className = $_SESSION['_NStartUpPageClass'];
+			$className = Configuration::That()->StartClass;
 			$this->WebPage = new $className();
 			if(empty($_COOKIE['_NAppCookie']))
 				$this->WebPage->Show();
@@ -509,7 +513,7 @@ final class Application extends Object
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
-		$className = $_SESSION['_NStartUpPageClass'];
+		$className = Configuration::That()->StartClass;
 		++$_SESSION['_NVisit'];
 		$this->WebPage = new $className();
 		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
@@ -552,5 +556,16 @@ final class Application extends Object
 	}
 	*/
 }
+
+// DEPRECATED! Use Application::SetStartUpPage instead.
+/**
+ * @ignore
+ */
+function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=14, $debugMode=true)
+{
+	Application::Start(new Configuration($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode));
+}
+
+register_shutdown_function(array('Application', 'Start'));
 
 ?>

@@ -1,0 +1,45 @@
+/*! Copyright (c) 2005 - 2009 NOLOH, LLC. All rights reserved */
+html,body,div,span,input,object,iframe,fieldset,form,img,tbody,tfoot,thead,tr,td,th,pre,code,em,i,b,strong,tt,dl,dt,dd,q,blockquote,caption
+{
+	margin:0;
+	padding:0;
+}
+body
+{
+	color:#000;
+	background:#FFF;
+	font:13px/1.3em arial, helvetica, sans-serif;
+}
+input,button,textarea,select,optgroup,option
+{
+	font-family:inherit;
+	font-size:inherit;
+	font-style:inherit;
+	font-weight:inherit;
+}
+select,input,button,textarea,button
+{
+	font:99% arial,helvetica,sans-serif;
+}
+h1,h2,h3,h4,h5,h6
+{
+	font-size:100%;
+	font-weight:normal;
+}
+a img 
+{ 
+	border: none; 
+}
+table
+{
+	border-collapse:collapse;
+	border-spacing:0;
+}
+table, td, th
+{
+	vertical-align:middle;
+}
+th, caption
+{
+	text-align:left;
+}

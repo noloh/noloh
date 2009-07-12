@@ -6,6 +6,19 @@
 /**
  * @ignore
  */
+function _NPHPInfo($info)
+{
+	$info = str_replace(array("\n", "\r", "'"), array('','',"\\'"), $info);
+	$loc = strpos($info, '</table>') + 8;
+	$text = substr($info, 0, $loc) .
+		'<br><table border="0" cellpadding="3" width="600"><tr class="h"><td><a href="http://www.noloh.com"><img border="0" src="' . ((NOLOHConfig::NOLOHURL)?NOLOHConfig::NOLOHURL:GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), ComputeNOLOHPath())) . '/Images/nolohLogo.png" alt="NOLOH Logo" /></a><h1 class="p">NOLOH Version '.GetNOLOHVersion().'</h1></td></tr></table><div id="N2"></div><div id="N3"></div>' .
+		substr($info, $loc);
+	session_destroy();
+	return $text;
+}
+/**
+ * @ignore
+ */
 function _NOBErrorHandler($buffer)
 {
 	if(strpos($buffer, '<title>phpinfo()</title>') !== false)

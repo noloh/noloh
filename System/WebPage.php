@@ -68,8 +68,14 @@ abstract class WebPage extends Component
 		$this->Title = $title;
 		$this->Keywords = $keywords;
 		$this->Description = $description;
+		
+		$config = Configuration::That();
+		$this->AddCSSFile($config->CSSReset ? $config->CSSReset : (System::AssetPath() .'/Styles/NReset.css'));
+		if(UserAgent::IsIE() && UserAgent::GetBrowserVersion() < 8)
+			$this->AddCSSFile($config->CSSResetLegacyIE ? $config->CSSResetLegacyIE : (System::AssetPath() .'/Styles/NResetIE.css'));
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
-		$this->CSSFiles->Add(System::AssetPath() .'/Controls/NStyles.css');
+		$this->CSSFiles->Add(System::AssetPath() .'/Styles/NStyles.css');
+		
 		$this->SetLoadIndicator($loadIndicator = new Label('Loading...', 7, 7, null, null));
 		$loadIndicator->Opacity = 75;
 		$loadIndicator->CSSClass = 'NLoadIndiLabel';
@@ -95,9 +101,14 @@ abstract class WebPage extends Component
 	 */
 	function AddCSSFile($path)
 	{
+		$tmp = $_SESSION['_NPropertyQueue'];
+		unset($_SESSION['_NPropertyQueue']);
 		$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
+		//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\'';
 		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
-		$this->CSSFiles->Add($path, true);
+		if($this->CSSFiles)
+			$this->CSSFiles->Add($path, true);
+		$_SESSION['_NPropertyQueue'] = $tmp;
 	}
 	/**
 	 * @ignore

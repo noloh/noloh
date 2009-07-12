@@ -41,7 +41,7 @@ abstract class CheckControl extends Control
 		{
 			if(is_numeric($width))
 				$width = max(1, $width-23);
-			$this->Caption = new Label(null, 23, 0, $width, $height);
+			$this->Caption = new Label(null, 20, 0, $width, $height);
 			$this->SetText($text);
 			if($width === System::Auto)
 				$this->SetWidth($this->Caption->Right);

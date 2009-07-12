@@ -6,6 +6,7 @@ require($_NPath . 'Interfaces/Groupable.php');
 require($_NPath . 'Interfaces/MultiGroupable.php');
 require($_NPath . 'Interfaces/Singleton.php');
 require($_NPath . 'System/Object.php');
+require($_NPath . 'System/Configuration.php');
 require($_NPath . 'System/Application.php');
 require($_NPath . 'System/Component.php');
 require($_NPath . 'System/Error.php');
@@ -106,6 +107,7 @@ function _NAutoLoad($class)
 			// Statics
 			'Animate' => 			'Statics/Animate.php',
 			'ClientScript' => 		'Statics/ClientScript.php',
+			'Color' => 				'Statics/Color.php',
 			'Cursor' => 			'Statics/Cursor.php',
 			'Layout' => 			'Statics/Layout.php',
 			'Shift' => 				'Statics/Shift.php'
