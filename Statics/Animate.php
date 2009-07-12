@@ -88,6 +88,8 @@ final class Animate
 		if($to instanceof Control)
 			$to = '_N(\''. $to->Id .'\').offsetLeft';
 		$numArgs = func_num_args();
+		if($numArgs > 4)
+			$control->SetLeft($from);
 		Animate::Property($control, 'style.left', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
 	/**
@@ -104,6 +106,8 @@ final class Animate
 		if($to instanceof Control)
 			$to = '_N(\''. $to->Id .'\').offsetTop';
 		$numArgs = func_num_args();
+		if($numArgs > 4)
+			$control->SetTop($from);
 		Animate::Property($control, 'style.top', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
 	/**
@@ -125,7 +129,15 @@ final class Animate
 			$toTop = '_N(\''. $to->Id .'\').offsetLeft';
 		$numArgs = func_num_args();
 		if($numArgs >= 5)
+		{
 			++$numArgs;
+			if($numArgs > 5)
+			{
+				$control->SetLeft($fromLeft);
+				if($numArgs > 6)
+					$control->SetTop($fromTop);
+			}
+		}
 		Animate::Property($control, 'style.left', $toLeft, $duration, 'px', $easing, $fromLeft, $fps, $numArgs);
 		Animate::Property($control, 'style.top', $toTop, $duration, 'px', $easing, $fromTop, $fps, $numArgs);
 	}
@@ -141,6 +153,8 @@ final class Animate
 	static function Width($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args();
+		if($numArgs > 4)
+			$control->SetWidth($from);
 		Animate::Property($control, 'style.width', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
 	/**
@@ -155,6 +169,8 @@ final class Animate
 	static function Height($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args();
+		if($numArgs > 4)
+			$control->SetHeight($from);
 		Animate::Property($control, 'style.height', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
 	/**
@@ -172,7 +188,15 @@ final class Animate
 	{
 		$numArgs = func_num_args();
 		if($numArgs >= 5)
+		{
 			++$numArgs;
+			if($numArgs > 5)
+			{
+				$control->SetWidth($fromWidth);
+				if($numArgs > 6)
+					$control->SetHeight($fromHeight);
+			}
+		}
 		Animate::Property($control, 'style.width', $toWidth, $duration, 'px', $easing, $fromWidth, $fps, $numArgs);
 		Animate::Property($control, 'style.height', $toHeight, $duration, 'px', $easing, $fromHeight, $fps, $numArgs);
 	}
@@ -238,6 +262,8 @@ final class Animate
 	static function Opacity($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args() + 2;
+		if($numArgs > 4)
+			$control->SetOpacity($from);
 		Animate::Property($control, 'opacity', $to, $duration, '', $easing, $from, $fps, max(5, $numArgs));
 	}
 }
