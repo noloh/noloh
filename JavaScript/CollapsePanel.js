@@ -8,11 +8,12 @@ function _NClpsPnlTgl(id, clpse)
 				_NSetProperty(id, 'style.height', '');
 			pnl.AnimationStop = null;
 		}	
-	if(clpse == false || pnl.Opn == false)
+	if(pnl.Opn == false || !clpse)
 	{	
-		if(!pnl.Hgt)
+		var body = _N(pnl.Body);
+		if(pnl.Hgt != null)
 		{
-			var body = _N(pnl.Body);
+			
 			body.style.display = '';
 			pnl.NullHgt = body.offsetHeight + _N(pnl.Top).offsetHeight;
 		}
@@ -28,4 +29,11 @@ function _NClpsPnlTgl(id, clpse)
 		new _NAni(pnl.Body, "opacity", 'Hiding', time);
 		pnl.Opn = false;
 	}
+}
+function _NClpsPnlSetHgt(id, hgt)
+{
+	var pnl = _N(id);
+	pnl.Hgt = hgt;
+	if(hgt != null)
+		_N(pnl.Body).style.height = (hgt - _N(pnl.Top).offsetHeight) + 'px';
 }

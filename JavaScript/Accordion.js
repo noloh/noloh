@@ -9,8 +9,7 @@ function _NAccPtAdd(accordion, accordionPart)
 function _NAccPtExpd(accordPart)
 {
 	var part = _N(accordPart);
-	var prevPart = part.Group.PrevSelectedElement;
-	part.Hgt = (parseInt(_N(part.Accord).offsetHeight) - _N(part.Accord).TitleHeight + _N(part.Top).offsetHeight);
+	_NClpsPnlSetHgt(part.id, (parseInt(_N(part.Accord).offsetHeight) - _N(part.Accord).TitleHeight + _N(part.Top).offsetHeight));
 }
 function _NAccPtRm(accordion, index)
 {
