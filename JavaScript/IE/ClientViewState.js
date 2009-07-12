@@ -75,7 +75,7 @@ function _NCheckURL()
 			_N.HistoryLength = history.length;
 		}
 		_N.Request.open("POST", (targetURL.indexOf("#/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#/",targetURL.indexOf("?")==-1?"?":"&")+"&")
-           	+ "_NVisit=0&_NApp" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight, true);
+           	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight, true);
 		location = targetURL;
 		_N.Hash = location.hash;
 		_N.URL = location.href;

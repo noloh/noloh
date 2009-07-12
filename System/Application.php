@@ -254,7 +254,7 @@ final class Application extends Object
 		self::UnsetNolohSessionVars();
 		$this->HandleFirstRun(false);
 		$_SESSION['_NScriptSrcs'] = $srcs;
-		AddScript('_NVisit=-1', Priority::High);
+		AddScript('_N.Visit=-1', Priority::High);
 	}
 	
 	private function HandleDebugMode()
