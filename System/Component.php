@@ -8,7 +8,6 @@
  * 
  * @package System
  */
-
 abstract class Component extends Object
 {
 	/**
@@ -32,6 +31,15 @@ abstract class Component extends Object
 	public $Id;
 	private $ParentId;
 	private $ShowStatus;
+	/**
+	 * Gets a Component by its Id
+	 * @param string $id
+	 * @return Component
+	 */
+	static function &Get($id)
+	{
+		return $GLOBALS['OmniscientBeing'][$id];
+	}
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Component.

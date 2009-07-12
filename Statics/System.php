@@ -130,6 +130,67 @@ final class System
 		return $styled;
 	}
 	/**
+	 * Alert a string specified by the $msg variable.
+	 * <pre>System::Alert("Hi, my name is Asher!");</pre>
+	 * @param string $msg Message to be Alerted
+	 * @return string
+	 */
+	function Alert($msg)
+	{
+		AddScript('alert("' . str_replace(array('\\',"\n","\r",'"'),array('\\\\','\n','\r','\"'),$msg) . '")');
+		return $msg;
+	}
+	/**
+	 * Gets the absolute path of a localized path
+	 * @param string $path
+	 * @return string
+	 */
+	function GetAbsolutePath($path)
+	{
+		if(isset($_SESSION['_NUserDir']) && strpos($path, System::AssetPath())===0)
+			return System::RelativePath() . substr($path, strlen(System::AssetPath()));
+	
+		if($path[0] == '\\' || $path[0] == '/')
+			return realpath($_SERVER['DOCUMENT_ROOT'].$path);
+		if(strpos($path, 'http://') >= 0)
+			return $path;
+		else
+			return realpath($path);
+	}
+	/**
+	 * Returns a relative path showing how one would traverse from one directory to another
+	 * @param string $fromDirectory
+	 * @param string $toDirectory
+	 * @return string
+	 */
+	function GetRelativePath($fromDirectory, $toDirectory)
+	{
+		$fromDirectory = rtrim($fromDirectory, '/');
+		$toLength = strlen($toDirectory);
+		$fromLength = strlen($fromDirectory);
+		
+		$length = min(array($toLength, $fromLength));
+		$lastMatchingSlash = 0;
+		
+		for($i=0; ($i<$length && ($toDirectory[$i] === $fromDirectory[$i])) ; ++$i)
+		{
+			if($fromDirectory[$i] === '/')
+				$lastMatchingSlash = $i;
+		}
+		if($i == $fromLength && $toLength > $fromLength && $toDirectory[$i] === '/')
+		{
+			$lastMatchingSlash = $i;
+			$slashCount = 0;
+		}
+		else
+			$slashCount = 1;
+		for(; $i<$fromLength; ++$i)
+			if($fromDirectory[$i] === '/')
+				++$slashCount;
+				
+		return str_repeat('../', $slashCount) . substr($toDirectory, $lastMatchingSlash + 1);
+	}
+	/**
 	 * System::Log will log one or more values to a debug window, along with a system timestamp. This function is useful for debugging. It will return the first parameter passed in.
 	 * <pre>System::Log($someVar, 'Hey', 17, array('Yes', 'even', 'arrays!'));</pre>
 	 * @param mixed,... $what The information to be logged, as an unlimited number of parameters
@@ -195,7 +256,7 @@ final class System
 	 */
 	static function ImagePath()		{return self::AssetPath() . '/Images/';}
 	/**
-	 * @ignore
+	 * Returns the full, URL path to the application
 	 */
 	static function FullAppPath()	{return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
 }
