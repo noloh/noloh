@@ -33,10 +33,6 @@ a img
 { 
 	border: none; 
 }
-img 
-{ 
-	-ms-interpolation-mode: bicubic; 
-}
 ol 
 { 
 	margin-left:2em; 
