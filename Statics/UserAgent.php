@@ -22,6 +22,10 @@
 final class UserAgent
 {
 	/**
+	 * The Chrome browser
+	 */
+	const Chrome = 'ch';
+	/**
 	 * A short-hand for the Internet Explorer browser
 	 */
 	const IE = 'ie';
@@ -62,6 +66,7 @@ final class UserAgent
 	 */
 	static function LoadInformation()
 	{
+		$userInfo = array();
 		$agt = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 		
 		/*
@@ -77,22 +82,29 @@ final class UserAgent
 		   strpos($agt, 'libwww-perl') !== false ||
 		   )
 		*/
-		   
+		
 		$_SESSION['_NIsIE'] = false;
-        if(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
+		if(preg_match('!chrome/([0-9.]+) !', $agt, $version))
+        	$_SESSION['_NBrowser'] = 'ch';
+        elseif(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
+        {
+        	preg_match('!version/([0-9.]+) !', $agt, $version);
         	$_SESSION['_NBrowser'] = 'sa';
-        elseif(strpos($agt, 'gecko') !== false && strpos($agt, 'firefox') !== false)
+        }
+        elseif(strpos($agt, 'gecko') !== false && preg_match('!firefox/([0-9.]+) !', $agt, $version))
         	$_SESSION['_NBrowser'] = 'ff';
-        elseif(strpos($agt, 'opera') !== false)
+        elseif(preg_match('!opera[ /]([0-9.]+) !', $agt, $version))
         	$_SESSION['_NBrowser'] = 'op';
-        elseif(strpos($agt, 'msie') !== false)
+        elseif(preg_match('!msie ([0-9.]+);!', $agt, $version))
         {
         	$_SESSION['_NBrowser'] = 'ie';
         	$_SESSION['_NIsIE'] = true;
-        	$_SESSION['_NIE6'] = strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 6') !== false;
+        	if($version[1] == 6)
+        		$_SESSION['_NIE6'] = true;
         }
         else
         	$_SESSION['_NBrowser'] = 'other';
+        $_SESSION['_NBrowserVersion'] = $version[1];
         
         if(strpos($agt, 'win') !== false || strpos($agt, '16bit') !== false)
         	$_SESSION['_NOS'] = 'win';
@@ -105,7 +117,6 @@ final class UserAgent
         else
         	$_SESSION['_NOS'] = 'other';
 	}
-	
 	/**
 	 * Returns the user's browser
 	 * @return mixed
@@ -127,14 +138,30 @@ final class UserAgent
 	/**
 	 * @ignore
 	 */
+	public static function IsWebKit()
+	{
+		$browser = $_SESSION['_NBrowser'];
+		return $browser === 'ch' || $browser === 'sa';
+	}
+	/**
+	 * Returns the user's browser version
+	 * @return string
+	 */
+	public static function GetBrowserVersion()
+	{
+		return $_SESSION['_NBrowserVersion'];
+	}
+	/**
+	 * @ignore
+	 */
 	public static function IsIE6()
 	{
 		return $_SESSION['_NIsIE'] && $_SESSION['_NIE6'];
 	}
 	/**
-	* Returns the user's operating system
-	* @return mixed
-	*/
+	 * Returns the user's operating system
+	 * @return mixed
+	 */
 	public static function GetOperatingSystem()
 	{
 		return $_SESSION['_NOS'];
