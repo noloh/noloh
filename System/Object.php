@@ -60,8 +60,8 @@ abstract class Object
 		return method_exists($this, $method);
 	}
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	function __get($nm)
 	{
 		$func = 'Get' . $nm;
@@ -77,8 +77,8 @@ abstract class Object
 		}
 	}
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	function __set($nm, $val)
 	{
 		$func = 'Set' . $nm;
@@ -104,7 +104,18 @@ abstract class Object
 	 */
 	function __call($nm, $args)
 	{
-		if(strpos($nm, 'Get') === 0)
+		if(strpos($nm, 'Cas') === 0)
+		{
+			$prop = substr($nm, 3);
+			if($this->HasProperty($prop))
+			{
+				call_user_func_array(array(&$this, 'Set'.$prop), $args);
+				return $this;
+			}
+			else 
+				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
+		}
+		elseif(strpos($nm, 'Get') === 0)
 		{
 			$prop = substr($nm, 3);
 			if(property_exists($this, $prop))
