@@ -295,7 +295,7 @@ final class URL
 					AddScript('var a=document.createElement("a");a.href=document.URL;a.title=document.title;a.rel="sidebar";a.click();', Priority::Low);
 					break;
 				}
-			case 'sa':
+			case 'sa': case 'ch':
 				$first = UserAgent::GetOperatingSystem() === 'mac' ? 'Cmd' : 'Ctrl';
 				$second = strpos($_SERVER['HTTP_USER_AGENT'], 'konqueror') === false ? 'D' : 'B';
 				Alert('Please press ' . $first . '+' . $second . ' to bookmark this application.');

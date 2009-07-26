@@ -85,11 +85,11 @@ abstract class WebPage extends Component
 		$unload['System'] = new ServerEvent(null, 'isset', true);
 		AddNolohScriptSrc('GeneralFunctions.js');
 		AddNolohScriptSrc('ClientViewState.js', true);
-		switch(GetBrowser())
+		switch(UserAgent::GetBrowser())
 		{
-			case 'ie': case 'sa': 			AddNolohScriptSrc('Mixed/FindPositionIESa.js'); break;
-			case 'ff': 						AddNolohScriptSrc('Mixed/FindPositionFF.js'); break;
-			case 'op': 						AddNolohScriptSrc('Mixed/FindPositionOp.js');
+			case 'ie': case 'sa': case 'ch':	AddNolohScriptSrc('Mixed/FindPositionIESa.js'); break;
+			case 'ff': 							AddNolohScriptSrc('Mixed/FindPositionFF.js'); break;
+			case 'op':							AddNolohScriptSrc('Mixed/FindPositionOp.js');
 		}
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
 			AddScript('_NInit(\''.$this->LoadIndicator->Id.'\',' . ($GLOBALS['_NDebugMode']==='Full'?'"Full"':($GLOBALS['_NDebugMode']?'true':'false')) . ')', Priority::High);
