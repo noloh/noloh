@@ -91,7 +91,7 @@ final class UserAgent
         	preg_match('!version/([0-9.]+) !', $agt, $version);
         	$_SESSION['_NBrowser'] = 'sa';
         }
-        elseif(strpos($agt, 'gecko') !== false && preg_match('!firefox/([0-9.]+) !', $agt, $version))
+        elseif(strpos($agt, 'gecko') !== false && preg_match('!firefox/([0-9.]+)!', $agt, $version))
         	$_SESSION['_NBrowser'] = 'ff';
         elseif(preg_match('!opera[ /]([0-9.]+) !', $agt, $version))
         	$_SESSION['_NBrowser'] = 'op';
