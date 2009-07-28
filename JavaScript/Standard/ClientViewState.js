@@ -479,7 +479,9 @@ function _NReqStateChange()
 {
 	if(_N.Request.readyState == 4)
 	{
-   		var response = _N.Request.responseText.split("/*_N*/", 2), loadIndicator = _N.LoadIndicator;
+   		var text = _N.Request.responseText, pos = text.indexOf("/*_N*/"), 
+   			response = [text.substring(0, pos), text.substring(pos)], 
+   			loadIndicator = _N.LoadIndicator;
 		if(typeof _N.DebugMode == null)
 		{
 			_NProcessResponse(response);

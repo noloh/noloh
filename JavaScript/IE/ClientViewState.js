@@ -492,7 +492,7 @@ function _NProcessResponse(response)
 	}
 	if(_N.DebugMode == "Full")
 	{
-		var reg = new RegEx('((?:(?=/\*)/\*.*?\*/|((?!/\*)(?:[^\'";]|\'(?:[^\'\\]|\\.)*?\'|"(?:[^"\\]|\\.)*?")))+?);');
+		var reg = new RegExp('((?:(?=/\*)/\*.*?\*/|((?!/\*)(?:[^\'";]|\'(?:[^\'\\]|\\.)*?\'|"(?:[^"\\]|\\.)*?")))+?);');
 		var r = response[1].match(reg);
 		for(var i=0; i<r.length; ++i)
 			try
@@ -522,7 +522,9 @@ function _NReqStateChange()
 {
 	if(_N.Request.readyState == 4)
 	{
-   		var response = _N.Request.responseText.split("/*_N*/", 2);
+   		var text = _N.Request.responseText, pos = text.indexOf("/*_N*/"), 
+   			response = [text.substring(0, pos), text.substring(pos)], 
+   			loadIndicator = _N.LoadIndicator;
    		if(typeof _N.DebugMode == null)
 		{
 			_NProcessResponse(response);
