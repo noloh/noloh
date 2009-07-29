@@ -66,16 +66,15 @@ abstract class Object
 	{
 		$func = 'Get' . $nm;
 		if(method_exists($this, $func))
-			$ret = $this->$func();
+			return $this->$func();
 		else
 		{
 			$func = 'get' . $nm;
 			if(method_exists($this, $func))
-				$ret = $this->$func();
+				return $this->$func();
 			else
 				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
 		}
-		return $ret;
 	}
 	/**
 	 * @ignore
