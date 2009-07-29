@@ -262,7 +262,7 @@ final class Animate
 	static function Opacity($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args() + 2;
-		if($numArgs > 2)
+		if($numArgs > 6)
 			$control->SetOpacity($from);
 		Animate::Property($control, 'opacity', $to, $duration, '', $easing, $from, $fps, max(5, $numArgs));
 	}
