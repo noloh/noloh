@@ -26,6 +26,8 @@ final class Application extends Object
 			return Configuration::That();
 		else
 		{
+                        if(getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
+                                exit('Error with working directory. This could be caused by two reasons: you do a chdir in main after including the kernel, or your server is not compatible with not allowing a Application::Start call.');
 			session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
 			if(isset($_SESSION['_NConfiguration']))
