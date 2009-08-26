@@ -170,11 +170,11 @@ function _NShftStp(e)
 					if(_N.EventVars.Caught.length)
 					{
 						catcher.DragCatch.call(catcher);
-						_N.EventVars.Caught = [];
+						//_N.EventVars.Caught = [];
 					}
 				}
 			}
-		delete _N.EventVars.Caught;
+		//delete _N.EventVars.Caught;
 	}
 	count = _N.Shifts.Ghosts.length;
 	for(i=0; i<count; ++i)
