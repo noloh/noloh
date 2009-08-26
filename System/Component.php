@@ -220,8 +220,18 @@ abstract class Component extends Object
 	 */
 	function UpdateEvent($eventType)
 	{
-		NolohInternal::SetProperty($eventType, array($eventType, null), $this);
+		NolohInternal::SetProperty($eventType, array($eventType, 'GetEvPrStr'), $this);
 	}
+        /**
+         * @ignore
+         */
+        function GetEvPrStr($type)
+        {
+            if(isset(Event::$Conversion[$type]))
+                    return '\''.Event::$Conversion[$type].'\',\''.$this->GetEventString($type).'\'';
+            else
+                    return '\''.$type.'\',' . '_NEvent(\'' . $this->GetEventString($type) . '\',\'' . $this->Id . '\')';
+        }
 	/**
 	 * @ignore
 	 */

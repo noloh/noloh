@@ -92,7 +92,7 @@ class TextBox extends Control
 		}
 	}
 	/**
-	 * Returns the regular expression  which filters out user input. E.g., '/^\d*$/' indicates numeric only
+	 * Returns the regular expression which filters out user input. E.g., '/^\d*$/' indicates numeric only. Since regular expressions come in several slightly different flavors, it is worth noting that this expects a "JavaScript" type of regular expression.
 	 * @return string
 	 */
 	function GetFilter()
@@ -100,7 +100,7 @@ class TextBox extends Control
 		return $this->Filter;
 	}
 	/**
-	 * Sets the regular expression  which filters out user input. E.g., '/^\d*$/' indicates numeric only
+	 * Sets the regular expression which filters out user input. E.g., '/^\d*$/' indicates numeric only. Since regular expressions come in several slightly different flavors, it is worth noting that this expects a "JavaScript" type of regular expression.
 	 * @param string $filter
 	 */
 	function SetFilter($filter)

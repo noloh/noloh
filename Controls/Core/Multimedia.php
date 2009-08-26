@@ -230,7 +230,7 @@ class Multimedia extends Control
 	function QueueResetInnerString()
 	{
 		//QueueClientFunction($this, '_NSetInnerMMString', array('\''.$this->Id.'\'', ));
-		NolohInternal::SetProperty('innerHTML', $this, $this);
+		NolohInternal::SetProperty('innerHTML', array('GetInnerString'), $this);
 	}
 	/**
 	 * Returns a Talk Event, which gets launched when a Flash object attempts to talk to NOLOH. The arguments are stored in Event::$FlashArgs

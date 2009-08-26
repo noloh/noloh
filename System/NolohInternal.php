@@ -102,13 +102,12 @@ final class NolohInternal
 				$nameValPairsString .= '\''.$name.'\',\''.addslashes($val).'\',';
 			elseif(is_numeric($val))
 				$nameValPairsString .= '\''.$name.'\','.$val.',';
-			elseif(is_array($val))									// EVENTS!
-			{
-				if(isset(Event::$Conversion[$name]))
-					$nameValPairsString .= '\''.Event::$Conversion[$name].'\',\''.GetComponentById($objId)->GetEventString($val[0]).'\',';
-				else 
-					$nameValPairsString .= '\''.$name.'\',' . '_NEvent(\'' . GetComponentById($objId)->GetEventString($val[0]) . '\',\'' . $objId . '\'),';
-			}
+			elseif(is_array($val))
+                        {
+                                if(!$obj)
+                                    $obj = Component::Get($objId);
+				$nameValPairsString .= call_user_func_array(array($obj, array_pop($val)), $val) . ',';
+                        }
 			elseif(is_bool($val))
 				$nameValPairsString .= '\''.$name.'\','.($val?'true':'false').',';
 			elseif($val === null)
@@ -116,8 +115,8 @@ final class NolohInternal
 				$splitStr = explode(' ', $name);
 				$nameValPairsString .= '\''.$splitStr[0].'\',\'\',';
 			}
-			elseif(is_object($val))									// EMBEDS!
-				$nameValPairsString .= '\''.$name.'\',\''.$val->GetInnerString().'\',';
+			//elseif(is_object($val))									// EMBEDS!
+			//	$nameValPairsString .= '\''.$name.'\',\''.$val->GetInnerString().'\',';
 		}
 		unset($_SESSION['_NPropertyQueue'][$objId]);
 		return rtrim($nameValPairsString, ',');
