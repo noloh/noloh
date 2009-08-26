@@ -1201,7 +1201,7 @@ abstract class Control extends Component
 			$ret = &$this->CSSPropertyArray[$key];
 		}
 		else 
-			$ret = parent::__get($nm);
+			return parent::__get($nm);
 			//The following line stole 10 hours from my life :( - Asher
 //			$ret = &parent::__get($nm);
 		return $ret;
