@@ -473,7 +473,7 @@ final class Application extends Object
 			$this->HandleTokens();
 			$className = Configuration::That()->StartClass;
 			$this->WebPage = new $className();
-			if(empty($_COOKIE['_NAppCookie']))
+			if(empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()))
 				$this->WebPage->Show();
 			else
 				return $this->WebPage->NoScriptShow();
