@@ -44,7 +44,8 @@ final class Application extends Object
 				}
 				$_SESSION['_NConfiguration'] = $config;
 			}
-			new Application($config);
+            if($config->StartClass)
+			    new Application($config);
 			return $config;
 		}
 		return false;

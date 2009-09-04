@@ -43,34 +43,44 @@ class Configuration extends Object implements Singleton
 		parent::Object();
 		$args = func_get_args();
 		$argLength = func_num_args();
+        $firstIndex = 0;
 		if($argLength)
-			for($i=0; $i<$argLength; ++$i)
-			{
-				if(is_array($args[$i]))
-					foreach($args[$i] as $name => $value)
-						$this->$name = $value;
-				elseif($args[$i] instanceof Configuration)
-					foreach(get_object_vars($args[$i]) as $name => $value)
-						$this->$name = $value;
-				else 
-				{
-					if(!$setStartupLegacy)
-						$setStartupLegacy = array('StartClass', 'UnsupportedURL', 'URLTokenMode', 'TokenTrailsExpiration', 'DebugMode');
-					$this->{$setStartupLegacy[$i]} = $args[$i];
-				}
-			}
-		else 
+        {
+            if($args[0] === System::Auto)
+            {
+                $this->DetectStartClass();
+                $firstIndex = 1;
+            }
+        }
+        else
+            $this->DetectStartClass();
+		for($i=$firstIndex; $i<$argLength; ++$i)
 		{
-			$classes = get_declared_classes();
-			$classLength = count($classes);
-			for($i=$classLength-1; $i; --$i)
-				if(is_subclass_of($classes[$i], 'WebPage'))
-				{
-					$this->StartClass = $classes[$i];
-					break;
-				}
-		}
+			if(is_array($args[$i]))
+				foreach($args[$i] as $name => $value)
+					$this->$name = $value;
+			elseif($args[$i] instanceof Configuration)
+				foreach(get_object_vars($args[$i]) as $name => $value)
+					$this->$name = $value;
+			else 
+			{
+				if(!$setStartupLegacy)
+					$setStartupLegacy = array('StartClass', 'UnsupportedURL', 'URLTokenMode', 'TokenTrailsExpiration', 'DebugMode');
+				$this->{$setStartupLegacy[$i]} = $args[$i];
+			}
+		}                         
 	}
+    private function DetectStartClass()
+    {
+        $classes = get_declared_classes();
+        $classLength = count($classes);
+        for($i=$classLength-1; $i; --$i)
+            if(is_subclass_of($classes[$i], 'WebPage'))
+            {
+                $this->StartClass = $classes[$i];
+                break;
+            }    
+    }
 	/**
 	 * Returns the instance of Configuration currently in use. The name is a pun on the "this" concept. See also Singleton interface.
 	 * @return Configuration
