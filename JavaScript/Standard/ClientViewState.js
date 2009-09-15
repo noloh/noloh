@@ -342,8 +342,16 @@ function _NAdd(addTo, tag, id, nameValuePairs, beforeId)
 function _NAdopt(id, parentId)
 {
     var ele = _N(id);
-    ele.parentNode.removeChild(ele);
-    _N(parentId).appendChild(ele);
+	if(_N.Incubator[parentId])
+	{
+		_N.Incubator[id] = _N(id);
+		_N.IncubatorRootsIns[id] = [parentId, null];
+	}
+	else
+	{
+		ele.parentNode.removeChild(ele);
+		_N(parentId).appendChild(ele);
+	}
 }
 function _NRem(id)
 {

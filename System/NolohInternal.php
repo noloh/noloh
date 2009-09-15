@@ -88,7 +88,8 @@ final class NolohInternal
     {
         if(!$obj->GetBuoyant())
             AddScript('_NAdopt(\''.$obj->Id.'\',\'' . $obj->GetParent()->GetAddId($obj) . '\')', Priority::High);
-        unset($_SESSION['_NControlQueue'][$obj->Id]);
+        $GLOBALS['_NAddedSomething'] = true;
+		unset($_SESSION['_NControlQueue'][$obj->Id]);
     }
 	
 	public static function GetPropertiesString($objId, $nameValPairs=array())
