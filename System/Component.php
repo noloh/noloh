@@ -50,7 +50,7 @@ abstract class Component extends Object
 		global $OmniscientBeing;
 		$OmniscientBeing[$this->Id = 'N' . ++$_SESSION['_NNumberOfComponents']] = &$this;
 		if($this instanceof Singleton)
-		{                                     
+		{
 			$parent = new ReflectionClass(get_class($this));
 			do
 			{
@@ -58,7 +58,7 @@ abstract class Component extends Object
 				$parent = $class->getParentClass();
 			}while($parent && $parent->implementsInterface('Singleton'));
 			$class = $class->getName();
-			if(isset($_SESSION['_NSingletons'][$class]))
+			if(isset($_SESSION['_NSingletons'][$class]) && GetComponentById($_SESSION['_NSingletons'][$class]))
 				BloodyMurder('Cannot create more than one instance of a ' . $class . ' class because it is a Singleton.');
 			else
 				$_SESSION['_NSingletons'][$class] = $this->Id;
