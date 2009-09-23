@@ -5,7 +5,7 @@
  * A component is a basic building-block in a NOLOH application. It is an abstract class, so you may not instantiate a new Component, only write classes that extend this class.<br>
  * Each component has an <b>Id</b> that uniquely identifies itself among all other components.<br>
  * A component may have a <b>Parent</b>, which establishes a tree based on the parent-child relationship.<br>
- * 
+ *
  * @package System
  */
 abstract class Component extends Object
@@ -22,7 +22,7 @@ abstract class Component extends Object
 	 * A possible ShowStatus for the Component. Buried indicates that the Component is has been shown and then removed.
 	 */
 	const Buried = 2;
-	
+
 	private $EventSpace;
 	/**
 	 * A unique Id for the component
@@ -43,15 +43,21 @@ abstract class Component extends Object
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Component.
-	 */ 
+	 */
 	function Component()
 	{
 		$this->ShowStatus = 0;
 		global $OmniscientBeing;
 		$OmniscientBeing[$this->Id = 'N' . ++$_SESSION['_NNumberOfComponents']] = &$this;
 		if($this instanceof Singleton)
-		{
-			$class = get_class($this);
+		{                                     
+			$parent = new ReflectionClass(get_class($this));
+			do
+			{
+				$class = $parent;
+				$parent = $class->getParentClass();
+			}while($parent && $parent->implementsInterface('Singleton'));
+			$class = $class->getName();
 			if(isset($_SESSION['_NSingletons'][$class]))
 				BloodyMurder('Cannot create more than one instance of a ' . $class . ' class because it is a Singleton.');
 			else
@@ -83,9 +89,9 @@ abstract class Component extends Object
 	}
 	/**
 	 * Gets the Id of the immediate Parent Component
-	 * @return string 
+	 * @return string
 	 */
-	function GetParentId() 
+	function GetParentId()
 	{
 		return $this->ParentId;
 	}
@@ -101,18 +107,18 @@ abstract class Component extends Object
 			if($parentId === null)
 				if($this->ShowStatus===null)
 					$_SESSION['_NControlQueueRoot'][$this->Id] = false;
-				else 
+				else
 					unset($_SESSION['_NControlQueueRoot'][$this->Id], $_SESSION['_NControlQueueDeep'][$this->ParentId][$this->Id]);
-			else 
+			else
 			{
 				if($this->ParentId !== null)
 					unset($_SESSION['_NControlQueueRoot'][$this->Id], $_SESSION['_NControlQueueDeep'][$this->ParentId][$this->Id]);
 				if(GetComponentById($parentId)->ShowStatus !== 0)
 					$_SESSION['_NControlQueueRoot'][$this->Id] = true;
-				else 
+				else
 					if(isset($_SESSION['_NControlQueueDeep'][$parentId]))
 						$_SESSION['_NControlQueueDeep'][$parentId][$this->Id] = true;
-					else 
+					else
 						$_SESSION['_NControlQueueDeep'][$parentId] = array($this->Id => true);
 			}
 			$this->ParentId = $parentId;
@@ -127,10 +133,10 @@ abstract class Component extends Object
 		$regionId = substr($parentId, 0, strpos($parentId, 'i'));
 		if(GetComponentById($regionId)->GetShowStatus()!==0)
 			$_SESSION['_NControlQueueRoot'][$this->Id] = true;
-		else 
+		else
 			if(isset($_SESSION['_NControlQueueDeep'][$regionId]))
 				$_SESSION['_NControlQueueDeep'][$regionId][$this->Id] = true;
-			else 
+			else
 				$_SESSION['_NControlQueueDeep'][$regionId] = array($this->Id => true);
 	}
 	/**
@@ -153,7 +159,7 @@ abstract class Component extends Object
 					return GetComponentById($this->ParentId);
 				elseif($generation > 1)
 					return GetComponentById($this->ParentId)->GetParent($generation-1);
-				else 
+				else
 					return $this;
 			}
 			elseif(is_string($generation))
@@ -188,7 +194,7 @@ abstract class Component extends Object
 	{
 		if($this->EventSpace === null)
 			$this->EventSpace = array();
-		return isset($this->EventSpace[$eventType]) 
+		return isset($this->EventSpace[$eventType])
 			? $this->EventSpace[$eventType]
 			: new Event(array(), array(array($this->Id, $eventType)));
 	}
@@ -335,11 +341,11 @@ abstract class Component extends Object
 	{
 		/*if(isset($GLOBALS['_NChunking']))
 			$GLOBALS['_NControlChunk'][$this->Id] = &$this;*/
-			
+
 		$vars = (array)$this;
 		//global $OmniscientBeing;
 		foreach ($vars as $key => $val)
-		//{			
+		//{
         	//if(is_null($val))
         	if($val === null)
 				unset($vars[$key]);
