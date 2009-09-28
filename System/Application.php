@@ -356,8 +356,20 @@ final class Application extends Object
 					$GLOBALS['_NQueueDisabled'] = $changes[0];
 					$changeCount = count($changes);
 					$j = 0;
-					while(++$j < $changeCount)
-						$component->{isset($lookUp[$prop = $changes[$j]]) ? $lookUp[$prop] : ('Set'.$prop)}($changes[++$j]);
+					if($component->GetSecure())
+					{
+						$oldValue = $component->GetValue();
+						while(++$j < $changeCount)
+							$component->{isset($lookUp[$prop = $changes[$j]]) ? $lookUp[$prop] : ('Set'.$prop)}($changes[++$j]);
+						if($oldValue != $component->GetValue())
+							if(isset($GLOBALS['_NResetSecureValues']))
+								$GLOBALS['_NResetSecureValues'][$component->Id] = $oldValue;
+							else
+								$GLOBALS['_NResetSecureValues'] = array($component->Id => $oldValue);
+					}
+					else
+						while(++$j < $changeCount)
+							$component->{isset($lookUp[$prop = $changes[$j]]) ? $lookUp[$prop] : ('Set'.$prop)}($changes[++$j]);
 				}
 			}
 		}
@@ -483,6 +495,7 @@ final class Application extends Object
 		header('Content-Type: text/javascript; charset=UTF-8');
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
 			URL::UpdateTokens();
+		NolohInternal::ResetSecureValuesQueue();
 		NolohInternal::LinkTokensQueue();
 		NolohInternal::ControlQueue();
 		NolohInternal::SetPropertyQueue();

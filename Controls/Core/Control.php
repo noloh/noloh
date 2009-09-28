@@ -36,8 +36,8 @@ abstract class Control extends Component
 	private $Selected;
 	private $GroupName;
 	private $Buoyant;
+	private $Secure;
 	private $Shifts;
-
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -636,6 +636,22 @@ abstract class Control extends Component
 			if(!$bool)
 				QueueClientFunction($this, '_NByntStp', array("'$this->Id'"));
 		}
+	}
+	/**
+	 * Returns the security settings for this Control. A value of true means that the Value of this Control will be reset so that sensitive data is not saved in the session.
+	 * @return boolean
+	 */
+	function GetSecure()
+	{
+		return $this->Secure;
+	}
+	/**
+	 * Sets the security settings for this Control. A value of true means that the Value of this Control will be reset so that sensitive data is not saved in the session.
+	 * @param boolean $secure
+	 */
+	function SetSecure($secure)
+	{
+		return $this->Secure = $secure;
 	}
 	/**
 	 * Returns whether the Control is Selected. This only makes sense in the context of Controls implementing Groupable or
