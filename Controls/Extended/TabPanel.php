@@ -3,20 +3,20 @@
  * TabPanel class
  *
  * A TabPanel is a Panel with a TabBar that allows you to navigate quickly between several TabPages.
- * 
+ *
  * <pre>
  * $tabPanel = new TabPanel();
  * $tabPanel->TabPages->Add($people = new TabPage('People'));
  * $tabPanel->TabPages->Add($business = new TabPage('Businesses'));
- * 
+ *
  * //Now we can add some things to our TabPages
  * $people->Controls->Add(...);
  * $business->Controls->Add(...);
- * 
- * //Now we add the TabPanel to some Panel's Controls 
+ *
+ * //Now we add the TabPanel to some Panel's Controls
  * $this->Controls->Add($tabPanel);
  * </pre>
- * 
+ *
  * @package Controls/Extended
  */
 class TabPanel extends Panel
@@ -37,7 +37,7 @@ class TabPanel extends Panel
 	 */
 	public $TabPages;
 	private $Tabs;
-	
+
 	private $TabAlignment = 'Top';
 	/**
 	 * Constructor
@@ -45,24 +45,24 @@ class TabPanel extends Panel
 	 * @param integer $top The Top coordinate of this element
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
-	 */	
+	 */
 	function TabPanel($left = 0, $top = 0, $width = 500, $height = 500)
 	{
 		parent::Panel($left, $top, null, null);
 		$this->Tabs = new Group();
 		$this->Tabs->Change = new ClientEvent('_NTbPgSt', $this->Tabs->Id);
-		
+
 		$this->TabBar = new Panel(0, 0, '100%', 0);
 		$this->Body = new Panel(0, 0, '100%', null, $this);
-		
+
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 
 		$this->Body->Shifts[] = Shift::With($this, Shift::Height);
-		
+
 		$this->TabPages = &$this->Body->Controls;
 		$this->TabPages->AddFunctionName = 'AddTabPage';
-		
+
 		$this->TabBar->Layout = $this->Body->Layout = Layout::Relative;
 		$this->Controls->Add($this->TabBar);
 		$this->Controls->Add($this->Body);
@@ -80,7 +80,7 @@ class TabPanel extends Panel
 	 * Returns index of the currently selected TabPage
 	 * @return mixed
 	 */
-	public function GetSelectedIndex()	
+	public function GetSelectedIndex()
 	{
 		return $this->Tabs->GetSelectedIndex();
 	}
@@ -104,10 +104,20 @@ class TabPanel extends Panel
 	{
 		if(is_string($tabPage))
 			$this->SetSelectedIndex($this->TabPanelBar->Controls->IndexOf(GetComponentById($tabPage)));
-		else 
+		else
 			$this->SetSelectedIndex($this->TabPages->IndexOf($tabPage));
 		return $tabPage;
 	}
+	/**
+	 * Returns the SelectedTab. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return SelectedTab
+	 */
+	function GetValue()			{return $this->GetSelectedTab();}
+	/**
+	 * Sets the SelectedTab. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param SelectedTab $value
+	 */
+	function SetValue($value)	{return $this->SetSelectedTab($value);}
 	/**
 	 * Sets an TabPage of a particular index as selected
 	 * @param integer $index
@@ -122,13 +132,13 @@ class TabPanel extends Panel
 	 * @ignore
 	 */
 	public function AddTabPage($tabPage)
-	{	
+	{
 		if(!is_object($tabPage))
 			$tabPage = new TabPage($tabPage);
-		
+
 		$rolloverTab = $tabPage->GetRolloverTab();
 		$tabHeight = $rolloverTab->GetHeight();
-		
+
 		if($tabHeight > $this->TabBar->GetHeight())
 		{
 			$this->TabBar->SetHeight($tabHeight);
@@ -175,7 +185,7 @@ class TabPanel extends Panel
 		if($this->TabAlignment == Layout::Top)
 		{
 			$this->TabBar->Left = 0;
-			$this->TabBar->Top = 0; 
+			$this->TabBar->Top = 0;
 			$this->Body->Top = $this->TabPanelBar->Height;
 		}
 		else if($this->TabAlignment == Layout::Bottom)
