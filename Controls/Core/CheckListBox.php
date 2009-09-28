@@ -192,6 +192,16 @@ class CheckListBox extends ListControl
 		return null;
 	}
 	/**
+	 * Returns the SelectedValue. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return string
+	 */
+	function GetValue()			{return $this->GetSelectedValue();}
+	/**
+	 * Sets the SelectedValue. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param string $value
+	 */
+	function SetValue($value)	{return $this->SetSelectedValue($value);}
+	/**
 	 * Returns an array of all the values of the selected Items
 	 * @return array
 	 */
