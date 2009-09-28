@@ -4,9 +4,9 @@
  *
  * A CheckControl is a Control that can visually be checked on or off. For example, {@see CheckBox} and {@see RadioButton}
  * both extend CheckControl, and it is CheckControl's purpose to provide functionality that is common to both CheckBox and RadioButton,
- * as well as for proper organization and inheritance. It is not recommended that you extend CheckControl directly, instead, you should 
+ * as well as for proper organization and inheritance. It is not recommended that you extend CheckControl directly, instead, you should
  * extend CheckBox or RadioButton.
- * 
+ *
  * @package Controls/Core
  */
 abstract class CheckControl extends Control
@@ -81,7 +81,7 @@ abstract class CheckControl extends Control
 	}
 	/**
 	 * Sets the value of this CheckControl
-	 * @param text $value
+	 * @param string $value
 	 */
 	function SetValue($value)
 	{
@@ -94,7 +94,7 @@ abstract class CheckControl extends Control
 	{
 		return $this->GroupName;
 	}*/
-	
+
 	/*
 	 * @ignore
 	 *
@@ -139,7 +139,7 @@ abstract class CheckControl extends Control
 		}
 		return $bool;
 	}
-	
+
 	/*
 	 * An alias for GetChecked
 	 * @return boolean
@@ -237,7 +237,7 @@ abstract class CheckControl extends Control
 			QueueClientFunction($this, '_NChange', array('\''.$this->Id.'I\'', '\'onchange\'', '\'var e=_N("'.$this->Id.'").onchange;if(e) e.call();\''));
 		return parent::SetChange($change);
 	}*/
-	
+
 	/**
 	 * @ignore
 	 */

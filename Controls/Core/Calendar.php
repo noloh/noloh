@@ -1,21 +1,21 @@
 <?php
 /**
 * Calendar class
-* 
+*
 * A Calendar is a Panel which shows the days of the year sorted by month in a table where
 * the columns correspond to days of the week, as in a conventional calendar. Furthermore,
 * the user can scroll between months and years, as well as select a date.
-* 
+*
 * <pre>
 * // Instantiates a new Calendar object
 * $calendar = new Calendar();
 * // Adds it to the Controls ArrayList
 * $this->Controls->Add($calendar);
 * </pre>
-* 
+*
 * One may also set a Change Event on the calendar. This Event will be triggered when any
 * date is selected.
-* 
+*
 * <pre>
 * // Sets the Calendar object's Change Event to call the AlertDate function with itself as a parameter
 * $calendar->Change = new ServerEvent($this, 'AlertDate', $calendar);
@@ -26,10 +26,10 @@
 * }
 * // Thus, when a new date is selected on the Calendar, that date will be Alerted
 * </pre>
-* 
+*
 * @package Controls/Core
 */
-class Calendar extends Panel 
+class Calendar extends Panel
 {
 	/**
 	 * The Label which displays the Date, at the top of the Calendar
@@ -210,8 +210,18 @@ class Calendar extends Panel
 		$this->UpdateClient();
 	}
 	/**
+	 * Returns the Timestamp. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return integer
+	 */
+	function GetValue()			{return $this->GetTimestamp();}
+	/**
+	 * Sets the Timestamp. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param integer $value
+	 */
+	function SetValue($value)	{return $this->SetTimestamp($value);}
+	/**
 	 * Returns the the selected day as formatted according to the Format property.
-	 * @return string 
+	 * @return string
 	 */
 	function GetFullDate()
 	{

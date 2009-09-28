@@ -1,9 +1,9 @@
 <?php
 /**
  * ControlPair class
- * 
- * A ControlPair is a Container showing two Controls next to each other, either vertically or horizontally. 
- * 
+ *
+ * A ControlPair is a Container showing two Controls next to each other, either vertically or horizontally.
+ *
  * @package Collections
  */
 class ControlPair extends Panel implements ArrayAccess
@@ -18,12 +18,12 @@ class ControlPair extends Panel implements ArrayAccess
 	 * @deprecated Use Layout::Vertical instead
 	 */
 	const Vertical = 1;
-	
+
 	private $First;
 	private $Second;
 	private $Orientation;
 	private $Margin;
-	
+
 	/*TODO
 	Allow for setting of Pixel/Ratio, SetRatio()
 	*/
@@ -57,7 +57,7 @@ class ControlPair extends Panel implements ArrayAccess
 		$this->SetSecond($secondControl);
 //		$this->Second = $secondControl;
 		$this->SetOrientation($orientation);
-		
+
 //		$this->SetLeft($left);
 //		$this->SetTop($top);
 	}
@@ -65,7 +65,7 @@ class ControlPair extends Panel implements ArrayAccess
 	 * Returns the First Control
 	 * @return Control
 	 */
-	function GetFirst()	
+	function GetFirst()
 	{
 		return $this->First;
 	}
@@ -85,17 +85,17 @@ class ControlPair extends Panel implements ArrayAccess
 			if($orientation == Layout::Horizontal)
 				$obj->CSSFloat = 'left';
 		}
-		else 
+		else
 			$this->Controls->Add($obj);
 		return $this->First = $obj;
 //		$this->SetLeft($left);
-		
+
 	}
 	/**
 	 * Returns the Second Control
 	 * @return Control
 	 */
-	function GetSecond()	
+	function GetSecond()
 	{
 		return $this->Second;
 	}
@@ -118,7 +118,7 @@ class ControlPair extends Panel implements ArrayAccess
 	 * Returns the spacing between the two Controls
 	 * @return integer
 	 */
-	function GetMargin()	
+	function GetMargin()
 	{
 		if(isset($this->Margin))
 			if($this->Orientation == Layout::Horizontal)
@@ -146,7 +146,7 @@ class ControlPair extends Panel implements ArrayAccess
 			}
 			if($this->Orientation == Layout::Vertical)
 				$this->OrganizeMarginVer($margin);
-			else	
+			else
 				$this->OrganizeMarginHor($margin);
 		}
 		return $margin;
@@ -221,7 +221,7 @@ class ControlPair extends Panel implements ArrayAccess
 			$this->Layout = $layout;
 			$this->SetTop($this->GetTop());
 			$this->SetLeft($this->GetLeft());
-		}*/	
+		}*/
 		return $orientation;
 	}
 	/**
@@ -265,15 +265,15 @@ class ControlPair extends Panel implements ArrayAccess
 				return $obj2Height;
 	}
 	/**
-	 * Returns the Text property of the Second Control
+	 * Returns the Value property of the Second Control
 	 * @return string
 	 */
-	function GetValue()	{return $this->Second->GetText();}
+	function GetValue()	{return $this->Second->GetValue();}
 	/**
-	 * Sets the Text property of the Second Control
+	 * Sets the Value property of the Second Control
 	 * @param string $value
 	 */
-	function SetValue($value)	{$this->Second->SetText($value);}
+	function SetValue($value)	{$this->Second->SetValue($value);}
 	/**
 	 * Returns the Text property of the First Control
 	 * @return string
@@ -289,7 +289,7 @@ class ControlPair extends Panel implements ArrayAccess
 	 * @return Control
 	 * @deprecated Use GetFirst() instead
 	 */
-	function GetControl1()	
+	function GetControl1()
 	{
 		return $this->GetFirst();
 	}
@@ -307,7 +307,7 @@ class ControlPair extends Panel implements ArrayAccess
 	 * @return Control
 	 * @deprecated Use GetSecond() instead
 	 */
-	function GetControl2()	
+	function GetControl2()
 	{
 		return $this->GetSecond();
 	}
@@ -338,7 +338,7 @@ class ControlPair extends Panel implements ArrayAccess
 	 * @ignore
 	 */
 	function offsetSet($index, $val)
-	{		
+	{
 		return $key ? $this->SetSecond($val) : $this->SetFirst($val);
 	}
 	/**

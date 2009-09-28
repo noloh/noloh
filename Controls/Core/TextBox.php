@@ -5,7 +5,7 @@
  * A TextBox is a Control for a conventional web text input field. It allows the user to type in a single line of text.
  * If you want to allow the user to type in more than one line of text, then you are looking for the TextArea Control
  * instead.
- * 
+ *
  * @package Controls/Core
  */
 class TextBox extends Control
@@ -23,7 +23,7 @@ class TextBox extends Control
 	 * @param integer $height The height of this element
 	 * @return TextBox
 	 */
-	function TextBox($left = 0, $top = 0, $width = 83, $height = 16)  
+	function TextBox($left = 0, $top = 0, $width = 83, $height = 16)
 	{
 		parent::Control($left, $top, $width, $height);
 	}
@@ -36,7 +36,7 @@ class TextBox extends Control
 		$lab->SetVisible(true);
 		if($lab->Text != $this->Text)
 		{
-			$lab->Text = $this->Text; 
+			$lab->Text = $this->Text;
 			if($lab->Change != null)
 				$lab->Change->Exec();
 		}
@@ -76,6 +76,16 @@ class TextBox extends Control
 		$this->Password = $bool ? true : null;
 		NolohInternal::SetProperty('type', $bool ? 'password' : 'text', $this);
 	}
+	/**
+	 * Returns the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return string
+	 */
+	function GetValue()			{return $this->GetText();}
+	/**
+	 * Sets the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param string $value
+	 */
+	function SetValue($value)	{return $this->SetText($value);}
 	/**
 	 * @ignore
 	 */

@@ -11,12 +11,12 @@
  * // Adds it to the Controls ArrayList
  * $this->Controls->Add($datePicker);
  * </pre>
- * 
+ *
  * @property-read string $FullDate The full date of the selected day. It will be formatted according to the Format property.
  * @property integer $Timestamp The currently selected day of the DatePicker in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT
- * @property string $Format The format of the DatePicker display, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function. 
+ * @property string $Format The format of the DatePicker display, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function.
  * NOLOH's default is 'l, F d, Y' which means that a typical date will look like 'Tuesday, August 14, 2007'
- * 
+ *
  * @package Controls/Extended
  */
 class DatePicker extends Panel
@@ -67,7 +67,7 @@ class DatePicker extends Panel
 	}
 	/**
 	 * Returns the the selected day as formatted according to the Format property.
-	 * @return string 
+	 * @return string
 	 */
 	function GetFullDate()
 	{
@@ -95,11 +95,21 @@ class DatePicker extends Panel
 		//QueueClientFunction($this, '_N(\''.$this->Calendar->Id.'\').onchange', array());
 	}
 	/**
-	 * Returns the currently used format of the display of the DatePicker, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function. 
- 	 * NOLOH's default is 'l, F d, Y' which means that a typical date will look like 'Tuesday, August 14, 2007'
-	 * @return string 
+	 * Returns the Timestamp. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return integer
 	 */
-	function GetFormat()									
+	function GetValue()			{return $this->GetTimestamp();}
+	/**
+	 * Sets the Timestamp. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param integer $value
+	 */
+	function SetValue($value)	{return $this->SetTimestamp($value);}
+	/**
+	 * Returns the currently used format of the display of the DatePicker, using the same formatting codes as PHP's native date() {@link PHP_Manual#date} function.
+ 	 * NOLOH's default is 'l, F d, Y' which means that a typical date will look like 'Tuesday, August 14, 2007'
+	 * @return string
+	 */
+	function GetFormat()
 	{
 		return $this->Calendar->GetFormat();
 	}

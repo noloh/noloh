@@ -5,13 +5,13 @@
  * A TextArea is a Control for a conventional web text area. It allows the user to type in multiple lines of text.
  * If you want to allow the user to type in only a single line of text, then you are looking for the TextBox Control
  * instead.
- * 
+ *
  * @package Controls/Core
  */
-class TextArea extends Control 
+class TextArea extends Control
 {
 	private $MaxLength;
-	private $Scrolling;	
+	private $Scrolling;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends TextArea
@@ -23,7 +23,7 @@ class TextArea extends Control
 	 * @param integer $maxLength The maximum number of characters that are allowed in the TextArea
 	 * @return TextArea
 	 */
-	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)  
+	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)
 	{
 		parent::Control($left, $top, $width, $height);
 		$this->SetMaxLength($maxLength);
@@ -172,6 +172,16 @@ class TextArea extends Control
     {
         return Event::$FocusedComponent->Id == $this->Id ? Event::$SelectedText : '';
     }
+    /**
+	 * Returns the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return string
+	 */
+	function GetValue()			{return $this->GetText();}
+	/**
+	 * Sets the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param string $value
+	 */
+	function SetValue($value)	{return $this->SetText($value);}
     /**
      * @ignore
      */

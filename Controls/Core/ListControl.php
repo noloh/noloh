@@ -4,9 +4,9 @@
  *
  * A ListControl is a Control that has Items in it that may become selected. For example, {@see ComboBox}, {@see ListBox}, and {@see CheckListBox}
  * all extend ListControl, and it is ListControl's purpose to provide functionality that is common to both ComboBox, ListBox, and CheckListBox
- * as well as for proper organization and inheritance. 
- * It is not recommended that you extend ListControl directly, instead, you should extend ComboBox, ListBox, or CheckListBox. 
- * 
+ * as well as for proper organization and inheritance.
+ * It is not recommended that you extend ListControl directly, instead, you should extend ComboBox, ListBox, or CheckListBox.
+ *
  * @package Controls/Core
  */
 abstract class ListControl extends Control
@@ -83,6 +83,16 @@ abstract class ListControl extends Control
 		return null;
 	}
 	/**
+	 * Returns the SelectedValue. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return string
+	 */
+	function GetValue()			{return $this->GetSelectedValue();}
+	/**
+	 * Sets the SelectedValue. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param string $value
+	 */
+	function SetValue($value)	{return $this->SetSelectedValue($value);}
+	/**
 	 * Gets the Text of the selected Item
 	 * <br> Can also be called as a property
 	 * <pre>$tempText = $this->SelectedText</pre>
@@ -115,7 +125,7 @@ abstract class ListControl extends Control
 		return null;
 	}
 	/**
-	 * Adds an Item to the Items ArrayList. 
+	 * Adds an Item to the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Add($item)</pre>
 	 * @param Item $item
@@ -132,7 +142,7 @@ abstract class ListControl extends Control
 		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	/**
-	 * Inserts an Item into a particular index of the Items ArrayList. 
+	 * Inserts an Item into a particular index of the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Insert($item, $index)</pre>
 	 * @param Item $item
@@ -145,7 +155,7 @@ abstract class ListControl extends Control
 		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
 	/**
-	 * Removes an Item from a particular index of the Items ArrayList. 
+	 * Removes an Item from a particular index of the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->RemoveAt($index)</pre>
 	 * @param integer $index
@@ -160,7 +170,7 @@ abstract class ListControl extends Control
 		//AddScript("_N('$this->Id').remove($index)");
 	}
 	/**
-	 * Clears the Items ArrayList. 
+	 * Clears the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Clear()</pre>
 	 * @param Item $item
@@ -219,5 +229,5 @@ abstract class ListControl extends Control
 			echo $indent, '<OPTION value="', $item->Value, '">', $item->Text, "</OPTION>\n";
 	}
 }
-	
+
 ?>
