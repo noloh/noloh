@@ -335,8 +335,16 @@ abstract class Component extends Object
 	 */
 	function NoScriptShow()			{}
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
+	function GetSecure()
+	{
+		// Might be necessary for more advanced features, but should currently be off.
+		return false;
+	}
+	/**
+	 * @ignore
+	 */
 	function __sleep()
 	{
 		/*if(isset($GLOBALS['_NChunking']))
