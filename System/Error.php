@@ -80,6 +80,7 @@ function _NErrorHandler($number, $string, $file, $line)
 	if($gzip)
 		ob_end_flush();
 	flush();
+	NolohInternal::ResetSecureValuesQueue();
 	global $OmniscientBeing;
 	$_SESSION['_NScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
