@@ -1,20 +1,20 @@
 <?php
-/** 
+/**
  * Control class
  *
  * Control is the base class for most NOLOH controls. They are different from Components in that they have a visual representation
  * on the browser, e.g., location, size, Visible, Opacity, etc... All custom defined controls must extend Control.<br>
  * Controls also have a built-in syntactical sugar for setting all CSS properties, simply by prepending the property with CSS and using
  * PascalCase. For example, if one wishes to set the CSS property margin-left to 2px, one would use $control->CSSMarginLeft = '2px';
- * 
+ *
  * @package Controls/Core
  */
 
 abstract class Control extends Component
 {
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	protected $CSSPropertyArray;
 	private $CSSClass;
 	private $Opacity;
@@ -37,7 +37,7 @@ abstract class Control extends Component
 	private $GroupName;
 	private $Buoyant;
 	private $Shifts;
-	
+
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -164,10 +164,20 @@ abstract class Control extends Component
 		$this->Text = $text;
 	}
 	/**
+	 * Returns the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @return string
+	 */
+	function GetValue()			{return $this->GetText();}
+	/**
+	 * Sets the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
+	 * @param string $value
+	 */
+	function SetValue($value)	{return $this->SetText($value);}
+	/**
 	 * Returns the Width of this Control. Can be either an integer signifying Width in pixels, or can be a string for percents, e.g., '50%'
 	 * @return integer|string
 	 */
-	function GetWidth() 
+	function GetWidth()
 	{
 		return $this->Width;
 	}
@@ -181,7 +191,7 @@ abstract class Control extends Component
 		if(is_numeric($width))
 			if($width >= 0)
 				NolohInternal::SetProperty('style.width', $width.'px', $this);
-			else 
+			else
 				BloodyMurder('Cannot set Width to a negative value.');
 		elseif(is_numeric(rtrim($width, '%')))
 			NolohInternal::SetProperty('style.width', $width, $this);
@@ -192,7 +202,7 @@ abstract class Control extends Component
 	 * Returns the Height of this Control. Can be either an integer signifying Height in pixels, or can be a string for percents, e.g., '50%'
 	 * @return integer|string
 	 */
-	function GetHeight() 
+	function GetHeight()
 	{
 		return $this->Height;
 	}
@@ -206,7 +216,7 @@ abstract class Control extends Component
 		if(is_numeric($height))
 			if($height >= 0)
 				NolohInternal::SetProperty('style.height', $height.'px', $this);
-			else 
+			else
 				BloodyMurder('Cannot set Height to a negative value.');
 		elseif(is_numeric(rtrim($height, '%')))
 			NolohInternal::SetProperty('style.height', $height, $this);
@@ -216,7 +226,7 @@ abstract class Control extends Component
 	/**
 	 * Returns the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being set via the property syntax, Location should be set to an array of the Width and Height values, and the get always returns an array.
- 	 * <pre> 
+ 	 * <pre>
  	 * $object->SetSize(300, 400);
  	 * //or as a property being set to an array.
  	 * $object->Size = array(300, 400);
@@ -230,7 +240,7 @@ abstract class Control extends Component
 	/**
 	 * Sets the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being set via the property syntax, Location should be set to an array of the Width and Height values, and the get always returns an array.
-	 * <pre> 
+	 * <pre>
 	 * $object->SetSize(300, 400);
  	 * //or as a property being set to an array.
  	 * $object->Size = array(300, 400);
@@ -257,7 +267,7 @@ abstract class Control extends Component
 	 * Returns the Left of this Control. Can be either an integer signifying Left in pixels, or can be a string for percents, e.g., '50%'
 	 * @return integer|string
 	 */
-	function GetLeft() 
+	function GetLeft()
 	{
 		return $this->Left;
 	}
@@ -279,7 +289,7 @@ abstract class Control extends Component
 	 * Returns the Top of this Control. Can be either an integer signifying Top in pixels, or can be a string for percents, e.g., '50%'
 	 * @return integer|string
 	 */
-	function GetTop() 
+	function GetTop()
 	{
 		return $this->Top;
 	}
@@ -300,7 +310,7 @@ abstract class Control extends Component
 	/**
 	 * Returns the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being set via the property syntax, Location should be set to an array of the left and top values, and the get always returns an array.
- 	 * <pre> 
+ 	 * <pre>
  	 * $object->SetLocation(100, 200);
  	 * //or as a property being set to an array.
  	 * $object->Location = array(100, 200);
@@ -315,7 +325,7 @@ abstract class Control extends Component
 	/**
 	 * Sets the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
 	 * When being used set the property syntax, Location should be set to an array of the left and top values, and the get always returns an array.
- 	 * <pre> 
+ 	 * <pre>
  	 * $object->SetLocation(100, 200);
  	 * //or as a property being set to an array.
  	 * $object->Location = array(100, 200);
@@ -355,7 +365,7 @@ abstract class Control extends Component
 		return $this->GetLeft() + $this->GetWidth();
 	}
 	/**
-	 * Returns the Layout type of this Control. The Default is Layout::Absolute, but other possible values are 
+	 * Returns the Layout type of this Control. The Default is Layout::Absolute, but other possible values are
 	 * Layout::Relative and Layout::Web (which is the equivalent to CSS static).
 	 * @return mixed
 	 */
@@ -364,9 +374,9 @@ abstract class Control extends Component
 		return $this->Layout === null ? 0 : $this->Layout;
 	}
 	/**
-	 * Sets the Layout type of this Control. The Default is Layout::Absolute, but other possible values are 
+	 * Sets the Layout type of this Control. The Default is Layout::Absolute, but other possible values are
 	 * Layout::Relative and Layout::Web (which is the equivalent to CSS static).
-	 * @param mixed 
+	 * @param mixed
 	 */
 	function SetLayout($layout)
 	{
@@ -691,7 +701,7 @@ abstract class Control extends Component
 		if($group = GetComponentById($groupName))
 			if($group->GetShowStatus())
 				NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', $groupName, $this);
-			else 
+			else
 				$group->WaitingList[] = $this->Id;
 	}
 	/**
@@ -808,7 +818,7 @@ abstract class Control extends Component
 	 * Returns the KeyPress Event, which gets launched when the Control is focused and a user presses a key on his keyboard
 	 * @return Event
 	 */
-	function GetKeyPress()							
+	function GetKeyPress()
 	{
 		AddNolohScriptSrc('KeyEvents.js', true);
 		return $this->GetEvent('KeyPress');
@@ -817,7 +827,7 @@ abstract class Control extends Component
 	 * Sets the KeyPress Event, which gets launched when the Control is focused and a user presses a key on his keyboard
 	 * @param Event $keyPress
 	 */
-	function SetKeyPress($keyPress)					
+	function SetKeyPress($keyPress)
 	{
 		AddNolohScriptSrc('KeyEvents.js', true);
 		$this->SetEvent($keyPress, 'KeyPress');
@@ -876,7 +886,7 @@ abstract class Control extends Component
 	 * Returns the ReturnKey Event, which gets launched when the Control is focused and a user presses the return key on his keyboard
 	 * @return Event
 	 */
-	function GetReturnKey()							
+	function GetReturnKey()
 	{
 		AddNolohScriptSrc('KeyEvents.js', true);
 		return $this->GetEvent('ReturnKey');
@@ -885,7 +895,7 @@ abstract class Control extends Component
 	 * Sets the ReturnKey Event, which gets launched when the Control is focused and a user presses the return key on his keyboard
 	 * @param Event $returnKey
 	 */
-	function SetReturnKey($returnKey)				
+	function SetReturnKey($returnKey)
 	{
 		AddNolohScriptSrc('KeyEvents.js', true);
 		$this->SetEvent($returnKey, 'ReturnKey');
@@ -944,7 +954,7 @@ abstract class Control extends Component
 	 * Returns the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
 	 * @return Event
 	 */
-	function GetTypePause()							
+	function GetTypePause()
 	{
 		AddNolohScriptSrc('KeyEvents.js', true);
 		return $this->GetEvent('TypePause');
@@ -953,7 +963,7 @@ abstract class Control extends Component
 	 * Sets the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
 	 * @param Event $typePause
 	 */
-	function SetTypePause($typePause)				
+	function SetTypePause($typePause)
 	{
 		AddNolohScriptSrc('KeyEvents.js', true);
 		$this->SetEvent($typePause, 'TypePause');
@@ -1006,7 +1016,7 @@ abstract class Control extends Component
 			$fncStr = '_N(\'' . ($id = $this->Id) . '\').Shifts.push';
 			if(isset($_SESSION['_NFunctionQueue'][$id]) && isset($_SESSION['_NFunctionQueue'][$id][$fncStr]))
 				$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = $shift[2];
-			else 
+			else
 			{
 				AddNolohScriptSrc('Shift.js', true);
 				QueueClientFunction($this, $fncStr, array($shift[2]));
@@ -1079,7 +1089,7 @@ abstract class Control extends Component
 						++$i;
 					}
 				}
-				else 
+				else
 					continue;
 				if($regularRemoveNum)
 				{
@@ -1141,10 +1151,10 @@ abstract class Control extends Component
 	{
 		if($this->Visible === 0)
 			return false;
-			
+
 		$indent .= '  ';
 		$str = '';
-		
+
 		if($this->Layout !== 2)
 			if($this->Layout == 0)
 			{
@@ -1180,7 +1190,7 @@ abstract class Control extends Component
 		*/
 		if($str)
 			$str = 'style="' . $str . '"';
-			
+
 		if($this->CSSClass !== null)
 			$str .= ' class="' . $this->CSSClass . '"';
 		return trim($str);
@@ -1200,7 +1210,7 @@ abstract class Control extends Component
 			$key = strtolower($key[0]) . substr($key, 1);
 			$ret = &$this->CSSPropertyArray[$key];
 		}
-		else 
+		else
 			return parent::__get($nm);
 			//The following line stole 10 hours from my life :( - Asher
 //			$ret = &parent::__get($nm);
