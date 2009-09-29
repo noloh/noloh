@@ -13,7 +13,7 @@ _N.Request = true;
 event = null;
 function _NInit(loadIndicator, debugMode)
 {
-	window.onscroll = _NBodyScrollState;
+	//window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
 	_NSetLoadIndi(loadIndicator);
 	_N.DebugMode = debugMode;
@@ -257,6 +257,7 @@ function _NSave(id, property, value)
 			_N.Changes[id][property] = typeof value == "boolean" ? (value ? 1 : 0) : value;
 	}
 }
+/*
 function _NBodyScrollState()
 {
 	var x = Math.max(document.body.scrollLeft, document.documentElement.scrollLeft),
@@ -265,6 +266,7 @@ function _NBodyScrollState()
 	loadIndicator.style.left = x+7+"px";
 	loadIndicator.style.top = y+7+"px";
 }
+*/
 function _NBodySizeState()
 {
 	var body = document.body, tmp;

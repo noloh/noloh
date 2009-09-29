@@ -77,6 +77,7 @@ abstract class WebPage extends Component
 		$this->CSSFiles->Add(System::AssetPath() .'/Styles/NStyles.css');
 		
 		$this->SetLoadIndicator($loadIndicator = new Label('Loading...', 7, 7, null, null));
+		$loadIndicator->Layout = Layout::Fixed;
 		$loadIndicator->Opacity = 75;
 		$loadIndicator->CSSClass = 'NLoadIndiLabel';
 		unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);

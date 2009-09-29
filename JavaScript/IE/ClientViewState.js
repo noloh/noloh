@@ -13,7 +13,7 @@ _N.Request = true;
 _N.HistoryLength = history.length;
 function _NInit(loadIndicator, debugMode)
 {
-	window.onscroll = _NBodyScrollState;
+	//window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
 	_NSetLoadIndi(loadIndicator);
 	_N.Title = document.title;
@@ -311,6 +311,7 @@ function _NSave(id, property, value)
 			_N.Changes[id][property] = typeof value == "boolean" ? (value ? 1 : 0) : value;
 	}
 }
+/*
 function _NBodyScrollState()
 {
 	var x = document.documentElement.scrollLeft,
@@ -319,6 +320,7 @@ function _NBodyScrollState()
 	loadIndicator.style.left = x+7+"px";
 	loadIndicator.style.top = y+7+"px";
 }
+*/
 function _NBodySizeState()
 {
 	var body = _N("N1");
