@@ -47,6 +47,19 @@ function SetGlobal($name, $value)
 	$_SESSION['_NGlobals'][$name] = &$value;
 }
 /**
+ * Creates a new instance of a class and returns it, cascade-friendly.
+ * @param string $className
+ * @param mixed $paramsAsDotDotDot
+ * @return Object
+ */
+function _new($className, $paramsAsDotDotDot=null)
+{
+	$args = func_get_args();
+	$reflectionClass = new ReflectionClass($className);
+	$instance = $reflectionClass->newInstanceArgs(array_slice($args, 1));
+	return $instance;
+}
+/**
  * Alert a string specified by the $msg variable.
  * <br><pre>Alert("Hi, my name is Asher!");</pre>
  * @param string $msg Message to be Alerted
