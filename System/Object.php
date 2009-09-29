@@ -107,13 +107,18 @@ abstract class Object
 		if(strpos($nm, 'Cas') === 0)
 		{
 			$prop = substr($nm, 3);
-			if($this->HasProperty($prop))
+			if(method_exists($this, $prop))
+			{
+				call_user_func_array(array(&$this, $prop), $args);
+				return $this;
+			}
+			elseif($this->HasProperty($prop))
 			{
 				call_user_func_array(array(&$this, 'Set'.$prop), $args);
 				return $this;
 			}
 			else 
-				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
+				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the method or property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
 		elseif(strpos($nm, 'Get') === 0)
 		{
