@@ -200,7 +200,39 @@ final class NolohInternal
 	{
 		if(isset($GLOBALS['_NResetSecureValues']))
 			foreach($GLOBALS['_NResetSecureValues'] as $id => $value)
-				Component::Get($id)->SetValue($value);
+			{
+				$obj = &Component::Get($id);
+				if($obj->Secure === true)
+				{
+					if(isset($_SESSION['_NPropertyQueue'][$id]))
+					{
+						$oldQueue = &$_SESSION['_NPropertyQueue'][$id];
+						unset($_SESSION['_NPropertyQueue'][$id]);
+					}
+					$obj->SetValue($value);
+					if(isset($_SESSION['_NPropertyQueue'][$id]))
+						$prop = key($_SESSION['_NPropertyQueue'][$id]);
+					if($oldQueue)
+					{
+						$_SESSION['_NPropertyQueue'][$id] = &$oldQueue;
+						unset($oldQueue);
+					}
+					else
+						unset($_SESSION['_NPropertyQueue'][$id]);
+					if($prop)
+					{
+						ClientScript::AddNOLOHSource('Secure.js');
+						ClientScript::Queue($obj, '_NSecRemind', array($obj, $prop));
+						unset($prop);
+					}
+				}
+				elseif($obj->Secure === 'Reset')
+				{
+					$GLOBALS['_NQueueDisabled'] = $id;
+					$obj->SetValue($value);
+					$GLOBALS['_NQueueDisabled'] = null;
+				}
+			}
 	}
 }
 ?>
