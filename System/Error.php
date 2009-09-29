@@ -110,7 +110,9 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
-	if($_SESSION['_NVisit'] === -1)
+	if(!isset($GLOBALS['_NDebugMode']))
+		trigger_error($message);
+	elseif($_SESSION['_NVisit'] === -1)
 	{
 		echo $message;
 		session_destroy();
