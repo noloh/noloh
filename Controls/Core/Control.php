@@ -9,7 +9,6 @@
  *
  * @package Controls/Core
  */
-
 abstract class Control extends Component
 {
 	/**
@@ -375,7 +374,7 @@ abstract class Control extends Component
 	}
 	/**
 	 * Sets the Layout type of this Control. The Default is Layout::Absolute, but other possible values are
-	 * Layout::Relative and Layout::Web (which is the equivalent to CSS static).
+	 * Layout::Relative, Layout::Web (which is the equivalent to CSS static), or Layout::Fixed.
 	 * @param mixed
 	 */
 	function SetLayout($layout)
@@ -386,7 +385,8 @@ abstract class Control extends Component
 			{
 				case 0: $printAs = 'absolute'; break;
 				case 1: $printAs = 'relative'; break;
-				case 2: $printAs = 'static';
+				case 2: $printAs = 'static'; break;
+				case 4: $printAs = 'fixed'; break;
 			}
 			NolohInternal::SetProperty('style.position', $printAs, $this);
 			if(is_string($this->Layout))

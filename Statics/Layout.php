@@ -26,9 +26,13 @@ final class Layout
 	 */
 	const Relative = 1;
 	/**
-	 * A possible value for the Layout property of a Control, Relative specifies that the Control will be positioned within its parent container by the block model, with the Left and Top properties ignored.
+	 * A possible value for the Layout property of a Control, Web specifies that the Control will be positioned within its parent container by the block model, with the Left and Top properties ignored.
 	 */
 	const Web = 2;
+	/**
+	 * A possible value for the Layout property of a Control, Fixed is similar to Absolute except that the coordinates are taken relative to the WebPage instead of the immediate parent.
+	 */
+	const Fixed = 3;
 	/**
 	 * A possible value for the Align property of some Controls.
 	 */
