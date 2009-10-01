@@ -55,13 +55,7 @@ class RolloverTab extends Panel implements Groupable
 		
 		if($text != null)
 		{
-			if(is_string($text))
-			{
-				$this->TextObject = new Label($text, 0, 0, null, null);
-				$this->TextObject->CSSClass = 'NRollTab';
-			}
-			else
-			
+			if(is_object($text))
 			{
 				$this->TextObject = $text;
 				//Currently won't work for all Groupable objects, must make sure it has a TogglesOff
@@ -73,6 +67,11 @@ class RolloverTab extends Panel implements Groupable
 					$this->TextObject->Width = $this->Width;
 					$this->TextObject->Height = $this->Height;
 				}
+			}
+			else
+			{
+				$this->TextObject = new Label($text, 0, 0, null, null);
+				$this->TextObject->CSSClass = 'NRollTab';
 			}
 		}
 //		$imagePath = GetImagePath().'Std/';
