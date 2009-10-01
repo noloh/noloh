@@ -42,6 +42,19 @@ final class Data extends Object
 	 */
 	const Both = 3;
 	/**
+	 * Specifies that your query or command is SQL.
+	 */
+	const SQL = 'sql';
+	/**
+	 * Specifies that your query or command is accessing a view.
+	 */
+	const View = 'view';
+	/**
+	 * Specified that your query or command is accessing a function in your database. 
+	 * Stored function and stored procedures are examples of this.
+	 */
+	const Func = 'function';
+	/**
 	 * $Links is a direct conduit to access any open Data Links/Connections. Multiple DataConnections can be accessed through 
 	 * the $Links Data object.
 	 * 

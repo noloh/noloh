@@ -130,16 +130,47 @@ class DataConnection extends Object
 	 * @return Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC 
 	 */
 	function GetType()		{return $this->Type;}
-	
 	//Database Query Helper Functions
-	private function GenerateSqlString($spName, $paramsArray)
+	private function GenerateSQL($sql, $paramArray=null)
+	{
+		$paramCount = count($paramArray);
+		$paramNum = 1;
+		$search = array();
+		$replace = array();
+		for($i=0; $i < $paramCount; ++$i)
+		{
+			$param = $paramArray[$i];
+			if(is_array($param))
+			{
+				$count = count($param);
+				if($count === 1)
+				{
+					$search[] = key($param);
+					$replace[] = $this->ConvertValueToSQL(current($param));
+				}
+				elseif($count == 2)
+				{
+					$search[] = $param[0];
+					$replace[] = $this->ConvertValueToSQL($param[1]);
+				}			
+			}
+			else
+			{
+				$search[] = '$' . $paramNum;
+				$replace[] = $this->ConvertValueToSQL($param);
+			}
+			++$paramNum;
+		}
+		return str_replace($search, $replace, $sql);
+	}
+	private function GenerateFunction($spName, $paramArray=null)
 	{
 		if($spName == null)
 			return null;
 			
 		if($this->Type != Data::MSSQL)
 		{
-		$query = 'SELECT ';
+			$query = 'SELECT ';
 			$begin = '(';
 			$end = ')';
 		}
@@ -152,12 +183,12 @@ class DataConnection extends Object
 		if($this->Type == Data::Postgres)
 			$query .= ' * FROM ';
 		$query .= $spName . $begin;
-		$numArgs = count($paramsArray);
+		$numArgs = count($paramArray);
 		if($this->Type == Data::Postgres)
 		{
 			for($i = 0; $i < $numArgs; ++$i)
 			{
-				$tmpArg = self::ConvertTypeToPostgres($paramsArray[$i]);
+				$tmpArg = self::ConvertTypeToPostgres($paramArray[$i]);
 				$query .= $tmpArg . ",";		
 			}
 		}
@@ -165,7 +196,7 @@ class DataConnection extends Object
 		{
 			for($i = 0; $i < $numArgs; ++$i)
 			{
-				$tmpArg = self::ConvertTypeToMSSQL($paramsArray[$i]);
+				$tmpArg = self::ConvertTypeToMSSQL($paramArray[$i]);
 				$query .= $tmpArg . ",";		
 			}
 		}
@@ -174,7 +205,7 @@ class DataConnection extends Object
 			$resource = $this->Connect();
 			for($i = 0; $i < $numArgs; ++$i)
 			{
-				$tmpArg = self::ConvertTypeToMySQL($paramsArray[$i], "'", $resource);
+				$tmpArg = self::ConvertTypeToMySQL($paramArray[$i], "'", $resource);
 				$query .= $tmpArg . ",";		
 			}
 			$this->Close();
@@ -183,6 +214,16 @@ class DataConnection extends Object
 		if($numArgs > 0)
 			$query = rtrim($query, ',');
 		$query .= $end . ';';
+		return $query;
+	}
+	private function GenerateView($view, $offset=null, $limit=null)
+	{
+		$query = "SELECT * FROM $view";
+		if($offset != null && is_numeric($offset))
+			$query .= " OFFSET $offset";
+		if($limit != null && is_numeric($limit))
+			$query .= " LIMIT $limit";
+		$query .= ';';
 		return $query;
 	}
 	/**
@@ -267,33 +308,53 @@ class DataConnection extends Object
 		return $tmpArr;
 	}
 	/**
-	 * * Note: The first parameter is optional, we can execute this funciton in the following 2 ways:
+	 * * Note: The first parameter is optional, we can execute this function in the following 2 ways:
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL(Data::Assoc, 'SELECT * FROM people');
 	 * </pre>
-	 * Or
+	 * or
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people');
 	 * </pre>
 	 * 
+	 * Also you can set replacements to your query using parameters. You can use numbered paramaters, or your own through an array.
+	 * 
+	 * For example, we can specify replacements for our city and state using numbered replacements. NOLOH will automatically replace your $n using the parameters you specified in sequence.
+	 * <pre>
+	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people WHERE city=$1 and state = $2', 'Brooklyn', 'New York');
+	 * </pre>
+	 * Alternatively, you can specify replacements using an array with your own names.
+	 * <pre>
+	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people WHERE city=:city and state = :state', array(':city', 'Brooklyn'), array(':state', New York'));
+	 * </pre>
+	 * You can also specify your array in key => value format.
+	 * <pre>
+	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people WHERE city=:city and state = :state', array(':city' => 'Brooklyn'), array(':state' => New York'));
+	 * </pre>
+	 * Finally, you can mix and match the different types of replacements.
+	 * <pre>
+	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people WHERE name = $1, city=:city and state = :state', 'Asher', array(':city' => 'Brooklyn'), array(':state', New York'));
+	 * </pre>
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
-	 * @param string $sqlString The SQL query.
+	 * @param string $sql The SQL query.
+	 * @param mixed,... $paramsDotDotDot Optional: Replacements to your SQL query. NOLOH takes care of formatting the value properly for your database.
 	 * 
 	 * @return DataReader A DataReader containing the resulting data of your query.
 	 */
-	function ExecSQL($resultType, $sqlString='')
+	function ExecSQL($resultType, $sql='', $paramsDotDotDot = null)
 	{
 		$args = func_get_args();
 		$sql = $resultType;
+		$paramsArg = 1;
 		if($hasResultOption = is_int($resultType))
 		{
 			$resultOption = $resultType;
 			$sql = $args[1];
+			$paramsArg = 2;
 		}
+		$sql = self::GenerateSQL($sql, array_slice($args, $paramsArg));
 		$dbCmd = new DataCommand($this, $sql);
-		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-//		$dbCmd->Connection->Close();
-		return $tmpReturn;
+		return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 	}
 	/**
 	 * Executes a stored procedure or stored function in your database. You can natively pass in as many parameters to your function as you wish
@@ -332,11 +393,9 @@ class DataConnection extends Object
 			$resultOption = $spName;
 			$spName = $args[1];
 		}
-		$query = self::GenerateSqlString($spName, array_slice($args, $hasResultOption?2:1));
+		$query = self::GenerateFunction($spName, array_slice($args, $hasResultOption?2:1));
 		$dbCmd = new DataCommand($this, $query, $resultOption);
-		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-//		$dbCmd->Connection->Close();
-		return $tmpReturn;
+		return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 	}
 	/**
 	 * Executes a view in your database. 
@@ -375,23 +434,22 @@ class DataConnection extends Object
 			if(isset($args[3]))
 				$limit = $args[3];
 		}
-		$query = "SELECT * FROM $view";
-		if($offset != null && is_numeric($offset))
-			$query .= " OFFSET $offset";
-		if($limit != null && is_numeric($limit))
-			$query .= " LIMIT $limit";
-		$query .= ';';
-		$dbCmd = new DataCommand($this, $query);
-		$tmpReturn = $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-//		$dbCmd->Connection->Close();
+		$query = self::GenerateView($view, $offset, $limit);
 		
-		return $tmpReturn;
+		$dbCmd = new DataCommand($this, $query);
+		return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 	}
 	/**
-	 * Creates a command based on a stored procedure or stored function in your database. You can natively pass in as many parameters to your function as you wish
+	 * Creates a command based on a SQL string, a View, a Stored Procedure, or Stored Function in your database. 
+	 * 
+	 * CreateCommand operates similar to the corresponding Exec functions. For instance, 
+	 * when using it in the context of SQL, or Function, you can natively pass in as many parameters to your function as you wish
 	 * through the dotdotdot syntactic sugar.
 	 *
-	 * Note: The first parameter is optional, we can execute this function in the following ways:
+	 * Note: The first parameter is optional when creating a Function command. 
+	 * The second, resultType paramater is optional across the board.
+	 * 
+	 * We can create a command based on a database function in the following ways:
 	 * <pre>
 	 *     $city = 'Brooklyn';
 	 *     $state = 'New York';
@@ -401,11 +459,37 @@ class DataConnection extends Object
 	 * </pre>
 	 * If you don't want to specify the column indices type.
 	 * <pre>
-	 *     $peopleCommand = Data::$Links->People->ExecFunction('sp_get_people' $city, $state);
+	 *     $peopleCommand = Data::$Links->People->CreateCommand('sp_get_people' $city, $state);
 	 * </pre>
 	 * If you don't have any parameters to your function.
 	 * <pre>
-	 *     $peopleCommand = Data::$Links->People->ExecFunction('sp_get_people');
+	 *     $peopleCommand = Data::$Links->People->CreateCommand('sp_get_people');
+	 * </pre>
+	 * 
+	 * We can create a command based on SQL in the following ways:
+	 * 
+	 * <pre>
+	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::SQL, Data::Assoc, "SELECT * FROM people WHERE city='Brooklyn' AND state='New York'");
+	 * </pre>
+	 * 
+	 * Furthermore, we can create the command using paramaters for our SQL, like in ExecSQL.
+	 * <pre>
+	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::SQL, Data::Assoc, "SELECT * FROM people WHERE city=$1 AND state=$2", $city, $state);
+	 * </pre>
+	 * 
+	 * We can also choose not to specify a column indices type.
+	 * <pre>
+	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::SQL, "SELECT * FROM people WHERE city=$1 AND state=$2", $city, $state);
+	 * </pre>
+	 * 
+	 * We can create a command based on a View in the following ways:
+	 * <pre>
+	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::View, Data::Assoc, 'v_get_all_people');
+	 * </pre>
+	 * 
+	 * We can also choose not to specify a column indicies type.
+	 * <pre>
+	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::View, 'v_get_all_people');
 	 * </pre>
 	 * 
 	 * At a later point we can execute the command:
@@ -421,23 +505,39 @@ class DataConnection extends Object
 	 * 
 	 * Please see the Data::$Links article for more information and examples.
 	 * 
+	 * @param mixed Data::SQL|Data::View|Data::Function $commandType Optional: The type of query you're creating.
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
 	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.sp_get_convertibles'.
 	 * @param mixed,... $paramsDotDotDot Optional: The parameters of your function. NOLOH takes care of formatting the value properly for your database.
 	 * @return DataCommand A DataCommand to be executed later. This can also be used in conjuction with Bind functions in certain Controls.
 	 */
-	function CreateCommand($spName, $paramsDotDotDot)
+	function CreateCommand($spName, $paramsDotDotDot=null)
 	{
 		$args = func_get_args();
-		if($hasResultOption = is_int($spName))
+		$index = 0;
+		$arg = $args[$index];
+		$type = Data::Func;
+		if($arg == Data::SQL || $arg == Data::View || $arg == Data::Func)
 		{
-			$resultOption = $spName;
-			$spName = $args[1];
+			$type = $arg;
+			$arg = $args[++$index];
 		}
-		$query = self::GenerateSqlString($spName, array_slice($args, $hasResultOption?2:1));
-		$dbCmd = new DataCommand($this, $query, $hasResultOption?$resultOption:Data::Both);
-		return $dbCmd;
+		if($hasResultOption = is_int($arg))
+		{
+			$resultOption = $arg;
+			++$index;
+		}
+		$spName = $args[$index];
+		$args = array_slice($args, $index + 1);
+		if($type == Data::Func)
+			$query = self::GenerateFunction($spName, $args);
+		elseif($type == Data::SQL)
+			$query = self::GenerateSQL($spName, $args);
+		elseif($type == Data::View)
+			$query = self::GenerateView($spName);
+			
+		return new DataCommand($this, $query, $hasResultOption?$resultOption:Data::Both);
 	}
 	/**
 	 * @ignore

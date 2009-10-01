@@ -1,6 +1,6 @@
 <?php
 /**
- * @internal
+ * @ignore
  */
 class DataConstraint extends Object
 {
