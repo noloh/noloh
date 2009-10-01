@@ -13,7 +13,7 @@
  * and Value property. The developer can then decide what they will do with the MarkupItem depending on that Keyword and Value, and
  * whether the MarkupItem is an Eventee or Larva. 
  * 
- * A Larva is a MarkupItem whose tag name is n:component. Any other tag is an eventee.
+ * A Larva is a MarkupItem whose tag name is n:larva. Any other tag is an eventee.
  * 
  * For more information, please see
  * @see RichMarkupRegion

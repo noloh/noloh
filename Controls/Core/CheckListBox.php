@@ -1,9 +1,9 @@
 <?php
 /**
  * CheckListBox class
- * 
+ *
  *  A CheckListBox is a rectangular ListControl where the user is able to see all the Items as CheckBoxes and may select several of them at the same time.
- * 
+ *
  * <pre>
  * // Instantiates a new CheckListBox
  * $checkListBox = new CheckListBox();
@@ -12,7 +12,7 @@
  * // Adds another Item to the CheckListBox
  * $checkListBox->Items->Add(new Item("value2", "text2"));
  * </pre>
- * 
+ *
  * @package Controls/Core
  */
 class CheckListBox extends ListControl
@@ -22,7 +22,7 @@ class CheckListBox extends ListControl
 	 * @var ArrayList
 	 */
 	public $CheckBoxes;
-	
+
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends CheckListBox.
@@ -31,7 +31,7 @@ class CheckListBox extends ListControl
 	* @param integer $width
 	* @param integer $height
 	*/
-	function CheckListBox($left = 0, $top = 0, $width = 83, $height = 40)  
+	function CheckListBox($left = 0, $top = 0, $width = 83, $height = 40)
 	{
 		parent::ListControl($left, $top, $width, $height);
 		$this->CheckBoxes = new Group();
@@ -60,7 +60,7 @@ class CheckListBox extends ListControl
 		return $this->CheckBoxes->SetChange($change);
 	}
 	/**
-	 * Adds an Item to the Items ArrayList. 
+	 * Adds an Item to the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Add($item)</pre>
 	 * @param Item $item
@@ -94,7 +94,7 @@ class CheckListBox extends ListControl
 		return $item;
 	}
 	/**
-	 * Removes an Item from a particular index of the Items ArrayList. 
+	 * Removes an Item from a particular index of the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->RemoveAt($index)</pre>
 	 * @param integer $index
@@ -109,7 +109,7 @@ class CheckListBox extends ListControl
 			$this->CheckBoxes[$i]->Top = $this->CheckBoxes[$i-1]->Bottom;
 	}
 	/**
-	 * Clears the Items ArrayList. 
+	 * Clears the Items ArrayList.
 	 * <br> This is equivalent to:
 	 * <pre>$this->Items->Clear()</pre>
 	 */

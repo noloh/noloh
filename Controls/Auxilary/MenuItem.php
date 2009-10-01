@@ -17,25 +17,25 @@ class MenuItem extends Panel
 	 */
 	public $MenuItemsPanel;
 	/**
-	* An ArrayList of MenuItems that will be Shown when added, provided the Menu has also been Shown.
-	* 
-	* MenuItems are an ArrayList and can be added, removed, or inserted. See ArrayList for more information.
-	* 
-	* $menu = new Menu();
-	* $add = $menu->MenuItems->Add('Add');
-	* We can now $add MenuItems directly to the MenuItem
-	* <pre>
-	* //Adding a MenuItem through a string
-	* $add->MenuItems->Add('Boiler');
-	* //Adding multiple MenuItems through strings
-	* $add->MenuItems->Add->AddRange('Sink', 'Door');
-	* //Adding a MenuItem to MenuItems:
-	* $add->MenuItems->Add->Add(new MenuItem('Sink'));
-	* //Adding multiple MenuItems through AddRange()
-	* $add->MenuItems->Add->AddRange(new MenuItem('Sink'), new MenuItem('Door'));
-	* </pre>
-	* @var ArrayList
-	*/
+	 * An ArrayList of MenuItems that will be Shown when added, provided the Menu has also been Shown.
+	 * 
+	 * MenuItems are an ArrayList and can be added, removed, or inserted. See ArrayList for more information.
+	 * 
+	 * $menu = new Menu();
+	 * $add = $menu->MenuItems->Add('Add');
+	 * We can now $add MenuItems directly to the MenuItem
+	 * <pre>
+	 * //Adding a MenuItem through a string
+	 * $add->MenuItems->Add('Boiler');
+	 * //Adding multiple MenuItems through strings
+	 * $add->MenuItems->Add->AddRange('Sink', 'Door');
+	 * //Adding a MenuItem to MenuItems:
+	 * $add->MenuItems->Add->Add(new MenuItem('Sink'));
+	 * //Adding multiple MenuItems through AddRange()
+	 * $add->MenuItems->Add->AddRange(new MenuItem('Sink'), new MenuItem('Door'));
+	 * </pre>
+	 * @var ArrayList
+	 */
 	public $MenuItems;
 	private $TextLabel;
 	private $Icon;
@@ -275,15 +275,6 @@ class MenuItem extends Panel
 	{
 		AddNolohScriptSrc('MenuItem.js', true);
 		parent::Show();	
-	}
-	/**
-	 * @ignore
-	 */
-	function Hide()
-	{
-		parent::Hide();
-		$this->TextLabel->Hide();
-		$this->MenuItemsPanel->Hide();
 	}
 }
 

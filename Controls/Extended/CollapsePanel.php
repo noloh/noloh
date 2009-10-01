@@ -5,7 +5,7 @@
  * A CollapsePanel is a Panel that can expand or collapse its body section. This is usually initiated by clicking on
  * the title part of the CollapsePanel. A CollapsePanel also has a RolloverImage located in its TitlePanel whose state corresponds
  * to whether the CollapsePanel is expanded or collapsed.
- * 
+ *
  * @package Controls/Extended
  */
 class CollapsePanel extends Panel implements Groupable
@@ -23,11 +23,11 @@ class CollapsePanel extends Panel implements Groupable
 	 */
 	protected $ToggleButton;
 	private $TogglesOff;
-	
+
 	/*TODO Trigger Events when Expanded and Collapsed. Function to expand or collapse, such as Collapse(), Expand(), Toggle()*/
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param string $text The text displayed in the TitlePanel
      * @param integer $left The Left coordinate of this element
 	 * @param integer $top The Top coordinate of this element
@@ -47,11 +47,11 @@ class CollapsePanel extends Panel implements Groupable
 		$deselect = parent::GetDeselect();
 		$deselect['User'] = new Event();
 		$deselect['System'] = new Event();
-		
+
 		$this->SetTogglesOff(true);
 		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
 		$this->TitlePanel->ParentId = $this->Id;
-		$this->BodyPanel->ParentId = $this->Id; 
+		$this->BodyPanel->ParentId = $this->Id;
 		$this->Controls = &$this->BodyPanel->Controls;
 		//$this->BodyPanel->Shifts[] = Shift::With($this, Shift::Height);
 		$this->TitlePanel->Layout = $this->BodyPanel->Layout = Layout::Relative;
@@ -74,7 +74,7 @@ class CollapsePanel extends Panel implements Groupable
 	function GetBodyPanel()	{return $this->BodyPanel;}
 	/**
 	 * Sets the RolloverImage that is used as the ToggleButton
-	 * 
+	 *
 	 * @param RolloverImage $rolloverImage
 	 */
 	function SetToggleButton($rolloverImage=null)
@@ -84,7 +84,7 @@ class CollapsePanel extends Panel implements Groupable
 			$imagePath = System::ImagePath() . 'Std/arrow_up.png';
 			$rolloverImage = new RolloverImage($imagePath, $imagePath, 5, 6);
 			$rolloverImage->SelectedSrc = System::ImagePath() . 'Std/arrow_down.png';
-			
+
 		}
 		if($rolloverImage->SelectedSrc != null)
 		{
@@ -101,7 +101,7 @@ class CollapsePanel extends Panel implements Groupable
 //			$deselect['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSetProperty('{$rolloverImage->Id}','Selected',  false);");
 		}
 		$rolloverImage->Click->Enabled = false;
-		
+
 		if($this->ToggleButton != null)
 			$this->ToggleButton->ParentId = null;
 		$this->ToggleButton = &$rolloverImage;
@@ -125,8 +125,8 @@ class CollapsePanel extends Panel implements Groupable
 		{
 			$tmpTitleLabel = new Label($text, 0, 0, null, null);
 			$tmpTitleLabel->Layout = Layout::Relative;
-			$tmpTitleLabel->CSSClass = 'NAccordionText';	
-			$this->TitlePanel->Controls['Text'] = $tmpTitleLabel;		
+			$tmpTitleLabel->CSSClass = 'NAccordionText';
+			$this->TitlePanel->Controls['Text'] = $tmpTitleLabel;
 		}
 		else
 			$this->TitlePanel->Controls['Text']->SetText($text);
@@ -162,7 +162,7 @@ class CollapsePanel extends Panel implements Groupable
 	}
 	/**
 	 * Sets whether the CollapsePanel is collapsed or not.
-	 * 
+	 *
 	 * This is an alias for !Selected
 	 * @deprecated Use Selected instead
 	 * @param boolean $bool
@@ -198,8 +198,8 @@ class CollapsePanel extends Panel implements Groupable
 		parent::SetHeight($height);
 		//if($height > $this->TitlePanel->GetHeight() /*&& $height != null*/)
 //			ClientScript::Set($this, 'Hgt', $height, '_N');
-			ClientScript::Set($this, 'Hgt', $height, null);
-//			ClientScript::Queue($this, '_NClpsPnlInHgt', $this);
+			//ClientScript::Set($this, 'Hgt', $height, null);
+			ClientScript::Queue($this, '_NClpsPnlSetHgt', array($this, $height));
 //			QueueClientFunction($this, '_NClpsPnlInHgt', array('\''.$this->Id.'\''/*, true, Priority::Low*/));
 		//NolohInternal::SetProperty('Hgt', $height, $this);
 	}
@@ -237,7 +237,7 @@ class CollapsePanel extends Panel implements Groupable
 	}
 	/**
 	 * Sets whether the CollapsePanel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
-	 * 
+	 *
 	 * @param boolean $bool
 	 */
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
@@ -245,7 +245,7 @@ class CollapsePanel extends Panel implements Groupable
 	 * Returns whether the CollapsePanel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
 	 * @return boolean
 	 */
-	function GetTogglesOff()			{return ($this->TogglesOff==true);}	
+	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	/**
 	 * Returns the Background of the TitlePanel.
 	 * @return object|string
@@ -256,7 +256,7 @@ class CollapsePanel extends Panel implements Groupable
 			return $this->TitlePanel->Controls['Glossy'];
 		else
 			return $this->TitlePanel->BackColor;
-			
+
 	}
 	/**
 	 * Returns the CollapsePanel's TitlePanel

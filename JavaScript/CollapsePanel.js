@@ -1,19 +1,18 @@
 function _NClpsPnlTgl(id, clpse)
 {
 	var pnl = _N(id);
-	
+
 	if(!pnl.AnimationStop)
 		pnl.AnimationStop = function(){
 			if(pnl.Opn && !pnl.Hgt)
 				_NSetProperty(id, 'style.height', '');
 			pnl.AnimationStop = null;
-		}	
+		}
 	if(pnl.Opn == false || !clpse)
-	{	
+	{
 		var body = _N(pnl.Body);
 		if(pnl.Hgt != null)
 		{
-			
 			body.style.display = '';
 			pnl.NullHgt = body.offsetHeight + _N(pnl.Top).offsetHeight;
 		}

@@ -2,19 +2,19 @@
 /**
  * Accordian class
  *
- * An Accordion is a Group of AccordionParts where at most one AccordionPart is expanded. 
+ * An Accordion is a Group of AccordionParts where at most one AccordionPart is expanded.
  * From a user interface perspective, it is a device for organizing information into collapsible sections.
  * Selecting an AccordionPart will deselect the previously selected AccordionPart.
- * 
+ *
  * @package Controls/Extended
  */
 class Accordion extends Panel
 {
 	/**
 	* An ArrayList of AccordionParts that will be Shown when added, provided the Accordion has also been Shown.
-	* 
+	*
 	* AccordionParts are an ArrayList and can be added, removed, or inserted. See ArrayList for more information.
-	* 
+	*
 	* <pre>
 	* //Adding an AccordionPart through a string
 	* $accordion->AccordionParts->Add('Section 1');
@@ -32,7 +32,7 @@ class Accordion extends Panel
 	private $PartGroup;
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param integer $left The Left coordinate of this element
 	 * @param integer $top The Top coordinate of this element
 	 * @param integer $width The Width dimension of this element
@@ -49,7 +49,7 @@ class Accordion extends Panel
 		$this->AccordionParts->RemoveAtFunctionName = 'RemoveAccordionPartAt';
 	}
 	/**
-	 * Selects an AccordionPArt whose index in the AccordionPars ArrayList matches the parameter
+	 * Selects an AccordionPart whose index in the AccordionParts ArrayList matches the parameter
 	 * @param integer $index
 	 */
 	function SetSelectedIndex($index)
@@ -58,7 +58,7 @@ class Accordion extends Panel
 			$this->AccordionParts[$index]->SetSelected(true);
 	}
 	/**
-	 * Returns the index of the first selected Accordionpart
+	 * Returns the index of the first selected AccordionPart
 	 * @return integer
 	 */
 	function GetSelectedIndex()
