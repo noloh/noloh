@@ -124,9 +124,10 @@ final class System
 	static function Style($text, $class, $newLine = false)
 	{
 		$tag = is_string($newLine)?$newLine:'span';
-		$styled = '<' . $tag . ' class=\''.$class.'\'>'.$text.'</' . $tag . '>';
+		$styled = '';
 		if($newLine === true)
 			$styled .= '<br/>';
+		$styled .= '<' . $tag . ' class=\''.$class.'\'>'.$text.'</' . $tag . '>';
 		return $styled;
 	}
 	/**
