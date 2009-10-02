@@ -24,6 +24,7 @@ class Image extends Control
 {
 	private $Src;
     private $Magician;
+	private $IE6PNGFix;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Image
@@ -71,14 +72,24 @@ class Image extends Control
 		$this->Src = $path;
 		if($this->Magician)
 			$this->SetMagicianSrc();
-		/*elseif(UserAgent::IsIE6() && preg_match('/\.png$/i', $newSrc))
+		elseif(UserAgent::IsIE6())
 		{
-			//Alert('progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $newSrc . '")');
-			NolohInternal::SetProperty('style.filter', 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $newSrc . '")', $this);
-//			NolohInternal::SetProperty('style.display', 'inline-block', $this);
-			
-			//AddScript("alert(_N('$this->Id').style.filter);", Priority::Low);
-		}*/
+			if(preg_match('/\.png$/i', $path))
+			{
+				NolohInternal::SetProperty('style.filter', 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $path . '",sizingMethod="scale")', $this);
+				//NolohInternal::SetProperty('style.display', 'inline-block', $this);
+				if(!$this->IE6PNGFix)
+					NolohInternal::SetProperty('src', System::ImagePath() . 'Blank.gif', $this);
+				$this->IE6PNGFix = true;
+			}
+			else
+			{
+				if($this->IE6PNGFix)
+					NolohInternal::SetProperty('style.filter', '', $this);
+				NolohInternal::SetProperty('src', $path, $this);
+				$this->IE6PNGFix = null;
+			}
+		}
 		else
 			NolohInternal::SetProperty('src', $path, $this);
         //NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
