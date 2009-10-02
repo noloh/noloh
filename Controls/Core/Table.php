@@ -50,7 +50,8 @@ class Table extends Control
 			$this->Rows->Add(new TableRow());
 			for($j = 0; $j < $numCols; ++$j)
 			{				
-				eval('$this->Rows->Elements[$i]->Columns->Add(new TableColumn(new '.$typeAsString.'(' . $params . ')));');
+				$this->Rows->Elements[$i]->Columns->Add(new TableColumn(new $typeAsString($params)));
+//				eval('$this->Rows->Elements[$i]->Columns->Add(new TableColumn(new '.$typeAsString.'(' . $params . ')));');
 				$this->BuiltMatrix[$i][$j] = &$this->Rows->Elements[$i]->Columns->Elements[$j];
 				$this->BuiltMatrix[$i][$j]->Controls->Elements[0]->SetWidth($this->BuiltMatrix[$i][$j]->GetWidth());
 			}
