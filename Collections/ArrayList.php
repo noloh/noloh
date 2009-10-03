@@ -189,10 +189,15 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	{
 		if(isset($this->Elements[$index]) && $this->Elements[$index] instanceof Component && $this->Elements[$index]->GetParentId() === $this->ParentId)
 			$this->Elements[$index]->SetParentId(null);
+		unset($this->Elements[$index]);
+		if(is_numeric($index))
+			array_merge($this->Elements);
+		/*
 		if(is_numeric($index))
 			array_splice($this->Elements, $index, 1);
 		else 
 			unset($this->Elements[$index]);
+		*/
 	}
 	/**
 	 * Removes the first occurrence of a particular element from the ArrayList.
