@@ -65,10 +65,28 @@ class ClientEvent extends Event
 			return 'null';
 		elseif(is_array($param))
 		{
-			$tmpArr = array();
-			foreach($param as $val)
-				$tmpArr[] = self::ClientFormat($val);
-			return '[' . implode(',', $tmpArr) . ']';
+			$isList = true;
+			$count = count($param);
+        	for ($i=0, reset($param); $i<$count; ++$i, next($param))
+            	if (key($param) !== $i)
+            	{
+            		$isList = false; 
+            		break; 
+            	}
+            if($isList)
+            {
+				$tmpArr = array();
+				foreach($param as $val)
+					$tmpArr[] = self::ClientFormat($val);
+				return '[' . implode(',', $tmpArr) . ']';
+			}
+			else
+			{
+				$str = '{';
+				foreach($param as $key => $val)
+					$str .= self::ClientFormat($key) . ':' . self::ClientFormat($val) . ',';
+				return rtrim($str, ',') . '}';
+			}
 		}
 		elseif($param instanceof Component)
 			return '"' . $param->Id . '"';
