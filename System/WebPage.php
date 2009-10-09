@@ -87,7 +87,7 @@ abstract class WebPage extends Component
 		
 		$unload = parent::GetEvent('Unload');
 		$unload['User'] = new ClientEvent('');
-		$unload['System'] = new ServerEvent(null, 'isset', true);
+		$unload['System'] = new ServerEvent('WebPage', 'ReportProperAuthorities');
 		AddNolohScriptSrc('GeneralFunctions.js');
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(UserAgent::GetBrowser())
@@ -323,6 +323,10 @@ abstract class WebPage extends Component
 			QueueClientFunction($this, '_NChangeByObj', array('window','\''.$property.'\'','\''.$value.'\''), false);
 		}
 	}
+	/**
+	 * @ignore
+	 */
+	static function ReportProperAuthorities()	{}
 	/**
 	 * Returns the instance of WebPage that was used with SetStartupPage. The name is a pun on the "this" concept. See also Singleton interface.
 	 * @return WebPage
