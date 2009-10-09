@@ -11,11 +11,10 @@ _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
 event = null;
-function _NInit(loadIndicator, debugMode)
+function _NInit(debugMode)
 {
 	//window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
-	_NSetLoadIndi(loadIndicator);
 	_N.DebugMode = debugMode;
 	_N.Saved[document.body.id] = {};
 	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);

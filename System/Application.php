@@ -480,13 +480,15 @@ final class Application extends Object
 		//header('Cache-Control: no-store');
 		if(++$_SESSION['_NVisit'] === 0)
 		{
+			global $_NShowStrategy, $_NWidth, $_NHeight;
 			setcookie('_NAppCookie', false);
-			$GLOBALS['_NWidth'] = $_GET['_NWidth'];
-			$GLOBALS['_NHeight'] = $_GET['_NHeight'];
+			$_NWidth = $_GET['_NWidth'];
+			$_NHeight = $_GET['_NHeight'];
 			$this->HandleTokens();
+			$_NShowStrategy = (empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()));
 			$className = Configuration::That()->StartClass;
 			$this->WebPage = new $className();
-			if(empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()))
+			if($_NShowStrategy)
 				$this->WebPage->Show();
 			else
 				return $this->WebPage->NoScriptShow();
@@ -522,8 +524,9 @@ final class Application extends Object
 	private function SearchEngineRun()
 	{
 		$this->HandleTokens();
-		$className = Configuration::That()->StartClass;
 		++$_SESSION['_NVisit'];
+		$className = Configuration::That()->StartClass;
+		$GLOBALS['_NShowStrategy'] = false;
 		$this->WebPage = new $className();
 		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 		$tokenLinks = '';

@@ -76,11 +76,15 @@ abstract class WebPage extends Component
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
 		$this->CSSFiles->Add(System::AssetPath() .'/Styles/NStyles.css');
 		
-		$this->SetLoadIndicator($loadIndicator = new Label('Loading...', 7, 7, null, null));
-		$loadIndicator->Layout = Layout::Fixed;
-		$loadIndicator->Opacity = 75;
-		$loadIndicator->CSSClass = 'NLoadIndiLabel';
-		unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
+		if(isset($GLOBALS['_NShowStrategy']) && $GLOBALS['_NShowStrategy'])
+		{
+			$this->SetLoadIndicator($loadIndicator = new Label('Loading...', 7, 7, null, null));
+			$loadIndicator->Layout = Layout::Fixed;
+			$loadIndicator->Opacity = 75;
+			$loadIndicator->CSSClass = 'NLoadIndiLabel';
+			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
+		}
+		
 		$unload = parent::GetEvent('Unload');
 		$unload['User'] = new ClientEvent('');
 		$unload['System'] = new ServerEvent(null, 'isset', true);
@@ -93,7 +97,7 @@ abstract class WebPage extends Component
 			case 'op':							AddNolohScriptSrc('Mixed/FindPositionOp.js');
 		}
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
-			AddScript('_NInit(\''.$this->LoadIndicator->Id.'\',' . 
+			AddScript('_NInit(' . 
 				(isset($GLOBALS['_NDebugMode'])
 					? (is_bool($GLOBALS['_NDebugMode']) 
 						? ($GLOBALS['_NDebugMode']?'true':'false')
