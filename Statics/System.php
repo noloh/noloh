@@ -170,24 +170,27 @@ final class System
 		$toLength = strlen($toDirectory);
 		$fromLength = strlen($fromDirectory);
 		
-		$length = min(array($toLength, $fromLength));
+		$length = min($toLength, $fromLength);
 		$lastMatchingSlash = 0;
 		
-		for($i=0; ($i<$length && ($toDirectory[$i] === $fromDirectory[$i])) ; ++$i)
+		for($i=0; $i<$length && ($toDirectory[$i] === $fromDirectory[$i]) ; ++$i)
 		{
 			if($fromDirectory[$i] === '/')
 				$lastMatchingSlash = $i;
 		}
-		if($i == $fromLength && $toLength > $fromLength && $toDirectory[$i] === '/')
+		if($i === $fromLength && $toLength > $fromLength && $toDirectory[$i] === '/')
 		{
 			$lastMatchingSlash = $i;
 			$slashCount = 0;
 		}
 		else
 			$slashCount = 1;
-		for(; $i<$fromLength; ++$i)
+		for(++$i; $i<$fromLength; ++$i)
 			if($fromDirectory[$i] === '/')
+			{
 				++$slashCount;
+				++$i;
+			}
 				
 		return str_repeat('../', $slashCount) . substr($toDirectory, $lastMatchingSlash + 1);
 	}
@@ -248,7 +251,7 @@ final class System
  	 * Returns the relative system path to NOLOH
  	 * @return string
  	 */
-	static function GetNOLOHRelativePath()	{return self::RelativePath();}	
+	static function GetNOLOHRelativePath()	{return self::RelativePath();}
 	
 	/**
  	 * @ignore
