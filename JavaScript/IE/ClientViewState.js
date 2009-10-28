@@ -11,19 +11,23 @@ _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
 _N.HistoryLength = history.length;
-function _NInit(debugMode)
+function _NInitHelper()
 {
-	//window.onscroll = _NBodyScrollState;
-	window.onresize = _NBodySizeState;
-	_N.Title = document.title;
-	_N.DebugMode = debugMode;
 	_N.Saved["N1"] = {};
 	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
 	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
 	var graveyard = document.createElement("DIV");
 	graveyard.id = "NGraveyard";
 	graveyard.style.display = "none";
-	document.body.appendChild(graveyard);
+	_N("N1").appendChild(graveyard);
+}
+function _NInit(debugMode)
+{
+	//window.onscroll = _NBodyScrollState;
+	window.onresize = _NBodySizeState;
+	_N.Title = document.title;
+	_N.DebugMode = debugMode;
+	_NInitHelper();
 	if(location.hash=="")
 		location = location + "#/";
 	_N.Hash = location.hash;
@@ -82,6 +86,11 @@ function _NCheckURL()
 		_N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
 		_N.Request.send(str);
 		_N("N1").innerHTML = "";
+		_N.Saved = {};
+		_N.Changes = {};
+		_N.HighestZ = 0;
+		_N.LowestZ = 0;
+		_NInitHelper();
 	}
 }
 function _NSetURL(url, id)
