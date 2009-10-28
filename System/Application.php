@@ -267,6 +267,8 @@ final class Application extends Object
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting());
 			ob_start('_NOBErrorHandler');
+			if($debugMode === System::Full)
+				ClientScript::AddNOLOHSource('DebugFull.js');
 		}
 	}
 	private function TheComingOfTheOmniscientBeing()

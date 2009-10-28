@@ -500,26 +500,13 @@ function _NProcessResponse(response)
 		document.getElementsByTagName("head")[0].appendChild(s);
 	}
 	if(_N.DebugMode == "Full")
-	{
-		var reg = new RegExp('((?:(?=/\*)/\*.*?\*/|((?!/\*)(?:[^\'";]|\'(?:[^\'\\]|\\.)*?\'|"(?:[^"\\]|\\.)*?")))+?);');
-		var r = response[1].match(reg);
-		for(var i=0; i<r.length; ++i)
-			try
-			{
-				eval(r[i]);
-			}
-			catch(err)
-			{
-				alert("A javascript error has occurred:\n\n" + err.name + "\n" + err.description + "\nProcessing statement: " + r[i]);
-				i=r.length;
-			}
-	}
+		_NDebugFull(response[1]);
 	else
 		eval(response[1]);
 }
 function _NAlertError(err)
 {
-	alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + "\n" + err.description : "An application error has occurred.");
+	alert(_N.DebugMode ? "A javascript error has occurred:\n\n" + err.name + ": " + err.message : "An application error has occurred.");
 }
 function _NUnServer()
 {
@@ -534,7 +521,7 @@ function _NReqStateChange()
    		var text = _N.Request.responseText, pos = text.indexOf("/*_N*/"), 
    			response = [text.substring(0, pos), text.substring(pos)], 
    			loadIndicator = _N.LoadIndicator;
-   		if(typeof _N.DebugMode == null)
+   		if(_N.DebugMode == null)
 		{
 			_NProcessResponse(response);
 			_NUnServer();
