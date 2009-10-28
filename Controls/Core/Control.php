@@ -386,7 +386,7 @@ abstract class Control extends Component
 				case 0: $printAs = 'absolute'; break;
 				case 1: $printAs = 'relative'; break;
 				case 2: $printAs = 'static'; break;
-				case 4: $printAs = 'fixed'; break;
+				case 3: $printAs = 'fixed';
 			}
 			NolohInternal::SetProperty('style.position', $printAs, $this);
 			if(is_string($this->Layout))
