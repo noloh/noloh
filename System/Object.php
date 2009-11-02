@@ -125,11 +125,13 @@ abstract class Object
 				call_user_func_array(array(&$this, $prop), $args);
 				return $this;
 			}
-			elseif($this->HasProperty($prop))
+			elseif(method_exists($this, $setProp = 'Set'.$prop))
 			{
-				call_user_func_array(array(&$this, 'Set'.$prop), $args);
+				call_user_func_array(array(&$this, $setProp), $args);
 				return $this;
 			}
+			elseif(property_exists($this, $prop))
+				$this->$prop = $args[0];
 			else 
 				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the method or property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
