@@ -106,6 +106,7 @@ abstract class WebPage extends Component
 				. ')', Priority::High);
 		//AddScript('_NSaveControl(\''.$this->Id.'\')');
 		$GLOBALS['_NFavIcon'] = $favIconPath;
+		return $this;
 	}
 	/**
 	 * @ignore
@@ -475,6 +476,28 @@ UserAgent::IsIE6() ? '
 	{
 		return $this->Id;
 	}
+	private function SetCSSHelper($nm, $val)
+	{
+		if($this->CSSPropertyArray == null)
+			$this->CSSPropertyArray = array();
+		$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
+		$key = strtolower($key[0]) . substr($key, 1);
+		$this->CSSPropertyArray[$key] = $val;
+		NolohInternal::SetProperty('style.'.$key, $val, $this);
+	}
+	/**
+	 * @ignore
+	 */
+	function __call($nm, $args)
+	{
+		if(strpos($nm, 'CSS') === 3 && (strpos($nm, 'Cas') === 0 || strpos($nm, 'Set') === 0))
+		{
+			$this->SetCSSHelper($nm, $args[0]);
+			return $this;
+		}
+		else
+			return parent::__call($nm, $args);
+	}
 	/**
 	 * @ignore
 	 */
@@ -499,12 +522,7 @@ UserAgent::IsIE6() ? '
 	{
 		if(strpos($nm, 'CSS') === 0)
 		{
-			if($this->CSSPropertyArray == null)
-				$this->CSSPropertyArray = array();
-			$key = str_replace(array('_', 'CSS'), array('', ''), $nm);
-			$key = strtolower($key[0]) . substr($key, 1);
-			$this->CSSPropertyArray[$key] = $val;
-			NolohInternal::SetProperty('style.'.$key, $val, $this);
+			$this->SetCSSHelper($nm, $val);
 			return $val;
 		}
 		else

@@ -2,9 +2,11 @@
 /**
  * Object class
  * 
- * An Object is the top-most parent of any NOLOH class. Its purpose is two-fold: First of all, for organizing classes, it is convenient and
- * logically elegant to have a base for all of your classes. Secondly, it comes equipped with the syntactic sugar that calls Get or Set 
- * functions for you for properties that are not accessible. Consider the following example:
+ * An Object is the top-most parent of any NOLOH class. Its purpose is two-fold: First of all, for organizing classes, it is both convenient and
+ * semantically elegant to have a single base for all of your classes. Secondly, it comes equipped with the most basic and most universal
+ * syntactic sugars of NOLOH, thus allowing for even your most basic classes (e.g., classes used primarily for storing properties) to take
+ * advantage of these great features. These sugars include calling Get or Set methods for you for properties that are not accessible, as well as cascading
+ * method and Set method calls, illustrated in the following example:
  * 
  * <pre>
  * class Foo extends Object
@@ -14,14 +16,20 @@
  *   // An accessor method for the private property
  *   function GetProperty()
  *   {
- *     Alert('GetProperty has been called!');
+ *     System::Alert('GetProperty has been called!');
  *     return $this->Property;
  *   }
  *   // A mutator method for the private property
  *   function SetProperty($value)
  *   {
- *     Alert('SetProperty has been called!');
+ *     System::Alert('SetProperty has been called!');
  *     $this->Property = $value;
+ *   }
+ * 	 // A generic method with a return
+ * 	 function DoSomething()
+ *   {
+ * 		System::Alert('Doing something!');
+ * 		return 17;
  *   }
  * }
  * 
@@ -31,7 +39,12 @@
  * $foo->Property = 'Hello';
  * // Automatically calls the GetProperty method, triggering an Alert and setting the local variable to 'Hello'
  * $property = $foo->Property;
+ * // Automatically calls methods and overrides their returns to return the object back for more actions.
+ * // A total of 3 Alerts will trigger, starting with 'Doing something!' since the method calls get resolved from left to right.
+ * $foo->CasDoSomething()->CasSetProperty('Ummm...')->CasProperty('Goodbye');
  * </pre>
+ * 
+ * For a more detailed discussion about the rich subject of NOLOH's syntactic sugars, please explore http://dev.noloh.com/#/articles/
  * 
  * @package System
  */
