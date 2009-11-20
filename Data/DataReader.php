@@ -102,7 +102,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 				$this->Data = pg_fetch_all($resource);
 			
 		}
-		elseif($type == Data::MySQL)
+		elseif($type == Data::MySQL && is_resource($resource))
 		{
 			if($resultType == Data::Both)
 				$resultType = MYSQL_BOTH;
