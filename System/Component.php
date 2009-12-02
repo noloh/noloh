@@ -58,10 +58,16 @@ abstract class Component extends Object
 				$parent = $class->getParentClass();
 			}while($parent && $parent->implementsInterface('Singleton'));
 			$class = $class->getName();
-			if(isset($_SESSION['_NSingletons'][$class]) && GetComponentById($_SESSION['_NSingletons'][$class]))
-				BloodyMurder('Cannot create more than one instance of a ' . $class . ' class because it is a Singleton.');
-			else
-				$_SESSION['_NSingletons'][$class] = $this->Id;
+			if(isset($_SESSION['_NSingletons'][$class]) && Component::Get($id = $_SESSION['_NSingletons'][$class]))
+			{
+				$lastTrash = is_array($_SESSION['_NGarbage']) ? count($_SESSION['_NGarbage']) : 0;
+				$GLOBALS['_NGarbage'] = true;
+				unset($OmniscientBeing[$id], $GLOBALS['_NGarbage']);
+				if($lastTrash === (is_array($_SESSION['_NGarbage']) ? count($_SESSION['_NGarbage']) : 0))
+					BloodyMurder('Cannot create more than one instance of a ' . $class . ' class because it is a Singleton.');
+					//System::Log($lastTrash, (is_array($_SESSION['_NGarbage']) ? end($_SESSION['_NGarbage']) : null));
+			}
+			$_SESSION['_NSingletons'][$class] = $this->Id;
 		}
 	}
 	/**
