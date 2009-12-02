@@ -57,6 +57,7 @@ class ListBox extends ListControl
 		{
 			$this->SelectedIndices[] = $index;
 			parent::SetSelectedIndex($index);
+			ClientScript::Queue($this, '_NLstCtrSaveSelInds', array($this), true, Priority::Low);
 		}
 	}
 	/**
@@ -110,14 +111,15 @@ class ListBox extends ListControl
 	function SetSelected($index, $select)
 	{
 		if($select)
-			SetSelectedIndex($index);
+			$this->SetSelectedIndex($index);
 		elseif(in_array($index, $this->SelectedIndices, true))
 		{
 			//NolohInternal::SetProperty("options[$index].selected", false, $this);
 			//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=false;void", array(0));
-			QueueClientFunction($this, '_NLstCtrDesel', array('\''.$this->Id.'\'', $index), false);
+			ClientScript::Queue($this, '_NLstCtrDesel', array($this, $index), false);
 			//AddScript("_N('$this->Id').options[$index].selected=false");
 			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
+			ClientScript::Queue($this, '_NLstCtrSaveSelInds', array($this), true, Priority::Low);
 		}
 	}
 	/**
@@ -126,7 +128,8 @@ class ListBox extends ListControl
 	function ClearSelected()
 	{
 		$this->SelectedIndices = array();
-		QueueClientFunction($this, '_NLstCtrClrSel', array('\''.$this->Id.'\''), false);
+		ClientScript::Queue($this, '_NLstCtrClrSel', array($this), false);
+		ClientScript::Queue($this, '_NLstCtrSaveSelInds', array($this), true, Priority::Low);
 	}
 	/**
 	 * @ignore
@@ -151,10 +154,10 @@ class ListBox extends ListControl
 	function Show()
 	{
 		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
-		AddNolohScriptSrc('ListControl.js');
+		ClientScript::AddNOLOHSource('ListControl.js');
 		$initialProperties = parent::Show() . '\'multiple\',\'true\'' . $this->GetEventString(null);
 		NolohInternal::Show('SELECT', $initialProperties, $this);
-		AddScript('_NLstCtrSaveSelInds("'.$this->Id.'");', Priority::Low);
+		ClientScript::Queue($this, '_NLstCtrSaveSelInds', array($this), true, Priority::Low);
 	}
 	/**
 	 * @ignore

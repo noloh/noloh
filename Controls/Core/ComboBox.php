@@ -44,6 +44,7 @@ class ComboBox extends ListControl
 		{
 			$this->SelectedIndex = $index;
 			parent::SetSelectedIndex($index);
+			ClientScript::Queue($this, '_NLstCtrSaveSelInd', array($this), true, Priority::Low);
 		}
 	}
 	/**
@@ -57,21 +58,20 @@ class ComboBox extends ListControl
 	/**
 	 * @ignore
 	 */
-	function GetEventString($eventTypeAsString)
-	{
-		$preStr = '';
-		if($eventTypeAsString == 'Change')
-			$preStr = '_NSave("'.$this->Id.'","'.selectedIndex.'");';
-		return $preStr . parent::GetEventString($eventTypeAsString);
-	}
-	/**
-	 * @ignore
-	 */
 	function AddItem($item)
 	{
 		parent::AddItem($item);
 		if($this->Items->Count == 1)
 			$this->SetSelectedIndex(0);
+	}
+	/**
+	 * @ignore
+	 */
+	public function ClearItems()
+	{
+		parent::ClearItems();
+		$this->SelectedIndex = null;
+		ClientScript::Queue($this, '_NLstCtrSaveSelInd', array($this), true, Priority::Low);
 	}
 	/**
 	 * @ignore
@@ -155,6 +155,16 @@ class ComboBox extends ListControl
 					$this->Items->Add($row);
 			}
 		}			
+	}
+	/**
+	 * @ignore
+	 */
+	function GetEventString($eventTypeAsString)
+	{
+		$preStr = '';
+		if($eventTypeAsString == 'Change')
+			$preStr = '_NSave("'.$this->Id.'","selectedIndex");';
+		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	/**
 	 * @ignore

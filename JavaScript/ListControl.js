@@ -44,6 +44,10 @@ function _NLstCtrExplSelInds(options)
 				retString += i + "~d2~";
 	return retString.substring(0,retString.length-4);
 }
+function _NLstCtrSaveSelInd(id)
+{
+	_N.Saved[id].selectedIndex = _N(id).selectedIndex;
+}
 function _NLstCtrSaveSelInds(id)
 {
 	_N.Saved[id]._NSelectedIndices = _NLstCtrExplSelInds(_N(id).options);

@@ -12,18 +12,18 @@
 abstract class ListControl extends Control
 {
 	/**
-	* Items, An ArrayList containing the Items of the ListControl
-	* @var ArrayList
-	*/
+	 * Items, An ArrayList containing the Items of the ListControl
+	 * @var ArrayList
+	 */
 	public $Items;
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends ListControl.
-	* @param integer $left
-	* @param integer $top
-	* @param integer $width
-	* @param integer $height
-	*/
+	 * @param integer $left
+	 * @param integer $top
+	 * @param integer $width
+	 * @param integer $height
+	 */
 	function ListControl($left=0, $top=0, $width=0, $height=0)
 	{
 		Control::Control($left, $top, $width, $height);
@@ -31,8 +31,8 @@ abstract class ListControl extends Control
 		$this->Items->InsertFunctionName = 'InsertItem';
 	}
 	/**
-	* @ignore
-	*/
+	 * @ignore
+	 */
 	abstract public function GetSelectedIndex();
 	/**
 	 * Selects an item based on the index
@@ -46,7 +46,7 @@ abstract class ListControl extends Control
 		//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=true;void", array(0), true, Priority::Low);
 		if(!isset($this->Items[$index]))
 			BloodyMurder('Trying to set index ' . $index . ' to selected of the ' . get_class($this) . ' of id ' . $this->Id . ', but no such index exists.');
-		QueueClientFunction($this, '_NLstCtrSel', array('\''.$this->Id.'\'', $index), false);
+		ClientScript::Queue($this, '_NLstCtrSel', array($this, $index), false);
 		if(/*$this->GetSelectedIndex() !== $index && */!$this->Change->Blank() /*&& $index != "first"*/)
 			$this->Change->Exec();
 	}
@@ -138,7 +138,7 @@ abstract class ListControl extends Control
 			$item = new Item($item, $item);
 		$this->Items->Add($item, true);
 		//QueueClientFunction($this, "_N('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
-		QueueClientFunction($this, '_NLstCtrAdd', array('\''.$this->Id.'\'', '\''.addslashes($item->Text).'\'', '\''.$item->Value.'\''), false);
+		ClientScript::Queue($this, '_NLstCtrAdd', array($this, $item->Text, $item->Value), false);
 		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	/**
@@ -151,7 +151,7 @@ abstract class ListControl extends Control
 	{
 		$this->Items->Insert($item, $index, true);
 		//QueueClientFunction($this, "_N('$this->Id').options.add", array("new Option('$item->Text','$item->Value')", $index), false);
-		QueueClientFunction($this, '_NLstCtrAdd', array('\''.$this->Id.'\'', '\''.$item->Text.'\'', '\''.$item->Value.'\'', is_numeric($index)?$index:('\''.$index.'\'')), false);
+		ClientScript::Queue($this, '_NLstCtrAdd', array($this, $item->Text, $item->Value, $index), false);
 		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'),$index)");
 	}
 	/**
@@ -166,7 +166,7 @@ abstract class ListControl extends Control
 		//if(func_num_args()==1)
 			$this->Items->RemoveAt($index, true);
 		//QueueClientFunction($this, "_N('$this->Id').options.remove", array($index), false);
-		QueueClientFunction($this, '_NLstCtrRem', array('\''.$this->Id.'\'', is_numeric($index)?$index:('\''.$index.'\'')), false);
+		ClientScript::Queue($this, '_NLstCtrRem', array($this, $index), false);
 		//AddScript("_N('$this->Id').remove($index)");
 	}
 	/**
@@ -183,7 +183,7 @@ abstract class ListControl extends Control
 		//Changed previos line to SetProperty
 		//NolohInternal::SetProperty("options.length", 0, $this);
 		//QueueClientFunction($this, "_N('$this->Id').options.length=0;void", array(0), false);
-		QueueClientFunction($this, '_NLstCtrClr', array('\''.$this->Id.'\''), false);
+		ClientScript::Queue($this, '_NLstCtrClr', array($this), false);
 	}
 	/**
 	 * @ignore
