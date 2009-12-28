@@ -167,6 +167,9 @@ final class System
 	static function GetRelativePath($fromDirectory, $toDirectory)
 	{
 		$fromDirectory = rtrim($fromDirectory, '/');
+		//HACK! Will add / to toDirectory if toDirectory is not empty, or / - Asher
+		if(strlen($toDirectory) > 1)
+			$toDirectory = rtrim($toDirectory, '/') . '/';
 		$toLength = strlen($toDirectory);
 		$fromLength = strlen($fromDirectory);
 		
