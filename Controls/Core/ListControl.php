@@ -138,7 +138,7 @@ abstract class ListControl extends Control
 			$item = new Item($item, $item);
 		$this->Items->Add($item, true);
 		//QueueClientFunction($this, "_N('$this->Id').options.add", array("new Option('$item->Text','$item->Value')"), false);
-		ClientScript::Queue($this, '_NLstCtrAdd', array($this, $item->Text, $item->Value), false);
+		ClientScript::Queue($this, '_NLstCtrAdd', array($this, str_replace(array('"', '\''), array('<NQt2>', '<NQt1>'), $item->Text), $item->Value), false);
 		//AddScript("_N('$this->Id').options.add(new Option('$item->Text','$item->Value'))");
 	}
 	/**

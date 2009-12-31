@@ -15,6 +15,7 @@ function _NLstCtrClrSel(id)
 }
 function _NLstCtrAdd(id,text,val,idx)
 {
+	text = text.replace(/<NQt2>/g,"\"").replace(/<NQt1>/g,"\'");
 	var opts = _N(id).options;
 	if(typeof idx == "undefined")
 		opts[opts.length] = new Option(text,val);
