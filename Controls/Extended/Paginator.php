@@ -74,7 +74,6 @@ class Paginator extends RichMarkupRegion implements Countable
 		$this->Visible = false;
 		$this->SetResultsPanel($resultsPanel);
 		$template = '{first} {prev} {status} {pages} {next} {last}';
-//		$template = '{first}{prev}{next}{last}';
 		$this->SetTemplate($template);
 	}
 	/**
@@ -106,6 +105,11 @@ class Paginator extends RichMarkupRegion implements Countable
 	 * @return Control|Container
 	 */
 	function GetNext()	{return $this->Next;}
+	/**
+	 * Returns the DataSource that the current page of the Paginator is bound to.
+	 * @return mixed
+	 */
+	function GetDataSource()	{return $this->DataSource;}
 	/**
 	 * Returns the Prev object of the Paginator when Paginator::Prev is used in Template.
 	 * By default this is a Link.
@@ -162,7 +166,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	/**
 	 * Sets the maximum number of pages. Data that lives on a page greater than MaxPages will be ignored.
 	 * @param object $num
-	 * @return 
 	 */
 	function SetMaxPages($num)
 	{
@@ -170,7 +173,7 @@ class Paginator extends RichMarkupRegion implements Countable
 	}
 	/**
 	 * Returns the maximum number of pages.
-	 * @return 
+	 * @return integer
 	 */
 	function GetMaxPages()	{return $this->MaxPages;}
 	/**
@@ -178,7 +181,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	 * This is useful when your template consists of the Paginator::Pages element.
 	 * 
 	 * @param string $class
-	 * @return 
 	 */
 	function SetPageClass($class)
 	{
@@ -277,7 +279,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	 * the Add function will be called with the result of the callback, adding
 	 * the element to your ArrayList. 
 	 * @param Panel|ArrayList $resultsPanel
-	 * @return 
 	 */
 	function SetResultsPanel($resultsPanel)
 	{
@@ -398,7 +399,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	 *     $paginator->Limit = array(-2, 10);
 	 * </pre>
 	 * @param integer|array $num
-	 * @return 
 	 */
 	function SetLimit($num)
 	{
@@ -435,7 +435,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	 * Sets the Page of the Paginator to a particular page number.
 	 * @param integer $num Page number to change to
 	 * @param boolean $bind
-	 * @return 
 	 */
 	function SetPage($num, $bind=true)
 	{
@@ -522,7 +521,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	}
 	/**
 	 * Makes the Paginator go back one page
-	 * @return 
 	 */
 	function PrevPage()
 	{	
@@ -530,13 +528,12 @@ class Paginator extends RichMarkupRegion implements Countable
 	}
 	/**
 	 * Make the Paginator go forward one page
-	 * @return 
 	 */
 	function NextPage()
 	{
 		return($this->SetPage($this->CurrentPage + 1));
 	}
-	/*
+	/**
 	 * Returns the total number of Pages
 	 * @return integer
 	 */
@@ -548,7 +545,7 @@ class Paginator extends RichMarkupRegion implements Countable
 		else
 			return 0;
 	}
-	/*
+	/**
 	 * Returns the total number of Pages
 	 * @return integer
 	 */
@@ -563,7 +560,6 @@ class Paginator extends RichMarkupRegion implements Countable
 	 * @param object $limit [optional]
 	 * @param object $offset [optional]
 	 * @param object $cache [optional]
-	 * @return 
 	 */
 	public function Bind($dataSource=null, $rowCallback=null, $limit=10, $offset=0, $cache = false)
 	{
@@ -627,7 +623,7 @@ class Paginator extends RichMarkupRegion implements Countable
 		}
 		if($this->DataSource instanceof DataCommand)
 		{
-			if(!$loadIntoMemory)
+			if(!$cache)
 			{
 				if(is_array($limit) || is_array($offset))
 				{
