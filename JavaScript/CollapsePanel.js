@@ -11,7 +11,7 @@ function _NClpsPnlTgl(id, clpse)
 	if(pnl.Opn == false || !clpse)
 	{
 		var body = _N(pnl.Body);
-		if(pnl.Hgt != null)
+		if(!pnl.Hgt)
 		{
 			body.style.display = '';
 			pnl.NullHgt = body.offsetHeight + _N(pnl.Top).offsetHeight;
@@ -39,6 +39,6 @@ function _NClpsPnlSetHgt(id, hgt)
 {
 	var pnl = _N(id);
 	pnl.Hgt = hgt;
-	if(hgt != null)
+	if(hgt)
 		_N(pnl.Body).style.height = (hgt - _N(pnl.Top).offsetHeight) + 'px';
 }
