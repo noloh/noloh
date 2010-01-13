@@ -1227,9 +1227,9 @@ abstract class Control extends Component
 	 */
 	function __call($nm, $args)
 	{
-		if(strpos($nm, 'CSS') === 3 && (strpos($nm, 'Cas') === 0 || strpos($nm, 'Set') === 0))
+		if(strpos($nm, 'CasCSS') === 0 || strpos($nm, 'SetCSS') === 0)
 		{
-			$this->SetCSSHelper($nm, $args[0]);
+			$this->SetCSSHelper(substr($nm, 3), $args[0]);
 			return $this;
 		}
 		else
