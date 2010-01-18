@@ -57,6 +57,61 @@ final class ClientScript
 		}
 	}
 	/**
+	 * @ignore 
+	 */
+	static function RaceAdd()
+	{
+		
+	}
+	/**
+	 * Queues either a JavaScript function or a full JavaScript statement associated with a specific Component to be executed on the client AFTER a race condition is met. <br>
+	 * The code will not be sent to the client, until the given Component has shown.<br>
+	 * <pre>
+	 * 	ClientScript::RaceQueue($this, 'someWidget.state == "ready"', alert', array("someWidget is ready for use"));
+	 * </pre>
+	 * @param Component $component One or more components that the scripts will be dependent on, i.e., they will not get sent to the client if the dependencies have not shown.
+	 * @param mixed $condition A statement, condition, JavaScript object, JavaScript function, or ClientEvent.
+	 * @param string $codeOrFunction The name of the JavaScript function or valid JavaScript code ending with a semicolon
+	 * @param mixed $paramsArray An array of parameters passed into the function
+	 * @param boolean $replace
+	 * @param mixed $priority Determines the order in which scripts run. Can be: Priority::Low, Priority::Medium, or Priority::High 
+	 */
+	static function RaceQueue($component, $condition, $codeOrFunction, $paramsArray=null, $replace=true, $priority=Priority::Medium)
+	{
+		if(!$condition instanceof ClientEvent)
+		{	
+			if(preg_match('/^[a-z$_][\w$]*$/i', $condition))
+				$condition = "function(){return typeof($condition) != 'undefined';}";
+			else
+				$condition = "function(){return $condition;}";
+//			System::Log($condition);
+			$condition = new ClientEvent($condition);	
+		}
+		if(!$codeOrFunction instanceof ClientEvent)
+		{
+			if(preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
+			{
+				$paramsArray = null;
+				$codeOrFunction = 'function(){' . $codeOrFunction . '}';
+			}
+			else
+			{
+				if(is_array($paramsArray))
+				{
+					$paramsArray = array_map(array('ClientEvent', 'ClientFormat'), $paramsArray);
+					$paramsArray = implode(',', $paramsArray);
+				}
+				elseif($paramsArray !== null)
+					$paramsArray = array(ClientEvent::ClientFormat($paramsArray));
+				$codeOrFunction = 'function(){' . $codeOrFunction . '('. $paramsArray .')}'; 	
+			}
+//			System::Log($codeOrFunction);
+			$codeOrFunction = new ClientEvent($codeOrFunction);
+		}
+		self::AddNOLOHSource('RaceCall.js');
+		ClientScript::Queue($component, '_NChkCond', array($condition, $codeOrFunction), /*$replace*/false, $priority);
+	}
+	/**
 	 * Adds a Javascript script file to be run immediately on the client <br>
 	 * The server will keep track of which files have been added so that the same file will not be sent to the client twice.<br>
 	 * {@see ClientScript::Add} to add actual code as opposed to files.
