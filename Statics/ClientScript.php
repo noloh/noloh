@@ -116,12 +116,19 @@ final class ClientScript
 	 * The server will keep track of which files have been added so that the same file will not be sent to the client twice.<br>
 	 * {@see ClientScript::Add} to add actual code as opposed to files.
 	 * @param string $path A path to the javascript file.
+	 * @param bool $combine Whether you want the source file to be combined with other source files, or added separately.
 	 */
-	static function AddSource($path)
+	static function AddSource($path, $combine=true)
 	{
 		if(!isset($_SESSION['_NScriptSrcs'][$path]))
 		{
-			$_SESSION['_NScriptSrc'] .= file_get_contents($path);
+			if($combine)
+				$_SESSION['_NScriptSrc'] .= file_get_contents($path);
+			else
+			{
+				self::AddNOLOHSource('AddExternal.js');
+				$_SESSION['_NScriptSrc'] .= '_NAddExtSource(\'' . $path . '\');';
+			}
 			$_SESSION['_NScriptSrcs'][$path] = true;
 		}
 	}
