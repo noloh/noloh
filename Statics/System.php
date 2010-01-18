@@ -275,7 +275,7 @@ final class System
 	/**
 	 * @ignore
 	 */
-	static function FullAppPath()			{return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http://':'https://') . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
+	static function FullAppPath()			{return URL::GetProtocol() . '://' . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
 }
 
 ?>

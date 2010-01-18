@@ -44,6 +44,14 @@ final class URL
 	 */
 	const Tokens = null;
 	/**
+	 * The HTTP Protocol
+	 */
+	const HTTP = 'http';
+	/**
+	 * The HTTPS Protocol
+	 */
+	const HTTPS = 'https';
+	/**
 	 * An ArrayList of values to be used for a neat, slash-separated chain of tokens. Note that this only makes sense in the context of a URL::Display token mode.
 	 * @var ArrayList
 	 */
@@ -325,6 +333,41 @@ final class URL
 		self::QueueUpdateTokens();
 		self::$TokenChain->Clear(true);
 	}
+	/**
+	 * Returns the current Path of your application. If $includeTokens is true tokens will be included.
+	 * @param object $includeTokens
+	 * @return string
+	 */
+	static function GetPath($includeTokens = true)
+	{
+		$path = System::FullAppPath();
+		if($includeTokens)
+		{
+			$tokens = self::TokenString(self::$TokenChain, $_SESSION['_NTokens']);
+			if($tokens)
+				$path .= '#/' . $tokens;
+		}
+		return $path;
+	}
+	/**
+	 * Returns the protocol segment of the URL. Your webserver must have HTTPS params enabled to check for HTTPS.
+	 * @return URL::HTTP|URL::HTTPS
+	 */
+	static function GetProtocol()	
+	{
+		return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http':'https');
+	}
+	/**
+	 * Changes the protocol of your current URL. For example, http://www.noloh.com would redirect to https://www.noloh.com
+	 * @param object $protocol
+	 */
+	static function SetProtocol($protocol)
+	{
+		if($protocol != ($current = self::GetProtocol()))
+		{
+			$search = '/^(' . $current . ')(:.*)$/i';
+			URL::Redirect(preg_replace($search, $protocol . '$2', URL::GetPath()));
+		}
+	}
 }
-
 ?>
