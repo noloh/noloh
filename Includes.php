@@ -19,6 +19,7 @@ require($_NPath . 'Collections/ImplicitArrayList.php');
 require($_NPath . 'Controls/Core/Control.php');
 require($_NPath . 'Events/Event.php');
 require($_NPath . 'Events/ClientEvent.php');
+require($_NPath . 'Events/RaceClientEvent.php');
 require($_NPath . 'Events/ServerEvent.php');
 require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');

@@ -90,6 +90,13 @@ class ClientEvent extends Event
 		}
 		elseif($param instanceof Component)
 			return '"' . $param->Id . '"';
+		elseif($param instanceof ClientEvent)
+		{
+			if (preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', ($func = $param->ExecuteFunction)))
+				return $func;
+			else	
+				return 'function(){' . $param->GetEventString(null, null) .'}';
+		}
 		elseif(is_object($param))
 			BloodyMurder('Objects can not be passed as parameters to ClientEvent');
 	}
