@@ -484,7 +484,7 @@ class WindowPanel extends Panel
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
-		if(isset($this->Borders[1]) && $this->Borders[1] instanceof Image)
+		if(isset($this->Borders[0]) && $this->Borders[0] instanceof Image)
 		{
 			$margin = 0;
 			if(isset($this->Corners[0]))
