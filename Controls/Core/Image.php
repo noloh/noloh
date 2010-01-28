@@ -132,24 +132,23 @@ class Image extends Control
 	 */
 	function SetWidth($width)
 	{
-		$tmpWidth = $width;
-		if(!is_numeric($tmpWidth))
+		if($width !== null && !is_numeric($width))
 		{
 			if(substr($width, -1) != '%')
 			{
-				$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($tmpWidth == System::Auto)
-					$tmpWidth = $tmpImageSize[0];
+				$imageSize = getimagesize(GetAbsolutePath($this->Src));
+				if($width == System::Auto)
+					$width = $imageSize[0];
 				else
 				{
-					$tmpWidth = intval($tmpWidth)/100;
-					$tmpWidth = round($tmpWidth * $tmpImageSize[0]);
+					$width = intval($width)/100;
+					$width = round($width * $imageSize[0]);
 				}
 			}
 		}
 		if($this->Magician != null)
 			$this->SetMagicianSrc();
-		parent::SetWidth($tmpWidth);
+		parent::SetWidth($width);
 	}
 	/**
 	 * @ignore
@@ -169,24 +168,23 @@ class Image extends Control
 	 */
 	function SetHeight($height)
 	{
-		$tmpHeight = $height;
-		if(!is_numeric($tmpHeight))
+		if($height !== null && !is_numeric($height))
 		{
 			if(substr($height, -1) != '%')
 			{
-				$tmpImageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($tmpHeight == System::Auto)
-					$tmpHeight = $tmpImageSize[1];
+				$imageSize = getimagesize(GetAbsolutePath($this->Src));
+				if($height == System::Auto)
+					$height = $imageSize[1];
 				else
 				{
-					$tmpHeight = intval($tmpHeight)/100;
-					$tmpHeight = round($tmpHeight * $tmpImageSize[1]);
+					$height = intval($height)/100;
+					$height = round($height * $imageSize[1]);
 				}
 			}
 		}
 		if($this->Magician != null)
 			$this->SetMagicianSrc();
-		parent::SetHeight($tmpHeight);
+		parent::SetHeight($height);
 	}
 	/**
 	 * Conjure can be used to render your own images on the fly, e.g., for creating captuas. It lets you specify a callback function, which MUST
