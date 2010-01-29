@@ -37,6 +37,7 @@ abstract class Control extends Component
 	private $Buoyant;
 	private $Secure;
 	private $Shifts;
+	private $DataValue;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -161,6 +162,22 @@ abstract class Control extends Component
 	function SetText($text)
 	{
 		$this->Text = $text;
+	}
+	/**
+	 * Sets the DataValue. DataValue can be used to store a piece of data related to the object, such as database ids.
+	 * @param mixed $data 
+	 */
+	function SetDataValue($data)
+	{
+		$this->DataValue = $data;
+	}
+	/**
+	 * Returns the DataValue. DataValue can be used to store a piece of data related to the object, such as database ids.
+	 * @return mixed
+	 */
+	function GetDataValue()
+	{
+		return $this->DataValue;
 	}
 	/**
 	 * Returns the Text. This is a convenient alias because different types of Controls may have different interpretations of "Value."
