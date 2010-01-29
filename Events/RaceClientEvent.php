@@ -17,11 +17,11 @@
  * <pre>
  * $btn->Click = new RaceClientEvent('CKEditor', 'alert', 'I have been clicked CKEditor is defined');
  * $btn->Click = new RaceClientEvent('CKEditor.SubObject', 'alert', 'I have been clicked and SubObject is defined');
- * $btn->Click = new RaceClientEvent('function(){return someObj.someFunc()}', 'alert', 'I have been clicked and SubObject is defined');
- * $btn->Click = new RaceClientEvent(new ClientEvent('function(){return someObj.someFunc()}'), 'alert', 'I have been clicked and SubObject is defined');
+ * $btn->Click = new RaceClientEvent('function(){return someObj.someFunc()}', 'alert', 'I have been clicked and the result of someFunc() is true');
+ * $btn->Click = new RaceClientEvent(new ClientEvent('function(){return someObj.someFunc()}'), 'alert', 'I have been clicked and the result of someFunc() is true);
  * </pre>
  * Similarly, RaceClientEvent's other parameters are identical to ClientEvent. This means that you can also pass in statements instead of just function calls.
- * $btn->Click = new RaceClientEvent('CKEditor', 'alert(I have been clicked CKEditor is defined);');
+ * $btn->Click = new RaceClientEvent('CKEditor', 'alert("I have been clicked CKEditor is defined");');
  * </pre>
   For more information, please see
  * @link /Tutorials/Events.html#ClientEvents
@@ -67,6 +67,7 @@ class RaceClientEvent extends ClientEvent
 			else	
 				$condition = 'function(){' . $param->GetEventString(null, null) .'}';
 		}
+		ClientScript::AddNOLOHSource('RaceCall.js');
 		$this->ExecuteFunction = '_NChkCond(' . $condition . ',' . 'function(){' . $this->ExecuteFunction . '});';	
 	}
 }
