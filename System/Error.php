@@ -50,42 +50,47 @@ function _NOBErrorHandler($buffer)
  */
 function _NErrorHandler($number, $string, $file, $line)
 {
-	ob_end_clean();
-	setcookie('_NAppCookie', false);
-	if(strpos($string, '~OB~') === 0)
+	if(error_reporting() & $number)
 	{
-		$matches = explode('~OB~', $string);
-		$string = $matches[2];
-		$file = $matches[3];
-		$line = $matches[4];
+		ob_end_clean();
+		setcookie('_NAppCookie', false);
+		if(strpos($string, '~OB~') === 0)
+		{
+			$matches = explode('~OB~', $string);
+			$string = $matches[2];
+			$file = $matches[3];
+			$line = $matches[4];
+		}
+		elseif($string === '~_NINFO~')
+		{
+			setcookie('_NPHPInfo', true);
+			Application::Reset(true, false);
+		}
+		elseif($GLOBALS['_NDebugMode'] !== 'Kernel')
+		{
+			$trace = _NFirstNonNOLOHBacktrace();
+			$file = $trace['file'];
+			$line = $trace['line'];
+		}
+		$gzip = defined('FORCE_GZIP');
+		if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
+			ob_start('ob_gzhandler');
+		if(!in_array('Cache-Control: no-cache', headers_list(), true))
+			++$_SESSION['_NVisit'];
+		error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin $file\\non line $line":'')));
+		echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
+		if($gzip)
+			ob_end_flush();
+		flush();
+		NolohInternal::ResetSecureValuesQueue();
+		global $OmniscientBeing;
+		$_SESSION['_NScript'] = array('', '', '');
+		$_SESSION['_NScriptSrc'] = '';
+		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+	    exit();
 	}
-	elseif($string === '~_NINFO~')
-	{
-		setcookie('_NPHPInfo', true);
-		Application::Reset(true, false);
-	}
-	elseif($GLOBALS['_NDebugMode'] !== 'Kernel')
-	{
-		$trace = _NFirstNonNOLOHBacktrace();
-		$file = $trace['file'];
-		$line = $trace['line'];
-	}
-	$gzip = defined('FORCE_GZIP');
-	if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
-		ob_start('ob_gzhandler');
-	if(!in_array('Cache-Control: no-cache', headers_list(), true))
-		++$_SESSION['_NVisit'];
-	error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin $file\\non line $line":'')));
-	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
-	if($gzip)
-		ob_end_flush();
-	flush();
-	NolohInternal::ResetSecureValuesQueue();
-	global $OmniscientBeing;
-	$_SESSION['_NScript'] = array('', '', '');
-	$_SESSION['_NScriptSrc'] = '';
-	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-    exit();
+	else
+		return false;
 }
 /**
  * Finds the first array of trace information before a NOLOH file
@@ -127,7 +132,7 @@ function BloodyMurder($message)
 		}
 		else 
 			$trace = _NFirstNonNOLOHBacktrace();
-		_NErrorHandler(0, $message, $trace['file'], $trace['line']);
+		_NErrorHandler(1, $message, $trace['file'], $trace['line']);
 	}
 }
 ?>
