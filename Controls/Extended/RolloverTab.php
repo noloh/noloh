@@ -338,7 +338,13 @@ class RolloverTab extends Panel implements Groupable
 			//$this->Selected = $selected;
 			if($bool)
 			{
-				$this->OutTab->Visible = $this->OverTab->Visible = $this->DownTab->Visible = System::Vacuous;
+				if($this->OutTab)
+					$this->OutTab->Visible =  System::Vacuous;
+				if($this->DownTab)
+					$this->DownTab->Visible =  System::Vacuous;
+				if($this->OverTab)
+					$this->OverTab->Visible =  System::Vacuous;
+				
 				NolohInternal::SetProperty('Cur', 'Slct', $this);
 				$this->SelectedTab->Visible = true;
 			}
@@ -355,7 +361,7 @@ class RolloverTab extends Panel implements Groupable
 	 */
 	function Show()
 	{
-		AddNolohScriptSrc('RolloverTab.js');
+		ClientScript::AddNOLOHSource('RolloverTab.js');
 		//NolohInternal::SetProperty('Cur', 'Out', $this);
 		if($this->TextObject)
 			$this->TextObject->BringToFront();
