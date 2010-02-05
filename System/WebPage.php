@@ -25,7 +25,7 @@ abstract class WebPage extends Component
 	/**
 	 * @ignore
 	 */
-	public $Keywords;
+	private $Keywords;
 	/**
 	 * @ignore
 	 */
@@ -66,7 +66,8 @@ abstract class WebPage extends Component
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->Title = $title;
-		$this->Keywords = $keywords;
+		$this->SetKeywords($keywords);
+//		$this->Keywords = $keywords;
 		$this->Description = $description;
 		
 		$config = Configuration::That();
@@ -169,7 +170,7 @@ abstract class WebPage extends Component
 	 * <pre>
 	 * WebPage::SetMeta('Ice Cream Melts in the Summer', 'tragedy, ice cream, summer', 'A hilarious story of melting ice cream');
 	 * //Alternatively
-	 * $keywords = array('tragedy, ice cream, summer');
+	 * $keywords = array('tragedy', 'ice cream', 'summer');
 	 * WebPage::SetMeta('Ice Cream Melts in the Summer', $keywords, 'A hilarious story of melting ice cream');
 	 * </pre>
 	 * @param string $title The title of your application
@@ -183,10 +184,20 @@ abstract class WebPage extends Component
 		if(isset($title))
 			$webPage->SetTitle($title);
 		if(isset($keywords))
-			$webPage->Keywords = is_array($keywords)?implode(',', $keywords):$keywords;
+			$webPage->SetKeywords($keywords);
 		if(isset($description))
 			$webPage->Description = $description;
 	}
+	/**
+	 * Sets the keywords that descibe your section or content
+	 * @param string|array $keywords
+	 * @return 
+	 */
+	function SetKeywords($keywords)
+	{
+		$this->Keywords = is_array($keywords)?implode(',', $keywords):$keywords;
+	}
+	function GetKeywords()	{return $this->Keywords;}
 	/**
 	 * Returns the horizontal size of the browser, in pixels
 	 * @return integer
