@@ -99,7 +99,8 @@ final class Application extends Object
 			FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
 		elseif(isset($_GET['_NFileRequest']))
 			File::SendRequestedFile($_GET['_NFileRequest']);
-		elseif(isset($_SESSION['_NVisit']) || isset($_POST['_NVisit']))
+		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && 
+			(!($host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)) || $host == parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)))
 		{
 			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 				$this->HandleIENavigation();
