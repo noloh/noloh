@@ -165,6 +165,29 @@ abstract class WebPage extends Component
 		}
 	}
 	/**
+	 * Sets the meta information of your application. Useful for setting the title, keywords, and description as you change sections or load in content.
+	 * <pre>
+	 * WebPage::SetMeta('Ice Cream Melts in the Summer', 'tragedy, ice cream, summer', 'A hilarious story of melting ice cream');
+	 * //Alternatively
+	 * $keywords = array('tragedy, ice cream, summer');
+	 * WebPage::SetMeta('Ice Cream Melts in the Summer', $keywords, 'A hilarious story of melting ice cream');
+	 * </pre>
+	 * @param string $title The title of your application
+	 * @param string|array $keywords Keywords that describe your section or content
+	 * @param string $description The description of your section or content
+	 * @return 
+	 */
+	static function SetMeta($title=null, $keywords=null, $description=null)
+	{
+		$webPage = WebPage::That();
+		if(isset($title))
+			$webPage->SetTitle($title);
+		if(isset($keywords))
+			$webPage->Keywords = is_array($keywords)?implode(',', $keywords):$keywords;
+		if(isset($description))
+			$webPage->Description = $description;
+	}
+	/**
 	 * Returns the horizontal size of the browser, in pixels
 	 * @return integer
 	 */
@@ -347,6 +370,7 @@ abstract class WebPage extends Component
 		//header('Pragma: no-cache');
 		header('Content-Type: text/html; charset=UTF-8');
 		//header('Content-Type: text/html; charset=ISO-8859-1');
+		
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
