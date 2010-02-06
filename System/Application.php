@@ -100,7 +100,7 @@ final class Application extends Object
 		elseif(isset($_GET['_NFileRequest']))
 			File::SendRequestedFile($_GET['_NFileRequest']);
 		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && 
-			(!($host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)) || $host == parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST)))
+			(!($host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
 		{
 			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 				$this->HandleIENavigation();
