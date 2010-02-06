@@ -76,10 +76,6 @@
 	padding-bottom:1px;
 	position:fixed;
 }
-a img
-{
-	border:0px;
-}
 .NLarva
 {
 	display:inline;
@@ -88,6 +84,7 @@ a img
 {
 	text-decoration:none;
 	overflow:visible;
+	outline: none;
 }
 .NLVSubItem
 {
