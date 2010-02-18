@@ -94,7 +94,7 @@ class ImplicitArrayList extends ArrayList
 		elseif(is_object($src = $this->Source) || ($src = GetComponentById($this->Source==null?$this->ParentId:$this->Source)))
 			return $src->{$this->AddFunctionName}($element);
 		elseif(class_exists($this->Source))
-			call_user_func(array($this->Source, $this->AddFunctionName), $element);
+			return call_user_func(array($this->Source, $this->AddFunctionName), $element);
 	}
 	/**
 	 * Inserts an element into a particular index of the ArrayList, not overwriting what was previously there.
