@@ -53,12 +53,22 @@ class Form extends Component
 	{
 		parent::Component();
 		//parent::Control($left, $top, $width, $height);
-		$this->Controls = new ArrayList();
+//		$this->Controls = new ArrayList();
+		$this->Controls = new ImplicitArrayList($this, 'AddControl');
 		$this->Controls->ParentId = $this->Id;
 		$this->SetAction($action);
 		$this->SetMethod($method);
 		$this->SetTarget($target);
 		$this->SetEncType($encType);
+	}
+	/**
+	* @ignore
+	*/
+	function AddControl($control)
+	{
+		if($control->GetHTMLName() === null)
+			$control->SetHTMLName($control->Id);
+		return $this->Controls->Add($control, true);
 	}
 	/**
 	 * Returns the Action of the Form. Typically, this is the URL of another web server to where you are submitting, but it can sometimes also be something else, e.g., a mailto: command
