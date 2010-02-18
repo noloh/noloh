@@ -38,6 +38,7 @@ abstract class Control extends Component
 	private $Secure;
 	private $Shifts;
 	private $DataValue;
+	private $HTMLName;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -737,6 +738,21 @@ abstract class Control extends Component
 			else
 				$group->WaitingList[] = $this->Id;
 	}
+	/**
+	* Sets the HTMLName which represents the HTML name of your object on the client. This is usually used in conjuction with the NOLOH Form object.
+	* 
+	* @param string $name
+	*/
+	function SetHTMLName($name)
+	{
+		$this->HTMLName = $name;
+		ClientScript::Set($this, 'name', $name, null);
+	}
+	/**
+	* Returns the HTMLName which represents the HTML name of your object on the client. This is usually used in conjuction with the NOLOH Form object.
+	* @return string
+	*/
+	function GetHTMLName()	{return $this->HTMLName;}
 	/**
 	 * @ignore
 	 */

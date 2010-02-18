@@ -345,6 +345,7 @@ final class Application extends Object
 				'innerHTML' => 'Set_NText',
 				'selectedIndex' => 'SetSelectedIndex',
 				'className' => 'SetCSSClass',
+				'name' => 'SetHTMLName',
 				'src' => 'SetSrc',
 				'scrollLeft' => 'SetScrollLeft',
 				'scrollTop' => 'SetScrollTop'
