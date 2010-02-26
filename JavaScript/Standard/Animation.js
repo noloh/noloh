@@ -97,9 +97,10 @@ _NAni.prototype.Move = function(delta)
 }
 _NAni.prototype.FinishingTouches = function()
 {
-	if(this.ObjId == "N1")
+	/*if(this.ObjId == "N1")
 		_NBodyScrollState();
-	else if(this.Property == "opacity" && this.Destination == 100)
+	else */
+	if(this.Property == "opacity" && this.Destination == 100)
 		this.Obj.style.opacity = '';
 	else if(this.Oblivion)
 	{

@@ -304,7 +304,7 @@ abstract class WebPage extends Component
 	function SetScrollLeft($scrollLeft)
 	{
 		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
-		QueueClientFunction($this, 'document.documentElement.scrollLeft='.$scrollLeft.';_NBodyScrollState', array());
+		ClientScript::Queue($this, 'document.documentElement.scrollLeft='.$scrollLeft.';', null);
 	}
 	/**
 	 * @ignore
@@ -320,7 +320,7 @@ abstract class WebPage extends Component
 	function SetScrollTop($scrollTop)
 	{
 		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
-		QueueClientFunction($this, 'document.documentElement.scrollTop='.$scrollTop.';_NBodyScrollState', array());
+		ClientScript::Queue($this, 'document.documentElement.scrollTop='.$scrollTop.';', null);
 	}
 	/**
 	 * Gets the Unload Event, which launches when someone navigates away from the application or closes their browser
