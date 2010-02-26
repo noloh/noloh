@@ -90,6 +90,23 @@ class File extends Object
 		}
 	}
 	/**
+	 * Returns the content of the File by reading it.
+	 * @return string
+	 */
+	function GetContent()
+	{
+		return file_get_contents($this->Filename);
+	}
+	/**
+	 * Sets the content of the File by writing to it.
+	 * @param string $content
+	 * @return mixed
+	 */
+	function SetContent($content)
+	{
+		return file_put_contents($this->Filename, $content) ? $content : null;
+	}
+	/**
 	 * Open a file for reading, writing, or both. Always close your file when you are finished
 	 * @param mixed $mode A File class constant signifying what the file is opened for 
 	 * @param boolean $autoSave
