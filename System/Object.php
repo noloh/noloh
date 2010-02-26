@@ -80,11 +80,15 @@ abstract class Object
 		$func = 'Get' . $nm;
 		if(method_exists($this, $func))
 			return $this->$func();
+		elseif(method_exists($this, $nm))
+			return new ServerEvent($this, $nm);
 		else
 		{
 			$func = 'get' . $nm;
 			if(method_exists($this, $func))
 				return $this->$func();
+			elseif(method_exists($this, $nm))
+				return new ServerEvent($this, $nm);
 			else
 				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
 		}
@@ -140,6 +144,12 @@ abstract class Object
 			$prop = substr($nm, 3);
 			if(property_exists($this, $prop))
 				return $this->$prop;
+			if(method_exists($this, $prop))
+			{
+				$class = new ReflectionClass('ServerEvent');
+				array_unshift($args, $this, $prop);
+				return $class->newInstanceArgs($args);
+			}
 			else 
 				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
