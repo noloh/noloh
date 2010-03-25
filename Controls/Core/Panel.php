@@ -102,10 +102,15 @@ class Panel extends Control
 	/**
 	 * Opens the Panel and only the Panel in a separate window so that the user may print it. The user's browser must
 	 * allow opening new windows for this to work.
+	 * 
+	 * @param bool $openDialog Automatically launch the 
 	 */
-	function OpenPrintableVersion()
+	function OpenPrintableVersion($openDialog=false)
 	{
-		AddScript('var oldNode = _N(\''.$this->Id.'\'); var newWin = window.open(); newWin.document.write(oldNode.innerHTML);');
+		$code = 'var newWin = window.open(); newWin.document.write(_N(\''.$this->Id.'\').innerHTML);';
+		if($openDialog)
+			$code .= 'newWin.print();';
+		ClientScript::Queue($this, 'try{' . $code . '} catch(e){}');
 	}
 	/**
 	 * Returns the kind of scroll bars the Panel will have, if any
