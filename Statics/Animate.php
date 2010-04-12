@@ -53,7 +53,7 @@ final class Animate
 	 */
 	static function Property($control, $property, $to, $duration=1000, $units='px', $easing=Animate::Quadratic, $from=null, $fps=30, $numArgs=null)
 	{
-		AddNolohScriptSrc('Animation.js', true);
+		ClientScript::AddNOLOHSource('Animation.js', true);
 		$args = func_get_args();
 		if($numArgs)
 			$args = array_slice($args, 0, $numArgs);
@@ -88,7 +88,7 @@ final class Animate
 		if($to instanceof Control)
 			$to = '_N(\''. $to->Id .'\').offsetLeft';
 		$numArgs = func_num_args();
-		if($numArgs > 4)
+		if($numArgs > 4 && $from !== null)
 			$control->SetLeft($from);
 		Animate::Property($control, 'style.left', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
@@ -106,7 +106,7 @@ final class Animate
 		if($to instanceof Control)
 			$to = '_N(\''. $to->Id .'\').offsetTop';
 		$numArgs = func_num_args();
-		if($numArgs > 4)
+		if($numArgs > 4 && $from !== null)
 			$control->SetTop($from);
 		Animate::Property($control, 'style.top', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
@@ -131,10 +131,10 @@ final class Animate
 		if($numArgs >= 5)
 		{
 			++$numArgs;
-			if($numArgs > 5)
+			if($numArgs > 5 && $fromLeft !== null)
 			{
 				$control->SetLeft($fromLeft);
-				if($numArgs > 6)
+				if($numArgs > 6 && $fromTop !== null)
 					$control->SetTop($fromTop);
 			}
 		}
@@ -153,7 +153,7 @@ final class Animate
 	static function Width($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args();
-		if($numArgs > 4)
+		if($numArgs > 4 && $from !== null)
 			$control->SetWidth($from);
 		Animate::Property($control, 'style.width', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
@@ -169,7 +169,7 @@ final class Animate
 	static function Height($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args();
-		if($numArgs > 4)
+		if($numArgs > 4 && $from !== null)
 			$control->SetHeight($from);
 		Animate::Property($control, 'style.height', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
@@ -190,10 +190,10 @@ final class Animate
 		if($numArgs >= 5)
 		{
 			++$numArgs;
-			if($numArgs > 5)
+			if($numArgs > 5 && $fromWidth !== null)
 			{
 				$control->SetWidth($fromWidth);
-				if($numArgs > 6)
+				if($numArgs > 6 && $fromHeight !== null)
 					$control->SetHeight($fromHeight);
 			}
 		}
@@ -262,7 +262,7 @@ final class Animate
 	static function Opacity($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		$numArgs = func_num_args() + 2;
-		if($numArgs > 6)
+		if($numArgs > 6 && $from !== null)
 			$control->SetOpacity($from);
 		Animate::Property($control, 'opacity', $to, $duration, '', $easing, $from, $fps, max(5, $numArgs));
 	}
