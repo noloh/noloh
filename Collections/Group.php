@@ -116,6 +116,22 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return false;
 	}
 	/**
+	 * Removes an unlimited number elements from the Group.
+	 * @param mixed,... $dotDotDot Unlimited number of elements to be removed
+	 * <pre>
+	 * // The following two statements have the same effect.
+	 * $group->RemoveRange($firstElement, $secondElement, $thirdElement, $fourthElement);
+	 * $group->RemoveRange(array($firstElement, $secondElement, $thirdElement, $fourthElement));
+	 * </pre>
+	 */
+	function RemoveRange($dotDotDot)
+	{
+		$numArgs = func_num_args();
+		$args = $numArgs === 1 && (is_array($dotDotDot) || $dotDotDot instanceof Iterator) ? $dotDotDot : func_get_args();
+		foreach($args as $val)
+			$this->Remove($val);
+	}
+	/**
 	 * Removes an element at a particular index. An element must exist there or an error is given.
 	 * If the index is an integer, the Group is reindexed to fill in the gap.
 	 * @param integer|string $index The index of the element to be removed

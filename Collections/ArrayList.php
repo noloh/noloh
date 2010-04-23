@@ -218,6 +218,22 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		return false;
 	}
 	/**
+	 * Removes an unlimited number elements from the ArrayList.
+	 * @param mixed,... $dotDotDot Unlimited number of elements to be removed
+	 * <pre>
+	 * // The following two statements have the same effect.
+	 * $arrayList->RemoveRange($firstElement, $secondElement, $thirdElement, $fourthElement);
+	 * $arrayList->RemoveRange(array($firstElement, $secondElement, $thirdElement, $fourthElement));
+	 * </pre>
+	 */
+	function RemoveRange($dotDotDot)
+	{
+		$numArgs = func_num_args();
+		$args = $numArgs === 1 && (is_array($dotDotDot) || $dotDotDot instanceof Iterator) ? $dotDotDot : func_get_args();
+		foreach($args as $val)
+			$this->Remove($val);
+	}
+	/**
 	 * Finds the index of a particular element. Numeric indices start from 0 on.
 	 * @param mixed $element The element to be searched for
 	 * @return integer|string If found, the index of the element. Otherwise, -1.
