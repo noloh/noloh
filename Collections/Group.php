@@ -163,6 +163,19 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		return -1;
 	}
 	/**
+	* Returns the numerical position of the Group whose element is Selected, or -1 if it's not found
+	* @return integer
+	*/
+	function GetSelectedPosition()
+	{
+		$i = 0;
+		foreach($this->Groupees as $groupee)
+			if($groupee->GetSelected())
+				return $i;
+			else ++$i;
+		return -1;
+	}
+	/**
 	 * Returns an array of selected indices, indexed numerically.
 	 * @return array
 	 */
