@@ -32,7 +32,8 @@ class MarkupRegion extends Control
 		parent::Control($left, $top, $width, $height);
 		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;
-		$this->SetText($markupStringOrFile);
+		if($markupStringOrFile !== null)
+			$this->SetText($markupStringOrFile);
 	}
 	/**
 	 * @ignore
