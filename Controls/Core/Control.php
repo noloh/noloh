@@ -108,9 +108,9 @@ abstract class Control extends Component
 	{
 		$this->Opacity = $opacity;
 		if(UserAgent::IsIE())
-			NolohInternal::SetProperty('style.filter', 'alpha(opacity='.$opacity.')', $this);
+			NolohInternal::SetProperty('style.filter', $opacity===100?'':'alpha(opacity='.$opacity.')', $this);
 		else
-			NolohInternal::SetProperty('style.opacity', $opacity/100, $this);
+			NolohInternal::SetProperty('style.opacity', $opacity===100?'':$opacity/100, $this);
 	}
 	/**
 	 * Returns the ZIndex of this Control. A higher ZIndex means that this Control will appear on top of other Controls with overlapping location.
