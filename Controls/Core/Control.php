@@ -1000,24 +1000,6 @@ abstract class Control extends Component
 	 */
 	function SetShiftStop($shiftStop)				{$this->SetEvent($shiftStop, 'ShiftStop');}
 	/**
-	 * Returns the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
-	 * @return Event
-	 */
-	function GetTypePause()
-	{
-		AddNolohScriptSrc('KeyEvents.js', true);
-		return $this->GetEvent('TypePause');
-	}
-	/**
-	 * Sets the TypePause Event, which gets launched when a user has the Control focused, types something, and pauses typing for half a second
-	 * @param Event $typePause
-	 */
-	function SetTypePause($typePause)
-	{
-		AddNolohScriptSrc('KeyEvents.js', true);
-		$this->SetEvent($typePause, 'TypePause');
-	}
-	/**
 	 * @ignore
 	 */
 	function _NGetShifts()

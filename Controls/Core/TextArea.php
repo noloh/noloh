@@ -107,6 +107,24 @@ class TextArea extends Control
 	 */
 	function SetScroll($scroll)						{$this->SetEvent($scroll, 'Scroll');}
 	/**
+	 * Returns the TypePause Event, which gets launched when a user has the TextArea focused, types something, and pauses typing for half a second
+	 * @return Event
+	 */
+	function GetTypePause()
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		return $this->GetEvent('TypePause');
+	}
+	/**
+	 * Sets the TypePause Event, which gets launched when a user has the TextArea focused, types something, and pauses typing for half a second
+	 * @param Event $typePause
+	 */
+	function SetTypePause($typePause)
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		$this->SetEvent($typePause, 'TypePause');
+	}
+	/**
 	 * @ignore
 	 */
 	function GetEventString($eventTypeAsString)

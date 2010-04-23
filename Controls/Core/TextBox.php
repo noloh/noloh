@@ -121,6 +121,24 @@ class TextBox extends Control
 		$this->UpdateEvent('KeyPress');
 	}
 	/**
+	 * Returns the TypePause Event, which gets launched when a user has the TextBox focused, types something, and pauses typing for half a second
+	 * @return Event
+	 */
+	function GetTypePause()
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		return $this->GetEvent('TypePause');
+	}
+	/**
+	 * Sets the TypePause Event, which gets launched when a user has the TextBox focused, types something, and pauses typing for half a second
+	 * @param Event $typePause
+	 */
+	function SetTypePause($typePause)
+	{
+		AddNolohScriptSrc('KeyEvents.js', true);
+		$this->SetEvent($typePause, 'TypePause');
+	}
+	/**
 	 * Returns the string of text that was highlighted by the user
 	 * @return string
 	 */
