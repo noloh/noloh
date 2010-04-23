@@ -313,6 +313,45 @@ abstract class Component extends Object
 		}
 	}
 	/**
+	* Removes the Component from its parent Collection. For example, if this object is a Button in a Panel, then calling $object->Leave would remove the Button from the Panel. 
+	*/
+	function Leave()
+	{	
+		$parent = $this->GetParent();
+		if(isset($parent))
+		{
+            if($parent->HasProperty('Controls'))
+            {
+            	$controls = $parent->Controls;
+            	if($controls instanceof ArrayList && $controls->ParentId === $parent->Id && $controls->Remove($this))
+			        return true;
+            }
+            if($parent instanceof Iterator && $parent->HasMethod('Remove') && $parent->Remove($this))
+				return true;
+				
+			$parentClass = get_class($parent);
+			do
+			{
+				$reflect = new ReflectionClass($parentClass);
+	            $properties = $reflect->getProperties(ReflectionProperty::IS_PUBLIC + ReflectionProperty::IS_PROTECTED + ReflectionProperty::IS_PRIVATE);
+		        foreach ($properties as $prop) 
+				{
+					$propName = $prop->getName();
+					if($parent->HasProperty($propName))
+					{
+						$propValue = $parent->$propName;
+						if($propValue instanceof ArrayList && $propValue->ParentId === $parent->Id && $propValue->Remove($this))
+							return true;
+					}
+				}
+				$parentClass = $parentClass->getParentClass();
+			}while($parentClass);
+			$this->ParentId = null;
+			return true;
+		}
+		return false;
+	}
+	/**
 	 * Re-shows an object for one parent that was once shown under another parent but not removed.
 	 * Should not be called under most circumstances. Should only be called in overriding the Adopt() of advanced, custom components.
 	 * Overriding this function allows you to have code execute when the Component is shown on the client after being added to another parent.

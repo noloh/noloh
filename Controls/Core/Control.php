@@ -146,7 +146,7 @@ abstract class Control extends Component
 	function Set_NOblivion($bool)
 	{
 		if($bool)
-			$this->Parent->Controls->Remove($this);
+			$this->Leave();
 	}
 	/**
 	 * Returns the Text of this Control. Depending on the specific Control, this can have several different interpretations.
