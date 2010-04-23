@@ -116,7 +116,7 @@ final class URL
 	function SetChainToken($index, $tokenValue, $removeSubsequentTokens=false)
 	{
 		$chainElements = &self::$TokenChain->Elements;
-		if($GLOBALS['_NURLTokenMode'] && (!isset($chainElements[$tokenName]) || $chainElements[$index]!=$tokenValue))
+		if($GLOBALS['_NURLTokenMode'] && (!isset($chainElements[$index]) || $chainElements[$index]!=$tokenValue))
 		{
 			self::QueueUpdateTokens();
 			self::SetTokenHelper($chainElements, $index, $tokenValue, $removeSubsequentTokens);
