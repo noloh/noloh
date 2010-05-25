@@ -64,7 +64,7 @@ class Configuration extends Object implements Singleton
 					$this->$name = $value;
 			else 
 			{
-				if(!$setStartupLegacy)
+				if(!isset($setStartupLegacy))
 					$setStartupLegacy = array('StartClass', 'UnsupportedURL', 'URLTokenMode', 'TokenTrailsExpiration', 'DebugMode');
 				$this->{$setStartupLegacy[$i]} = $args[$i];
 			}

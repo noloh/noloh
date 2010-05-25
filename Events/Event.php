@@ -157,7 +157,7 @@ class Event extends Object implements ArrayAccess
 		foreach($this->ExecuteFunction as $event)
 			if(is_object($event) && $event->GetEnabled())
 				$event->GetInfo($arr, $onlyClientEvents, $liquid, $liquidClientEvent);
-		if($becameLiquid && $liquidClientEvent)
+		if(isset($becameLiquid) && $becameLiquid && $liquidClientEvent)
 		{
 			$arr[0] .= 'if(liq){' . $liquidClientEvent . '} ';
 			$liquidClientEvent = '';

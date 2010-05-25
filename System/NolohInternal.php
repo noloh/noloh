@@ -104,11 +104,11 @@ final class NolohInternal
 			elseif(is_numeric($val))
 				$nameValPairsString .= '\''.$name.'\','.$val.',';
 			elseif(is_array($val))
-                        {
-                                if(!$obj)
-                                    $obj = Component::Get($objId);
-				$nameValPairsString .= call_user_func_array(array($obj, array_pop($val)), $val) . ',';
-                        }
+            {
+                    if(!isset($obj))
+                    	$obj = Component::Get($objId);
+					$nameValPairsString .= call_user_func_array(array($obj, array_pop($val)), $val) . ',';
+            }
 			elseif(is_bool($val))
 				$nameValPairsString .= '\''.$name.'\','.($val?'true':'false').',';
 			elseif($val === null)
@@ -183,10 +183,13 @@ final class NolohInternal
 
 	public static function ClientEventQueue()
 	{
-		$count = count($GLOBALS['_NClientEventExecs']);
-		for($i=0; $i<$count; ++$i)
-			if($GLOBALS['_NClientEventExecs'][$i]->GetShowStatus())
-				$GLOBALS['_NClientEventExecs'][$i]->AddToScript();
+		if(isset($GLOBALS['_NClientEventExecs']))
+		{
+			$count = count($GLOBALS['_NClientEventExecs']);
+			for($i=0; $i<$count; ++$i)
+				if($GLOBALS['_NClientEventExecs'][$i]->GetShowStatus())
+					$GLOBALS['_NClientEventExecs'][$i]->AddToScript();
+		}
 	}
 
 	public static function LinkTokensQueue()

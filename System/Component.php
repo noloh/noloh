@@ -215,7 +215,7 @@ abstract class Component extends Object
 		$handle = array($this->Id, $eventType);
 		if($this->EventSpace === null)
 			$this->EventSpace = array();
-		elseif($this->EventSpace[$eventType])
+		elseif(!empty($this->EventSpace[$eventType]))
 		{
 			$handles = &$this->EventSpace[$eventType]->Handles;
 			if(($index = array_search($handle, $handles)) !== false);
