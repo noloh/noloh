@@ -155,7 +155,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function Clear()
 	{
 		$change = $this->Change;
-		AddScript('_N.'.$this->Id.'.Elements=[];', Priority::High);
+		if($this->GetShowStatus())
+			AddScript('_N.'.$this->Id.'.Elements=[];', Priority::High);
 		//AddScript('window.'.$this->Id.'.=new Group();', Priority::High);
 		//QueueClientFunction($this, 'window.'.$this->Id.'.Elements=Array', array(), true, Priority::High);
 		foreach($this->Groupees->Elements as $groupee)
