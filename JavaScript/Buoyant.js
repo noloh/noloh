@@ -37,9 +37,13 @@ function _NByntStp(id)
 }
 function _NByntMv(id)
 {
-	var obj = _N(id), parent = _N(obj.BuoyantParentId);
-	obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
-	obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
+	var obj = _N(id);
+	if(obj)
+	{
+		var parent = _N(obj.BuoyantParentId);
+		obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
+		obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
+	}
 }
 function _NByntMvCh(obj)
 {
