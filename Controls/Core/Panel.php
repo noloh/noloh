@@ -31,7 +31,7 @@ class Panel extends Control
 	 */
 	function Panel($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::Control($left, $top, null, null);
 		if($implicitObject == null)
 			$this->Controls = new ArrayList();
 		elseif($implicitObject == $this)
@@ -41,6 +41,10 @@ class Panel extends Control
 		$this->Controls->ParentId = $this->Id;
 		$this->SetScrolling(($width === null || $height === null)?null:false);
 		$this->SetCSSClass();
+		if($width !== null)
+			$this->SetWidth($width);
+		if($height !== null)
+			$this->SetHeight($height);
 	}
 	/**
      * Returns the Scroll Event, which gets launched when a user scrolls through the Panel
