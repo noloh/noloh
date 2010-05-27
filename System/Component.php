@@ -313,8 +313,8 @@ abstract class Component extends Object
 		}
 	}
 	/**
-	* Removes the Component from its parent Collection. For example, if this object is a Button in a Panel, then calling $object->Leave would remove the Button from the Panel. 
-	*/
+	 * Removes the Component from its parent Collection. For example, if this object is a Button in a Panel, then calling $object->Leave would remove the Button from the Panel. 
+	 */
 	function Leave()
 	{	
 		$parent = $this->GetParent();
@@ -344,7 +344,7 @@ abstract class Component extends Object
 							return true;
 					}
 				}
-				$parentClass = $parentClass->getParentClass();
+				$parentClass = $reflect->getParentClass();
 			}while($parentClass);
 			$this->ParentId = null;
 			return true;
