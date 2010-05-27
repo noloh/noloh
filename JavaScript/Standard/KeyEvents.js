@@ -1,6 +1,6 @@
 function _NKeyEvntsPress()
 {
-	_NSave(this.id,'value',this.value);
+	_NSave(this.id,'value');
 	if(this.ReturnKey && event.keyCode == 13)
 		this.ReturnKey();
 	if(this.KeyPress)

@@ -9,8 +9,9 @@ function _NByntSta(id, parentId)
 	do
 	{
 		if(parent.BuoyantChildren == null)
-			parent.BuoyantChildren = [];
-		parent.BuoyantChildren.push(id);
+			parent.BuoyantChildren = [id];
+		else
+			parent.BuoyantChildren.push(id);
 		parent = parent.parentNode;
 	}while (parent && parent.id);
 	if(!_N.BuoyantStartMoveQueue)

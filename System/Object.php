@@ -77,12 +77,14 @@ abstract class Object
 	 */
 	function &__get($nm)
 	{
-		$func = 'Get' . $nm;
-		if(method_exists($this, $func))
-			return $this->$func();
+		if(method_exists($this, $func = 'Get' . $nm))
+		{
+			$ret = $this->$func();
+			return $ret;
+		}
 		elseif(method_exists($this, $nm))
-			return new ServerEvent($this, $nm);
-		else
+			$ret = new ServerEvent($this, $nm);
+		elseif(property_exists($class = get_class($this), $var = '_In' . $nm))
 		{
 			$func = 'get' . $nm;
 			if(method_exists($this, $func))
@@ -92,14 +94,16 @@ abstract class Object
 			else
 				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
 		}
+		else
+			BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
+		return $ret;
 	}
 	/**
 	 * @ignore
 	 */
 	function __set($nm, $val)
 	{
-		$func = 'Set' . $nm;
-		if(method_exists($this, $func))
+		if(method_exists($this, $func = 'Set' . $nm))
 		{
 			$this->$func($val);
 			return $val;
@@ -112,9 +116,9 @@ abstract class Object
 				$this->$func($val);
 				return $val;
 			}
-			else
-				BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only in the class ' . get_class($this) . '.');
 		}
+		else
+			BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only in the class ' . get_class($this) . '.');
 	}
 	/**
 	 * @ignore
@@ -162,7 +166,7 @@ abstract class Object
 				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
 		else 
-			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope of the class ' . get_class($this) . '.');
+			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist in, or is not in scope of, the class ' . get_class($this) . '.');
 	}
 }
 

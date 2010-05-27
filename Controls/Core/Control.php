@@ -1034,7 +1034,7 @@ abstract class Control extends Component
 				array_push($_SESSION['_NFunctionQueue'][$id]['_NShftWth'][0], $shift[2], '[\''.$this->Id.'\',' . $shift[3]);
 			else
 			{
-				AddNolohScriptSrc('Shift.js', true);
+				ClientScript::AddNOLOHSource('Shift.js', true);
 				QueueClientFunction(GetComponentById($id), '_NShftWth', array('\''.$id.'\'', $shift[2], '[\''.$this->Id.'\',' . $shift[3]));
 			}
 			if(isset($shift[4]))
@@ -1050,7 +1050,7 @@ abstract class Control extends Component
 				$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = $shift[2];
 			else
 			{
-				AddNolohScriptSrc('Shift.js', true);
+				ClientScript::AddNOLOHSource('Shift.js', true);
 				QueueClientFunction($this, $fncStr, array($shift[2]));
 			}
 			if(isset($shift[3]))

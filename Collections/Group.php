@@ -362,7 +362,7 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	function Show()
 	{
 		parent::Show();
-		AddNolohScriptSrc('Group.js');
+		ClientScript::AddNOLOHSource('Group.js');
 		AddScript('_N.'.$this->Id.'=new _NGroup();', Priority::High);
 		$listCount = count($this->WaitingList);
 		for($i=0; $i<$listCount; ++$i)
