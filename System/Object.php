@@ -121,7 +121,7 @@ abstract class Object
 			$this->$func($val);
 			return $val;
 		}
-		else 
+		elseif(strpos($nm, 'All') === 0 && $this instanceof Iterator)
 		{
 			$prop = substr($nm, 3);
 			$method = 'Set' . $prop;
@@ -198,6 +198,29 @@ abstract class Object
 				return $this->$prop = $args[0];
 			else 
 				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
+		}
+		elseif(strpos($nm, 'All') === 0 && $this instanceof Iterator)
+		{
+			$method = substr($nm, 3);
+			foreach($this as $obj)
+				if(is_object($obj) && method_exists($obj, $method))
+					call_user_func_array(array(&$obj, $method), $args);
+		}
+		elseif($parent = $this->GetParent())
+		{
+			$class = new ReflectionClass(get_class($parent)); 
+        	$staticProperties = $class->getStaticProperties(); 
+        	foreach ($staticProperties as $name => $value) 
+        	{ 
+        		if (preg_match('/^_In(.+)$/i', $name, $result)) 
+        		{
+        			if($parent->{$result[1]} == $this)
+        			{
+						$innerSugar = new InnerSugar($parent, array(), $result[1], $value);
+						call_user_func_array(array(&$innerSugar, $nm), $args);
+					}
+				}
+			}
 		}
 		else 
 			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist in, or is not in scope of, the class ' . get_class($this) . '.');
