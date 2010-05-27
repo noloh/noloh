@@ -6,7 +6,7 @@
  * semantically elegant to have a single base for all of your classes. Secondly, it comes equipped with the most basic and most universal
  * syntactic sugars of NOLOH, thus allowing for even your most basic classes (e.g., classes used primarily for storing properties) to take
  * advantage of these great features. These sugars include calling Get or Set methods for you for properties that are not accessible, as well as cascading
- * method and Set method calls, illustrated in the following example:
+ * method and Set method calls, illustrated in the following example, as well as many others not listed here.
  * 
  * <pre>
  * class Foo extends Object
@@ -86,13 +86,26 @@ abstract class Object
 			$ret = new ServerEvent($this, $nm);
 		elseif(property_exists($class = get_class($this), $var = '_In' . $nm))
 		{
-			$func = 'get' . $nm;
-			if(method_exists($this, $func))
-				return $this->$func();
-			elseif(method_exists($this, $nm))
-				return new ServerEvent($this, $nm);
-			else
-				BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
+			$class = new ReflectionClass($class);
+			$ret = new InnerSugar($this, array(), $nm, $class->getStaticPropertyValue($var));
+		}
+		elseif(method_exists($this, $func = 'get' . $nm))
+			$ret = $this->$func();
+		elseif($parent = $this->GetParent())
+		{
+			$class = new ReflectionClass(get_class($parent)); 
+        	$staticProperties = $class->getStaticProperties(); 
+        	foreach ($staticProperties as $name => $value) 
+        	{ 
+        		if (preg_match('/^_In(.+)$/i', $name, $result)) 
+        		{
+        			if($parent->{$result[1]} == $this)
+        			{
+						$innerSugar = new InnerSugar($parent, array(), $result[1], $value);
+						$ret = $innerSugar->$nm;
+					}
+				}
+			}
 		}
 		else
 			BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
@@ -110,11 +123,32 @@ abstract class Object
 		}
 		else 
 		{
-			$func = 'set' . $nm;
-			if(method_exists($this, $func))
-			{
-				$this->$func($val);
-				return $val;
+			$prop = substr($nm, 3);
+			$method = 'Set' . $prop;
+			foreach($this as $obj)
+				if(is_object($obj) && (property_exists($obj, $prop) || ($obj instanceof Object && method_exists($obj, $method))))
+					$obj->$prop = $val;
+			return $val;
+		}
+		elseif(method_exists($this, $func = 'set' . $nm))
+		{
+			$this->$func($val);
+			return $val;
+		}
+		elseif($parent = $this->GetParent())
+		{
+			$class = new ReflectionClass(get_class($parent)); 
+        	$staticProperties = $class->getStaticProperties(); 
+        	foreach ($staticProperties as $name => $value) 
+        	{ 
+        		if (preg_match('/^_In(.+)$/i', $name, $result)) 
+        		{
+        			if($parent->{$result[1]} == $this)
+        			{
+						$innerSugar = new InnerSugar($parent, array(), $result[1], $value);
+						return $innerSugar->$nm = $val;
+					}
+				}
 			}
 		}
 		else

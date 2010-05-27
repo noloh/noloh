@@ -33,6 +33,8 @@ function _NAutoLoad($class)
 		$_NAutoLoad = array(
 			
 			// System
+			'InnerSugar' => 		'System/InnerSugar.php',
+			'SugarException' => 	'System/SugarException.php',
 			'Multiple' => 			'System/Multiple.php',
 			
 			// Collections
