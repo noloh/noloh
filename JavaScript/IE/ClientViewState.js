@@ -423,9 +423,9 @@ function _NRem(id)
     if(ele.BuoyantChildren)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRem(ele.BuoyantChildren[i]);
-    if(ele.TimerChildren)
-    	for(var i=0; i<ele.TimerChildren.length; ++i)
-			_N(ele.TimerChildren[i]).Stop();
+    if(ele.NonControls)
+    	for(var i=0; i<ele.NonControls.length; ++i)
+			_N(ele.NonControls[i]).Stop();
 }
 function _NRes(id, parentId)
 {
@@ -435,9 +435,9 @@ function _NRes(id, parentId)
     if(ele.BuoyantChildren)
     	for(var i=0; i<ele.BuoyantChildren.length; ++i)
 			_NRes(ele.BuoyantChildren[i], parentId);
-	if(ele.TimerChildren)
-	    for(var i=0; i<ele.TimerChildren.length; ++i)
-			_N(ele.TimerChildren[i]).Start();
+	if(ele.NonControls)
+	    for(var i=0; i<ele.NonControls.length; ++i)
+			_N(ele.NonControls[i]).Start();
 }
 function _NAsc(id)
 {
@@ -453,9 +453,9 @@ function _NAsc(id)
         		var parent = ele.parentNode;
         		_NByntFrgt(ele.BuoyantChildren[i], parent);
         	}
-		if(ele.TimerChildren)
-			for(var i=0; i<ele.TimerChildren.length; ++i)
-				_N(ele.TimerChildren[i]).Destroy();
+		if(ele.NonControls)
+			for(var i=0; i<ele.NonControls.length; ++i)
+				_N(ele.NonControls[i]).Destroy();
         ele.parentNode.removeChild(ele);
     }
 }
