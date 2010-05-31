@@ -126,7 +126,7 @@ final class System
 		$tag = is_string($newLine)?$newLine:'span';
 		$styled = '';
 		if($newLine === true)
-			$styled .= '<br/>';
+			$styled .= '<br>';
 		$styled .= '<' . $tag . ' class=\''.$class.'\'>'.$text.'</' . $tag . '>';
 		return $styled;
 	}
