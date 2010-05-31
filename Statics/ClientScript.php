@@ -183,5 +183,23 @@ final class ClientScript
 			}
 		}
 	}
+	/**
+	 * Observes a JavaScript property so that it is automatically updated on the server as well, under an optional alias.
+	 * Note: This is slightly less efficient than manually calling the NOLOH built-in JavaScript function _NSetProperty when
+	 * the property is changed in order to inform the server since the latter happens only when necessary, while the property
+	 * observers will result in executing some relatively light code with every server request. Clearly, the former method is
+	 * preferred for its on-demand nature, while usage of ClientScript::Observe is often left to either less experienced
+	 * NOLOH developers or in cases when modifying the JavaScript in any way is for some reason impossible, thus not lending to
+	 * an opportune moment to call _NSetProperty on-demand.
+	 * @param Component|string $objOrId
+	 * @param string $clientPropertyName
+	 * @param string $serverPropertyAlias
+	 */
+	static function Observe($objOrId, $clientPropertyName, $serverPropertyAlias = null)
+	{
+		$obj = is_object($objOrId) ? $objOrId : Component::Get($objOrId);
+		self::AddNOLOHSource('Observe.js');
+		self::Queue($obj, '_NObserve', array($objOrId, $clientPropertyName, $serverPropertyAlias), false, Priority::Low);
+	}
 }
 ?>

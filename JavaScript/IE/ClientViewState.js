@@ -467,6 +467,8 @@ function _NGCAsc(idArr)
 }
 function _NChangeString()
 {
+	if(_N.Observes)
+		_NObserveSave();
 	var change = "", changes = "", id, property;
 	for(id in _N.Changes)
 	{
