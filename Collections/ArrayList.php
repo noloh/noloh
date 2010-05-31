@@ -244,6 +244,16 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		return $idx===false ? -1 : $idx;
 	}
 	/**
+	 * Returns whether the element is contained within the ArrayList.
+	 * For the position of the element, use IndexOf instead.
+	 * @param mixed $element The element to be searched for
+	 * @return boolean Whether the element was found
+	 */
+	function Contains($element)
+	{
+		return $this->IndexOf($element !== -1);
+	}
+	/**
 	 * Clears the ArrayList.
 	 */
 	function Clear()
