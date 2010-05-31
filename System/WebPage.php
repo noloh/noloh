@@ -90,6 +90,10 @@ abstract class WebPage extends Component
 		$unload['User'] = new ClientEvent('');
 		$unload['System'] = new ServerEvent('WebPage', 'ReportProperAuthorities');
 		AddNolohScriptSrc('GeneralFunctions.js');
+		if(UserAgent::IsIE6())
+			AddNolohScriptSrc('IE/XHR6.js');
+		else
+			AddNolohScriptSrc('XHR.js', true);
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(UserAgent::GetBrowser())
 		{

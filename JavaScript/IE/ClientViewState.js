@@ -63,9 +63,7 @@ function _NCheckURL()
 	{
 		clearInterval(_N.URLChecker);
 		var str = "_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp + "&_NSkeletonless=true";
-		_N.Request = new ActiveXObject("Microsoft.XMLHTTP");
 		_N(_N.LoadIndicator).style.visibility = "visible";
-		_N.Request.onreadystatechange = _NReqStateChange;
 		if(_N.HistoryLength+1==history.length)
 			var targetURL = inner;
 		else
@@ -77,14 +75,14 @@ function _NCheckURL()
 			d.close();
 			_N.HistoryLength = history.length;
 		}
-		_N.Request.open("POST", (targetURL.indexOf("#/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#/",targetURL.indexOf("?")==-1?"?":"&")+"&")
-           	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight, true);
 		location = targetURL;
 		_N.Hash = location.hash;
 		_N.URL = location.href;
-		_N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		_N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
-		_N.Request.send(str);
+		_N.Request = _NXHR("POST", 
+			(targetURL.indexOf("#/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#/",targetURL.indexOf("?")==-1?"?":"&")+"&")
+           	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
+           	_NReqStateChange, true);
+        _N.Request.send(str);
 		_N("N1").innerHTML = "";
 		_N.Saved = {};
 		_N.Changes = {};
@@ -501,8 +499,9 @@ function _NEventVarsString()
 	_N.EventVars = {};
 	return str.substring(0, str.length-4);
 }
-function _NProcessResponse(response)
+function _NProcessResponse(text)
 {
+	var pos = text.indexOf("/*_N*/"), response = [text.substring(0, pos), text.substring(pos)];
 	if(response[0] != "")
 	{
 		var s = document.createElement("SCRIPT");
@@ -529,19 +528,17 @@ function _NReqStateChange()
 {
 	if(_N.Request.readyState == 4)
 	{
-   		var text = _N.Request.responseText, pos = text.indexOf("/*_N*/"), 
-   			response = [text.substring(0, pos), text.substring(pos)], 
-   			loadIndicator = _N.LoadIndicator;
+   		var text = _N.Request.responseText, loadIndicator = _N.LoadIndicator;
    		if(_N.DebugMode == null)
 		{
-			_NProcessResponse(response);
+			_NProcessResponse(text);
 			_NUnServer();
 		}
 		else
 		{
 	   		try
 	   		{
-				_NProcessResponse(response);
+				_NProcessResponse(text);
 	   		}
 	   		catch(err)
 	   		{
@@ -595,13 +592,11 @@ function _NServer()
 			str += "&_NTokenLink="+_N.URLTokenLink;
 			_N.URLTokenLink = null;
 		}
-	    _N.Request = new ActiveXObject("Microsoft.XMLHTTP");
 		_N(_N.LoadIndicator).style.visibility = "visible";
-        if(notUnload)
-	        _N.Request.onreadystatechange = _NReqStateChange;
-	    _N.Request.open("POST", url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"), true);
-	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
+	    _N.Request = _NXHR("POST",
+	    	url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"),
+	    	notUnload ? _NReqStateChange : null,
+	    	notUnload);
 	    _N.Request.send(str);
 	}
 }

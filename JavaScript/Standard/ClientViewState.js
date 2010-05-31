@@ -448,8 +448,9 @@ function _NEventVarsString()
 	_N.EventVars = {};
 	return str.substring(0, str.length-4);
 }
-function _NProcessResponse(response)
+function _NProcessResponse(text)
 {
+	var pos = text.indexOf("/*_N*/"), response = [text.substring(0, pos), text.substring(pos)];
 	if(response[0] != "")
 	{
 		var s = document.createElement("SCRIPT");
@@ -459,7 +460,7 @@ function _NProcessResponse(response)
 		eval(response[0]);
 	}
 	if(_N.DebugMode == "Full")
-		_NDebugFull(code);
+		_NDebugFull(response[1]);
 	else
 		eval(response[1]);
 }
@@ -477,18 +478,16 @@ function _NReqStateChange()
 {
 	if(_N.Request.readyState == 4)
 	{
-   		var text = _N.Request.responseText, pos = text.indexOf("/*_N*/"), 
-   			response = [text.substring(0, pos), text.substring(pos)], 
-   			loadIndicator = _N.LoadIndicator;
+   		var text = _N.Request.responseText, loadIndicator = _N.LoadIndicator;
 		if(_N.DebugMode == null)
 		{
-			_NProcessResponse(response);
+			_NProcessResponse(text);
 			_NUnServer(loadIndicator);
 		}
 		else
 	   		try
 	   		{
-				_NProcessResponse(response);
+				_NProcessResponse(text);
 	   		}
 	   		catch(err)
 	   		{
@@ -540,13 +539,11 @@ function _NServer()
 			str += "&_NTokenLink="+_N.URLTokenLink;
 			_N.URLTokenLink = null;
 		}
-	    _N.Request = new XMLHttpRequest();
 		_N(_N.LoadIndicator).style.visibility = "visible";
-        if(notUnload)
-    	    _N.Request.onreadystatechange = _NReqStateChange;
-	    _N.Request.open("POST", url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"), notUnload);
-	    _N.Request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	    _N.Request.setRequestHeader("Remote-Scripting", "NOLOH");
+	    _N.Request = _NXHR("POST", 
+	    	url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"),
+	    	notUnload ? _NReqStateChange : null,
+	    	notUnload);
 	    _N.Request.send(str);
 	}
 }
