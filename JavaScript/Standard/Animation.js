@@ -75,7 +75,7 @@ _NAni.prototype.Step = function()
 		this.FinishingTouches();
 		this.CleanUp();
 	}
-}
+};
 _NAni.prototype.Move = function(delta)
 {
 	if(this.ObjId == "N1")
@@ -94,7 +94,7 @@ _NAni.prototype.Move = function(delta)
 	}
 	if(this.Obj.AnimationStep)
 		this.Obj.AnimationStep.call(this.Obj);
-}
+};
 _NAni.prototype.FinishingTouches = function()
 {
 	/*if(this.ObjId == "N1")
@@ -120,7 +120,7 @@ _NAni.prototype.FinishingTouches = function()
 				return;
 		this.Obj.AnimationStop();
 	}
-}
+};
 _NAni.prototype.CleanUp = function()
 {
 	if(--_NAni.ActiveCount == 0)
@@ -131,7 +131,7 @@ _NAni.prototype.CleanUp = function()
 	}
 	else
 		_NAni.Active[this.Index] = null;
-}
+};
 function _NAniStepAll()
 {
 	var count= _NAni.Active.length;
