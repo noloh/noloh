@@ -246,7 +246,10 @@ class Image extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), '> ';
+		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true);
+		if($this->ToolTip===null && $this->Text===null)
+			echo ' alt="',$this->ToolTip,' ',$this->Text,'"';
+		echo '>';
 	}
 	/**
 	 * @ignore

@@ -334,7 +334,7 @@ class Label extends Control
 	}
 	/**
 	 * @ignore
-	 */
+	 *
 	function SearchEngineShow()
 	{
 		if($this->Text)
@@ -347,7 +347,7 @@ class Label extends Control
 	{
 		$str = parent::NoScriptShow($indent);
 		if($str !== false)
-			echo $indent, '<DIV ', $str, '>', $this->Text, "</DIV>\n";
+			echo $indent, '<DIV ', $str, '>', $this->Text, "</DIV>\r\n";
 	}
 }
 ?>

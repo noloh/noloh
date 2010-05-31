@@ -392,7 +392,7 @@ abstract class WebPage extends Component
 
 <!-- Powered by NOLOH  -->
 <!--   www.noloh.com   -->
-<!--      '.GetNOLOHVersion().'      -->
+<!--      ',GetNOLOHVersion(),'      -->
 
 <HTML lang="en">
   <HEAD id="NHead">
@@ -447,17 +447,19 @@ UserAgent::IsIE6() ? '
 	 */
 	function SearchEngineShow($tokenLinks)
 	{
-		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><TITLE>', $this->Title, '</TITLE>',
-			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '">',
-			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,
-			'"></HEAD><BODY>';
+		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><TITLE>', $this->Title, "</TITLE>\r\n",
+			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '">',"\r\n",
+			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,'">',"\r\n";
+		foreach($this->CSSFiles as $path)
+			echo '<LINK rel="stylesheet" type="text/css" href="', $path, '">';
+		echo '</HEAD><BODY>',"\r\n";
 		foreach($_SESSION['_NControlQueueRoot'] as $id => $show)
 		{
 			$obj = GetComponentById($id);
 			if($show && $obj)
 				$obj->SearchEngineShow();
 		}
-		echo ' <BR>', $tokenLinks, ' <A href="http://www.noloh.com">Powered by NOLOH</A></BODY></HTML>';
+		echo " <BR>\r\n", $tokenLinks, "\r\n</BODY></HTML>";
 	}
 	/**
 	 * @ignore
@@ -470,18 +472,19 @@ UserAgent::IsIE6() ? '
 		echo 
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
-<!-- Powered by NOLOH -->
-<!--  www.noloh.com  -->
+<!-- Powered by NOLOH  -->
+<!--   www.noloh.com   -->
+<!--      ',GetNOLOHVersion(),'      -->
 
 <HTML lang="en">
   <HEAD>
     <TITLE>', $this->Title, '</TITLE>';
 	foreach($this->CSSFiles as $path)
 		echo '
-    <LINK rel="stylesheet" type="text/css" href="', $path, '"></LINK>';
+    <LINK rel="stylesheet" type="text/css" href="', $path, '">';
 	if($GLOBALS['_NFavIcon'])
 		echo '
-	<LINK rel="shortcut icon" href="' . $GLOBALS['_NFavIcon'] . '"></LINK>';
+	<LINK rel="shortcut icon" href="' . $GLOBALS['_NFavIcon'] . '">';
 	echo '
   </HEAD>
   <BODY';

@@ -137,7 +137,7 @@ class IFrame extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<A href="', $this->Src, '">', $this->Src, '</A> ';
+		echo '<A href="', $this->Src, '"', parent::SearchEngineShow(true), '>', $this->Text ? $this->Text : $this->Src, '</A>';
 	}
 	/**
 	 * @ignore

@@ -214,10 +214,11 @@ class RichMarkupRegion extends MarkupRegion
 	 */
 	public function SearchEngineShow()
 	{
-		echo str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $this->TempString), ' ';
+		echo '<DIV',parent::SearchEngineShow(true),'>', str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $this->TempString);
 		foreach($this->ComponentSpace as $component)
 			if($component instanceof Component)
 				$component->SearchEngineShow();
+		echo '</DIV>';
 	}
 	/**
 	 * @ignore

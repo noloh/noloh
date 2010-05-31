@@ -225,7 +225,7 @@ class MarkupRegion extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo is_file($this->Text)?file_get_contents($this->Text):$this->Text, ' ';
+		echo '<DIV', parent::SearchEngineShow(true),'>',is_file($this->Text)?file_get_contents($this->Text):$this->Text, '</DIV>';
 	}
 	/**
 	 * @ignore
