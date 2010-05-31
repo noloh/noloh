@@ -473,6 +473,8 @@ function _NUnServer(loadIndicator)
 	_N.LoadIndicator = loadIndicator;
 	_N(loadIndicator).style.visibility = "hidden";
 	_N.Request = null;
+	if(_N.Listeners)
+		_NListenersCont();
 }
 function _NReqStateChange()
 {
@@ -501,6 +503,8 @@ function _NReqStateChange()
 }
 function _NSE(eventType, id, uploads)
 {
+	if(_N.Listeners)
+		_NListenersHold();
 	if(!_N.EventVars.MouseX && event)
 	{
 		_N.EventVars.MouseX = event.pageX;

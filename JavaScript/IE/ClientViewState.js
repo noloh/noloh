@@ -523,6 +523,8 @@ function _NUnServer()
 	_N(_N.LoadIndicator).style.visibility = "hidden";
 	_N.Request = null;
 	_N.URLChecker = setInterval(_NCheckURL, 500);
+	if(_N.Listeners)
+		_NListenersCont();
 }
 function _NReqStateChange()
 {
@@ -553,6 +555,8 @@ function _NReqStateChange()
 }
 function _NSE(eventType, id, uploads)
 {
+	if(_N.Listeners)
+		_NListenersHold();
 	if(!_N.EventVars.MouseX && window.event)
 	{
 		_N.EventVars.MouseX = window.event.clientX + document.documentElement.scrollLeft;

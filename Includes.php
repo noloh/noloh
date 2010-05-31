@@ -67,6 +67,7 @@ function _NAutoLoad($class)
 			'Label' => 				'Controls/Core/Label.php',
 			'Link' => 				'Controls/Core/Link.php',
 			'ListBox' => 			'Controls/Core/ListBox.php',
+			'Listener' => 			'Controls/Core/Listener.php',
 			'MarkupRegion' => 		'Controls/Core/MarkupRegion.php',
 			'Multimedia' => 		'Controls/Core/Multimedia.php',
 			'RadioButton' => 		'Controls/Core/RadioButton.php',

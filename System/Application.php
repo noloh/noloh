@@ -126,6 +126,8 @@ final class Application extends Object
 				GetComponentById($key)->File = null;
 				unset($_SESSION['_NFiles'][$key]);
 			}
+			if(isset($_POST['_NListener']))
+				Listener::Process($_POST['_NListener']);
 			$this->Run();
 		}
 		else
@@ -232,7 +234,7 @@ final class Application extends Object
 	{
 		if(!isset($_SESSION['_NVisit']) || 
 			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
-			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit'])))
+			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit']) && !isset($_POST['_NListener'])))
 		{
 			if(!isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
