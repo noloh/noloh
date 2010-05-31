@@ -230,14 +230,17 @@ class Link extends Label
 	function SetControl($control)
 	{
 		if($this->Control == null)
-			$this->CSSClass .= ' NLnkCtrl';
+			parent::SetCSSClass('NLnkCtrl ' . parent::GetCSSClass());
 		else 
 			$this->Control->SetParentId(null);
+		$control->SetOpacity(parent::GetOpacity());
 		$control->SetParentId($this->Id);
 		$this->Control = $control;
 		unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
 		NolohInternal::SetProperty('style.width', '', $this);
 		NolohInternal::SetProperty('style.height', '', $this);
+		NolohInternal::SetProperty(UserAgent::IsIE() ? 'style.filter' : 'style.opacity', '', $this);
+		//Control::SetOpacity(null);
 		$this->UpdateEvent('Click');
 	}
 	/**
@@ -251,10 +254,21 @@ class Link extends Label
 			$this->Control->SetParentId(null);
 			Control::SetWidth($this->Width);
 			Control::SetHeight($this->Height);
+			Control::SetOpacity($this->Opacity);
 			$this->Control = null;
 		}
-		$this->CSSClass = str_replace('NLnkCtrl', '', $this->CSSClass);
+		parent::SetCSSClass(str_replace('NLnkCtrl', '', parent::GetCSSClass()));
 		$this->UpdateEvent('Click');
+	}
+	/**
+	 * @ignore
+	 */
+	function SetCSSClass($class = '')
+	{
+		if($this->Control)
+			parent::SetCSSClass('NLnkCtrl ' . str_replace('NLnkCtrl', '', $class));
+		else
+			parent::SetCSSClass($class);
 	}
 	/**
 	 * @ignore
@@ -269,6 +283,20 @@ class Link extends Label
 	function GetHeight()
 	{
 		return $this->Control === null ? parent::GetHeight() : $this->Control->GetHeight();
+	}
+	/**
+	 * @ignore
+	 */
+	function GetOpacity()
+	{
+		return $this->Control === null ? parent::GetOpacity() : $this->Control->GetOpacity();
+	}
+	/**
+	 * @ignore
+	 */
+	function SetOpacity($opacity)
+	{
+		return $this->Control === null ? parent::SetOpacity($opacity) : $this->Control->SetOpacity($opacity);
 	}
 	/**
 	 * @ignore
@@ -296,7 +324,7 @@ class Link extends Label
 	 */
 	function SearchEngineShow()
 	{
-		if($this->Destination)
+		if($this->Destination !== '#')
 			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.$this->TokenString()) : $this->Destination, '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
 		else 
 		{

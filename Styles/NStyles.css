@@ -80,7 +80,7 @@
 {
 	display:inline;
 }
-.NLnkCtrl
+.NLnkCtrl, .NLnkCtrl:link, .NLnkCtrl:visited, .NLnkCtrl:hover, .NLnkCtrl:active
 {
 	text-decoration:none;
 	overflow:visible;
