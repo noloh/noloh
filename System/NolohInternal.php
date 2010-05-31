@@ -6,6 +6,16 @@ final class NolohInternal
 {
 	private function NolohInternal(){}
 
+	public static function Queues()
+	{
+		NolohInternal::ResetSecureValuesQueue();
+		NolohInternal::LinkTokensQueue();
+		NolohInternal::ControlQueue();
+		NolohInternal::SetPropertyQueue();
+		NolohInternal::FunctionQueue();
+		NolohInternal::ClientEventQueue();
+	}
+	
 	public static function ControlQueue()
 	{
         while (list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))

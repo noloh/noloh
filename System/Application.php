@@ -46,6 +46,8 @@ final class Application extends Object
 			    new Application($config);
 			return $config;
 		}
+		else
+			return Configuration::That();
 		return false;
 	}
 	/**
@@ -502,12 +504,7 @@ final class Application extends Object
 		header('Content-Type: text/javascript; charset=UTF-8');
 		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
 			URL::UpdateTokens();
-		NolohInternal::ResetSecureValuesQueue();
-		NolohInternal::LinkTokensQueue();
-		NolohInternal::ControlQueue();
-		NolohInternal::SetPropertyQueue();
-		NolohInternal::FunctionQueue();
-		NolohInternal::ClientEventQueue();
+		NolohInternal::Queues();
 		ob_end_clean();
 		$gzip = defined('FORCE_GZIP');
 		if($gzip)
