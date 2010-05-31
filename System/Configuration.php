@@ -68,7 +68,7 @@ class Configuration extends Object implements Singleton
 					$setStartupLegacy = array('StartClass', 'UnsupportedURL', 'URLTokenMode', 'TokenTrailsExpiration', 'DebugMode');
 				$this->{$setStartupLegacy[$i]} = $args[$i];
 			}
-		}                         
+		}
 	}
     private function DetectStartClass()
     {

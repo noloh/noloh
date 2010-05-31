@@ -128,7 +128,7 @@ class Timer extends Component
 	}
 	/**
 	 * @ignore
-	*/
+	 */
 	function Reshow()
 	{
 		if($this->GetShowStatus() === 1 && ($parentId = $this->GetParentId()))
