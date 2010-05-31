@@ -22,12 +22,10 @@ final class Application extends Object
 	 */
 	public static function Start($dotDotDot=null)
 	{
-		if($GLOBALS['_NApp'])
-			return Configuration::That();
-		else
+		if(empty($GLOBALS['_NApp']))
 		{
-                        if(getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
-                                exit('Error with working directory. This could be caused by two reasons: you do a chdir in main after including the kernel, or your server is not compatible with not allowing a Application::Start call.');
+            if(getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
+                    exit('Error with working directory. This could be caused by two reasons: you do a chdir in main after including the kernel, or your server is not compatible with not allowing a Application::Start call.');
 			session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
 			if(isset($_SESSION['_NConfiguration']))
@@ -247,7 +245,7 @@ final class Application extends Object
 			}
 			return true;//!isset($_COOKIE['_NApp']);
 		}
-		if($_SESSION['_NVisit']===0 && $_GET['_NVisit']==0 && count($_POST)===0)	//FireBug bug
+		if($_SESSION['_NVisit']===0 && (isset($_GET['_NVisit']) && $_GET['_NVisit']==0) && count($_POST)===0)	//FireBug bug
 			return true;
 		return false;
 	}
@@ -389,7 +387,10 @@ final class Application extends Object
 			$eventInfo = explode('@', $events[$i]);
 			if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
 			{
-				setcookie(session_name(), session_id(), time()-42000, '/');
+				$params = session_get_cookie_params();
+			    setcookie(session_name(), '', time() - 42000,
+			        $params["path"], $params["domain"],
+			        $params["secure"], $params["httponly"]);
 				session_destroy();
 				exit();
 			}
