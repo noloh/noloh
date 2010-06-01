@@ -76,9 +76,11 @@ class TreeNode extends Panel
 	 */
 	function TreeNode($element, $left=10)
 	{
-		parent::Panel($left, 0, 0, null);
+		parent::Panel(0, 0, null, null);
 		$this->SetScrolling(System::Full);
-		$this->SetLayout(1);
+		$this->SetLayout(Layout::Relative);
+		if($left != null)
+			$this->CSSMarginLeft = $left . 'px';
 		if(GetBrowser() == 'ie')
 			NolohInternal::SetProperty('style.marginTop','6px',$this);
 		//$this->PlusMinus = new PlusMinusSwitch(0, 3);
@@ -218,23 +220,27 @@ class TreeNode extends Panel
 			{
 				$this->Element = &GetComponentById($element->Id);
 				$this->Element->SetLeft(40);
-				$this->Element->SetTop(-1);
+//				$this->Element->SetTop(-1);
+				$this->Element->SetTop(0);
 			}
 			elseif($element instanceof Item)
 			{
 				$this->Value = $element->Value;
-				$this->Element = new Label($element->Text, 40, -1, System::Auto, System::Auto);
+//				$this->Element = new Label($element->Text, 40, -1, System::Auto, System::Auto);
+				$this->Element = new Label($element->Text, 40, 0, System::Auto, System::Auto);
 			}
 		}
 		else
-			$this->Element = new Label($element, 40, -1, System::Auto, System::Auto);
+//			$this->Element = new Label($element, 40, -1, System::Auto, System::Auto);
+			$this->Element = new Label($element, 40, 0,  System::Auto, System::Auto);
 		if(GetBrowser() != 'ie')
 		{
 			$this->Element->CSSMargin = '5px';
 			$this->Element->CSSMarginLeft = '0px';
 		}
-		$this->Element->SetLayout(1);
+		$this->Element->SetLayout(Layout::Relative);
 		$this->Element->SetCursor(Cursor::Hand);
+		ClientScript::Set($this, 'El', $this->Element, '_N');
 	}
 	/**
 	 * Returns the TreeNode, if any, having this TreeNode as a sub-node.
@@ -312,7 +318,8 @@ class TreeNode extends Panel
 	{
 		$this->TreeListId = $newId;
 		NolohInternal::SetProperty('ListId', $newId, $this);
-		$this->Element->Click['_N'] = new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
+//		$this->Element->Click['_N'] = new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
+		$this->Element->Click['_N'] = new ClientEvent('_NTreeClick', $this->Id);
 	}
 	/**
 	 * @ignore
@@ -332,7 +339,8 @@ class TreeNode extends Panel
 		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
 		$this->Element->Click['_N'] = $this->TreeListId==null 
 			? new ClientEvent('')
-			: new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
+//			: new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
+			: new ClientEvent('_NTreeClick', $this->Id);
 		$this->Element->Click[] = $newClick;
 	}
 	/**
@@ -457,7 +465,8 @@ class TreeNode extends Panel
 				else
 					array_splice($selectedTreeNodes, $pos, 1);
 				//GetComponentById($this->TreeListId)->SetSelectedTreeNode($this);
-				QueueClientFunction($this, '_NTreeSlctTgl', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''), false);
+//				QueueClientFunction($this, '_NTreeSlctTgl', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\''), false);
+				ClientScript::Queue($this, '_NTreeSlctTgl', array($this->Id), false);
 			//GetComponentById($this->TreeListId)->;
 			//if($bool)
 			//	QueueClientFunction($this, '_NTreeSlct', array('\''.$this->Id.'\'', '\''.$this->Element->Id.'\'', 'Object()'));
@@ -473,7 +482,8 @@ class TreeNode extends Panel
 	function AddShift($shift)
 	{
 		//if(!isset($this->MouseDown['_N']))
-			$this->MouseDown['_N'] = new ClientEvent('_NTreeSlctOne', $this->Id, $this->Element->Id);
+//			$this->MouseDown['_N'] = new ClientEvent('_NTreeSlctOne', $this->Id, $this->Element->Id);
+			$this->MouseDown['_N'] = new ClientEvent('_NTreeSlctOne', $this->Id);
 		parent::AddShift($shift);
 	}
 }

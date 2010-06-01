@@ -4,7 +4,7 @@ function _NTreeInit(id)
 	tree.SelectedElements = [];
 	tree.SelectedNodes = "";
 }
-function _NTreeClick(nodeId, elementId)
+function _NTreeClick(nodeId)
 {
 	var tree = _N(_N(nodeId).ListId);
 
@@ -14,32 +14,37 @@ function _NTreeClick(nodeId, elementId)
 		window.getSelection().removeAllRanges();
 	
 	if(event && event.ctrlKey)
-		_NTreeSlctTgl(nodeId, elementId);
+		_NTreeSlctTgl(nodeId);
 	else
-		_NTreeSlctOne(nodeId, elementId);
+		_NTreeSlctOne(nodeId);
 }
-function _NTreeSlct(nodeId, elementId)
+function _NTreeSlct(nodeId)
 {
-	var tree = _N(_N(nodeId).ListId);
+	var node = _N(nodeId);
+	var tree = _N(node.ListId);
 	_NSave(tree.id, "_NSelectedNodes", tree.SelectedNodes);
-	_NSetProperty(elementId, "style.background", "#316AC5");
-	_NSetProperty(elementId, "style.color", "#FFFFFF");
+	_NSetProperty(node._N.El, "style.background", "#316AC5");
+	_NSetProperty(node._N.El, "style.color", "#FFFFFF");
 }
-function _NTreeSlctOne(nodeId, elementId)
+function _NTreeSlctOne(nodeId)
 {
-	var tree = _N(_N(nodeId).ListId), i;
+	var node = _N(nodeId);
+	var tree = _N(node.ListId), i;
 	for(i = 0; i < tree.SelectedElements.length; ++i)
 	{
 		_NSetProperty(tree.SelectedElements[i], "style.background", "transparent");
 		_NSetProperty(tree.SelectedElements[i], "style.color", "#000000");
 	}
-	tree.SelectedElements = [elementId];
+	tree.SelectedElements = [node._N.El];
 	tree.SelectedNodes = nodeId;
-	_NTreeSlct(nodeId, elementId);
+	_NTreeSlct(nodeId);
+//	_NTreeSlct(nodeId, elementId);
 }
-function _NTreeSlctTgl(nodeId, elementId)
+function _NTreeSlctTgl(nodeId)
 {
-	var tree = _N(_N(nodeId).ListId), elementsLength = tree.SelectedElements.length, i;
+	var elementId, node = _N(nodeId);
+	elementId = node._N.El;
+	var tree = _N(node.ListId), elementsLength = tree.SelectedElements.length, i;
 	for(i=0; i<elementsLength; ++i)
 		if(tree.SelectedElements[i] == elementId)
 		{
@@ -56,7 +61,7 @@ function _NTreeSlctTgl(nodeId, elementId)
 	if(tree.SelectedNodes != "")
 		tree.SelectedNodes += "~d2~";
 	tree.SelectedNodes += nodeId;
-	_NTreeSlct(nodeId, elementId);
+	_NTreeSlct(nodeId);
 }
 function _NTreeTgl(panelId, iconId, nodeId)
 {

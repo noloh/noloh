@@ -104,7 +104,8 @@ class TreeList extends Panel
 	function SetSelectedTreeNode($treeNode)
 	{
 		$this->SelectedTreeNodes = array($treeNode->Id);
-		QueueClientFunction($treeNode, '_NTreeSlctOne', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\''));
+//		QueueClientFunction($treeNode, '_NTreeSlctOne', array('\''.$treeNode->Id.'\'', '\''.$treeNode->Element->Id.'\''));
+		ClientScript::Queue($treeNode, '_NTreeSlctOne', array($treeNode));
 		$treeNode->ExpandToShow();
 	}
 	/**
@@ -245,7 +246,10 @@ class TreeList extends Panel
 	 */
 	function Show()
 	{
-		AddNolohScriptSrc('TreeList.js');
+		ClientScript::AddNOLOHSource('TreeList.js');
+//		ClientScript::Queue($this, '_NTreeInit', array($this->Id));
+//		AddNolohScriptSrc('TreeList.js');
+//		ClientScript::Add('_NTreeInit(\''.$this->Id.'\')');
 		AddScript('_NTreeInit(\''.$this->Id.'\')');
 		parent::Show();
 	}
