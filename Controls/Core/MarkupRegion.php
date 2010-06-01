@@ -16,6 +16,7 @@ class MarkupRegion extends Control
 	private $Scrolling;
 	private $ScrollLeft;
 	private $ScrollTop;
+	private $InnerCSSClass;
 	//private $FontSize;
 	/**
 	 * Constructor.
@@ -42,6 +43,13 @@ class MarkupRegion extends Control
 	{
 		return 12;
 	}
+	function SetInnerCSSClass($className)
+	{
+		$this->InnerCSSClass = $className;
+		if($text = $this->GetText())
+			$this->SetText($text);
+	}
+	function GetInnerCSSClass()	{return $this->InnerCSSClass;}
 //	function SetFontSize($newSize)
 //	{
 //		$this->FontSize = $newSize;
@@ -196,7 +204,10 @@ class MarkupRegion extends Control
         parent::SetText($markupStringOrFile);
 		$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", '"', '\'', '\\'), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>', '\\\\'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
 		$this->AutoWidthHeight($tmpFullString);
-		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
+		if(isset($this->InnerCSSClass))
+			 $markupStringOrFile = '<div class = \''. $this->InnerCSSClass . '\'>' . $markupStringOrFile . '</div>';
+		ClientScript::Queue($this, '_NMkupSet', array($this->Id, $markupStringOrFile));
+//		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 	}
 	/**
 	 * Styles a string of text by giving it a CSS class
