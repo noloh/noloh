@@ -39,7 +39,7 @@ class AccordionPart extends CollapsePanel implements Groupable
 	function Show()
 	{
 		parent::Show();
-		AddNolohScriptSrc('Accordion.js');
+		ClientScript::AddNOLOHSource('Accordion.js');
 		
 	}
 }

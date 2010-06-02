@@ -83,15 +83,16 @@ class RichMarkupRegion extends MarkupRegion
 		++$this->ItemCount;
 		$id = $this->Id . 'i' . $this->ItemCount;
 	
+		$innerContent = isset($matches[7])?$matches[7]:'';
 		if(strcasecmp($matches[1], 'larva') === 0)
 		{
 			$this->Larvae[$id] = array($matches[4], $matches[5]);
-			return '<div class=<NQt2>NLarva<NQt2> id=<NQt2>' . $id . '<NQt2>' . $matches[2].$matches[6].'>'.$matches[7].'</div>';
+			return '<div class=<NQt2>NLarva<NQt2> id=<NQt2>' . $id . '<NQt2>' . $matches[2].$matches[6].'>'.$innerContent.'</div>';
 		}
 		else 
 		{
 			$this->Eventees[$id] = array($matches[1], $matches[4], $matches[5]);
-			return '<'.$matches[1].$matches[2]. 'id=<NQt2>'.$id.'<NQt2>'.$matches[6].'>'.$matches[7].'</'.$matches[1].'>';
+			return '<'.$matches[1].$matches[2]. 'id=<NQt2>'.$id.'<NQt2>'.$matches[6].'>'.$innerContent.'</'.$matches[1].'>';
 		}
 	}
 	/**
