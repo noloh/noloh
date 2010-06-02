@@ -1183,6 +1183,7 @@ abstract class Control extends Component
 	 */
 	function SearchEngineShow($returnClass=false)
 	{
+		$this->Show();
 		if($returnClass)
 			return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className'])) 
 				? ' class="'.$_SESSION['_NPropertyQueue'][$this->Id]['className'].'"' 
