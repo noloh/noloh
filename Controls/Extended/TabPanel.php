@@ -123,7 +123,13 @@ class TabPanel extends Panel
 	 * Returns the currently selected TabPage
 	 * @return TabPage
 	 */
-	public function GetSelectedTabPage()	{return $this->Tabs->GetSelectedIndex();}
+	public function GetSelectedTabPage()	
+	{
+		$index = $this->GetSelectedIndex();
+		if($index != -1)
+			return $this->TabPages[$index];
+		return null;
+	}
 	/**
 	 * Returns the currently selected TabPage
 	 * @deprecated Use SelectedTabPage instead
