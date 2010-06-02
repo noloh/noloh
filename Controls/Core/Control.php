@@ -1185,7 +1185,7 @@ abstract class Control extends Component
 	{
 		if($returnClass)
 			return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className'])) 
-				? ' className="'.$_SESSION['_NPropertyQueue'][$this->Id]['className'].'"' 
+				? ' class="'.$_SESSION['_NPropertyQueue'][$this->Id]['className'].'"' 
 				: '';
 		elseif($this->Text)
 			echo '<P',self::SearchEngineShow(true),'>',$this->Text,'</P>';
