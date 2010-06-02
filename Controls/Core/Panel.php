@@ -185,18 +185,52 @@ class Panel extends Control
 	/**
 	 * @ignore
 	 */
-	function SetStretches($option)
+	private function SetStretches()
 	{
-		AddNolohScriptSrc('StretchPanel.js');
-		$this->Controls = $this->Controls->ToImplicit($this, 'ImplicitAdd');
+		if(!$this->Controls instanceof ImplicitArrayList)
+		{
+			ClientScript::AddNOLOHSource('StretchPanel.js');
+			ClientScript::AddNOLOHSource('Dimensions.js', true);
+			ClientScript::AddNOLOHSource('Animation.js', true);
+			$this->Controls = $this->Controls->ToImplicit($this, 'ImplicitAdd');
+		}
+	}
+	function SetWidth($width)
+	{
+		if($width === System::Auto)
+		{
+			$this->SetStretches();
+			ClientScript::Set($this, 'AutX', true, '_N');
+			if($this->Controls->GetCount() > 0)
+				ClientScript::Queue($this, '_NStrResize', $this);
+			$width = 0;
+		}
+		elseif(parent::GetWidth() === System::Auto)
+			ClientScript::Set($this, 'AutX', null, '_N');
+		parent::SetWidth($width);	
+	}
+	function SetHeight($height)
+	{
+		if($height === System::Auto)
+		{
+			$this->SetStretches();
+			ClientScript::Set($this, 'AutY', true, '_N');
+		}
+		elseif(parent::GetHeight() === System::Auto)
+			ClientScript::Set($this, 'AutY', null, '_N');
+		parent::SetHeight($height);	
 	}
 	/**
 	 * @ignore
 	 */
 	function ImplicitAdd($object)
 	{
-		$this->Controls->Add($object, true);
-		QueueClientFunction($this, '_NStrPnlAdd', array('\'' . $this->Id . '\'', '\'' . $object->Id . '\''), false);
+		if($object instanceof Control)
+		{
+			ClientScript::Queue($this, '_NStrPnlAdd', array($this, $object), false);
+			$object->Leave['resize'] = new ClientEvent('_NStrResize', $this);
+		}
+		return $this->Controls->Add($object, true);
 	}
 	/**
 	 * @ignore
