@@ -19,6 +19,9 @@ class RolloverLabel extends Label implements Groupable
 	private $DownColor;
 	private $SelectedColor;
 	private $TogglesOff;
+	private $Closeable;
+	private $CloseObject;
+	
 	/**
 	 * Constructor 
 	 * @param string $text The text displayed in the Label
@@ -210,6 +213,62 @@ class RolloverLabel extends Label implements Groupable
 				$this->Color = (!$bool)?$this->OutColor:(($this->SelectedColor != null)?$this->SelectedColor:$this->OverColor);
 		}
 	}
+	/**
+	* Sets whether this RolloverLabel is closeable. A value of true will display an x the user can click to remove the RolloverLabel.
+	* 
+	* @param mixed $closeable Whether this RolloverTab is closeable
+	* @param mixed $object Optional object for the close.
+	*/
+	function SetCloseable($closeable, $object=null)
+	{
+		if($closeable)
+		{
+			$this->Closeable = true;
+			if(!$object && isset($this->CloseObject))
+				$this->CloseObject->ParentId = $this->Id;
+			else
+				$this->SetCloseObject($object);
+		}
+		else
+		{
+			$this->Closeable = null;
+			if(isset($this->CloseObject))
+				$this->CloseObject->ParentId = null;
+		}
+	}
+	/**
+	* Sets the object that is used to close the RolloverLabel when Closeable is true.
+	* 
+	* @param mixed $object
+	*/
+	function SetCloseObject($object)
+	{
+		if(!$object)
+			if(isset($this->CloseObject))
+				return;
+			else
+				$object = new Image(System::ImagePath() . 'smallX.png', 2, 2);
+		
+		if(isset($this->CloseObject))
+			$this->CloseObject->ParentId = null;
+			
+		$object->ReflectAxis('x');
+		$this->CloseObject = $object;
+		$this->CloseObject->ParentId = $this->Id;
+		$this->CloseObject->Click = new ClientEvent('_NLeave', $this);
+		$this->CloseObject->Click->Bubbles = false;
+	}
+	/**
+	* Gets the object that is used to close the RolloverLabel when Closeable is true.
+	* 
+	* @param mixed $object
+	*/
+	function GetCloseObject()	{return $this->CloseObject;}
+	/**
+	* Gets whether this tab is closeable. A value of true will display an x the user can click to remove the Tab.
+	* 
+	*/
+	function GetCloseable()	{return $this->Closeable === null?false:true;}
 	/**
 	 * @ignore
 	 */
