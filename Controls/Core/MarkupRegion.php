@@ -43,12 +43,21 @@ class MarkupRegion extends Control
 	{
 		return 12;
 	}
+	/**
+	* Sets the CSSClass for the content of the MarkupRegion. This is useful for adding things like Margin around your content.
+	* 
+	* @param string $className
+	*/
 	function SetInnerCSSClass($className)
 	{
 		$this->InnerCSSClass = $className;
 		if($text = $this->GetText())
 			$this->SetText($text);
 	}
+	/**
+	* Returns the CSSClass for the content of the MarkupRegion. This is useful for adding things like Margin around your content.
+	* 
+	*/
 	function GetInnerCSSClass()	{return $this->InnerCSSClass;}
 //	function SetFontSize($newSize)
 //	{
