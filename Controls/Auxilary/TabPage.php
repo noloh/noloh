@@ -76,7 +76,7 @@ class TabPage extends Panel
 	* @param mixed $closeable Whether this RolloverTab is closeable
 	* @param mixed $object Optional object for the close.
 	*/
-	public function SetCloseable($bool, $image)
+	public function SetCloseable($bool, $image=null)
 	{
 		$this->RolloverTab->SetCloseable($bool, $image=null);
 	}
