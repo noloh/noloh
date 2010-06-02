@@ -28,6 +28,23 @@ function ToggleVisibility(id)
 	else
 		_NSetProperty(id, "style.display", "none");
 }
+function _NNS(obj, ns)
+{
+	var argLength = ns.length, i;
+	for(i=0; i<argLength; ++i)
+		obj = obj[ns[i]];
+	return obj;
+}
+function _NCNS(obj)
+{
+	var argLength = arguments.length, i, arg, val;
+	for(i=1; i<argLength; ++i)
+	{
+		val = obj[arg = arguments[i]];
+		obj = (!val)?obj[arg] = []:val;
+	}
+	return obj;
+}
 function _NAvail(id)
 {
 	var obj = _N(id);
