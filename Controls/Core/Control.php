@@ -1001,6 +1001,16 @@ abstract class Control extends Component
 	 */
 	function SetShiftStop($shiftStop)				{$this->SetEvent($shiftStop, 'ShiftStop');}
 	/**
+	 * Returns the Leave Event, which gets launched when a Control is removed from it's parent
+	 * @return Event
+	 */
+	function GetLeave()							{return $this->GetEvent('Leave');}
+	/**
+	 * Sets the Leave Event, which gets launched when a Control is removed from it's parent
+	 * @param Event $shiftStop
+	 */
+	function SetLeave($event)				{$this->SetEvent($event, 'Leave');}
+	/**
 	 * @ignore
 	 */
 	function _NGetShifts()

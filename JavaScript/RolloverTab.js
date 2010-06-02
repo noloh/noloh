@@ -25,3 +25,11 @@ function _NRlTbChg(rlOvrTb, state)
 		_N(tab.Slct).style.display = '';
 	}
 }
+function _NLeave(id)
+{
+	_NSetProperty(id, '_NOblivion', 1);
+	_NRem(id);
+	var obj = _N(id);
+	if(obj.Leave)
+		obj.Leave.call(obj);
+}

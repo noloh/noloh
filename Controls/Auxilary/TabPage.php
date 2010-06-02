@@ -37,7 +37,16 @@ class TabPage extends Panel
 		if(!is_object($rolloverTab))
 			$rolloverTab = new RolloverTab($rolloverTab);
 		$this->RolloverTab = $rolloverTab;
+		$rolloverTab->Leave = new ClientEvent('_NLeave', $this);
 	}
+	/**
+	* @ignore
+	*/
+	public function SetSelected($bool)	{$this->RolloverTab->SetSelected($bool);}
+	/**
+	* @ignore
+	*/
+	public function GetSelected()	{return $this->RolloverTab->GetSelected();}
 	/**
 	 * Returns the RolloverTab associated with the TabPage
 	 * @return RolloverTab
@@ -51,5 +60,39 @@ class TabPage extends Panel
 	 * @ignore
 	 */
 	public function GetText()		{return $this->RolloverTab->GetText();}
+	/**
+	* @ignore
+	*/
+	public function GetWidth()
+	{
+		if(($parent = $this->GetParent()) !== null)
+			return $parent->GetWidth();
+		else
+			return parent::GetWidth();
+	}
+	/**
+	* Sets whether this TabPage's Tab is closeable. A value of true will display an x the user can click to remove the TabPage.
+	* 
+	* @param mixed $closeable Whether this RolloverTab is closeable
+	* @param mixed $object Optional object for the close.
+	*/
+	public function SetCloseable($bool, $image)
+	{
+		$this->RolloverTab->SetCloseable($bool, $image=null);
+	}
+	/**
+	* Sets whether this TabPage's Tab is closeable. A value of true will display an x the user can click to remove the Tab.
+	*/
+	public function GetCloseable()	{return $this->RolloverTab->GetCloseable();}
+	/**
+	* @ignore
+	*/
+	public function GetHeight()
+	{
+		if(($parent = $this->GetParent()) !== null)
+			return $parent->GetHeight();
+		else
+			return parent::GetHeight();
+	}
 }
 ?>

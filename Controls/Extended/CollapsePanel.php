@@ -183,7 +183,6 @@ class CollapsePanel extends Panel implements Groupable
 	{
 		parent::SetSelected($bool);
 		if(!$bool && !$this->GetShowStatus())
-		//System::Log('SetCollapsed');
 //			ClientScript::Set($this, 'InitClpse', 200, '_N');
 			ClientScript::Set($this, 'InitClpse', true, null); //Blame Phil
 //			NolohInternal::SetProperty('Animates', 1, $this);
