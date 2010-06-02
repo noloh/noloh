@@ -16,3 +16,13 @@ _NGroup.prototype.GetSelectedElement = function()
 	var selectedIndex = this.GetSelectedIndex();
 	return selectedIndex == -1 ? null : this.Elements[selectedIndex];
 };
+_NGroup.prototype.Remove = function(id)
+{
+	var elementsLength = this.Elements.length, i;
+	for(i=0; i<elementsLength; ++i)
+		if(id == this.Elements[i])
+		{
+			this.Elements.splice(i, 1);
+			return i;
+		}
+};
