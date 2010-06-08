@@ -544,6 +544,7 @@ final class Application extends Object
 					if(time()-$info[1]<$GLOBALS['_NTokenTrailsExpiration']*86400)
 						$tokenLinks .= '<A href="' . ($key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</a>, ';
 		}
+		NolohInternal::NonstandardShowQueues();
 		$this->WebPage->SearchEngineShow($tokenLinks);
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))

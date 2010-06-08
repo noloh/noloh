@@ -1183,11 +1183,13 @@ abstract class Control extends Component
 	 */
 	function SearchEngineShow($returnClass=false)
 	{
-		$this->Show();
 		if($returnClass)
+		{
+			//$this->Show();
 			return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className'])) 
 				? ' class="'.$_SESSION['_NPropertyQueue'][$this->Id]['className'].'"' 
 				: '';
+		}
 		elseif($this->Text)
 			echo '<P',self::SearchEngineShow(true),'>',$this->Text,'</P>';
 	}

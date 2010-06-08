@@ -16,9 +16,37 @@ final class NolohInternal
 		NolohInternal::ClientEventQueue();
 	}
 	
+	public static function NonstandardShowQueues()
+	{
+		//return;
+		//NolohInternal::LinkTokensQueue();
+		$root = $_SESSION['_NControlQueueRoot'];
+		//$deep = $_SESSION['_NControlQueueDeep'];
+		$prop = $_SESSION['_NPropertyQueue'];
+		foreach($_SESSION['_NControlQueueRoot'] as $id => $show)
+			self::NonStandardShowHelper($id, $show);
+		//self::ControlQueue();
+		$_SESSION['_NControlQueueRoot'] = $root;
+		//$_SESSION['_NControlQueueDeep'] = $deep;
+		$_SESSION['_NPropertyQueue'] = $prop;
+	}
+	
+	public static function NonStandardShowHelper($id, $show)
+	{
+		$obj = GetComponentById($id);
+		if($show && $obj)
+		{
+//			if($obj->GetShowStatus()===0)
+				$obj->Show();
+			if(!empty($_SESSION['_NControlQueueDeep'][$id]))
+				foreach($_SESSION['_NControlQueueDeep'][$id] as $innerId => $innerShow)
+					self::NonStandardShowHelper($innerId, $innerShow);
+			}
+	}
+	
 	public static function ControlQueue()
 	{
-        while (list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
+        while(list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
 			self::ShowControl(GetComponentById($objId), $bool);
 		if(isset($GLOBALS['_NAddedSomething']))
 			AddScript('_NQ()', Priority::High);
