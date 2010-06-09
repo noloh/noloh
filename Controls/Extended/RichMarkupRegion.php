@@ -215,7 +215,17 @@ class RichMarkupRegion extends MarkupRegion
 	 */
 	public function SearchEngineShow()
 	{
-		echo '<DIV', Control::SearchEngineShow(true),'>', str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $this->TempString);
+		$markupStringOrFile = Control::GetText();
+		if($markupStringOrFile != null)
+        {
+	        if(is_file($markupStringOrFile))
+				$text = file_get_contents($markupStringOrFile);
+			else
+				$text = &$markupStringOrFile;
+			$tmpFullString = &$this->ParseItems($text);
+			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+        }
+		echo '<DIV', Control::SearchEngineShow(true),'>', str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $text);
 		foreach($this->ComponentSpace as $component)
 			if($component instanceof Component)
 				$component->SearchEngineShow();
