@@ -222,19 +222,26 @@ class TabPanel extends Panel
 	function HandleTabScroller()
 	{
 		$args = func_get_args();
-		switch($prop = strtolower(InnerSugar::$Tail))
+		$invocation = InnerSugar::$Invocation;
+		$prop = strtolower(InnerSugar::$Tail);
+		if($invocation == InnerSugar::Set)
 		{
-			case 'back':
-			case 'next':
-				$this->SetScroller($prop, $args[0]);
-				break;
-			case 'scrollincrement':
-			case 'scrollduration':
-				$this->ScrollerInfo[$prop] = $args[0];
-				ClientScript::Set($this->TabScroller, $prop, $args[0], '_N');
-				break;
-			default: throw new SugarException();
+			switch($prop)
+			{
+				case 'back':
+				case 'next':
+					$this->SetScroller($prop, $args[0]);
+					break;
+				case 'scrollincrement':
+				case 'scrollduration':
+					$this->ScrollerInfo[$prop] = $args[0];
+					ClientScript::Set($this->TabScroller, $prop, $args[0], '_N');
+					break;
+				default: throw new SugarException();
+			}
 		}
+		elseif($invocation == InnerSugar::Get && isset($this->ScrollerInfo[$prop]))
+			return $this->ScrollerInfo[$prop];
 	}
 	/**
 	* Gets whether the TabScroller Tabs scroll. True always displays TabScroller arrows, while System::Auto will automatically decide.
