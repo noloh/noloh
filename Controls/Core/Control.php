@@ -275,9 +275,9 @@ abstract class Control extends Component
 		else
 		{
 			if(isset($width))
-				$this->SetLeft($width);
+				$this->SetWidth($width);
 			if(isset($height))
-				$this->SetTop($height);
+				$this->SetHeight($height);
 		}
 	}
 	/**
