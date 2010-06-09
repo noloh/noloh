@@ -277,7 +277,7 @@ abstract class Component extends Object
 	 */
 	function SearchEngineShowChildren()
 	{
-		$this->Show();
+		//$this->Show();
 		if(!empty($_SESSION['_NControlQueueDeep'][$this->Id]))
 			foreach($_SESSION['_NControlQueueDeep'][$this->Id] as $id => $show)
 			{
