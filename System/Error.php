@@ -77,7 +77,7 @@ function _NErrorHandler($number, $string, $file, $line)
 			ob_start('ob_gzhandler');
 		if(!in_array('Cache-Control: no-cache', headers_list(), true))
 			++$_SESSION['_NVisit'];
-		error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin $file\\non line $line":'')));
+		error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin ".str_replace("\\","\\\\",$file)."\\non line $line":'')));
 		echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
 		if($gzip)
 			ob_end_flush();
