@@ -247,7 +247,7 @@ function _NSave(id, property, value)
 		case "style.visibility":
 		case "style.display":
 			var obj = _N(id);
-			_N.Changes[id]["Visible"] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit");
+			_N.Changes[id]["Visible"] = obj.style.display=="none" ? "null" : (obj.style.visibility == "inherit" ? "Cloak" : false);
 			break;
 		case "style.opacity":
 			_N.Changes[id]["Opacity"] = value * 100;

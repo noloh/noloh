@@ -51,8 +51,7 @@ final class System
 	const Full = 'Full';
 	/**
 	 * System::Vacuous is used in connection with {@link Control::SetVisible()} to indicate that the control will not
-	 * take up space. This is similar to false except that if either static or relative Layout is used, the
-	 * control will not occupy space.
+	 * take up space. This is now the same as false, but distinct from System::Cloak;
 	 * <pre>
 	 * // Add a new Button
 	 * $this->Controls->Add($btn1 = new Button());
@@ -66,6 +65,12 @@ final class System
 	 * </pre>
 	 */
 	const Vacuous = null;
+	/**
+	* System::Vacuous is used in connection with {@link Control::SetVisible()} to indicate that the control will 
+	* take up space. This is similar to false except that if either static or relative Layout is used, the
+	* Control will actually occupy space.
+	*/
+	const Cloak = 'Cloak';
 	/**
 	 * System::Unhandled is used in connection with {@link SetStartUpPage} as the fifth, $debugMode, parameter to 
 	 * indicate that NOLOH's error handling will be disabled and regular crashing behavior will occur in case of an error.

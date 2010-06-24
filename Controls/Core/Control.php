@@ -478,8 +478,8 @@ abstract class Control extends Component
 		NolohInternal::SetProperty('disabled', !$bool, $this);
 	}
 	/**
-	 * Returns whether the Control is Visible. Can be either a boolean value or System::Vacuous. The difference between false and
-	 * System::Vacuous only comes into play when a Layout::Web is used. Invisible Controls still take up space, whereas Vacuous
+	 * Returns whether the Control is Visible. Can be either a boolean value or System::Cloak. The difference between false and
+	 * System::Cloak only comes into play when a Layout::Web is used. Invisible Controls will not take up space, whereas Cloaked
 	 * Controls do not.
 	 * @return mixed
 	 */
@@ -488,14 +488,14 @@ abstract class Control extends Component
 		return $this->Visible === null ? true : $this->Visible;
 	}
 	/**
-	 * Sets whether the Control is Visible. Can be either a boolean value or System::Vacuous. The difference between false and
-	 * System::Vacuous only comes into play when a Layout::Web is used. Invisible Controls still take up space, whereas Vacuous
+	 * Sets whether the Control is Visible. Can be either a boolean value or System::Cloak. The difference between false and
+	 * System::Cloak only comes into play when a Layout::Web is used. Invisible Controls will not take up space, whereas Cloaked
 	 * Controls do not.
 	 * @param mixed $visibility
 	 */
 	function SetVisible($visibility)
 	{
-		if($visibility === null || $visibility === 'null')
+		if(!$visibility || $visibility === 'null')
 		{
 			$this->Visible = 0;
 			NolohInternal::SetProperty('style.display', 'none', $this);
@@ -503,15 +503,15 @@ abstract class Control extends Component
 		else//if(is_bool($visibility))
 		{
 			NolohInternal::SetProperty('style.display', '', $this);
-			if($visibility===true || $visibility==='true')
+			if($visibility === System::Cloak)
 			{
-				$this->Visible = null;
-				NolohInternal::SetProperty('style.visibility', 'inherit', $this);
+				$this->Visible = $visibility;
+				NolohInternal::SetProperty('style.visibility', 'hidden', $this);
 			}
 			else
 			{
-				$this->Visible = false;
-				NolohInternal::SetProperty('style.visibility', 'hidden', $this);
+				$this->Visible = null;
+				NolohInternal::SetProperty('style.visibility', 'inherit', $this);
 			}
 		}
 	}
@@ -1149,7 +1149,6 @@ abstract class Control extends Component
 		NolohInternal::SetProperty('Shifts', 'Array()', $this);
 		$this->Shifts->Clear(true);
 	}
-	
 	/**
 	 * Brings this Control to the front of whatever Parent it is in. In other words, it will be given a ZIndex higher than any other.
 	 */
