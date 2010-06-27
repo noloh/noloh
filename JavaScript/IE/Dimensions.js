@@ -1,27 +1,25 @@
 function _NOuterWidth(id, margin)
 {
-	var obj = _N(id);
-	if(margin)
-	{
-		var styles = obj.currentStyle;
-		return _NSumProps(obj, [obj.offsetWidth, styles.marginLeft, styles.marginRight], 0);
-	}
-	return obj.offsetWidth;
+	return _NOuterProp(id, margin, ['offsetWidth', 'marginLeft', 'marginRight']);
 }
 function _NOuterHeight(id, margin)
 {	
-	var obj = _N(id);
+	return _NOuterProp(id, margin, ['offsetHeight', 'marginTop', 'marginBottom']);
+}
+function _NOuterProp(id, margin, props)
+{
+	var sum, display, obj = _N(id);
+	display = obj.style.display;
+	if(display == 'none')
+		obj.style.display = '';
+	sum = obj[props[0]];
 	if(margin)
 	{
 		var styles = obj.currentStyle;
-		return _NSumProps(obj, [obj.offsetHeight, styles.marginTop, styles.marginBottom], 0);
+		sum = _NSumProps(obj, [sum, styles[props[1]], styles[props[2]]], 0);
 	}
-	return obj.offsetHeight;
-	
-	/*return _NSumProps(_N(id), margin
-//		?[['offsetHeight'], ['style', 'borderLeftWidth'], ['style', 'borderRightWidth'], ['style', 'marginTop'], ['style', 'marginBottom']]
-		?[['offsetHeight'], ['style', 'marginTop'], ['style', 'marginBottom']]
-		:[['offsetHeight']], 0);*/
+	obj.style.display = display;
+	return sum;
 }
 function _NSumProps(obj, props, i)
 {
