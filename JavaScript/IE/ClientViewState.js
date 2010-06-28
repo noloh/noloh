@@ -62,7 +62,7 @@ function _NCheckURL()
 	if((_N.Hash != location.hash && _N.Hash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_N.URL != inner))
 	{
 		clearInterval(_N.URLChecker);
-		var str = "_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp + "&_NSkeletonless=true";
+		var str = "_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp + "&_NSkeletonless=true", bodyEle = _N("N1");
 		_N(_N.LoadIndicator).style.visibility = "visible";
 		if(_N.HistoryLength+1==history.length)
 			var targetURL = inner;
@@ -83,7 +83,10 @@ function _NCheckURL()
            	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
            	_NReqStateChange, true);
         _N.Request.send(str);
-		_N("N1").innerHTML = "";
+        if(bodyEle.NonControls)
+    		for(var i=0; i<bodyEle.NonControls.length; ++i)
+				_N(bodyEle.NonControls[i]).Destroy();
+		bodyEle.innerHTML = "";
 		_N.Saved = {};
 		_N.Changes = {};
 		_N.HighestZ = 0;
