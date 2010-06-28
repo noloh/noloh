@@ -254,6 +254,18 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 		return $this->IndexOf($element) !== -1;
 	}
 	/**
+	 * Toggles an element's presence within the ArrayList. That is, if that element is contained within the ArrayList, it is Removed; otherwise, it is Added. 
+	 * @param boolean Whether the element was found
+	 */
+	function Toggle($element)
+	{
+		$index = $this->IndexOf($element);
+		if($index === -1)
+			$this->Add($element);
+		else
+			$this->RemoveAt($index);
+	}
+	/**
 	 * Clears the ArrayList.
 	 */
 	function Clear()
