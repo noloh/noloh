@@ -1150,6 +1150,46 @@ abstract class Control extends Component
 		$this->Shifts->Clear(true);
 	}
 	/**
+	 * @ignore
+	 */
+	function GetCSSClasses()
+	{
+		static $cssClasses = array();
+		if(!isset($cssClasses[$this->Id]))
+		{
+			$cssClasses[$this->Id] = new ImplicitArrayList($this, 'AddCSSClass', '', 'ClearCSSClasses');
+			$cssClasses[$this->Id]->RemoveFunctionName = 'RemoveCSSClass';
+			$cssClasses[$this->Id]->Elements = explode(' ', self::GetCSSClass());
+		}
+		return $cssClasses[$this->Id];
+	}
+	/**
+	 * @ignore
+	 */
+	function AddCSSClass($className)
+	{
+		$cssClasses = $this->GetCSSClasses();
+		if(!$cssClasses->Contains($className))
+			self::SetCSSClass(self::GetCSSClass() . ' ' . $className);
+		$cssClasses->Add($className, true);
+	}
+	/**
+	 * @ignore
+	 */
+	function RemoveCSSClass($className)
+	{
+		self::SetCSSClass(str_replace($className, '', self::GetCSSClass()));
+		$this->CSSClasses->Remove($className, true);
+	}
+	/**
+	 * @ignore
+	 */
+	function ClearCSSClasses()
+	{
+		$this->SetCSSClass('');
+		$this->CSSClasses->Elements = explode(' ', self::GetCSSClass());
+	}
+	/**
 	 * Brings this Control to the front of whatever Parent it is in. In other words, it will be given a ZIndex higher than any other.
 	 */
 	function BringToFront()
@@ -1272,7 +1312,7 @@ abstract class Control extends Component
 	 */
 	function &__get($nm)
 	{
-		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass')
+		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass' && $nm !== 'CSSClasses')
 		{
 			if($nm === 'CSSFloat')
 				$nm = UserAgent::IsIE() ? 'styleFloat' : 'cssFloat';
@@ -1293,7 +1333,7 @@ abstract class Control extends Component
 	 */
 	function __set($nm, $val)
 	{
-		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass')
+		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass' && $nm !== 'CSSClasses')
 		{
 			$this->SetCSSHelper($nm, $val);
 			return $val;
