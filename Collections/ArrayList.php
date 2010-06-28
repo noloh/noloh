@@ -251,7 +251,7 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function Contains($element)
 	{
-		return $this->IndexOf($element !== -1);
+		return $this->IndexOf($element) !== -1;
 	}
 	/**
 	 * Clears the ArrayList.
