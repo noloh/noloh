@@ -53,6 +53,7 @@ function _NTbPgScrlChk(id)
 		{
 			sum = tabScroller.parentNode.clientWidth + 'px';
 			display = 'none';
+			new _NAni(id, 'style.left', 0, tabScroller.scrollduration);
 		}
 		else
 			return;

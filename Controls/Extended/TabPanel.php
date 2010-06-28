@@ -297,11 +297,10 @@ class TabPanel extends Panel
 	function SetTabScrolling($scroll)
 	{
 		$this->TabScrolling = $scroll;
-		if($scroll !== false)
-			$this->TabBar->SetWidth(System::Auto);
 		
 		if($scroll !== false)
 		{
+			$this->TabBar->SetWidth(System::Auto);
 			if(!isset($this->ScrollerInfo['scrollincrement']))
 				$this->SetScrollerClient('scrollincrement', 200);
 			if(!isset($this->ScrollerInfo['scrollduration']))
