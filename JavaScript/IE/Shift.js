@@ -78,12 +78,28 @@ function _NShftObjs(objects, deltaX, deltaY)
 			_NShftProcObj(obj, objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
 	}
 }
+function _NShftCalcPrcnt(obj, prcnt, prop)
+{
+	if(typeof(prcnt) == 'string' && prcnt.charAt(prcnt.length-1) == '%')
+	{	
+		var lookup, parent = obj.parentNode;
+		if(parent)
+		{
+			prcnt = parseInt(prcnt)/100;
+			lookup = {'style.width':'offsetWidth', 'style.left':'offsetWidth', 'style.height':'offsetHeight', 'style.top':'offsetHeight'};
+			if(prop = lookup[prop])
+				return prcnt * parent[prop];					
+		}
+	}
+	return prcnt;	
+}
 function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposite)
 {
 	if(delta)
 	{
 		startPx = parseInt(startPx);
-		var maxBound, minBound = info[2]==null?(startPx<0?null:0):(info[2]=="N"?null:info[2]), shiftsWith, tmp;
+//		var maxBound, minBound = info[2]==null?(startPx<0?null:0):(info[2]=="N"?null:info[2]), shiftsWith, tmp;
+		var maxBound, minBound = info[2]==null?(startPx<0?null:0):(info[2]=="N"?null:_NShftCalcPrcnt(obj, info[2], propStr)), shiftsWith, tmp;
 		if(opposite)
 		{
 			var parent = obj.parentNode;
@@ -93,7 +109,7 @@ function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposi
 				maxBound = null;
 		}
 		else
-			maxBound = info[3] == "N" ? null : info[3];
+			maxBound = info[3] == "N" ? null : _NShftCalcPrcnt(obj, info[3], propStr);
 		if(info[7])
 			delta = _NShftObj(info[0], propStr, startPx, delta, minBound, maxBound, info[5], info[6], _N.Shifts.ActualCount, info[7]);
 		else
