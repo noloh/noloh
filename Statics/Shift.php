@@ -104,8 +104,8 @@ final class Shift
 			$args = func_get_args();
 			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
-//			$str = '["'.$id.'",1,' . implode(',', $args) . ']';
-			$str = '["'.$id.'",1,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str = '["'.$id.'",1,' . implode(',', $args) . ']';
+//			$str = '["'.$id.'",1,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 		}
 		else 
 			$str = '["'.$id.'",1]';
@@ -129,8 +129,8 @@ final class Shift
 			$args = func_get_args();
 			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
-//			$str = '["'.$id.'",2,' . implode(',', $args) . ']';
-			$str = '["'.$id.'",2,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str = '["'.$id.'",2,' . implode(',', $args) . ']';
+//			$str = '["'.$id.'",2,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 		}
 		else 
 			$str = '["'.$id.'",2]';
@@ -157,8 +157,8 @@ final class Shift
 			$args = func_get_args();
 			self::BoundsToClient($args, 1, 2);
 			unset($args[0], $args[3], $args[4]);
-//			$str1 = '["'.$id.'",1,' . implode(',', $args) . ']';
-			$str1 = '["'.$id.'",1,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str1 = '["'.$id.'",1,' . implode(',', $args) . ']';
+//			$str1 = '["'.$id.'",1,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 			if($numArgs >= 4)
 			{
 				$args[1] = $minHeight;
@@ -170,8 +170,8 @@ final class Shift
 			}
 			else 
 				unset($args[1], $args[2]);
-//			$str2 = '["'.$id.'",2,' . implode(',', $args) . ']';
-			$str2 = '["'.$id.'",2,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str2 = '["'.$id.'",2,' . implode(',', $args) . ']';
+//			$str2 = '["'.$id.'",2,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 		}
 		else 
 		{
@@ -198,8 +198,8 @@ final class Shift
 			$args = func_get_args();
 			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
-//			$str = '["'.$id.'",4,' . implode(',', $args) . ']';
-			$str = '["'.$id.'",4,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str = '["'.$id.'",4,' . implode(',', $args) . ']';
+//			$str = '["'.$id.'",4,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 		}
 		else 
 			$str = '["'.$id.'",4]';
@@ -223,8 +223,8 @@ final class Shift
 			$args = func_get_args();
 			self::BoundsToClient($args, 1, 2);
 			unset($args[0]);
-//			$str = '["'.$id.'",5,' . implode(',', $args) . ']';
-			$str = '["'.$id.'",5,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str = '["'.$id.'",5,' . implode(',', $args) . ']';
+//			$str = '["'.$id.'",5,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 		}
 		else 
 			$str = '["'.$id.'",5]';
@@ -251,8 +251,8 @@ final class Shift
 			$args = func_get_args();
 			self::BoundsToClient($args, 1, 2);
 			unset($args[0], $args[3], $args[4]);
-//			$str1 = '["'.$id.'",4,' . implode(',', $args) . ']';
-			$str1 = '["'.$id.'",4,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str1 = '["'.$id.'",4,' . implode(',', $args) . ']';
+//			$str1 = '["'.$id.'",4,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 			if($numArgs >= 4)
 			{
 				$args[1] = $minTop;
@@ -264,8 +264,8 @@ final class Shift
 			}
 			else 
 				unset($args[1], $args[2]);
-//			$str2 = '["'.$id.'",5,' . implode(',', $args) . ']';
-			$str2 = '["'.$id.'",5,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
+			$str2 = '["'.$id.'",5,' . implode(',', $args) . ']';
+//			$str2 = '["'.$id.'",5,' . implode(',', array_map(array('ClientEvent', 'ClientFormat'), $args)) . ']';
 		}
 		else 
 		{
@@ -584,11 +584,15 @@ final class Shift
 				$args[$minIdx] = '';
 			elseif($tmp === null)
 				$args[$minIdx] = '"N"';
+			else
+				$args[$minIdx] = ClientEvent::ClientFormat($args[$minIdx]);
 			if(array_key_exists($maxIdx, $args))
 				if(($tmp = $args[$maxIdx]) === 'P')
 					$args[$maxIdx] = '';
 				elseif($tmp === null)
 					$args[$maxIdx] = '"N"';
+				else
+					$args[$maxIdx] = ClientEvent::ClientFormat($args[$maxIdx]);
 		}
 	}
 }
