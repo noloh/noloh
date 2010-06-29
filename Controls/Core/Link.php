@@ -193,10 +193,12 @@ class Link extends Label
 	 */
 	function TokenString()
 	{
-		$tokens = array_merge($_SESSION['_NTokens']);
+//		$tokens = array_merge($_SESSION['_NTokens']);
+		$tokens = array();
 		foreach($this->Tokens as $key => $val)
 			URL::SetTokenHelper($tokens, $key, $val, $this->RemoveSubsequents[$key]);
-		$chain = array_merge(URL::$TokenChain->Elements);
+//		$chain = array_merge(URL::$TokenChain->Elements);
+		$chain = array();
 		if($this->TokenChain)
 			foreach($this->TokenChain as $key => $val)
 				URL::SetTokenHelper($chain, $key, $val, $this->RemoveSubsequents2[$key]);
