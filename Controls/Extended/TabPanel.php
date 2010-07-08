@@ -197,7 +197,7 @@ class TabPanel extends Panel
 		if($count == 0)
 			$this->SetSelectedIndex(0);
 		else
-			$tabPage->Visible = System::Vacuous;
+			$tabPage->Visible = System::Cloak;
 		
 		$tabScrolling = $this->TabScrolling;
 		if($tabScrolling === System::Auto || $tabScrolling === true)
