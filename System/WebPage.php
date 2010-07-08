@@ -199,6 +199,10 @@ abstract class WebPage extends Component
 	{
 		$this->Keywords = is_array($keywords)?implode(',', $keywords):$keywords;
 	}
+	/**
+	 * Gets the keywords that descibe your section or content
+	 * @return string|array
+	 */
 	function GetKeywords()	{return $this->Keywords;}
 	/**
 	 * Returns the horizontal size of the browser, in pixels
