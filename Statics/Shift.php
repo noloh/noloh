@@ -15,6 +15,7 @@
  * $panel->Shifts[] = Shift::Location($panel);
  * // Makes an Image resize a Panel.
  * $image->Shifts[] = Shift::Size($panel);
+ * </pre>
  * </li>
  * <li>Those whose names end in 'With' (e.g., Shift::LeftWith) specifies how a Control will behave when
  * another Control is either Shifted <b>or</b> Animated. Notice that good object-oriented techniques

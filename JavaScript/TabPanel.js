@@ -5,9 +5,9 @@ function _NTbPgSt(group)
 	{
 		var prevTab = grp.PrevSelectedElement;
 		if(prevTab != null)
-			_NSetProperty(_N(prevTab).TabPg, 'style.display', 'none');
+			_NSetProperty(_N(prevTab).TabPg, 'style.visibility', 'hidden');
 		if(tab.TabPg != null)
-			_NSetProperty(tab.TabPg, 'style.display', '');
+			_NSetProperty(tab.TabPg, 'style.visibility', 'visible');
 	}
 }
 function _NTbPgRm(id)

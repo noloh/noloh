@@ -155,7 +155,7 @@ class TextArea extends Control
 	}
 	/**
 	 * Returns the kind of scroll bars the TextArea will have, if any
-	 * @return mixed
+	 * @return null|true|false|System::Auto|System::Full
 	 */
 	function GetScrolling()
 	{
@@ -163,7 +163,7 @@ class TextArea extends Control
 	}
 	/**
 	 * Sets the kind of scroll bars the TextArea will have, if any
-	 * @param mixed $scrollType
+	 * @param null|true|false|System::Auto|System::Full $scrollType
 	 */
 	function SetScrolling($scrollType)
 	{

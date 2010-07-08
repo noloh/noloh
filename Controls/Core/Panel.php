@@ -118,7 +118,7 @@ class Panel extends Control
 	}
 	/**
 	 * Returns the kind of scroll bars the Panel will have, if any
-	 * @return mixed
+	 * @return null|true|false|System::Auto|System::Full|System::Horizontal|System::Vertical
 	 */
 	function GetScrolling()
 	{
@@ -126,7 +126,7 @@ class Panel extends Control
 	}
 	/**
 	 * Sets the kind of scroll bars the Panel will have, if any
-	 * @param mixed $scrollType
+	 * @param null|true|false|System::Auto|System::Full|System::Horizontal|System::Vertical $scrollType
 	 */
 	function SetScrolling($scrollType)
 	{
@@ -195,6 +195,9 @@ class Panel extends Control
 			$this->Controls = $this->Controls->ToImplicit($this, 'ImplicitAdd');
 		}
 	}
+	/**
+	* @ignore
+	*/
 	function SetWidth($width)
 	{
 		if($width === System::Auto)
@@ -209,6 +212,9 @@ class Panel extends Control
 			ClientScript::Set($this, 'AutX', null, '_N');
 		parent::SetWidth($width);	
 	}
+	/**
+	* @ignore
+	*/
 	function SetHeight($height)
 	{
 		if($height === System::Auto)

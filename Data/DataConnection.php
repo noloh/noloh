@@ -308,7 +308,7 @@ class DataConnection extends Object
 		return $tmpArr;
 	}
 	/**
-	 * * Note: The first parameter is optional, we can execute this function in the following 2 ways:
+	 * Note: The first parameter is optional, we can execute this function in the following 2 ways:
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL(Data::Assoc, 'SELECT * FROM people');
 	 * </pre>
@@ -388,6 +388,7 @@ class DataConnection extends Object
 	function ExecFunction($spName, $paramsDotDotDot = null)
 	{
 		$args = func_get_args();
+		$resultOption = null;
 		if($hasResultOption = is_int($spName))
 		{
 			$resultOption = $spName;

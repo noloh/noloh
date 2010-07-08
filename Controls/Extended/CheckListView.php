@@ -1,6 +1,6 @@
 <?php
 /**
- * @internal
+ * @ignore
  */
 class CheckListView extends ListView
 {

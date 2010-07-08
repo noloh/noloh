@@ -94,7 +94,7 @@ class IFrame extends Control
 	}
 	/**
 	 * Returns the kind of scroll bars the IFrame will have, if any
-	 * @return mixed
+	 * @return null|true|false|System::Auto $scrollType
 	 */
 	function GetScrolling()
 	{
@@ -102,7 +102,7 @@ class IFrame extends Control
 	}
 	/**
 	 * Sets the kind of scroll bars the IFrame will have, if any
-	 * @param mixed $scrollType
+	 * @param null|true|false|System::Auto $scrollType $scrollType
 	 */
 	function SetScrolling($scrollType)
 	{

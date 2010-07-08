@@ -93,7 +93,7 @@ class MarkupRegion extends Control
 	function SetScroll($scroll)						{$this->SetEvent($scroll, 'Scroll');}
 	/**
 	 * Returns the kind of scroll bars the MarkupRegion will have, if any
-	 * @return mixed
+	 * @return null|true|false|System::Auto|System::Full|System::Horizontal|System::Vertical
 	 */
     function GetScrolling()
 	{
@@ -101,7 +101,7 @@ class MarkupRegion extends Control
 	}
 	/**
 	 * Sets the kind of scroll bars the MarkupRegion will have, if any
-	 * @param mixed $scrollType
+	 * @param null|true|false|System::Auto|System::Full|System::Horizontal|System::Vertical $scrollType
 	 */
 	function SetScrolling($scrollType)
 	{

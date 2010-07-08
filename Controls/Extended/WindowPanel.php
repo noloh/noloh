@@ -491,7 +491,8 @@ class WindowPanel extends Panel
 				$margin += $this->Corners[0]->GetHeight();
 			if(isset($this->Corners[2]))
 				$margin += $this->Corners[2]->GetHeight();
-			$this->Borders[0]->SetHeight($height - $margin);	
+			$difference = $height - $margin;
+			$this->Borders[0]->SetHeight($difference < 0 ? 0:$difference);	
 		}
 		if(isset($this->Borders[2]) && $this->Borders[2] instanceof Image)
 		{
@@ -500,7 +501,8 @@ class WindowPanel extends Panel
 				$margin += $this->Corners[1]->GetHeight();
 			if(isset($this->Corners[3]))
 				$margin += $this->Corners[3]->GetHeight();
-			$this->Borders[2]->SetHeight($height - $margin);	
+			$difference = $height - $margin;
+			$this->Borders[2]->SetHeight($difference < 0 ? 0:$difference);		
 		}
 		$this->SetBodyPanelHeight($height);
 		if($this->WindowShade)

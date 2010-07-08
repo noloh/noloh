@@ -81,7 +81,7 @@ class ListView extends Panel
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function ListView($left, $top, $width, $height)
+	function ListView($left=0, $top=0, $width=300, $height=200)
 	{
 		parent::Panel($left, $top, $width, $height)/*, $this)*/;
 		$this->ColumnsPanel = new Panel(0, 0, $width, 28, $this);

@@ -41,7 +41,7 @@ class File extends Object
 	 */
 	static function Send($fileName, $contentType='application/octet-stream', $alias=null)
 	{
-		AddNolohScriptSrc('SendFile.js');
+		ClientScript::AddNOLOHSource('SendFile.js');
 		AddScript('_NFileReq("' . $_SERVER['PHP_SELF'] . '?_NApp=' . $GLOBALS['_NApp'] . '&_NFileRequest=' . $fileName . '")');
 		$_SESSION['_NFileSend'][$fileName] = array($contentType, $alias);
 		//$webPage = GetComponentById('N1');

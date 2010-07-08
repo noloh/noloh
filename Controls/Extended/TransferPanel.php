@@ -1,6 +1,6 @@
 <?php
 /**
- * @internal
+ * @ignore
  */
 class TransferPanel extends Panel
 {
@@ -55,7 +55,6 @@ class TransferPanel extends Panel
 	function Show()
 	{
 		parent::Show();
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/TransferPanelScripts.js");
-		AddNolohScriptSrc('TransferPanel.js');
+		ClientScript::AddNOLOHSource('TransferPanel.js');
 	}
 }

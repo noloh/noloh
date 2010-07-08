@@ -180,7 +180,6 @@ abstract class WebPage extends Component
 	 * @param string $title The title of your application
 	 * @param string|array $keywords Keywords that describe your section or content
 	 * @param string $description The description of your section or content
-	 * @return 
 	 */
 	static function SetMeta($title=null, $keywords=null, $description=null)
 	{
@@ -195,7 +194,6 @@ abstract class WebPage extends Component
 	/**
 	 * Sets the keywords that descibe your section or content
 	 * @param string|array $keywords
-	 * @return 
 	 */
 	function SetKeywords($keywords)
 	{
@@ -407,7 +405,7 @@ abstract class WebPage extends Component
 				'' : 
 				(';url='.$unsupportedURL.''),
   '"></NOSCRIPT>', $favIcon?'
-    <LINK rel="shortcut icon" href="'.$favIcon.'"></LINK>':'','
+    <LINK rel="shortcut icon" href="'.$favIcon.'">':'','
   </HEAD>',
 UserAgent::IsIE() ? '
   <BODY>
