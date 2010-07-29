@@ -97,10 +97,11 @@ final class System
 	 */
 	static function IncludePaths($pathsAsDotDotDot)
 	{
-		$paths = explode(PATH_SEPARATOR, get_include_path());
+		$separator = constant('PATH_SEPARATOR');
+		$paths = explode($separator, get_include_path());
 		$funcArgs = func_get_args();
 		$paths = array_merge($paths, $funcArgs);
-	    set_include_path(implode(PATH_SEPARATOR, $paths));
+	    set_include_path(implode($separator, $paths));
 	}
 	/**
 	 * @ignore
