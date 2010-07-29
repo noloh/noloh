@@ -114,6 +114,7 @@ function _NAutoLoad($class)
 			'Color' => 				'Statics/Color.php',
 			'Cursor' => 			'Statics/Cursor.php',
 			'Layout' => 			'Statics/Layout.php',
+			'Semantics' =>			'Statics/Semantics.php',
 			'Shift' => 				'Statics/Shift.php'
 		);
 	
