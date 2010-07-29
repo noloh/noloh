@@ -458,14 +458,14 @@ UserAgent::IsIE6() ? '
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,'">',"\r\n";
 		foreach($this->CSSFiles as $path)
 			echo '<LINK rel="stylesheet" type="text/css" href="', $path, '">';
-		echo '</HEAD><BODY>',"\r\n";
+		echo '</HEAD><BODY><DIV>',"\r\n";
 		foreach($_SESSION['_NControlQueueRoot'] as $id => $show)
 		{
 			$obj = GetComponentById($id);
 			if($show && $obj)
 				$obj->SearchEngineShow();
 		}
-		echo " <BR>\r\n", $tokenLinks, "\r\n</BODY></HTML>";
+		echo " <BR>\r\n", $tokenLinks, "\r\n</DIV></BODY></HTML>";
 	}
 	/**
 	 * @ignore

@@ -241,9 +241,52 @@ class Panel extends Control
 	/**
 	 * @ignore
 	 */
+	function GetSemantics()
+	{
+		$sem = parent::GetSemantics();
+		return $sem === null ? System::Auto : ($sem === false ? null: $sem);
+	}
+	/**
+	 * @ignore
+	 */
+	function SetSemantics($semantics)
+	{
+		return $this->Semantics = ($semantics === System::Auto ? null : ($semantics === null ? false : $semantics));
+	}
+	/**
+	 * @ignore
+	 */
+	function GetSearchEngineTag()
+	{
+		if($this->Semantics === System::Auto)
+		{
+			if(empty($_SESSION['_NControlQueueDeep'][$this->Id]) || (count($arr = $_SESSION['_NControlQueueDeep'][$this->Id]) < 2))
+				return '';
+			else
+				foreach($arr as $id => $show)
+				{
+					$obj = GetComponentById($id);
+					if($show && $obj && !($obj instanceof Panel) && !($obj instanceof Container) && !($obj instanceof Group))
+						return Semantics::Grouped;
+				}
+			return '';
+		}
+		else 
+			return ($this->Semantics === Semantics::Normal)
+				? ''
+				: $this->Semantics;
+	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
+		$tag = $this->GetSearchEngineTag();
+		if($tag)
+			echo '<', $tag, parent::SearchEngineShow(true), '>';
 		$this->SearchEngineShowChildren();
+		if($tag)
+			echo '</', $tag, '>';
 	}
 	/**
 	 * @ignore

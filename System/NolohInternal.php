@@ -21,13 +21,13 @@ final class NolohInternal
 		//return;
 		//NolohInternal::LinkTokensQueue();
 		$root = $_SESSION['_NControlQueueRoot'];
-		//$deep = $_SESSION['_NControlQueueDeep'];
+		$deep = $_SESSION['_NControlQueueDeep'];
 		$prop = $_SESSION['_NPropertyQueue'];
 		foreach($_SESSION['_NControlQueueRoot'] as $id => $show)
 			self::NonStandardShowHelper($id, $show);
 		//self::ControlQueue();
 		$_SESSION['_NControlQueueRoot'] = $root;
-		//$_SESSION['_NControlQueueDeep'] = $deep;
+		$_SESSION['_NControlQueueDeep'] = $deep;
 		$_SESSION['_NPropertyQueue'] = $prop;
 	}
 	
@@ -36,7 +36,7 @@ final class NolohInternal
 		$obj = GetComponentById($id);
 		if($show && $obj)
 		{
-//			if($obj->GetShowStatus()===0)
+			if($obj->GetShowStatus()===0)
 				$obj->Show();
 			if(!empty($_SESSION['_NControlQueueDeep'][$id]))
 				foreach($_SESSION['_NControlQueueDeep'][$id] as $innerId => $innerShow)

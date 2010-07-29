@@ -243,9 +243,23 @@ class MarkupRegion extends Control
 	/**
 	 * @ignore
 	 */
+	function GetSearchEngineTag()
+	{
+		if($this->Semantics === System::Auto)
+		{
+			return 'DIV';
+		}
+		else 
+			return ($this->Semantics === Semantics::Normal)
+				? 'DIV'
+				: $this->Semantics;
+	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow()
 	{
-		echo '<DIV', parent::SearchEngineShow(true),'>',is_file($this->Text)?file_get_contents($this->Text):$this->Text, '</DIV>';
+		echo '<', $tag = $this->GetSearchEngineTag(), parent::SearchEngineShow(true),'>',is_file($this->Text)?file_get_contents($this->Text):$this->Text, '</',$tag,'>';
 	}
 	/**
 	 * @ignore

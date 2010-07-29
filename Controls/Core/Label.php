@@ -334,6 +334,20 @@ class Label extends Control
 	}
 	/**
 	 * @ignore
+	 */
+	function GetSearchEngineTag()
+	{
+		if($this->Semantics === System::Auto || $this->Semantics === Semantics::Heading)
+		{
+			return 'SPAN';
+		}
+		else
+			return ($this->Semantics === Semantics::Normal)
+				? 'SPAN'
+				: $this->Semantics;
+	}
+	/**
+	 * @ignore
 	 *
 	function SearchEngineShow()
 	{

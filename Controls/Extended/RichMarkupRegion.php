@@ -225,11 +225,12 @@ class RichMarkupRegion extends MarkupRegion
 			$tmpFullString = &$this->ParseItems($text);
 			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
         }
-		echo '<DIV', Control::SearchEngineShow(true),'>', str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $text);
+        $tag = $this->GetSearchEngineTag();
+		echo '<', $tag, Control::SearchEngineShow(true),'>', str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $text);
 		foreach($this->ComponentSpace as $component)
 			if($component instanceof Component)
 				$component->SearchEngineShow();
-		echo '</DIV>';
+		echo '</', $tag, '>';
 	}
 	/**
 	 * @ignore

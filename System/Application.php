@@ -537,15 +537,16 @@ final class Application extends Object
 		$file = getcwd().'/NOLOHSearchTrails.dat';
 		if(file_exists($file))
 		{
+			$expiration = $GLOBALS['_NTokenTrailsExpiration'] * 86400;
 			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
 			$trails = unserialize(base64_decode(file_get_contents($file)));
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $info)
-					if(time()-$info[1]<$GLOBALS['_NTokenTrailsExpiration']*86400)
-						$tokenLinks .= '<A href="' . ($key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</a>, ';
+					if(time()-$info[1] < $expiration)
+						$tokenLinks .= '<LI><A href="' . ($key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</A></LI> ';
 		}
 		NolohInternal::NonstandardShowQueues();
-		$this->WebPage->SearchEngineShow($tokenLinks);
+		$this->WebPage->SearchEngineShow('<UL>'.$tokenLinks.'</UL>');
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)
