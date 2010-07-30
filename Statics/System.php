@@ -66,7 +66,7 @@ final class System
 	 */
 	const Vacuous = null;
 	/**
-	* System::Vacuous is used in connection with {@link Control::SetVisible()} to indicate that the control will 
+	* System::Cloak is used in connection with {@link Control::SetVisible()} to indicate that the control will 
 	* take up space. This is similar to false except that if either static or relative Layout is used, the
 	* Control will actually occupy space.
 	*/

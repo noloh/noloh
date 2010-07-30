@@ -199,7 +199,7 @@ abstract class Control extends Component
 		return $this->Width;
 	}
 	/**
-	 * Returns the Width of this Control. Can be either an integer signifying Width in pixels, or can be a string for percents, e.g., '50%'
+	 * Sets the Width of this Control. Can be either an integer signifying Width in pixels, or can be a string for percents, e.g., '50%'
 	 * @param integer|string $width
 	 */
 	function SetWidth($width)
@@ -740,20 +740,36 @@ abstract class Control extends Component
 				$group->WaitingList[] = $this->Id;
 	}
 	/**
-	* Sets the HTMLName which represents the HTML name of your object on the client. This is usually used in conjuction with the NOLOH Form object.
-	* 
-	* @param string $name
-	*/
+	 * Sets the HTMLName which represents the HTML name of your object on the client. This is usually used in conjuction with the NOLOH Form object. 
+	 * @param string $name
+	 */
 	function SetHTMLName($name)
 	{
 		$this->HTMLName = $name;
 		ClientScript::Set($this, 'name', $name, null);
 	}
 	/**
-	* Returns the HTMLName which represents the HTML name of your object on the client. This is usually used in conjuction with the NOLOH Form object.
-	* @return string
-	*/
+	 * Returns the HTMLName which represents the HTML name of your object on the client. This is usually used in conjuction with the NOLOH Form object.
+	 * @return string
+	 */
 	function GetHTMLName()	{return $this->HTMLName;}
+	/**
+	 * Returns the Semantics for this Control, which help define how it is used and may be used to aid in search engine optimization.
+	 * @return Semantics|System::Auto
+	 */
+	function GetSemantics()
+	{
+		return $this->Semantics;
+	}
+	/**
+	 * Sets the Semantics for this Control, which help define how it is used and may be used to aid in search engine optimization.
+	 * @param Semantics|System::Auto $semantics
+	 * @return Semantics|System::Auto
+	 */
+	function SetSemantics($semantics)
+	{
+		return $this->Semantics = $semantics;
+	}
 	/**
 	 * @ignore
 	 */
@@ -1220,6 +1236,16 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
+	function GetSearchEngineTag()
+	{
+		$sem = $this->GetSemantics();
+		return ($sem === Semantics::Normal || $sem === System::Auto)
+			? 'P'
+			: $sem;
+	}
+	/**
+	 * @ignore
+	 */
 	function SearchEngineShow($returnClass=false)
 	{
 		if($returnClass)
@@ -1230,7 +1256,10 @@ abstract class Control extends Component
 				: '';
 		}
 		elseif($this->Text)
-			echo '<P',self::SearchEngineShow(true),'>',$this->Text,'</P>';
+		{
+			$tag = $this->GetSearchEngineTag();
+			echo '<',$tag, self::SearchEngineShow(true),'>', $this->Text, '</',$tag,'>';
+		}
 	}
 	/**
 	 * @ignore
