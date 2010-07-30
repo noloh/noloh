@@ -16,7 +16,7 @@ class MarkupRegion extends Control
 	private $Scrolling;
 	private $ScrollLeft;
 	private $ScrollTop;
-	private $InnerCSSClass;
+	protected $InnerCSSClass;
 	//private $FontSize;
 	/**
 	 * Constructor.
