@@ -39,6 +39,7 @@ abstract class Control extends Component
 	private $Shifts;
 	private $DataValue;
 	private $HTMLName;
+	private $Semantics;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -90,7 +91,7 @@ abstract class Control extends Component
 	function SetCSSClass($class)
 	{
 		$this->CSSClass = $class;
-		NolohInternal::SetProperty('className', $class, $this);
+		NolohInternal::SetProperty('className', trim($class), $this);
 	}
 	/**
 	 * Returns the Opacity of this Control in percents, i.e., from 0 to 100.

@@ -211,41 +211,61 @@ final class System
 	 */
 	static function Log($what)
 	{
-		if($GLOBALS['_NDebugMode'])
+//		if($GLOBALS['_NDebugMode'])
+		if(Configuration::That()->DebugMode !== false)
 		{
-			$webPage = WebPage::That();
-			$debugWindow = $webPage->DebugWindow;
-			if($debugWindow)
+			$stamp = date('h:i:s') . substr(microtime(), 1, 5);
+			if(UserAgent::IsCLI())
 			{
-				$display = $debugWindow->Controls['Display'];
-				$old = true;
+				$endLine = constant('PHP_EOL');
+				$output = $stamp . ': ';
+				if(($count = func_num_args()) > 1)
+				{
+					$output .= $endLine;
+					$args = func_get_args();
+					for($i=0; $i < $count; ++$i)
+						$output .= ' * ' . self::LogFormat($args[$i]) . $endLine;
+				}
+				else 
+					 $output .= self::LogFormat($what) . $endLine;
+				echo $output;
 			}
 			else
 			{
-				$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
-				$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
-				//$display->CSSFontFamily = 'consolas, monospace';
-				$old = false;
-				$debugWindow->Buoyant = true;
-			}
-			$debugWindow->ParentId = $webPage->Id;
-			$debugWindow->Visible = true;
-			$stamp = date('h:i:s') . substr(microtime(), 1, 5);
-			$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ';
-			if(($count = func_num_args()) > 1)
-			{
-				$display->Text .= '<UL>';
-				$args = func_get_args();
-				for($i=0; $i < $count; ++$i)
-					$display->Text .= '<LI>' . self::LogFormat($args[$i]) . '</LI>';
-				$display->Text .= '</UL>';
-			}
-			else 
-				 $display->Text .= self::LogFormat($what);
-			if(!isset($GLOBALS['_NDebugScrollAnim']))
-			{
-				Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
-				$GLOBALS['_NDebugScrollAnim'] = true;
+				$webPage = WebPage::That();
+				$debugWindow = $webPage->DebugWindow;
+				if($debugWindow)
+				{
+					$display = $debugWindow->Controls['Display'];
+					$old = true;
+				}
+				else
+				{
+					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
+					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
+					//$display->CSSFontFamily = 'consolas, monospace';
+					$old = false;
+					$debugWindow->Buoyant = true;
+				}
+				$debugWindow->ParentId = $webPage->Id;
+				$debugWindow->Visible = true;
+				
+				$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ';
+				if(($count = func_num_args()) > 1)
+				{
+					$display->Text .= '<UL>';
+					$args = func_get_args();
+					for($i=0; $i < $count; ++$i)
+						$display->Text .= '<LI>' . self::LogFormat($args[$i]) . '</LI>';
+					$display->Text .= '</UL>';
+				}
+				else 
+					 $display->Text .= self::LogFormat($what);
+				if(!isset($GLOBALS['_NDebugScrollAnim']))
+				{
+					Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
+					$GLOBALS['_NDebugScrollAnim'] = true;
+				}
 			}
 		}
 		return $what;

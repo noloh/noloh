@@ -136,6 +136,14 @@ final class UserAgent
 		return $_SESSION['_NIsIE'];
 	}
 	/**
+	 * Returns whether or not PHP is running from the command-line.
+	 * @return boolean
+	 */
+	function IsCLI() 
+	{
+		return php_sapi_name() === 'cli' && empty($_SERVER['REMOTE_ADDR']);
+	}
+	/**
 	 * @ignore
 	 */
 	public static function IsWebKit()
