@@ -34,6 +34,10 @@ final class UserAgent
 	 */
 	const InternetExplorer = 'ie';
 	/**
+	 * The Links browser
+	 */
+	const Links = 'li';
+	/**
 	 * The Firefox family of browsers (e.g., it includes Gecko)
 	 */
 	const Firefox = 'ff';
@@ -102,6 +106,8 @@ final class UserAgent
         	if($version[1] == 6)
         		$_SESSION['_NIE6'] = true;
         }
+        elseif(preg_match('!links \(([0-9.]+);!', $agt, $version))
+        	$_SESSION['_NBrowser'] = 'li';
         else
         	$_SESSION['_NBrowser'] = 'other';
         $_SESSION['_NBrowserVersion'] = $version[1];

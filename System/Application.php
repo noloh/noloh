@@ -203,7 +203,7 @@ final class Application extends Object
 			$_SESSION['_NUserDir'] = true;
 		UserAgent::LoadInformation();
 		if($trulyFirst)
-			if($_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other')
+			if(($_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other') || UserAgent::GetBrowser() === UserAgent::Links)
 				$this->SearchEngineRun();
 			else 
 			{
@@ -491,8 +491,8 @@ final class Application extends Object
 		{
 			global $_NShowStrategy, $_NWidth, $_NHeight;
 			setcookie('_NAppCookie', false);
-			$_NWidth = $_GET['_NWidth'];
-			$_NHeight = $_GET['_NHeight'];
+			$_NWidth = isset($_GET['_NWidth']) ? $_GET['_NWidth'] : 1024;
+			$_NHeight = isset($_GET['_NHeight']) ? $_GET['_NHeight'] : 768;
 			$this->HandleTokens();
 			$_NShowStrategy = (empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()));
 			$className = Configuration::That()->StartClass;
