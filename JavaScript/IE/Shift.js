@@ -67,15 +67,15 @@ function _NShftObjs(objects, deltaX, deltaY)
 	var obj, tmp, count = objects.length;
 	for(var i=0; i<count; ++i)
 	{
-		obj = _N(objects[i][0]);
-		if(objects[i][1] == 1)
-			_NShftProcObj(obj, objects[i], 1, "style.width", 1, (tmp=obj.style.width)?tmp:obj.offsetWidth, deltaX, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.left)?tmp:obj.offsetLeft);
-		else if(objects[i][1] == 2)
-			_NShftProcObj(obj, objects[i], 2, "style.height", 0, (tmp=obj.style.height)?tmp:obj.offsetHeight, deltaY, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.top)?tmp:obj.offsetTop);
-		else if(objects[i][1] == 4)
-			_NShftProcObj(obj, objects[i], 4, "style.left", 1, (tmp=obj.style.left)?tmp:obj.offsetLeft, deltaX, objects[i][3]?null:(tmp=obj.style.width)?tmp:obj.offsetWidth);
-		else
-			_NShftProcObj(obj, objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
+		if(obj = _N(objects[i][0]))
+			if(objects[i][1] == 1)
+				_NShftProcObj(obj, objects[i], 1, "style.width", 1, (tmp=obj.style.width)?tmp:obj.offsetWidth, deltaX, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.left)?tmp:obj.offsetLeft);
+			else if(objects[i][1] == 2)
+				_NShftProcObj(obj, objects[i], 2, "style.height", 0, (tmp=obj.style.height)?tmp:obj.offsetHeight, deltaY, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.top)?tmp:obj.offsetTop);
+			else if(objects[i][1] == 4)
+				_NShftProcObj(obj, objects[i], 4, "style.left", 1, (tmp=obj.style.left)?tmp:obj.offsetLeft, deltaX, objects[i][3]?null:(tmp=obj.style.width)?tmp:obj.offsetWidth);
+			else
+				_NShftProcObj(obj, objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
 	}
 }
 function _NShftCalcPrcnt(obj, prcnt, prop)
