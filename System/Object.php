@@ -126,7 +126,7 @@ abstract class Object
 			$prop = substr($nm, 3);
 			$method = 'Set' . $prop;
 			foreach($this as $obj)
-				if(is_object($obj) && (property_exists($obj, $prop) || ($obj instanceof Object && method_exists($obj, $method))))
+				if(is_object($obj) && (property_exists($obj, $prop) || ($obj instanceof Object && method_exists($obj, $method)) || ($obj instanceof Control && strpos($prop, 'CSS')===0)))
 					$obj->$prop = $val;
 			return $val;
 		}
