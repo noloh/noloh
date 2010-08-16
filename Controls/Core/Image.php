@@ -246,10 +246,12 @@ class Image extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true);
-		if($this->ToolTip===null && $this->Text===null)
-			echo ' alt="',$this->ToolTip,' ',$this->Text,'"';
-		echo '>';
+		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true), ' alt="';
+		if($this->ToolTip || $this->Text)
+			echo $this->ToolTip, ($this->ToolTip && $this->Text) ? ' ' : '', $this->Text;
+		else
+			echo preg_replace(array('/\.\w+$/', '/\d[a-zA-Z]{0,2}$/', '/[0-9_]+/', '/([a-z])([A-Z])/'), array('', '', ' ', '$1 $2'), basename($this->Src));
+		echo '">';
 	}
 	/**
 	 * @ignore
