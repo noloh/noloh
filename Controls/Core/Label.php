@@ -139,6 +139,8 @@ class Label extends Control
 			AddNolohScriptSrc('Auto.js');
 			QueueClientFunction($this, '_NAWH', array('\''.$this->Id.'\''));
 		}
+		else
+			unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
 	}
 	/**
 	 * Returns the alignment of the Label, i.e., where the text will show with respect to the bounds of the Label. Possible values include Layout::Left, Layout::Center, or Layout::Right. 
