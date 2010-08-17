@@ -80,7 +80,7 @@ final class Shift
 	/**
 	 * A possible value for the min only of Width or Height, Reflect specifies that negative values will reflect the Control through its location.
 	 */
-	const Reflect = '"R"';
+	const Reflect = 'R';
 	/**
 	 * @ignore
 	 */
