@@ -9,6 +9,10 @@ body
 	color:#000;
 	font:13px/1.1 arial, helvetica, sans-serif;
 }
+ul
+{
+	margin-top:0;
+}
 input,button,textarea,select,optgroup,option
 {
 	font-family:inherit;
