@@ -260,7 +260,7 @@ class Panel extends Control
 	{
 		if($this->Semantics === System::Auto)
 		{
-			if(empty($_SESSION['_NControlQueueDeep'][$this->Id]) || (count($arr = $_SESSION['_NControlQueueDeep'][$this->Id]) < 2))
+			if(empty($_SESSION['_NControlQueueDeep'][$this->Id]) || (count($arr = $_SESSION['_NControlQueueDeep'][$this->Id]) < 2) || ($this->GetParent('Link') !== null))
 				return '';
 			else
 				foreach($arr as $id => $show)

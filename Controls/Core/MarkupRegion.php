@@ -259,7 +259,7 @@ class MarkupRegion extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<', $tag = $this->GetSearchEngineTag(), parent::SearchEngineShow(true),'>',is_file($this->Text)?file_get_contents($this->Text):$this->Text, '</',$tag,'>';
+		echo '<', $tag = $this->GetSearchEngineTag(), parent::SearchEngineShow(true),'>',preg_replace('/<([^<>]* )target\s*=([\'"])\w+\2\s*([^<>]*)>/', '<$1$3>', is_file($this->Text)?file_get_contents($this->Text):$this->Text), '</',$tag,'>';
 	}
 	/**
 	 * @ignore

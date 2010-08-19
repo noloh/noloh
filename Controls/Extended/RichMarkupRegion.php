@@ -228,7 +228,7 @@ class RichMarkupRegion extends MarkupRegion
 			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
         }
         $tag = $this->GetSearchEngineTag();
-		echo '<', $tag, Control::SearchEngineShow(true),'>', str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $text);
+		echo '<', $tag, Control::SearchEngineShow(true),'>', preg_replace(array('/<Nendl>/', '/<NQt2>/', '/<NQt1>/', '/<([^<>]* )target\s*=([\'"])\w+\2\s*([^<>]*)>/'), array("\n", "\"", "'", '<$1$3>'), $text);
 		foreach($this->ComponentSpace as $component)
 			if($component instanceof Component)
 				$component->SearchEngineShow();
