@@ -171,7 +171,7 @@ abstract class Component extends Object
 			elseif(is_string($generation))
 			{
 				$parent = GetComponentById($this->ParentId);
-				return $parent instanceof $generation ? $parent : $parent->GetParent($generation);
+				return $parent ? ($parent instanceof $generation ? $parent : $parent->GetParent($generation)) : null;
 			}
 			elseif(is_array($generation))
 			{
