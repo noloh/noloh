@@ -110,14 +110,14 @@ class RichMarkupRegion extends MarkupRegion
 //				if($info[1] == "tools_services")
 //					Alert("Blah: " . $this->Eventees["N30i1"][2]);
 				if(isset($info[0]))
-					$eventees[] = &new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
+					$eventees[] = new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
 //				else
 //					file_put_contents('/tmp/snakeinthegrass', var_export($info, true), FILE_APPEND);
 			}	
 		else 
 			foreach($this->Eventees as $id => $info)
 				if($info[1] == $byValue)
-					$eventees[] = &new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
+					$eventees[] = new Eventee($id, $info[0], $info[1], $info[2], $this->Id);
 		return $eventees;
 	}
 	/**

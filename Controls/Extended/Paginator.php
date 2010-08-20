@@ -353,7 +353,7 @@ class Paginator extends RichMarkupRegion implements Countable
 					$object->CSSDisplay = 'inline';
 					break;
 				case 'pages':  
-					$object = $this->Pages = &new Panel(0, 0, null, null);
+					$object = $this->Pages = new Panel(0, 0, null, null);
 					$object->CSSDisplay = 'inline';
 					break;
 				case 'status': 

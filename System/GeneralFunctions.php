@@ -125,7 +125,7 @@ function AddNolohScriptSrc($src, $browserSpecific = false)
 function QueueClientFunction(Component $component, $functionName, $paramsArray=array(), $replace=true, $priority=Priority::Medium)
 {
     $objId = $component->Id;
-	if($GLOBALS['_NQueueDisabled'] != $objId)
+	if(!isset($GLOBALS['_NQueueDisabled']) || $GLOBALS['_NQueueDisabled'] != $objId)
 	{
 		if(!isset($_SESSION['_NFunctionQueue'][$objId]))
 			$_SESSION['_NFunctionQueue'][$objId] = array();

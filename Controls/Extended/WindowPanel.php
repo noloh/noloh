@@ -189,7 +189,7 @@ class WindowPanel extends Panel
 				if(!$button instanceof Image)
 				{
 					if(is_string($button))
-						$button = &new Image($button);
+						$button = new Image($button);
 				}	
 				$button->SetLocation($left, $top);
 				$button->ReflectAxis('x');
@@ -203,7 +203,9 @@ class WindowPanel extends Panel
 				}
 			}
 			if(isset($this->Buttons[$index]))
-				$left += $this->Buttons[$index]->GetWidth() + 5;		
+				$left += $this->Buttons[$index]->GetWidth() + 5;	
+			
+			unset($button);	
 		}
 //		if($height = $this->GetHeight())
 //			$this->SetHeight($height);

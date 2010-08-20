@@ -42,7 +42,7 @@ class TableRow extends Control
 	public function AddColumn($column)
 	{	
 		if(!($column instanceof TableColumn))
-			$column = &new TableColumn($column);
+			$column = new TableColumn($column);
 		
 		$this->Columns->Add($column, true);
 	}

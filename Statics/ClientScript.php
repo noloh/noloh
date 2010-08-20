@@ -37,7 +37,7 @@ final class ClientScript
 	static function Queue($component, $codeOrFunction, $paramsArray=array(), $replace=true, $priority=Priority::Medium)
 	{
 		$id = $component->Id;
-		if($GLOBALS['_NQueueDisabled'] != $id)
+		if(!isset($GLOBALS['_NQueueDisabled']) || $GLOBALS['_NQueueDisabled'] != $id)
 		{
 			if(preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
 				$paramsArray = null;

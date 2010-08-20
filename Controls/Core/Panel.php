@@ -34,7 +34,7 @@ class Panel extends Control
 		parent::Control($left, $top, null, null);
 		if($implicitObject == null)
 			$this->Controls = new ArrayList();
-		elseif($implicitObject == $this)
+		elseif($implicitObject === $this)
 			$this->Controls = new ImplicitArrayList();
 		else 
 			$this->Controls = new ImplicitArrayList($implicitObject);

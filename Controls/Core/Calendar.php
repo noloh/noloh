@@ -74,15 +74,16 @@ class Calendar extends Panel
 		$this->Controls->AddRange($this->DateDisplay, $leftYear, $rightYear, $leftMonth, $rightMonth);
 		for($i=6; $i>=0; --$i)
 		{
-			$this->Controls->Add($lbl = &new Label($daysOfWeek[$i], $i*31, 33, 31));
-			$lbl->SetCSSClass('NCalColHead');
+			$this->Controls->Add(new Label($daysOfWeek[$i], $i*31, 33, 31))
+				->SetCSSClass('NCalColHead');
 		}
 		for($i=1; $i<7; ++$i)
 			for($j=0; $j<7; ++$j)
 			{
-				$this->Controls->Add($lbl = &new Label('', $j*31, 33+23*$i, 31));
+				$this->Controls->Add($lbl = new Label('', $j*31, 33+23*$i, 31));
 				$lbl->SetCSSClass('NCalCell');
 				$lbl->SetMouseUp(new ClientEvent('_NCalSlctDt(\''.$this->Id.'\');'));
+				unset($lbl);
 			}
 		$this->SetTimestamp($timestamp);
 	}
