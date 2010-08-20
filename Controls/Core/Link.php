@@ -327,7 +327,7 @@ class Link extends Label
 	function SearchEngineShow()
 	{
 		if($this->Destination !== '#')
-			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.$this->TokenString()) : $this->Destination, '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
+			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SERVER['PHP_SELF'].'?'.htmlspecialchars($this->TokenString())) : htmlspecialchars($this->Destination), '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
 		else 
 		{
 			parent::SearchEngineShow();

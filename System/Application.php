@@ -543,7 +543,14 @@ final class Application extends Object
 			if($trails !== false && isset($trails[$tokenString]))
 				foreach($trails[$tokenString] as $key => $info)
 					if(time()-$info[1] < $expiration)
-						$tokenLinks .= '<LI><A href="' . str_replace('&', '%26', $key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</A></LI> ';
+					{
+						$href = $key[0]=='?'?(System::FullAppPath().$key):$key;
+						$pos = strpos($href, '?');
+						if($pos !== false)
+							$href = substr($href, 0, $pos) . htmlspecialchars(substr($href, $pos));
+						$tokenLinks .= '<LI><A href="' . $href . '">' . $info[0] . '</A></LI> ';						
+//						$tokenLinks .= '<LI><A href="' . str_replace('&', '%26', $key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</A></LI> ';						
+					}
 		}
 		NolohInternal::NonstandardShowQueues();
 		$this->WebPage->SearchEngineShow('<UL>'.$tokenLinks.'</UL>');
