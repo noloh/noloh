@@ -145,7 +145,7 @@ final class NolohInternal
             {
                     if(!isset($obj))
                     	$obj = Component::Get($objId);
-					$nameValPairsString .= call_user_func_array(array($obj, array_pop($val)), $val) . ',';
+					$nameValPairsString .= '\''.$name.'\',' . call_user_func_array(array(&$obj, array_shift($val)), $val) . ',';
             }
 			elseif(is_bool($val))
 				$nameValPairsString .= '\''.$name.'\','.($val?'true':'false').',';

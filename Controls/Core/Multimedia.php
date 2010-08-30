@@ -222,7 +222,7 @@ class Multimedia extends Control
 		
 		$tmpStr .= '</OBJECT>';
 		//Terrible way of doing this, but width and height gets reset
-		return str_replace("'", "\\'", $tmpStr);
+		return '\'' . str_replace("'", "\\'", $tmpStr) . '\'';
 	}
 	/**
 	 * @ignore
