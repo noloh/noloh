@@ -41,6 +41,9 @@ class ListViewItem extends Panel //extends Component
 	public $SubItems;
 	private $ListViewId;
 	private $Value;
+	private $SubItemsHack = array();
+	//Possible Alternatives Excess, Extra
+//	private $Surplus;
 	/**
 	 * Constructor for ListViewItem
 	 * @param mixed $objOrText An optional initial SubItem for the ListViewItem.
@@ -51,8 +54,12 @@ class ListViewItem extends Panel //extends Component
 	{
 		parent::Panel(null, null, '100%', $height, $this);
 		$this->SetLayout(Layout::Relative);
-		$this->SubItems = &$this->Controls;
-		$this->SubItems->AddFunctionName = 'AddSubItem';
+		$this->SubItems = new ImplicitArrayList($this, 'AddSubItem');
+//		$this->SubItems = &$this->Controls;
+//		$this->SubItems->AddFunctionName = 'AddSubItem';
+		$this->SubItems->RemoveFunctionName = 'RemoveSubItem';
+			
+		$this->Scrolling = false;
 		if($objOrText != null)
 			$this->AddSubItem($objOrText);
 	}
@@ -97,7 +104,7 @@ class ListViewItem extends Panel //extends Component
 				{
 					if($cols[$j] == $i++)
 					{
-						$this->CreateSubItem($val);
+						$subItem = $this->CreateSubItem($val);
 						++$j;
 					}
 				}
@@ -105,29 +112,61 @@ class ListViewItem extends Panel //extends Component
 			else
 			{
 				foreach($objOrText as $val)
-					$this->CreateSubItem($val);
+					$subItem = $this->CreateSubItem($val);
 			}
 		}
 		else
-			$this->CreateSubItem($objOrText);
+			$subItem = $this->CreateSubItem($objOrText);
+			
 		if($this->ListViewId != null)
-			GetComponentById($this->ListViewId)->Update($this);
+			$this->GetListView()->Update($this, $this->SubItems->Count() - 1);
+		return $subItem;
 	}
+	/**
+	* @ignore
+	*/
+	function RemoveSubItem($element)
+	{
+		$this->Controls->Remove($element);
+		$this->SubItems->Remove($element, true);
+		ClientScript::Queue($this, '_NRem', array($element->Id . '_W'), false);
+	}
+	/**
+	* @ignore
+	*/
 	private function CreateSubItem($objectOrText)
 	{
 		if(!is_object($objectOrText) || $objectOrText == null)
-			$object = new Label($objectOrText, null, 0, null, '100%');
+//			$object = new Label($objectOrText, null, 0, null, '100%');
+			$object = new Label($objectOrText, null, null, null, null);
 		else
 		{
-			$object = new Panel(null, 0, 1, '100%');
-			$object->Controls->Add($objectOrText);
-			if(($height = $objectOrText->GetHeight()) > $this->GetHeight())
-				$this->SetHeight($height);
+			$object = $objectOrText;
 		}
+		$object->Layout = Layout::Relative;
 		$this->SubItems->Add($object, true);
 		$object->SetCSSClass('NLVSubItem');
+//		$this->ShowSubItem($object);
 		return $object;
 	}
+	/**
+	* @ignore
+	*/
+	function ShowSubItem($subItem)
+	{
+		if($this->GetShowStatus()!==0)
+		{
+			$initial = "'className','NLVWrap', 'style.position','relative'";
+			NolohInternal::Show('DIV', $initial, $this, $this->Id, $subItem->Id . '_W');
+		}
+		else
+			$this->SubItemsHack[] = $subItem;
+		$this->Controls->Add($subItem, true);
+	}
+	/**
+	* @ignore
+	*/
+	function GetAddId($obj)	{return $obj->Id . '_W';}
 	/**
 	 * Sets the Value of this ListViewItem.
 	 * @param mixed $value
@@ -153,6 +192,15 @@ class ListViewItem extends Panel //extends Component
 		if($eventTypeAsString === 'Click') 
 			return '_NLVSlct("' . $this->Id . '");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
+	}
+	function Show()
+	{
+		parent::Show();
+		$initial = "'className','NLVWrap', 'style.position','relative'";
+//		$initial = "'className','NLVWrap'";
+		foreach($this->SubItemsHack as $subItem)
+			NolohInternal::Show('DIV', $initial, $this, $this->Id, $subItem->Id . '_W');
+		unset($this->SubItemsHack);
 	}
 }		
 ?>

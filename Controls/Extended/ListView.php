@@ -25,6 +25,7 @@
  */
 class ListView extends Panel
 {
+	static $Ordered;
 	/**
 	 * @ignore
 	 */
@@ -52,14 +53,16 @@ class ListView extends Panel
 	private $ApproxCount;
 	private $HeightSpacer;
 	private $DataColumns;
+	private $PrevColumn;
+	private $ExcessSubItems;
 	/**
 	 * @ignore
 	 */
 	protected $ColumnsPanel;
-	/**
+/*	/**
 	 * @ignore
 	 */
-	protected $LVItemsQueue = array();
+//	protected $LVItemsQueue = array();
 	/**
 	 * @ignore
 	 */
@@ -83,35 +86,55 @@ class ListView extends Panel
 	 */
 	function ListView($left=0, $top=0, $width=300, $height=200)
 	{
-		parent::Panel($left, $top, $width, $height)/*, $this)*/;
+		parent::Panel($left, $top, $width, null)/*, $this)*/;
+		$this->Scrolling = false;
 		$this->ColumnsPanel = new Panel(0, 0, $width, 28, $this);
-		$this->ColumnsPanel->CSSBackground_Image = "url(". System::ImagePath() . "Std/HeadBlue.gif)";
-		$this->ColumnsPanel->CSSBackground_Repeat = "repeat-x";
+		$this->ColumnsPanel->CSSBackgroundImage = "url(". System::ImagePath() . "Std/HeadBlue.gif)";
+		$this->ColumnsPanel->CSSBackgroundRepeat = "repeat-x";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;
-		$this->BodyPanelsHolder = new Panel(0, $this->ColumnsPanel->Bottom, $width, $height - $this->ColumnsPanel->Height);
+		$this->BodyPanelsHolder = new Panel(0, 0, $width, $height - $this->ColumnsPanel->Height);
 		$this->BodyPanelsHolder->Scrolling = System::Auto;
-		$this->InnerPanel = new Panel(0, 0, null, 'auto', $this);
+		
+		$this->ColumnsPanel->Layout = $this->BodyPanelsHolder->Layout = Layout::Relative;
+		$this->InnerPanel = new Panel(0, 0, $this->Width, null, $this);
 		$this->InnerPanel->Layout = Layout::Web;
 		$this->BodyPanelsHolder->Scrolling = System::Auto;
+		//ListViewItems
 		$this->ListViewItems = &$this->InnerPanel->Controls;
 		$this->ListViewItems->AddFunctionName = 'AddListViewItem';
+		$this->ListViewItems->RemoveFunctionName = 'RemoveListViewItem';
 		$this->ListViewItems->ClearFunctionName = 'ClearListViewItems';
 		$this->ListViewItems->InsertFunctionName = 'InsertListViewItem';
 		$this->BodyPanelsHolder->Controls->Add($this->InnerPanel);
 		//Shift With Outer Panel
 		$this->ColumnsPanel->Shifts[] = Shift::WidthWith($this, Shift::Width);
-		//$this->ColumnsPanel->Shifts[] = Shift::With($this, Shift::Width, Shift::Width);
 		$this->BodyPanelsHolder->Shifts[] = Shift::WidthWith($this, Shift::Width);
-		//$this->BodyPanelsHolder->Shifts[] = Shift::With($this, Shift::Width, Shift::Width);
-		
+		$this->SetHeight($height);
+		//Line
 		$this->Line = new Label('', 0, 0, 3, '100%');
 		$this->Line->Visible = false;
 		$this->Line->BackColor = '#808080';
 		$this->Line->ParentId = $this->Id;
-		$this->Controls->AddRange($this->ColumnsPanel, /*$this->InnerPanel*/ $this->BodyPanelsHolder);
+		$this->Controls->AddRange($this->ColumnsPanel, $this->BodyPanelsHolder);
 		$this->ModifyScroll();
 	}
+	/*function HandleColumns()
+	{
+		$args = func_get_args();
+	    $invocation = InnerSugar::$Invocation;
+	    $tail = InnerSugar::$Tail;
+	    if($invocation == InnerSugar::Get)
+	    {
+	        switch($tail)
+	        {
+	            case 'Everything':
+	                return 42;
+	                break;
+	            default: throw new SugarException();
+	        }
+	    }
+	}*/
 	/**
 	 * Returns an ArrayList containing the ColumnHeaders of the ListView. ColumnHeaders should be added to this ArrayList
 	 * @return ArrayList
@@ -132,51 +155,55 @@ class ListView extends Panel
 	 */
 	function AddColumn($text, $width = System::Auto)
 	{
-		$count = $this->Columns->Count();
-		if(is_string($text) || is_int($text))
-			$this->Columns->Add($column = &new ColumnHeader($text, (($count > 0)?$this->Columns[$count - 1]->GetRight():0), $width, $this->ColumnsPanel->GetHeight()), true, true);
-//			$this->Columns->Add($column = &new ColumnHeader($text, 0, $width, $this->ColumnsPanel->GetHeight()), true, true);
-		elseif($text instanceof ColumnHeader)
-		{
-			$this->Columns->Add($column = &$text, true);
-			if($text->GetLeft() == System::Auto)
-				$text->SetLeft($count > 0?$this->Columns[$count - 1]->GetRight():0);
-//			$text->SetLeft(0);
-		}
+//		$column = (is_string($text) || is_int($text))
+//			? new ColumnHeader($text, 0, $width, $this->ColumnsPanel->GetHeight())
+		$column = ($text instanceof ColumnHeader)? $text: new ColumnHeader($text, 0, $width, $this->ColumnsPanel->GetHeight());
+		
 		if($column)
 		{
-//		$column->SetLayout(Layout::Relative);
-//		$column->CSScssFloat = 'left';
-		if(($right = $column->GetRight()) > $this->GetWidth())
-		$right = $column->GetRight();
-		$this->InnerPanel->SetWidth($right);
-		$this->MakeColumnShift($column);
-		$column->SetListView($this->Id);
-		$this->ColumnsPanel->BringToFront();
-		$column->SizeHandle->ShiftStart = new ClientEvent("_NLVResizeStart('{$this->Line->Id}', '$column->Id', '{$this->InnerPanel->Id}');");
-//		$column->SizeHandle->ShiftStart = new ClientEvent("_NLVResizeStart('{$this->Line->Id}', '$column->Id', '{$this->InnerPanel->Id}');return;");
-		$column->SizeHandle->ShiftStop = new ClientEvent('_NLVResizeEnd');
-//		$this->Line->Shifts[] = Shift::With($column->SizeHandle, Shift::Left);
-		$this->Line->Shifts[] = Shift::LeftWith($column->SizeHandle, Shift::Left);
+			$this->Columns->Add($column, true);
+			$column->SetLayout(Layout::Relative);
+			$column->CSSFloat = 'left';
+			$this->BondColumn($column);
+//			$this->ColumnsPanel->BringToFront();
+			$column->SetListView($this->Id);
+			$column->ShiftStart = new ClientEvent('_NLVResizeStart', $this->Line->GetId(), $column->GetId(), $this->InnerPanel->GetId());
+			$column->ShiftStop = new ClientEvent('_NLVResizeEnd');
+			$this->Line->Shifts[] = Shift::LeftWith($column, Shift::Width);
+			ClientScript::Queue($column, '_NHndlClmn', array($column, $this->InnerPanel));
 		}
-		foreach($this->LVItemsQueue as $key => $listViewItem)
+		/*foreach($this->LVItemsQueue as $key => $listViewItem)
 			if($this->Update($listViewItem))
-				unset($this->LVItemsQueue[$key]);
+				unset($this->LVItemsQueue[$key]);*/
+		if(isset($this->ExcessSubItems))
+		{
+			foreach($this->ExcessSubItems as $key => $listViewItem)
+			{
+				if($listViewItem->GetListView())
+					$this->Update($listViewItem);
+				unset($this->ExcessSubItems[$key]);
+			}
+		}	
+		return $column;
 	}
-	/**
-	 * @ignore
-	 */
-	protected function MakeColumnShift($column)
+	private function BondColumn($object, $column=null/*, $shift=true*/)
 	{
-		if(($count = $this->Columns->Count) > 1){
-			//$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2]);//, Shift::Mirror, 1, null, -1);
-//			$column->Shifts[] = Shift::With($this->Columns[$count - 2], Shift::Left);//, Shift::Mirror, 1, null, -1);
-			$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Width, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
-			$column->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Left, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
-//			$column->Shifts[] = Shift::LeftWith($this->Line);//, Shift::Mirror, 1, null, -1);
+		if($object instanceof Control)
+		{
+			$object->Toggle = System::Continuous;
+			$select = $object->GetSelect();
+			$object->Select = null;
+			$object->Select['LV'] = new ServerEvent($this, 'Sort', $column === null?$object:$column);
+			$object->Select['LV'][] = $select;	
+			
+			$this->InnerPanel->Shifts[] = Shift::WidthWith($object);
+			/*if($shift && (($count = $this->Columns->Count) > 1))
+			{
+				$object->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Width, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
+				$object->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Left, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
+			}*/
+			
 		}
-		$column->SizeHandle->Shifts[] = Shift::Left($column->SizeHandle);
-		$column->SizeHandle->Shifts[] = Shift::Width($column);
 	}
 	/**
 	 * @ignore
@@ -198,20 +225,19 @@ class ListView extends Panel
 				$GLOBALS['_NLVCols'] = $previousCols;
 				
 				if(is_array($listViewItem))
-				{
-					$this->InsertListViewItem($listViewItem[0], $listViewItem[1]);
-					return;
-				}
+					return $this->InsertListViewItem($listViewItem[0], $listViewItem[1]);
 			}
 			else
 				$listViewItem = new ListViewItem($listViewItem);
 		}
 		$this->ListViewItems->Add($listViewItem, true);
-		$this->SetItemProperties($listViewItem);
-		/*
-		if($tmpSubItemCount > $tmpColCount)
-			if(empty($this->LVItemsQueue["{$listViewItem->Id}"])) 
-				$this->LVItemsQueue["{$listViewItem->Id}"] = $listViewItem;*/
+		$listViewItem->SetListView($this);
+		return $this->SetItemProperties($listViewItem);
+	}
+	function RemoveListViewItem($listViewItem)
+	{
+		$this->ListViewItems->Remove($listViewItem, true);
+		$listViewItem->SetListView(null);
 	}
 	/**
 	 * @ignore
@@ -219,46 +245,44 @@ class ListView extends Panel
 	function InsertListViewItem($listViewItem, $idx)
 	{
 		$this->ListViewItems->Insert($listViewItem, $idx, true);
-		$this->SetItemProperties($listViewItem);
+		$listViewItem->SetListView($this);
+		return $this->SetItemProperties($listViewItem);
 	}
 	/**
 	 * @ignore
 	 */
-	function Update(ListViewItem $listViewItem=null, $startColumn=null/*, $addToQueue=true*/)
+	function Update(ListViewItem $listViewItem=null, $startColumn=null)
 	{
+		$this->SetItemProperties($listViewItem, $startColumn);
 		return true;
-		/*//Need to change this function to allow for more optimized adding of subcolumns,
-		//Currently it iterates throught all subcolumns, but should only iterate through NEW subcolumns
-		$tmpColCount = $this->Columns->Count();
-		$tmpIndex = $this->ListViewItems->IndexOf($listViewItem);
-		if($tmpIndex != -1)//null))
-		{
-			$tmpSubItemCount = $listViewItem->SubItems->Count();
-			for($i=0; ($i<$tmpSubItemCount && $i < $tmpColCount); ++$i)
-			{
-				$this->BodyPanels[$i]->Controls[$tmpIndex] = $listViewItem->SubItems[$i];
-				$this->BodyPanels[$i]->Controls[$tmpIndex]->SetLeft(0);
-				}
-			}
-			if($tmpSubItemCount <= $tmpColCount)
-				return true;
-		}
-		return false;*/
 	}
 	//Function will Consolidate adding parts of Update() and AddListViewItem()
-	private function SetItemProperties(ListViewItem $listViewItem)
+	private function SetItemProperties(ListViewItem $listViewItem, $startColumn = null)
 	{
 		$subItemCount = $listViewItem->SubItems->Count();
 		$colCount = $this->Columns->Count();
-		$listViewItem->SetListView($this);
+		$start = $startColumn !== null?$startColumn:0;
+//		$listViewItem->SetListView($this);
+		if($subItemCount > $colCount)
+		{
+			if(!isset($this->ExcessSubItems))
+				$this->ExcessSubItems = array();
+			
+			$this->ExcessSubItems[$listViewItem->Id] = $listViewItem;
+			//$listViewItem->SetSurplus($true);
+		}
+			
 		if($colCount > 0 && $subItemCount > 0)
 		{
-			for($i=0;$i<$subItemCount && $i < $colCount;++$i)
+			$max = ($colCount > $subItemCount)?$subItemCount:$colCount;
+			for($i=$start; $i < $max; ++$i)
 			{
-				if($listViewItem->SubItems->Elements[$i] !== null)
+				if(!isset($listViewItem->Controls->Elements[$i]))
 				{
-					$listViewItem->SubItems->Elements[$i]->SetLeft($this->Columns->Elements[$i]->GetLeft());
-					$listViewItem->SubItems->Elements[$i]->SetWidth($this->Columns->Elements[$i]->GetWidth());
+					$column = $this->Columns->Elements[$i];
+					$subItem = $listViewItem->SubItems->Elements[$i];
+					$listViewItem->ShowSubItem($subItem);
+					ClientScript::Queue($this, '_NLVSetItem', array($subItem, $column), false);
 				}
 			}
 		}
@@ -267,6 +291,7 @@ class ListView extends Panel
 			$listViewItem->UpdateEvent('Click');
 			NolohInternal::SetProperty('SelCls', $this->SelectCSS, $listViewItem);
 		}
+		return $listViewItem;
 	}
 	private function ModifyScroll()
 	{
@@ -278,7 +303,10 @@ class ListView extends Panel
 	public function ClearListViewItems()
 	{
 		$this->ListViewItems->Clear(true);
-		$this->LVItemsQueue = array();
+		if(isset($this->ExcessSubItems))
+			unset($this->ExcessSubItems);
+//		$this->LVItemsQueue = array();
+//		$this->LVItemsQueue = array();
 	}
 	/**
 	 * Clears both the Columns and ListViewItems of the ListView
@@ -308,7 +336,8 @@ class ListView extends Panel
 	 */
 	function Show()
 	{
-		AddNolohScriptSrc('ListView.js');
+		ClientScript::AddNOLOHSource('ListView.js');
+		ClientScript::AddNOLOHSource('Dimensions.js', true);
 		parent::Show();
 	}
 	/**
@@ -351,14 +380,14 @@ class ListView extends Panel
 			$numRows = new DataCommand($dataSource->GetConnection(), 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);
 			$numRows = $numRows->Execute();
 			$numRows = $numRows->Data[0][0];
-			if(!$this->HeightSpacer)
+			
+			if($this->HeightSpacer)
+				$this->HeightSpacer->SetHeight($numRows * 20);
+			else
 			{
 				$this->HeightSpacer = new Label('', 0, 0, 1, $numRows * 20);
-//				$this->HeightSpacer->SetVisible(false);
 				$this->HeightSpacer->ParentId = $this->BodyPanelsHolder->Id;
 			}
-			else
-				$this->HeightSpacer->SetHeight($numRows * 20);
 			$this->ApproxCount = $numRows;
 			$sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
 			$this->DataSource = new DataCommand($dataSource->GetConnection(), $sql, $dataSource->ResultType);
@@ -474,17 +503,25 @@ class ListView extends Panel
 	 */
 	public function Sort($column, $ascending=true)
 	{
-		if($column instanceof ColumnHeader)
+		//TODO Allow Specifying of Property you want to sort on a per column basis.
+		if($column instanceof Control)
 			$index = $this->Columns->IndexOf($column);
 		elseif(is_int($column))
 			$index = $column;
 		else return;
-		$count = $this->Columns->Count;
-		for($i=0; $i < $count; ++$i)
-		{
-			if($this->Columns[$i]->OrderArrow != null)
-				$this->Columns[$i]->OrderArrow->SetVisible(false);
-		}
+
+		if(isset($this->PrevColumn) && $column != $this->PrevColumn)
+			$this->PrevColumn->SetSelected(false);
+			
+		if(isset($this->SortedBy) && $this->SortedBy['column'] === $column->Id)
+			$ascending = $this->SortedBy['sorted'] = ($this->SortedBy['sorted'] == self::Ascending)?self::Descending:self::Ascending;
+		else
+			$this->SortedBy = array('column' => $column->Id, 'sorted' => $ascending);
+		
+		self::$Ordered = $ascending;
+		
+		$this->PrevColumn = $column;
+
 		if($this->DataSource != null && !$this->StoredInMemory && $this->DataFetch['Bind']->Enabled)
 		{
 			$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/i', '$1', $this->DataSource->GetSqlStatement());
@@ -503,7 +540,6 @@ class ListView extends Panel
 			$this->CurrentOffset = 0;
 			$this->DataFetch['Bind']->Enabled = true;
 			$this->DataFetch['Bind']->Exec();
-			//System::Log($result);
 			return;
 		}		
 		$rows = array();
@@ -515,12 +551,10 @@ class ListView extends Panel
 		else
 			arsort($rows);
 		
-		$clientArray = '[';
 		foreach($rows as $key => $val)
-			$clientArray .= '\'' . $this->ListViewItems->Elements[$key]->Id .'\',';
+			$clientArray[] = $this->ListViewItems->Elements[$key]->Id;
 		
-		$clientArray = rtrim($clientArray, ',') . ']';
-		QueueClientFunction($this, '_NLVSort', array('"'.$this->InnerPanel->Id.'",'.$clientArray));
+		ClientScript::Queue($this, '_NLVSort', array($this->InnerPanel, $clientArray));
 	}
 	/**
 	 * @ignore
