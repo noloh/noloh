@@ -45,18 +45,21 @@ class Tab extends Panel
 		if($leftImage)
 		{
 			$this->LeftImage = ($leftImage instanceof Image)?$leftImage:new Image($leftImage);
+			$this->LeftImage->Text = '';
 			$this->Controls->Add($this->LeftImage);
 		}
 		if($mainImage)
 		{
 			$this->MainImage = ($mainImage instanceof Image)?$mainImage:new Image($mainImage);
+			$this->MainImage->Text = '';
 			$this->Controls->Add($this->MainImage);
 		}
 		if($rightImage)
 		{
 			$this->RightImage = ($rightImage instanceof Image)?$rightImage:new Image($rightImage);
+			$this->RightImage->Text = '';
 			$this->Controls->Add($this->RightImage);
-		}	
+		}
 		$this->SetOrientation($orientation);
 	}
 	/**
