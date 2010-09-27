@@ -270,6 +270,60 @@ final class System
 		}
 		return $what;
 	}
+	/**
+	* System::Modal will Add and Modal a Control. Useful for when wanting to 
+	* focus on a particular Control. Clicking on the outside of the Modal will 
+	* close it. If no Container is specified, Modal will add to the WebPage.
+	*
+	* <code>
+	* //Basic Usage
+	* $first = new Panel(0, 0, 400, 400);
+	* $first->BackColor = Color::Red;
+	* System::Modal($first);
+	* </code>
+	* Alternatively you can Modal in a specified Panel
+	* <code>
+	* $this->Controls->Add($first = new Panel(0, 0, 600, 600))
+	* 	->BackColor = Color::Red;
+	* $second = new Panel(0, 0, 400, 400);
+	* $second->BackColor = Color::Green;
+	* System::Modal($second, $first);
+	* </code>
+	* 
+	* @param Control $obj The Control you want to Modal
+	* @param Panel $container An alternative Panel you wish to Modal in
+	* @param mixed $backColor The BackColor of your Modal
+	* @param mixed $duration The Duration your Modal opens/closes
+	* @param mixed $opacity The Opacity of your Modal's background layer
+	* @return Panel
+	*/
+	static function Modal($obj, $container=null, $backColor='#999999', $duration=500, $opacity=80)
+	{
+		$modal = new Panel(0, 0, '100%', '100%');
+		$modal->Scrolling = System::Full;
+		$backLabel = new Label('', null, null, '100%', '100%');
+		$backLabel->ParentId = $modal->Id;
+		$backLabel->BackColor = $backColor;
+		$backLabel->Opacity = 0;
+		$backLabel->SendToBack();
+		Animate::Opacity($backLabel, $opacity, $duration);
+		
+		$close = new ServerEvent('Animate', 'Opacity', $modal, Animate::Oblivion, $duration);
+		$obj->Leave[] = $close;
+		$backLabel->Click = $close;
+		$modal->Click->Liquid = true;
+		$modal->DataValue = $backLabel;
+		$modal->Controls->Add($obj);
+		ClientScript::AddNOLOHSource('Layout.js');
+		ClientScript::Queue($obj, 'HAlign', array($obj));
+		ClientScript::Queue($obj, 'VAlign', array($obj));
+		
+		if($container && $container->HasProperty('Controls'))
+			$container->Controls->Add($modal);
+		else
+			WebPage::That()->Controls->Add($modal);
+		return $modal;
+	}
 	
 	/**
  	 * Returns the full system path to NOLOH
