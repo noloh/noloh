@@ -50,6 +50,11 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null)
 	{
 		$this->ResultType = $type;
+		if($callBack)
+		{
+			$object = isset($callBack['id'])?GetComponentById($callBack['id']): $callBack['class'];
+			$callArray = array($object, $callBack['function']);
+		}
 		if($type == Data::Postgres)
 		{
 			if($resultType == Data::Both)
@@ -63,34 +68,14 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			{
 				$this->Data = array();
 				$numRows = pg_numrows($resource);
-				if($callBack)
-				{
-					if(isset($callBack['id']))
-							$object = GetComponentById($callBack['id']);
-						else
-							$object = $callBack['class'];
-					$callArray = array($object, $callBack['function']);
-				}
 				for ($i=0; $i < $numRows; ++$i)
 				{
+					$data = pg_fetch_array($resource, $i, $resultType);
 					if(isset($callBack['constraint']))
-					{
-						$intersection = array();
-						$data = pg_fetch_array($resource, $i, $resultType);
-						$columns = $callBack['constraint']->GetColumns();
-						$count = count($columns);
-						for($columnIndex=0; $columnIndex < $count; ++$columnIndex)
-						{
-							//$local = $keys[$i];
-							if(isset($data[$columns[$columnIndex]]))
-								$intersection[$columns[$columnIndex]] = $data[$columns[$columnIndex]];
-						}
-						$this->Data[] = $intersection;
-//						$this->Data[] = array_intersect_key(pg_fetch_array($resource, $i, $resultType), array_flip($callBack['constraint']->GetColumns()));
+						$data = self::HandleConstraint($data, $callBack['constraint']);
 					
-					}
-					else
-						$this->Data[] = pg_fetch_array($resource, $i, $resultType);
+					$this->Data[] = $data;
+					
 					if($callBack)
 					{
 						$args = array_merge(array($this->Data[$i]), $callBack['params']);
@@ -99,8 +84,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 				}
 			}
 			else
-				$this->Data = pg_fetch_all($resource);
-			
+				$this->Data = pg_fetch_all($resource);	
 		}
 		elseif($type == Data::MySQL && is_resource($resource))
 		{
@@ -115,7 +99,17 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 //			for ($i=0; $i < $numRows; ++$i)
 //				$this->Data[] =  mysql_fetch_array($resource, $resultType);
 			while($row = mysql_fetch_array($resource, $resultType))
-				$this->Data[] = $row;
+			{
+				if(isset($callBack['constraint']))
+					$row = self::HandleConstraint($row, $callBack['constraint']);
+				
+				$this->Data[] = $row;	
+				if($callBack)
+				{
+					$args = array_merge(array($row), $callBack['params']);
+					call_user_func_array($callArray, $args);
+				}
+			}
 		}
 		elseif($type == Data::MSSQL && $resource !== true)
 		{
@@ -133,21 +127,43 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 				++$count;
 				$data[$count] = array();
 				while($row = mssql_fetch_array($resource, $resultType))
+				{
+					if(isset($callBack['constraint']))
+						$row = self::HandleConstraint($row, $callBack['constraint']);
 					$data[$count][] = $row;
+					if($callBack)
+					{
+						$args = array_merge(array($row), $callBack['params']);
+						call_user_func_array($callArray, $args);
+					}	
+				}
 			}while (mssql_next_result($resource));
 			mssql_free_result($resource);
 			
-			if($count > 0)
-				$this->Data = $data;
-			else
-				$this->Data = $data[0];		
-//			$numRows = mssql_num_rows($resource);
-//			for ($i=0; $i < $numRows; ++$i)
-//				$this->Data[] =  mssql_fetch_array($resource, $resultType);
+			$this->Data = ($count > 0)?$data:$data[0];
 		}
 		if(!$this->Data)
 			$this->Data = array();
 	}
+	private static function HandleConstraint($data, $constraint)
+	{
+		$intersection = array();
+		$columns = $constraint->GetColumns();
+		$count = count($columns);
+		for($columnIndex=0; $columnIndex < $count; ++$columnIndex)
+		{
+			//$local = $keys[$i];
+			if(isset($data[$columns[$columnIndex]]))
+				$intersection[$columns[$columnIndex]] = $data[$columns[$columnIndex]];
+		}
+		return $intersection;
+//		$this->Data[] = array_intersect_key(pg_fetch_array($resource, $i, $resultType), array_flip($callBack['constraint']->GetColumns()));			
+	}
+/*	/**
+	* 
+	* 
+	
+	function GetResource()	{return $this->Resource;}*/
 	/**
 	 * @ignore
 	 */
