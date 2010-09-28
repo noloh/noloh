@@ -187,6 +187,23 @@ class Image extends Control
 		parent::SetHeight($height);
 	}
 	/**
+	 * Returns the Text of this Image. This is used to provide textual descriptions to search engines or other clients that cannot interpret images. The default, System::Auto, uses a beautified version of the Path filename.
+	 * @return string
+	 */
+	function GetText()
+	{
+		$text = parent::GetText();
+		return $text ? substr($text,1) : System::Auto;
+	}
+	/**
+	 * Sets the Text of this Image. This is used to provide textual descriptions to search engines or other clients that cannot interpret images. The default, System::Auto, uses a beautified version of the Path filename.
+	 * @param string $text
+	 */
+	function SetText($text)
+	{
+		parent::SetText($text === System::Auto ? null : ('\''.$text));
+	}
+	/**
 	 * Conjure can be used to render your own images on the fly, e.g., for creating captuas. It lets you specify a callback function, which MUST
 	 * be static, whose first parameter is the image resource, and subsequent parameters can be anything you define. One can then call PHP's image 
 	 * magic functions on the image resource. Consider the following example:
@@ -247,10 +264,11 @@ class Image extends Control
 	function SearchEngineShow()
 	{
 		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true), ' alt="';
-		if($this->ToolTip || $this->Text)
-			echo $this->ToolTip, ($this->ToolTip && $this->Text) ? ' ' : '', $this->Text;
-		else
+		$text = $this->GetText();
+		if($text === System::Auto)
 			echo preg_replace(array('/\.\w+$/', '/\d[a-zA-Z]{0,2}$/', '/[0-9_]+/', '/([a-z])([A-Z])/'), array('', '', ' ', '$1 $2'), basename($this->Src));
+		elseif($this->ToolTip || $text)
+			echo $this->ToolTip, ($this->ToolTip && $text) ? ' ' : '', $text;
 		echo '">';
 	}
 	/**

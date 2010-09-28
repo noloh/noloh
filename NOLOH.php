@@ -14,6 +14,6 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  * Gets the current version of NOLOH
  * @return string
  */
-function GetNOLOHVersion() {return '1.7.607';}
+function GetNOLOHVersion() {return '1.7.608';}
 
 ?>
