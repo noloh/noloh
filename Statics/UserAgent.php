@@ -150,6 +150,13 @@ final class UserAgent
 		return php_sapi_name() === 'cli' && empty($_SERVER['REMOTE_ADDR']);
 	}
 	/**
+	 * Returns whether or not the user agent is a spider, e.g., a search bot.
+	 */
+	function IsSpider()
+	{
+		return $_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other';
+	}
+	/**
 	 * @ignore
 	 */
 	public static function IsWebKit()
