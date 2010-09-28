@@ -15,12 +15,24 @@ final class Application extends Object
 	 */
 	const Name = '@APPNAME';
 	private $WebPage;
+	
+	/**
+	 * @ignore
+	 */
+	public static function AutoStart()
+	{
+		$GLOBALS['_NAutoStart'] = true;
+		if(isset($GLOBALS['_NApplication']) && $GLOBALS['_NApplication'] instanceof Application)
+			$GLOBALS['_NApplication']->HandleFirstRun();
+		else
+			Application::Start();
+	}
 	/**
 	 * Starts the Application, optionally with some Configuration parameters.
 	 * @param mixed,... $dotDotDot 
 	 * @return Configuration
 	 */
-	public static function Start($dotDotDot=null)
+	public static function &Start($dotDotDot=null)
 	{
 		if(empty($GLOBALS['_NApp']))
 		{
@@ -40,14 +52,15 @@ final class Application extends Object
 					$reflect = new ReflectionClass('Configuration');
 					$config = $reflect->newInstanceArgs($args);
 				}
-				$_SESSION['_NConfiguration'] = $config;
+				$_SESSION['_NConfiguration'] = &$config;
 			}
             if($config->StartClass)
 			    new Application($config);
 			return $config;
 		}
 		else
-			return Configuration::That();
+//			return Configuration::That();
+			return $_SESSION['_NConfiguration'];
 		return false;
 	}
 	/**
@@ -100,7 +113,7 @@ final class Application extends Object
 		elseif(isset($_GET['_NFileRequest']))
 			File::SendRequestedFile($_GET['_NFileRequest']);
 		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && 
-			(!($host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
+			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
 		{
 			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 				$this->HandleIENavigation();
@@ -170,6 +183,7 @@ final class Application extends Object
 			phpinfo();
 			exit();
 		}
+		$home = null;
 		$_SESSION['_NVisit'] = -1;
 		$_SESSION['_NNumberOfComponents'] = 0;
 		$_SESSION['_NControlQueueRoot'] = array();
@@ -204,7 +218,7 @@ final class Application extends Object
 			$_SESSION['_NUserDir'] = true;
 		UserAgent::LoadInformation();
 		if($trulyFirst)
-			if(($_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other') || UserAgent::GetBrowser() === UserAgent::Links)
+			if(UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
 				$this->SearchEngineRun();
 			else 
 			{
@@ -528,10 +542,15 @@ final class Application extends Object
 	}
 	private function SearchEngineRun()
 	{
+		$GLOBALS['_NShowStrategy'] = false;
+		if(!isset($GLOBALS['_NAutoStart']))
+		{
+			$GLOBALS['_NApplication'] = $this;
+			return;
+		}
 		$this->HandleTokens();
 		++$_SESSION['_NVisit'];
 		$className = Configuration::That()->StartClass;
-		$GLOBALS['_NShowStrategy'] = false;
 		$this->WebPage = new $className();
 		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 		$tokenLinks = '';
@@ -591,6 +610,6 @@ function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Dis
 	Application::Start(new Configuration($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode));
 }
 
-register_shutdown_function(array('Application', 'Start'));
+register_shutdown_function(array('Application', 'AutoStart'));
 
 ?>
