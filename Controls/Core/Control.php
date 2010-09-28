@@ -40,6 +40,7 @@ abstract class Control extends Component
 	private $DataValue;
 	private $HTMLName;
 	private $Semantics;
+	private $Toggle;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -478,6 +479,15 @@ abstract class Control extends Component
 		$this->Enabled = $bool ? null : false;
 		NolohInternal::SetProperty('disabled', !$bool, $this);
 	}
+	
+	/**
+	* @ignore
+	*/
+	function SetToggle($toggles)
+	{
+		$this->Toggle = $toggles;
+	}
+	
 	/**
 	 * Returns whether the Control is Visible. Can be either a boolean value or System::Cloak. The difference between false and
 	 * System::Cloak only comes into play when a Layout::Web is used. Invisible Controls will not take up space, whereas Cloaked
@@ -688,9 +698,9 @@ abstract class Control extends Component
 	 */
 	function SetSelected($bool)
 	{
-		if(!($this instanceof Groupable || $this instanceof MultiGroupable))
-			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');
-		if($bool != $this->GetSelected())
+		/*if(!($this instanceof Groupable || $this instanceof MultiGroupable))
+			BloodyMurder('Cannot call SetSelected on an object not implementing Groupable or MultiGroupable');*/
+		if($bool != $this->GetSelected() || ($bool && $this->Toggle === System::Continuous))
 		{
 			$group = null;
 			if($this->GroupName !== null)
@@ -732,11 +742,13 @@ abstract class Control extends Component
 	function SetGroupName($groupName)
 	{
 		if($this->GroupName && !$groupName)
-			NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', '', $this);
+//			NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', '', $this);
+			NolohInternal::SetProperty($this instanceof MultiGroupable ? 'GroupM' : 'Group', '', $this);
 		$this->GroupName = $groupName;
 		if($group = GetComponentById($groupName))
 			if($group->GetShowStatus())
-				NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', $groupName, $this);
+//				NolohInternal::SetProperty($this instanceof Groupable ? 'Group' : 'GroupM', $groupName, $this);
+				NolohInternal::SetProperty($this instanceof MultiGroupable ? 'GroupM' : 'Group', $groupName, $this);
 			else
 				$group->WaitingList[] = $this->Id;
 	}

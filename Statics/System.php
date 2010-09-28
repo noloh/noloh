@@ -85,6 +85,11 @@ final class System
 	 */
 	const Vertical = 'vertical';
 	/**
+	* @ignore
+	* Possible Alternatives: Perpetual
+	*/
+	const Continuous = 2;
+	/**
 	 * @ignore
 	 */
 	const Kernel = 'Kernel';

@@ -91,6 +91,13 @@
 	padding-left:.3em;
 	white-space:nowrap;
 }
+.NLVWrap
+{
+	float: left;
+	position: relative;
+	overflow: hidden;
+	min-height: 10px;
+}
 .NLVSelect
 {
 	background-color:#011f43;

@@ -57,8 +57,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 */
 	function Add($element)
 	{
-		if(!($element instanceof Groupable || $element instanceof MultiGroupable))
-			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');
+		/*if(!($element instanceof Groupable || $element instanceof MultiGroupable))
+			BloodyMurder('Object Added to Group does not implement Groupable or MultiGroupable');*/
 		$element->SetGroupName($this->Id);
 		/*if($this->GetShowStatus())
 			NolohInternal::SetProperty('Group', $this->Id, $element);*/
@@ -368,7 +368,8 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 		for($i=0; $i<$listCount; ++$i)
 		{
 			$obj = &GetComponentById($this->WaitingList[$i]);
-			NolohInternal::SetProperty($obj instanceof Groupable ? 'Group' : 'GroupM', $this->Id, $obj);
+//			NolohInternal::SetProperty($obj instanceof Groupable ? 'Group' : 'GroupM', $this->Id, $obj);
+			NolohInternal::SetProperty($obj instanceof MultiGroupable ? 'GroupM' : 'Group', $this->Id, $obj);
 		}
 		$this->WaitingList = null;
 	}
