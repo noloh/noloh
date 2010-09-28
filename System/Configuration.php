@@ -16,7 +16,7 @@ class Configuration extends Object implements Singleton
 	public $TokenTrailsExpiration = 14;
 	public $DebugMode = true;
 	public $DefaultUnit = 'px';
-	
+	public $ShowURLFilename = 'Auto';
 	public $CSSReset;
 	public $CSSResetLegacyIE;
 	

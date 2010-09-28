@@ -217,6 +217,21 @@ final class Application extends Object
 		if($home)
 			$_SESSION['_NUserDir'] = true;
 		UserAgent::LoadInformation();
+		$config = Configuration::That();
+		if($config->ShowURLFilename !== 'Auto')
+		{
+			$fileName = basename($_SERVER['SCRIPT_FILENAME']);
+			$appears = preg_match('/'.$fileName.'$/i', $fullPath = System::FullAppPath());
+			if($appears != $config->ShowURLFilename)
+			{
+				header('HTTP/1.1 301 Moved Permanently');
+				if($appears)
+					header('Location: ' . rtrim($fullPath, $fileName));
+				else
+					header('Location: ' . rtrim($fullPath, '/') . '/' . $fileName);
+				exit();
+			}
+		}
 		if($trulyFirst)
 			if(UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
 				$this->SearchEngineRun();
