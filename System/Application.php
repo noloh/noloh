@@ -564,6 +564,9 @@ final class Application extends Object
 			return;
 		}
 		$this->HandleTokens();
+		global $_NSETokenChain, $_NSETokens;
+		$_NSETokenChain = array();
+		$_NSETokens = array();
 		++$_SESSION['_NVisit'];
 		$className = Configuration::That()->StartClass;
 		$this->WebPage = new $className();
@@ -583,12 +586,26 @@ final class Application extends Object
 						$pos = strpos($href, '?');
 						if($pos !== false)
 							$href = substr($href, 0, $pos) . htmlspecialchars(substr($href, $pos));
-						$tokenLinks .= '<LI><A href="' . $href . '">' . $info[0] . '</A></LI> ';						
-//						$tokenLinks .= '<LI><A href="' . str_replace('&', '%26', $key[0]=='?'?(System::FullAppPath().$key):$key) . '">' . $info[0] . '</A></LI> ';						
+						$tokenLinks .= '<LI><A href="' . $href . '">' . $info[0] . '</A></LI> ';
 					}
 		}
 		NolohInternal::NonstandardShowQueues();
-		$this->WebPage->SearchEngineShow('<UL>'.$tokenLinks.'</UL>');
+		$canonicalURL = '';
+		$chainCount = count($_NSETokenChain);
+		$tokenCount = count($_NSETokens);
+		if($chainCount || $tokenCount)
+		{
+			for($i=$chainCount-1; $i && (!isset($_NSETokenChain[$i]) || $_NSETokenChain[$i]!==false); --$i);
+			for(; $i<$chainCount && (!isset($_NSETokenChain[$i]) || $_NSETokenChain[$i]!==true); ++$i);
+			$count = count(URL::$TokenChain);
+			for(; $i<$count; ++$i)
+				unset(URL::$TokenChain[$i]);
+			foreach($_NSETokens as $key => $val)
+				unset($_SESSION['_NTokens']);
+			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
+			$canonicalURL = System::FullAppPath() . ($tokenString ? '?' . $tokenString : '');
+		}
+		$this->WebPage->SearchEngineShow($canonicalURL, '<UL>'.$tokenLinks.'</UL>');
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)

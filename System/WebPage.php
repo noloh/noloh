@@ -451,11 +451,13 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function SearchEngineShow($tokenLinks)
+	function SearchEngineShow($canonicalURL, $tokenLinks)
 	{
 		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><META http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>', $this->Title, "</TITLE>\r\n",
 			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '">',"\r\n",
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,'">',"\r\n";
+		if($canonicalURL)
+			echo '<LINK rel="canonical" href="', $canonicalURL, '">';
 		foreach($this->CSSFiles as $path)
 			echo '<LINK rel="stylesheet" type="text/css" href="', $path, '">';
 		echo '</HEAD><BODY><DIV>',"\r\n";

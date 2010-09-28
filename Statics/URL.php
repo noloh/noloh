@@ -68,6 +68,10 @@ final class URL
 	 */
 	static function GetToken($tokenName, $defaultValue=null)
 	{
+		if(isset($GLOBALS['_NShowStrategy']) && $GLOBALS['_NShowStrategy']===false && func_num_args()>1 &&
+		  isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] && 
+		  $_SESSION['_NTokens'][$tokenName] == $defaultValue)
+		  	$GLOBALS['_NSETokens'][$tokenName] = true;
 		return isset($_SESSION['_NTokens'][$tokenName]) && $GLOBALS['_NURLTokenMode'] ? $_SESSION['_NTokens'][$tokenName] : $defaultValue;
 	}
 	/**
@@ -106,9 +110,12 @@ final class URL
 	/**
 	 * @ignore
 	 */
-	function GetChainToken($index, $default=null)
+	function GetChainToken($index, $defaultValue=null)
 	{
-		return (isset(URL::$TokenChain[$index]) && $GLOBALS['_NURLTokenMode'])?URL::$TokenChain[$index]:$default;
+		if(isset($GLOBALS['_NShowStrategy']) && $GLOBALS['_NShowStrategy']===false && func_num_args()>1 &&
+		  isset(URL::$TokenChain[$index]) && $GLOBALS['_NURLTokenMode'])
+		  	$GLOBALS['_NSETokenChain'][$index] = (URL::$TokenChain[$index] == $defaultValue);
+		return (isset(URL::$TokenChain[$index]) && $GLOBALS['_NURLTokenMode']) ? URL::$TokenChain[$index] : $defaultValue;
 	}
 	/**
 	 * @ignore
