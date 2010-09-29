@@ -145,23 +145,24 @@ class DataConnection extends Object
 				$count = count($param);
 				if($count === 1)
 				{
-					$search[] = key($param);
+					$search[] = '/' . preg_quote(key($param), '/') . '\b/';
 					$replace[] = $this->ConvertValueToSQL(current($param));
 				}
 				elseif($count == 2)
 				{
-					$search[] = $param[0];
+					$search[] =  '/' . preg_quote($param[0], '/')  . '\b/';
 					$replace[] = $this->ConvertValueToSQL($param[1]);
 				}			
 			}
 			else
 			{
-				$search[] = '$' . $paramNum;
+				$search[] = '/\$' . $paramNum . '\b/';
 				$replace[] = $this->ConvertValueToSQL($param);
 			}
 			++$paramNum;
 		}
-		return str_replace($search, $replace, $sql);
+//		return str_replace($search, $replace, $sql);
+		return preg_replace($search, $replace, $sql);
 	}
 	private function GenerateFunction($spName, $paramArray=null)
 	{
