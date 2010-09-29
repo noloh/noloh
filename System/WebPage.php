@@ -118,14 +118,17 @@ abstract class WebPage extends Component
 	 */
 	function AddCSSFile($path)
 	{
-		$tmp = $_SESSION['_NPropertyQueue'];
-		unset($_SESSION['_NPropertyQueue']);
-		$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
-		//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\'';
-		NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
-		if($this->CSSFiles)
-			$this->CSSFiles->Add($path, true);
-		$_SESSION['_NPropertyQueue'] = $tmp;
+		if(!isset($this->CSSFiles) || !$this->CSSFiles->Contains($path))
+		{
+			$tmp = $_SESSION['_NPropertyQueue'];
+			unset($_SESSION['_NPropertyQueue']);
+			$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
+			//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\'';
+			NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
+			if($this->CSSFiles)
+				$this->CSSFiles->Add($path, true);
+			$_SESSION['_NPropertyQueue'] = $tmp;
+		}
 	}
 	/**
 	 * @ignore
