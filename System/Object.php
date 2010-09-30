@@ -91,22 +91,8 @@ abstract class Object
 		}
 		elseif(method_exists($this, $func = 'get' . $nm))
 			$ret = $this->$func();
-		elseif($parent = $this->GetParent())
-		{
-			$class = new ReflectionClass(get_class($parent)); 
-        	$staticProperties = $class->getStaticProperties(); 
-        	foreach ($staticProperties as $name => $value) 
-        	{ 
-        		if (preg_match('/^_In(.+)$/i', $name, $result)) 
-        		{
-        			if($parent->{$result[1]} == $this)
-        			{
-						$innerSugar = new InnerSugar($parent, array(), $result[1], $value);
-						$ret = $innerSugar->$nm;
-					}
-				}
-			}
-		}
+		elseif($innerSugar = $this->ParentInnerSugar())
+			$ret = $innerSugar->$nm;
 		else
 			BloodyMurder('Could not get property ' . $nm . ' because it does not exist or is write-only in the class ' . get_class($this) . '.');
 		return $ret;
@@ -135,22 +121,8 @@ abstract class Object
 			$this->$func($val);
 			return $val;
 		}
-		elseif($parent = $this->GetParent())
-		{
-			$class = new ReflectionClass(get_class($parent)); 
-        	$staticProperties = $class->getStaticProperties(); 
-        	foreach ($staticProperties as $name => $value) 
-        	{ 
-        		if (preg_match('/^_In(.+)$/i', $name, $result)) 
-        		{
-        			if($parent->{$result[1]} == $this)
-        			{
-						$innerSugar = new InnerSugar($parent, array(), $result[1], $value);
-						return $innerSugar->$nm = $val;
-					}
-				}
-			}
-		}
+		elseif($innerSugar = $this->ParentInnerSugar())
+			return $innerSugar->$nm = $val;
 		else
 			BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only in the class ' . get_class($this) . '.');
 	}
@@ -206,24 +178,23 @@ abstract class Object
 				if(is_object($obj) && method_exists($obj, $method))
 					call_user_func_array(array(&$obj, $method), $args);
 		}
-		elseif($parent = $this->GetParent())
+		elseif($innerSugar = $this->ParentInnerSugar())
+			call_user_func_array(array(&$innerSugar, $nm), $args);
+		else 
+			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist in, or is not in scope of, the class ' . get_class($this) . '.');
+	}
+	private function ParentInnerSugar()
+	{
+		if($this->HasProperty('ParentId') && ($parent = Component::Get($this->ParentId)))
 		{
 			$class = new ReflectionClass(get_class($parent)); 
         	$staticProperties = $class->getStaticProperties(); 
         	foreach ($staticProperties as $name => $value) 
-        	{ 
-        		if (preg_match('/^_In(.+)$/i', $name, $result)) 
-        		{
-        			if($parent->{$result[1]} == $this)
-        			{
-						$innerSugar = new InnerSugar($parent, array(), $result[1], $value);
-						call_user_func_array(array(&$innerSugar, $nm), $args);
-					}
-				}
-			}
+        		if(preg_match('/^_In(.+)$/i', $name, $result)) 
+        			if($parent->{$result[1]} === $this)
+						return new InnerSugar($parent, array(), $result[1], $value);
 		}
-		else 
-			BloodyMurder('The function ' . $nm . ' could not be called because it does not exist in, or is not in scope of, the class ' . get_class($this) . '.');
+		return false;
 	}
 }
 
