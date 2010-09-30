@@ -17,6 +17,7 @@ class Configuration extends Object implements Singleton
 	public $DebugMode = true;
 	public $DefaultUnit = 'px';
 	public $ShowURLFilename = 'Auto';
+	public $SpiderSSL = false;
 	public $CSSReset;
 	public $CSSResetLegacyIE;
 	

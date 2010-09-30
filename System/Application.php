@@ -564,11 +564,21 @@ final class Application extends Object
 			return;
 		}
 		$this->HandleTokens();
+		$config = Configuration::That();
+		if($config->SpiderSSL !== 'Auto' && ((URL::GetProtocol() === 'https') != $config->SpiderSSL))
+		{
+			header('HTTP/1.1 301 Moved Permanently');
+			if($config->SpiderSSL)
+				header('Location: ' . str_replace('http', 'https', System::FullAppPath()));
+			else
+				header('Location: ' . str_replace('https', 'http', System::FullAppPath()));
+			exit();
+		}
 		global $_NSETokenChain, $_NSETokens;
 		$_NSETokenChain = array();
 		$_NSETokens = array();
 		++$_SESSION['_NVisit'];
-		$className = Configuration::That()->StartClass;
+		$className = $config->StartClass;
 		$this->WebPage = new $className();
 		$_SESSION['_NStartUpPageId'] = $this->WebPage->Id;
 		$tokenLinks = '';
