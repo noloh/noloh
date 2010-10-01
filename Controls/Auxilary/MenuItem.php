@@ -8,9 +8,6 @@
  */
 class MenuItem extends Panel
 {
-	//public $RolloverImage;
-	private $Checked;
-//	public $DefaultItem;
 	/**
 	 * The Panel containing the MenuItem's SubItems.
 	 * @var Panel
@@ -97,20 +94,12 @@ class MenuItem extends Panel
 //		else
 		if($this->MenuItemsPanel->Controls->Count() <= 0)
 		{
-//			$this->MenuItemsPanel = new Panel($this->GetRight(), $this->GetTop(), 100, 100);
-			//Alert($this->MenuItemsPanel->Id);
 			NolohInternal::SetProperty('ItmsPnl', "{$this->MenuItemsPanel->Id}", $this);
 			NolohInternal::SetProperty('ChildrenArray', '[]', $this->MenuItemsPanel);
-			//$menuItem->SetTop(0);
-			//$menuItem->MenuItemsPanel->SetTop($menuItem->GetTop());
 		}
-		//$menuItem->Layout = Layout::Relative;
-		//$menuItem->SetWidth('100%');
-		//Alert($this->MenuItemsPanel->GetWidth() . ' | ' . $menuItem->GetWidth());
 		if($this->MenuItemsPanel->GetWidth() < ($width = $menuItem->GetWidth()))
 		{
 			$this->MenuItemsPanel->SetWidth($width);
-			//Alert($this->MenuItemsPanel->GetWidth());
 			$count = $this->MenuItemsPanel->Controls->Count();
 			for($i=0; $i<$count; ++$i)
 				$this->MenuItemsPanel->Controls->Elements[$i]->SetWidth($width); 
@@ -125,26 +114,21 @@ class MenuItem extends Panel
 		if(isset($_SESSION['_NFunctionQueue'][$id]) && isset($_SESSION['_NFunctionQueue'][$id][$fncStr]))
 			$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = "'{$menuItem->Id}'";
 		else 
-			QueueClientFunction($this->MenuItemsPanel, $fncStr, array(-1, 0, "'{$menuItem->Id}'"));
-
+			ClientScript::Queue($this->MenuItemsPanel, $fncStr, array(-1, 0, $menuItem->GetId()));
 		return $menuItem;
 	}
 	/**
+	 * Returns the Element in which the Text for this MenuItem is displayed. Label by default.
+	 * @return Label
+	 */
+	function GetElement()	{return $this->TextLabel;}
+	/*
 	 * Returns the Label in which the Text for this MenuItem is displayed.
+	 * @deprecated Use Element instead
 	 * @return Label
 	 */
 	function GetTextLabel()	{return $this->TextLabel;}
-	/**
-	 * @ignore
-	 */
-	function SetChecked($bool)
-	{
-		
-	}
-	/**
-	 * @ignore
-	 */
-	function GetChecked()	{return $this->Checked;}
+	
 	/**
 	 * @ignore
 	 */
@@ -233,9 +217,9 @@ class MenuItem extends Panel
 	 * @ignore
 	 */
 	function SetClick($event)				{$this->TextLabel->SetClick($event);}
-	//function SetLayout($Layout)		{$this->TextLabel->SetLayout($Layout);}
 	/**
 	 * Sets the color of the MenuItem's text under normal circumstances
+	 * 
 	 * @param string $color
 	 */
 	function SetOutTextColor($color='#001E42')	
@@ -245,6 +229,7 @@ class MenuItem extends Panel
 	}
 	/**
 	 * Sets the color of the MenuItem's text when the mouse cursor is over it
+	 * 
 	 * @param string $color
 	 */
 	function SetOverTextColor($color='#FFFFFF')
@@ -253,6 +238,7 @@ class MenuItem extends Panel
 	}
 	/**
 	 * Sets the background color of the MenuItem under normal circumstances
+	 * 
 	 * @param string $color
 	 */
 	function SetOutBackColor($color='transparent')	
@@ -262,6 +248,7 @@ class MenuItem extends Panel
 	}
 	/**
 	 * Sets the background color of the MenuItem when the mouse cursor is over it
+	 * 
 	 * @param string $color
 	 */
 	function SetOverBackColor($color='#07254A')
@@ -273,7 +260,7 @@ class MenuItem extends Panel
 	 */
 	function Show()
 	{
-		AddNolohScriptSrc('MenuItem.js', true);
+		ClientScript::AddNOLOHSource('MenuItem.js', true);
 		parent::Show();	
 	}
 }

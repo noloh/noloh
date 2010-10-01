@@ -20,7 +20,7 @@ function _NMnuTglSubItms(mnuItmId)
 			ToggleVisibility(subMenu.id);
 	}
 	else
-		_NHideChldrn(tmpParent.SlctMnuItm);
+		_NHideChldrn(parent.SlctMnuItm);
 }
 function _NMnuTglOut()
 {
@@ -46,7 +46,7 @@ function _NMnuHideChldrn()
 function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 {
 	var opnMnu = _N(mnuItmId);
-	if(opnMnu.ItmsPnl != null)
+	if(opnMnu.ItmsPnl)
 	{
 		var chldMnu = _N(opnMnu.ItmsPnl);
 		for(var i=0; i < chldMnu.ChildrenArray.length; ++i)
