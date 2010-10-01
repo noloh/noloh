@@ -165,16 +165,12 @@ class ListView extends Panel
 			$column->SetLayout(Layout::Relative);
 			$column->CSSFloat = 'left';
 			$this->BondColumn($column);
-//			$this->ColumnsPanel->BringToFront();
 			$column->SetListView($this->Id);
 			$column->ShiftStart = new ClientEvent('_NLVResizeStart', $this->Line->GetId(), $column->GetId(), $this->InnerPanel->GetId());
 			$column->ShiftStop = new ClientEvent('_NLVResizeEnd');
 			$this->Line->Shifts[] = Shift::LeftWith($column, Shift::Width);
 			ClientScript::Queue($column, '_NHndlClmn', array($column, $this->InnerPanel));
 		}
-		/*foreach($this->LVItemsQueue as $key => $listViewItem)
-			if($this->Update($listViewItem))
-				unset($this->LVItemsQueue[$key]);*/
 		if(isset($this->ExcessSubItems))
 		{
 			foreach($this->ExcessSubItems as $key => $listViewItem)
@@ -197,12 +193,6 @@ class ListView extends Panel
 			$object->Select['LV'][] = $select;	
 			
 			$this->InnerPanel->Shifts[] = Shift::WidthWith($object);
-			/*if($shift && (($count = $this->Columns->Count) > 1))
-			{
-				$object->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Width, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
-				$object->Shifts[] = Shift::LeftWith($this->Columns[$count - 2], Shift::Left, Shift::Parent, null);//, Shift::Mirror, 1, null, -1);
-			}*/
-			
 		}
 	}
 	/**
@@ -212,20 +202,24 @@ class ListView extends Panel
 	{
 		if(!$listViewItem instanceof ListViewItem)
 		{
-			if(is_array($listViewItem) && $this->RowCallback)
+			if(is_array($listViewItem) && isset($this->DataColumns))
 			{
 				$previousBound = Event::$BoundData;
-				if(isset($GLOBALS['_NLVCols']))
-					$previousCols = isset($GLOBALS['_NLVCols'])?$GLOBALS['_NLVCols']:null;
-						
+				$previousCols = isset($GLOBALS['_NLVCols'])?$GLOBALS['_NLVCols']:null;
+				
 				$GLOBALS['_NLVCols'] = $this->DataColumns;
 				Event::$BoundData = $listViewItem;
-				$listViewItem = $this->RowCallback->Exec();
+//				System::Log($listViewItem, $this->DataColumns);		
+				if($this->RowCallback)
+					$listViewItem = $this->RowCallback->Exec();
+				else
+					$listViewItem = new ListViewItem($listViewItem);
+					
 				Event::$BoundData = $previousBound;
 				$GLOBALS['_NLVCols'] = $previousCols;
 				
 				if(is_array($listViewItem))
-					return $this->InsertListViewItem($listViewItem[0], $listViewItem[1]);
+					return $this->InsertListViewItem($listViewItem[0], $listViewItem[1]);		
 			}
 			else
 				$listViewItem = new ListViewItem($listViewItem);
@@ -430,21 +424,17 @@ class ListView extends Panel
 				}
 				else
 					$properties[0] = $properties[1] = $constraints[$i];
-				/*if($properties[1] !== false)
-				{
-					$this->DataColumns[] = $i;
-					$this->AddColumn($properties[1], $properties[2]);
-				}*/
+
 				if($properties[0] || $properties[1])
 				{
-				if($properties[1] !== false)
-				{
-						$title = ($properties[1] != false)?$properties[1]:$properties[0];
-						$this->AddColumn($title, $properties[2]);
-					$this->DataColumns[] = $i;
-				}
-				if($properties[0])
-					$columns[] = $properties[0];
+					if($properties[1] !== false)
+					{
+							$title = ($properties[1] != false)?$properties[1]:$properties[0];
+							$this->AddColumn($title, $properties[2]);
+						$this->DataColumns[] = $i;
+					}
+					if($properties[0])
+						$columns[] = $properties[0];
 				}			
 			}
 		}

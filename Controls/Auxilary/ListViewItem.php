@@ -100,8 +100,10 @@ class ListViewItem extends Panel //extends Component
 			{
 				$cols = $GLOBALS['_NLVCols'];
 				$i = $j = 0;
+//				System::Log($objOrText, $cols);
 				foreach($objOrText as $val)
 				{
+//					System::Log($j, $i);
 					if($cols[$j] == $i++)
 					{
 						$subItem = $this->CreateSubItem($val);
