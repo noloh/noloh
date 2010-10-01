@@ -535,14 +535,14 @@ class ListView extends Panel
 		$rows = array();
 		
 		foreach($this->ListViewItems->Elements as $key => $listViewItem)
-			$rows[$key] = $listViewItem->SubItems[$index]->GetText();	
+			$rows[$key] = isset($listViewItem->SubItems[$index])?$listViewItem->SubItems[$index]->GetText():null;	
 		if(!$ascending)
 			asort($rows);
 		else
 			arsort($rows);
 		
 		foreach($rows as $key => $val)
-			$clientArray[] = $this->ListViewItems->Elements[$key]->Id;
+			$clientArray[] = $this->ListViewItems->Elements[$key]->GetId();
 		
 		ClientScript::Queue($this, '_NLVSort', array($this->InnerPanel, $clientArray));
 	}
