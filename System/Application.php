@@ -204,7 +204,7 @@ final class Application extends Object
 		$_SESSION['_NLowestZ'] = 0;
 		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
 		$_SESSION['_NPath'] = ComputeNOLOHPath();
-		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath']);
+		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
 		$_SESSION['_NRAPath'] = rtrim(
 			NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : 
 			/*(str_repeat('../', substr_count($_SESSION['_NURL'], '/', strlen(dirname($_SESSION['_NURL']))+1)) 
@@ -212,7 +212,7 @@ final class Application extends Object
 				GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
 				$_SESSION['_NRPath']));*/
 			(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false))
-				? System::GetRelativePath($selfDir, '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'])
+				? System::GetRelativePath($selfDir, '/', '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'], '/')
 				: $_SESSION['_NRPath']), '/');
 		if($home)
 			$_SESSION['_NUserDir'] = true;
