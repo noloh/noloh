@@ -173,14 +173,21 @@ final class System
 	 * Returns a relative path showing how one would traverse from one directory to another
 	 * @param string $fromDirectory
 	 * @param string $toDirectory
+	 * @param System::Auto|string $slash
 	 * @return string
 	 */
-	static function GetRelativePath($fromDirectory, $toDirectory)
+	static function GetRelativePath($fromDirectory, $toDirectory, $slash = System::Auto)
 	{
-		$fromDirectory = rtrim($fromDirectory, '/');
+		if($slash === self::Auto)
+			$slash = strpos($GLOBALS['_NPath'], '/') === false ? '\\' : '/';
+		$repSlash = $slash === '/' ? '\\' : '/';
+		$fromDirectory = str_replace($repSlash, $slash, $fromDirectory);
+		$toDirectory = str_replace($repSlash, $slash, $toDirectory);
+		
+		$fromDirectory = rtrim($fromDirectory, $slash);
 		//HACK! Will add / to toDirectory if toDirectory is not empty, or / - Asher
 		if(strlen($toDirectory) > 1)
-			$toDirectory = rtrim($toDirectory, '/') . '/';
+			$toDirectory = rtrim($toDirectory, $slash) . $slash;
 		$toLength = strlen($toDirectory);
 		$fromLength = strlen($fromDirectory);
 		
@@ -189,10 +196,10 @@ final class System
 		
 		for($i=0; $i<$length && ($toDirectory[$i] === $fromDirectory[$i]) ; ++$i)
 		{
-			if($fromDirectory[$i] === '/')
+			if($fromDirectory[$i] === $slash)
 				$lastMatchingSlash = $i;
 		}
-		if($i === $fromLength && $toLength > $fromLength && $toDirectory[$i] === '/')
+		if($i === $fromLength && $toLength > $fromLength && $toDirectory[$i] === $slash)
 		{
 			$lastMatchingSlash = $i;
 			$slashCount = 0;
@@ -200,13 +207,13 @@ final class System
 		else
 			$slashCount = 1;
 		for(++$i; $i<$fromLength; ++$i)
-			if($fromDirectory[$i] === '/')
+			if($fromDirectory[$i] === $slash)
 			{
 				++$slashCount;
 				++$i;
 			}
 				
-		return str_repeat('../', $slashCount) . substr($toDirectory, $lastMatchingSlash + 1);
+		return str_repeat('..'.$slash, $slashCount) . substr($toDirectory, $lastMatchingSlash + 1);
 	}
 	/**
 	 * System::Log will log one or more values to a debug window, along with a system timestamp. This function is useful for debugging. It will return the first parameter passed in.
