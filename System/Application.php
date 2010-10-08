@@ -298,7 +298,7 @@ final class Application extends Object
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
 			ini_set('html_errors', false);
-			set_error_handler('_NErrorHandler', error_reporting());
+			set_error_handler('_NErrorHandler', error_reporting() | E_USER_NOTICE);
 			ob_start('_NOBErrorHandler');
 			if($debugMode === System::Full)
 				ClientScript::AddNOLOHSource('DebugFull.js');
