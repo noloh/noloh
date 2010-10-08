@@ -104,8 +104,7 @@ function _NFirstNonNOLOHBacktrace()
 	for($i=0; $i<$backtraceCount; ++$i)
 		if(isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
 			return $backtrace[$i];
-	$errorLast = error_get_last();
-	if(isset($errorLast['file']) && strpos($errorLast, $_NPath) === false)
+	if(function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
 		return $errorLast;
 	return array('file' => null, 'line' => null);
 }

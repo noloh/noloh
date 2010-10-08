@@ -363,7 +363,7 @@ abstract class WebPage extends Component
 		}
 		else 
 		{
-			$property = Event::$Conversion[$eventType];
+			$property = isset(Event::$Conversion[$eventType]) ? Event::$Conversion[$eventType] : $eventType;
 			QueueClientFunction($this, '_NChangeByObj', array('window','\''.$property.'\'','\''.$value.'\''), false);
 		}
 	}

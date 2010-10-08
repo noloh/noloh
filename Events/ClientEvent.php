@@ -166,7 +166,7 @@ class ClientEvent extends Event
 	 */
 	function Exec(&$execClientEvents=true)
 	{
-		if(!$GLOBALS['_NQueueDisabled'] && $execClientEvents && $this->Enabled===null)
+		if(empty($GLOBALS['_NQueueDisabled']) && $execClientEvents && $this->Enabled===null)
 			if(!isset($GLOBALS['_NClientEventExecs']))
 				$GLOBALS['_NClientEventExecs'] = array($this);
 			else

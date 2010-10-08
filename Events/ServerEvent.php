@@ -149,7 +149,7 @@ class ServerEvent extends Event
 	 */
 	function Exec(&$execClientEvents=true, $liquidParent=false)
 	{
-		if($GLOBALS['_NQueueDisabled'] || $this->Enabled===false 
+		if(!empty($GLOBALS['_NQueueDisabled']) || $this->Enabled===false 
 			|| (($liquidParent||$this->Liquid) && isset($GLOBALS['_NSEFromClient']) && !Event::$LiquidExec))
 				return;
 		$execClientEvents = true;

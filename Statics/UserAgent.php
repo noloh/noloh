@@ -177,7 +177,7 @@ final class UserAgent
 	 */
 	public static function IsIE6()
 	{
-		return $_SESSION['_NIsIE'] && $_SESSION['_NIE6'];
+		return $_SESSION['_NIsIE'] && isset($_SESSION['_NIE6']);
 	}
 	/**
 	 * Returns the user's operating system

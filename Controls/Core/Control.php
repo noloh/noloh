@@ -1179,7 +1179,9 @@ abstract class Control extends Component
 		$this->Shifts->Clear(true);
 	}
 	/**
-	 * @ignore
+	 * Returns the ArrayList of CSS class names, each one as a string. 
+	 * For example, Adding to this ArrayList will Add another CSS class to this Control. Another way of accomplishing that is by appending to the CSSClass property. Both approaches are valid.
+	 * @return ArrayList
 	 */
 	function GetCSSClasses()
 	{
