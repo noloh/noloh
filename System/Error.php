@@ -30,7 +30,6 @@ function _NOBErrorHandler($buffer)
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
 			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['line']);
-			
 			//return false;
 			//trigger_error(serialize(error_get_last()));
 			//trigger_error(serialize(error_get_last()));
@@ -50,13 +49,26 @@ function _NOBErrorHandler($buffer)
  */
 function _NErrorHandler($number, $string, $file, $line)
 {
+	if($ob = (strpos($string, '~OB~') === 0))
+	{
+		$number = 0;
+		$matches = explode('~OB~', $string);
+		$words = explode(' ', strtoupper(trim(strip_tags($matches[1]))));
+		while(!$number && count($words))
+		{
+			$constName = 'E_' . implode('_', $words);
+			if(defined($constName))
+				$number = constant($constName);
+			else
+				array_pop($words);
+		}
+	}
 	if(error_reporting() & $number)
 	{
 		ob_end_clean();
 		setcookie('_NAppCookie', false);
-		if(strpos($string, '~OB~') === 0)
+		if($ob)
 		{
-			$matches = explode('~OB~', $string);
 			$string = $matches[2];
 			$file = $matches[3];
 			$line = $matches[4];
