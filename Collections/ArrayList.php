@@ -188,7 +188,11 @@ class ArrayList extends Object implements ArrayAccess, Countable, Iterator
 	function RemoveAt($index)
 	{
 		if(isset($this->Elements[$index]) && $this->Elements[$index] instanceof Component && $this->Elements[$index]->GetParentId() === $this->ParentId)
+		{	
 			$this->Elements[$index]->SetParentId(null);
+			if(!$this->Elements[$index]->Leave->Blank())
+				$this->Elements[$index]->Leave->Exec();
+		}
 		unset($this->Elements[$index]);
 		if(is_numeric($index))
 			array_merge($this->Elements);
