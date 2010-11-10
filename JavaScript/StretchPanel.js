@@ -12,13 +12,12 @@ function _NStrPnlAdd(pnl, obj)
 	}
 	if(panel._N.AutY)
 	{
-		sum = obj.offsetTop + _NOuterHeight(obj, true);
+		sum = object.offsetTop + _NOuterHeight(obj, true);
 		_NStrPnl(sum, panel.clientHeight, pnl, 'style.height', sum);
 	}
 }
 function _NStrPnl(sum, compare, obj, prop, to)
 {
-//	console.log(sum, compare, obj, prop);
 	if(sum > compare)
 		new _NAni(obj, prop, to, 0);
 }
