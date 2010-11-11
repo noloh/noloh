@@ -47,7 +47,7 @@ class Configuration extends Object implements Singleton
         $firstIndex = 0;
 		if($argLength)
         {
-            if($args[0] === System::Auto)
+            if($args[0] === 'Auto')
             {
                 $this->DetectStartClass();
                 $firstIndex = 1;

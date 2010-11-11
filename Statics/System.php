@@ -105,8 +105,9 @@ final class System
 		$separator = constant('PATH_SEPARATOR');
 		$paths = explode($separator, get_include_path());
 		$funcArgs = func_get_args();
-		$paths = array_merge($paths, $funcArgs);
-	    set_include_path(implode($separator, $paths));
+		foreach($funcArgs as $val)
+			$paths[] = realpath($val);
+		set_include_path(implode($separator, $paths));
 	}
 	/**
 	 * @ignore
