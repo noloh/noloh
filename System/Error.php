@@ -51,19 +51,14 @@ function _NErrorHandler($number, $string, $file, $line)
 {
 	if($ob = (strpos($string, '~OB~') === 0))
 	{
-		$number = 0;
 		$matches = explode('~OB~', $string);
-		$words = explode(' ', strtoupper(trim(strip_tags($matches[1]))));
-		while(!$number && count($words))
-		{
-			$constName = 'E_' . implode('_', $words);
-			if(defined($constName))
-				$number = constant($constName);
-			else
-				array_pop($words);
-		}
+		$error = substr(strtoupper(trim(strip_tags($matches[1]))), 0, 5);
+		if($error === 'PARSE')
+			$number = 4;
+		else
+			$number = 1;
 	}
-	if(error_reporting() & $number)
+	if($number & error_reporting())
 	{
 		ob_end_clean();
 		setcookie('_NAppCookie', false);
