@@ -334,8 +334,7 @@ abstract class Control extends Component
  	 * //or as a property being set to an array.
  	 * $object->Location = array(100, 200);
  	 * </pre>
-	 * @param integer|string $left
-	 * @param integer|string $top
+ 	 * @return array
 	 */
 	function GetLocation()
 	{
@@ -386,7 +385,7 @@ abstract class Control extends Component
 	/**
 	 * Returns the Layout type of this Control. The Default is Layout::Absolute, but other possible values are
 	 * Layout::Relative and Layout::Web (which is the equivalent to CSS static).
-	 * @return mixed
+	 * @return Layout
 	 */
 	function GetLayout()
 	{
@@ -395,7 +394,7 @@ abstract class Control extends Component
 	/**
 	 * Sets the Layout type of this Control. The Default is Layout::Absolute, but other possible values are
 	 * Layout::Relative, Layout::Web (which is the equivalent to CSS static), or Layout::Fixed.
-	 * @param mixed
+	 * @param Layout
 	 */
 	function SetLayout($layout)
 	{
@@ -492,7 +491,7 @@ abstract class Control extends Component
 	 * Returns whether the Control is Visible. Can be either a boolean value or System::Cloak. The difference between false and
 	 * System::Cloak only comes into play when a Layout::Web is used. Invisible Controls will not take up space, whereas Cloaked
 	 * Controls do not.
-	 * @return mixed
+	 * @return boolean|System::Cloak
 	 */
 	function GetVisible()
 	{
@@ -502,7 +501,7 @@ abstract class Control extends Component
 	 * Sets whether the Control is Visible. Can be either a boolean value or System::Cloak. The difference between false and
 	 * System::Cloak only comes into play when a Layout::Web is used. Invisible Controls will not take up space, whereas Cloaked
 	 * Controls do not.
-	 * @param mixed $visibility
+	 * @param boolean|System::Cloak $visibility
 	 */
 	function SetVisible($visibility)
 	{
@@ -547,7 +546,7 @@ abstract class Control extends Component
 	}
 	/**
 	 * Returns the background color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'
-	 * @return string
+	 * @return Color|string
 	 */
 	function GetBackColor()
 	{
@@ -555,7 +554,7 @@ abstract class Control extends Component
 	}
 	/**
 	 * Sets the background color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'
-	 * @param string $backColor
+	 * @param Color|string $backColor
 	 */
 	function SetBackColor($backColor)
 	{
@@ -565,7 +564,7 @@ abstract class Control extends Component
 	/**
 	 * Sets the color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'. Depending on
 	 * the specific type of Control, this can have a variety of interpretations.
-	 * @return string
+	 * @return Color|string
 	 */
 	function GetColor()
 	{
@@ -574,7 +573,7 @@ abstract class Control extends Component
 	/**
 	 * Sets the color of the Control. Can be either a string of hex like '#FF0000' or the name of a color like 'red'. Depending on
 	 * the specific type of Control, this can have a variety of interpretations.
-	 * @param string $color
+	 * @param Color|string $color
 	 */
 	function SetColor($color)
 	{
@@ -583,7 +582,7 @@ abstract class Control extends Component
 	}
 	/**
 	 * Returns the mouse cursor when it is over the Control. Should be a constant or static of the Cursor class.
-	 * @return mixed
+	 * @return Cursor
 	 */
 	function GetCursor()
 	{
@@ -591,7 +590,7 @@ abstract class Control extends Component
 	}
 	/**
 	 * Sets the mouse cursor when it is over the Control. Should be a constant or static of the Cursor class.
-	 * @param mixed $cursor
+	 * @param Cursor $cursor
 	 */
 	function SetCursor($cursor)
 	{
