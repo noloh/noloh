@@ -174,6 +174,8 @@ class TextBox extends Control
         	preg_match('/^(.)\^?(.*?)\$?\1([a-zA-Z]*)$/', $this->Filter, $matches);
         	$preStr = '_NFilter("'.$this->Id.'","'.str_replace('\\','\\\\\\\\',$matches[2]).'","'.$matches[3].'");';
         }
+    	elseif($eventTypeAsString === 'ReturnKey' && UserAgent::GetBrowser()==='op')
+        	$preStr = 'this.onchange.call();';
 		return $preStr . parent::GetEventString($eventTypeAsString);
 	}
 	/**
@@ -181,6 +183,8 @@ class TextBox extends Control
 	 */
 	function Show()
 	{
+		if(UserAgent::GetBrowser() === 'op')
+			$this->UpdateEvent('ReturnKey');
 		$initialProperties = parent::Show() . '\'type\',\'' . ($this->Password?'password\'':'text\'') . $this->GetEventString(null);
 		//$tempStr = str_repeat("  ", $IndentLevel) . "<INPUT "  . $parentShow . "' ";
 		//if(!is_null($this->Text))
