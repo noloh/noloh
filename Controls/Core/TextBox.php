@@ -115,8 +115,8 @@ class TextBox extends Control
 	 */
 	function SetFilter($filter)
 	{
-		AddNolohScriptSrc('Filter.js', true);
-		AddNolohScriptSrc('KeyEvents.js', true);
+		ClientScript::AddSource('Filter.js', true);
+		ClientScript::AddSource('KeyEvents.js', true);
 		$this->Filter = $filter;
 		$this->UpdateEvent('KeyPress');
 	}
@@ -126,7 +126,7 @@ class TextBox extends Control
 	 */
 	function GetTypePause()
 	{
-		AddNolohScriptSrc('KeyEvents.js', true);
+		ClientScript::AddSource('KeyEvents.js', true);
 		return $this->GetEvent('TypePause');
 	}
 	/**
@@ -135,7 +135,7 @@ class TextBox extends Control
 	 */
 	function SetTypePause($typePause)
 	{
-		AddNolohScriptSrc('KeyEvents.js', true);
+		ClientScript::AddSource('KeyEvents.js', true);
 		$this->SetEvent($typePause, 'TypePause');
 	}
 	/**
@@ -184,7 +184,10 @@ class TextBox extends Control
 	function Show()
 	{
 		if(UserAgent::GetBrowser() === 'op')
+		{
+			ClientScript::AddNOLOHSource('KeyEvents.js', true);
 			$this->UpdateEvent('ReturnKey');
+		}
 		$initialProperties = parent::Show() . '\'type\',\'' . ($this->Password?'password\'':'text\'') . $this->GetEventString(null);
 		//$tempStr = str_repeat("  ", $IndentLevel) . "<INPUT "  . $parentShow . "' ";
 		//if(!is_null($this->Text))
