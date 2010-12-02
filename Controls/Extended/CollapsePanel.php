@@ -3,7 +3,7 @@
  * CollapsePanel
  *
  * A CollapsePanel is a Panel that can expand or collapse its body section. This is usually initiated by clicking on
- * the title part of the CollapsePanel. A CollapsePanel also has a RolloverImage located in its TitlePanel whose state corresponds
+ * the title part of the CollapsePanel. A CollapsePanel also has a RolloverImage located in its Title whose state corresponds
  * to whether the CollapsePanel is expanded or collapsed.
  *
  * @package Controls/Extended
@@ -11,9 +11,13 @@
 class CollapsePanel extends Panel implements Groupable
 {
 	/**
+	* @ignore
+	*/
+	static $_InTitle = 'TitleHandler';
+	/**
 	 * @ignore
 	 */
-	protected $TitlePanel;
+	protected $Title;
 	/**
 	 * @ignore
 	 */
@@ -28,19 +32,20 @@ class CollapsePanel extends Panel implements Groupable
 	/**
 	 * Constructor
 	 *
-	 * @param string $text The text displayed in the TitlePanel
+	 * @param string $text The text displayed in the Title
      * @param integer $left The Left coordinate of this element
 	 * @param integer $top The Top coordinate of this element
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
-	 * @param integer $titleHeight The height of the TitlePanel
+	 * @param integer $titleHeight The height of the Title
 	 */
 	function CollapsePanel($text='', $left=0, $top=0, $width=200, $height=200, $titleHeight=28)
 	{
 		$this->BodyPanel = new Panel(0, 0, '100%', null);
 		parent::Panel($left, $top, null, null);
-		parent::SetSelected(true);
 		parent::SetScrolling(false);
+		$this->SetSelected(true);
+		
 		$select = parent::GetSelect();
 		$select['User'] = new Event();
 		$select['System'] = new Event();
@@ -49,22 +54,25 @@ class CollapsePanel extends Panel implements Groupable
 		$deselect['System'] = new Event();
 
 		$this->SetTogglesOff(true);
-		$this->TitlePanel = new Panel(0, 0, null, $titleHeight);
-		$this->TitlePanel->ParentId = $this->Id;
+		$this->Title = new Panel(0, 0, null, $titleHeight);
+		$this->Title->ParentId = $this->Id;
 		$this->BodyPanel->ParentId = $this->Id;
 		$this->Controls = &$this->BodyPanel->Controls;
 		//$this->BodyPanel->Shifts[] = Shift::With($this, Shift::Height);
-		$this->TitlePanel->Layout = $this->BodyPanel->Layout = Layout::Relative;
-		$this->SetTitleBackground();
+		$this->Title->Layout = $this->BodyPanel->Layout = Layout::Relative;
+		$this->Title->BackObject = new RolloverImage(
+			System::ImagePath() . 'Std/HeadBlue.gif', 
+			System::ImagePath() . 'Std/HeadOrange.gif', 0, 0, '100%', $this->Title->GetHeight());
+
 		$this->SetText($text);
 		$this->SetToggleButton();
-		$this->TitlePanel->Click['Collapse'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', _N('{$this->Id}').Tgl?_N('{$this->Id}').Selected!=true:true);");
+		$this->Title->Click['Collapse'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', _N('{$this->Id}').Tgl?_N('{$this->Id}').Selected!=true:true);");
 		$select['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id');");
 		$deselect['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id', true);");
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 //		$this->Shifts[] = Shift::SizeWith($this->BodyPanel, Shift::Size, null, null, null, null);
-		NolohInternal::SetProperty('Top', $this->TitlePanel->Id, $this);
+		NolohInternal::SetProperty('Top', $this->Title->Id, $this);
 		NolohInternal::SetProperty('Body', $this->BodyPanel->Id, $this);
 	}
 	/**
@@ -106,7 +114,7 @@ class CollapsePanel extends Panel implements Groupable
 			$this->ToggleButton->ParentId = null;
 		$this->ToggleButton = &$rolloverImage;
 		$this->ToggleButton->ReflectAxis('x');
-		$this->ToggleButton->ParentId = $this->TitlePanel->Id;
+		$this->ToggleButton->ParentId = $this->Title->Id;
 	}
 	/**
 	 * Returns the RolloverImage that is used as the ToggleButton
@@ -121,45 +129,98 @@ class CollapsePanel extends Panel implements Groupable
 	 */
 	function SetText($text)
 	{
-		if(!isset($this->TitlePanel->Controls['Text']))
+		if(isset($this->Title->Controls['Text']))
 		{
-			$tmpTitleLabel = new Label($text, 0, 0, null, null);
-			$tmpTitleLabel->Layout = Layout::Relative;
-			$tmpTitleLabel->CSSClass = 'NAccordionText';
-			$this->TitlePanel->Controls['Text'] = $tmpTitleLabel;
+			if($text instanceof Control)
+			{	
+				$this->Title->Controls['Text']->Leave();
+				$this->Title->Controls['Text'] = $text;
+			}
+			else
+				$this->Title->Controls['Text']->SetText($text);
 		}
 		else
-			$this->TitlePanel->Controls['Text']->SetText($text);
+		{
+			if($text instanceof Control)
+				$title = $text;
+			else
+			{
+				$title = new Label($text, 0, 0, null, null);
+				$title->Layout = Layout::Relative;
+				$title->CSSClass = 'NAccordionText';
+			}
+			$this->Title->Controls['Text'] = $title;
+		}
 	}
 	/**
 	 * @ignore
 	 */
 	function GetText()
 	{
-		return $this->TitlePanel->Controls['Text']->GetText();
+		return $this->Title->Controls['Text']->GetText();
 	}
 	/**
-	 * Sets the Background of the TitlePanel to a color an an object.
+	* @deprecated Use $this->Title->BackColor or $this->Title->BackObject instead
+	 * Sets the Background of the Title to a color an an object.
 	 * @param object|string $objectOrColor
 	 */
 	function SetTitleBackground($objectOrColor=null)
 	{
-		if($objectOrColor != null)
+		if(is_object($objectOrColor))
 		{
-			if(is_object($objectOrColor))
-				$glossy = $objectOrColor;
-			else
-			{
-				$this->TitlePanel->BackColor = $objectOrColor;
-				if($this->TitlePanel->Controls['Glossy'] != null)
-					unset($this->TitlePanel->Controls['Glossy']);
-				return;
-			}
+			$this->Title->BackObject = $objectOrColor;
 		}
 		else
-			$glossy = new RolloverImage(System::ImagePath() . 'Std/HeadBlue.gif', System::ImagePath() . 'Std/HeadOrange.gif', 0, 0, '100%', $this->TitlePanel->GetHeight());
-		$this->TitlePanel->Controls['Glossy'] = $glossy;
+		{
+			$this->Title->BackColor = $objectOrColor;
+		}	
 	}
+	/**
+	* @ignore
+	*/
+	function TitleHandler()
+    {
+		$args = func_get_args();
+		$invocation = InnerSugar::$Invocation;
+		$prop = strtolower(InnerSugar::$Tail);
+//		$currentChain = strtolower(array_pop(InnerSugar::$Chain));
+
+		if($invocation == InnerSugar::Set)
+		{
+			switch($prop)
+			{
+				case 'backobject':
+					$object = $args[0];
+//					System::Log('Here', $object);
+					if(isset($this->Title->Controls['Back']))
+						$this->Title->Controls['Back']->Leave();
+					if($object instanceof Control)
+					{		
+						$this->Title->Controls['Back'] = $object;
+						$select = parent::GetSelect();
+						$select['System']['Collapse']['BackObj'] 
+							= new ClientEvent('_NSetProperty', $object, 'Selected', true);
+						$deselect = parent::GetDeselect();
+						$deselect['System']['Collapse']['BackObj'] 
+							= new ClientEvent('_NSetProperty', $object, 'Selected', false);
+					}
+					break;
+				default: throw new SugarException();
+			}
+		}
+		elseif($invocation == InnerSugar::Get)
+		{
+			switch($prop)
+			{
+				case 'backobject':
+					if(isset($this->Title->Controls['BackObject']))
+						return $this->Title->Controls['BackObject'];
+					break;
+			}
+		}
+	/*	elseif($invocation == InnerSugar::Get && isset($this->ScrollerInfo[$prop]))
+			return $this->ScrollerInfo[$prop];*/
+    }
 	/**
 	 * Sets whether the CollapsePanel is collapsed or not.
 	 *
@@ -182,12 +243,17 @@ class CollapsePanel extends Panel implements Groupable
 	function SetSelected($bool)
 	{
 		parent::SetSelected($bool);
+//		System::Log($this->Id, $bool?'Selected':'Not Selected');
 		if(!$bool && !$this->GetShowStatus())
+		{
 //			ClientScript::Set($this, 'InitClpse', 200, '_N');
 			ClientScript::Set($this, 'InitClpse', true, null); //Blame Phil
+		}
+//			else
 //			NolohInternal::SetProperty('Animates', 1, $this);
 //		$this->SetSelected(!$bool);
 		//QueueClientFunction($this, '_NClpsPnlTgl', array('\''.$this->Id.'\'', $bool?'true':'false'), true, Priority::Low);
+//		ClientScript::Set($this, 'Selected', true);
 	}
 	/**
 	 * @ignore
@@ -195,12 +261,7 @@ class CollapsePanel extends Panel implements Groupable
 	function SetHeight($height)
 	{
 		parent::SetHeight($height);
-		//if($height > $this->TitlePanel->GetHeight() /*&& $height != null*/)
-//			ClientScript::Set($this, 'Hgt', $height, '_N');
-			//ClientScript::Set($this, 'Hgt', $height, null);
-			ClientScript::Queue($this, '_NClpsPnlSetHgt', array($this, $height));
-//			QueueClientFunction($this, '_NClpsPnlInHgt', array('\''.$this->Id.'\''/*, true, Priority::Low*/));
-		//NolohInternal::SetProperty('Hgt', $height, $this);
+		ClientScript::Queue($this, '_NClpsPnlSetHgt', array($this, $height));
 	}
 	/**
 	 * @ignore
@@ -246,22 +307,29 @@ class CollapsePanel extends Panel implements Groupable
 	 */
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	/**
-	 * Returns the Background of the TitlePanel.
+	 * @deprecated Use $this->Title->BackColor or $this->Title->BackObject
+	 * Returns the Background of the Title.
 	 * @return object|string
 	 */
 	function GetTitleBackground()
 	{
-		if(isset($this->TitlePanel->Controls['Glossy']))
-			return $this->TitlePanel->Controls['Glossy'];
-		else
-			return $this->TitlePanel->BackColor;
+//		if(isset($this->Title->Controls['Glossy']))
+//			return $this->Title->Controls['Glossy'];
+//		else
+			return $this->Title->BackColor;
 
 	}
 	/**
-	 * Returns the CollapsePanel's TitlePanel
-	 * @return Panel
-	 */
-	function GetTitlePanel()	{return $this->TitlePanel;}
+	* Returns the CollapsePanel's 'Title Panel
+	* @return Panel
+	*/
+	function GetTitle()	{return $this->Title;}
+	/**
+	*  @deprecated Use Title instead
+	* Returns the CollapsePanel's Title
+	* @return Panel
+	*/
+	function GetTitlePanel()	{return $this->GetTitle();}
 	/**
 	 * @ignore
 	 */
@@ -275,8 +343,9 @@ class CollapsePanel extends Panel implements Groupable
 	function Show()
 	{
         parent::Show();
-		AddNolohScriptSrc('Animation.js', true);
-		AddNolohScriptSrc('CollapsePanel.js');
+        ClientScript::AddNOLOHSource('Animation.js', true);
+        ClientScript::AddNOLOHSource('CollapsePanel.js');
+//        ClientScript::AddNOLOHSource('Dimensions.js', true);
 	}
 }
 ?>
