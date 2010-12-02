@@ -80,8 +80,26 @@ final class ClientScript
 	{
 		if(!$condition instanceof ClientEvent)
 		{	
-			if(preg_match('/^[a-z$_][\w$]*$/i', $condition))
-				$condition = "function(){return typeof($condition) != 'undefined';}";
+			if(preg_match('/^[a-z$_][\w$.]*$/i', $condition))
+			{
+				$namespaces = explode('.', $condition);
+				$count = count($namespaces);
+				if($count > 1)
+				{
+					$condition = 'function(){return';
+					$accumNamespace = $namespaces[0];
+					for($i=0; $i < $count; ++$i)
+					{
+						$condition .= ' typeof(' .$accumNamespace . ') != \'undefined\' &&';
+						if(isset($namespaces[$i + 1]))
+							$accumNamespace .= '.' . $namespaces[$i + 1];
+					}
+					$condition = rtrim($condition, '&') . ';}';
+				}
+				else
+					$condition = "function(){return typeof($condition) != 'undefined';}";
+				
+			}
 			else
 				$condition = "function(){return $condition;}";
 //			System::Log($condition);
@@ -179,9 +197,31 @@ final class ClientScript
 				else
 					for($i=3; $i<$numArgs; ++$i)
 						array_push($paramsArray, $args[$i] === Application::Name ? $startClass : $args[$i]);
-				self::Queue($component, '_NSfSet', $paramsArray, false, Priority::High);
+				if($value instanceof RaceClientEvent)
+				{
+//					$execute =  preg_replace('/^function\(\)\{\s*(?:return ?)?/', 'function(){return ', $value->ExecuteFunction);
+					$execute =  preg_replace('/,function\(\)\{\s*(?:return ?)?/', ',function(){return ', $value->ExecuteFunction, 1);
+//					What Execute Function Looks like
+//					$this->ExecuteFunction = '_NChkCond(' . $condition . ',' . 'function(){' . $this->ExecuteFunction . '});';				
+					$execute = substr($execute, 0, -2) . ', function(v){_NSfSet(' . ClientEvent::ClientFormat($paramsArray[0]) 
+					. ',' . ClientEvent::ClientFormat($paramsArray[1]). ',v,';	
+					$execute .= implode(',', array_map(array('ClientEvent', 'ClientFormat'), array_slice($paramsArray, 3))) . ')});'; 
+					self::Queue($component, $execute, null, false, Priority::High);
+				}
+				else
+					self::Queue($component, '_NSfSet', $paramsArray, false, Priority::High);
 			}
 		}
+	}
+	/**
+	* Returns a Raw object for use in various Client related functions. This
+	* allows for better interopability with 3rd party JavaScript libararies.
+	* 
+	* @param mixed string|ClientEvent The string, or Client that you wish to raw
+	*/
+	static function Raw($value)
+	{
+		return (object)array('raw' => $value);
 	}
 	/**
 	 * Observes a JavaScript property so that it is automatically updated on the server as well, under an optional alias.

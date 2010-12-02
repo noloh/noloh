@@ -1,4 +1,4 @@
-function _NChkCond(cond, call)
+function _NChkCond(cond, call, callback)
 {
 	//console.log(cond, call);
 	var _NChkIntvl = setInterval(
@@ -6,8 +6,10 @@ function _NChkCond(cond, call)
 	{
 		if (cond()) 
 		{
-			call();
+			var returnVal = call();
 			clearInterval(_NChkIntvl);
+			if(callback)
+				callback(returnVal);
 		}
 	}, 100);
 }
