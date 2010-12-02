@@ -24,6 +24,10 @@
 class ClientEvent extends Event
 {
 	/**
+	* @ignore
+	*/
+	const Inline = 'inline';
+	/**
 	 * @ignore
 	 */
 	static function GenerateString($eventType, $str)
@@ -92,10 +96,16 @@ class ClientEvent extends Event
 			return '"' . $param->Id . '"';
 		elseif($param instanceof ClientEvent)
 		{
-			if (preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', ($func = $param->ExecuteFunction)))
+			$func = $param->ExecuteFunction;
+			if (preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', $func))
 				return $func;
-			else	
-				return 'function(){' . $param->GetEventString(null, null) .'}';
+			else
+				return 'function(){' . $param->GetEventString(self::Inline, null) .'}';
+		}
+		elseif($param instanceof stdClass)
+		{
+			$raw = $param->raw;
+			return ($raw instanceof ClientEvent)?rtrim($raw->GetEventString(self::Inline, null), ';'):$raw;
 		}
 		elseif(is_object($param))
 			BloodyMurder('Objects can not be passed as parameters to ClientEvent');
@@ -123,7 +133,10 @@ class ClientEvent extends Event
 	{
 		if($this->GetEnabled())
 		{
-			$txt = ClientEvent::GenerateString($eventType, $this->Liquid?'if(liq){'.$this->ExecuteFunction.'}':$this->ExecuteFunction);
+			if($eventType === self::Inline)
+				$txt = $this->Liquid?'if(liq){'.$this->ExecuteFunction.'}':$this->ExecuteFunction;
+			else
+				$txt = ClientEvent::GenerateString($eventType, $this->Liquid?'if(liq){'.$this->ExecuteFunction.'}':$this->ExecuteFunction);
 			if($this->Bubbles === false)
 				$txt .= '_NNoBubble();';
 			return $txt;

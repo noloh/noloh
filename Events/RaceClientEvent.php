@@ -49,13 +49,35 @@ class RaceClientEvent extends ClientEvent
 		}
 		else
 			$allCodeAsString = str_replace("\n", ' ', $allCodeAsString);*/
-		parent::ClientEvent($allCodeAsString, $params);
+		$args = func_get_args();
+		call_user_func_array(array('ClientEvent', 'ClientEvent'), array_splice($args, 1));
+		//parent::ClientEvent($allCodeAsString, $params);
 		if(!$condition instanceof ClientEvent)
 		{	
 			if(!preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', $condition))
 			{
-				if(preg_match('/^[a-z$_][\w$]*$/i', $condition))
-					$condition = "function(){return typeof($condition) != 'undefined';}";
+				if(preg_match('/^[a-z$_][\w$.]*$/i', $condition))
+//					$condition = "function(){return typeof($condition) != 'undefined';}";
+//					$condition = "function(){var result; try{result = (typeof($condition) != 'undefined')}catch(e){result = false}return result;}";
+				{
+					$namespaces = explode('.', $condition);
+					$count = count($namespaces);
+					if($count > 1)
+					{
+						$condition = 'function(){return';
+						$accumNamespace = $namespaces[0];
+						for($i=0; $i < $count; ++$i)
+						{
+							$condition .= ' typeof(' .$accumNamespace . ') != \'undefined\' &&';
+							if(isset($namespaces[$i + 1]))
+								$accumNamespace .= '.' . $namespaces[$i + 1];
+						}
+						$condition = rtrim($condition, '&') . ';}';
+					}
+					else
+						$condition = "function(){return typeof($condition) != 'undefined';}";
+						
+				}
 				else
 					$condition = "function(){return $condition;}";
 			}
