@@ -48,7 +48,8 @@ function _NCNS(obj)
 function _NAvail(id)
 {
 	var obj = _N(id);
-	if(obj.style.display == "none" || obj.style.visibility == "hidden" || obj.disabled == true)
+	//!obj Temporary hack to make sure obj exists, until shifts are corrected
+	if(!obj || obj.style.display == "none" || obj.style.visibility == "hidden" || obj.disabled == true)
 		return false;
 	return obj.parentNode.id ? _NAvail(obj.parentNode.id) : true;
 }

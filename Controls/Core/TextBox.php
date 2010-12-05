@@ -115,8 +115,8 @@ class TextBox extends Control
 	 */
 	function SetFilter($filter)
 	{
-		ClientScript::AddSource('Filter.js', true);
-		ClientScript::AddSource('KeyEvents.js', true);
+		ClientScript::AddNOLOHSource('Filter.js', true);
+		ClientScript::AddNOLOHSource('KeyEvents.js', true);
 		$this->Filter = $filter;
 		$this->UpdateEvent('KeyPress');
 	}
@@ -126,7 +126,7 @@ class TextBox extends Control
 	 */
 	function GetTypePause()
 	{
-		ClientScript::AddSource('KeyEvents.js', true);
+		ClientScript::AddNOLOHSource('KeyEvents.js', true);
 		return $this->GetEvent('TypePause');
 	}
 	/**
@@ -135,7 +135,7 @@ class TextBox extends Control
 	 */
 	function SetTypePause($typePause)
 	{
-		ClientScript::AddSource('KeyEvents.js', true);
+		ClientScript::AddNOLOHSource('KeyEvents.js', true);
 		$this->SetEvent($typePause, 'TypePause');
 	}
 	/**
