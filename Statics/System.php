@@ -112,14 +112,16 @@ final class System
 	/**
 	 * @ignore
 	 */
-	static function LogFormat($what, $addQuotes=false)
+	static function LogFormat($what, $addQuotes=false, $tier=0)
 	{
 		if(($isArray = is_array($what)) || $what instanceof Iterator)
 		{
-			$text = ($isArray ? 'array' : get_class($what)) . '(';
+			$indent = '    ';
+			$spacer = str_repeat($indent, $tier);
+			$text = ($isArray ? 'Array' : get_class($what)) . "\n$spacer(\n";
 			foreach($what as $key => $val)
-				$text .= $key . ' => ' . self::LogFormat($val, true) . ', ';
-			return rtrim($text,', ') . ')';
+				$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
+			return rtrim($text,', ') . "$spacer)";
 		}
 		elseif(is_object($what))
 			return (string)$what . ' ' . get_class($what) . ' object';
@@ -269,11 +271,11 @@ final class System
 					$display->Text .= '<UL>';
 					$args = func_get_args();
 					for($i=0; $i < $count; ++$i)
-						$display->Text .= '<LI>' . self::LogFormat($args[$i]) . '</LI>';
+						$display->Text .= '<LI><PRE>' . self::LogFormat($args[$i]) . '</PRE></LI>';
 					$display->Text .= '</UL>';
 				}
 				else 
-					 $display->Text .= self::LogFormat($what);
+					 $display->Text .= '<PRE>' . self::LogFormat($what) . '</PRE>';
 				if(!isset($GLOBALS['_NDebugScrollAnim']))
 				{
 					Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
