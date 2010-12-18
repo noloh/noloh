@@ -210,7 +210,8 @@ final class URL
 	 */
 	static function Redirect($url, $searchEngineLinkText=null)
 	{
-		AddScript('location="'.$url.'";');
+		ClientScript::Add('window.location.replace("'.$url.'");');
+		//AddScript('location="'.$url.'";');
 		if(!isset($GLOBALS['_NInitialURLTokens']))
 			$GLOBALS['_NInitialURLTokens'] = self::TokenString(self::$TokenChain, $_SESSION['_NTokens']);
 		self::UpdateTrails($url, $searchEngineLinkText?$searchEngineLinkText:$url);
