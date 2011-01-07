@@ -172,12 +172,12 @@ function _NChangeByObj(obj, property, value)
 					_N.HighestZ = value;
 				if(value < _N.LowestZ)
 					_N.LowestZ = value;
-				obj.style.zIndex = obj.BuoyantParentId == null ? value : value + 9999;
+				obj.style.zIndex = (obj.Buoyant)?value + 9999 : value;
 				break;
 			case "style.left":
-				if(obj.BuoyantParentId)
+				if(obj.Buoyant)
 				{
-					obj.BuoyantLeft = parseInt(value);
+					obj.Buoyant.Left = parseInt(value);
 					_NByntMv(obj.id);
 				}
 				else
@@ -188,9 +188,10 @@ function _NChangeByObj(obj, property, value)
 				}
 				break;
 			case "style.top":
-				if(obj.BuoyantParentId)
+//				if(obj.BuoyantParentId)
+				if(obj.Buoyant)
 				{
-					obj.BuoyantTop = parseInt(value);
+					obj.Buoyant.Top = parseInt(value);
 					_NByntMv(obj.id);
 				}
 				else
@@ -383,14 +384,17 @@ function _NAsc(id)
 	var ele = _N(id);
 	if(ele)
     {
-    	if(ele.BuoyantParentId)
-    		_NByntFrgt(id, _N(ele.BuoyantParentId));
+    	if(ele.Buoyant)
+    		_NByntFrgt(id, _N(ele.Buoyant.ParentId));
         if(ele.BuoyantChildren)
         	for(var i=0; i<ele.BuoyantChildren.length; ++i)
         	{
-        		_NAsc(ele.BuoyantChildren[i]);
+        		//_NAsc(ele.BuoyantChildren[i]);
+        		//var parent = _N(_N(ele.BuoyantChildren[i]).BuoyantParentId);
         		var parent = ele.parentNode;
         		_NByntFrgt(ele.BuoyantChildren[i], parent);
+        		_NAsc(ele.BuoyantChildren[i]);
+        		
         	}
 		if(ele.NonControls)
 			for(var i=0; i<ele.NonControls.length; ++i)

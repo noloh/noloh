@@ -1,10 +1,21 @@
 function _NByntSta(id, parentId)
 {
 	var obj = _N(id), parent = _N(parentId);
-	obj.BuoyantParentId = parentId;
-	obj.BuoyantLeft = parseInt(obj.style.left);
-	obj.BuoyantTop = parseInt(obj.style.top);
-	obj.BuoyantZIndex = obj.style.zIndex;
+	//Buoyant should be changed to array {"parentId":parentId, etc.}
+	//obj.BuoyantParentId = parentId;
+//	obj.BuoyantLeft = parseInt(obj.style.left);
+//	obj.BuoyantRight = parseInt(obj.style.right);
+//	obj.BuoyantTop = parseInt(obj.style.top);
+//	obj.BuoyantBottom = parseInt(obj.style.bottom);
+//	obj.BuoyantZIndex = obj.style.zIndex;
+	obj.Buoyant = {
+		"ParentId":	parentId,
+		"Left":	parseInt(obj.style.left),
+		"Right":parseInt(obj.style.right),
+		"Top": parseInt(obj.style.top),
+		"Bottom": parseInt(obj.style.bottom),
+		"ZIndex": parseInt(obj.style.zIndex)};
+		
 	obj.style.zIndex = 9999;
 	do
 	{
@@ -26,13 +37,20 @@ function _NByntSta(id, parentId)
 function _NByntStp(id)
 {
 	var obj = _N(id), parent = _N(obj.BuoyantParentId);
-	obj.style.left = obj.BuoyantLeft + "px";
-	obj.style.top = obj.BuoyantTop + "px";
-	obj.style.zIndex = obj.BuoyantZIndex;
-	obj.BuoyantParentId = null;
-	obj.BuoyantLeft = null;
-	obj.BuoyantTop = null;
-	obj.BuoyantZIndex = null;
+	obj.style.left = obj.Buoyant["Left"] + "px";
+	if(obj.Buoyant["Right"])
+		obj.style.right = obj.Buoyant["Right"] + "px";	
+	obj.style.top = obj.Buoyant["Top"] + "px";
+	if(obj.Buoyant["Bottom"])
+		obj.style.bottom = obj.Buoyant["Bottom"] + "px";
+	obj.style.zIndex = obj.Buoyant["ZIndex"];
+	obj.Buoyant = null;
+	//obj.BuoyantParentId = null;
+//	obj.BuoyantLeft = null;
+//	obj.BuoyantRight = null;
+//	obj.BuoyantTop = null;
+//	obj.BuoyantBottom = null;
+//	obj.BuoyantZIndex = null;
 	_NByntFrgt(id, parent);
 }
 function _NByntMv(id)
@@ -40,9 +58,17 @@ function _NByntMv(id)
 	var obj = _N(id);
 	if(obj)
 	{
-		var parent = _N(obj.BuoyantParentId);
-		obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
-		obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
+		var parent = _N(obj.Buoyant.ParentId), xProps, yProps;
+//		obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
+//		obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
+		/*Changed | to || and added || for Bouyant Check. Single pipe will continue to evaluate.
+		 For ex. try true | alert('nonsense') vs true || alert('nonsense')*/
+		xProp = obj.Buoyant["Right"]?['right', 'borderRightWidth', 'Right']:['left', 'borderLeftWidth', 'Left'];
+		yProp = obj.Buoyant["Bottom"]?['bottom', 'borderBottomWidth', 'Bottom']:['top', 'borderTopWidth', 'Top'];
+		obj.style[xProp[0]] = _NFindX(obj.Buoyant.ParentId) + (parseInt(parent.style[xProp[1]],10)||0) + (obj.Buoyant[xProp[2]]||0) + "px";
+		obj.style[yProp[0]] = _NFindY(obj.Buoyant.ParentId) + (parseInt(parent.style[yProp[1]],10)||0) + (obj.Buoyant[yProp[2]]||0) + "px";
+//		obj.style.left = _NFindX(obj.Buoyant["ParentId"]) + (parseInt(parent.style.borderLeftWidth,10)||0) + (obj.BuoyantLeft||0) + "px";
+//		obj.style.top = _NFindY(obj.Buoyant["ParentId"]) + (parseInt(parent.style.borderTopWidth,10)||0) + (obj.BuoyantTop||0) + "px";
 	}
 }
 function _NByntMvCh(obj)
