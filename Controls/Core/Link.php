@@ -205,12 +205,16 @@ class Link extends Label
 		return URL::TokenString($chain, $tokens);
 	}
 	/**
-	 * @ignore
-	 */
+	* Returns where the URL referenced opens
+	* 
+	* @return Link::Blank|Link::Self|Link::NewWindow
+	*/
 	function GetTarget()	{return ($this->Target === null)?self::Self:$this->Target;}
 	/**
-	 * @ignore
-	 */
+	* Set where the URL referenced opens
+	* 
+	* @param mixed Link::Blank|Link::Self|Link::NewWindow
+	*/
 	function SetTarget($targetType)
 	{
 		$this->Target = ($targetType == self::Self)?null:$targetType;

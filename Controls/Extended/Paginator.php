@@ -12,8 +12,8 @@
  * $pages = new Paginator($results);
  * /*we can then Bind the Paginator to a DataCommand
  *   and set the callback for each row of data{@*}
- * $command = Data::Links->MyDB1->ExecSQL('SELECT * FROM people');
- * $pages->Bind($command, new ServerEvent($this, 'CreatePerson');
+ * $users = Data::$Links->MyDB1->ExecSQL('SELECT * FROM people');
+ * $pages->Bind($users, new ServerEvent($this, 'CreatePerson');
  * //Create the callback function
  * function CreatePerson()
  * {
