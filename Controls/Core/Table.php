@@ -34,7 +34,9 @@ class Table extends Control
 	 */
 	function Table($left=0, $top=0, $width=500, $height=500)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::Control($left, $top, null, null);
+		$this->SetWidth($width);
+		$this->SetHeight($height);
 		$this->Rows = new ArrayList();
 		$this->Rows->ParentId = $this->Id;
 	}
@@ -51,7 +53,6 @@ class Table extends Control
 			for($j = 0; $j < $numCols; ++$j)
 			{				
 				$this->Rows->Elements[$i]->Columns->Add(new TableColumn(new $typeAsString($params)));
-//				eval('$this->Rows->Elements[$i]->Columns->Add(new TableColumn(new '.$typeAsString.'(' . $params . ')));');
 				$this->BuiltMatrix[$i][$j] = &$this->Rows->Elements[$i]->Columns->Elements[$j];
 				$this->BuiltMatrix[$i][$j]->Controls->Elements[0]->SetWidth($this->BuiltMatrix[$i][$j]->GetWidth());
 			}
@@ -179,6 +180,18 @@ class Table extends Control
     	$this->CellPadding = (int)$padding;
     	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"cellPadding"', '"'.$this->CellPadding.'"'), false);
     	return $padding;
+    }
+    function SetWidth($width)
+    {
+    	parent::SetWidth($width);
+		if($width === null)
+			ClientScript::Queue($this, '_NSetProperty', array($this->Id . 'InnerTable', 'style.width', null)); 
+    }
+    function SetHeight($height)
+    {
+		parent::SetHeight($height);
+		if($height === null)
+			ClientScript::Queue($this, '_NSetProperty', array($this->Id . 'InnerTable', 'style.height', null));
     }
     /**
      * @ignore
