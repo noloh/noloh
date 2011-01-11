@@ -60,7 +60,9 @@ function _NErrorHandler($number, $string, $file, $line)
 	}
 	if($number & error_reporting())
 	{
-		ob_end_clean();
+		$level = ob_get_level();
+		for($i=0; $i<$level; ++$i)
+			ob_end_clean();
 		setcookie('_NAppCookie', false);
 		if($ob)
 		{
