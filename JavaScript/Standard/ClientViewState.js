@@ -497,7 +497,14 @@ function _NReqStateChange()
 	   		}
 	   		catch(err)
 	   		{
-				_NAlertError(err);
+	   			var el = document.createElement("DIV");
+	   			el.innerHTML = text;
+	   			text = el.textContent;
+	   			var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
+	   			if(matches)
+	   				alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
+	   			else
+					_NAlertError(err);
 	   		}
 	        finally
 	        {
