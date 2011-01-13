@@ -77,16 +77,18 @@ class ControlPair extends Panel implements ArrayAccess
 	function SetFirst($obj)
 	{
 //		$left = $this->GetLeft();
-		$obj->Layout = Layout::Relative;
+		if($obj->HasProperty('Layout'))
+			$obj->Layout = Layout::Relative;
 		if($this->First)
 		{
 			$this->Controls->Remove($this->First);
 			$this->Controls->Insert($obj, 0);
-			if($orientation == Layout::Horizontal)
-				$obj->CSSFloat = 'left';
+//			if($obj instanceof $orientation == Layout::Horizontal)
+//				$obj->CSSFloat = 'left';
 		}
 		else
 			$this->Controls->Add($obj);
+		$obj->CSSFloat = 'left';
 		return $this->First = $obj;
 //		$this->SetLeft($left);
 
@@ -106,10 +108,12 @@ class ControlPair extends Panel implements ArrayAccess
 	 */
 	function SetSecond($obj)
 	{
-		$obj->Layout = Layout::Relative;
+		if($obj->HasProperty('Layout'))
+			$obj->Layout = Layout::Relative;
 		if($this->Second)
 			$this->Controls->Remove($this->Second);
 		$this->Controls->Add($obj);
+		$obj->CSSFloat = 'left';
 		return $this->Second = $obj;
 //		$this->SetLeft($this->GetLeft());
 //		$this->SetTop($this->GetTop());
@@ -200,15 +204,17 @@ class ControlPair extends Panel implements ArrayAccess
 			$this->Margin->CSSFloat = 'left';
 			if($orientation == Layout::Horizontal)
 			{
-				$this->First->CSSFloat = 'left';
-				$this->Second->CSSFloat = '';
+//				$this->First->CSSFloat = 'left';
+//				$this->Second->CSSFloat = '';
 				$this->OrganizeMarginHor($this->Margin->GetHeight());
+				$this->Margin->CSSClear = 'none';
 			}
 			else
 			{
+				$this->Margin->CSSClear = 'right';
 //				$this->Margin->CSSFloat = 'left';
 				$this->First->CSSFloat = '';
-				$this->Second->CSSFloat = 'left';
+//				$this->Second->CSSFloat = 'left';
 				$this->OrganizeMarginVer($this->Margin->GetWidth());
 			}
 			//$this->SetMargin($margin);
