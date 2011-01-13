@@ -80,33 +80,29 @@ final class ClientScript
 	{
 		if(!$condition instanceof ClientEvent)
 		{	
-			if(preg_match('/^[a-z$_][\w$.]*$/i', $condition))
+			if (preg_match('/^[a-z$_][\w$()\']+\.[\w$()\'.]+$/i', $condition))
 			{
 				$namespaces = explode('.', $condition);
-				$count = count($namespaces);
-				if($count > 1)
-				{
-					$condition = 'function(){return';
-					$accumNamespace = $namespaces[0];
-					for($i=0; $i < $count; ++$i)
-					{
-						$condition .= ' typeof(' .$accumNamespace . ') != \'undefined\' &&';
-						if(isset($namespaces[$i + 1]))
-							$accumNamespace .= '.' . $namespaces[$i + 1];
-					}
-					$condition = rtrim($condition, '&') . ';}';
-				}
-				else
-					$condition = "function(){return typeof($condition) != 'undefined';}";
-				
+			
+				$condition = "function(){return (typeof({$namespaces[0]}) != 'undefined' && _NNS(" . $namespaces[0] . ',' . 
+					ClientEvent::ClientFormat(array_slice($namespaces, 1)) . 
+					', true))}';
 			}
-			else
+			elseif (preg_match('/^([a-z$_][\w$()\']+\.[\w$()\'.]+)\s*?([!=<>]{1,3})\s*(.*)$/i', $condition, $parts))
+			{
+				$namespaces = explode('.', $parts[1]);
+				$condition = "function() {return (typeof({$namespaces[0]}) != 'undefined' && _NNS(" . $namespaces[0] . ',' . 
+						ClientEvent::ClientFormat(array_slice($namespaces, 1)) . 
+						", true) && ({$parts[1]} {$parts[2]} {$parts[3]}))}";
+			}
+			elseif (preg_match('/^(?:true|false|\d+)$/i', $condition) || !(preg_match('/^[a-z$_][\w$\']+$/i', $condition))) 
 				$condition = "function(){return $condition;}";
-//			System::Log($condition);
+			else
+				$condition = "function(){return typeof($condition) != 'undefined';}";	
 			$condition = new ClientEvent($condition);	
 		}
 		if(!$codeOrFunction instanceof ClientEvent)
-		{
+		{	
 			if(preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
 			{
 				$paramsArray = null;
@@ -123,7 +119,6 @@ final class ClientScript
 					$paramsArray = array(ClientEvent::ClientFormat($paramsArray));
 				$codeOrFunction = 'function(){' . $codeOrFunction . '('. $paramsArray .')}'; 	
 			}
-//			System::Log($codeOrFunction);
 			$codeOrFunction = new ClientEvent($codeOrFunction);
 		}
 		self::AddNOLOHSource('RaceCall.js');

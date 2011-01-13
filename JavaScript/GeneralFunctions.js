@@ -1,5 +1,4 @@
 /*! Copyright (c) 2005 - 2010 NOLOH, LLC. All rights reserved */
-
 function _N(id)
 {
 	var obj;
@@ -28,12 +27,15 @@ function ToggleVisibility(id)
 	else
 		_NSetProperty(id, "style.display", "none");
 }
-function _NNS(obj, ns)
+function _NNS(obj, ns, checkUndefined)
 {
 	var argLength = ns.length, i;
-	for(i=0; i<argLength; ++i)
-		obj = obj[ns[i]];
-	return obj;
+	for(i=0; i < argLength; obj = obj[ns[i++]])
+	{
+		if(checkUndefined && typeof(obj) == 'undefined')
+			return false;
+	}
+	return checkUndefined?typeof(obj) != 'undefined':obj;
 }
 function _NCNS(obj)
 {
