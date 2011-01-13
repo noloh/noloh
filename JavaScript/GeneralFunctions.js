@@ -1,19 +1,15 @@
 /*! Copyright (c) 2005 - 2010 NOLOH, LLC. All rights reserved */
 function _N(id)
 {
-	var obj;
-	if(obj = document.getElementById(id));
-	else if(obj = _N.Incubator[id]);
-	else obj = _N[id];
-	return obj;
+	return document.getElementById(id) || _N.Incubator[id] || _N[id] || null;
 }
 function BringToFront(id)
 {
-	_NSetProperty(id, "style.zIndex", ++_N.HighestZ);
+	_NSet(id, "style.zIndex", ++_N.HighestZ);
 }
 function SendToBack(id)
 {
-	_NSetProperty(id, "style.zIndex", --_N.LowestZ);
+	_NSet(id, "style.zIndex", --_N.LowestZ);
 }
 function ToggleVisibility(id)
 {
@@ -21,11 +17,11 @@ function ToggleVisibility(id)
 	if(obj.style.visibility == "hidden" || obj.style.display == "none")
 	{
 		BringToFront(id);
-		_NSetProperty(id, "style.visibility", "inherit");
-		_NSetProperty(id, "style.display", "");
+		_NSet(id, "style.visibility", "inherit");
+		_NSet(id, "style.display", "");
 	}
 	else
-		_NSetProperty(id, "style.display", "none");
+		_NSet(id, "style.display", "none");
 }
 function _NNS(obj, ns, checkUndefined)
 {

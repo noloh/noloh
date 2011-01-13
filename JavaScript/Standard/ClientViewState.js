@@ -17,8 +17,8 @@ function _NInit(debugMode)
 	window.onresize = _NBodySizeState;
 	_N.DebugMode = debugMode;
 	_N.Saved[document.body.id] = {};
-	_NSetProperty(document.body.id, "Width", document.documentElement.clientWidth);
-	_NSetProperty(document.body.id, "Height", document.documentElement.clientHeight);
+	_NSet(document.body.id, "Width", document.documentElement.clientWidth);
+	_NSet(document.body.id, "Height", document.documentElement.clientHeight);
 	_N.WindowWidth = window.outerWidth;
 	_N.WindowHeight = window.outerHeight;
 	var graveyard = document.createElement("DIV");
@@ -52,12 +52,14 @@ function _NSetTokens(hash, id)
 {
 	_NSetURL(document.URL.split("#",1)[0] + "#/" + hash, id);
 }
-function _NSetProperty(id, property, value)
+function _NSet(id, property, value)
 {
-	_NChange(id, property, value);
+	//_NChange(id, property, value);
+	_NChangeByObj(_N(id), property, value);
 	_NSave(id, property, value);
 	return value;
 }
+function _NSetProperty(id, property, value)	{return _NSet(id, property, value)}
 function _NChange(id, property, value)
 {
 	_NChangeByObj(_N(id), property, value);
@@ -279,8 +281,8 @@ function _NBodySizeState()
 	}
 	if(body.BuoyantChildren)
 		_NByntMvCh(body);
-	_NSetProperty(body.id, "Width", document.documentElement.clientWidth);
-	_NSetProperty(body.id, "Height", document.documentElement.clientHeight);
+	_NSet(body.id, "Width", document.documentElement.clientWidth);
+	_NSet(body.id, "Height", document.documentElement.clientHeight);
 	_N.WindowWidth = window.outerWidth;
 	_N.WindowHeight = window.outerHeight;
 }

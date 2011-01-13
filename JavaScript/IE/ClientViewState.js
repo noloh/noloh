@@ -14,8 +14,8 @@ _N.HistoryLength = history.length;
 function _NInitHelper()
 {
 	_N.Saved["N1"] = {};
-	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
-	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
+	_NSet("N1", "Width", document.documentElement.clientWidth);
+	_NSet("N1", "Height", document.documentElement.clientHeight);
 	var graveyard = document.createElement("DIV");
 	graveyard.id = "NGraveyard";
 	graveyard.style.display = "none";
@@ -117,12 +117,15 @@ function _NSetTitle(title)
 {
 	document.title = _N.Title = title;
 }
-function _NSetProperty(id, property, value)
+function _NSet(id, property, value)
 {
-	_NChange(id, property, value);
+	//_NChange(id, property, value);
+	_NChangeByObj(_N(id), property, value);
 	_NSave(id, property, value);
 	return value;
 }
+function _NSetProperty(id, property, value)	{return _NSet(id, property, value)}
+
 function _NChange(id, property, value)
 {
 	_NChangeByObj(_N(id), property, value);
@@ -342,8 +345,8 @@ function _NBodySizeState()
 	}
 	if(body.BuoyantChildren)
 		_NByntMvCh(body);
-	_NSetProperty("N1", "Width", document.documentElement.clientWidth);
-	_NSetProperty("N1", "Height", document.documentElement.clientHeight);
+	_NSet("N1", "Width", document.documentElement.clientWidth);
+	_NSet("N1", "Height", document.documentElement.clientHeight);
 }
 function _NSetP(id, nameValuePairs)
 {
