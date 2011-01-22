@@ -484,35 +484,42 @@ function _NUnServer(loadIndicator)
 }
 function _NReqStateChange()
 {
-	if(_N.Request.readyState == 4)
-	{
-   		var text = _N.Request.responseText, loadIndicator = _N.LoadIndicator;
-		if(_N.DebugMode == null)
+	var req = _N.Request;
+	if(req.readyState == 4)
+		if(req.status == 200)
 		{
-			_NProcessResponse(text);
-			_NUnServer(loadIndicator);
-		}
-		else
-	   		try
-	   		{
+   			var text = _N.Request.responseText, loadIndicator = _N.LoadIndicator;
+			if(_N.DebugMode == null)
+			{
 				_NProcessResponse(text);
-	   		}
-	   		catch(err)
-	   		{
-	   			var el = document.createElement("DIV");
-	   			el.innerHTML = text;
-	   			text = el.textContent;
-	   			var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
-	   			if(matches)
-	   				alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
-	   			else
-					_NAlertError(err);
-	   		}
-	        finally
-	        {
 				_NUnServer(loadIndicator);
-	        }
-	}
+			}
+			else
+	   			try
+	   			{
+					_NProcessResponse(text);
+	   			}
+	   			catch(err)
+	   			{
+	   				var el = document.createElement("DIV");
+	   				el.innerHTML = text;
+	   				text = el.textContent;
+	   				var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
+	   				if(matches)
+	   					alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
+	   				else
+						_NAlertError(err);
+	   			}
+		        finally
+		        {
+					_NUnServer(loadIndicator);
+		        }
+			}
+			else
+			{
+				alert("HTTP error: " + req.status + "\n" + req.statusText);
+				_NUnServer();
+			}
 }
 function _NSE(eventType, id, uploads)
 {
@@ -541,7 +548,7 @@ function _NServer()
 {
 	if(!_N.Request)
 	{
-		var url = location.href, notUnload = true, sECount = _N.SEQ.length;
+		var url = location.href, hashPos = url.indexOf("#/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
 		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 		for(var i=0; i<sECount; ++i)
 		{
@@ -557,10 +564,10 @@ function _NServer()
 			_N.URLTokenLink = null;
 		}
 		_N(_N.LoadIndicator).style.visibility = "visible";
-	    _N.Request = _NXHR("POST", 
-	    	url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"),
+		_N.Request = _NXHR("POST", 
+	    	hashPos==-1 ? url.replace(location.hash,"") : url.replace("#/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
 	    	notUnload ? _NReqStateChange : null,
 	    	notUnload);
-	    _N.Request.send(str);
+		_N.Request.send(str);
 	}
 }
