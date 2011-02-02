@@ -111,10 +111,8 @@ class Panel extends Control
 	 */
 	function OpenPrintableVersion($openDialog=false)
 	{
-		$code = 'var newWin = window.open(); newWin.document.write(_N(\''.$this->Id.'\').innerHTML);';
-		if($openDialog)
-			$code .= 'newWin.print();';
-		ClientScript::Queue($this, 'try{' . $code . '} catch(e){}');
+		ClientScript::AddNOLOHSource(UserAgent::GetBrowser() == 'op' ? 'Mixed/PrintableVersionOp.js' : 'Mixed/PrintableVersion.js');
+		ClientScript::Queue($this, '_NOpenPrintable', array($this->Id, $openDialog));
 	}
 	/**
 	 * Returns the kind of scroll bars the Panel will have, if any
