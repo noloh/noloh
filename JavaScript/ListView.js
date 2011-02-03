@@ -34,14 +34,14 @@ function _NLVSlct(id)
 	if(!event.ctrlKey && !event.metaKey)
 	{
 		for(var key in panel.SelectedRows)
-			_NSetProperty(key, "className", _N(key).className.replace(row.SelCls, ''));
+			_NSet(key, "className", _N(key).className.replace(row.SelCls, ''));
 		panel.SelectedRows = {};
 		panel.StringRep = "";
 	}
 	else if(panel.SelectedRows[id])
 	{
 		event.preventDefault();
-		_NSetProperty(id, "className", row.className.replace(row.SelCls, ''));
+		_NSet(id, "className", row.className.replace(row.SelCls, ''));
 		delete(panel.SelectedRows[id]);
 		panel.StringRep = panel.StringRep.replace(id + "~d2~", "");
 		_NSave(panel.parentNode.parentNode.id, "_NSelectedRows", panel.StringRep);
@@ -60,7 +60,7 @@ function _NLVSort(id, arr)
 }
 function _NLVSetItem(element, column)
 {
-	_NSetProperty(element + '_W', 'style.width', _NOuterWidth(column) +'px');
+	_NSet(element + '_W', 'style.width', _NOuterWidth(column) +'px');
 }
 function _NLVResizeStart(line, clmn, innrPnl)
 {

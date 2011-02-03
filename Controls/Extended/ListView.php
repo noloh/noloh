@@ -210,10 +210,9 @@ class ListView extends Panel
 				$GLOBALS['_NLVCols'] = $this->DataColumns;
 				Event::$BoundData = $listViewItem;
 //				System::Log($listViewItem, $this->DataColumns);		
-				if($this->RowCallback)
-					$listViewItem = $this->RowCallback->Exec();
-				else
-					$listViewItem = new ListViewItem($listViewItem);
+				$listViewItem = $this->RowCallback
+					?$this->RowCallback->Exec()
+					:new ListViewItem($listViewItem);
 					
 				Event::$BoundData = $previousBound;
 				$GLOBALS['_NLVCols'] = $previousCols;
@@ -296,9 +295,10 @@ class ListView extends Panel
 	 */
 	public function ClearListViewItems()
 	{
+		ClientScript::Set($this, 'SelectedRows', null, null);
 		$this->ListViewItems->Clear(true);
 		if(isset($this->ExcessSubItems))
-			unset($this->ExcessSubItems);
+			$this->ExcessSubItems = array();
 //		$this->LVItemsQueue = array();
 //		$this->LVItemsQueue = array();
 	}
