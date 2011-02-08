@@ -257,7 +257,7 @@ final class System
 				else
 				{
 					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
-					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, null, null);
+					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, '100%', '100%');
 					//$display->CSSFontFamily = 'consolas, monospace';
 					$old = false;
 					$debugWindow->Buoyant = true;
