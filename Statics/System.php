@@ -336,7 +336,10 @@ final class System
 		if($container && $container->HasProperty('Controls'))
 			$container->Controls->Add($modal);
 		else
+		{
+			$backLabel->Layout = Layout::Fixed;
 			WebPage::That()->Controls->Add($modal);
+		}
 		return $modal;
 	}
 	
