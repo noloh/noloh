@@ -60,7 +60,7 @@ class ClientEvent extends Event
 	static public function ClientFormat($param)
 	{
 		if(is_string($param))
-			return '"'.str_replace(array('"', "\n"), array('\\\\"', ' '), $param).'"';
+			return '"'.str_replace(array('"', "\r\n", "\n"), array('\\\\"', ' ', ' '), $param).'"';
 		elseif(is_int($param) || is_float($param))
 			return $param;
 		elseif(is_bool($param))

@@ -42,11 +42,11 @@ final class ClientScript
 			if(preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
 				$paramsArray = null;
 			elseif(is_array($paramsArray))
-				$paramsArray = array_map(array('ClientEvent', 'ClientFormat'), $paramsArray);
+				$paramsArray = array_map(array('ClientScript', 'ClientFormat'), $paramsArray);
 			elseif($paramsArray === null)
 				$paramsArray = array();
 			else 
-				$paramsArray = array(ClientEvent::ClientFormat($paramsArray));
+				$paramsArray = array(ClientScript::ClientFormat($paramsArray));
 			
 			if(!isset($_SESSION['_NFunctionQueue'][$id]))
 				$_SESSION['_NFunctionQueue'][$id] = array();
@@ -85,14 +85,14 @@ final class ClientScript
 				$namespaces = explode('.', $condition);
 			
 				$condition = "function(){return (typeof({$namespaces[0]}) != 'undefined' && _NNS(" . $namespaces[0] . ',' . 
-					ClientEvent::ClientFormat(array_slice($namespaces, 1)) . 
+					ClientScript::ClientFormat(array_slice($namespaces, 1)) . 
 					', true))}';
 			}
 			elseif (preg_match('/^([a-z$_][\w$()\']+\.[\w$()\'.]+)\s*?([!=<>]{1,3})\s*(.*)$/i', $condition, $parts))
 			{
 				$namespaces = explode('.', $parts[1]);
 				$condition = "function() {return (typeof({$namespaces[0]}) != 'undefined' && _NNS(" . $namespaces[0] . ',' . 
-						ClientEvent::ClientFormat(array_slice($namespaces, 1)) . 
+						ClientScript::ClientFormat(array_slice($namespaces, 1)) . 
 						", true) && ({$parts[1]} {$parts[2]} {$parts[3]}))}";
 			}
 			elseif (preg_match('/^(?:true|false|\d+)$/i', $condition) || !(preg_match('/^[a-z$_][\w$\']+$/i', $condition))) 
@@ -112,11 +112,11 @@ final class ClientScript
 			{
 				if(is_array($paramsArray))
 				{
-					$paramsArray = array_map(array('ClientEvent', 'ClientFormat'), $paramsArray);
+					$paramsArray = array_map(array('ClientScript', 'ClientFormat'), $paramsArray);
 					$paramsArray = implode(',', $paramsArray);
 				}
 				elseif($paramsArray !== null)
-					$paramsArray = array(ClientEvent::ClientFormat($paramsArray));
+					$paramsArray = array(ClientScript::ClientFormat($paramsArray));
 				$codeOrFunction = 'function(){' . $codeOrFunction . '('. $paramsArray .')}'; 	
 			}
 			$codeOrFunction = new ClientEvent($codeOrFunction);
@@ -172,6 +172,7 @@ final class ClientScript
 		$id = is_object($component) ? $component->Id : $component;
 		if($GLOBALS['_NQueueDisabled'] !== $id)
 		{
+			
 			if($namespaces == null || $namespaces == 'style')
 			{
 				if($namespaces == 'style')
@@ -198,9 +199,9 @@ final class ClientScript
 					$execute =  preg_replace('/,function\(\)\{\s*(?:return ?)?/', ',function(){return ', $value->ExecuteFunction, 1);
 //					What Execute Function Looks like
 //					$this->ExecuteFunction = '_NChkCond(' . $condition . ',' . 'function(){' . $this->ExecuteFunction . '});';				
-					$execute = substr($execute, 0, -2) . ', function(v){_NSfSet(' . ClientEvent::ClientFormat($paramsArray[0]) 
-					. ',' . ClientEvent::ClientFormat($paramsArray[1]). ',v,';	
-					$execute .= implode(',', array_map(array('ClientEvent', 'ClientFormat'), array_slice($paramsArray, 3))) . ')});'; 
+					$execute = substr($execute, 0, -2) . ', function(v){_NSfSet(' . ClientScript::ClientFormat($paramsArray[0]) 
+					. ',' . ClientScript::ClientFormat($paramsArray[1]). ',v,';	
+					$execute .= implode(',', array_map(array('ClientScript', 'ClientFormat'), array_slice($paramsArray, 3))) . ')});'; 
 					self::Queue($component, $execute, null, false, Priority::High);
 				}
 				else
@@ -235,6 +236,59 @@ final class ClientScript
 		$obj = is_object($objOrId) ? $objOrId : Component::Get($objOrId);
 		self::AddNOLOHSource('Observe.js');
 		self::Queue($obj, '_NObserve', array($objOrId, $clientPropertyName, $serverPropertyAlias), false, Priority::Low);
+	}
+	static public function ClientFormat($param)
+	{
+		if(is_string($param))
+			return '"'.str_replace(array('"', "\r\n", "\n"), array('\\"', ' ', ' '), $param).'"';
+		elseif(is_int($param) || is_float($param))
+			return $param;
+		elseif(is_bool($param))
+			return ($param?'true':'false');
+		elseif($param === null)
+			return 'null';
+		elseif(is_array($param))
+		{
+			$isList = true;
+			$count = count($param);
+        	for ($i=0, reset($param); $i<$count; ++$i, next($param))
+            	if (key($param) !== $i)
+            	{
+            		$isList = false; 
+            		break; 
+            	}
+            if($isList)
+            {
+				$tmpArr = array();
+				foreach($param as $val)
+					$tmpArr[] = self::ClientFormat($val);
+				return '[' . implode(',', $tmpArr) . ']';
+			}
+			else
+			{
+				$str = '{';
+				foreach($param as $key => $val)
+					$str .= self::ClientFormat($key) . ':' . self::ClientFormat($val) . ',';
+				return rtrim($str, ',') . '}';
+			}
+		}
+		elseif($param instanceof Component)
+			return '"' . $param->Id . '"';
+		elseif($param instanceof ClientEvent)
+		{
+			$func = $param->ExecuteFunction;
+			if (preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', $func))
+				return $func;
+			else
+				return 'function(){' . $param->GetEventString(ClientEvent::Inline, null) .'}';
+		}
+		elseif($param instanceof stdClass)
+		{
+			$raw = $param->raw;
+			return ($raw instanceof ClientEvent)?rtrim($raw->GetEventString(ClientEvent::Inline, null), ';'):$raw;
+		}
+		elseif(is_object($param))
+			BloodyMurder('Objects can not be converted to the client');
 	}
 }
 ?>
