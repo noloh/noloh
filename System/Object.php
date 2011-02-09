@@ -123,6 +123,8 @@ abstract class Object
 		}
 		elseif($innerSugar = $this->ParentInnerSugar())
 			return $innerSugar->$nm = $val;
+		elseif(preg_match('/\.(\w+)$/i', $nm, $matches))
+			return self::__set($matches[1], $args);
 		else
 			BloodyMurder('Could not set property ' . $nm . ' because it does not exist or is read-only in the class ' . get_class($this) . '.');
 	}
@@ -168,6 +170,8 @@ abstract class Object
 			$prop = substr($nm, 3);
 			if(property_exists($this, $prop))
 				return $this->$prop = $args[0];
+			elseif(preg_match('/\.(\w+)$/i', $nm, $matches))
+				return call_user_func_array(array(&$this, 'Set' . $matches[1]), $args);
 			else 
 				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
