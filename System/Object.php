@@ -172,7 +172,9 @@ abstract class Object
 				return $this->$prop = $args[0];
 			elseif(preg_match('/\.(\w+)$/i', $nm, $matches))
 				return call_user_func_array(array(&$this, 'Set' . $matches[1]), $args);
-			else 
+			elseif(isset($GLOBALS['_NQueueDisabled']) && $GLOBALS['_NQueueDisabled']===$this->Id)
+				return;
+			else
 				BloodyMurder('The function ' . $nm . ' could not be called because it does not exist or is not in scope, nor does the property ' . $prop . ' exist in the class ' . get_class($this) . '.');
 		}
 		elseif(strpos($nm, 'All') === 0 && $this instanceof Iterator)
