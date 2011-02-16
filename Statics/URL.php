@@ -95,7 +95,7 @@ final class URL
 	 */
 	static function SetTokenHelper(&$tokenArray, $tokenName, $tokenValue, $removeSubsequentTokens=false)
 	{
-		if($tokenValue === null)
+		if($tokenValue === null || $tokenValue === '')
 			unset($tokenArray[$tokenName]);
 		else
 			$tokenArray[$tokenName] = $tokenValue;
