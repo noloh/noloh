@@ -54,7 +54,8 @@ class RichMarkupRegion extends MarkupRegion
 			else
 				$text = &$markupStringOrFile;
 			if(isset($this->InnerCSSClass))
-			 	$text = '<div class = \''. $this->InnerCSSClass . '\'>' . $text . '</div>';
+ 				$markupStringOrFile = "<div id = 'Inner{$this->Id}' class = '{$this->InnerCSSClass}'>$markupStringOrFile</div>";
+//			 	$text = '<div class = \''. $this->InnerCSSClass . '\'>' . $text . '</div>';
 			$tmpFullString = &$this->ParseItems($text);
 			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
         }

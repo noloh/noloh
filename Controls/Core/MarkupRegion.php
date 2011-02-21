@@ -168,9 +168,11 @@ class MarkupRegion extends Control
     {
     	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
     	if($_SESSION['_NIsIE'])
-    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
+    		ClientScript::Queue($this, '_NChange', array($this->Id, 'scrollTop', $scrollTop), false, Priority::High);
+//    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
-        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
+    		ClientScript::Set($this, 'scrollTop', $scrollTop, null);
+//        	NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
         $this->ScrollTop = $scrollTop;
     }
 	//function GetMarkupString()
@@ -214,7 +216,8 @@ class MarkupRegion extends Control
 		$markupStringOrFile =  str_replace(array("\r\n", "\n", "\r", '"', '\'', '\\'), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>', '\\\\'), ($tmpFullString = ((is_file($markupStringOrFile))?file_get_contents($markupStringOrFile):$markupStringOrFile)));
 		$this->AutoWidthHeight($tmpFullString);
 		if(isset($this->InnerCSSClass))
-			 $markupStringOrFile = '<div class = \''. $this->InnerCSSClass . '\'>' . $markupStringOrFile . '</div>';
+			 $markupStringOrFile = "<div id = 'Inner{$this->Id}' class = '{$this->InnerCSSClass}'>$markupStringOrFile</div>";
+//			 $markupStringOrFile = '<div class = \''. $this->InnerCSSClass . '\'>' . $markupStringOrFile . '</div>';
 		ClientScript::Queue($this, '_NMkupSet', array($this->Id, $markupStringOrFile));
 //		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 	}
