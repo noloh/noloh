@@ -6,16 +6,16 @@
  * 
  * Basic Example:
  * <pre>
- * $navButton = new RolloverImage('navOut.gif'. 'navOver.gif');
+ * $navButton = new RolloverImage('navOut.gif', 'navOver.gif');
  * //optional Down state
  * $navButton->DownPath = 'navDown.gif;
  * </pre>
  * When using RolloverImages as part of a Group, you can set the Selected state.
  * <pre>
  * $group = new Group();
- * $home = new RolloverImage('homeOut.gif'. 'homeOver.gif');
+ * $home = new RolloverImage('homeOut.gif', 'homeOver.gif');
  * $home->SelectedPath = 'homeSelected.gif';
- * $about = new RolloverImage('aboutOut.gif'. 'aboutOver.gif');
+ * $about = new RolloverImage('aboutOut.gif', 'aboutOver.gif');
  * $about->SelectedPath = 'aboutSelected.gif';
  * 
  * $group->AddRange($home, $about);
@@ -58,7 +58,7 @@ class RolloverImage extends Image implements Groupable
 	 * Returns the path to the image that is shown during the out state
 	 * @return string
 	 */
-	function GetPath()								{return $this->Src;}
+	function GetPath()								{return $this->OutSrc;}
 	/**
 	 * Returns the path to the image that is shown during the over state
 	 * @return string
