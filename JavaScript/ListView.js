@@ -2,8 +2,8 @@ _N.LVInfo=null;
 function _NLVModScroll(listViewId, columnPanelId, innerPanelId)
 {
 	var listView = _N(listViewId);
-	_NSetProperty(columnPanelId, 'style.left', -(parseInt(listView.scrollLeft)) + "px");
-	_NSetProperty(columnPanelId, 'style.width', (listView.offsetWidth + (parseInt(listView.scrollLeft))) + "px");
+	_NSet(columnPanelId, 'style.left', -(parseInt(listView.scrollLeft)) + "px");
+	_NSet(columnPanelId, 'style.width', (listView.offsetWidth + (parseInt(listView.scrollLeft))) + "px");
 	if(listView.scrollTop + listView.clientHeight >= _N(innerPanelId).offsetHeight && listView.parentNode.DataFetch)
 		listView.parentNode.DataFetch();
 }
@@ -20,7 +20,7 @@ function _NHndlClmn(columnId, innerPanelId, remove)
 			if(sum < outerWidth )
 				sum = outerWidth;
 		}
-		_NSetProperty(innerPanelId, 'style.width', sum + 'px');
+		_NSet(innerPanelId, 'style.width', sum + 'px');
 	}
 }
 function _NLVSlct(id)
@@ -86,7 +86,7 @@ function _NLVResizeEnd()
 		{
 			innerPnlChildren = innerPnlNodes[i].childNodes;
 			if(typeof(innerPnlChildren[index]) !== 'undefined')
-				_NSetProperty(innerPnlChildren[index].id, 'style.width', 
+				_NSet(innerPnlChildren[index].id, 'style.width', 
 					parseInt(innerPnlChildren[index].style.width) + changeX + 'px'); 
 		}
 	}

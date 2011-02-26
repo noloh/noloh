@@ -295,7 +295,7 @@ class ListView extends Panel
 	 */
 	public function ClearListViewItems()
 	{
-		ClientScript::Set($this, 'SelectedRows', null, null);
+		ClientScript::Set($this->InnerPanel, 'SelectedRows', null, null);
 		$this->ListViewItems->Clear(true);
 		if(isset($this->ExcessSubItems))
 			$this->ExcessSubItems = array();
