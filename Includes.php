@@ -124,9 +124,26 @@ function _NAutoLoad($class)
 		require($dir . '/' . $class . '.php');
 	elseif(function_exists('__autoload'))
 		__autoload($class);
-	else 
+	else
+	{
+		if(count($autoloads = spl_autoload_functions()) > 1)
+		{
+			$callLoad = false;
+			foreach($autoloads as $autoload)
+			{
+				if($callLoad && $autoload !== '_NAutoLoad')
+				{
+					call_user_func($autoload, $class);
+					if(class_exists($class, false))
+						return;
+				}
+				elseif(!$callLoad && $autoload == '_NAutoLoad')
+					$callLoad = true;
+			}
+		}
 		require($class . '.php');
 	//	BloodyMurder('The class ' . $class . ' is not defined.');
+	}
 }
 
 spl_autoload_register('_NAutoLoad');
