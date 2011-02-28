@@ -55,8 +55,6 @@ class ListViewItem extends Panel //extends Component
 		parent::Panel(null, null, '100%', $height, $this);
 		$this->SetLayout(Layout::Relative);
 		$this->SubItems = new ImplicitArrayList($this, 'AddSubItem');
-//		$this->SubItems = &$this->Controls;
-//		$this->SubItems->AddFunctionName = 'AddSubItem';
 		$this->SubItems->RemoveFunctionName = 'RemoveSubItem';
 			
 		$this->Scrolling = false;
@@ -147,7 +145,7 @@ class ListViewItem extends Panel //extends Component
 		}
 		$object->Layout = Layout::Relative;
 		$this->SubItems->Add($object, true);
-		$object->SetCSSClass('NLVSubItem');
+		$object->CSSClasses->Add('NLVSubItem');
 //		$this->ShowSubItem($object);
 		return $object;
 	}
