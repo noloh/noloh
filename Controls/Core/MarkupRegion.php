@@ -7,6 +7,10 @@
  * probably not put a tag like INPUT. Indeed, MarkupRegion was specifically designed to take in the kind
  * of mark-up that mark-up was originally designed for and is good at: styled text and possibly images.
  * 
+ * <pre>
+ * $content = new MarkupRegion('Path/To/Markup/content.htm');
+ * </pre>
+ * 
  * @package Controls/Core
  */
 class MarkupRegion extends Control
@@ -218,7 +222,7 @@ class MarkupRegion extends Control
 		if(isset($this->InnerCSSClass))
 			 $markupStringOrFile = "<div id = 'Inner{$this->Id}' class = '{$this->InnerCSSClass}'>$markupStringOrFile</div>";
 //			 $markupStringOrFile = '<div class = \''. $this->InnerCSSClass . '\'>' . $markupStringOrFile . '</div>';
-		ClientScript::Queue($this, '_NMkupSet', array($this->Id, $markupStringOrFile));
+		ClientScript::Queue($this, '_NMkupSet', array($this, $markupStringOrFile));
 //		QueueClientFunction($this, '_NMkupSet', array('\''.$this->Id.'\'', '\''.$markupStringOrFile.'\''));
 	}
 	/**

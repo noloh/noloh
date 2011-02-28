@@ -54,7 +54,7 @@ class RichMarkupRegion extends MarkupRegion
 			else
 				$text = &$markupStringOrFile;
 			if(isset($this->InnerCSSClass))
- 				$markupStringOrFile = "<div id = 'Inner{$this->Id}' class = '{$this->InnerCSSClass}'>$markupStringOrFile</div>";
+ 				$text = "<div id = 'Inner{$this->Id}' class = '{$this->InnerCSSClass}'>$text</div>";
 //			 	$text = '<div class = \''. $this->InnerCSSClass . '\'>' . $text . '</div>';
 			$tmpFullString = &$this->ParseItems($text);
 			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
@@ -64,7 +64,8 @@ class RichMarkupRegion extends MarkupRegion
 		//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
-			AddScript('_NMkupSet(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
+			ClientScript::Queue($this, '_NMkupSet', array($this, $text));
+//			AddScript('_NMkupSet(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
 		else
 			$this->TempString = $text;
 //		file_put_contents('/tmp/snakeinthegrass2', var_export($this->Eventees, true));
