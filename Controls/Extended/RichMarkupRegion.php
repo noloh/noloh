@@ -64,7 +64,7 @@ class RichMarkupRegion extends MarkupRegion
 		//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
 			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
-			ClientScript::Queue($this, '_NMkupSet', array($this, $text));
+			ClientScript::Queue($this, '_NMkupSet', array($this, $text), true, Priority::High);
 //			AddScript('_NMkupSet(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
 		else
 			$this->TempString = $text;
