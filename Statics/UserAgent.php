@@ -22,6 +22,18 @@
 final class UserAgent
 {
 	/**
+	 * A personal computer Device. Note: When speaking of various types of devices, a Mac is still considered a personal computer.
+	 */
+	const PC = 'pc';
+	/**
+	 * A search engine spider Device
+	 */
+	const Spider = 'spi';
+	/*
+	 * A mobile Device
+	 *
+	const Mobile = 'mo';*/
+	/**
 	 * The Chrome browser
 	 */
 	const Chrome = 'ch';
@@ -54,13 +66,21 @@ final class UserAgent
 	 */
 	const Windows = 'win';
 	/**
-	 * The Macintosh operation system
+	 * The Mac operating system
+	 */
+	const Mac = 'mac';
+	/**
+	 * An alias for the Mac operation system
 	 */
 	const Macintosh = 'mac';
 	/**
 	 * The Linux family of operating system (e.g., it includes Unix)
 	 */
 	const Linux = 'lin';
+	/**
+	 * The Googlebot search engine Spider
+	 */
+	const Googlebot = 'gbot';
 	/**
 	 * @ignore
 	 */
@@ -70,58 +90,86 @@ final class UserAgent
 	 */
 	static function LoadInformation()
 	{
-		$userInfo = array();
 		$agt = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
 		
-		/*
-		if(strpos($agt, 'google') !== false || 
-		   strpos($agt, 'msn') !== false ||
-		   strpos($agt, 'yahoo') !== false ||
-		   strpos($agt, 'jeeves') !== false ||
-		   strpos($agt, 'altavista') !== false ||
-		   strpos($agt, 'yahoo') !== false ||
-		   strpos($agt, 'infoseek') !== false ||
-		   strpos($agt, 'yahoo') !== false ||
-		   strpos($agt, 'lycos') !== false ||
-		   strpos($agt, 'libwww-perl') !== false ||
-		   )
-		*/
-		
+		$device = self::PC;
 		$_SESSION['_NIsIE'] = false;
 		if(preg_match('!chrome/([0-9.]+) !', $agt, $version))
-        	$_SESSION['_NBrowser'] = 'ch';
+        	$browser = 'ch';
         elseif(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
         {
         	preg_match('!version/([0-9.]+) !', $agt, $version);
-        	$_SESSION['_NBrowser'] = 'sa';
+        	$browser = 'sa';
         }
         elseif(strpos($agt, 'gecko') !== false && preg_match('!firefox/([0-9.]+)!', $agt, $version))
-        	$_SESSION['_NBrowser'] = 'ff';
+        	$browser = 'ff';
         elseif(preg_match('!opera[ /]([0-9.]+) !', $agt, $version))
-        	$_SESSION['_NBrowser'] = 'op';
+        	$browser = 'op';
         elseif(preg_match('!msie ([0-9.]+);!', $agt, $version))
         {
-        	$_SESSION['_NBrowser'] = 'ie';
+        	$browser = 'ie';
         	$_SESSION['_NIsIE'] = true;
         	if($version[1] == 6)
         		$_SESSION['_NIE6'] = true;
         }
         elseif(preg_match('!links \(([0-9.]+);!', $agt, $version))
-        	$_SESSION['_NBrowser'] = 'li';
+        	$browser = 'li';
         else
-        	$_SESSION['_NBrowser'] = 'other';
+        {
+        	$browser = 'other';
+        	$device = self::Spider;
+        	if(preg_match('!googlebot/([0-9.]+)[ ;]!', $agt, $version))
+        		$name = self::Googlebot;
+        }
+        
         $_SESSION['_NBrowserVersion'] = $version[1];
         
         if(strpos($agt, 'win') !== false || strpos($agt, '16bit') !== false)
-        	$_SESSION['_NOS'] = 'win';
+        	$os = 'win';
         elseif(strpos($agt, 'mac') !== false)
-        	$_SESSION['_NOS'] = 'mac';
+        	$os = 'mac';
         elseif(strpos($agt, 'inux') !== false)
-        	$_SESSION['_NOS'] = 'lin';
+        	$os = 'lin';
         elseif(strpos($agt, 'unix') !== false)
-        	$_SESSION['_NOS'] = 'unix';
+        	$os = 'unix';
         else
-        	$_SESSION['_NOS'] = 'other';
+        	$os = 'other';
+        
+        $_SESSION['_NUserAgent'] = array($device, $browser === 'other' ? $name : $browser, $version[1]);
+        $_SESSION['_NBrowser'] = $browser;
+        $_SESSION['_NOS'] = $os;
+	}
+	/**
+	 * Returns the user's device type
+	 * @return mixed
+	 */
+	public static function GetDevice()
+	{
+		return $_SESSION['_NUserAgent'][0];
+	}
+	/**
+	 * Returns the name of the client software
+	 * @return mixed
+	 */
+	public static function GetName()
+	{
+		return $_SESSION['_NUserAgent'][1];
+	}
+	/**
+	 * Returns the version of the client software
+	 * @return mixed
+	 */
+	public static function GetVersion()
+	{
+		return $_SESSION['_NUserAgent'][2];
+	}
+	/**
+	 * Returns an array consisting of the device, name, and version
+	 * @return array
+	 */
+	public static function GetInfo()
+	{
+		return array_combine(array('Device', 'Name', 'Version'), $_SESSION['_NUserAgent']);
 	}
 	/**
 	 * Returns the user's browser
