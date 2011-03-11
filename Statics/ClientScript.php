@@ -140,7 +140,9 @@ final class ClientScript
 			else
 			{
 				self::AddNOLOHSource('AddExternal.js');
-				$_SESSION['_NScriptSrc'] .= '_NAddExtSource(\'' . $path . '\');';
+//				$_SESSION['_NScriptSrc'] .= '_NAddExtSource(\'' . $path . '\');';
+				ClientScript::Add("_NAddExtSource('$path');", Priority::High);
+//				$_SESSION['_NScriptSrc'] .= '_NAddExtSource(\'' . $path . '\');';
 			}
 			$_SESSION['_NScriptSrcs'][$path] = true;
 		}
