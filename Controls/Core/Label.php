@@ -40,8 +40,10 @@ class Label extends Control
 	function Label($text='', $left = 0, $top = 0, $width = 83, $height = 18)
 	{
 		parent::Control($left, $top, null, null);
-		parent::SetWidth($width);
-		parent::SetHeight($height);
+		if($width !== null)
+			parent::SetWidth($width);
+		if($height !== null)
+			parent::SetHeight($height);
 		$this->SetText($text);
 		$this->SetCSSClass();
 	}
