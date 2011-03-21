@@ -56,7 +56,7 @@ class ListViewItem extends Panel //extends Component
 		$this->SetLayout(Layout::Relative);
 		$this->SubItems = new ImplicitArrayList($this, 'AddSubItem');
 		$this->SubItems->RemoveFunctionName = 'RemoveSubItem';
-			
+//		$this->SubItems->ParentId = $this->Id;
 		$this->Scrolling = false;
 		if($objOrText != null)
 			$this->AddSubItem($objOrText);
@@ -140,13 +140,12 @@ class ListViewItem extends Panel //extends Component
 //			$object = new Label($objectOrText, null, 0, null, '100%');
 			$object = new Label($objectOrText, null, null, null, null);
 		else
-		{
 			$object = $objectOrText;
-		}
+			
 		$object->Layout = Layout::Relative;
-		$this->SubItems->Add($object, true);
 		$object->CSSClasses->Add('NLVSubItem');
 //		$this->ShowSubItem($object);
+		$this->SubItems->Add($object, true);
 		return $object;
 	}
 	/**
@@ -166,7 +165,11 @@ class ListViewItem extends Panel //extends Component
 	/**
 	* @ignore
 	*/
-	function GetAddId($obj)	{return $obj->Id . '_W';}
+	function GetAddId($obj)	
+	{
+//		return $obj instanceof Container?$obj->GetId() . '_W':$obj->GetId();
+		return $obj->Id . '_W';
+	}
 	/**
 	 * Sets the Value of this ListViewItem.
 	 * @param mixed $value

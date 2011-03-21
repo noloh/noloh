@@ -4,8 +4,22 @@ function _NLVModScroll(listViewId, columnPanelId, innerPanelId)
 	var listView = _N(listViewId);
 	_NSet(columnPanelId, 'style.left', -(parseInt(listView.scrollLeft)) + "px");
 	_NSet(columnPanelId, 'style.width', (listView.offsetWidth + (parseInt(listView.scrollLeft))) + "px");
-	if(listView.scrollTop + listView.clientHeight >= _N(innerPanelId).offsetHeight && listView.parentNode.DataFetch)
+	
+//	console.log(listView.scrollTop, _N(innerPanelId).offsetHeight);
+	if((listView.scrollTop + listView.offsetHeight >= _N(innerPanelId).offsetHeight) && listView.parentNode.DataFetch)
+//	while((listView.scrollTop > _N(innerPanelId).offsetHeight) && listView.parentNode.DataFetch)
+	{
+//		console.log(listView.scrollTop, _N(innerPanelId).offsetHeight);
+//		_N(innerPanelId).style.height = (_N(innerPanelId).offsetHeight + 50) + 'px';
+//		console.log(listView.parentNode.DataFetch);
+		_NSet(listView.parentNode.id, '_InnerOffset', [listView.scrollTop, _N(innerPanelId).offsetHeight]);
+//		ToggleVisibility(listView.parentNode._N.Loader);
 		listView.parentNode.DataFetch();
+/*		setTimeout(function(){
+			_NLVModScroll(listViewId, columnPanelId, innerPanelId)}, 100);*/
+		
+	}
+//		listView.parentNode.DataFetch();
 }
 function _NHndlClmn(columnId, innerPanelId, remove)
 {
@@ -51,23 +65,25 @@ function _NLVSlct(id)
 	panel.StringRep += id + "~d2~";
 	_NSave(panel.parentNode.parentNode.id, "_NSelectedRows", panel.StringRep);
 	if(row.className.indexOf(row.SelCls) == -1)
-		_NSetProperty(id, 'className', row.className + ' ' + row.SelCls);
+		_NSet(id, 'className', row.className + ' ' + row.SelCls);
 }
 function _NLVSort(id, arr)
 {
 	for(var pnl = _N(id), i=0; i<arr.length; ++i)
 		pnl.appendChild(pnl.removeChild(_N(arr[i])));
 }
-function _NLVSetItem(element, column)
+function _NLVSet(column, elements)
 {
-	_NSet(element + '_W', 'style.width', _NOuterWidth(column) +'px');
+	var width = _NOuterWidth(column) +'px';
+	for(var i=1, len=arguments.length; i<len; ++i)
+		_NSet(arguments[i] + '_W', 'style.width', width);
 }
 function _NLVResizeStart(line, clmn, innrPnl)
 {
 	ToggleVisibility(line);
 	BringToFront(line);
 	var left = _N(clmn).offsetLeft + _N(clmn).parentNode.offsetLeft + _NOuterWidth(clmn, true);
-	_NSetProperty(line, 'style.left', left + 'px');
+	_NSet(line, 'style.left', left + 'px');
 	_N.LVInfo = {Line:line, Clmn:clmn, InnPnl:innrPnl, LnStart:left};
 }
 function _NLVResizeEnd()
@@ -78,10 +94,8 @@ function _NLVResizeEnd()
 	{
 		var i, count = parent.childNodes.length, innerPnlNodes = _N(_N.LVInfo.InnPnl).childNodes, innerPnlChildren;
 		for(index=0; index < count, parent.childNodes[index].id != clmn.id; ++index);
-		
-//		_NSetProperty(innerPnl.id, 'style.width', parseInt(innerPnl.style.width) + changeX + 'px');
+//		_NSet(innerPnl.id, 'style.width', parseInt(innerPnl.style.width) + changeX + 'px');
 		count = innerPnlNodes.length;
-		
 		for(i=0; i < count; ++i)
 		{
 			innerPnlChildren = innerPnlNodes[i].childNodes;

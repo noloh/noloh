@@ -55,6 +55,8 @@ class ListView extends Panel
 	private $DataColumns;
 	private $PrevColumn;
 	private $ExcessSubItems;
+	private $_InnerOffset;
+//	private $Loader;
 	/**
 	 * @ignore
 	 */
@@ -177,7 +179,6 @@ class ListView extends Panel
 			{
 				if($listViewItem->GetListView())
 					$this->Update($listViewItem);
-				unset($this->ExcessSubItems[$key]);
 			}
 		}	
 		return $column;
@@ -249,21 +250,22 @@ class ListView extends Panel
 		$this->SetItemProperties($listViewItem, $startColumn);
 		return true;
 	}
-	//Function will Consolidate adding parts of Update() and AddListViewItem()
+	//Function Consolidates adding parts of Update() and AddListViewItem()
 	private function SetItemProperties(ListViewItem $listViewItem, $startColumn = null)
 	{
 		$subItemCount = $listViewItem->SubItems->Count();
 		$colCount = $this->Columns->Count();
-		$start = $startColumn !== null?$startColumn:0;
-//		$listViewItem->SetListView($this);
+//		System::Log('SubItemCount', $subItemCount, 'ColCount', $colCount);
+		$start = $startColumn !== null?$startColumn:$listViewItem->Controls->Count();
 		if($subItemCount > $colCount)
 		{
 			if(!isset($this->ExcessSubItems))
 				$this->ExcessSubItems = array();
-			
-			$this->ExcessSubItems[$listViewItem->Id] = $listViewItem;
-			//$listViewItem->SetSurplus($true);
+			if(!isset($this->ExcessSubItems[$listViewItem->Id]))
+				$this->ExcessSubItems[$listViewItem->Id] = $listViewItem;
 		}
+		elseif(isset($this->ExcessSubItems[$listViewItem->Id]))
+			unset($this->ExcessSubItems[$listViewItem->Id]);
 			
 		if($colCount > 0 && $subItemCount > 0)
 		{
@@ -273,9 +275,19 @@ class ListView extends Panel
 				if(!isset($listViewItem->Controls->Elements[$i]))
 				{
 					$column = $this->Columns->Elements[$i];
+					$colId = $column->GetId();
 					$subItem = $listViewItem->SubItems->Elements[$i];
 					$listViewItem->ShowSubItem($subItem);
-					ClientScript::Queue($this, '_NLVSetItem', array($subItem, $column), false);
+					
+					if(isset($_SESSION['_NFunctionQueue'][$colId]) && isset($_SESSION['_NFunctionQueue'][$colId]['_NLVSet']))
+					{
+						$_SESSION['_NFunctionQueue'][$colId]['_NLVSet'][0][] = ClientScript::ClientFormat($subItem);
+//						System::Log($_SESSION['_NFunctionQueue'][$colId]['_NLVSet']);
+					}
+					else
+					{
+						ClientScript::Queue($column, '_NLVSet', array($column, $subItem), true);
+					}
 				}
 			}
 		}
@@ -383,7 +395,7 @@ class ListView extends Panel
 				$this->HeightSpacer->ParentId = $this->BodyPanelsHolder->Id;
 			}
 			$this->ApproxCount = $numRows;
-			$sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
+			$sql = 'SELECT * FROM (' . $sql . ') as sub_query; ';
 			$this->DataSource = new DataCommand($dataSource->GetConnection(), $sql, $dataSource->ResultType);
 			$this->Limit = $limit;
 			$callBack = true;
@@ -391,8 +403,16 @@ class ListView extends Panel
 		else
 		{
 			$callBack = false;
+			/*Finds the difference between the scrollTop and the InnerOffset and
+			and divides it by the average row height to determine the needed
+			limit*/
+			$difference = $this->_InnerOffset['scrollTop'] - $this->_InnerOffset['innerOffset'];
+			$calcLimit = ceil(($difference + ($this->BodyPanelsHolder->GetHeight() * 2))/20);
+//			System::Log('CalcLimit', $calcLimit);
+			//
+//			$this->Loader->Visible = false;
 			$offset = $this->CurrentOffset;
-			$limit = $this->Limit;
+			$limit = $this->Limit > $calcLimit?$this->Limit:$calcLimit;
 		}
 		if(isset($constraints))
 		{
@@ -444,8 +464,8 @@ class ListView extends Panel
 			{
 				$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/i', '$1', $this->DataSource->GetSqlStatement());
 				$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
-				
-				$this->DataSource->SetSqlStatement($result);
+//				return System::Log($result);
+				$this->DataSource->SetSQL($result);
 				if($callBack)
 				{
 					if($rowCallback instanceof ServerEvent)
@@ -459,7 +479,10 @@ class ListView extends Panel
 				if(count($data->Data) < $limit)
 					$this->DataFetch['Bind']->Enabled = false;
 				elseif($this->GetDataFetch('Bind')->Blank())
+				{
 					$this->DataFetch['Bind'] = new ServerEvent($this, 'Bind');
+//					$this->SetLoader();
+				}
 				else
 					$this->DataFetch['Bind']->Enabled = true;
 			}
@@ -479,12 +502,7 @@ class ListView extends Panel
 			
 		}
 		if(!isset($constraints) && isset($data->Data[0]) && $callBack && !$rowCallback)
-		{
-			$columns = array_keys($data->Data[0]);
-			$count = count($columns);
-			for($i=0; $i<$count; ++$i)
-				$this->Columns->Add($columns[$i]);
-		}		
+			$this->Columns->AddRange(array_keys($data->Data[0]));
 	}
 	/**
 	 * Sorts the ListView on a particular column
@@ -514,7 +532,7 @@ class ListView extends Panel
 
 		if($this->DataSource != null && !$this->StoredInMemory && $this->DataFetch['Bind']->Enabled)
 		{
-			$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/i', '$1', $this->DataSource->GetSqlStatement());
+			$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $this->DataSource->GetSqlStatement());
 			$result = preg_replace('/ ORDER BY (?:[\w"]+(?: ASC| DESC)?(?:, ?)?)+/i', '', $result);
 			
 			$callBack = $this->DataSource->GetCallback();
@@ -597,5 +615,62 @@ class ListView extends Panel
 			$this->SelectCSS = $cssClass;
 		}
 	}
+	/**
+	* @ignore
+	*/
+	function Set_InnerOffset($values)
+	{
+		$values = explode(',', $values);
+		$this->_InnerOffset = array('scrollTop' => $values[0], 'innerOffset' => $values[1]);
+	}
+//	function GetLoader()
+//	{
+//		
+//	}
+//	/**
+//	* @ignore
+//	* 
+//	*/
+//	function SetLoader($loadObj=null)
+//	{
+//		$loadPanel = new Panel(0, $this->ColumnsPanel->GetHeight(), $this->BodyPanelsHolder->Width, $this->BodyPanelsHolder->Height);
+//		$loadPanel->CSSClass = 'NLVLoad';
+//		if(!$loadObj)
+//		{
+//			$loader = new Image(System::ImagePath() . 'lv_loader.gif');
+//			$loadText = new Label('Loading...', 0, 0, '100%', null);
+//			$loadObj = new Panel(0, 0, $loader->GetWidth(), null);
+//			$loadObj->Controls->AddRange($loader, $loadText);
+//			$loadObj->Controls->AllLayout = Layout::Relative;
+//		}
+//		$loadPanel->Controls->Add($loadObj);
+//		ClientScript::AddNOLOHSource('Layout.js');
+//		ClientScript::Queue($loadPanel, 'HAlign', array($loadObj));
+//		ClientScript::Queue($loadPanel, 'VAlign', array($loadObj));
+//		$this->Loader = $loadPanel;
+//		$this->Loader->ParentId = $this->Id;
+//		$this->Loader->SetVisible(false);
+//		ClientScript::Set($this, 'Loader', $this->Loader, '_N');
+//	}
+	/*function pcre_error_decode($errcode)
+	{
+	  switch ($errcode)
+	  {
+	    case PREG_NO_ERROR:
+	      return 'PREG_NO_ERROR';
+	    case PREG_INTERNAL_ERROR:
+	      return 'PREG_INTERNAL_ERROR';
+	    case PREG_BACKTRACK_LIMIT_ERROR:
+	      return 'PREG_BACKTRACK_LIMIT_ERROR';
+	    case PREG_RECURSION_LIMIT_ERROR:
+	      return 'PREG_RECURSION_LIMIT_ERROR';
+	    case PREG_BAD_UTF8_ERROR:
+	      return 'PREG_BAD_UTF8_ERROR';
+	    case PREG_BAD_UTF8_OFFSET_ERROR:
+	      return 'PREG_BAD_UTF8_OFFSET_ERROR';
+	    default:
+	      return 'Unknown error code';
+	  }
+	}*/
 }
 ?>
