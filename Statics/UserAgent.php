@@ -31,8 +31,12 @@ final class UserAgent
 	const Spider = 'spi';
 	/*
 	 * A mobile Device
-	 *
-	const Mobile = 'mo';*/
+	 */
+	const Mobile = 'mob';
+	/**
+	 * A slate device
+	 */
+	const Slate = 'sla';
 	/**
 	 * The Chrome browser
 	 */
@@ -78,6 +82,14 @@ final class UserAgent
 	 */
 	const Linux = 'lin';
 	/**
+	 * The iPhone 
+	 */
+	const IPhone = 'ipho';
+	/**
+	 * The iPad
+	 */
+	const IPad = 'ipad';
+	/**
 	 * The Googlebot search engine Spider
 	 */
 	const Googlebot = 'gbot';
@@ -91,9 +103,21 @@ final class UserAgent
 	static function LoadInformation()
 	{
 		$agt = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';
-		
-		$device = self::PC;
 		$_SESSION['_NIsIE'] = false;
+		
+		if(strpos($agt, 'iphone') !== false)
+		{
+			$device = self::Mobile;
+        	$name = self::IPhone;
+        }
+        elseif(strpos($agt, 'ipad') !== false)
+        {
+        	$device = self::Slate;
+        	$name = self::IPad;
+		}
+		else
+			$device = self::PC;
+		
 		if(preg_match('!chrome/([0-9.]+) !', $agt, $version))
         	$browser = 'ch';
         elseif(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
@@ -117,7 +141,7 @@ final class UserAgent
         else
         {
         	$browser = 'other';
-        	$device = self::Spider;
+			$device = self::Spider;
         	if(preg_match('!googlebot/([0-9.]+)[ ;]!', $agt, $version))
         		$name = self::Googlebot;
         }
@@ -135,7 +159,7 @@ final class UserAgent
         else
         	$os = 'other';
         
-        $_SESSION['_NUserAgent'] = array($device, $browser === 'other' ? $name : $browser, $version[1]);
+        $_SESSION['_NUserAgent'] = array($device, isset($name) ? $name : $browser, $version[1]);
         $_SESSION['_NBrowser'] = $browser;
         $_SESSION['_NOS'] = $os;
 	}
@@ -148,7 +172,7 @@ final class UserAgent
 		return $_SESSION['_NUserAgent'][0];
 	}
 	/**
-	 * Returns the name of the client software
+	 * Returns the name of the client
 	 * @return mixed
 	 */
 	public static function GetName()
