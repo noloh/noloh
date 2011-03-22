@@ -99,7 +99,8 @@ function _NChangeByObj(obj, property, value)
 				obj.oncontextmenu = _NEvent(value + "; if(obj.ContextMenu) _NCMShow(obj); return false;", obj);
 				break;
 			case "onmousedown":
-				obj.onmousedown = _NEvent("if(!event || event.button!=2) {" + value + "; if(obj.Shifts && obj.Shifts.length && !_N.Shifts) _NShftSta(obj.Shifts);}", obj);
+			case "ontouchstart":
+				obj[property] = _NEvent("if(!event || event.button!=2) {" + value + "; if(obj.Shifts && obj.Shifts.length && !_N.Shifts) _NShftSta(obj.Shifts);}", obj);
 				break;
 			case "onmouseout":
 				obj.onmouseout = _NEvent("var to = event.relatedTarget, runWhile = true; try{to;to.id;} catch(err) {runWhile=false;} if(runWhile) while(to && to.tag!='BODY') {if(to.id == obj.id) return; to = to.parentNode;} " + value, obj);
@@ -120,8 +121,7 @@ function _NChangeByObj(obj, property, value)
 				obj.href = value=="#" ? "javascript:void(0);" : value;
 				break;
 			case "Shifts":
-				if(!obj.onmousedown)
-					_NChangeByObj(obj, "onmousedown", "");
+				_NSetShifts(obj);
 			case "ChildrenArray":
 				eval("obj." + property + " = " + value + ";");
 				break;

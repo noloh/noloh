@@ -265,3 +265,8 @@ function _NRound(number, toTheNearest, modLeft)
 		mod += toTheNearest;
 	return (mod >= toTheNearest/2) ? (number + toTheNearest - mod) : (number - mod);
 }
+function _NSetShifts(obj)
+{
+	if(!obj.onmousedown)
+		_NChangeByObj(obj, "onmousedown", "");
+}

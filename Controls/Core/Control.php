@@ -944,12 +944,12 @@ abstract class Control extends Component
 	 * Returns the MouseOver Event, which gets launched when the user moves his mouse cursor over the Control's occupying space
 	 * @return Event
 	 */
-	function GetMouseOver()							{return $this->GetEvent('MouseOver');}
+	function GetMouseOver()							{return /*UserAgent::GetName() !== UserAgent::IPad ? */$this->GetEvent('MouseOver') /*:*/ ;}
 	/**
 	 * Sets the MouseOver Event, which gets launched when the user moves his mouse cursor over the Control's occupying space
 	 * @param Event $mouseOver
 	 */
-	function SetMouseOver($mouseOver)				{$this->SetEvent($mouseOver, 'MouseOver');}
+	function SetMouseOver($mouseOver)				{/*if(UserAgent::GetName() !== UserAgent::IPad) */$this->SetEvent($mouseOver, 'MouseOver');}
 	/**
 	 * Returns the MouseUp Event, which gets launched when the user releases the left mouse button over the Control's occupying space
 	 * @return Event
@@ -1072,7 +1072,10 @@ abstract class Control extends Component
 				array_push($_SESSION['_NFunctionQueue'][$id]['_NShftWth'][0], $shift[2], '[\''.$this->Id.'\',' . $shift[3]);
 			else
 			{
-				ClientScript::AddNOLOHSource('Shift.js', true);
+				if(UserAgent::GetName() === UserAgent::IPad)
+					ClientScript::AddNOLOHSource('Mixed/ShiftIPad.js', false);
+				else
+					ClientScript::AddNOLOHSource('Shift.js', true);
 				QueueClientFunction(GetComponentById($id), '_NShftWth', array('\''.$id.'\'', $shift[2], '[\''.$this->Id.'\',' . $shift[3]));
 			}
 			if(isset($shift[4]))
@@ -1088,7 +1091,10 @@ abstract class Control extends Component
 				$_SESSION['_NFunctionQueue'][$id][$fncStr][0][] = $shift[2];
 			else
 			{
-				ClientScript::AddNOLOHSource('Shift.js', true);
+				if(UserAgent::GetName() === UserAgent::IPad)
+					ClientScript::AddNOLOHSource('Mixed/ShiftIPad.js', false);
+				else
+					ClientScript::AddNOLOHSource('Shift.js', true);
 				QueueClientFunction($this, $fncStr, array($shift[2]));
 			}
 			if(isset($shift[3]))

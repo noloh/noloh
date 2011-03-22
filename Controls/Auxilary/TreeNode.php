@@ -326,22 +326,33 @@ class TreeNode extends Panel
 	 */
 	function GetClick()
 	{
-		$click = $this->Element->Click;
-		if(!isset($click['_N']))
-			$click['_N'] = new ClientEvent('');
-		return $this->Element->Click;
+		if(UserAgent::GetName() === UserAgent::IPad)
+			return parent::GetClick();
+		else
+		{
+			$click = $this->Element->Click;
+			if(!isset($click['_N']))
+				$click['_N'] = new ClientEvent('');
+			return $this->Element->Click;
+		}
+		
 	}
 	/**
 	 * @ignore
 	 */
 	function SetClick($newClick)
 	{
-		$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
-		$this->Element->Click['_N'] = $this->TreeListId==null 
-			? new ClientEvent('')
-//			: new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
-			: new ClientEvent('_NTreeClick', $this->Id);
-		$this->Element->Click[] = $newClick;
+		if(UserAgent::GetName() === UserAgent::IPad)
+			return parent::SetClick($newClick);
+		else
+		{
+			$this->Element->Click = new Event(array(), array(array($this->Element->Id,'Click')));
+			$this->Element->Click['_N'] = $this->TreeListId==null 
+				? new ClientEvent('')
+	//			: new ClientEvent('_NTreeClick("'.$this->Id.'","'.$this->Element->Id.'");');
+				: new ClientEvent('_NTreeClick', $this->Id);
+			$this->Element->Click[] = $newClick;
+		}
 	}
 	/**
 	 * @ignore

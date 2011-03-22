@@ -232,6 +232,12 @@ abstract class Component extends Object
 	 */
 	function UpdateEvent($type)
 	{
+		if(UserAgent::GetName()===UserAgent::IPad)
+		{
+			if($type === 'MouseOver')
+				return;
+			Event::$Conversion['MouseDown'] = 'ontouchstart';
+		}
 		NolohInternal::SetProperty(isset(Event::$Conversion[$type])?Event::$Conversion[$type]:$type, array('GetEvPrStr', $type), $this);
 	}
 	/**
