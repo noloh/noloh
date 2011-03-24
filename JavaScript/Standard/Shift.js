@@ -270,3 +270,11 @@ function _NSetShifts(obj)
 	if(!obj.onmousedown)
 		_NChangeByObj(obj, "onmousedown", "");
 }
+function _NShiftWithBody(body)
+{
+	var tmp;
+	if(body.ShiftsWith[1])
+		_NShftObjs(body.ShiftsWith[1], window.outerWidth - _N.WindowWidth, 0);
+	if(body.ShiftsWith[2])
+		_NShftObjs(body.ShiftsWith[2], 0, (tmp = window.outerHeight - _N.WindowHeight)?tmp:(document.documentElement.clientHeight - body.Height));
+}

@@ -279,3 +279,7 @@ function _NSetShifts(obj)
 {
 	obj.ontouchstart = _NEvent("if(obj.Shifts && obj.Shifts.length && !_N.Shifts) _NShftSta(obj.Shifts);", obj);
 }
+function _NShiftWithBody(body)
+{
+	return false;
+}

@@ -271,14 +271,9 @@ function _NBodyScrollState()
 */
 function _NBodySizeState()
 {
-	var body = document.body, tmp;
+	var body = document.body;
 	if(body.ShiftsWith)
-	{
-		if(body.ShiftsWith[1])
-			_NShftObjs(body.ShiftsWith[1], window.outerWidth - _N.WindowWidth, 0);
-		if(body.ShiftsWith[2])
-			_NShftObjs(body.ShiftsWith[2], 0, (tmp = window.outerHeight - _N.WindowHeight)?tmp:(document.documentElement.clientHeight - body.Height));
-	}
+		_NShiftWithBody(body);
 	if(body.BuoyantChildren)
 		_NByntMvCh(body);
 	_NSet(body.id, "Width", document.documentElement.clientWidth);
