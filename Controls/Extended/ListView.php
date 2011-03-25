@@ -395,7 +395,7 @@ class ListView extends Panel
 				$this->HeightSpacer->ParentId = $this->BodyPanelsHolder->Id;
 			}
 			$this->ApproxCount = $numRows;
-			$sql = 'SELECT * FROM (' . $sql . ') as sub_query; ';
+			$sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
 			$this->DataSource = new DataCommand($dataSource->GetConnection(), $sql, $dataSource->ResultType);
 			$this->Limit = $limit;
 			$callBack = true;
@@ -462,9 +462,13 @@ class ListView extends Panel
 		{
 			if(!$loadIntoMemory)
 			{
-				$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/i', '$1', $this->DataSource->GetSqlStatement());
+				$sql = $this->DataSource->GetSQL();
+
+				$result = preg_replace('/^(.*?)(?:\s+(?:OFFSET\s+\d+)|(?:LIMIT\s+\d+)|\s)*?;$/si', '$1', $sql, 1);
+//				$result = preg_replace('/^(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $sql, 1);
+//				$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $sql);
+//				return System::Log('failed', self::pcre_error_decode(preg_last_error()));
 				$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
-//				return System::Log($result);
 				$this->DataSource->SetSQL($result);
 				if($callBack)
 				{
@@ -532,18 +536,22 @@ class ListView extends Panel
 
 		if($this->DataSource != null && !$this->StoredInMemory && $this->DataFetch['Bind']->Enabled)
 		{
-			$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $this->DataSource->GetSqlStatement());
-			$result = preg_replace('/ ORDER BY (?:[\w"]+(?: ASC| DESC)?(?:, ?)?)+/i', '', $result);
+			$result = preg_replace('/^(.*?)(?:\s+(?:OFFSET\s+\d+)|(?:LIMIT\s+\d+)|\s)*?;$/si', '$1', $this->DataSource->GetSQL());
+//			$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $this->DataSource->GetSQL());
+			$result = preg_replace('/sub_query ORDER BY (?:[\w"]+(?: ASC| DESC)?(?:, ?)?)+/', '', $result, 1, $count);
 			
 			$callBack = $this->DataSource->GetCallback();
 			if(isset($callBack['constraint']))
 				$sortColumn = '"' . $callBack['constraint']->Columns[$this->DataColumns[$index]] . '"';
 			else
 				$sortColumn = $index + 1;
+			if($count > 0)
+				$result .= 'sub_query';
 			$result .= ' ORDER BY ' . $sortColumn;
 			if(!$ascending)
 				$result .= ' DESC';
-			$this->DataSource->SetSqlStatement($result);
+			
+			$this->DataSource->SetSQL($result);
 			$this->ListViewItems->Clear();
 			$this->CurrentOffset = 0;
 			$this->DataFetch['Bind']->Enabled = true;
@@ -609,7 +617,7 @@ class ListView extends Panel
 			foreach($this->ListViewItems as $listViewItem)
 			{
 				$listViewItem->UpdateEvent('Click');
-				NolohInternal::SetProperty('SelCls', $cssClass, $listViewItem);
+				ClientScript::Set($listViewItem, 'SelCls', $cssClass);
 			}
 			$this->Selectable = $mode;
 			$this->SelectCSS = $cssClass;
