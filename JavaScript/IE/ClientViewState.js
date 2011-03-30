@@ -270,7 +270,7 @@ function _NChangeByObj(obj, property, value)
 					_NByntMvCh(obj);
 				break;
 			case "className":
-				obj.className = obj.className.indexOf("NClickable")!=-1 ? "NClickable " + value : value;
+				obj.className = obj.className.indexOf("NClickable")!=-1 && value.indexOf("NClickable")==-1 ? "NClickable " + value : value;
 				break;
 			case "ContextMenu":
 				if(!obj.oncontextmenu)
