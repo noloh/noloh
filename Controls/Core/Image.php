@@ -266,7 +266,10 @@ class Image extends Control
 		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true), ' alt="';
 		$text = $this->GetText();
 		if($text === System::Auto)
-			echo preg_replace(array('/\.\w+$/', '/\d[a-zA-Z]{0,2}$/', '/[0-9_]+/', '/([a-z])([A-Z])/'), array('', '', ' ', '$1 $2'), basename($this->Src));
+			if($this->ToolTip)
+				echo $this->ToolTip;
+			else
+				echo preg_replace(array('/\.\w+$/', '/\d[a-zA-Z]{0,2}$/', '/[0-9_]+/', '/([a-z])([A-Z])/'), array('', '', ' ', '$1 $2'), basename($this->Src));
 		elseif($this->ToolTip || $text)
 			echo $this->ToolTip, ($this->ToolTip && $text) ? ' ' : '', $text;
 		echo '">';
