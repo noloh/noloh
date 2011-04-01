@@ -10,30 +10,55 @@
  */
 class Configuration extends Object implements Singleton
 {
+	/**
+	* The name of the WebPage class that serves as the inital start-up point of your application
+	* 
+	* @var string 
+	*/
 	public $StartClass;
+	/**
+	*  If a user's browser is not supported, or he does not have JavaScript enabled, 
+	* this will be the URL of the error page to which he is navigated.
+	* A value of null will use NOLOH's alternative rendering to create a more degraded, 
+	* non-JavaScript application
+	* 
+	* @var string
+	*/
 	public $UnsupportedURL;
+	/**
+	* Specified how URL tokens are displayed
+	* 
+	* @var URL::Display|URL::Encrypt|URL::Disable
+	*/
 	public $URLTokenMode = URL::Display;
+	/**
+	* Specifies the number of days until token search trails file expires
+	* 
+	* @var integer
+	*/
 	public $TokenTrailsExpiration = 14;
+	/**
+	* Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
+	* 
+	* @var true|false|System::Unhandled
+	*/
 	public $DebugMode = true;
 	public $DefaultUnit = 'px';
+	/**
+	* Whether your script name is shown in the url.
+	* ex. http://www.noloh.com/index.php vs. http://www.noloh.com/
+	* 
+	* @var System::Auto|true|false
+	*/
 	public $ShowURLFilename = 'Auto';
+	/**
+	* Whether search engine spiders get directed to an HTTPS version of your application
+	* 
+	* @var boolean
+	*/
 	public $SpiderSSL = false;
 	public $CSSReset;
 	public $CSSResetLegacyIE;
-	
-	/*
-	 * Specifies which WebPage class will serve as the initial start-up point of your application
-	 * @param string $className The name of the class that extends WebPage, as a string
-	 * @param string $unsupportedURL If a user's browser is not supported, or he does not have JavaScript enabled, this will be the URL of the error page to which he is navigated. A value of null will use NOLOH's to create a more degraded, non-JavaScript application
-	 * @param mixed $urlTokenMode Specifies how URL tokens are displayed. Possible values are URL::Display, URL::Encrypt, or URL::Disable
-	 * @param integer $tokenTrailsExpiration Specifies the number of days until token search trails file expires. Please see Search Engine Friendly documentation for more information
-	 * @param mixed $debugMode Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
-	 */
-	/*public static function SetStartUpPage($className, $unsupportedURL=null, $urlTokenMode=URL::Display, $tokenTrailsExpiration=14, $debugMode=true)
-	{
-		new Application($className, $unsupportedURL, $urlTokenMode, $tokenTrailsExpiration, $debugMode);
-	}*/
-	
 	/**
 	 * Constructor
 	 * 

@@ -14,7 +14,7 @@
  * </pre>
  * 
  * <pre>
- * Alert('Congratulations on using this app in ' . UserAgent::GetBrowser() . '! That is by far the hardest browser to develop for without NOLOH!';
+ * System::Alert('Congratulations on using this app in ' . UserAgent::GetBrowser() . '! That is by far the hardest browser to develop for without NOLOH!';
  * </pre>
  * 
  * @package Statics
