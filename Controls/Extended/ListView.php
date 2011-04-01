@@ -55,6 +55,7 @@ class ListView extends Panel
 	private $DataColumns;
 	private $PrevColumn;
 	private $ExcessSubItems;
+	private $ColumnLookup;
 	private $_InnerOffset;
 //	private $Loader;
 	/**
@@ -321,6 +322,7 @@ class ListView extends Panel
 	{
 		$this->ClearListViewItems();
 		$this->Columns->Clear();
+		$this->ColumnLookup = null;
 	}
 	/**
 	 * @ignore
@@ -383,10 +385,18 @@ class ListView extends Panel
 			$this->Clear();
 			$this->DataSource = $dataSource;
 			$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $dataSource->GetSqlStatement());
-			$numRows = new DataCommand($dataSource->GetConnection(), 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);
+			//Row Count
+			$connection = $dataSource->GetConnection();
+			$numRows = new DataCommand($connection, 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);
 			$numRows = $numRows->Execute();
 			$numRows = $numRows->Data[0][0];
-			
+			//Columns
+			if($constraints)
+			{
+				$columns = new DataCommand($connection, 'SELECT * FROM (' . $sql . ') AS sub_query LIMIT 1', Data::Assoc);
+				$columns = $columns->Execute();
+				$this->ColumnLookup = array_flip(array_keys($columns->Data[0]));
+			}
 			if($this->HeightSpacer)
 				$this->HeightSpacer->SetHeight($numRows * 20);
 			else
@@ -541,8 +551,11 @@ class ListView extends Panel
 			$result = preg_replace('/sub_query ORDER BY (?:[\w"]+(?: ASC| DESC)?(?:, ?)?)+/', '', $result, 1, $count);
 			
 			$callBack = $this->DataSource->GetCallback();
-			if(isset($callBack['constraint']))
-				$sortColumn = '"' . $callBack['constraint']->Columns[$this->DataColumns[$index]] . '"';
+			if(isset($callBack['constraint']) && is_array($this->ColumnLookup))
+			{
+				$columnName = $callBack['constraint']->Columns[$this->DataColumns[$index]];
+				$sortColumn = isset($this->ColumnLookup[$columnName])?$this->ColumnLookup[$columnName] + 1:$columnName;
+			}
 			else
 				$sortColumn = $index + 1;
 			if($count > 0)
