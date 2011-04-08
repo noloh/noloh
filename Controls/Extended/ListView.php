@@ -395,7 +395,8 @@ class ListView extends Panel
 			{
 				$columns = new DataCommand($connection, 'SELECT * FROM (' . $sql . ') AS sub_query LIMIT 1', Data::Assoc);
 				$columns = $columns->Execute();
-				$this->ColumnLookup = array_flip(array_keys($columns->Data[0]));
+				if(!empty($columns->Data))
+					$this->ColumnLookup = array_flip(array_keys($columns->Data[0]));
 			}
 			if($this->HeightSpacer)
 				$this->HeightSpacer->SetHeight($numRows * 20);
