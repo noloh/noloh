@@ -46,20 +46,15 @@ class ControlPair extends Panel implements ArrayAccess
 	{
 		parent::Panel($left, $top, null, null);
 		if(!is_object($firstControl))
-			$firstControl = new Label($firstControl, 0, 0, System::Auto);
+			$firstControl = new Label($firstControl, 0, 0, null, null);
 		$this->SetFirst($firstControl);
-//		$this->First = $firstControl;
 		$this->SetMargin($margin);
 		if($secondControl === null)
 			$secondControl = new TextBox(0, 0);
 		elseif(is_string($secondControl))
 			$secondControl = new $secondControl(0, 0);
 		$this->SetSecond($secondControl);
-//		$this->Second = $secondControl;
 		$this->SetOrientation($orientation);
-
-//		$this->SetLeft($left);
-//		$this->SetTop($top);
 	}
 	/**
 	 * Returns the First Control
@@ -76,31 +71,29 @@ class ControlPair extends Panel implements ArrayAccess
 	 */
 	function SetFirst($obj)
 	{
-//		$left = $this->GetLeft();
+		$previous = $this->First;
 		if($obj->HasProperty('Layout'))
 			$obj->Layout = Layout::Relative;
-		if($this->First)
+			
+		$this->First = $obj;
+		if($previous)
 		{
-			$this->Controls->Remove($this->First);
+			$this->Controls->Remove($previous);
 			$this->Controls->Insert($obj, 0);
-//			if($obj instanceof $orientation == Layout::Horizontal)
-//				$obj->CSSFloat = 'left';
+			$orientation = $this->Orientation;
+			$this->Orientation = null;
+			$this->SetOrientation($orientation);
 		}
 		else
 			$this->Controls->Add($obj);
-		$obj->CSSFloat = 'left';
-		return $this->First = $obj;
-//		$this->SetLeft($left);
+		return $obj; 
 
 	}
 	/**
 	 * Returns the Second Control
 	 * @return Control
 	 */
-	function GetSecond()
-	{
-		return $this->Second;
-	}
+	function GetSecond()	{return $this->Second;}
 	/**
 	 * Sets the Second Control
 	 * @param Control $obj
@@ -108,15 +101,20 @@ class ControlPair extends Panel implements ArrayAccess
 	 */
 	function SetSecond($obj)
 	{
+		$isSet = isset($this->Second);
 		if($obj->HasProperty('Layout'))
 			$obj->Layout = Layout::Relative;
 		if($this->Second)
 			$this->Controls->Remove($this->Second);
 		$this->Controls->Add($obj);
-		$obj->CSSFloat = 'left';
-		return $this->Second = $obj;
-//		$this->SetLeft($this->GetLeft());
-//		$this->SetTop($this->GetTop());
+		$this->Second = $obj;
+		if($isSet)
+		{
+			$orientation = $this->Orientation;
+			$this->Orientation = null;
+			$this->SetOrientation($orientation);
+		}
+		return $obj;
 	}
 	/**
 	 * Returns the spacing between the two Controls
@@ -204,30 +202,19 @@ class ControlPair extends Panel implements ArrayAccess
 			$this->Margin->CSSFloat = 'left';
 			if($orientation == Layout::Horizontal)
 			{
-//				$this->First->CSSFloat = 'left';
-//				$this->Second->CSSFloat = '';
+				$this->First->CSSFloat = 'left';
 				$this->OrganizeMarginHor($this->Margin->GetHeight());
 				$this->Margin->CSSClear = 'none';
 			}
 			else
 			{
 				$this->Margin->CSSClear = 'right';
-//				$this->Margin->CSSFloat = 'left';
+				$this->Margin->CSSFloat = '';
 				$this->First->CSSFloat = '';
-//				$this->Second->CSSFloat = 'left';
 				$this->OrganizeMarginVer($this->Margin->GetWidth());
 			}
-			//$this->SetMargin($margin);
-//			}
-//			else
 			$this->Orientation = $orientation;
 		}
-		/*if($this->Layout != $layout)
-		{
-			$this->Layout = $layout;
-			$this->SetTop($this->GetTop());
-			$this->SetLeft($this->GetLeft());
-		}*/
 		return $orientation;
 	}
 	/**
