@@ -15,11 +15,15 @@
 .NColHead
 {
 	color:white;
-	font-family:sans-serif;
+	font: 11px tahoma, arial, verdana, sans-serif;
+	padding: 4px 5px;
+	margin-right: 4px;
+	white-space: nowrap;
+	/*font-family:sans-serif;
 	font-size:12px;
 	font-weight:bold;
 	padding-top:5px;
-	padding-left:5px;
+	padding-left:5px;*/
 }
 .NCalCell
 {
@@ -86,17 +90,35 @@
 	overflow:visible;
 	outline: none;
 }
-.NLVSubItem
+/*.NLVSubItem
 {
 	padding-left:.3em;
 	white-space:nowrap;
-}
-.NLVWrap
+}*/
+/*.NLVLoad
+{
+	background: #a19d9d;
+	text-align: center;
+}*/
+/*.NLVWrap
 {
 	float: left;
 	position: relative;
 	overflow: hidden;
 	min-height: 10px;
+}*/
+.NLVRow > div
+{
+	float: left;
+	/*position: relative;*/
+	overflow: hidden;
+	min-height: 10px;
+}
+.NLVRow > div > div
+{
+	padding-left: .3em;
+	word-wrap: normal; /*IE8 - pre-processor should take into consideration*/ 
+	white-space: nowrap;
 }
 .NLVSelect
 {
