@@ -56,6 +56,7 @@ abstract class WebPage extends Component
 		{
 			$GLOBALS['_NTitle'] = $title;
 			$GLOBALS['_NFavIcon'] = $favIconPath;
+			$GLOBALS['_NMobileApp'] = $this instanceof MobileApp;
 			throw new Exception('Fatal cookie behavior.', $GLOBALS['_NApp']);
 		}
 		parent::Component();
@@ -382,7 +383,7 @@ abstract class WebPage extends Component
 	/**
 	 * @ignore
 	 */
-	static function SkeletalShow($title, $unsupportedURL, $favIcon)
+	static function SkeletalShow($title, $unsupportedURL, $favIcon, $isMobileApp)
 	{
 		header('Cache-Control: no-store');
 		//header('Cache-Control: no-cache, must-revalidate, max-age=0');
@@ -412,7 +413,8 @@ abstract class WebPage extends Component
 				'' : 
 				(';url='.$unsupportedURL.''),
   '"></NOSCRIPT>', $favIcon?'
-    <LINK rel="shortcut icon" href="'.$favIcon.'">':'','
+    <LINK rel="shortcut icon" href="'.$favIcon.'">':'', UserAgent::GetDevice()===UserAgent::Mobile && $isMobileApp ? '
+    <META name="viewport" content="width=device-width, initial-scale=1.0">':'', '
   </HEAD>',
 UserAgent::IsIE() ? '
   <BODY>
