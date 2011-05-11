@@ -232,6 +232,11 @@ final class Application extends Object
 				exit();
 			}
 		}
+		if($config->MobileAppURL && System::FullAppPath()!=$config->MobileAppURL && UserAgent::GetDevice()===UserAgent::Mobile)
+		{
+			header('Location: ' . $config->MobileAppURL);
+			exit();
+		}
 		if($trulyFirst)
 			if(UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
 				$this->SearchEngineRun();
@@ -247,8 +252,9 @@ final class Application extends Object
 				{
 					if($e->getCode() == $GLOBALS['_NApp'])
 					{
-						setcookie('_NAppCookie', $GLOBALS['_NApp']);
-						WebPage::SkeletalShow($GLOBALS['_NTitle'], $config->UnsupportedURL, $GLOBALS['_NFavIcon']);
+						if(empty($_GET))
+							setcookie('_NAppCookie', $GLOBALS['_NApp']);
+						WebPage::SkeletalShow($GLOBALS['_NTitle'], $config->UnsupportedURL, $GLOBALS['_NFavIcon'], $GLOBALS['_NMobileApp']);
 						return;
 					}
 					else 
