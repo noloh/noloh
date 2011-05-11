@@ -147,17 +147,18 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	}
 	private static function HandleConstraint($data, $constraint)
 	{
-		$intersection = array();
+		//$intersection = array();
 		$columns = $constraint->GetColumns();
-		$count = count($columns);
+		/*$count = count($columns);
 		for($columnIndex=0; $columnIndex < $count; ++$columnIndex)
 		{
 			//$local = $keys[$i];
 			if(isset($data[$columns[$columnIndex]]))
 				$intersection[$columns[$columnIndex]] = $data[$columns[$columnIndex]];
-		}
-		return $intersection;
-//		$this->Data[] = array_intersect_key(pg_fetch_array($resource, $i, $resultType), array_flip($callBack['constraint']->GetColumns()));			
+		}*/
+//		System::Log($columns, $data);
+//		$intersection = array_intersect_key($data, array_flip($columns));
+		return array_intersect_key($data, array_flip($columns));	
 	}
 /*	/**
 	* 
