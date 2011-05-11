@@ -73,7 +73,7 @@ class RolloverTab extends Panel implements Groupable
 			else
 			{
 				$this->TextObject = new Label($text, 0, 0, null, null);
-				$this->TextObject->CSSClass = 'NRollTab';
+				$this->TextObject->CSSClasses->Add('NRollTab');
 			}
 		}
 		$imagePath = System::ImagePath() . 'Std/';
@@ -247,6 +247,18 @@ class RolloverTab extends Panel implements Groupable
 			if($this->TextObject instanceof Groupable)
 				$deselect['System'][] = new ClientEvent("_NSetProperty('{$this->TextObject->Id}','Selected', false);");
 //			$this->Select = new ClientEvent("_NRlTbChg('{$this->Id}', 'Slct');");
+		}
+		else
+		{
+			$click = parent::GetClick();
+			if(isset($click['System']))
+				$click['System'] = null;
+			$select = parent::GetSelect();
+			if(isset($select['System']))
+				$select['System'] = null;
+			$deselect = parent::GetDeselect();
+			if(isset($deselect['System']))
+				$deselect['System'] = null;
 		}
 	}
 	/**
