@@ -413,11 +413,11 @@ abstract class WebPage extends Component
 <HTML lang="en">
   <HEAD id="NHead">
     <TITLE>', $title, '</TITLE>
-    <NOSCRIPT><META http-equiv="refresh" content="0',
+    <NOSCRIPT><META http-equiv="refresh" content="0; url=',
 			$unsupportedURL === null ?
 				//'http://www.noloh.com/Errors/UnsupportedBrowser.html' : 
-				'' : 
-				(';url='.$unsupportedURL.''),
+				System::FullAppPath().'?_NError=NoJavaScript' : 
+				$unsupportedURL,
   '"></NOSCRIPT>', $favIcon?'
     <LINK rel="shortcut icon" href="'.$favIcon.'">':'', $isMobileApp && !$oldOpMobile ? '
     <META name="viewport" content="width=device-width, initial-scale=1.0">':'', '
@@ -494,6 +494,7 @@ UserAgent::IsIE6() ? '
 <!-- Powered by NOLOH  -->
 <!--   www.noloh.com   -->
 <!--      ',GetNOLOHVersion(),'      -->
+<!--  JS-Free Version  -->
 
 <HTML lang="en">
   <HEAD>

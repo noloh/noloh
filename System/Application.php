@@ -103,7 +103,9 @@ final class Application extends Object
 	{
 		$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
 		$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
-		if(isset($_GET['_NImage']))
+		if(isset($_REQUEST['_NError']))
+			return print self::CreateError($_REQUEST['_NError']);
+		elseif(isset($_GET['_NImage']))
 			if(empty($_GET['_NWidth']))
 				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
 			else
@@ -145,6 +147,24 @@ final class Application extends Object
 		}
 		else
 			$this->HandleFirstRun();
+	}
+	private static function CreateError($type)
+	{
+		if(!System::NOLOHPath())
+			$_SESSION['_NPath'] = ComputeNOLOHPath();
+		if(file_exists($path = (System::NOLOHPath() . '/Errors/' . $type . '.html')))
+			$error = file_get_contents($path);
+		/*elseif(file_exists($path = (System::NOLOHPath() . '/Errors/ErrorType.html')))
+			$error = file_get_contents($path);*/
+		else
+			return 'Error: An undetermined problem arose displaying a custom NOLOH error.';
+		$replace = array('{APP_PATH}' => System::FullAppPath());
+		if($type == 'NoJavaScript')
+		{
+			$query = urlencode('Enable Javascript in ' . UserAgent::GetBrowser());
+			$replace['{ENABLE_JS}'] = 'http://google.com/search?btnI=I%27m+Feeling+Lucky&q=' . $query . '&sourceid=navclient';
+		}
+		return str_replace(array_keys($replace), array_values($replace), $error);
 	}
 	/**
 	 * @ignore
