@@ -53,6 +53,7 @@ class ListViewItem extends Panel //extends Component
 	function ListViewItem($objOrText = null, $height=20)
 	{
 		parent::Panel(null, null, '100%', $height, $this);
+		$this->CSSClasses->Add('NLVRow');
 		$this->SetLayout(Layout::Relative);
 		$this->SubItems = new ImplicitArrayList($this, 'AddSubItem');
 		$this->SubItems->RemoveFunctionName = 'RemoveSubItem';
@@ -97,16 +98,11 @@ class ListViewItem extends Panel //extends Component
 			if(isset($GLOBALS['_NLVCols']))
 			{
 				$cols = $GLOBALS['_NLVCols'];
-				$i = $j = 0;
-//				System::Log($objOrText, $cols);
-				foreach($objOrText as $val)
-				{
-//					System::Log($j, $i);
-					if($cols[$j] == $i++)
+//				System::Log('ListViewItem', $objOrText, $cols);
+				foreach($cols as $column)
 					{
-						$subItem = $this->CreateSubItem($val);
-						++$j;
-					}
+					if(array_key_exists($column, $objOrText))
+						$subItem = $this->CreateSubItem($objOrText[$column]);
 				}
 			}
 			else
@@ -143,7 +139,7 @@ class ListViewItem extends Panel //extends Component
 			$object = $objectOrText;
 			
 		$object->Layout = Layout::Relative;
-		$object->CSSClasses->Add('NLVSubItem');
+//		$object->CSSClasses->Add('NLVSubItem');
 //		$this->ShowSubItem($object);
 		$this->SubItems->Add($object, true);
 		return $object;
@@ -155,7 +151,7 @@ class ListViewItem extends Panel //extends Component
 	{
 		if($this->GetShowStatus()!==0)
 		{
-			$initial = "'className','NLVWrap', 'style.position','relative'";
+			$initial = "style.position','relative'";
 			NolohInternal::Show('DIV', $initial, $this, $this->Id, $subItem->Id . '_W');
 		}
 		else
@@ -199,7 +195,8 @@ class ListViewItem extends Panel //extends Component
 	function Show()
 	{
 		parent::Show();
-		$initial = "'className','NLVWrap', 'style.position','relative'";
+//		$initial = "'className','NLVWrap', 'style.position','relative'";
+		$initial = "'style.position','relative'";
 //		$initial = "'className','NLVWrap'";
 		foreach($this->SubItemsHack as $subItem)
 			NolohInternal::Show('DIV', $initial, $this, $this->Id, $subItem->Id . '_W');

@@ -59,6 +59,7 @@ class ColumnHeader extends Panel
 		$this->SizeHandle->Shifts[] = Shift::Width($this);
 		
 		$this->Caption->CSSClass = 'NColHead';
+		$this->Caption->SetLayout(Layout::Relative);
 		$this->SizeHandle->Cursor = Cursor::WestResize;
 		$this->Caption->ParentId = $this->Id;
 		$this->SizeHandle->ParentId = $this->Id;
@@ -111,7 +112,7 @@ class ColumnHeader extends Panel
 		$arrowPath = System::ImagePath() . 'Std/' . (($order)?'ArrDwn.gif':'ArrUp.gif');
 		if($this->OrderArrow == null)
 		{
-			$this->OrderArrow = new Image($arrowPath, 8, 12);
+			$this->OrderArrow = new Image($arrowPath, 8, 10);
 			$this->OrderArrow->ReflectAxis('x');
 			$this->OrderArrow->ParentId = $this->Id;
 			$this->Deselect = new ServerEvent($this->OrderArrow, 'SetVisible', false);

@@ -91,18 +91,18 @@ class ListView extends Panel
 	{
 		parent::Panel($left, $top, $width, null)/*, $this)*/;
 		$this->Scrolling = false;
-		$this->ColumnsPanel = new Panel(0, 0, $width, 28, $this);
+		$this->ColumnsPanel = new Panel(0, 0, $width, 22, $this);
 		$this->ColumnsPanel->CSSBackgroundImage = "url(". System::ImagePath() . "Std/HeadBlue.gif)";
 		$this->ColumnsPanel->CSSBackgroundRepeat = "repeat-x";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
 		$this->Columns = &$this->ColumnsPanel->Controls;
 		$this->BodyPanelsHolder = new Panel(0, 0, $width, $height - $this->ColumnsPanel->Height);
-		$this->BodyPanelsHolder->Scrolling = System::Auto;
+		$this->BodyPanelsHolder->SetScrolling(System::Auto);
 		
 		$this->ColumnsPanel->Layout = $this->BodyPanelsHolder->Layout = Layout::Relative;
 		$this->InnerPanel = new Panel(0, 0, $this->Width, null, $this);
-		$this->InnerPanel->Layout = Layout::Web;
-		$this->BodyPanelsHolder->Scrolling = System::Auto;
+		$this->InnerPanel->SetLayout(Layout::Web);
+		$this->BodyPanelsHolder->SetScrolling(System::Auto);
 		//ListViewItems
 		$this->ListViewItems = &$this->InnerPanel->Controls;
 		$this->ListViewItems->AddFunctionName = 'AddListViewItem';
@@ -204,23 +204,32 @@ class ListView extends Panel
 	{
 		if(!$listViewItem instanceof ListViewItem)
 		{
-			if(is_array($listViewItem) && isset($this->DataColumns))
+			if(is_array($listViewItem))
 			{
-				$previousBound = Event::$BoundData;
+//				System::Log($listViewItem);
+				if(isset($this->DataColumns))
+			{
 				$previousCols = isset($GLOBALS['_NLVCols'])?$GLOBALS['_NLVCols']:null;
-				
 				$GLOBALS['_NLVCols'] = $this->DataColumns;
+				}
+				if($this->RowCallback)
+				{
+					$previousBound = Event::$BoundData;
 				Event::$BoundData = $listViewItem;
-//				System::Log($listViewItem, $this->DataColumns);		
-				$listViewItem = $this->RowCallback
-					?$this->RowCallback->Exec()
-					:new ListViewItem($listViewItem);
-					
+					$listViewItem = $this->RowCallback->Exec();
 				Event::$BoundData = $previousBound;
-				$GLOBALS['_NLVCols'] = $previousCols;
-				
 				if(is_array($listViewItem))
+					{
+						if(isset($this->DataColumns))
+							$GLOBALS['_NLVCols'] = $previousCols;
 					return $this->InsertListViewItem($listViewItem[0], $listViewItem[1]);		
+			}
+				}
+				else
+					$listViewItem = new ListViewItem($listViewItem);
+					
+				if(isset($this->DataColumns))
+					$GLOBALS['_NLVCols'] = $previousCols;	
 			}
 			else
 				$listViewItem = new ListViewItem($listViewItem);
@@ -273,6 +282,7 @@ class ListView extends Panel
 			$max = ($colCount > $subItemCount)?$subItemCount:$colCount;
 			for($i=$start; $i < $max; ++$i)
 			{
+//				System::Log('start', $start, 'max', $max, 'i', $i);
 				if(!isset($listViewItem->Controls->Elements[$i]))
 				{
 					$column = $this->Columns->Elements[$i];
@@ -295,7 +305,7 @@ class ListView extends Panel
 		if($this->Selectable)
 		{
 			$listViewItem->UpdateEvent('Click');
-			NolohInternal::SetProperty('SelCls', $this->SelectCSS, $listViewItem);
+			ClientScript::Set($listViewItem, 'SelCls', $this->SelectedCSS);
 		}
 		return $listViewItem;
 	}
@@ -384,7 +394,7 @@ class ListView extends Panel
 		{
 			$this->Clear();
 			$this->DataSource = $dataSource;
-			$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $dataSource->GetSqlStatement());
+			$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $dataSource->GetSQL());
 			//Row Count
 			$connection = $dataSource->GetConnection();
 			$numRows = new DataCommand($connection, 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);
@@ -462,7 +472,7 @@ class ListView extends Panel
 					{
 							$title = ($properties[1] != false)?$properties[1]:$properties[0];
 							$this->AddColumn($title, $properties[2]);
-						$this->DataColumns[] = $i;
+						$this->DataColumns[] = $properties[0];
 					}
 					if($properties[0])
 						$columns[] = $properties[0];
@@ -474,12 +484,13 @@ class ListView extends Panel
 			if(!$loadIntoMemory)
 			{
 				$sql = $this->DataSource->GetSQL();
-
+//				return System::Log($sql);
 				$result = preg_replace('/^(.*?)(?:\s+(?:OFFSET\s+\d+)|(?:LIMIT\s+\d+)|\s)*?;$/si', '$1', $sql, 1);
 //				$result = preg_replace('/^(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $sql, 1);
 //				$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $sql);
 //				return System::Log('failed', self::pcre_error_decode(preg_last_error()));
 				$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+//				return System::Log($result);
 				$this->DataSource->SetSQL($result);
 				if($callBack)
 				{
@@ -516,8 +527,10 @@ class ListView extends Panel
 		{
 			
 		}
-		if(!isset($constraints) && isset($data->Data[0]) && $callBack && !$rowCallback)
+		if(!isset($constraints) && isset($data->Data[0]) && $callBack/* && !$rowCallback*/)
+		{
 			$this->Columns->AddRange(array_keys($data->Data[0]));
+	}
 	}
 	/**
 	 * Sorts the ListView on a particular column
@@ -554,7 +567,8 @@ class ListView extends Panel
 			$callBack = $this->DataSource->GetCallback();
 			if(isset($callBack['constraint']) && is_array($this->ColumnLookup))
 			{
-				$columnName = $callBack['constraint']->Columns[$this->DataColumns[$index]];
+//				$columnName = $callBack['constraint']->Columns[$this->DataColumns[$index]];
+				$columnName = $this->DataColumns[$index];
 				$sortColumn = isset($this->ColumnLookup[$columnName])?$this->ColumnLookup[$columnName] + 1:$columnName;
 			}
 			else
@@ -581,10 +595,13 @@ class ListView extends Panel
 		else
 			arsort($rows);
 		
+		if(count($rows) > 0)
+		{
 		foreach($rows as $key => $val)
 			$clientArray[] = $this->ListViewItems->Elements[$key]->GetId();
 		
 		ClientScript::Queue($this, '_NLVSort', array($this->InnerPanel, $clientArray));
+	}
 	}
 	/**
 	 * @ignore
