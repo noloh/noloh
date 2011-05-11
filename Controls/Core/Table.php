@@ -181,17 +181,23 @@ class Table extends Control
     	QueueClientFunction($this, '_NChange', array('"'.$this->Id.'InnerTable"', '"cellPadding"', '"'.$this->CellPadding.'"'), false);
     	return $padding;
     }
+    /**
+     * @ignore
+     */
     function SetWidth($width)
     {
     	parent::SetWidth($width);
 		if($width === null)
-			ClientScript::Queue($this, '_NSetProperty', array($this->Id . 'InnerTable', 'style.width', null)); 
+			ClientScript::Queue($this, '_NSet', array($this->Id . 'InnerTable', 'style.width', null)); 
     }
+	/**
+     * @ignore
+     */
     function SetHeight($height)
     {
 		parent::SetHeight($height);
 		if($height === null)
-			ClientScript::Queue($this, '_NSetProperty', array($this->Id . 'InnerTable', 'style.height', null));
+			ClientScript::Queue($this, '_NSet', array($this->Id . 'InnerTable', 'style.height', null));
     }
     /**
      * @ignore

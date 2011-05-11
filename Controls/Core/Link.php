@@ -10,7 +10,7 @@
  * <pre>
  * function Foo()
  * {
- *	$tempLink = new Link(null, 0, 0);
+ *	$tempLink = new Link('http://www.example.com', 'Click Me');
  * 	//Adds a Link to the Controls ArrayList of some Container
  *	$this->Controls->Add($tempLink); 
  * }

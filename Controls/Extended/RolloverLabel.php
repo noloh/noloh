@@ -139,7 +139,7 @@ class RolloverLabel extends Label implements Groupable
 		$deselect['System'] = new ClientEvent("_NRlLblTgl('{$this->Id}','Out');");
 	}	
 	/**
-	 * Sets whether the RollvoerLabel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 * Sets whether the RolloverLabel can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
 	 * @param boolean $bool
 	 */
 	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}

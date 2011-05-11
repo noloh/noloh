@@ -160,9 +160,9 @@ class CollapsePanel extends Panel implements Groupable
 		return $this->Title->Controls['Text']->GetText();
 	}
 	/**
-	* @deprecated Use $this->Title->BackColor or $this->Title->BackObject instead
 	 * Sets the Background of the Title to a color an an object.
 	 * @param object|string $objectOrColor
+	 * @deprecated Use $this->Title->BackColor or $this->Title->BackObject instead
 	 */
 	function SetTitleBackground($objectOrColor=null)
 	{
@@ -307,9 +307,9 @@ class CollapsePanel extends Panel implements Groupable
 	 */
 	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	/**
-	 * @deprecated Use $this->Title->BackColor or $this->Title->BackObject
 	 * Returns the Background of the Title.
 	 * @return object|string
+	 * @deprecated Use $this->Title->BackColor or $this->Title->BackObject
 	 */
 	function GetTitleBackground()
 	{

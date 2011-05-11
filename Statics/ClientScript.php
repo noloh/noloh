@@ -239,6 +239,14 @@ final class ClientScript
 		self::AddNOLOHSource('Observe.js');
 		self::Queue($obj, '_NObserve', array($objOrId, $clientPropertyName, $serverPropertyAlias), false, Priority::Low);
 	}
+	/**
+	* Formats parameter for sending to the client in conjuction with other
+	* ClientScript functions. Only necessary in special cases, NOLOH 
+	* automatically calls this function for you in most cases.
+	* 
+	* @param mixed $param
+	* @return mixed
+	*/
 	static public function ClientFormat($param)
 	{
 		if(is_string($param))

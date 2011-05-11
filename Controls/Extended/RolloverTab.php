@@ -76,7 +76,6 @@ class RolloverTab extends Panel implements Groupable
 				$this->TextObject->CSSClass = 'NRollTab';
 			}
 		}
-//		$imagePath = GetImagePath().'Std/';
 		$imagePath = System::ImagePath() . 'Std/';
 		$this->SetWidth($width);
 		if($outTab == null)
@@ -86,14 +85,11 @@ class RolloverTab extends Panel implements Groupable
 			$this->SetOutTab($outTab);
 		if($selectedTab == null)
 			$this->SetSelectedTab(new Tab($imagePath . 'TabFrontLeft.gif', $imagePath . 'TabFrontMiddle.gif', $imagePath . 'TabFrontRight.gif'));
-//			$this->SetSelectedTab(new Tab(System::ImagePath() . 'Std/TabActRndLeft.gif', System::ImagePath() . 'Std/TabActCenter.gif', System::ImagePath() . 'Std/TabActRndRight.gif'));
 		else
 			$this->SetSelectedTab($selectedTab);
-		//$this->Cursor = Cursor::Arrow;
 		$this->SetHeight($height == null?$this->OutTab->GetHeight():$height);
 		if($this->TextObject != null)
 			$this->Controls->Add($this->TextObject);
-		//NolohInternal::SetProperty('Cur', 'Out', $this);
 	}
 	/**
 	 * @ignore

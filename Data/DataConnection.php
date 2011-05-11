@@ -538,7 +538,6 @@ class DataConnection extends Object
 			$query = self::GenerateSQL($spName, $args);
 		elseif($type == Data::View)
 			$query = self::GenerateView($spName);
-			
 		return new DataCommand($this, $query, $hasResultOption?$resultOption:Data::Both);
 	}
 	/**

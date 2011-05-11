@@ -192,6 +192,9 @@ class ListViewItem extends Panel //extends Component
 			return '_NLVSlct("' . $this->Id . '");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);
 	}
+	/**
+	 * @ignore
+	 */
 	function Show()
 	{
 		parent::Show();
