@@ -4,6 +4,7 @@
 require($_NPath . 'NOLOHConfig.php');
 require($_NPath . 'Interfaces/Groupable.php');
 require($_NPath . 'Interfaces/MultiGroupable.php');
+require($_NPath . 'Interfaces/MobileApp.php');
 require($_NPath . 'Interfaces/Singleton.php');
 require($_NPath . 'System/Object.php');
 require($_NPath . 'System/Configuration.php');
@@ -17,6 +18,7 @@ require($_NPath . 'System/WebPage.php');
 require($_NPath . 'Collections/ArrayList.php');
 require($_NPath . 'Collections/ImplicitArrayList.php');
 require($_NPath . 'Controls/Core/Control.php');
+require($_NPath . 'Statics/UserAgent.php');
 require($_NPath . 'Events/Event.php');
 require($_NPath . 'Events/ClientEvent.php');
 require($_NPath . 'Events/RaceClientEvent.php');
@@ -24,7 +26,6 @@ require($_NPath . 'Events/ServerEvent.php');
 require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');
 require($_NPath . 'Statics/URL.php');
-require($_NPath . 'Statics/UserAgent.php');
 
 function _NAutoLoad($class)
 {
