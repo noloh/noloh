@@ -472,7 +472,10 @@ class ListView extends Panel
 					{
 							$title = ($properties[1] != false)?$properties[1]:$properties[0];
 							$this->AddColumn($title, $properties[2]);
+						if($properties[0] !== false)
 						$this->DataColumns[] = $properties[0];
+						elseif(isset($properties[1]))
+							$this->DataColumns[] = $properties[1];
 					}
 					if($properties[0])
 						$columns[] = $properties[0];
