@@ -133,10 +133,10 @@ final class UserAgent
 		$_SESSION['_NIsIE'] = false;
 		
 		// Devices
-		if($name = self::LoadMobile($agt))
-			$device = self::Mobile;
-		elseif($name = self::LoadSlate($agt))
+		if($name = self::LoadSlate($agt))
 			$device = self::Slate;
+		elseif($name = self::LoadMobile($agt))
+			$device = self::Mobile;
 		else
 			$device = self::PC;
 		
