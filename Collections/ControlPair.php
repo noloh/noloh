@@ -203,6 +203,7 @@ class ControlPair extends Panel implements ArrayAccess
 			if($orientation == Layout::Horizontal)
 			{
 				$this->First->CSSFloat = 'left';
+				$this->Second->CSSFloat = 'left';
 				$this->OrganizeMarginHor($this->Margin->GetHeight());
 				$this->Margin->CSSClear = 'none';
 			}
@@ -211,6 +212,8 @@ class ControlPair extends Panel implements ArrayAccess
 				$this->Margin->CSSClear = 'right';
 				$this->Margin->CSSFloat = '';
 				$this->First->CSSFloat = '';
+				$this->First->CSSClear = 'left';
+				$this->Second->CSSFloat = '';
 				$this->OrganizeMarginVer($this->Margin->GetWidth());
 			}
 			$this->Orientation = $orientation;
