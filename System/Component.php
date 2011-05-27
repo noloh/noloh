@@ -117,6 +117,8 @@ abstract class Component extends Object
 					unset($_SESSION['_NControlQueueRoot'][$this->Id], $_SESSION['_NControlQueueDeep'][$this->ParentId][$this->Id]);
 			else
 			{
+				if(isset($_SESSION['_NControlQueueRoot'][$this->Id]))
+					unset($_SESSION['_NControlQueueRoot'][$this->Id]);
 				if($this->ParentId !== null)
 					unset($_SESSION['_NControlQueueRoot'][$this->Id], $_SESSION['_NControlQueueDeep'][$this->ParentId][$this->Id]);
 				if(GetComponentById($parentId)->ShowStatus !== 0)
