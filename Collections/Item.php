@@ -37,6 +37,10 @@ class Item extends Object
 		$this->Value = $value;
 		$this->Text = $text;
 	}*/
+	function __toString()
+	{
+		return 'Item: Text - "' . $this->Text . '"; Value - "' . $this->Value . '";'; 
+	}
 }
 
 ?>
