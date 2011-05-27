@@ -397,8 +397,13 @@ abstract class WebPage extends Component
 		$symbol = empty($_GET) ? '?' : '&';
 		$url = '(document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
                + "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
-		echo 
-'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+        $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
+        $oldOpMobile = $isMobileApp && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
+		echo $oldOpMobile ? 
+'<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">' :
+'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">', '
 
 <!-- Powered by NOLOH  -->
 <!--   www.noloh.com   -->
@@ -413,7 +418,7 @@ abstract class WebPage extends Component
 				'' : 
 				(';url='.$unsupportedURL.''),
   '"></NOSCRIPT>', $favIcon?'
-    <LINK rel="shortcut icon" href="'.$favIcon.'">':'', UserAgent::GetDevice()===UserAgent::Mobile && $isMobileApp ? '
+    <LINK rel="shortcut icon" href="'.$favIcon.'">':'', $isMobileApp && !$oldOpMobile ? '
     <META name="viewport" content="width=device-width, initial-scale=1.0">':'', '
   </HEAD>',
 UserAgent::IsIE() ? '
