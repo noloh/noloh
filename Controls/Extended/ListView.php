@@ -305,7 +305,7 @@ class ListView extends Panel
 		if($this->Selectable)
 		{
 			$listViewItem->UpdateEvent('Click');
-			ClientScript::Set($listViewItem, 'SelCls', $this->SelectedCSS);
+			ClientScript::Set($listViewItem, 'SelCls', $this->SelectCSS);
 		}
 		return $listViewItem;
 	}
