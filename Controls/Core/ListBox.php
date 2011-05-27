@@ -45,7 +45,45 @@ class ListBox extends ListControl
 		if($this->SelectedIndices == null)
 			return -1;
 		else 
+		{
+			$i = 0;
+			$pos = min($this->SelectedIndices);
+			//Should be cached
+			foreach($this->Items as $idx => $item)
+			{
+				if($i == $pos)
+					return $idx;
+				$i++;
+			}
+		}
+	}
+	/**
+	* Returns the numerical position of the ListBox whose element is Selected, or -1 if it's not found
+	* @return integer
+	*/
+	function GetSelectedPosition()
+	{
+		if($this->SelectedIndices == null)
+			return -1;
+		else
 			return min($this->SelectedIndices);
+	}
+	/**
+	* @ignore
+	*/
+	public function RemoveItemAt($index)
+	{
+		parent::RemoveItemAt($index);
+		if(is_int($index))
+		{
+			$count = count($this->SelectedIndices);
+			for($i = 0; $i < $count; ++$i)
+			{
+				$key = $this->SelectedIndices[$i];
+				if(is_numeric($key) && $key > $index)
+					--$this->SelectedIndices[$i];
+			}
+		}
 	}
 	/**
 	 * Selects an Item whose index in the Items ArrayList matches the parameter
@@ -153,7 +191,6 @@ class ListBox extends ListControl
 	 */
 	function Show()
 	{
-		//AddScriptSrc(NOLOHConfig::GetBaseDirectory().NOLOHConfig::GetNOLOHPath()."Javascripts/ListControl.js");
 		ClientScript::AddNOLOHSource('ListControl.js');
 		$initialProperties = parent::Show() . '\'multiple\',\'true\'' . $this->GetEventString(null);
 		NolohInternal::Show('SELECT', $initialProperties, $this);
