@@ -51,6 +51,23 @@ abstract class ListControl extends Control
 			$this->Change->Exec();
 	}
 	/**
+	* Returns the numerical position of the ListControl whose Item is Selected, or -1 if it's not found
+	* @return integer
+	*/
+	function GetSelectedPosition()
+	{
+		$selectedIndex = $this->GetSelectedIndex();
+		if($selectedIndex !== -1)
+		{
+			$i = 0;
+			foreach($this->Items as $idx => $item)
+				if($selectedIndex == $idx)
+					return $i;
+				else ++$i;
+		}
+		return -1;
+	}
+	/**
 	 * Gets the Value of a selected Item
 	 * <br> Can also be called as a property
 	 * <pre>$tempVal = $this->SelectedValue</pre>
