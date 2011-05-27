@@ -305,7 +305,7 @@ class ListView extends Panel
 		if($this->Selectable)
 		{
 			$listViewItem->UpdateEvent('Click');
-			ClientScript::Set($listViewItem, 'SelCls', $this->SelectCSS);
+			ClientScript::Set($listViewItem, 'SelCls', $this->SelectCSS, null);
 		}
 		return $listViewItem;
 	}
@@ -651,7 +651,7 @@ class ListView extends Panel
 			foreach($this->ListViewItems as $listViewItem)
 			{
 				$listViewItem->UpdateEvent('Click');
-				ClientScript::Set($listViewItem, 'SelCls', $cssClass);
+				ClientScript::Set($listViewItem, 'SelCls', $cssClass, null);
 			}
 			$this->Selectable = $mode;
 			$this->SelectCSS = $cssClass;
