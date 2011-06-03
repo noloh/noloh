@@ -5,7 +5,7 @@ function _NClpsPnlTgl(id, clpse)
 	if(!pnl.AnimationStop)
 		pnl.AnimationStop = function(){
 			if(pnl.Opn && !pnl.Hgt)
-				_NSetProperty(id, 'style.height', '');
+				_NSet(id, 'style.height', '');
 			pnl.AnimationStop = null;
 		}
 	if(pnl.Opn == false || !clpse)
@@ -27,7 +27,7 @@ function _NClpsPnlTgl(id, clpse)
 		if (pnl.InitClpse) 
 		{
 			time = pnl.InitClpse = 0; 
-			_NSetProperty(id, 'style.height', pnl.style.minHeight);
+			_NSet(id, 'style.height', pnl.style.minHeight);
 		}
 		else 
 			new _NAni(id, "style.height", _N(pnl.Top).offsetHeight, time);

@@ -38,8 +38,8 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	}
 	if(display)
 	{
-		_NSetProperty(this.ObjId, 'style.display', '');
-		_NSetProperty(this.ObjId, 'style.visibility', 'inherit');
+		_NSet(this.ObjId, 'style.display', '');
+		_NSet(this.ObjId, 'style.visibility', 'inherit');
 	}
 	this.From = from == null ? (prpty == "opacity" ? (this.Obj.style.filter?parseInt(this.Obj.style.filter.substring(13)):100) : parseInt(eval("this.Obj."+prpty+";"))) : from;
 	if(isNaN(this.From))
@@ -81,12 +81,12 @@ _NAni.prototype.Move = function(delta)
 	if(this.ObjId == "N1")
 		document.documentElement[this.Property] = this.From + delta + this.Units;
 	else if(this.Property == 'opacity')
-		_NSetProperty(this.ObjId, 'style.filter', 'alpha(opacity='+(this.From + delta)+')');
+		_NSet(this.ObjId, 'style.filter', 'alpha(opacity='+(this.From + delta)+')');
 	else if(this.Property == 'scrollLeft' || this.Property == 'scrollTop')
 		_NChangeByObj(this.Obj, this.Property, this.From + delta);
 	else
 	{
-		_NSetProperty(this.ObjId, this.Property, this.From + delta + this.Units);
+		_NSet(this.ObjId, this.Property, this.From + delta + this.Units);
 		if(this.Obj.ShiftsWith && this.Obj.ShiftsWith[this.ShiftType])
 			if(this.ShiftType == 1 || this.ShiftType == 4)
 				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], delta - this.LastDelta, 0);
@@ -107,12 +107,12 @@ _NAni.prototype.FinishingTouches = function()
 	else if(this.Oblivion)
 	{
 		_NRem(this.ObjId);
-		_NSetProperty(this.ObjId, '_NOblivion', 1);
+		_NSet(this.ObjId, '_NOblivion', 1);
 	}
 	else if(this.Hiding)
 	{
 		this.Obj._NHiding = true;
-		_NSetProperty(this.ObjId, 'style.display', 'none');
+		_NSet(this.ObjId, 'style.display', 'none');
 	}
 	if(this.Obj.AnimationStop)
 	{

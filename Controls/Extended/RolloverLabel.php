@@ -132,7 +132,7 @@ class RolloverLabel extends Label implements Groupable
 			NolohInternal::SetProperty('Slct', $color, $this);
 
 		$click = parent::GetClick();
-		$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
+		$click['System'] = new ClientEvent("_NSet('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
 		$select = parent::GetSelect();
 		$select['System'] = new ClientEvent("_NRlLblTgl('{$this->Id}','Slct');");
 		$deselect = parent::GetDeselect();

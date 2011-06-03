@@ -23,8 +23,8 @@ function _NTreeSlct(nodeId)
 	var node = _N(nodeId);
 	var tree = _N(node.ListId);
 	_NSave(tree.id, "_NSelectedNodes", tree.SelectedNodes);
-	_NSetProperty(node._N.El, "style.background", "#316AC5");
-	_NSetProperty(node._N.El, "style.color", "#FFFFFF");
+	_NSet(node._N.El, "style.background", node._N.SlBkClr || "#316AC5");
+	_NSet(node._N.El, "style.color", node._N.SlClr || "#FFFFFF");
 }
 function _NTreeSlctOne(nodeId)
 {
@@ -32,8 +32,8 @@ function _NTreeSlctOne(nodeId)
 	var tree = _N(node.ListId), i;
 	for(i = 0; i < tree.SelectedElements.length; ++i)
 	{
-		_NSetProperty(tree.SelectedElements[i], "style.background", "transparent");
-		_NSetProperty(tree.SelectedElements[i], "style.color", "#000000");
+		_NSet(tree.SelectedElements[i], "style.background", "transparent");
+		_NSet(tree.SelectedElements[i], "style.color", "#000000");
 	}
 	tree.SelectedElements = [node._N.El];
 	tree.SelectedNodes = nodeId;
@@ -53,8 +53,8 @@ function _NTreeSlctTgl(nodeId)
 				? (elementsLength==1?nodeId:(nodeId+"~d2~"))
 				: ("~d2~"+nodeId), "");
 			_NSave(tree.id, "_NSelectedNodes", tree.SelectedNodes);
-			_NSetProperty(elementId, "style.background", "transparent");
-			_NSetProperty(elementId, "style.color", "#000000");
+			_NSet(elementId, "style.background", "transparent");
+			_NSet(elementId, "style.color", "#000000");
 			return;
 		}
 	tree.SelectedElements.push(elementId);
@@ -68,12 +68,12 @@ function _NTreeTgl(panelId, iconId, nodeId)
 	var node = _N(nodeId);
 	if(_N(panelId).style.display=="")
 	{
-		_NSetProperty(panelId, "style.display", "none");
-		_NSetProperty(iconId, "src", node.CloseSrc!=null?node.CloseSrc:_N(node.ListId).CloseSrc);
+		_NSet(panelId, "style.display", "none");
+		_NSet(iconId, "src", node.CloseSrc!=null?node.CloseSrc:_N(node.ListId).CloseSrc);
 	}
 	else 
 	{
-		_NSetProperty(panelId, "style.display", "");
-		_NSetProperty(iconId, "src", node.OpenSrc!=null?node.OpenSrc:_N(node.ListId).OpenSrc);
+		_NSet(panelId, "style.display", "");
+		_NSet(iconId, "src", node.OpenSrc!=null?node.OpenSrc:_N(node.ListId).OpenSrc);
 	}
 }

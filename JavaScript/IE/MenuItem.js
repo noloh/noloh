@@ -52,7 +52,7 @@ function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 		for(var i=0; i < chldMnu.ChildrenArray.length; ++i)
 			_NHideChldrn(chldMnu.ChildrenArray[i], true);
 		if(topLvl)
-			_NSetProperty(opnMnu.ItmsPnl, 'style.display', 'none'); 
+			_NSet(opnMnu.ItmsPnl, 'style.display', 'none'); 
 	}
 	if(topLvl)
 	{
@@ -66,6 +66,6 @@ function _NMnuOutClrs(mnuItmId, isOut)
 {
 	var mnuItm = _N(mnuItmId);
 	
-	_NSetProperty(mnuItmId, "style.background", isOut?mnuItm.OtBckClr:mnuItm.OvBckClr);
-	_NSetProperty(mnuItmId, "style.color", isOut?mnuItm.OtTxtClr:mnuItm.OvTxtClr);
+	_NSet(mnuItmId, "style.background", isOut?mnuItm.OtBckClr:mnuItm.OvBckClr);
+	_NSet(mnuItmId, "style.color", isOut?mnuItm.OtTxtClr:mnuItm.OvTxtClr);
 }

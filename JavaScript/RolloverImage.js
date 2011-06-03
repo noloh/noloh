@@ -10,7 +10,7 @@ function _NRlImgTgl(id, state)
 	{
 		var prevImg = img.Group.PrevSelectedElement;
 		if(prevImg != null)
-			_NSetProperty(prevImg, 'Selected', false);
+			_NSet(prevImg, 'Selected', false);
 	}*/
 	img.src = img[state];
 	img.Cur = state;

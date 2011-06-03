@@ -3,8 +3,8 @@ function _NCMShow(obj)
 	_NCMHide();
 	var id = _N.ContextMenu = obj.ContextMenu, contextMenu = _N(id);
 	contextMenu.style.display = "";
-	_NSetProperty(id, "style.left", window.event.clientX + document.documentElement.scrollLeft + "px");
-	_NSetProperty(id, "style.top", window.event.clientY + document.documentElement.scrollTop + "px");
+	_NSet(id, "style.left", window.event.clientX + document.documentElement.scrollLeft + "px");
+	_NSet(id, "style.top", window.event.clientY + document.documentElement.scrollTop + "px");
 	_N.EventVars.ContextMenuSource = obj.id;
 	_NClickOff(id, _NCMHide);
 	_NNoBubble();

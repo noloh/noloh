@@ -9,5 +9,5 @@ function _NCBCptClk(id)
 }
 function _NCBSave(id)
 {
-	_NSetProperty(id, "Selected", _N(id+"I").checked);
+	_NSet(id, "Selected", _N(id+"I").checked);
 }

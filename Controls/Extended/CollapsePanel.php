@@ -66,7 +66,7 @@ class CollapsePanel extends Panel implements Groupable
 
 		$this->SetText($text);
 		$this->SetToggleButton();
-		$this->Title->Click['Collapse'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', _N('{$this->Id}').Tgl?_N('{$this->Id}').Selected!=true:true);");
+		$this->Title->Click['Collapse'] = new ClientEvent("_NSet('{$this->Id}','Selected', _N('{$this->Id}').Tgl?_N('{$this->Id}').Selected!=true:true);");
 		$select['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id');");
 		$deselect['System']['Collapse'] = new ClientEvent("_NClpsPnlTgl('$this->Id', true);");
 		$this->SetWidth($width);
@@ -100,13 +100,13 @@ class CollapsePanel extends Panel implements Groupable
 			$rolloverImage->SetSelected($this->Selected);
 			$select = parent::GetSelect();
 			$deselect = parent::GetDeselect();
-//			$deselect['System'][] = $select['System'][] = new ClientEvent("_NSetProperty('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
+//			$deselect['System'][] = $select['System'][] = new ClientEvent("_NSet('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
 			//unset($select['System']['Button']);
 			//unset($deselect['System']['Button']);
-			$select['System']['Button'] = new ClientEvent("_NSetProperty('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
-			$deselect['System']['Button'] = new ClientEvent("_NSetProperty('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
-//			$select['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSetProperty('{$rolloverImage->Id}','Selected',  true);");
-//			$deselect['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSetProperty('{$rolloverImage->Id}','Selected',  false);");
+			$select['System']['Button'] = new ClientEvent("_NSet('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
+			$deselect['System']['Button'] = new ClientEvent("_NSet('{$rolloverImage->Id}','Selected',  _N('{$this->Id}').Selected==true);");
+//			$select['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSet('{$rolloverImage->Id}','Selected',  true);");
+//			$deselect['System'][] = new ClientEvent("console.log(_N('{$this->Id}').Selected); _NSet('{$rolloverImage->Id}','Selected',  false);");
 		}
 		$rolloverImage->Click->Enabled = false;
 
@@ -199,10 +199,10 @@ class CollapsePanel extends Panel implements Groupable
 						$this->Title->Controls['Back'] = $object;
 						$select = parent::GetSelect();
 						$select['System']['Collapse']['BackObj'] 
-							= new ClientEvent('_NSetProperty', $object, 'Selected', true);
+							= new ClientEvent('_NSet', $object, 'Selected', true);
 						$deselect = parent::GetDeselect();
 						$deselect['System']['Collapse']['BackObj'] 
-							= new ClientEvent('_NSetProperty', $object, 'Selected', false);
+							= new ClientEvent('_NSet', $object, 'Selected', false);
 					}
 					break;
 				default: throw new SugarException();

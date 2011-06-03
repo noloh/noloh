@@ -46,7 +46,7 @@ class CheckBox extends CheckControl implements MultiGroupable
 	{
 		if($eventTypeAsString === 'Click')
 			return 
-		//	return '_NSetProperty(\'' . $this->Id . '\',\'Selected\', true);' . parent::GetEventString($eventTypeAsString);
+		//	return '_NSet(\'' . $this->Id . '\',\'Selected\', true);' . parent::GetEventString($eventTypeAsString);
 		//if($eventTypeAsString === 'Click' || $eventTypeAsString === 'Change')
 			//return '_NCBSave("'.$this->Id.'");' . parent::GetEventString($eventTypeAsString);
 		return parent::GetEventString($eventTypeAsString);

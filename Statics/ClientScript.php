@@ -228,7 +228,7 @@ final class ClientScript
 	 * observers will result in executing some relatively light code with every server request. Clearly, the former method is
 	 * preferred for its on-demand nature, while usage of ClientScript::Observe is often left to either less experienced
 	 * NOLOH developers or in cases when modifying the JavaScript in any way is for some reason impossible, thus not lending to
-	 * an opportune moment to call _NSetProperty on-demand.
+	 * an opportune moment to call _NSet on-demand.
 	 * @param Component|string $objOrId
 	 * @param string $clientPropertyName
 	 * @param string $serverPropertyAlias

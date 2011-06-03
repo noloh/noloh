@@ -23,7 +23,7 @@ function _NClickOffClick()
 {
 	if(_N.ClickOffId)
 	{
-		_NSetProperty(_N.ClickOffId, "style.display", "none");
+		_NSet(_N.ClickOffId, "style.display", "none");
 		if(_N.ClickOffFunc)
 			_N.ClickOffFunc();
 		document.detachEvent("onmousedown", _NClickOffDown);

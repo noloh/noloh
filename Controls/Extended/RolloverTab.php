@@ -237,15 +237,15 @@ class RolloverTab extends Panel implements Groupable
 //			$this->Click['Select'] = new ClientEvent('_NRlTbChg('{$this->Id}','Slct');");
 			//System::Log('here');
 			$click = parent::GetClick();
-			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', true);");
+			$click['System'] = new ClientEvent("_NSet('{$this->Id}','Selected', true);");
 			$select = parent::GetSelect();
 			$select['System'] = new ClientEvent("_NRlTbChg('{$this->Id}','Slct');");
 			if($this->TextObject instanceof Groupable)
-				$select['System'][] = new ClientEvent("_NSetProperty('{$this->TextObject->Id}','Selected', true);");
+				$select['System'][] = new ClientEvent("_NSet('{$this->TextObject->Id}','Selected', true);");
 			$deselect = parent::GetDeselect();
 			$deselect['System'] = new ClientEvent("_NRlTbChg('{$this->Id}','Out');");
 			if($this->TextObject instanceof Groupable)
-				$deselect['System'][] = new ClientEvent("_NSetProperty('{$this->TextObject->Id}','Selected', false);");
+				$deselect['System'][] = new ClientEvent("_NSet('{$this->TextObject->Id}','Selected', false);");
 //			$this->Select = new ClientEvent("_NRlTbChg('{$this->Id}', 'Slct');");
 		}
 		else

@@ -158,7 +158,7 @@ class RolloverImage extends Image implements Groupable
 		if($selectedPath)
 		{
 			$click = parent::GetClick();
-			$click['System'] = new ClientEvent("_NSetProperty('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
+			$click['System'] = new ClientEvent("_NSet('{$this->Id}','Selected', this.Tgl?this.Selected!=true:true);");
 			$select = parent::GetSelect();
 			$select['System'] = new ClientEvent("_NRlImgTgl('{$this->Id}','Slct');");
 			$deselect = parent::GetDeselect();

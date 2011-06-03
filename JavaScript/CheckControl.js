@@ -7,5 +7,5 @@ function _NChkCtrl(id, bool, over)
 }
 function _NChkCtrlTgl(id, tgl)
 {
-	_NSetProperty(id, "Selected", tgl ? !_N(id).Selected : true);
+	_NSet(id, "Selected", tgl ? !_N(id).Selected : true);
 }

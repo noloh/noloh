@@ -8,7 +8,7 @@ function _NRlLblTgl(id, state)
 	{
 		var prevLbl = lbl.Group.PrevSelectedElement;
 		if(prevLbl != null)
-			_NSetProperty(prevLbl, 'Selected', false);
+			_NSet(prevLbl, 'Selected', false);
 	}*/
 	_NRlLblSetClr(id, lbl[state]);
 	lbl.Cur = state;
@@ -19,9 +19,9 @@ function _NRlLblSetClr(id, color)
 {
 	if(color instanceof Array)
 	{
-		_NSetProperty(id, 'style.color', color[0]);
-		_NSetProperty(id, 'style.background', color[1]);
+		_NSet(id, 'style.color', color[0]);
+		_NSet(id, 'style.background', color[1]);
 	}
 	else
-		_NSetProperty(id, 'style.color', color);
+		_NSet(id, 'style.color', color);
 }

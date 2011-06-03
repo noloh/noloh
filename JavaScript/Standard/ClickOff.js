@@ -23,7 +23,7 @@ function _NClickOffClick(e)
 {
 	if(_N.ClickOffId)
 	{
-		_NSetProperty(_N.ClickOffId, "style.display", "none");
+		_NSet(_N.ClickOffId, "style.display", "none");
 		event = e;
 		if(_N.ClickOffFunc)
 			_N.ClickOffFunc();

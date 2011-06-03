@@ -1,27 +1,27 @@
 function _NCalLMt(id)
 {
 	var cal = _N(id);
-	cal.ViewDate.setMonth(_NSetProperty(id,"ViewMonth",cal.ViewDate.getMonth()-1));
-	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()));
+	cal.ViewDate.setMonth(_NSet(id,"ViewMonth",cal.ViewDate.getMonth()-1));
+	cal.ViewDate.setFullYear(_NSet(id,"ViewYear",cal.ViewDate.getFullYear()));
 	_NCalPrint(id);
 }
 function _NCalNMt(id)
 {
 	var cal = _N(id);
-	cal.ViewDate.setMonth(_NSetProperty(id,"ViewMonth",cal.ViewDate.getMonth()+1));
-	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()));
+	cal.ViewDate.setMonth(_NSet(id,"ViewMonth",cal.ViewDate.getMonth()+1));
+	cal.ViewDate.setFullYear(_NSet(id,"ViewYear",cal.ViewDate.getFullYear()));
 	_NCalPrint(id);
 }
 function _NCalLYr(id)
 {
 	var cal = _N(id);
-	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()-1));
+	cal.ViewDate.setFullYear(_NSet(id,"ViewYear",cal.ViewDate.getFullYear()-1));
 	_NCalPrint(id);
 }
 function _NCalNYr(id)
 {
 	var cal = _N(id);
-	cal.ViewDate.setFullYear(_NSetProperty(id,"ViewYear",cal.ViewDate.getFullYear()+1));
+	cal.ViewDate.setFullYear(_NSet(id,"ViewYear",cal.ViewDate.getFullYear()+1));
 	_NCalPrint(id);
 }
 function _NCalSlctDt(calid)
@@ -30,9 +30,9 @@ function _NCalSlctDt(calid)
 	var lab = window.event.srcElement;
 	_N(cal.SelectedLabelId).style.fontWeight = "normal";
 	cal.SelectedLabelId = lab.id;
-	cal.SelectDate.setDate(_NSetProperty(calid,"Date",lab.innerHTML));
-	cal.SelectDate.setMonth(_NSetProperty(calid,"Month",cal.ViewDate.getMonth()));
-	cal.SelectDate.setFullYear(_NSetProperty(calid,"Year",cal.ViewDate.getFullYear()));
+	cal.SelectDate.setDate(_NSet(calid,"Date",lab.innerHTML));
+	cal.SelectDate.setMonth(_NSet(calid,"Month",cal.ViewDate.getMonth()));
+	cal.SelectDate.setFullYear(_NSet(calid,"Year",cal.ViewDate.getFullYear()));
 	lab.style.fontWeight = "bold";
 	if(cal.onchange)
 		cal.onchange();

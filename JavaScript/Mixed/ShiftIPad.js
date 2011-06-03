@@ -48,7 +48,7 @@ function _NShftFirstGo(e)
 			_N.Shifts.Ghosts.push(i);
 		}
 		_N.Shifts.ActualCount[_N.Shifts[i][7] = _N.Shifts[i][1] + id] = parseInt(_N.Shifts[i][1]==1?obj.style.width: _N.Shifts[i][1]==2?obj.style.height: _N.Shifts[i][1]==4?obj.style.left: obj.style.top);
-		_NSetProperty(id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
+		_NSet(id, "style.zIndex", parseInt(obj.style.zIndex) + deltaZIndex);
 	}
 	delete _N.Shifts.ObjsWithStart;
 	_N.Shifts.HasMoved = true;
@@ -134,7 +134,7 @@ function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposi
 		if(tmp = _N.ChangeForReflect)
 		{
 			var finalCoord = parseInt(propNum == 1 ? obj.style.left : obj.style.top) + (tmp=="D" ? (-delta) : tmp);
-			_NSetProperty(info[0], propNum == 1 ? "style.left" : "style.top", finalCoord + "px");
+			_NSet(info[0], propNum == 1 ? "style.left" : "style.top", finalCoord + "px");
 			delete _N.ChangeForReflect;
 		}
 		if(delta)
@@ -170,7 +170,7 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 	}
 	if(maxBound != null && finalCoord > maxBound)
 		finalCoord = maxBound;
-	_NSetProperty(id, property, finalCoord + "px");
+	_NSet(id, property, finalCoord + "px");
 	return finalCoord - start;
 }
 function _NShftStp(e)

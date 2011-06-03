@@ -5,9 +5,9 @@ function _NTbPgSt(group)
 	{
 		var prevTab = grp.PrevSelectedElement;
 		if(prevTab != null)
-			_NSetProperty(_N(prevTab).TabPg, 'style.visibility', 'hidden');
+			_NSet(_N(prevTab).TabPg, 'style.visibility', 'hidden');
 		if(tab.TabPg != null)
-			_NSetProperty(tab.TabPg, 'style.visibility', 'visible');
+			_NSet(tab.TabPg, 'style.visibility', 'visible');
 	}
 }
 function _NTbPgRm(id)
@@ -16,7 +16,7 @@ function _NTbPgRm(id)
 	var idx = _N(id).Group.Remove(id);
 	idx = (idx > 0)?idx -1 : 0;
 	if(group.Elements[idx])
-		_NSetProperty(group.Elements[idx], 'Selected', true);
+		_NSet(group.Elements[idx], 'Selected', true);
 }
 function _NTbPgScrl(id, prop, sign)
 {
@@ -57,8 +57,8 @@ function _NTbPgScrlChk(id)
 		}
 		else
 			return;
-		_NSetProperty(tabScroller.id, 'style.width', sum);
-		_NSetProperty(back.id, 'style.display', display);
-		_NSetProperty(next.id, 'style.display', display);
+		_NSet(tabScroller.id, 'style.width', sum);
+		_NSet(back.id, 'style.display', display);
+		_NSet(next.id, 'style.display', display);
 	}
 }
