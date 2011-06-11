@@ -31,7 +31,6 @@ class RichMarkupRegion extends MarkupRegion
 	function RichMarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
 		$this->ComponentSpace = array();
-		$this->ItemCount = 0;
 		parent::MarkupRegion($markupStringOrFile, $left, $top, $width, $height);
 	}
 	/**
@@ -39,6 +38,7 @@ class RichMarkupRegion extends MarkupRegion
 	 */
 	function SetText($markupStringOrFile)
 	{
+		$this->ItemCount = 0;
 		$this->Eventees = array();
 		$this->Larvae = array();
 		foreach($this->ComponentSpace as $component)
@@ -56,16 +56,17 @@ class RichMarkupRegion extends MarkupRegion
 			if(isset($this->InnerCSSClass))
  				$text = "<div id = 'Inner{$this->Id}' class = '{$this->InnerCSSClass}'>$text</div>";
 //			 	$text = '<div class = \''. $this->InnerCSSClass . '\'>' . $text . '</div>';
-			$tmpFullString = &$this->ParseItems($text);
-			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+			$fullString = &$this->ParseItems($text);
+//			System::Log($fullString);
+//			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+			$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $fullString);
         }
         else
         	$text = '';
 		//		$this->AutoWidthHeight($tmpFullString);
 		if($this->GetShowStatus()!==0)
-			//QueueClientFunction($this, "SetMarkupString", array("'$this->Id'", "'$markupStringOrFile'"), true, Priority::High);
-			ClientScript::Queue($this, '_NMkupSet', array($this, $text), true, Priority::High);
-//			AddScript('_NMkupSet(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
+//			ClientScript::Queue($this, '_NMkupSet', array($this, $text), true, Priority::High);
+			AddScript('_NMkupSet(\'' . $this->Id. '\',\'' . $text. '\')', Priority::High);
 		else
 			$this->TempString = $text;
 //		file_put_contents('/tmp/snakeinthegrass2', var_export($this->Eventees, true));
@@ -211,7 +212,7 @@ class RichMarkupRegion extends MarkupRegion
 	public function Show()
 	{
 		parent::Show();
-		AddScript('_NMkupSet(\''.$this->Id.'\',\''.$this->TempString.'\')', Priority::High);
+		ClientScript::Add('_NMkupSet(\''.$this->Id.'\',\''.$this->TempString.'\');', Priority::High);
 		$this->TempString = null;
 	}
 	/**
@@ -226,8 +227,9 @@ class RichMarkupRegion extends MarkupRegion
 				$text = file_get_contents($markupStringOrFile);
 			else
 				$text = &$markupStringOrFile;
-			$tmpFullString = &$this->ParseItems($text);
-			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+			$fullString = &$this->ParseItems($text);
+//			$text = &str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $tmpFullString);
+			$text = str_replace(array("\r\n", "\n", "\r", "\"", "'"), array('<Nendl>', '<Nendl>', '<Nendl>', '<NQt2>', '<NQt1>'), $fullString);
         }
         $tag = $this->GetSearchEngineTag();
 		echo '<', $tag, Control::SearchEngineShow(true),'>', preg_replace(array('/<Nendl>/', '/<NQt2>/', '/<NQt1>/', '/<([^<>]* )target\s*=([\'"])\w+\2\s*([^<>]*)>/'), array("\n", "\"", "'", '<$1$3>'), $text);
