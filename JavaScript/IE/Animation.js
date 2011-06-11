@@ -17,7 +17,6 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 	this.Obj = id == "N1" ? document.documentElement : _N(id);
 	if(isNaN(to) || to == null)
 	{
-		this.Destination = prpty=="style.left"?-this.Obj.offsetWidth: prpty=="style.top"?-this.Obj.offsetHeight: 0;
 		if(to == "Oblivion")
 			this.Oblivion = true;
 		else if(to == "Hiding")
@@ -32,8 +31,10 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 			to = (prpty == 'style.width')?_NOuterWidth(id):_NOuterHeight(id);
 			_NSet(id, prpty, prev);
 		}
+		to = prpty=="style.left"?-this.Obj.offsetWidth: prpty=="style.top"?-this.Obj.offsetHeight: 0;
+
 	}
-		this.Destination = to;
+	this.Destination = to;
 	this.Property = prpty;
 	if(from == "Hiding")
 	{
