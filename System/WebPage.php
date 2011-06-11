@@ -170,7 +170,8 @@ abstract class WebPage extends Component
 		if($this->Title !== $title)
 		{
 			$this->Title = $title;
-			AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'), Priority::High);
+			ClientScript::Add($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'");'):('document.title="'.addslashes($title).'";'), Priority::High);
+//			AddScript($_SESSION['_NIsIE']?('_NSetTitle("'.addslashes($title).'")'):('document.title="'.addslashes($title).'"'), Priority::High);
 		}
 	}
 	/**

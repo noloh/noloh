@@ -53,7 +53,7 @@ class MenuItem extends Panel
 		else
 		{
 			$this->TextLabel = new Label($textOrControl, 0,0, System::Auto, 18);
-			$this->TextLabel->CSSClass = 'NMnuItm';
+			$this->TextLabel->CSSClasses->Add('NMnuItm');
 		}
 		$this->MenuItemsPanel = new Panel(0, 0, 0, 0, $this);
 		$this->SetWidth($this->TextLabel->GetWidth() + 15);

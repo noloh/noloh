@@ -108,24 +108,28 @@ final class NolohInternal
 			unset($_SESSION['_NControlInserts'][$objId]);
 		}
 		else
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'])', Priority::High);
+//			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'])', Priority::High);
+			ClientScript::Add('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.']);', Priority::High);
 		$GLOBALS['_NAddedSomething'] = true;
 	}
 
 	public static function Bury($obj)
 	{
-		AddScript('_NRem(\''.$obj->Id.'\')', Priority::High);
+		ClientScript::Add('_NRem(\''.$obj->Id.'\');', Priority::High);
+//		AddScript('_NRem(\''.$obj->Id.'\')', Priority::High);
 	}
 
 	public static function Resurrect($obj)
 	{
-		AddScript('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? $_SESSION['_NStartUpPageId'] : $obj->GetParent()->GetAddId($obj)).'\')', Priority::High);
+//		AddScript('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? $_SESSION['_NStartUpPageId'] : $obj->GetParent()->GetAddId($obj)).'\')', Priority::High);
+		ClientScript::Add('_NRes(\''.$obj->Id.'\',\''.($obj->GetBuoyant() ? $_SESSION['_NStartUpPageId'] : $obj->GetParent()->GetAddId($obj)).'\');', Priority::High);
 	}
 
     public static function Adoption($obj)
     {
         if(!$obj->GetBuoyant())
-            AddScript('_NAdopt(\''.$obj->Id.'\',\'' . $obj->GetParent()->GetAddId($obj) . '\')', Priority::High);
+            ClientScript::Add('_NAdopt(\''.$obj->Id.'\',\'' . $obj->GetParent()->GetAddId($obj) . '\');', Priority::High);
+//            AddScript('_NAdopt(\''.$obj->Id.'\',\'' . $obj->GetParent()->GetAddId($obj) . '\')', Priority::High);
         $GLOBALS['_NAddedSomething'] = true;
 		//unset($_SESSION['_NControlQueue'][$obj->Id]);
 		if(isset($_SESSION['_NControlQueueRoot'][$obj->Id]))
@@ -169,14 +173,15 @@ final class NolohInternal
 		{
 			$obj = &GetComponentById($objId);
 			if($obj!==null && $obj->GetShowStatus())
-				AddScript('_NSetP(\''.$objId.'\',['.self::GetPropertiesString($objId, $nameValPairs).'])');
+//				AddScript('_NSetP(\''.$objId.'\',['.self::GetPropertiesString($objId, $nameValPairs).'])');
+				ClientScript::Add('_NSetP(\''.$objId.'\',['.self::GetPropertiesString($objId, $nameValPairs).']);');
 			else
 			{
 				$splitStr = explode('i', $objId, 2);
 				$markupPanel = &GetComponentById($splitStr[0]);
 				if($markupPanel!==null && $markupPanel->GetShowStatus())
 				{
-					AddNolohScriptSrc('Eventee.js');
+					ClientScript::AddNOLOHSource('Eventee.js');
 					$nameValPairsString = '';
 					foreach($nameValPairs as $name => $val)
 						$nameValPairsString .= '\''.$name.'\',\''.($name=='href'?$val:$markupPanel->GetEventString($val, $objId)).'\',';
