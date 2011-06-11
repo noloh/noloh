@@ -33,11 +33,11 @@ final class Animate
 	/**
 	 * A possible value for the to parameter, Oblivion indicates that the Control's property will go to 1 and subsequently be removed from its Parent's ArrayList.
 	 */
-	const Oblivion = '"Oblivion"';
+	const Oblivion = 'Oblivion';
 	/**
 	 * A possible value for the to parameter, Hiding indicates that the Control's property will go to 1 and subsequently becomes invisible.
 	 */
-	const Hiding = '"Hiding"';
+	const Hiding = 'Hiding';
 	
 	private function Animate() {}
 	/**
@@ -54,25 +54,26 @@ final class Animate
 	static function Property($control, $property, $to, $duration=1000, $units='px', $easing=Animate::Quadratic, $from=null, $fps=30, $numArgs=null)
 	{
 		ClientScript::AddNOLOHSource('Animation.js', true);
+		if($to === null || $to == System::Auto)
+			ClientScript::AddNOLOHSource('Dimensions.js', true);
+			
 		$args = func_get_args();
 		if($numArgs)
 			$args = array_slice($args, 0, $numArgs);
 		else 
 			$numArgs = func_num_args();
-		$args[0] = '\'' . $control->Id . '\'';
-		$args[1] = '\'' . $property . '\'';
+		
 		if($numArgs > 4)
 		{
-			$args[4] = '\'' . $units . '\'';
 			if($numArgs > 6)
 				if($from===null)
-					$args[6] = 'null';
+					$args[6] = null;
 				elseif($property === 'scrollLeft' || $property === 'scrollTop')
-					QueueClientFunction($control, '_NChange', array('"'.$control->Id.'"', '"'.$property.'"', $from), false);
+					ClientScript::Queue($control, '_NChange', array($control, $property, $from), false);
 				else
-					NolohInternal::SetProperty($property, $from.$units, $control);
+					ClientScript::Set($control, $property, $from.$units, null);
 		}
-		QueueClientFunction($control, 'new _NAni', $args, false, Priority::Low);
+		ClientScript::Queue($control, 'new _NAni', $args, false, Priority::Low);
 	}
 	/**
 	 * Animates a specified Control's location horizontally
@@ -86,7 +87,7 @@ final class Animate
 	static function Left($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		if($to instanceof Control)
-			$to = '_N(\''. $to->Id .'\').offsetLeft';
+			$to = ClientScript::Raw('_N(\''. $to->Id .'\').offsetLeft');
 		$numArgs = func_num_args();
 		if($numArgs > 4 && $from !== null)
 			$control->SetLeft($from);
@@ -104,7 +105,7 @@ final class Animate
 	static function Top($control, $to, $duration=1000, $easing=Animate::Quadratic, $from=null, $fps=30)
 	{
 		if($to instanceof Control)
-			$to = '_N(\''. $to->Id .'\').offsetTop';
+			$to = ClientScript::Raw('_N(\''. $to->Id .'\').offsetTop');
 		$numArgs = func_num_args();
 		if($numArgs > 4 && $from !== null)
 			$control->SetTop($from);
@@ -124,9 +125,9 @@ final class Animate
 	static function Location($control, $toLeft, $toTop, $duration=1000, $easing=Animate::Quadratic, $fromLeft=null, $fromTop=null, $fps=30)
 	{
 		if($toLeft instanceof Control)
-			$toLeft = '_N(\''. $to->Id .'\').offsetLeft';
+			$toLeft = ClientScript::Raw('_N(\''. $to->Id .'\').offsetLeft');
 		if($toTop instanceof Control)
-			$toTop = '_N(\''. $to->Id .'\').offsetLeft';
+			$toTop = ClientScript::Raw('_N(\''. $to->Id .'\').offsetTop');
 		$numArgs = func_num_args();
 		if($numArgs >= 5)
 		{
@@ -142,7 +143,11 @@ final class Animate
 		Animate::Property($control, 'style.top', $toTop, $duration, 'px', $easing, $fromTop, $fps, $numArgs);
 	}
 	/**
-	 * Animates a specified Control's size horizontally
+	 * Animates a specified Control's size horizontally. If System::Auto is 
+	 * specified NOLOH will animate your object to its natural width and 
+	 * set the width to it. If null is passed, the object will animation to
+	 * its natural width and then have it's height set to null.
+	 * 
 	 * @param Control $control The Control to be animated
 	 * @param mixed $to The destination to which the Width will go. Can be an integer, Animate::Oblivion or Animate::Hiding.
 	 * @param integer $duration The number of milliseconds it will take for the animation to complete
@@ -158,9 +163,13 @@ final class Animate
 		Animate::Property($control, 'style.width', $to, $duration, 'px', $easing, $from, $fps, $numArgs+($numArgs>=4?2:1));
 	}
 	/**
-	 * Animates a specified Control's size vertically
+	 * Animates a specified Control's size vertically. If System::Auto is 
+	 * specified NOLOH will animate your object to its natural height and 
+	 * set the height to it. If null is passed, the object will animation to
+	 * its natural height and then have it's height set to null.
+	 * 
 	 * @param Control $control The Control to be animated
-	 * @param mixed $to The destination to which the Height will go. Can be an integer, Animate::Oblivion or Animate::Hiding.
+	 * @param mixed $to The destination to which the Height will go. Can be an integer, null, System::Auto, Animate::Oblivion or Animate::Hiding.
 	 * @param integer $duration The number of milliseconds it will take for the animation to complete
 	 * @param mixed $easing The type of easing motion associated with this animation. See the Animate constants for more details.
 	 * @param integer $from If you would like the Height to begin somewhere other than its current value
@@ -213,15 +222,15 @@ final class Animate
 	{
 		if($to instanceof Control)
 //			$to = '_N(\''. $to->Id .'\').offsetLeft';
-			$to = '_NFindX(\''. $to->Id .'\',\''. $control->Id .'\')';
+			$to = ClientScript::Raw('_NFindX(\''. $to->Id .'\',\''. $control->Id .'\')');
 		elseif($to === Layout::Left)
 			$to = 0;
 		elseif($to === Layout::Right)
-			$to = '_N(\''.$control->Id.'\').scrollWidth';
+			$to = ClientScript::Raw('_N(\''.$control->Id.'\').scrollWidth');
 		if($from === Layout::Left)
 			$from = 0;
 		elseif($from === Layout::Right)
-			$from = '_N(\''.$control->Id.'\').scrollWidth';
+			$from = ClientScript::Raw('_N(\''.$control->Id.'\').scrollWidth');
 		$numArgs = func_num_args() + 2;
 		Animate::Property($control, 'scrollLeft', $to, $duration, '', $easing, $from, $fps, max(5, $numArgs));
 	}
@@ -238,15 +247,28 @@ final class Animate
 	{
 		if($to instanceof Control)
 //			$to = '_N(\''. $to->Id .'\').offsetTop';
-			$to = '_NFindY(\''. $to->Id .'\',\''. $control->Id .'\')';
+			$to = ClientScript::Raw('_NFindY(\''. $to->Id .'\',\''. $control->Id .'\')');
 		elseif($to === Layout::Top)
 			$to = 0;
 		elseif($to === Layout::Bottom)
-			$to = '_N(\''.$control->Id.'\').scrollHeight';
+		{
+			$id = $control->GetId();
+			if($id == 'N1')
+			{
+				//WebKit
+//				$to = ClientScript::Raw('document.body.scrollHeight');
+				$to = ClientScript::Raw("_N('N1').scrollHeight");
+				//Everything Else
+//				$to = ClientScript::Raw('document.documentElement.scrollHeight');
+				
+			}
+			else
+				$to = ClientScript::Raw("_N('$id').scrollHeight");
+		}
 		if($from === Layout::Top)
 			$from = 0;
 		elseif($from === Layout::Right)
-			$from = '_N(\''.$control->Id.'\').scrollHeight';
+			$from = ClientScript::Raw('_N(\''.$control->Id.'\').scrollHeight');
 		$numArgs = func_num_args() + 2;
 		Animate::Property($control, 'scrollTop', $to, $duration, '', $easing, $from, $fps, max(5, $numArgs));
 	}
@@ -267,5 +289,4 @@ final class Animate
 		Animate::Property($control, 'opacity', $to, $duration, '', $easing, $from, $fps, max(5, $numArgs));
 	}
 }
-
 ?>

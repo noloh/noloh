@@ -223,7 +223,7 @@ final class ClientScript
 	}
 	/**
 	 * Observes a JavaScript property so that it is automatically updated on the server as well, under an optional alias.
-	 * Note: This is slightly less efficient than manually calling the NOLOH built-in JavaScript function _NSetProperty when
+	 * Note: This is slightly less efficient than manually calling the NOLOH built-in JavaScript function _NSet when
 	 * the property is changed in order to inform the server since the latter happens only when necessary, while the property
 	 * observers will result in executing some relatively light code with every server request. Clearly, the former method is
 	 * preferred for its on-demand nature, while usage of ClientScript::Observe is often left to either less experienced

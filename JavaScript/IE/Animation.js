@@ -15,15 +15,24 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 		}
 	this.ObjId = id;
 	this.Obj = id == "N1" ? document.documentElement : _N(id);
-	if(isNaN(to))
+	if(isNaN(to) || to == null)
 	{
 		this.Destination = prpty=="style.left"?-this.Obj.offsetWidth: prpty=="style.top"?-this.Obj.offsetHeight: 0;
 		if(to == "Oblivion")
 			this.Oblivion = true;
 		else if(to == "Hiding")
 			this.Hiding = true;
+		//Auto Height
+		else if((to == 'Auto' || to == null) && (prpty == 'style.width' || prpty == 'style.height'))	
+		{
+			if(!to)
+				this.ToNull=true;
+			var prev = (prpty == 'style.width')?_N(id).style.width:_N(id).style.height, destination;
+			_NSet(id, prpty, null);
+			to = (prpty == 'style.width')?_NOuterWidth(id):_NOuterHeight(id);
+			_NSet(id, prpty, prev);
+		}
 	}
-	else
 		this.Destination = to;
 	this.Property = prpty;
 	if(from == "Hiding")
@@ -114,6 +123,8 @@ _NAni.prototype.FinishingTouches = function()
 		this.Obj._NHiding = true;
 		_NSet(this.ObjId, 'style.display', 'none');
 	}
+	else if(this.ToNull)
+		_NSet(this.ObjId,  this.Property, null);
 	if(this.Obj.AnimationStop)
 	{
 		var count= _NAni.Active.length;
