@@ -23,7 +23,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 		else if(to == "Hiding")
 			this.Hiding = true;
 		//Auto Height
-		else if((to == 'Auto' || to == null) && (prpty == 'style.width' || prpty == 'style.height'))	
+		if((to == 'Auto' || to == null) && (prpty == 'style.width' || prpty == 'style.height'))	
 		{
 			if(!to)
 				this.ToNull=true;
@@ -32,6 +32,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 			to = (prpty == 'style.width')?_NOuterWidth(id):_NOuterHeight(id);
 			_NSet(id, prpty, prev);
 		}
+		else
 		to = prpty=="style.left"?-this.Obj.offsetWidth: prpty=="style.top"?-this.Obj.offsetHeight: 0;
 
 	}
