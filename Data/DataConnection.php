@@ -234,11 +234,15 @@ class DataConnection extends Object
 	{
 		if($this->Type == Data::Postgres)
 			$formattedValue = self::ConvertTypeToPostgres($value);
-		else
+		elseif($this->Type == Data::MySQL)
 		{
 			$resource = $this->Connect();
 			$formattedValue = self::ConvertTypeToMySQL($value, "'", $resource);
 			$this->Close();
+		}
+		elseif($this->Type == Data::MSSQL)
+		{
+			$formattedValue = self::ConvertTypeToMSSQL($value);
 		}
 		return $formattedValue;
 	}
