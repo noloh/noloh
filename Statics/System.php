@@ -271,11 +271,11 @@ final class System
 					$display->Text .= '<UL>';
 					$args = func_get_args();
 					for($i=0; $i < $count; ++$i)
-						$display->Text .= '<LI><PRE>' . self::LogFormat($args[$i]) . '</PRE></LI>';
+						$display->Text .= '<LI><PRE>' .  htmlspecialchars(self::LogFormat($args[$i])) . '</PRE></LI>';
 					$display->Text .= '</UL>';
 				}
 				else 
-					 $display->Text .= '<PRE>' . self::LogFormat($what) . '</PRE>';
+					 $display->Text .= '<PRE>' . htmlspecialchars(self::LogFormat($what)) . '</PRE>';
 				if(!isset($GLOBALS['_NDebugScrollAnim']))
 				{
 					Animate::ScrollTop($debugWindow->BodyPanel, Layout::Bottom);
