@@ -57,6 +57,9 @@ class ListView extends Panel
 	private $ExcessSubItems;
 	private $ColumnLookup;
 	private $_InnerOffset;
+	private $MSFirstColumn;
+	private $OriginalSQL;
+	private $SortSQL;
 //	private $Loader;
 	/**
 	 * @ignore
@@ -395,18 +398,37 @@ class ListView extends Panel
 			$this->Clear();
 			$this->DataSource = $dataSource;
 			$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $dataSource->GetSQL());
+			$this->OriginalSQL = $sql;
+			$this->SortSQL = null;
 			//Row Count
 			$connection = $dataSource->GetConnection();
-			$numRows = new DataCommand($connection, 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);
+			//Check if MSSQL
+			$isMSSQL = $connection->GetType() == Data::MSSQL;
+			
+			$query = 'SELECT count(1) FROM (' . $sql . ') as sub_query ';
+			
+			$numRows = new DataCommand($connection, $query, Data::Num);
 			$numRows = $numRows->Execute();
 			$numRows = $numRows->Data[0][0];
 			//Columns
-			if($constraints)
+			if($constraints || $isMSSQL)
 			{
-				$columns = new DataCommand($connection, 'SELECT * FROM (' . $sql . ') AS sub_query LIMIT 1', Data::Assoc);
+				if($isMSSQL)
+				{
+					$query = 'SELECT TOP 1 * FROM (' . $sql . ') AS sub_query';
+				}
+				else
+					$query = 'SELECT * FROM (' . $sql . ') AS sub_query LIMIT 1';
+					
+				$columns = new DataCommand($connection, $query, Data::Assoc);
 				$columns = $columns->Execute();
 				if(!empty($columns->Data))
-					$this->ColumnLookup = array_flip(array_keys($columns->Data[0]));
+				{
+					$keys = array_keys($columns->Data[0]);
+					$this->ColumnLookup = array_flip($keys);
+					if($isMSSQL)
+						$this->MSFirstColumn = $keys[0];
+				}
 			}
 			if($this->HeightSpacer)
 				$this->HeightSpacer->SetHeight($numRows * 20);
@@ -486,13 +508,26 @@ class ListView extends Panel
 		{
 			if(!$loadIntoMemory)
 			{
-				$sql = $this->DataSource->GetSQL();
-//				return System::Log($sql);
-				$result = preg_replace('/^(.*?)(?:\s+(?:OFFSET\s+\d+)|(?:LIMIT\s+\d+)|\s)*?;$/si', '$1', $sql, 1);
-//				$result = preg_replace('/^(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $sql, 1);
-//				$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $sql);
-//				return System::Log('failed', self::pcre_error_decode(preg_last_error()));
-				$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+				$isMSSQL = $this->DataSource->Connection->GetType() == Data::MSSQL;
+				
+				if($isMSSQL)
+				{
+					if($this->CurrentOffset != $offset)
+						$offset = $offset + 1;
+					$result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
+					$result .= "FROM ({$this->OriginalSQL}) as bs) as sub_query ";
+				    $result .= 'WHERE sub_query.n_del_row_num BETWEEN ' . ($offset) . ' AND ' . ($offset + $limit);	
+				    $offset+=1;
+				    if($this->SortSQL)
+				    	$result .= ' ' . $this->SortSQL;
+				}
+				else
+				{
+					$sql = $this->SortSQL?$this->SortSQL:$this->OriginalSQL;
+					$result = 'SELECT * FROM (' . $sql . ') as sub_query ';
+					$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+				}
+//				System::Log($result);
 //				return System::Log($result);
 				$this->DataSource->SetSQL($result);
 				if($callBack)
@@ -532,8 +567,11 @@ class ListView extends Panel
 		}
 		if(!isset($constraints) && isset($data->Data[0]) && $callBack/* && !$rowCallback*/)
 		{
-			$this->Columns->AddRange(array_keys($data->Data[0]));
-	}
+			if($isMSSQL)
+				$this->Columns->AddRange(array_slice(array_keys($data->Data[0]), 0, -1, true));
+			else
+				$this->Columns->AddRange(array_keys($data->Data[0]));
+		}
 	}
 	/**
 	 * Sorts the ListView on a particular column
@@ -563,48 +601,51 @@ class ListView extends Panel
 
 		if($this->DataSource != null && !$this->StoredInMemory && $this->DataFetch['Bind']->Enabled)
 		{
-			$result = preg_replace('/^(.*?)(?:\s+(?:OFFSET\s+\d+)|(?:LIMIT\s+\d+)|\s)*?;$/si', '$1', $this->DataSource->GetSQL());
-//			$result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/si', '$1', $this->DataSource->GetSQL());
-			$result = preg_replace('/sub_query ORDER BY (?:[\w"]+(?: ASC| DESC)?(?:, ?)?)+/', '', $result, 1, $count);
-			
+			if($isMSSQL = $this->DataSource->Connection->GetType() == Data::MSSQL)
+				$result = '';
+			else
+			{
+				$result = 'SELECT * FROM (' . $this->OriginalSQL . ') as sort_query';
+			}	
 			$callBack = $this->DataSource->GetCallback();
 			if(isset($callBack['constraint']) && is_array($this->ColumnLookup))
 			{
-//				$columnName = $callBack['constraint']->Columns[$this->DataColumns[$index]];
 				$columnName = $this->DataColumns[$index];
 				$sortColumn = isset($this->ColumnLookup[$columnName])?$this->ColumnLookup[$columnName] + 1:$columnName;
 			}
 			else
 				$sortColumn = $index + 1;
-			if($count > 0)
-				$result .= 'sub_query';
 			$result .= ' ORDER BY ' . $sortColumn;
 			if(!$ascending)
 				$result .= ' DESC';
-			
-			$this->DataSource->SetSQL($result);
+
+//			System::Log($result);
+			$this->SortSQL = $result;
+	//			$this->DataSource->SetSQL($result);
 			$this->ListViewItems->Clear();
 			$this->CurrentOffset = 0;
 			$this->DataFetch['Bind']->Enabled = true;
 			$this->DataFetch['Bind']->Exec();
-			return;
-		}		
-		$rows = array();
-		
-		foreach($this->ListViewItems->Elements as $key => $listViewItem)
-			$rows[$key] = isset($listViewItem->SubItems[$index])?$listViewItem->SubItems[$index]->GetText():null;	
-		if(!$ascending)
-			asort($rows);
+		}
 		else
-			arsort($rows);
-		
-		if(count($rows) > 0)
 		{
-		foreach($rows as $key => $val)
-			$clientArray[] = $this->ListViewItems->Elements[$key]->GetId();
-		
-		ClientScript::Queue($this, '_NLVSort', array($this->InnerPanel, $clientArray));
-	}
+			$rows = array();
+			
+			foreach($this->ListViewItems->Elements as $key => $listViewItem)
+				$rows[$key] = isset($listViewItem->SubItems[$index])?$listViewItem->SubItems[$index]->GetText():null;	
+			if(!$ascending)
+				asort($rows);
+			else
+				arsort($rows);
+			
+			if(count($rows) > 0)
+			{
+				foreach($rows as $key => $val)
+					$clientArray[] = $this->ListViewItems->Elements[$key]->GetId();
+			
+				ClientScript::Queue($this, '_NLVSort', array($this->InnerPanel, $clientArray));
+			}
+		}
 	}
 	/**
 	 * @ignore
