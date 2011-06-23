@@ -52,15 +52,27 @@ class ListViewItem extends Panel //extends Component
 	 */	
 	function ListViewItem($objOrText = null, $height=20)
 	{
-		parent::Panel(null, null, '100%', $height, $this);
+		parent::Panel(null, null, '100%', null, $this);
 		$this->CSSClasses->Add('NLVRow');
 		$this->SetLayout(Layout::Relative);
 		$this->SubItems = new ImplicitArrayList($this, 'AddSubItem');
 		$this->SubItems->RemoveFunctionName = 'RemoveSubItem';
 //		$this->SubItems->ParentId = $this->Id;
+		$this->SetHeight($height);
 		$this->Scrolling = false;
 		if($objOrText != null)
 			$this->AddSubItem($objOrText);
+	}
+	/**
+	* @ignore
+	*/
+	function SetHeight($height)
+	{
+		parent::SetHeight($height);
+		if(!$height)
+			$this->CSSClasses->Add('NLVWrap');
+		else
+			$this->CSSClasses->Remove('NLVWrap');
 	}
 	/**
 	 * Returns the ListView that this ListViewItem is associated with

@@ -120,6 +120,10 @@
 	word-wrap: normal; /*IE8 - pre-processor should take into consideration*/ 
 	white-space: nowrap;
 }
+.NLVWrap > div >div
+{
+	white-space:normal;
+}
 .NLVSelect
 {
 	background-color:#011f43;
