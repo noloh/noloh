@@ -426,8 +426,8 @@ class ListView extends Panel
 				{
 					$keys = array_keys($columns->Data[0]);
 					$this->ColumnLookup = array_flip($keys);
-					if($isMSSQL)
-						$this->MSFirstColumn = $keys[0];
+					if($isMSSQL && isset($keys[0]))
+						$this->MSFirstColumn = $keys[0];	
 				}
 			}
 			if($this->HeightSpacer)
@@ -510,47 +510,50 @@ class ListView extends Panel
 			{
 				$isMSSQL = $this->DataSource->Connection->GetType() == Data::MSSQL;
 				
-				if($isMSSQL)
+				if(!$isMSSQL || ($isMSSQL && $this->MSFirstColumn))
 				{
-					if($this->CurrentOffset != $offset)
-						$offset = $offset + 1;
-					$result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
-					$result .= "FROM ({$this->OriginalSQL}) as bs) as sub_query ";
-				    $result .= 'WHERE sub_query.n_del_row_num BETWEEN ' . ($offset) . ' AND ' . ($offset + $limit);	
-				    $offset+=1;
-				    if($this->SortSQL)
-				    	$result .= ' ' . $this->SortSQL;
-				}
-				else
-				{
-					$sql = $this->SortSQL?$this->SortSQL:$this->OriginalSQL;
-					$result = 'SELECT * FROM (' . $sql . ') as sub_query ';
-					$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
-				}
-//				System::Log($result);
-//				return System::Log($result);
-				$this->DataSource->SetSQL($result);
-				if($callBack)
-				{
-					if($rowCallback instanceof ServerEvent)
-						$this->RowCallback = $rowCallback;
-					if($constraints)
-						$this->DataSource->Callback(new DataConstraint($columns), $this, 'AddListViewItem');
+					if($isMSSQL)
+					{
+						if($this->CurrentOffset != $offset)
+							$offset = $offset + 1;
+						$result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
+						$result .= "FROM ({$this->OriginalSQL}) as bs) as sub_query ";
+					    $result .= 'WHERE sub_query.n_del_row_num BETWEEN ' . ($offset) . ' AND ' . ($offset + $limit);	
+					    $offset+=1;
+					    if($this->SortSQL)
+				    		$result .= ' ' . $this->SortSQL;
+					}
 					else
-						$this->DataSource->Callback($this, 'AddListViewItem');
+					{
+						$sql = $this->SortSQL?$this->SortSQL:$this->OriginalSQL;
+						$result = 'SELECT * FROM (' . $sql . ') as sub_query ';
+						$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+					}
+	//				System::Log($result);
+	//				return System::Log($result);
+					$this->DataSource->SetSQL($result);
+					if($callBack)
+					{
+						if($rowCallback instanceof ServerEvent)
+							$this->RowCallback = $rowCallback;
+						if($constraints)
+							$this->DataSource->Callback(new DataConstraint($columns), $this, 'AddListViewItem');
+						else
+							$this->DataSource->Callback($this, 'AddListViewItem');
+					}
+					$data = $this->DataSource->Execute();
+					if(count($data->Data) < $limit)
+						$this->DataFetch['Bind']->Enabled = false;
+					elseif($this->GetDataFetch('Bind')->Blank())
+					{
+						$this->DataFetch['Bind'] = new ServerEvent($this, 'Bind');
+	//					$this->SetLoader();
+					}
+					else
+						$this->DataFetch['Bind']->Enabled = true;
 				}
-				$data = $this->DataSource->Execute();
-				if(count($data->Data) < $limit)
-					$this->DataFetch['Bind']->Enabled = false;
-				elseif($this->GetDataFetch('Bind')->Blank())
-				{
-					$this->DataFetch['Bind'] = new ServerEvent($this, 'Bind');
-//					$this->SetLoader();
-				}
-				else
-					$this->DataFetch['Bind']->Enabled = true;
+				$this->CurrentOffset = $offset + $limit;
 			}
-			$this->CurrentOffset = $offset + $limit;
 		}
 		elseif(is_array($dataSource))
 		{
