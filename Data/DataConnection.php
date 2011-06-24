@@ -285,7 +285,7 @@ class DataConnection extends Object
 			$tmpArg = 'null';
 		return $tmpArg;
 	}
-	private static function ConvertTypeToMSSQL($value, $quote='"')
+	private static function ConvertTypeToMSSQL($value, $quote="'")
 	{
 		if(is_string($value))
 		{
