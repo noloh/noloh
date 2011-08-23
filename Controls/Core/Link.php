@@ -38,8 +38,8 @@ class Link extends Label
 	private $Control;
 	private $Tokens;
 	private $TokenChain;
-	private $RemoveSubsequents;
-	private $RemoveSubsequents2;
+	//private $RemoveSubsequents;
+	//private $RemoveSubsequents2;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Link
@@ -68,8 +68,8 @@ class Link extends Label
 			parent::Label($textOrControl, $left, $top, $width, $height);
 		$this->SetDestination($destination);
 		$this->Tokens = array();
-		$this->RemoveSubsequents = array();
-		$this->RemoveSubsequents2 = array();
+		//$this->RemoveSubsequents = array();
+		//$this->RemoveSubsequents2 = array();
 	}
 	/**
 	 * Returns the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
@@ -113,8 +113,9 @@ class Link extends Label
 	{
 		if($GLOBALS['_NURLTokenMode'] && (!isset($this->Tokens[$tokenName]) || $this->Tokens[$tokenName]!=$tokenValue))
 		{
-			$this->Tokens[$tokenName] = $tokenValue;
-			$this->RemoveSubsequents[$tokenName] = $removeSubsequentTokens;
+			//$this->Tokens[$tokenName] = $tokenValue;
+			//$this->RemoveSubsequents[$tokenName] = $removeSubsequentTokens;
+			URL::SetTokenHelper($this->Tokens, $tokenName, $tokenValue, $removeSubsequentTokens);
 			$this->QueueUpdateTokens();
 		}
 		return $tokenValue;
@@ -134,8 +135,9 @@ class Link extends Label
 		$chain = &$this->GetTokenChain()->Elements;
 		if($GLOBALS['_NURLTokenMode'] && (!isset($chain[$index]) || $chain[$index]!=$tokenValue))
 		{
-			$chain[$index] = $tokenValue;
-			$this->RemoveSubsequents2[$index] = $removeSubsequentTokens;
+			//$chain[$index] = $tokenValue;
+			//$this->RemoveSubsequents2[$index] = $removeSubsequentTokens;
+			URL::SetTokenHelper($chain, $index, $tokenValue, $removeSubsequentTokens);
 			$this->QueueUpdateTokens();
 		}
 		return $tokenValue;
@@ -196,12 +198,12 @@ class Link extends Label
 //		$tokens = array_merge($_SESSION['_NTokens']);
 		$tokens = array();
 		foreach($this->Tokens as $key => $val)
-			URL::SetTokenHelper($tokens, $key, $val, $this->RemoveSubsequents[$key]);
+			URL::SetTokenHelper($tokens, $key, $val/*, $this->RemoveSubsequents[$key]*/);
 //		$chain = array_merge(URL::$TokenChain->Elements);
 		$chain = array();
 		if($this->TokenChain)
 			foreach($this->TokenChain as $key => $val)
-				URL::SetTokenHelper($chain, $key, $val, $this->RemoveSubsequents2[$key]);
+				URL::SetTokenHelper($chain, $key, $val/*, $this->RemoveSubsequents2[$key]*/);
 		return URL::TokenString($chain, $tokens);
 	}
 	/**
