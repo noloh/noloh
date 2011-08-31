@@ -126,8 +126,16 @@ class TextBox extends Control
 	 */
 	function GetTypePause()
 	{
-		ClientScript::AddNOLOHSource('KeyEvents.js', true);
-		return $this->GetEvent('TypePause');
+		$typePause = $this->GetEvent('TypePause');
+		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
+		{
+			ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
+			if(!isset($typePause['_N']))
+				$typePause['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
+		}
+		else
+			ClientScript::AddNOLOHSource('KeyEvents.js', true);
+		return $typePause;
 	}
 	/**
 	 * Sets the TypePause Event, which gets launched when a user has the TextBox focused, types something, and pauses typing for half a second
@@ -135,8 +143,20 @@ class TextBox extends Control
 	 */
 	function SetTypePause($typePause)
 	{
-		ClientScript::AddNOLOHSource('KeyEvents.js', true);
-		$this->SetEvent($typePause, 'TypePause');
+		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
+		{
+			ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
+			$event = new Event();
+			$event['User'] = $typePause;
+			if(!isset($event['_N']))
+				$event['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
+			$this->SetEvent($event, 'TypePause');
+		}
+		else
+		{
+			ClientScript::AddNOLOHSource('KeyEvents.js', true);
+			$this->SetEvent($typePause, 'TypePause');
+		}
 	}
 	/**
 	 * Returns the string of text that was highlighted by the user
@@ -152,9 +172,15 @@ class TextBox extends Control
 	 */
 	function Focus($highlight = true)
 	{
-		parent::Focus();
+		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
+		{
+			ClientScript::Queue($this, '_NKeyEvntsMoTimeout', $this);
+		}
+		else
+			parent::Focus();
 		if($highlight)
-			QueueClientFunction($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+			ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+//			QueueClientFunction($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
 	}
     /**
      * @ignore
@@ -183,7 +209,11 @@ class TextBox extends Control
 	 */
 	function Show()
 	{
-		if(UserAgent::GetBrowser() === 'op')
+		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
+		{
+			ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
+		}
+		elseif(UserAgent::GetBrowser() === 'op')
 		{
 			ClientScript::AddNOLOHSource('KeyEvents.js', true);
 			$this->UpdateEvent('ReturnKey');
