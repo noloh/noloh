@@ -21,12 +21,21 @@ function _NInitHelper()
 	graveyard.style.display = "none";
 	_N("N1").appendChild(graveyard);
 }
-function _NInit(debugMode)
+function _NInit(configs)
 {
 	//window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
 	_N.Title = document.title;
-	_N.DebugMode = debugMode;
+	var key, configDefaults = {"DebugMode": true, "TimeoutTicks": 2760};
+	for(key in configs)
+	{
+		_N[key] = configs[key];
+		if(key in configDefaults)
+			delete configDefaults[key];
+	}
+	for(key in configDefaults)
+		_N[key] = configDefaults[key];
+	_N.TimeoutCount = 0;
 	_NInitHelper();
 	if(location.hash=="")
 		location = location + "#/";
@@ -92,6 +101,12 @@ function _NCheckURL()
 		_N.HighestZ = 0;
 		_N.LowestZ = 0;
 		_NInitHelper();
+	}
+	if(++ _N.TimeoutCount == _N.TimeoutTicks)
+	{
+		var serverArg = _N.TimeoutDuration ? _NTimeoutTicker() : "Ping";
+		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NApp="+_NApp+"&_NTimeout="+serverArg);
+		_N.TimeoutCount = 0;
 	}
 }
 function _NSetURL(url, id)
@@ -527,6 +542,9 @@ function _NAlertError(err)
 }
 function _NUnServer()
 {
+	_N.TimeoutCount = 0;
+	if(_N.TimeoutWorking)
+		_N.TimeoutWorking = null;
 	_N(_N.LoadIndicator).style.visibility = "hidden";
 	_N.Request = null;
 	_N.URLChecker = setInterval(_NCheckURL, 500);

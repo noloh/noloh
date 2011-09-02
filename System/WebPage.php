@@ -103,13 +103,14 @@ abstract class WebPage extends Component
 			case 'op':							AddNolohScriptSrc('Mixed/FindPositionOp.js');
 		}
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
-			AddScript('_NInit(' . 
+			/*AddScript('_NInit(' . 
 				(isset($GLOBALS['_NDebugMode'])
 					? (is_bool($GLOBALS['_NDebugMode']) 
 						? ($GLOBALS['_NDebugMode']?'true':'false')
 						: ('"'.$GLOBALS['_NDebugMode'].'"'))
 					: 'null')
-				. ')', Priority::High);
+				. ')', Priority::High);*/
+				ClientScript::Queue($this, '_NInit', array($config->GetClientInitParams()), false, Priority::High);
 		//AddScript('_NSaveControl(\''.$this->Id.'\')');
 		$GLOBALS['_NFavIcon'] = $favIconPath;
 		return $this;

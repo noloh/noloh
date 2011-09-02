@@ -111,6 +111,8 @@ final class Application extends Object
 		$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
 		if(isset($_REQUEST['_NError']))
 			return print self::CreateError($_REQUEST['_NError']);
+		elseif(isset($_REQUEST['_NTimeout']))
+			return $this->HandleTimeout($_REQUEST['_NTimeout']);
 		elseif(isset($_GET['_NImage']))
 			if(empty($_GET['_NWidth']))
 				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
@@ -542,6 +544,19 @@ final class Application extends Object
 	{
 		URL::QueueUpdateTokens();
 		$this->HandleTokens();
+	}
+	private function HandleTimeout($action)
+	{
+		//global $OmniscientBeing;
+		//$gzip = defined('FORCE_GZIP');
+		//$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+		if($action === 'Ping')
+			echo 'Pong';
+		elseif($action === 'Die')
+		{
+			echo 'Applicated timed out.';
+			session_destroy();
+		}
 	}
 	private function Run()
 	{

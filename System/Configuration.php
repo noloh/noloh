@@ -11,6 +11,14 @@
 class Configuration extends Object implements Singleton
 {
 	/**
+	 *  A possible value for the TimeoutAction property, Alert indicates that a simple alert will be displayed.
+	 */
+	const Alert = 'Alert';
+	/**
+	 *  A possible value for the TimeoutAction property, Confirm indicates that the user will be prompted if he wishes to continue;
+	 */
+	const Confirm = 'Confirm';
+	/**
 	 * The name of the WebPage class that serves as the inital start-up point of your application
 	 * @var string 
 	 */
@@ -69,6 +77,16 @@ class Configuration extends Object implements Singleton
 	 */
 	public $CSSResetLegacyIE;
 	/**
+	 * The number of seconds it takes for the application to time out.
+	 * @var integer
+	 */
+	public $TimeoutDuration = 0;
+	/**
+	 * The action that will be taken when the Application times out according to the TimeoutDuration parameter.
+	 * @var null|Configuration::Alert|Configuration::Prompt
+	 */
+	public $TimeoutAction = Configuration::Alert;
+	/**
 	 * Constructor
 	 * @return Configuration
 	 */
@@ -114,6 +132,47 @@ class Configuration extends Object implements Singleton
                 $this->StartClass = $classes[$i];
                 break;
             }    
+    }
+    /**
+     * @ignore
+     */
+	public function GetClientInitParams()
+    {
+		$arr = array();
+		
+		/*$arr['DebugMode'] = (isset($GLOBALS['_NDebugMode'])
+			? (is_bool($GLOBALS['_NDebugMode']) 
+				? ($GLOBALS['_NDebugMode']?'true':'false')
+				: ('"'.$GLOBALS['_NDebugMode'].'"'))
+			: 'null');*/
+		$debugMode = isset($GLOBALS['_NDebugMode']) ? $GLOBALS['_NDebugMode'] : null;
+		if($debugMode !== true)
+			$arr['DebugMode'] = $debugMode;
+		
+		$factor = 1000 / 500; // Where 500 is the _NURLCheck
+		$serverTimeout = intval(ini_get('session.gc_maxlifetime'));
+		$paddedServerTimeout = $serverTimeout > 240 ? ($serverTimeout - 60) : (($serverTimeout * 3) / 4);
+		if($this->TimeoutDuration)
+		{
+			ClientScript::AddNOLOHSource('Timeout.js');
+			$timeoutDuration = $serverDuration>$this->TimeoutDuration ? $serverDuration : $this->TimeoutDuration;
+			$timeoutTicks = $paddedServerTimeout < $timeoutDuration ? $paddedServerTimeout : $timeoutDuration;
+			$arr['TimeoutAction'] = $this->TimeoutAction;
+		}
+		else
+			$timeoutTicks = $paddedServerTimeout;
+		if(isset($timeoutDuration))
+			$arr['TimeoutDuration'] = floor($timeoutDuration * $factor);
+		// 2760 = (1440 - 60) * 2. 1440 is default maxlifetime, 60 is default padding for that number, 2 is default factor
+		if($timeoutTicks !== 2760)
+			$arr['TimeoutTicks'] = floor($timeoutTicks * $factor);
+		
+		
+		/*$defaults = array('DebugMode' => 'true');
+		foreach($defaults as $key => $val)
+			if($arr[$key] === $defaults[$key])
+				unset($arr[$key]);*/
+		return $arr;
     }
 	/**
 	 * Returns the instance of Configuration currently in use. The name is a pun on the "this" concept. See also Singleton interface.

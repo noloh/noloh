@@ -11,11 +11,19 @@ _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
 event = null;
-function _NInit(debugMode)
+function _NInit(configs)
 {
 	//window.onscroll = _NBodyScrollState;
 	window.onresize = _NBodySizeState;
-	_N.DebugMode = debugMode;
+	var key, configDefaults = {"DebugMode": true, "TimeoutTicks": 2760};
+	for(key in configs)
+	{
+		_N[key] = configs[key];
+		if(key in configDefaults)
+			delete configDefaults[key];
+	}
+	for(key in configDefaults)
+		_N[key] = configDefaults[key];
 	_N.Saved[document.body.id] = {};
 	_NSet(document.body.id, "Width", document.documentElement.clientWidth);
 	_NSet(document.body.id, "Height", document.documentElement.clientHeight);
@@ -25,6 +33,7 @@ function _NInit(debugMode)
 	graveyard.id = "NGraveyard";
 	graveyard.style.display = "none";
 	document.body.appendChild(graveyard);
+	_N.TimeoutCount = 0;
 	_N.Hash = location.hash;
 	_N.URLChecker = setInterval(_NCheckURL, 500);
 }
@@ -39,6 +48,12 @@ function _NCheckURL()
 {
 	if(_N.Hash != location.hash && (location.hash=="" || location.hash.charAt(1)=="/") && (_N.Hash=="" || _N.Hash.charAt(1)=="/"))
 		location.reload(true);
+	if(++ _N.TimeoutCount == _N.TimeoutTicks)
+	{
+		var serverArg = _N.TimeoutDuration ? _NTimeoutTicker() : "Ping";
+		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NApp="+_NApp+"&_NTimeout="+serverArg);
+		_N.TimeoutCount = 0;
+	}
 }
 function _NSetURL(url, id)
 {
@@ -471,6 +486,9 @@ function _NAlertError(err)
 }
 function _NUnServer(loadIndicator)
 {
+	_N.TimeoutCount = 0;
+	if(_N.TimeoutWorking)
+		_N.TimeoutWorking = null;
 	_N.LoadIndicator = loadIndicator;
 	_N(loadIndicator).style.visibility = "hidden";
 	_N.Request = null;
