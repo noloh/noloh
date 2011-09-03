@@ -135,5 +135,11 @@ class ColumnHeader extends Panel
 	 * @return ListView
 	 */
 	function GetListView()	{return GetComponentById($this->ListViewId);}
+	function __destruct()
+	{
+		unset($this->Caption);
+		unset($this->SizeHandle);
+		return parent::__destruct();
+	}
 }
 ?>

@@ -39,7 +39,7 @@ class ListView extends Panel
 	 * @var ArrayList
 	 */
 	public $ListViewItems;
-	private $Columns;
+//	private $Columns;
 	private $CurrentOffset;
 	private $BodyPanelsHolder;
 	private $SelectedRows;
@@ -98,7 +98,7 @@ class ListView extends Panel
 		$this->ColumnsPanel->CSSBackgroundImage = "url(". System::ImagePath() . "Std/HeadBlue.gif)";
 		$this->ColumnsPanel->CSSBackgroundRepeat = "repeat-x";
 		$this->ColumnsPanel->Controls->AddFunctionName = "AddColumn";
-		$this->Columns = &$this->ColumnsPanel->Controls;
+		//$this->Columns = &$this->ColumnsPanel->Controls;
 		$this->BodyPanelsHolder = new Panel(0, 0, $width, $height - $this->ColumnsPanel->Height);
 		$this->BodyPanelsHolder->SetScrolling(System::Auto);
 		
@@ -145,7 +145,8 @@ class ListView extends Panel
 	 * Returns an ArrayList containing the ColumnHeaders of the ListView. ColumnHeaders should be added to this ArrayList
 	 * @return ArrayList
 	 */
-	function GetColumns(){return $this->Columns;}
+//	function GetColumns(){return $this->Columns;}
+	function GetColumns(){return $this->ColumnsPanel->Controls;}
 	/**
 	 * @ignore
 	 */
@@ -167,7 +168,7 @@ class ListView extends Panel
 		
 		if($column)
 		{
-			$this->Columns->Add($column, true);
+			$this->GetColumns()->Add($column, true);
 			$column->SetLayout(Layout::Relative);
 			$column->CSSFloat = 'left';
 			$this->BondColumn($column);
@@ -243,8 +244,8 @@ class ListView extends Panel
 	}
 	function RemoveListViewItem($listViewItem)
 	{
-		$this->ListViewItems->Remove($listViewItem, true);
 		$listViewItem->SetListView(null);
+		$this->ListViewItems->Remove($listViewItem, true);
 	}
 	/**
 	 * @ignore
@@ -267,7 +268,7 @@ class ListView extends Panel
 	private function SetItemProperties(ListViewItem $listViewItem, $startColumn = null)
 	{
 		$subItemCount = $listViewItem->SubItems->Count();
-		$colCount = $this->Columns->Count();
+		$colCount = $this->GetColumns()->Count();
 //		System::Log('SubItemCount', $subItemCount, 'ColCount', $colCount);
 		$start = $startColumn !== null?$startColumn:$listViewItem->Controls->Count();
 		if($subItemCount > $colCount)
@@ -288,7 +289,7 @@ class ListView extends Panel
 //				System::Log('start', $start, 'max', $max, 'i', $i);
 				if(!isset($listViewItem->Controls->Elements[$i]))
 				{
-					$column = $this->Columns->Elements[$i];
+					$column = $this->GetColumns()->Elements[$i];
 					$colId = $column->GetId();
 					$subItem = $listViewItem->SubItems->Elements[$i];
 					$listViewItem->ShowSubItem($subItem);
@@ -334,7 +335,7 @@ class ListView extends Panel
 	public function Clear()
 	{
 		$this->ClearListViewItems();
-		$this->Columns->Clear();
+		$this->GetColumns()->Clear();
 		$this->ColumnLookup = null;
 	}
 	/**
@@ -571,9 +572,9 @@ class ListView extends Panel
 		if(!isset($constraints) && isset($data->Data[0]) && $callBack/* && !$rowCallback*/)
 		{
 			if($isMSSQL)
-				$this->Columns->AddRange(array_slice(array_keys($data->Data[0]), 0, -1, true));
+				$this->GetColumns()->AddRange(array_slice(array_keys($data->Data[0]), 0, -1, true));
 			else
-				$this->Columns->AddRange(array_keys($data->Data[0]));
+				$this->GetColumns()->AddRange(array_keys($data->Data[0]));
 		}
 	}
 	/**
@@ -585,7 +586,7 @@ class ListView extends Panel
 	{
 		//TODO Allow Specifying of Property you want to sort on a per column basis.
 		if($column instanceof Control)
-			$index = $this->Columns->IndexOf($column);
+			$index = $this->GetColumns()->IndexOf($column);
 		elseif(is_int($column))
 			$index = $column;
 		else return;
@@ -758,5 +759,11 @@ class ListView extends Panel
 	      return 'Unknown error code';
 	  }
 	}*/
+	function __destruct()
+	{
+		foreach($this->ColumnsPanel->Controls as $column)
+			$column->__destruct();
+		return parent::__destruct();
+	}
 }
 ?>
