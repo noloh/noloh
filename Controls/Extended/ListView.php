@@ -115,7 +115,7 @@ class ListView extends Panel
 		$this->BodyPanelsHolder->Controls->Add($this->InnerPanel);
 		//Shift With Outer Panel
 		$this->ColumnsPanel->Shifts[] = Shift::WidthWith($this, Shift::Width);
-		$this->BodyPanelsHolder->Shifts[] = Shift::WidthWith($this, Shift::Width);
+		$this->BodyPanelsHolder->Shifts[] = Shift::SizeWith($this);
 		$this->SetHeight($height);
 		//Line
 		$this->Line = new Label('', 0, 0, 3, '100%');
