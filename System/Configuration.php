@@ -87,6 +87,11 @@ class Configuration extends Object implements Singleton
 	 */
 	public $TimeoutAction = Configuration::Alert;
 	/**
+	 * Whether an application that implements MobileApp is zoomable via gestures
+	 * @var boolean
+	 */
+	public $Zoomable = true;
+	/**
 	 * Constructor
 	 * @return Configuration
 	 */

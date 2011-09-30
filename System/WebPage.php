@@ -421,7 +421,7 @@ abstract class WebPage extends Component
 				$unsupportedURL,
   '"></NOSCRIPT>', $favIcon?'
     <LINK rel="shortcut icon" href="'.$favIcon.'">':'', $isMobileApp && !$oldOpMobile ? '
-    <META name="viewport" content="width=device-width, initial-scale=1.0">':'', '
+    <META name="viewport" content="width=device-width, initial-scale=1.0' . ((Configuration::That()->Zoomable)?'':', user-scalable = no') . '">':'', '
   </HEAD>',
 UserAgent::IsIE() ? '
   <BODY>
