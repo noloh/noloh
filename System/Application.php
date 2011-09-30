@@ -122,8 +122,10 @@ final class Application extends Object
 			FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
 		elseif(isset($_GET['_NFileRequest']))
 			File::SendRequestedFile($_GET['_NFileRequest']);
-		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && 
-			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
+		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) &&
+			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) ||
+			(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11) || 
+				$host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
 		{
 			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 				$this->HandleIENavigation();
