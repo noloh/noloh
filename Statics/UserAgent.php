@@ -309,6 +309,16 @@ final class UserAgent
 		return $_SESSION['_NIsIE'];
 	}
 	/**
+	 * Returns whether or not the user is using a Opera for PocketPC 
+	 * This is identical in functionality to UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11, but provides a shortcut as, in practice, opera for pocketpc
+	 * often needs code different than other browsers.
+	 * @return boolean
+	 */
+	public static function IsPPCOpera()
+	{
+		return UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
+	}
+	/**
 	 * Returns whether or not PHP is running from the command-line.
 	 * @return boolean
 	 */

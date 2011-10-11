@@ -124,7 +124,7 @@ final class Application extends Object
 			File::SendRequestedFile($_GET['_NFileRequest']);
 		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) &&
 			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) ||
-			(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11) || 
+			(UserAgent::IsPPCOpera()) || 
 				$host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
 		{
 			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
@@ -302,7 +302,7 @@ final class Application extends Object
 			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
 			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit']) && !isset($_POST['_NListener'])))
 		{
-			if(!isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
+			if(UserAgent::IsPPCOpera() || !isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['_NEvents']) || !isset($_SESSION['_NVisit']) || isset($_GET['_NWidth']))
 					self::Reset(false, false);
