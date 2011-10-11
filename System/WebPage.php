@@ -57,7 +57,8 @@ abstract class WebPage extends Component
 			$GLOBALS['_NTitle'] = $title;
 			$GLOBALS['_NFavIcon'] = $favIconPath;
 			$GLOBALS['_NMobileApp'] = $this instanceof MobileApp;
-			throw new Exception('Fatal cookie behavior.', $GLOBALS['_NApp']);
+			$appId = $GLOBALS['_NApp'];
+			throw new Exception('Fatal cookie behavior.', $appId);
 		}
 		parent::Component();
 		parent::Show();
@@ -400,7 +401,7 @@ abstract class WebPage extends Component
 		$url = '(document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
                + "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
         $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
-        $oldOpMobile = $isMobileApp && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
+        $oldOpMobile = UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
 		echo $oldOpMobile ? 
 '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
