@@ -57,7 +57,7 @@ abstract class WebPage extends Component
 			$GLOBALS['_NTitle'] = $title;
 			$GLOBALS['_NFavIcon'] = $favIconPath;
 			$GLOBALS['_NMobileApp'] = $this instanceof MobileApp;
-			$appId = $GLOBALS['_NApp'];
+			$appId = $GLOBALS['_NApp']?$GLOBALS['_NApp']:0;
 			throw new Exception('Fatal cookie behavior.', $appId);
 		}
 		parent::Component();
