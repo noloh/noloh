@@ -134,7 +134,7 @@ class DataCommand extends Object
 	function ReplaceParam($index, $value)
 	{
 		$sql = $this->SqlStatement;
-		if ($this->Connection && preg_match('/^.*?\((.+?)\);\s*$/i', $sql, $matches)) 
+		if ($this->Connection && preg_match('/^.*?\((.+?)\);?\s*$/i', $sql, $matches)) 
 		{
 			//preg_match_all('/\'[^\']*\'|[^,]+/i', $matches[1], $result, PREG_PATTERN_ORDER);
 			// Phill: I think there was a \' problem in the above RegEx. I have changed to what I think is the solution. Didn't really test.

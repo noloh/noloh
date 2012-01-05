@@ -597,9 +597,14 @@ class Paginator extends RichMarkupRegion implements Countable
                 /*$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $countCommand->GetSqlStatement());
                 $numRows = new DataCommand($countCommand->GetConnection(), 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);*/
                 
-                $connection = $dataSource->GetConnection();
-                $sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $countCommand->GetSQL());
-                $this->OriginalSQL = $sql;
+                $connection = $bindCommand->GetConnection();
+                $sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $bindCommand->GetSQL());
+				$this->OriginalSQL = $sql;
+				if($hasCountCommand)
+                	$countSQL = preg_replace('/(.*?);*?\s*?\z/i', '$1', $countCommand->GetSQL());
+				else
+					$countSQL = $sql;	
+                
                 $isMSSQL = $connection->GetType() == Data::MSSQL;
                 
                 if($isMSSQL)
@@ -616,21 +621,16 @@ class Paginator extends RichMarkupRegion implements Countable
                     }
                 }
                         
-                if($hasCountCommand)
-                    $sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $bindCommand->GetSqlStatement());
-                
-                $numRows = new DataCommand($countCommand->GetConnection(), 'SELECT count(1) FROM (' . $sql . ') as sub_query ', Data::Num);
+                $numRows = new DataCommand($countCommand->GetConnection(), 'SELECT count(1) FROM (' . $countSQL . ') as sub_query ', Data::Num);
                 $numRows = $numRows->Execute();
                 $numRows = $numRows->Data[0][0]; 
-                
                 $this->NumResults = $numRows;
                 
                 if(is_array($limit) || is_array($offset))
                     $sql .= ';';
                 else
                     $sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
-                
-                $this->DataSource = new DataCommand($bindCommand->GetConnection(), $sql, $bindCommand->ResultType);
+				$this->DataSource = new DataCommand($bindCommand->GetConnection(), $sql, $bindCommand->ResultType);
                 $this->Limit = $limit;
                 $callBack = true;
                 $this->SetPage(1, false);
@@ -651,34 +651,34 @@ class Paginator extends RichMarkupRegion implements Countable
                 $isMSSQL = $this->DataSource->GetConnection()->GetType() == Data::MSSQL;
                 if(!$isMSSQL || ($isMSSQL && $this->MSFirstColumn))
                 {
+                	$sql = $this->OriginalSQL;
+					$constraintCommand = null;
                     if(is_array($limit) || is_array($offset))
                     {
+                    	$constraintCommand = new DataCommand($this->DataSource->GetConnection(), $sql);
                         if(is_array($limit))
-                            $this->DataSource->ReplaceParam($limit[0], $limit[1]);
+                            $constraintCommand->ReplaceParam($limit[0], $limit[1]);
                         if(is_array($offset))
-                            $this->DataSource->ReplaceParam($offset[0], $offset[1]);
+                            $constraintCommand->ReplaceParam($offset[0], $offset[1]);
+						$sql = $constraintCommand->GetSQL();
                     }
-                    elseif($isMSSQL)
+                    if($isMSSQL)
                     {
                         if($this->CurrentOffset != $offset)
                             $offset = $offset + 1;
                         $result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
-                        $result .= "FROM ({$this->OriginalSQL}) as bs) as sub_query ";
+                        $result .= "FROM ({$sql}) as bs) as sub_query ";
                         $result .= 'WHERE sub_query.n_del_row_num BETWEEN ' . ($offset) . ' AND ' . ($offset + $limit); 
                         $offset+=1;
                     }
                     else
                     {
-                        $sql = $this->OriginalSQL;
-                        // $result = str_ireplace(array('$LIMIT', '$OFFSET'), array($limit, $offset), $sql, $count);
-                        //return System::Log($result);
-                        if($count < 1)
-                        {
-                             $result = 'SELECT * FROM (' . $sql . ') as sub_query ';
-                             $result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
-                        }
-                        // $result = preg_replace('/(.*?)\s*(?:(?:OFFSET\s*\d*)|(?:LIMIT\s*\d*)|\s)*?\s*;/i', '$1', $this->DataSource->GetSqlStatement());
-                        // $result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+                         $result = 'SELECT * FROM (' . $sql . ') as sub_query ';
+						 if(!is_array($limit))
+                         	$result .= ' LIMIT ' . $limit;
+						 if(!is_array($offset))
+						 	$result .= ' OFFSET ' . $offset;
+						 $result .= ';';
                     }
                     $this->DataSource->SetSQL($result);
                 
