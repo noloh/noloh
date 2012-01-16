@@ -668,7 +668,7 @@ class Paginator extends RichMarkupRegion implements Countable
                             $offset = $offset + 1;
                         $result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
                         $result .= "FROM ({$sql}) as bs) as sub_query ";
-                        $result .= 'WHERE sub_query.n_del_row_num BETWEEN ' . ($offset) . ' AND ' . ($offset + $limit); 
+                        $result .= 'WHERE sub_query.n_del_row_num > ' . ($offset) . ' AND sub_query.n_del_row_num <=' . ($offset + $limit); 
                         $offset+=1;
                     }
                     else
