@@ -44,7 +44,7 @@ class RadioButton extends CheckControl implements Groupable
 		parent::Show();
 		//AddNolohScriptSrc('RadioButton.js');
 		$initialProperties = '\'type\',\'radio\',\'defaultChecked\','.($this->Checked?1:0).',\'onclick\',\'_NChkCtrlTgl("'.$this->Id.'",false);\'';
-		if($_SESSION['_NIsIE'])
+		if(UserAgent::IsIE() && UserAgent::GetVersion() < 9)
 			NolohInternal::Show('<INPUT name="'.($this->GroupName?$this->GroupName:$this->Id).'">', $initialProperties, $this, $this->Id, $this->Id.'I');
 		else
 		{
