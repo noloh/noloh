@@ -160,7 +160,7 @@ class DataConnection extends Object
 				// $search[] = '/(\$' . $paramNum . ')([^.]|$)\b/';
 				// $search[] = '/(\$' . '$paramNum' . ')([^.]|$)\b/';
 				// $search[] = '/(?:\$' . $paramNum . ')([^.]|$)/';
-				$sql = preg_replace('/(?:\$' . $paramNum . ')([^.]|$)/', '_N_' . $paramNum . '_N_' . '${1}', $sql);
+				$sql = preg_replace('/(?:\$' . $paramNum . ')([^\d.]|$)/', '_N_' . $paramNum . '_N_' . '${1}', $sql);
 				$search[] = '/_N_' . $paramNum . '_N_\b/';
 				$param = $this->ConvertValueToSQL($param);
 				// $param = str_replace('$', '\\$', $param);
