@@ -164,7 +164,7 @@ class DataConnection extends Object
 				$search[] = '/_N_' . $paramNum . '_N_\b/';
 				$param = $this->ConvertValueToSQL($param);
 				// $param = str_replace('$', '\\$', $param);
-				$replace[] = $param;
+				$replace[] = addcslashes($param, '\\$');
 			}
 			++$paramNum;
 		}
