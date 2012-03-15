@@ -17,23 +17,23 @@
  * <pre>
  * class UploadForm extends Panel
  * {
- * 	function UploadForm($left, $top, $width, $height)
- * 	{
- * 		parent::Panel($left, $top, $width, $height);
- * 		// Instantiates a new FileUpload box
- * 		$fileUpload = new FileUpload();
- * 		// Instantiates a new Button below the FileUpload box
- * 		$btn = new Button("Submit", 0, 30);
- * 		// Gives the button a Click Event that passes the fileUpload as a parameter
- * 		$btn->Click = new ServerEvent($this, "ButtonClicked", $fileUpload);
- * 		// Tells the button's click to also upload the file
- * 		$btn->Click->Uploads->Add($fileUpload);
- * 	}
- * 	function ButtonClicked($fileUpload)
- * 	{
- * 		// Alerts the size of the uploaded file
- * 		Alert("Size of file: " . $fileUpload->File->GetSize() . " bytes");	
- * 	}
+ *  function UploadForm($left, $top, $width, $height)
+ *  {
+ *      parent::Panel($left, $top, $width, $height);
+ *      // Instantiates a new FileUpload box
+ *      $fileUpload = new FileUpload();
+ *      // Instantiates a new Button below the FileUpload box
+ *      $btn = new Button("Submit", 0, 30);
+ *      // Gives the button a Click Event that passes the fileUpload as a parameter
+ *      $btn->Click = new ServerEvent($this, "ButtonClicked", $fileUpload);
+ *      // Tells the button's click to also upload the file
+ *      $btn->Click->Uploads->Add($fileUpload);
+ *  }
+ *  function ButtonClicked($fileUpload)
+ *  {
+ *      // Alerts the size of the uploaded file
+ *      Alert("Size of file: " . $fileUpload->File->GetSize() . " bytes");  
+ *  }
  * }
  * </pre>
  * See also:
@@ -44,175 +44,189 @@
  */
 class ServerEvent extends Event
 {
-	/**
-	 * @ignore
-	 */
-	private $Owner;
-	/**
-	 * An ArrayList holding the FileUpload objects that the Event will upload when launched from the client
-	 * @var ArrayList
-	 */
-	protected $Uploads;
-	/**
-	 * @ignore
-	 */
-	public $Parameters;
-	
-	/**
-	 * @ignore
-	 */
-	static function GenerateString($eventType, $objId, $uploadArray, $liquids)
-	{
-		$str = '_NSE("' . $eventType . '","' . $objId .
-			(count($uploadArray)
-				? '",[' . implode(',', $uploadArray) . ']);'
-				: '");');
-		//return $allLiquid ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : $str;			
-		return $liquids === 0 ? $str : 
-			($liquids === 1 ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : 
-			('if(liq) _N.EventVars.LiquidExec=1;' . $str));
-	}
-	/**
-	 * Constructor
-	 * @param string|object $objOrClassName Can be either a class name as a string such as "SpecialPanel" or an object such as $this
-	 * @param string $functionAsString The name of the function as a string
-	 * @param mixed $parametersAsDotDotDot An unlimited number of parameters that will in turn be passed as parameters into the specified function
-	 * @return ServerEvent
-	 */
-	function ServerEvent($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
-	{
-		parent::Event($functionAsString);
-		$this->Owner = is_object($objOrClassName) && $objOrClassName instanceof Component
-			? new Pointer($objOrClassName)
-			: $objOrClassName;
-		$this->Uploads = new ArrayList();
-		$this->Parameters = array_slice(func_get_args(), 2);
-	}
-	/**
-	 * @ignore
-	 */
-	function GetUploadIds()
-	{
-		$arr = array();
-		foreach($this->Uploads as $ul)
-			$arr[] = "\\\"" . $ul->Id . "\\\"";
-		return $arr;
-	}
-	/**
-	 * @ignore
-	 */
-	function GetInfo(&$arr, &$onlyClientEvents, $parentLiquid = false, &$liquidClientEvent = '')
-	{
-		$onlyClientEvents = false;
-		++$arr[2];
-		if($parentLiquid || $this->Liquid)
-			++$arr[3];
-		if($this->Bubbles === false)
-			$arr[4] = false;
-		return $this->Uploads->Count()===0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
-	}
-	/**
-	 * @ignore
-	 */
-	function GetEventString($eventType, $objsId)
-	{
-		if($this->GetEnabled())
-		{
-			$txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid);
-			if($this->Bubbles === false)
-				$txt .= '_NNoBubble();';
-			return $txt;
-		}
-		return '';
-	}
-	/**
-	 * @ignore
-	 */
-	function Blank()
-	{
-		return false;
-	}
-	/**
-	 * Launches the particular event. That is, the specified function will be called on the specified object or class 
-	 * using the specified parameters.
-	 * <pre>
-	 * // Instantiate a new Button
-	 * $btn = new Button("Click Me");
-	 * // Give it a Click ServerEvent
-	 * $btn->Click = new ServerEvent($this, "ButtonClicked", "FirstParam", 2);
-	 * // The following two lines are identical:
-	 * $btn->Exec();
-	 * $this->ButtonClicked("FirstParam", 2);
-	 * </pre>
-	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
-	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
-	 */
-	function Exec(&$execClientEvents=true, $liquidParent=false)
-	{
-		if(!empty($GLOBALS['_NQueueDisabled']) || $this->Enabled===false 
-			|| (($liquidParent||$this->Liquid) && isset($GLOBALS['_NSEFromClient']) && !Event::$LiquidExec))
-				return;
-		$execClientEvents = true;
-		
-		/*
-		$runThisString = 'return ';
-		if(is_object($this->Owner))
-			if($this->Owner instanceof Pointer)
-				$runThisString .= '$this->Owner->Dereference()->';
-			else 
-				$runThisString .= '$this->Owner->';
-		elseif(is_string($this->Owner))
-			$runThisString .= $this->Owner . '::';
-			
-		$runThisString .= $this->ExecuteFunction;
-		
-		if(strpos($this->ExecuteFunction,'(') === false)
-		{
-			$parameterCount = count($this->Parameters);
-			$runThisString .= '(';
-			for($i = 0; $i < $parameterCount - 1; ++$i)
-				$runThisString .= '$this->Parameters['.$i.'],';
-			$runThisString .= $parameterCount > 0 ? '$this->Parameters['.$i.']);' : ');';
-		}
-		else 
-			$runThisString .= ';';
-		*/
-		
-		$source = Event::$Source;
-		$handles = array();
-		$this->GetDeepHandles($handles);
-		if(count($handles) === 1)
-			Event::$Source = &$handles[0];
-		else
-			Event::$Source = $handles;
-		
-		if(is_object($this->Owner))
-			if($this->Owner instanceof Pointer)
-				$callBack = array($this->Owner->Dereference(), $this->ExecuteFunction);
-			else
-				$callBack = array($this->Owner, $this->ExecuteFunction);
-		elseif(is_string($this->Owner))
-			$callBack = array($this->Owner, $this->ExecuteFunction);
-		else 
-			$callBack = $this->ExecuteFunction;
-		$return = call_user_func_array($callBack, $this->Parameters);
-		
-		Event::$Source = &$source;
-		return $return;
-	}
-	/**
-	 * @ignore
-	 */
-	function __get($nm)
-	{
-		if($nm == 'Uploads')
-		{
-			if($this->Uploads === null)
-				$this->Uploads = new ArrayList();
-			return $this->Uploads;
-		}
-		else 
-			return parent::__get($nm);
-	}
+    /**
+     * @ignore
+     */
+    private $Owner;
+    /**
+     * An ArrayList holding the FileUpload objects that the Event will upload when launched from the client
+     * @var ArrayList
+     */
+    protected $Uploads;
+    /**
+     * @ignore
+     */
+    public $Parameters;
+    
+    /**
+     * @ignore
+     */
+    static function GenerateString($eventType, $objId, $uploadArray, $liquids)
+    {
+        $str = '_NSE("' . $eventType . '","' . $objId .
+            (count($uploadArray)
+                ? '",[' . implode(',', $uploadArray) . ']);'
+                : '");');
+        //return $allLiquid ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : $str;         
+        return $liquids === 0 ? $str : 
+            ($liquids === 1 ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : 
+            ('if(liq) _N.EventVars.LiquidExec=1;' . $str));
+    }
+    /**
+     * Constructor
+     * @param string|object $objOrClassName Can be either a class name as a string such as "SpecialPanel" or an object such as $this
+     * @param string $functionAsString The name of the function as a string
+     * @param mixed $parametersAsDotDotDot An unlimited number of parameters that will in turn be passed as parameters into the specified function
+     * @return ServerEvent
+     */
+    function ServerEvent($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
+    {
+        parent::Event($functionAsString);
+        $this->Owner = is_object($objOrClassName) && $objOrClassName instanceof Component
+            ? new Pointer($objOrClassName)
+            : $objOrClassName;
+        $this->Uploads = new ArrayList();
+        $this->Parameters = array_slice(func_get_args(), 2);
+    }
+    /**
+     * @ignore
+     */
+    function GetUploadIds()
+    {
+        $arr = array();
+        foreach($this->Uploads as $ul)
+            $arr[] = "\\\"" . $ul->Id . "\\\"";
+        return $arr;
+    }
+    /**
+     * Returns the NOLOH object associated with your ServerEvent, this is the object
+	 * or classname whose function your ServerEvent is triggering, if one is set. If
+	 * no object is set, or if the event is a function of a static class then null
+	 * is returned.
+     *
+     * @return Object|null
+     */
+    function GetOwner()
+    {
+    	if($this->Owner instanceof Pointer)
+        	return $this->Owner->Dereference();
+		return null;
+    }
+    /**
+     * @ignore
+     */
+    function GetInfo(&$arr, &$onlyClientEvents, $parentLiquid = false, &$liquidClientEvent = '')
+    {
+        $onlyClientEvents = false;
+        ++$arr[2];
+        if($parentLiquid || $this->Liquid)
+            ++$arr[3];
+        if($this->Bubbles === false)
+            $arr[4] = false;
+        return $this->Uploads->Count()===0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
+    }
+    /**
+     * @ignore
+     */
+    function GetEventString($eventType, $objsId)
+    {
+        if($this->GetEnabled())
+        {
+            $txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid);
+            if($this->Bubbles === false)
+                $txt .= '_NNoBubble();';
+            return $txt;
+        }
+        return '';
+    }
+    /**
+     * @ignore
+     */
+    function Blank()
+    {
+        return false;
+    }
+    /**
+     * Launches the particular event. That is, the specified function will be called on the specified object or class 
+     * using the specified parameters.
+     * <pre>
+     * // Instantiate a new Button
+     * $btn = new Button("Click Me");
+     * // Give it a Click ServerEvent
+     * $btn->Click = new ServerEvent($this, "ButtonClicked", "FirstParam", 2);
+     * // The following two lines are identical:
+     * $btn->Exec();
+     * $this->ButtonClicked("FirstParam", 2);
+     * </pre>
+     * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
+     * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
+     */
+    function Exec(&$execClientEvents=true, $liquidParent=false)
+    {
+        if(!empty($GLOBALS['_NQueueDisabled']) || $this->Enabled===false 
+            || (($liquidParent||$this->Liquid) && isset($GLOBALS['_NSEFromClient']) && !Event::$LiquidExec))
+                return;
+        $execClientEvents = true;
+        
+        /*
+        $runThisString = 'return ';
+        if(is_object($this->Owner))
+            if($this->Owner instanceof Pointer)
+                $runThisString .= '$this->Owner->Dereference()->';
+            else 
+                $runThisString .= '$this->Owner->';
+        elseif(is_string($this->Owner))
+            $runThisString .= $this->Owner . '::';
+            
+        $runThisString .= $this->ExecuteFunction;
+        
+        if(strpos($this->ExecuteFunction,'(') === false)
+        {
+            $parameterCount = count($this->Parameters);
+            $runThisString .= '(';
+            for($i = 0; $i < $parameterCount - 1; ++$i)
+                $runThisString .= '$this->Parameters['.$i.'],';
+            $runThisString .= $parameterCount > 0 ? '$this->Parameters['.$i.']);' : ');';
+        }
+        else 
+            $runThisString .= ';';
+        */
+        
+        $source = Event::$Source;
+        $handles = array();
+        $this->GetDeepHandles($handles);
+        if(count($handles) === 1)
+            Event::$Source = &$handles[0];
+        else
+            Event::$Source = $handles;
+        
+        if(is_object($this->Owner))
+            if($this->Owner instanceof Pointer)
+                $callBack = array($this->Owner->Dereference(), $this->ExecuteFunction);
+            else
+                $callBack = array($this->Owner, $this->ExecuteFunction);
+        elseif(is_string($this->Owner))
+            $callBack = array($this->Owner, $this->ExecuteFunction);
+        else 
+            $callBack = $this->ExecuteFunction;
+        $return = call_user_func_array($callBack, $this->Parameters);
+        
+        Event::$Source = &$source;
+        return $return;
+    }
+    /**
+     * @ignore
+     */
+    function __get($nm)
+    {
+        if($nm == 'Uploads')
+        {
+            if($this->Uploads === null)
+                $this->Uploads = new ArrayList();
+            return $this->Uploads;
+        }
+        else 
+            return parent::__get($nm);
+    }
 }
 ?>
