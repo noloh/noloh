@@ -7,7 +7,7 @@ function _NTbPgSt(group)
 		if(prevTab != null)
 			_NSet(_N(prevTab).TabPg, 'style.visibility', 'hidden');
 		if(tab.TabPg != null)
-			_NSet(tab.TabPg, 'style.visibility', 'visible');
+			_NSet(tab.TabPg, 'style.visibility', 'inherit');
 	}
 }
 function _NTbPgRm(id)
