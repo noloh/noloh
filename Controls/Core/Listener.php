@@ -246,7 +246,7 @@ class Listener extends Component
 				Component::Get($arr[$i])->CheckData();
 	}
 	/**
-	 * Returns the Evesnt associated with the Listener detecting that the data has been updated
+	 * Returns the Event associated with the Listener detecting that the data has been updated
 	 * @return Event
 	 */
 	function GetUpdate()
