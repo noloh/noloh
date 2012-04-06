@@ -50,6 +50,14 @@ final class Data extends Object
 	 */
 	const View = 'view';
 	/**
+	 * Specifies the sort order to be Ascending when passed to certain functions
+	 */
+	const Asc = 'ASC';
+	/**
+	 * Specifies the sort order to be Descending when passed to certain functions
+	 */
+	const Desc = 'DESC';
+	/**
 	 * Specified that your query or command is accessing a function in your database. 
 	 * Stored function and stored procedures are examples of this.
 	 */
