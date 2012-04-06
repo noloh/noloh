@@ -57,11 +57,19 @@ final class ClientScript
 		}
 	}
 	/**
-	 * @ignore 
+	 * Adds a Javascript script file to be run immediately on the client after satisfying a race condition. <br>
+	 * The server will keep track of which files have been added so that the same file will not be sent to the client twice.<br>
+	 * {@see ClientScript::Add} to add actual code as opposed to files.
+	 * @param string $path A path to the javascript file.
 	 */
-	static function RaceAdd()
+	static function RaceAddSource($condition, $path)
 	{
-		
+		if(!isset($_SESSION['_NScriptSrcs'][$path]))
+		{
+			self::AddNOLOHSource('AddExternal.js');
+			ClientScript::RaceQueue(WebPage::That(), $condition, '_NAddExtSource', array($path));
+			$_SESSION['_NScriptSrcs'][$path] = true;
+		}
 	}
 	/**
 	 * Queues either a JavaScript function or a full JavaScript statement associated with a specific Component to be executed on the client AFTER a race condition is met. <br>
@@ -140,9 +148,7 @@ final class ClientScript
 			else
 			{
 				self::AddNOLOHSource('AddExternal.js');
-//				$_SESSION['_NScriptSrc'] .= '_NAddExtSource(\'' . $path . '\');';
 				ClientScript::Add("_NAddExtSource('$path');", Priority::High);
-//				$_SESSION['_NScriptSrc'] .= '_NAddExtSource(\'' . $path . '\');';
 			}
 			$_SESSION['_NScriptSrcs'][$path] = true;
 		}
