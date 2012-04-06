@@ -425,7 +425,7 @@ class Paginator extends RichMarkupRegion implements Countable
     {
         if(is_array($this->CurrentOffset))
             return $this->CurrentOffset[1];
-        else
+    	else
             return $this->CurrentOffset;
     }
     /**
@@ -561,9 +561,10 @@ class Paginator extends RichMarkupRegion implements Countable
      * @param object $rowCallback [optional]
      * @param object $limit [optional]
      * @param object $offset [optional]
+     * @param object $orderBy [optional]
      * @param object $cache [optional]
      */
-    public function Bind($dataSource=null, $rowCallback=null, $limit=10, $offset=0, $cache = false)
+    public function Bind($dataSource=null, $rowCallback=null, $limit=10, $offset=0, $orderBy=null, $cache = false)
     {
         $data = null;
         if($dataSource)
@@ -669,11 +670,15 @@ class Paginator extends RichMarkupRegion implements Countable
                         $result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
                         $result .= "FROM ({$sql}) as bs) as sub_query ";
                         $result .= 'WHERE sub_query.n_del_row_num > ' . ($offset) . ' AND sub_query.n_del_row_num <=' . ($offset + $limit); 
+                        if($orderBy)
+                        	$result = $this->GenerateOrderBy($result, $orderBy);
                         $offset+=1;
                     }
                     else
                     {
                          $result = 'SELECT * FROM (' . $sql . ') as sub_query ';
+                         if($orderBy)
+                         	$result = $this->GenerateOrderBy($result, $orderBy);
 						 if(!is_array($limit))
                          	$result .= ' LIMIT ' . $limit;
 						 if(!is_array($offset))
@@ -717,6 +722,40 @@ class Paginator extends RichMarkupRegion implements Countable
             
         }
     }
+	/**
+	* @ignore
+	*/
+	private function GenerateOrderBy($sql, $orderBy)
+	{
+		if($orderBy)
+		{
+			$orderString = ' ORDER BY ';
+			if(is_string($orderBy))
+				$orderBy = array($orderBy => Data::Asc);
+			if(is_array($orderBy))
+			{
+				$count = 0;
+				$orderedBy = array();
+				foreach($orderBy as $col => $sortOrder)
+				{
+					if($sortOrder == Data::Asc || $sortOrder == Data::Desc)
+					{
+						$orderQuery = ' ' . $col . ' ';
+						$orderQuery .= ($sortOrder == Data::Asc?'ASC':'DESC');
+						$orderedBy[] = $orderQuery;
+					}
+					elseif(is_string($sortOrder))
+					{
+						$orderQuery = ' ' . $sortOrder . ' DESC ';
+						$orderedBy[] = $orderQuery;
+					}
+				}
+			}
+			if(count($orderedBy) > 0)
+				$sql .= ' ' . $orderString . implode(',', $orderedBy);
+		}
+		return $sql;
+	}
     /**
      * @ignore
      */
