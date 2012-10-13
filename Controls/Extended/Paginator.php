@@ -56,6 +56,8 @@ class Paginator extends RichMarkupRegion implements Countable
     private $ShowNonEmpty;
     private $MSFirstColumn;
     private $OriginalSQL;
+	private $OrderBy;
+	
     /**
      * Constructor
      * 
@@ -569,6 +571,7 @@ class Paginator extends RichMarkupRegion implements Countable
         $data = null;
         if($dataSource)
         {
+        	$this->OrderBy = $orderBy;
             $countCommand = null;
             if(is_array($dataSource))
             {
@@ -670,15 +673,15 @@ class Paginator extends RichMarkupRegion implements Countable
                         $result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
                         $result .= "FROM ({$sql}) as bs) as sub_query ";
                         $result .= 'WHERE sub_query.n_del_row_num > ' . ($offset) . ' AND sub_query.n_del_row_num <=' . ($offset + $limit); 
-                        if($orderBy)
-                        	$result = $this->GenerateOrderBy($result, $orderBy);
+                        if($this->OrderBy)
+                        	$result = $this->GenerateOrderBy($result, $this->OrderBy);
                         $offset+=1;
                     }
                     else
                     {
                          $result = 'SELECT * FROM (' . $sql . ') as sub_query ';
-                         if($orderBy)
-                         	$result = $this->GenerateOrderBy($result, $orderBy);
+                         if($this->OrderBy)
+                         	$result = $this->GenerateOrderBy($result, $this->OrderBy);
 						 if(!is_array($limit))
                          	$result .= ' LIMIT ' . $limit;
 						 if(!is_array($offset))
