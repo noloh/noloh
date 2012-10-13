@@ -370,14 +370,17 @@ function _NAdopt(id, parentId)
 function _NRem(id)
 {
 	var ele = _N(id);
-	ele.parentNode.removeChild(ele);
-	_N("NGraveyard").appendChild(ele);
-	if(ele.BuoyantChildren)
-		for(var i=0; i<ele.BuoyantChildren.length; ++i)
-			_NRem(ele.BuoyantChildren[i]);
-	if(ele.NonControls)
-		for(var i=0; i<ele.NonControls.length; ++i)
-			_N(ele.NonControls[i]).Stop();
+	if(ele)
+	{
+		ele.parentNode.removeChild(ele);
+		_N("NGraveyard").appendChild(ele);
+		if(ele.BuoyantChildren)
+			for(var i=0; i<ele.BuoyantChildren.length; ++i)
+				_NRem(ele.BuoyantChildren[i]);
+		if(ele.NonControls)
+			for(var i=0; i<ele.NonControls.length; ++i)
+				_N(ele.NonControls[i]).Stop();
+	}
 }
 function _NRes(id, parentId)
 {
