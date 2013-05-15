@@ -670,11 +670,14 @@ class Paginator extends RichMarkupRegion implements Countable
                     {
                         if($this->CurrentOffset != $offset)
                             $offset = $offset + 1;
+						if($this->OrderBy)
+						{
+							$sql = preg_replace('/^\s*SELECT/i', 'SELECT TOP 100 PERCENT', $sql, 1);
+							$sql = $this->GenerateOrderBy($sql, $this->OrderBy); 
+						}
                         $result = "SELECT sub_query.* FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY {$this->MSFirstColumn}) as n_del_row_num ";
                         $result .= "FROM ({$sql}) as bs) as sub_query ";
                         $result .= 'WHERE sub_query.n_del_row_num > ' . ($offset) . ' AND sub_query.n_del_row_num <=' . ($offset + $limit); 
-                        if($this->OrderBy)
-                        	$result = $this->GenerateOrderBy($result, $this->OrderBy);
                         $offset+=1;
                     }
                     else
