@@ -48,15 +48,17 @@ abstract class WebPage extends Component
 	 * @param string $keywords Keywords can be used by search engines to help better archive your application, but are not necessary to take advantage of NOLOH's built-in SearchEngineFriendly capabilities.
 	 * @param string $description Description can be used by search engines to help better archive your application, but are not necessary to take advantage of NOLOH's built-in SearchEngineFriendly capabilities.
 	 * @param string $favIconPath A Path to an image to be used as the browser favicon
+	 * @param string $vanityMessage A message you would like to display in the source of the WebPage
 	 * @return WebPage
 	 */
-	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null)
+	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null)
 	{
 		if($_SESSION['_NVisit'] === -1)
 		{
 			$GLOBALS['_NTitle'] = $title;
 			$GLOBALS['_NFavIcon'] = $favIconPath;
 			$GLOBALS['_NMobileApp'] = $this instanceof MobileApp;
+			$GLOBALS['_NVanity'] = $vanityMessage;
 			$appId = $GLOBALS['_NApp']?$GLOBALS['_NApp']:0;
 			throw new Exception('Fatal cookie behavior.', $appId);
 		}
@@ -395,6 +397,16 @@ abstract class WebPage extends Component
 		header('Content-Type: text/html; charset=UTF-8');
 		//header('Content-Type: text/html; charset=ISO-8859-1');
 		
+		$formatted = '';
+		if($GLOBALS['_NVanity'])
+		{
+			$formatted = "\n";
+			$vanity = explode("\n", $GLOBALS['_NVanity']);
+			foreach($vanity as $line)
+			{
+				$formatted .= '<!-- ' . $line . ' -->' . "\n";
+			}
+		}
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
@@ -411,6 +423,7 @@ abstract class WebPage extends Component
 <!-- Powered by NOLOH  -->
 <!--   www.noloh.com   -->
 <!--      ',GetNOLOHVersion(),'      -->
+',$formatted,'
 
 <HTML lang="en">
   <HEAD id="NHead">
