@@ -81,15 +81,21 @@ function _NByntFrgt(id, parent)
 {
 	do
 	{
-		if(parent.BuoyantChildren)
-			for(var i=0, count=parent.BuoyantChildren.length; i<count; ++i)
-				if(parent.BuoyantChildren[i] == id)
-				{
-					parent.BuoyantChildren.splice(i, 1);
-					break;
-				}
-//			parent.BuoyantChildren.splice(parent.BuoyantChildren.indexOf(id), 1);
-		parent = parent.parentNode;
+		if(parent)
+		{
+			if(typeof(parent.BuoyantChildren) != "undefined")
+			{
+				if(parent.BuoyantChildren)
+					for(var i=0, count=parent.BuoyantChildren.length; i<count; ++i)
+						if(parent.BuoyantChildren[i] == id)
+						{
+							parent.BuoyantChildren.splice(i, 1);
+							break;
+						}
+			}
+	//			parent.BuoyantChildren.splice(parent.BuoyantChildren.indexOf(id), 1);
+			parent = parent.parentNode;
+		}
 	}while (parent && parent.id);
 }
 function _NByntStaQ()
