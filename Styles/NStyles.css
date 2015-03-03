@@ -1,0 +1,162 @@
+.NMnuItm
+{
+	font-family:sans-serif;
+	font-size:10pt;
+	padding-left:2px;
+}
+.NAccordionText
+{
+	color:white;
+	font-family:sans-serif;
+	font-weight:bold;
+	padding-left:10px;
+	padding-top:5px;
+}
+.NColHead
+{
+	color:white;
+	font: 11px tahoma, arial, verdana, sans-serif;
+	padding: 4px 5px;
+	margin-right: 4px;
+	white-space: nowrap;
+	/*font-family:sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	padding-top:5px;
+	padding-left:5px;*/
+}
+.NCalCell
+{
+	cursor:pointer;
+	text-align:center;
+	font-family:sans-serif;
+}
+.NCalColHead
+{
+	cursor:default;
+	font-family:sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+}
+.NCalHead
+{
+	cursor:default;
+	font-family:sans-serif;
+	font-weight:bold;
+	text-align:center;
+	color:#FFFFFF;
+	background-color:#0000FF;
+	padding-top:1%;
+}
+.NCheckListBox
+{
+	background-color:#FFFFFF;
+	border:2px ridge;
+	overflow:auto;
+}
+.NClickable
+{
+	cursor:pointer;
+}
+.NLabel
+{
+	word-wrap:break-word;
+	overflow:hidden;
+}
+.NLoadIndiLabel
+{
+	background:white;
+	color:#011F43;
+	font-family:verdana,helvetica,arial;
+	font-size:9.5pt;
+	font-style:italic;
+	font-weight:bold;
+	letter-spacing:0.05em;
+	cursor:wait;
+	z-index:999999;
+	padding-left:5px;
+	padding-right:5px;
+	padding-bottom:1px;
+	position:fixed;
+}
+.NLarva
+{
+	display:inline;
+}
+.NLnkCtrl, .NLnkCtrl:link, .NLnkCtrl:visited, .NLnkCtrl:hover, .NLnkCtrl:active
+{
+	text-decoration:none;
+	overflow:visible;
+	outline: none;
+}
+/*.NLVSubItem
+{
+	padding-left:.3em;
+	white-space:nowrap;
+}*/
+/*.NLVLoad
+{
+	background: #a19d9d;
+	text-align: center;
+}*/
+/*.NLVWrap
+{
+	float: left;
+	position: relative;
+	overflow: hidden;
+	min-height: 10px;
+}*/
+.NLVRow > div
+{
+	float: left;
+	/*position: relative;*/
+	overflow: hidden;
+	min-height: 10px;
+}
+.NLVRow > div > div
+{
+	padding-left: .3em;
+	word-wrap: normal; /*IE8 - pre-processor should take into consideration*/ 
+	white-space: nowrap;
+}
+.NLVWrap > div >div
+{
+	white-space:normal;
+}
+.NLVSelect
+{
+	background-color:#011f43;
+	color:#FFFFFF;
+}
+.NPanel
+{
+	padding:0px;
+}
+.NPag
+{
+	margin-left:1px;
+	margin-right:1px;
+	text-decoration:none;
+}
+a.NPag:hover
+{
+	text-decoration:underline;
+}
+.NPagSel
+{
+	background-color:#EEEEEE;
+}
+.NRollTab
+{
+	text-align:center;
+	padding-top:.2em;
+}
+.NWinPanelTitle
+{
+	color:white;
+	padding-top:5px;
+	padding-left:5px;
+	font-weight:bold;
+	font-family:arial, sans-serif;
+}
