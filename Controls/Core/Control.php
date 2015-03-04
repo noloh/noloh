@@ -41,6 +41,7 @@ abstract class Control extends Component
 	private $HTMLName;
 	private $Semantics;
 	private $Toggle;
+	private $TabIndex;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -765,6 +766,21 @@ abstract class Control extends Component
 	 * @return string
 	 */
 	function GetHTMLName()	{return $this->HTMLName;}
+	/**
+	 * Returns the tab index for this Control, a positive integer defining the order in which Controls will be focused when a user cycles through Controls with the tab key.
+	 */
+	function GetTabIndex()
+	{
+		return $this->TabIndex;
+	}
+	/**
+	 * Sets the tab index for this Control, a positive integer defining the order in which Controls will be focused when a user cycles through Controls with the tab key.
+	 */
+	function SetTabIndex($tabIndex)
+	{
+		$this->TabIndex = $tabIndex;
+		ClientScript::Set($this, 'tabIndex', $tabIndex, null);
+	}
 	/**
 	 * Returns the Semantics for this Control, which help define how it is used and may be used to aid in search engine optimization.
 	 * @return Semantics|System::Auto
