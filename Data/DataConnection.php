@@ -14,58 +14,59 @@
  *     //Executes the DataCommand and stores the resulting DataReader in $results
  *     $results = $query->Execute();
  * </pre>
- * 
+ *
  * This example shows the use of DataConnection in conjuction with Data::$Links.
  * <pre>
  *     Data::$Links->People = new DataConnection(Data::Postgres, 'new_york_people');
  *     //Executes the SQL query and stores the resulting DataReader in $results
- *     $results = Data::$Links->ExecSQL('SELECT * FROM people'); 
+ *     $results = Data::$Links->ExecSQL('SELECT * FROM people');
  * </pre>
- * 
+ *
  * @package Data
  */
 class DataConnection extends Object
 {
 	/**
 	 * The username used to connect to your database
-	 * @var string 
+	 * @var string
 	 */
 	public $Username;
 	/**
 	 * The name of your database
-	 * @var string 
+	 * @var string
 	 */
 	public $DatabaseName;
 	/**
 	 * The password used to connect to your database
-	 * @var string 
+	 * @var string
 	 */
 	public $Password;
 	/**
 	 * Your database host, e.g; localhost, http://www.noloh.com, etc.
-	 * @var mixed 
+	 * @var mixed
 	 */
 	public $Host;
 	/**
 	 * The port you use to connect to your database.
-	 * @var mixed  
+	 * @var mixed
 	 */
 	public $Port;
 	/**
 	 * Your database link identifier resource.
-	 * @var resource 
+	 * @var resource
 	 */
 	public $ActiveConnection;
 	/**
 	 * Whether the connection should convert your data results to
 	 * their PHP real type equivalents, or leave them as strings.
-	 * 
+	 *
 	 * Defaults to false!
-	 * 
+	 *
 	 * @var Boolean
 	 */
 	public $ConvertType;
-	private $Type;	
+	private $Type;
+	private $Persistent;
 	/**
 	 * Constructor
 	 * Be sure to call this from the constructor of any class that extends DataConnection.
@@ -102,7 +103,10 @@ class DataConnection extends Object
 		}
 		elseif($this->Type == Data::MySQL)
 		{
-			$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $this->Password);
+			if($this->Persistent)
+				$this->ActiveConnection = mysql_pconnect($this->Host, $this->Username, $this->Password);
+			else
+				$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $this->Password);
 			mysql_select_db($this->DatabaseName, $this->ActiveConnection);
 //			mysql_set_charset('utf8',$this->ActiveConnection);
 		}
@@ -599,6 +603,16 @@ class DataConnection extends Object
 		elseif($type == Data::View)
 			$query = self::GenerateView($spName);
 		return new DataCommand($this, $query, $hasResultOption?$resultOption:Data::Both);
+	}
+	/**
+	 * Specifies whether the connection should force persistance. Only works with MySQL connections.
+	 * By default connections are NOT forced persistent, but will try to be persistent via normal db methods
+	 *
+	 * @param bool $persistant Whether the connection should be forced persisatnt
+	 */
+	function SetPersistent($persistent)
+	{
+		$this->Persistent = $persistent;
 	}
 	/**
 	 * @ignore
