@@ -103,11 +103,13 @@ final class Application extends Object
 			$url = 'location.href';
 		}
 		$browser = GetBrowser();
-		if($browser==='ie' || $browser==='ff')
+		if ($browser === 'ie' || $browser === 'ff' || $browser === 'ch')
+		{
 			if($clearURLTokens)
 				echo 'window.location.replace(', $url, ');';
 			else
 				echo 'window.location.reload(true);';
+		}
 		else
 			echo 'var frm=document.createElement("FORM");frm.action=', $url, ';frm.method="post";document.body.appendChild(frm);frm.submit();';
 		exit();
