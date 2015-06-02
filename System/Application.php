@@ -92,7 +92,16 @@ final class Application extends Object
 			session_destroy();
 		else
 			self::UnsetNolohSessionVars();
-		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
+		if ($clearURLTokens)
+		{
+			// Used to be PHP_SELF, without parsing. That failed for webserver proxy.
+			$uri = $_SERVER['DOCUMENT_URI'];
+			$url = '"' . substr($uri, 0, strpos($uri, '?')) . '"';
+		}
+		else
+		{
+			$url = 'location.href';
+		}
 		$browser = GetBrowser();
 		if($browser==='ie' || $browser==='ff')
 			if($clearURLTokens)
