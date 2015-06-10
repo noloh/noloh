@@ -6,6 +6,7 @@
  * rather you can use certain statics of the class in conjuction with the methods of the other Data related classes.
  * 
  * @package Data
+ * @property DataConnection $SandBox
  */
 final class Data extends Object
 {	
