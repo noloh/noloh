@@ -67,8 +67,6 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
-	private $Transaction = false;
-	private $TransactionQuery;
 	/**
 	 * Constructor
 	 * Be sure to call this from the constructor of any class that extends DataConnection.
@@ -421,16 +419,7 @@ class DataConnection extends Object
 		}
 		$sql = self::GenerateSQL($sql, array_slice($args, $paramsArg));
 		$dbCmd = new DataCommand($this, $sql);
-		
-		if ($this->Transaction)
-		{
-			$this->TransactionQuery .= $dbCmd->SQL . ';';
-			return null;
-		}
-		else
-		{
-			return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
-		}
+		return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 	}
 	/**
 	 * Executes a stored procedure or stored function in your database. You can natively pass in as many parameters to your function as you wish
@@ -635,15 +624,15 @@ class DataConnection extends Object
 	}
 	function BeginTransaction()
 	{
-		$this->Transaction = true;
+		$this->ExecSQL('START TRANSACTION READ WRITE;');
 	}
 	function Commit()
 	{
-		$this->Transaction = false;
-		$query = $this->TransactionQuery;
-		$this->TransactionQuery = null;
-		
-		$this->ExecSQL($query);
+		$this->ExecSQL('COMMIT;');
+	}
+	function Rollback()
+	{
+		$this->ExecSQL('ROLLBACK;');
 	}
 }
 ?>
