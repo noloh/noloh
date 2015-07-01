@@ -54,7 +54,7 @@ abstract class Resource extends Object
 		// TODO: End buffering
 		// TODO: gzip
 		// TODO: Possibly send cache headers on GET requests
-		echo json_encode($data);
+		echo json_encode($data, JSON_FORCE_OBJECT);
 	}
 
 
