@@ -29,6 +29,8 @@ abstract class Resource extends Object
 		return self::MethodNotAllowed();
 	}
 	
+	/* TODO: We should prevent 2 Responds. This should probably just queue a response,
+		and Router, at the end, should issue that response, or respond with a blank or perhaps an error code. */
 	function Respond($data)
 	{
 		if (is_object($data))
