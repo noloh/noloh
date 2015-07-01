@@ -102,8 +102,7 @@ abstract class RESTRouter extends Object
 			default:
 				$data = array();
 		}
-		
-		call_user_func_array(array($this->Resource, $method), $data);
+		call_user_func(array($this->Resource, $method), $data);
 	}
 	
 	
