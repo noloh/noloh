@@ -144,6 +144,12 @@ function _NAutoLoad($class)
 					$callLoad = true;
 			}
 		}
+		
+		if (!stream_resolve_include_path($class . '.php'))
+		{
+			return;
+		}
+		
 		if((include $class . '.php') === false)
 			if((include str_replace('_', '/', $class) . '.php') === false)
 				BloodyMurder('The class ' . $class . ' is not defined.');
