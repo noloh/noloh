@@ -71,7 +71,10 @@ abstract class RESTRouter extends Object
 			Resource::BadRequest();
 		}
 		
-		$className = array_shift($paths) . 'Resource';
+		$resourceName = array_shift($paths);
+		$resourceName = ucfirst(str_replace('-', ' ', $resourceName));
+		$resourceName = str_replace(' ', '', $resourceName);
+		$className = $resourceName . 'Resource';
 		if (is_subclass_of($className, 'Resource'))
 		{
 			$class = new ReflectionClass($className);
