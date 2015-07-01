@@ -142,14 +142,14 @@ class Configuration extends Object implements Singleton
         $classes = get_declared_classes();
         $classLength = count($classes);
         for ($i = $classLength - 1; $i; --$i)
-            if (is_subclass_of($classes[$i], 'WebPage') ||
+		{
+			if (is_subclass_of($classes[$i], 'WebPage') ||
 				is_subclass_of($classes[$i], 'RESTRouter'))
-            {
-                $this->StartClass = $classes[$i];
-                break;
-            }    
-		else
-			echo $classes[$i], "<BR>";
+			{
+				$this->StartClass = $classes[$i];
+				break;
+			}
+		}
     }
     /**
      * @ignore
