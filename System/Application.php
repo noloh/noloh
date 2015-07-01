@@ -21,11 +21,20 @@ final class Application extends Object
 	 */
 	public static function AutoStart()
 	{
-		$GLOBALS['_NAutoStart'] = true;
-		if(isset($GLOBALS['_NApplication']) && $GLOBALS['_NApplication'] instanceof Application)
-			$GLOBALS['_NApplication']->HandleFirstRun();
-		else
-			Application::Start();
+		if (empty($GLOBALS['_NREST']))
+		{
+			$GLOBALS['_NAutoStart'] = true;
+			if (isset($GLOBALS['_NApplication']) &&
+				$GLOBALS['_NApplication'] instanceof Application
+			)
+			{
+				$GLOBALS['_NApplication']->HandleFirstRun();
+			}
+			else
+			{
+				Application::Start();
+			}
+		}
 	}
 	/**
 	 * Starts the Application, optionally with some Configuration parameters.

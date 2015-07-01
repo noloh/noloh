@@ -37,6 +37,8 @@ function _NAutoLoad($class)
 			'InnerSugar' => 		'System/InnerSugar.php',
 			'SugarException' => 	'System/SugarException.php',
 			'Multiple' => 			'System/Multiple.php',
+			'RESTRouter' =>			'System/RESTRouter.php',
+			'Resource' => 			'System/Resource.php',
 			
 			//Events
 			'RaceClientEvent' =>	'Events/RaceClientEvent.php',
