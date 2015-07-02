@@ -72,7 +72,7 @@ abstract class RESTRouter extends Object
 		}
 		
 		$resourceName = array_shift($paths);
-		$resourceName = ucfirst(str_replace('-', ' ', $resourceName));
+		$resourceName = ucwords(str_replace('-', ' ', $resourceName));
 		$resourceName = str_replace(' ', '', $resourceName);
 		$className = $resourceName . 'Resource';
 		if (is_subclass_of($className, 'Resource'))
