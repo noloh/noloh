@@ -145,7 +145,8 @@ function _NAutoLoad($class)
 			}
 		}
 		
-		if (!stream_resolve_include_path($class . '.php'))
+		if (!stream_resolve_include_path($class . '.php') &&
+			!stream_resolve_include_path(str_replace('_', '/', $class) . '.php'))
 		{
 			return;
 		}
