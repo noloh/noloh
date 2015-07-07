@@ -9,12 +9,17 @@ abstract class RESTRouter extends Object
 	const Put 		= 'PUT';		// Update
 	const Delete 	= 'DELETE';		// Delete
 	
+	const Options	= 'OPTIONS';	// Preflighted Requests
+	
 	protected $Method;
 	protected $Resource;
 	
 	function RESTRouter()
 	{
 		parent::Object();
+
+		// CORS whitelist all origins
+		header('Access-Control-Allow-Origin: *');
 		
 		// TODO: Output buffering
 		
@@ -27,13 +32,20 @@ abstract class RESTRouter extends Object
 		$this->Method = strtoupper($_SERVER['REQUEST_METHOD']);
 		switch ($this->Method)
 		{
+			case self::Options:
+				die();	// 200 OK all preflights
+				break;
+			
 			case self::Post:
 			case self::Get:
 			case self::Put:
 			case self::Delete:
 				break;
+			
 			default:
-				Resource::MethodNotAllowed(array('GET', 'PUT', 'POST', 'DELETE'));
+				Resource::MethodNotAllowed(array(
+					self::Get, self::Put, self::Post, self::Delete
+				));
 		}
 	}
 	
