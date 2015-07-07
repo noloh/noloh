@@ -62,10 +62,10 @@ abstract class Resource extends Object
 
 	// Errors
 
-	public static function BadRequest()
+	public static function BadRequest($text = '')
 	{
 		header('HTTP/1.1 400 Bad Request');
-		die();
+		die($text);
 	}
 
 	public static function Unauthorized()

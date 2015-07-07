@@ -342,7 +342,10 @@ final class System
 		}
 		return $modal;
 	}
-	
+	function IsRESTful()
+	{
+		return isset($GLOBALS['_NREST']);
+	}
 	/**
 	 * Produces an HTTP error with a specified status code and optional redirect.
 	 * @param integer $statusCode
