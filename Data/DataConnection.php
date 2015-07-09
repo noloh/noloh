@@ -67,6 +67,7 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
+	static $TransactionCount = 0;
 	/**
 	 * Constructor
 	 * Be sure to call this from the constructor of any class that extends DataConnection.
@@ -624,14 +625,23 @@ class DataConnection extends Object
 	}
 	function BeginTransaction()
 	{
-		$this->ExecSQL('START TRANSACTION READ WRITE;');
+		static::$TransactionCount++;
+		if (static::$TransactionCount === 1)
+		{
+			$this->ExecSQL('START TRANSACTION READ WRITE;');
+		}
 	}
 	function Commit()
 	{
-		$this->ExecSQL('COMMIT;');
+		static::$TransactionCount--;
+		if (static::$TransactionCount === 0)
+		{
+			$this->ExecSQL('COMMIT;');
+		}
 	}
 	function Rollback()
 	{
+		static::$TransactionCount = 0;
 		$this->ExecSQL('ROLLBACK;');
 	}
 }
