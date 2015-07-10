@@ -99,7 +99,7 @@ final class Data extends Object
 	 */
 	function __set($name, $value)
 	{
-		$value->Index = $name;
+		$value->Name = $name;
 		return $_SESSION['_NDataLinks'][$name] = $value;
 	}
 }
