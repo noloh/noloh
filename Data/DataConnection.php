@@ -68,7 +68,7 @@ class DataConnection extends Object
 	private $Type;
 	private $Persistent;
 	
-	public $Name = 'Default';
+	public $Name = '_Default';
 	static $TransactionCounts;
 	/**
 	 * Constructor
