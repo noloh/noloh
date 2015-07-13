@@ -153,7 +153,7 @@ class DataConnection extends Object
 				BloodyMurder($errStr);
 			}
 			else
-				BloodyMurder(mssql_get_last_message);
+				BloodyMurder(mssql_get_last_message());
 	}
 	/**
 	 * Attempts to close the connection to your database. Note: In most circumstances, this is done automatically.
