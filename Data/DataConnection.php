@@ -135,11 +135,40 @@ class DataConnection extends Object
 	/**
 	 * Displays the appropriate error to the user and exits the app.
 	 */
-	function ErrorOut()
+	function ErrorOut($sql)
 	{
 		$type = $this->Type;
-		if($type == Data::Postgres)
-			BloodyMurder(pg_result_error($connection));
+		if ($type == Data::Postgres)
+		{
+			$error = pg_last_error($this->Connect());
+			$exception = new Exception($error);
+			
+			$traces = $exception->getTrace();
+			$first = true;
+			$count = 0;
+			foreach ($traces as $trace)
+			{
+				$count++;
+				if ($count > 3)
+				{
+					break;
+				}
+				
+				if ($first)
+				{
+					$first = false;
+					continue;
+				}
+				
+				$error .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . ' on line ' . $trace['line'];
+			}
+			
+			$error .= PHP_EOL . $sql;
+			$error = str_replace(':', '', $error);
+			$exception = new Exception($error);
+			
+			throw $exception;
+		}
 		elseif($type == Data::MySQL)
 			BloodyMurder(mysql_error());
 		elseif($type == Data::MSSQL)
