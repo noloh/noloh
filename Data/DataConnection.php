@@ -156,7 +156,6 @@ class DataConnection extends Object
 			}
 			
 			$error .= PHP_EOL . $sql;
-			$error = str_replace(':', '', $error);
 			$exception = new Exception($error);
 			
 			throw $exception;
