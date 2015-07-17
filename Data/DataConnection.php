@@ -137,6 +137,7 @@ class DataConnection extends Object
 	 */
 	function ErrorOut($sql)
 	{
+		global $_NPath;
 		$type = $this->Type;
 		if ($type == Data::Postgres)
 		{
@@ -144,23 +145,14 @@ class DataConnection extends Object
 			$exception = new Exception($error);
 			
 			$traces = $exception->getTrace();
-			$first = true;
-			$count = 0;
 			foreach ($traces as $trace)
 			{
-				$count++;
-				if ($count > 3)
+				if (strpos($trace['file'], $_NPath) === false
+					&& isset($trace['file'])
+					&& isset($trace['line']))
 				{
-					break;
+					$error .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . ' on line ' . $trace['line'];
 				}
-				
-				if ($first)
-				{
-					$first = false;
-					continue;
-				}
-				
-				$error .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . ' on line ' . $trace['line'];
 			}
 			
 			$error .= PHP_EOL . $sql;
