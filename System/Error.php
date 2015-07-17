@@ -121,6 +121,7 @@ function _NErrorHandler($number, $string, $file, $line)
 }
 function _NExceptionHandler($exception)
 {
+	global $_NPath;
 	$level = ob_get_level();
 	for ($i = 0; $i < $level; ++$i)
 	{
@@ -137,7 +138,20 @@ function _NExceptionHandler($exception)
 	{
 		++$_SESSION['_NVisit'];
 	}
-	error_log($message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $exception->getMessage())));
+
+	$traces = $exception->getTrace();
+	$message = $exception->getMessage();
+	foreach ($traces as $trace)
+	{
+		if (strpos($trace['file'], $_NPath) === false
+			&& isset($trace['file'])
+			&& isset($trace['line']))
+		{
+			$message .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . "\\non line " . $trace['line'];
+		}
+	}
+	
+	error_log($message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message)));
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : 'An application error has occurred.', '");';
 	if ($gzip)
 	{

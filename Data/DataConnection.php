@@ -137,27 +137,11 @@ class DataConnection extends Object
 	 */
 	function ErrorOut($sql)
 	{
-		global $_NPath;
 		$type = $this->Type;
 		if ($type == Data::Postgres)
 		{
-			$error = pg_last_error($this->Connect());
+			$error = pg_last_error($this->Connect()) . "\\n" . $sql;
 			$exception = new Exception($error);
-			
-			$traces = $exception->getTrace();
-			foreach ($traces as $trace)
-			{
-				if (strpos($trace['file'], $_NPath) === false
-					&& isset($trace['file'])
-					&& isset($trace['line']))
-				{
-					$error .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . ' on line ' . $trace['line'];
-				}
-			}
-			
-			$error .= PHP_EOL . $sql;
-			$exception = new Exception($error);
-			
 			throw $exception;
 		}
 		elseif($type == Data::MySQL)
