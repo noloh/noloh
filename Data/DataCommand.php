@@ -98,7 +98,7 @@ class DataCommand extends Object
 			$type = $this->Connection->GetType();
 			$connection = $this->Connection->Connect();
 			if($type == Data::Postgres)
-				$resource = pg_query($connection, $this->SqlStatement);
+				$resource = @pg_query($connection, $this->SqlStatement);
 			elseif($type == Data::MySQL)
 				$resource = mysql_query($this->SqlStatement, $connection);
 			elseif($type == Data::MSSQL)
@@ -109,7 +109,7 @@ class DataCommand extends Object
 				
 			if(!$resource)
 			{
-				$this->Connection->ErrorOut();
+				$this->Connection->ErrorOut($connection, $this->SqlStatement);
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;

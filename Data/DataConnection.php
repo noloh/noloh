@@ -120,8 +120,9 @@ class DataConnection extends Object
 			{
 				$this->ActiveConnection = sqlsrv_connect($host, 
 					array('Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $this->Password, 'ReturnDatesAsStrings' => true));
-				if(!$this->ActiveConnection ) {
-					$this->ErrorOut();
+				if (!$this->ActiveConnection)
+				{
+					$this->ErrorOut(null, null);
 				}
 			}
 			else
@@ -135,11 +136,15 @@ class DataConnection extends Object
 	/**
 	 * Displays the appropriate error to the user and exits the app.
 	 */
-	function ErrorOut()
+	function ErrorOut($connection, $sql)
 	{
 		$type = $this->Type;
-		if($type == Data::Postgres)
-			BloodyMurder(pg_result_error($connection));
+		if ($type == Data::Postgres)
+		{
+			$error = pg_last_error($connection) . "\\n" . $sql;
+			$exception = new SqlException($error);
+			throw $exception;
+		}
 		elseif($type == Data::MySQL)
 			BloodyMurder(mysql_error());
 		elseif($type == Data::MSSQL)
