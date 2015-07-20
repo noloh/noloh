@@ -135,13 +135,13 @@ class DataConnection extends Object
 	/**
 	 * Displays the appropriate error to the user and exits the app.
 	 */
-	function ErrorOut($sql)
+	function ErrorOut($connection, $sql)
 	{
 		$type = $this->Type;
 		if ($type == Data::Postgres)
 		{
-			$error = pg_last_error($this->Connect()) . "\\n" . $sql;
-			$exception = new Exception($error);
+			$error = pg_last_error($connection) . "\\n" . $sql;
+			$exception = new SqlException($error);
 			throw $exception;
 		}
 		elseif($type == Data::MySQL)

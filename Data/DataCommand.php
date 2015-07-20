@@ -109,7 +109,7 @@ class DataCommand extends Object
 				
 			if(!$resource)
 			{
-				$this->Connection->ErrorOut($this->SqlStatement);
+				$this->Connection->ErrorOut($connection, $this->SqlStatement);
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;

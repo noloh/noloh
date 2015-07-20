@@ -39,6 +39,7 @@ function _NAutoLoad($class)
 			'Multiple' => 			'System/Multiple.php',
 			'RESTRouter' =>			'System/RESTRouter.php',
 			'Resource' => 			'System/Resource.php',
+			'SqlException' => 		'System/SqlException.php',
 			
 			//Events
 			'RaceClientEvent' =>	'Events/RaceClientEvent.php',
