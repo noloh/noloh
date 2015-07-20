@@ -76,45 +76,28 @@ function _NErrorHandler($number, $string, $file, $line)
 		else
 			$number = 1;
 	}
-	if($number & error_reporting())
+	if ($number & error_reporting())
 	{
-		$level = ob_get_level();
-		for($i=0; $i<$level; ++$i)
-			ob_end_clean();
-		setcookie('_NAppCookie', false);
-		if($ob)
+		if ($ob)
 		{
 			$string = $matches[2];
 			$file = $matches[3];
 			$line = $matches[4];
 		}
-		elseif($string === '~_NINFO~')
+		elseif ($string === '~_NINFO~')
 		{
 			setcookie('_NPHPInfo', true);
 			Application::Reset(true, false);
 		}
-		elseif($GLOBALS['_NDebugMode'] !== 'Kernel')
+		elseif ($GLOBALS['_NDebugMode'] !== 'Kernel')
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
 			$file = $trace['file'];
 			$line = $trace['line'];
 		}
-		$gzip = defined('FORCE_GZIP');
-		if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
-			ob_start('ob_gzhandler');
-		if(!in_array('Cache-Control: no-cache', headers_list(), true))
-			++$_SESSION['_NVisit'];
-		error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin ".str_replace("\\","\\\\",$file)."\\non line $line":'')));
-		echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
-		if($gzip)
-			ob_end_flush();
-		flush();
-		NolohInternal::ResetSecureValuesQueue();
-		global $OmniscientBeing;
-		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-		exit();
+		
+		$message = $string . ($file ? "\\nin " . str_replace("\\", "\\\\", $file) . "\\non line $line" : '');
+		DisplayError($message);
 	}
 	else
 		return false;
