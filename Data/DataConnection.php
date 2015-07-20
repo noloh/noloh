@@ -120,8 +120,9 @@ class DataConnection extends Object
 			{
 				$this->ActiveConnection = sqlsrv_connect($host, 
 					array('Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $this->Password, 'ReturnDatesAsStrings' => true));
-				if(!$this->ActiveConnection ) {
-					$this->ErrorOut();
+				if (!$this->ActiveConnection)
+				{
+					$this->ErrorOut(null, null);
 				}
 			}
 			else
