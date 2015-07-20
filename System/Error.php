@@ -122,23 +122,7 @@ function _NErrorHandler($number, $string, $file, $line)
 function _NExceptionHandler($exception)
 {
 	global $_NPath;
-	$level = ob_get_level();
-	for ($i = 0; $i < $level; ++$i)
-	{
-		ob_end_clean();
-	}
-	setcookie('_NAppCookie', false);
 	
-	$gzip = defined('FORCE_GZIP');
-	if ($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
-	{
-		ob_start('ob_gzhandler');
-	}
-	if (!in_array('Cache-Control: no-cache', headers_list(), true))
-	{
-		++$_SESSION['_NVisit'];
-	}
-
 	$traces = $exception->getTrace();
 	$message = $exception->getMessage();
 	foreach ($traces as $trace)
@@ -149,6 +133,27 @@ function _NExceptionHandler($exception)
 		{
 			$message .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . "\\non line " . $trace['line'];
 		}
+	}
+	
+	DisplayError($message);
+}
+function DisplayError($message)
+{
+	$level = ob_get_level();
+	for ($i = 0; $i < $level; ++$i)
+	{
+		ob_end_clean();
+	}
+	setcookie('_NAppCookie', false);
+
+	$gzip = defined('FORCE_GZIP');
+	if ($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
+	{
+		ob_start('ob_gzhandler');
+	}
+	if (!in_array('Cache-Control: no-cache', headers_list(), true))
+	{
+		++$_SESSION['_NVisit'];
 	}
 	
 	error_log($message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message)));
@@ -162,7 +167,7 @@ function _NExceptionHandler($exception)
 	global $OmniscientBeing;
 	$_SESSION['_NScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
-	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
 	exit();
 }
 /**
