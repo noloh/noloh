@@ -32,19 +32,16 @@ abstract class RESTRouter extends Object
 		$this->Method = strtoupper($_SERVER['REQUEST_METHOD']);
 		switch ($this->Method)
 		{
-			case self::Options:
-				die();	// 200 OK all preflights
-				break;
-			
 			case self::Post:
 			case self::Get:
 			case self::Put:
 			case self::Delete:
+			case self::Options:
 				break;
 			
 			default:
 				Resource::MethodNotAllowed(array(
-					self::Get, self::Put, self::Post, self::Delete
+					self::Post, self::Get, self::Put, self::Delete, self::Options
 				));
 		}
 	}
@@ -118,6 +115,7 @@ abstract class RESTRouter extends Object
 				$data = array();
 		}
 		call_user_func(array($this->Resource, $method), $data);
+		$this->Resource->SendResponse();
 	}
 	
 	

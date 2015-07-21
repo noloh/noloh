@@ -2,37 +2,63 @@
 
 abstract class Resource extends Object
 {
+	protected $Response;
+	
 	function Resource() {}
 	
-	/* TODO: This doesn't allow parent::METHOD call.
-		A better way would be to somehow check if method is inherited. */
-	/* TODO: Find class methods, and send the Allow header.
-		Except it's not strictly class methods, because it could inherit a middle class. */
-	
-	function Post($data)
+	function Options()
 	{
-		return self::MethodNotAllowed();
+		$allowedList = $this->GetAllowedMethods();
+		header('Access-Control-Allow-Methods: ' . implode(', ', $allowedList));
+		die();
 	}
 	
-	function Get($params)
+	protected function GetAllowedMethods()
 	{
-		return self::MethodNotAllowed();
+		$allowedMethods = array();
+		$methods = array(
+			RESTRouter::Post,
+			RESTRouter::Get,
+			RESTRouter::Put,
+			RESTRouter::Delete,
+			RESTRouter::Options
+		);
+		foreach ($methods as $method)
+		{
+			$func = ucfirst(strtoLower($method));
+			if (method_exists($this, $func))
+			{
+				$allowedMethods[] = $method;
+			}
+		}
+		return $allowedMethods;
 	}
 	
-	function Put($data)
+	function __call($name, $args)
 	{
-		return self::MethodNotAllowed();
+		$name = strtoupper($name);
+		switch ($name)
+		{
+			case RESTRouter::Post:
+			case RESTRouter::Get:
+			case RESTRouter::Put:
+			case RESTRouter::Delete:
+				return self::MethodNotAllowed($this->GetAllowedMethods());
+				break;
+				
+			default:
+				self::InternalError();
+		}
 	}
 	
-	function Delete()
-	{
-		return self::MethodNotAllowed();
-	}
-	
-	/* TODO: We should prevent 2 Responds. This should probably just queue a response,
-		and Router, at the end, should issue that response, or respond with a blank or perhaps an error code. */
 	function Respond($data)
 	{
+		$this->Response = $data;
+	}
+	
+	function SendResponse()
+	{
+		$data = $this->Response;
 		if (is_object($data))
 		{
 			if (method_exists($data, 'ToArray'))
@@ -56,6 +82,7 @@ abstract class Resource extends Object
 		// TODO: End buffering
 		// TODO: gzip
 		// TODO: Possibly send cache headers on GET requests
+		header('HTTP/1.1 200 OK');
 		header('Content-Type: application/json');
 		echo json_encode($data);
 	}
@@ -88,6 +115,12 @@ abstract class Resource extends Object
 		{
 			header('Allow: ' . implode(', ', $allowedList));
 		}
+		die();
+	}
+	
+	public static function InternalError()
+	{
+		header('HTTP/1.1 500 Internal Server Error');
 		die();
 	}
 }
