@@ -646,6 +646,16 @@ class DataConnection extends Object
 			$this->ExecSQL('COMMIT;');
 		}
 	}
+	function ForceCommit()
+	{
+		if (isset(static::$TransactionCounts[$this->Name]) &&
+			static::$TransactionCounts[$this->Name] > 0 &&
+			$this->Type === Data::Postgres)
+		{
+			static::$TransactionCounts[$this->Name] = 0;
+			$this->ExecSQL('COMMIT;');
+		}
+	}
 	function Rollback()
 	{
 		static::$TransactionCounts[$this->Name] = 0;
