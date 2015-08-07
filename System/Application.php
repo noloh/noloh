@@ -626,9 +626,14 @@ final class Application extends Object
 		if($gzip)
 			ob_end_flush();
 		flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
+		if (isset($_SESSION['_NDataLinks']))
+		{
+			foreach ($_SESSION['_NDataLinks'] as $connection)
+			{
+				$connection->ForceCommit();
 				$connection->Close();
+			}
+		}
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
 		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
