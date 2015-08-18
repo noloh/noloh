@@ -375,7 +375,7 @@ final class URL
 	 * Changes the protocol of your current URL. For example, http://www.noloh.com would redirect to https://www.noloh.com
 	 * @param object $protocol
 	 */
-	static function SetProtocol($protocol)
+	static function SetProtocol($protocol, $permRedirect = false)
 	{
 		if($protocol != ($current = self::GetProtocol()))
 		{

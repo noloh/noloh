@@ -162,12 +162,12 @@ final class System
 	 */
 	static function GetAbsolutePath($path)
 	{
-		if(isset($_SESSION['_NUserDir']) && strpos($path, System::AssetPath())===0)
+		if (isset($_SESSION['_NUserDir']) && strpos($path, System::AssetPath())===0)
 			return System::RelativePath() . substr($path, strlen(System::AssetPath()));
 	
-		if($path[0] == '\\' || $path[0] == '/')
+		if ($path[0] == '\\' || $path[0] == '/')
 			return realpath($_SERVER['DOCUMENT_ROOT'].$path);
-		if(strpos($path, 'http://') >= 0)
+		if (strpos($path, URL::GetProtocol() . '://') >= 0)
 			return $path;
 		else
 			return realpath($path);
