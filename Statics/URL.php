@@ -374,13 +374,25 @@ final class URL
 	/**
 	 * Changes the protocol of your current URL. For example, http://www.noloh.com would redirect to https://www.noloh.com
 	 * @param object $protocol
+	 * @param boolean $jsRedirect
 	 */
-	static function SetProtocol($protocol, $permRedirect = false)
+	static function SetProtocol($protocol, $jsRedirect = true)
 	{
 		if($protocol != ($current = self::GetProtocol()))
 		{
-			$search = '/^(' . $current . ')(:.*)$/i';
-			URL::Redirect(preg_replace($search, $protocol . '$2', URL::GetPath()));
+			$search = '/^(' . $current . ')(\\:.*)$/i';
+			$newURL = preg_replace($search, $protocol . '$2', URL::GetPath(false));
+			
+			if ($jsRedirect)
+			{
+				URL::Redirect();
+			}
+			else
+			{
+				header('HTTP/1.1 301 Moved Permanently');
+				header('Location: ' . $newURL);
+				die();
+			}
 		}
 	}
 }
