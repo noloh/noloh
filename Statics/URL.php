@@ -385,7 +385,7 @@ final class URL
 			
 			if ($jsRedirect)
 			{
-				URL::Redirect();
+				URL::Redirect($newURL);
 			}
 			else
 			{
