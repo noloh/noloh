@@ -113,7 +113,15 @@ class DataCommand extends Object
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;
-			return new DataReader($type, $resource, $resultType, $this->Callback);
+			
+			if ($type === Data::Postgres)
+			{
+				return new DataReaderIterator($resource, $resultType, $this->Callback);
+			}
+			else
+			{
+				return new DataReader($type, $resource, $resultType, $this->Callback);
+			}
 		}
 		return false;
 	}

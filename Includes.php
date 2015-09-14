@@ -55,6 +55,7 @@ function _NAutoLoad($class)
 			'DataCommand' => 		'Data/DataCommand.php',
 			'DataConstraint' => 	'Data/DataConstraint.php',
 			'DataReader' => 		'Data/DataReader.php',
+			'DataReaderIterator' => 'Data/DataReaderIterator.php',
 			'File' => 				'Data/File.php',
 			
 			// Core Controls
