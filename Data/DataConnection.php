@@ -102,7 +102,9 @@ class DataConnection extends Object
 		$password = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$password = $this->Decrypt($password);
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
 		
 		if($this->Type == Data::Postgres)
@@ -670,46 +672,31 @@ class DataConnection extends Object
 		static::$TransactionCounts[$this->Name] = 0;
 		$this->ExecSQL('ROLLBACK;');
 	}
-	private function Encrypt($data)
+	function DBDump($file)
 	{
-		return $this->EncryptDecrypt($data, 'encrypt');
-	}
-	private function Decrypt($data)
-	{
-		return $this->EncryptDecrypt($data);
-	}
-	private function EncryptDecrypt($data, $action = 'decrypt')
-	{
-		$cipher = 'aes-256-cbc';
-
-		// Generate a 256-bit encryption key
-		// This should be stored somewhere instead of recreating it each time
-		// $encryptionKey = base64_encode(openssl_random_pseudo_bytes(32));
-		$encryptionKey = base64_decode('4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=');
-
-		// Generate an initialization vector
-		// This *MUST* be available for decryption as well
-		// $iv = base64_encode(openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher)));
-		$iv = base64_decode('lwHnoY6T0KZy7rkqdsHJgw==');
-
-		if ($action === 'encrypt')
+		$pass = Config::DBPassword;
+		if ($this->PasswordEncrypted)
 		{
-			// Encrypt $data using aes-256-cbc cipher with the given encryption key and 
-			// our initialization vector. The 0 gives us the default options, but can
-			// be changed to OPENSSL_RAW_DATA or OPENSSL_ZERO_PADDING
-			$encrypted = openssl_encrypt($data, $cipher, $encryptionKey, 0, $iv);
-			return $encrypted;
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
 		}
-		elseif ($action === 'decrypt')
+		
+		$user = Config::DBUser;
+		$host = Config::DBHost;
+		$dbName = Config::DBName;
+		if (PHP_OS === 'Linux')
 		{
-			$decrypted = openssl_decrypt($data, $cipher, $encryptionKey, 0, $iv);
-			return $decrypted;
+			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
+			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
 		}
 		else
 		{
-			BloodyMurder('Invalid usage of EncryptDecrypt!');
-			return false;
+			$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName} -f {$file}";
 		}
+
+		exec($backup);
+		return file_exists($file) ? $file : false;
 	}
 }
 ?>
