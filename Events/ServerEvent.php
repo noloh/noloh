@@ -227,7 +227,6 @@ class ServerEvent extends Event
         if ($log)
         {
             $callbackString = $class . '::' . $this->ExecuteFunction;
-            // Only grab the first one. TODO: This can be improved, but with some thought.
             Application::$RequestDetails['server_events'] .= 
                 (Application::$RequestDetails['server_events'] === '' ? '' : ', ') . 
                 $callbackString;
