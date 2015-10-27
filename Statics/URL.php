@@ -208,6 +208,7 @@ final class URL
 		AddScript('_NSetTokens(\''.$tokenString.'\')', Priority::Low);
 		self::UpdateTrails('?' . $tokenString, $GLOBALS['_NURLTokenMode']==2?$tokenString:self::TokenDisplayText(self::$TokenChain, $_SESSION['_NTokens']));
 		$_SESSION['_NTokenChain'] = serialize(self::$TokenChain);
+		return $tokenString;
 	}
 	/**
 	 * Redirects to another URL

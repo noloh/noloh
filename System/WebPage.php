@@ -123,6 +123,11 @@ abstract class WebPage extends Component
 		return $this;
 	}
 	/**
+	 * This can be overridden in order to log request details
+	 * @param array $details
+	 */
+	function ProcessRequestDetails($details)	{}
+	/**
 	 * @ignore
 	 */
 	function AddCSSFile($path)
