@@ -151,6 +151,16 @@ function DisplayError($message)
 	$_SESSION['_NScript'] = array('', '', '');
 	$_SESSION['_NScriptSrc'] = '';
 	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
+
+	$requestDetails = &Application::UpdateRequestDetails();
+	$requestDetails['error_message'] = $message;
+	unset($requestDetails['total_session_io_time']);
+	$webPage = WebPage::That();
+	if ($webPage)
+	{
+		$webPage->ProcessRequestDetails($requestDetails);
+	}
+	
 	exit();
 }
 /**

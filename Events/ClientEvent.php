@@ -177,7 +177,7 @@ class ClientEvent extends Event
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * <b>Note</b>:Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */
-	function Exec(&$execClientEvents=true)
+	function Exec(&$execClientEvents = true, $liquid = false, $log = false)
 	{
 		if(empty($GLOBALS['_NQueueDisabled']) && $execClientEvents && $this->Enabled===null)
 			if(!isset($GLOBALS['_NClientEventExecs']))

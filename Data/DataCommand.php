@@ -95,6 +95,7 @@ class DataCommand extends Object
 	{
 		if($this->Connection != null && $this->SqlStatement != null)
 		{
+			System::BeginBenchmarking();
 			$type = $this->Connection->GetType();
 			$connection = $this->Connection->Connect();
 			if($type == Data::Postgres)
@@ -113,7 +114,9 @@ class DataCommand extends Object
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;
-			return new DataReader($type, $resource, $resultType, $this->Callback);
+			$reader = new DataReader($type, $resource, $resultType, $this->Callback);
+			Application::$RequestDetails['total_database_time'] += System::Benchmark();
+			return $reader;
 		}
 		return false;
 	}

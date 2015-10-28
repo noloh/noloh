@@ -106,7 +106,7 @@ class DataConnection extends Object
 			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
 			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
-		
+		System::BeginBenchmarking();
 		if($this->Type == Data::Postgres)
 		{
 			if(!is_resource($this->ActiveConnection) || pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD)
@@ -142,6 +142,7 @@ class DataConnection extends Object
 				mssql_select_db($this->DatabaseName, $this->ActiveConnection);
 			}
 		}
+		Application::$RequestDetails['total_database_time'] += System::Benchmark();
 		return $this->ActiveConnection;
 	}
 	/**
