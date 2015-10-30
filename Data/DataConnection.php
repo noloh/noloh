@@ -208,6 +208,11 @@ class DataConnection extends Object
 	private function GenerateSQL($sql, $paramArray=null)
 	{
 		$paramCount = count($paramArray);
+		if (!$paramCount)
+		{
+			return $sql;
+		}
+		
 		$paramNum = 1;
 		$search = array();
 		$replace = array();
