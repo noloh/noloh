@@ -30,7 +30,9 @@ require($_NPath . 'Statics/URL.php');
 function _NAutoLoad($class)
 {
 	global $_NAutoLoad, $_NPath;
-	if(!isset($_NAutoLoad))
+	
+	if (!isset($_NAutoLoad))
+	{
 		$_NAutoLoad = array(
 			
 			// System
@@ -124,28 +126,49 @@ function _NAutoLoad($class)
 			'Semantics' =>			'Statics/Semantics.php',
 			'Shift' => 				'Statics/Shift.php'
 		);
+	}
 	
-	if(isset($_NAutoLoad[$class]))
+	if (isset($_NAutoLoad[$class]))
+	{
 		require($_NPath . $_NAutoLoad[$class]);
-	elseif(is_dir($dir = ($_NPath . 'Nodules/' . $class)))
+	}
+	elseif (is_dir($dir = ($_NPath . 'Nodules/' . $class)))
+	{
+		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
 		require($dir . '/' . $class . '.php');
-	elseif(function_exists('__autoload'))
+		if (!class_exists($class, false))
+		{
+			$autoloads = spl_autoload_functions();
+			$numAutoloadsNow = count($autoloads);
+			for ($i = $numAutoloadsBeforeInclude; $i < $numAutoloadsNow; ++$i)
+			{
+				call_user_func($autoloads[$i], $class);
+			}
+		}
+	}
+	elseif (function_exists('__autoload'))
+	{
 		__autoload($class);
+	}
 	else
 	{
-		if(count($autoloads = spl_autoload_functions()) > 1)
+		if (count($autoloads = spl_autoload_functions()) > 1)
 		{
 			$callLoad = false;
-			foreach($autoloads as $autoload)
+			foreach ($autoloads as $autoload)
 			{
-				if($callLoad && $autoload !== '_NAutoLoad')
+				if ($callLoad && $autoload !== '_NAutoLoad')
 				{
 					call_user_func($autoload, $class);
-					if(class_exists($class, false))
+					if (class_exists($class, false))
+					{
 						return;
+					}
 				}
-				elseif(!$callLoad && $autoload == '_NAutoLoad')
+				elseif (!$callLoad && $autoload === '_NAutoLoad')
+				{
 					$callLoad = true;
+				}
 			}
 		}
 		
@@ -155,9 +178,13 @@ function _NAutoLoad($class)
 			return;
 		}
 		
-		if((include $class . '.php') === false)
-			if((include str_replace('_', '/', $class) . '.php') === false)
+		if ((include $class . '.php') === false)
+		{
+			if ((include str_replace('_', '/', $class) . '.php') === false)
+			{
 				BloodyMurder('The class ' . $class . ' is not defined.');
+			}
+		}
 //		require($class . '.php');
 	//	BloodyMurder('The class ' . $class . ' is not defined.');
 	}
