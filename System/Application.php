@@ -653,9 +653,10 @@ final class Application extends Object
 		System::BeginBenchmarking();
 		$serializedSession = serialize($OmniscientBeing);
 		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress($serializedSession, 1) : $serializedSession;
+		$benchmark = System::Benchmark();
 
 		$requestDetails = &self::UpdateRequestDetails();
-		$requestDetails['total_session_io_time'] += System::Benchmark();
+		$requestDetails['total_session_io_time'] += $benchmark;
 		$requestDetails['session_strlen'] = strlen($serializedSession);
 		$requestDetails['tokens'] = $tokenString;
 		$this->WebPage->ProcessRequestDetails($requestDetails);
@@ -679,8 +680,6 @@ final class Application extends Object
 		
 		$requestDetails['visit'] = $_SESSION['_NVisit'];
 		$requestDetails['components'] = count($OmniscientBeing);
-		$requestDetails['total_server_time'] = (int)(1000 * (microtime(true) - $requestDetails['timestamp']));
-		unset($requestDetails['timestamp']);
 		$requestDetails['session_id'] = session_id();
 		$requestDetails['memory_peak_usage'] = memory_get_peak_usage(true) / 1048576; // 1024^2
 		
@@ -697,6 +696,9 @@ final class Application extends Object
 			$freeMemory = $matches[1];
 		}
 		$requestDetails['free_memory'] = $freeMemory / 1000;
+
+		$requestDetails['total_server_time'] = (int)(1000 * (microtime(true) - $requestDetails['timestamp']));
+		unset($requestDetails['timestamp']);
 		
 		return $requestDetails;
 	}
