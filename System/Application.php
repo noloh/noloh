@@ -16,6 +16,7 @@ final class Application extends Object
 	const Name = '@APPNAME';
 	private $WebPage;
 	
+	public static $RequestDetails;
 	/**
 	 * @ignore
 	 */
@@ -45,16 +46,19 @@ final class Application extends Object
 	{
 		if(empty($GLOBALS['_NApp']))
 		{
+			self::InitRequestDetails();
             if(!UserAgent::IsCLI() && getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
             	exit('Error with working directory. This could be caused by two reasons: you do a chdir in main after including the kernel, or your server is not compatible with not allowing a Application::Start call.');
 			if(isset($_REQUEST['_NApp']))
 				ini_set('session.use_cookies', 0);
 			else
 				session_set_cookie_params(30);
+			System::BeginBenchmarking();
 			session_name('_NS');
 			session_id(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
+			self::$RequestDetails['total_session_io_time'] += System::Benchmark();
 			if(isset($_SESSION['_NConfiguration']))
 				$config = $_SESSION['_NConfiguration'];
 			else 
@@ -185,6 +189,15 @@ final class Application extends Object
 			self::UnsetNolohSessionVars();
 			$this->HandleFirstRun();
 		}
+	}
+	private static function InitRequestDetails()
+	{
+		self::$RequestDetails = array(
+			'server_events'			=> '',
+			'total_database_time'	=> 0,
+			'total_session_io_time'	=> 0,
+			'timestamp'				=> microtime(true)
+		);
 	}
 	private static function CreateError($type)
 	{
@@ -372,7 +385,9 @@ final class Application extends Object
 	private function TheComingOfTheOmniscientBeing()
 	{
 		global $OmniscientBeing;
+		System::BeginBenchmarking();
 		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['_NOmniscientBeing']) : $_SESSION['_NOmniscientBeing']);
+		self::$RequestDetails['total_session_io_time'] += System::Benchmark();
 		unset($_SESSION['_NOmniscientBeing']);
 		$idArrayStr = '';
 		$idShftWithArr = array();
@@ -496,7 +511,7 @@ final class Application extends Object
 			if($obj = &GetComponentById($eventInfo[1]))
 	        {
 	            $execClientEvents = false;
-	            $obj->GetEvent($eventInfo[0])->Exec($execClientEvents);
+	            $obj->GetEvent($eventInfo[0])->Exec($execClientEvents, false, true);
 	        }
 			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
 				GetComponentById(substr($eventInfo[1], 0, $pos))->ExecEvent($eventInfo[0], $eventInfo[1]);
@@ -597,7 +612,7 @@ final class Application extends Object
 		header('Cache-Control: no-cache');
 		header('Pragma: no-cache');
 		//header('Cache-Control: no-store');
-		if(++$_SESSION['_NVisit'] === 0)
+		if (++$_SESSION['_NVisit'] === 0)
 		{
 			global $_NShowStrategy, $_NWidth, $_NHeight;
 			if(isset($_COOKIE['_NAppCookie']))
@@ -615,8 +630,14 @@ final class Application extends Object
 			AddScript('_N.Request=null;', Priority::Low);
 		}
 		header('Content-Type: text/javascript; charset=UTF-8');
-		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
-			URL::UpdateTokens();
+		if (isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
+		{
+			$tokenString = URL::UpdateTokens();
+		}
+		else
+		{
+			$tokenString = $_SERVER['QUERY_STRING'];
+		}
 		NolohInternal::Queues();
 		ob_end_clean();
 		$gzip = defined('FORCE_GZIP');
@@ -626,6 +647,19 @@ final class Application extends Object
 		if($gzip)
 			ob_end_flush();
 		flush();
+		$_SESSION['_NScriptSrc'] = '';
+		$_SESSION['_NScript'] = array('', '', '');
+		
+		System::BeginBenchmarking();
+		$serializedSession = serialize($OmniscientBeing);
+		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress($serializedSession, 1) : $serializedSession;
+
+		$requestDetails = &self::UpdateRequestDetails();
+		$requestDetails['total_session_io_time'] += System::Benchmark();
+		$requestDetails['session_strlen'] = strlen($serializedSession);
+		$requestDetails['tokens'] = $tokenString;
+		$this->WebPage->ProcessRequestDetails($requestDetails);
+		
 		if (isset($_SESSION['_NDataLinks']))
 		{
 			foreach ($_SESSION['_NDataLinks'] as $connection)
@@ -634,12 +668,37 @@ final class Application extends Object
 				$connection->Close();
 			}
 		}
-		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
 		$GLOBALS['_NGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['_NGarbage']);
+	}
+	public static function &UpdateRequestDetails()
+	{
+		global $OmniscientBeing;
+		$requestDetails = &self::$RequestDetails;
+		
+		$requestDetails['visit'] = $_SESSION['_NVisit'];
+		$requestDetails['components'] = count($OmniscientBeing);
+		$requestDetails['total_server_time'] = (int)(1000 * (microtime(true) - $requestDetails['timestamp']));
+		unset($requestDetails['timestamp']);
+		$requestDetails['session_id'] = session_id();
+		$requestDetails['memory_peak_usage'] = memory_get_peak_usage(true) / 1048576; // 1024^2
+		
+		if (substr(strtoupper(PHP_OS), 0, 3) === 'WIN')
+		{
+			exec('wmic OS get FreePhysicalMemory /Value', $output);
+			$memoryInfo = implode($output);
+			$freeMemory = (int)(substr($memoryInfo, strpos($memoryInfo, '=') + 1));
+		}
+		else
+		{
+			$memoryInfo = exec('free | grep buffers/cache');
+			preg_match('/(?:-\/\+ buffers\/cache:\s*\w+\s*)(\d*)/', $memoryInfo, $matches);
+			$freeMemory = $matches[1];
+		}
+		$requestDetails['free_memory'] = $freeMemory / 1000;
+		
+		return $requestDetails;
 	}
 	private function SearchEngineRun()
 	{

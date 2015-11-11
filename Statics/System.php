@@ -9,6 +9,7 @@
  */
 final class System
 {
+	private static $BenchmarkStartTime = null;
 	/**
 	 * @ignore
 	 */
@@ -430,6 +431,23 @@ final class System
 	 * @ignore
 	 */
 	static function FullAppPath()			{return URL::GetProtocol() . '://' . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
+
+	/**
+	 * Allows one to clock the time operation(s) took. Call this before before beginning those operations.
+	 */
+	static function BeginBenchmarking()
+	{
+		self::$BenchmarkStartTime = microtime(true);
+	}
+	/**
+	 * Returns the number of milliseconds that transpired since the call to BeginBenchmarking. 
+	 * @return int
+	 */
+	static function Benchmark()
+	{
+		$stop = microtime(true);
+		return (int)(1000 * ($stop - (self::$BenchmarkStartTime)));
+	}
 }
 
 ?>

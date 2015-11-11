@@ -191,11 +191,11 @@ class Event extends Object implements ArrayAccess
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */
-	function Exec(&$execClientEvents=true, $liquidParent=false)
+	function Exec(&$execClientEvents = true, $liquidParent = false, $log = false)
 	{
 		foreach($this->ExecuteFunction as $event)
 			if($event->GetEnabled())
-				$event->Exec($execClientEvents, $liquidParent || $this->Liquid);
+				$event->Exec($execClientEvents, $liquidParent || $this->Liquid, $log);
 	}
 	/**
 	 * @ignore
