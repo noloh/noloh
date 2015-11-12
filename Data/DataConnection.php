@@ -154,6 +154,7 @@ class DataConnection extends Object
 		if ($type == Data::Postgres)
 		{
 			$error = pg_last_error($connection) . "\\n" . $sql;
+			$this->Rollback();
 			$exception = new SqlException($error);
 			throw $exception;
 		}
@@ -675,8 +676,11 @@ class DataConnection extends Object
 	}
 	function Rollback()
 	{
-		static::$TransactionCounts[$this->Name] = 0;
-		$this->ExecSQL('ROLLBACK;');
+		if (!empty(static::$TransactionCounts[$this->Name]))
+		{
+			static::$TransactionCounts[$this->Name] = 0;
+			$this->ExecSQL('ROLLBACK;');
+		}
 	}
 	function DBDump($file)
 	{
