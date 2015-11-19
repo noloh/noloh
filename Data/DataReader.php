@@ -60,10 +60,6 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		$this->CallBack = $callBack;
 		
 		$this->Data = $this->ReadData();
-		if (!$this->Data)
-		{
-			$this->Data = array();
-		}
 	}
 	public function GetData()
 	{
@@ -221,6 +217,11 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			$free($resource);
 
 			$rows = ($count > 0) ? $data : $data[0];
+		}
+		
+		if (!$rows)
+		{
+			$rows = array();
 		}
 		
 		return $rows;
