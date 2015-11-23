@@ -32,13 +32,16 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	 * An array containing the results of your DataCommand
 	 * @var array 
 	 */
-	public $Data;
+	protected $Data;
+	protected $Type;
 	/**
 	 * Determines how your data columns are indexed
 	 * @var Data::Assoc|Data::Numeric|Data::Both 
 	 */
 	public $ResultType;
 	private $ColumnTypes;
+	protected $CallBack;
+	protected $Resource;
 	
 	/**
 	 * Constructor
@@ -51,123 +54,179 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null, $convertType=false)
 	{
-		$this->ResultType = $type;
-		if($callBack)
+		$this->Type = $type;
+		$this->ResultType = $resultType;
+		$this->Resource = $resource;
+		$this->CallBack = $callBack;
+		
+		$this->Data = $this->ReadData();
+	}
+	public function GetData()
+	{
+		return $this->Data;
+	}
+	protected function ReadData()
+	{
+		$type = $this->Type;
+		$resultType = $this->ResultType;
+		$resource = $this->Resource;
+		$callBack = $this->CallBack;
+		
+		if ($callBack)
 		{
-			$object = isset($callBack['id'])?GetComponentById($callBack['id']): $callBack['class'];
+			$object = isset($callBack['id']) ? GetComponentById($callBack['id']) : $callBack['class'];
 			$callArray = array($object, $callBack['function']);
 		}
-		if($type == Data::Postgres)
+		
+		if ($type == Data::Postgres)
 		{
-			if($resultType == Data::Both)
-				$resultType = PGSQL_BOTH;
-			elseif($resultType == Data::Assoc)
-				$resultType = PGSQL_ASSOC;
-			else
-				$resultType = PGSQL_NUM;	
-				
-			if($resultType == PGSQL_BOTH || $resultType == PGSQL_NUM || $callBack)
+			if ($resultType == Data::Both)
 			{
-				$this->Data = array();
+				$resultType = PGSQL_BOTH;
+			}
+			elseif ($resultType == Data::Assoc)
+			{
+				$resultType = PGSQL_ASSOC;
+			}
+			else
+			{
+				$resultType = PGSQL_NUM;
+			}
+
+			if ($resultType == PGSQL_BOTH || $resultType == PGSQL_NUM || $callBack)
+			{
+				$rows = array();
 				$numRows = pg_numrows($resource);
-				for ($i=0; $i < $numRows; ++$i)
+				for ($i = 0; $i < $numRows; ++$i)
 				{
 					$data = pg_fetch_array($resource, $i, $resultType);
 					//$data = self::ConvertType($type, $resource);
-					if(isset($callBack['constraint']))
-						$data = self::HandleConstraint($data, $callBack['constraint']);
-					
-					$this->Data[] = $data;
-					
-					if($callBack)
+					if (isset($callBack['constraint']))
 					{
-						$args = array_merge(array($this->Data[$i]), $callBack['params']);
+						$data = self::HandleConstraint($data, $callBack['constraint']);
+					}
+
+					$rows[] = $data;
+
+					if ($callBack)
+					{
+						$args = array_merge(array($rows[$i]), $callBack['params']);
 						call_user_func_array($callArray, $args);
 					}
 				}
 			}
 			else
-				$this->Data = pg_fetch_all($resource);	
-		}
-		elseif($type == Data::MySQL && is_resource($resource))
-		{
-			if($resultType == Data::Both)
-				$resultType = MYSQL_BOTH;
-			elseif($resultType == Data::Assoc)
-				$resultType = MYSQL_ASSOC;
-			else
-				$resultType = MYSQL_NUM;
-		
-//			$numRows = mysql_num_rows($resource);
-//			for ($i=0; $i < $numRows; ++$i)
-//				$this->Data[] =  mysql_fetch_array($resource, $resultType);
-			while($row = mysql_fetch_array($resource, $resultType))
 			{
-				if(isset($callBack['constraint']))
+				$rows = pg_fetch_all($resource);
+			}
+		}
+		elseif ($type == Data::MySQL && is_resource($resource))
+		{
+			if ($resultType == Data::Both)
+			{
+				$resultType = MYSQL_BOTH;
+			}
+			elseif ($resultType == Data::Assoc)
+			{
+				$resultType = MYSQL_ASSOC;
+			}
+			else
+			{
+				$resultType = MYSQL_NUM;
+			}
+
+			//			$numRows = mysql_num_rows($resource);
+			//			for ($i=0; $i < $numRows; ++$i)
+			//				$rows[] =  mysql_fetch_array($resource, $resultType);
+			while ($row = mysql_fetch_array($resource, $resultType))
+			{
+				if (isset($callBack['constraint']))
+				{
 					$row = self::HandleConstraint($row, $callBack['constraint']);
-				
-				$this->Data[] = $row;	
-				if($callBack)
+				}
+
+				$rows[] = $row;
+				if ($callBack)
 				{
 					$args = array_merge(array($row), $callBack['params']);
 					call_user_func_array($callArray, $args);
 				}
 			}
 		}
-		elseif($type == Data::MSSQL && $resource !== true)
+		elseif ($type == Data::MSSQL && $resource !== true)
 		{
 			if (function_exists('sqlsrv_fetch_array'))
 			{
-				if($resultType == Data::Both)
+				if ($resultType == Data::Both)
+				{
 					$resultType = SQLSRV_FETCH_BOTH;
-				elseif($resultType == Data::Assoc)
+				}
+				elseif ($resultType == Data::Assoc)
+				{
 					$resultType = SQLSRV_FETCH_ASSOC;
+				}
 				else
+				{
 					$resultType = SQLSRV_FETCH_NUMERIC;
+				}
+				
 				$fetch = 'sqlsrv_fetch_array';
 				$next = 'sqlsrv_next_result';
 				$free = 'sqlsrv_free_stmt';
-				
 			}
 			else
 			{
-				if($resultType == Data::Both)
+				if ($resultType == Data::Both)
+				{
 					$resultType = MSSQL_BOTH;
-				elseif($resultType == Data::Assoc)
+				}
+				elseif ($resultType == Data::Assoc)
+				{
 					$resultType = MSSQL_ASSOC;
+				}
 				else
+				{
 					$resultType = MSSQL_NUM;
+				}
+				
 				$fetch = 'mssql_fetch_array';
 				$next = 'mssql_next_result';
 				$free = 'mssql_free_result';
 			}
-		
+
 			$count = -1;
 			$data = array();
 			do
 			{
 				++$count;
 				$data[$count] = array();
-				while($row = $fetch($resource, $resultType))
+				while ($row = $fetch($resource, $resultType))
 				{
-					if(isset($callBack['constraint']))
+					if (isset($callBack['constraint']))
+					{
 						$row = self::HandleConstraint($row, $callBack['constraint']);
+					}
 					$data[$count][] = $row;
-					if($callBack)
+					if ($callBack)
 					{
 						$args = array_merge(array($row), $callBack['params']);
 						call_user_func_array($callArray, $args);
-					}	
+					}
 				}
-			}while ($next($resource));
+			} while ($next($resource));
 			$free($resource);
-			
-			$this->Data = ($count > 0)?$data:$data[0];
+
+			$rows = ($count > 0) ? $data : $data[0];
 		}
-		if(!$this->Data)
-			$this->Data = array();
+		
+		if (!$rows)
+		{
+			$rows = array();
+		}
+		
+		return $rows;
 	}
-	private function DetermineColumnTypes($dbType, $resource)
+	protected function DetermineColumnTypes($dbType, $resource)
 	{
 		$this->ColumnTypes = array();
 		if($dbType == Data::Postgres)
@@ -202,7 +261,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	{
 		
 	}
-	private static function HandleConstraint($data, $constraint)
+	protected static function HandleConstraint($data, $constraint)
 	{
 		//$intersection = array();
 		$columns = $constraint->GetColumns();
@@ -292,16 +351,14 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	 */
 	function offsetSet($index, $val)
 	{	
-		return null;	
+		BloodyMurder('offsetSet is not allowed for DataReader');
 	}
 	/**
 	 * @ignore
 	 */
 	function offsetUnset($index)
 	{
-		return null;
-//		if(is_numeric($index))
-//			array_splice($this->Data, $index, 1);
+		BloodyMurder('offsetUnset is not allowed for DataReader');
 	}
 }
 ?>

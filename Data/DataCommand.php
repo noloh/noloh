@@ -114,7 +114,16 @@ class DataCommand extends Object
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;
-			$reader = new DataReader($type, $resource, $resultType, $this->Callback);
+			
+			if ($type === Data::Postgres)
+			{
+				$reader = new DataReaderIterator($resource, $resultType, $this->Callback);
+			}
+			else
+			{
+				$reader = new DataReader($type, $resource, $resultType, $this->Callback);
+			}
+
 			Application::$RequestDetails['total_database_time'] += System::Benchmark();
 			return $reader;
 		}
