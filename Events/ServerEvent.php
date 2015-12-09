@@ -57,16 +57,25 @@ class ServerEvent extends Event
      * @ignore
      */
     public $Parameters;
-    
+    /**
+     * Ability to disable the spinner
+     * @var bool
+     */
+    public $Spinner = true;
     /**
      * @ignore
      */
-    static function GenerateString($eventType, $objId, $uploadArray, $liquids)
+    static function GenerateString($eventType, $objId, $uploadArray, $liquids, $spinner)
     {
         $str = '_NSE("' . $eventType . '","' . $objId .
             (count($uploadArray)
                 ? '",[' . implode(',', $uploadArray) . ']);'
                 : '");');
+
+        if ($spinner === false)
+        {
+            $str = '_N.Spinner=false;' . $str;
+        }
         //return $allLiquid ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : $str;         
         return $liquids === 0 ? $str : 
             ($liquids === 1 ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : 
@@ -123,6 +132,10 @@ class ServerEvent extends Event
             ++$arr[3];
         if($this->Bubbles === false)
             $arr[4] = false;
+        if ($this->Spinner === false)
+        {
+            $arr['spinner'] = false;
+        }
         return $this->Uploads->Count()===0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
     }
     /**
@@ -132,7 +145,7 @@ class ServerEvent extends Event
     {
         if($this->GetEnabled())
         {
-            $txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid);
+            $txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid, $this->Spinner);
             if($this->Bubbles === false)
                 $txt .= '_NNoBubble();';
             return $txt;
