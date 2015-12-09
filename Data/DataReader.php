@@ -115,7 +115,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 					}
 				}
 			}
-			else
+			elseif ($resource)
 			{
 				$rows = pg_fetch_all($resource);
 			}
