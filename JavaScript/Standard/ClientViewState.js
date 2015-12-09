@@ -494,6 +494,7 @@ function _NUnServer(loadIndicator)
 		_N.TimeoutWorking = null;
 	_N.LoadIndicator = loadIndicator;
 	_N(loadIndicator).style.visibility = "hidden";
+	_N.Spinner = null;
 	_N.Request = null;
 	if(_N.Listeners)
 		_NListenersCont();
@@ -579,7 +580,10 @@ function _NServer()
 			str += "&_NTokenLink="+_N.URLTokenLink;
 			_N.URLTokenLink = null;
 		}
-		_N(_N.LoadIndicator).style.visibility = "visible";
+		if (_N.Spinner !== false)
+		{
+			_N(_N.LoadIndicator).style.visibility = "visible";
+		}
 		_N.Request = _NXHR("POST", 
 	    	hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
 	    	notUnload ? _NReqStateChange : null,

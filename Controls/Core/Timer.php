@@ -122,6 +122,7 @@ class Timer extends Component
 	 */
 	function Show()
 	{
+		$this->UpdateEvent('Elapsed');
 		parent::Show();
 		AddNolohScriptSrc('Timer.js');
 		$this->Reshow();

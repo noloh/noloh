@@ -172,13 +172,13 @@ class Event extends Object implements ArrayAccess
 		if($this->GetEnabled())
 		{
 			$onlyClientEvents = true;
-            $arr = array('', array(), 0, 0);
+            $arr = array('', array(), 0, 0, 'spinner' => true);
 			$info = $this->GetInfo($arr, $onlyClientEvents);
 			$ret = '';
 			if($info[0] !== '')
 				$ret .= ClientEvent::GenerateString($eventType, $info[0]);
 			if(!$onlyClientEvents)
-				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3]===0?0 : $info[2]===$info[3]?1 : 2);
+				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3]===0?0 : $info[2]===$info[3]?1 : 2, $info['spinner']);
 			if(isset($arr[4]))
 				$ret .= '_NNoBubble();';
 			return $ret;
