@@ -112,7 +112,7 @@ class DataReaderIterator extends DataReader
 				
 				return $data;
 			}
-			else
+			elseif ($this->Resource)
 			{
 				return pg_fetch_assoc($this->Resource, $index);
 			}
