@@ -35,6 +35,10 @@ class DataReaderIterator extends DataReader
 	}
 	public function GetData()
 	{
+		if ($this->Data !== null)
+		{
+			return parent::GetData();
+		}
 		return $this->ReadData();
 	}
 	/**
@@ -94,7 +98,11 @@ class DataReaderIterator extends DataReader
 	}
 	function offsetGet($index)
 	{
-		if ($this->offsetExists($index))
+		if ($this->Data !== null)
+		{
+			return parent::offsetGet($index);
+		}
+		elseif ($this->offsetExists($index))
 		{
 			if (isset($this->CallBack['constraint']))
 			{
@@ -124,6 +132,13 @@ class DataReaderIterator extends DataReader
 		else
 		{
 			return null;
+		}
+	}
+	function __sleep()
+	{
+		if ($this->Data === null)
+		{
+			$this->Data = $this->ReadData();
 		}
 	}
 }
