@@ -140,7 +140,6 @@ class DataReaderIterator extends DataReader
 		{
 			$this->Data = $this->ReadData();
 		}
-		return parent::__sleep();
 	}
 }
 ?>
