@@ -116,6 +116,10 @@ class DataReaderIterator extends DataReader
 			{
 				return pg_fetch_assoc($this->Resource, $index);
 			}
+			else
+			{
+				throw new SqlException('Resource not available');
+			}
 		}
 		else
 		{
