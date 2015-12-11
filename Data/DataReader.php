@@ -119,6 +119,10 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			{
 				$rows = pg_fetch_all($resource);
 			}
+			else
+			{
+				throw new SqlException('Resource not available');
+			}
 		}
 		elseif ($type == Data::MySQL && is_resource($resource))
 		{
