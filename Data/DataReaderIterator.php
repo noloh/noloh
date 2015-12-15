@@ -140,6 +140,7 @@ class DataReaderIterator extends DataReader
 		{
 			$this->Data = $this->ReadData();
 		}
+		return array_keys((array)$this);
 	}
 }
 ?>
