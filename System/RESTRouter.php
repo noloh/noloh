@@ -101,9 +101,6 @@ abstract class RESTRouter extends Object
 		switch ($this->Method)
 		{
 			case self::Post:
-				$data = $_POST;
-				break;
-			
 			case self::Put:
 				if (empty($_POST))
 				{
