@@ -102,7 +102,23 @@ abstract class RESTRouter extends Object
 		{
 			case self::Post:
 			case self::Put:
-				$data = $_POST;
+				if (empty($_POST))
+				{
+					$raw = file_get_contents('php://input');
+					$json = json_decode($raw, true);
+					if ($json === null)
+					{
+						parse_str($raw, $data);
+					}
+					else
+					{
+						$data = $json;
+					}
+				}
+				else
+				{
+					$data = $_POST;
+				}
 				break;
 				
 			case self::Get:
