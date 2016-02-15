@@ -130,8 +130,24 @@ final class System
 				$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
 			return rtrim($text,', ') . "$spacer)";
 		}
-		elseif(is_object($what))
-			return (string)$what . ' ' . get_class($what) . ' object';
+		elseif (is_object($what))
+		{
+			if ($what instanceof stdClass)
+			{
+				$array = get_object_vars($what);
+				$returnArray = array();
+				foreach ($array as $key => $value)
+				{
+					$value = (is_array($value) || is_object($value)) ? self::LogFormat($value) : $value;
+					$returnArray[$key] = $value;
+				}
+				return self::LogFormat($returnArray);
+			}
+			else
+			{
+				return (string)$what . ' ' . get_class($what) . ' object';
+			}
+		}
 		elseif(!is_string($what) || $addQuotes)
 			return ClientEvent::ClientFormat($what);
 		return $what;
@@ -273,6 +289,7 @@ final class System
 				$debugWindow->Visible = true;
 				
 				$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ';
+				
 				if(($count = func_num_args()) > 1)
 				{
 					$display->Text .= '<UL>';
