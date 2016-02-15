@@ -178,7 +178,7 @@ function _NAutoLoad($class)
 			stream_resolve_include_path($includeFile = (str_replace('_', '/', $class) . '.php')) ||
 			stream_resolve_include_path($includeFile = (strtolower($class) . '.php')))
 		{
-			if (include $includeFile === false)
+			if ((include $includeFile) === false)
 			{
 				BloodyMurder('The class ' . $class . ' is not defined.');
 			}
