@@ -173,18 +173,12 @@ function _NAutoLoad($class)
 			}
 		}
 		
-		if (!stream_resolve_include_path($class . '.php') &&
-			!stream_resolve_include_path(str_replace('_', '/', $class) . '.php'))
-		{
-			return;
-		}
 		
-		if ((include $class . '.php') === false)
+		if (stream_resolve_include_path($includeFile = ($class . '.php')) ||
+			stream_resolve_include_path($includeFile = (str_replace('_', '/', $class) . '.php')) ||
+			stream_resolve_include_path($includeFile = (strtolower($class) . '.php')))
 		{
-			if ((include str_replace('_', '/', $class) . '.php') === false)
-			{
-				BloodyMurder('The class ' . $class . ' is not defined.');
-			}
+			include $includeFile;
 		}
 //		require($class . '.php');
 	//	BloodyMurder('The class ' . $class . ' is not defined.');
