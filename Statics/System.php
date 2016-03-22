@@ -123,12 +123,7 @@ final class System
 	{
 		if(($isArray = is_array($what)) || $what instanceof Iterator)
 		{
-			$indent = '    ';
-			$spacer = str_repeat($indent, $tier);
-			$text = ($isArray ? 'Array' : get_class($what)) . "\n$spacer(\n";
-			foreach($what as $key => $val)
-				$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
-			return rtrim($text,', ') . "$spacer)";
+			$what = self::FormatArray($what, 'Array', $tier);
 		}
 		elseif (is_object($what))
 		{
@@ -138,10 +133,10 @@ final class System
 				$returnArray = array();
 				foreach ($array as $key => $value)
 				{
-					$value = (is_array($value) || is_object($value)) ? self::LogFormat($value) : $value;
+					$value = self::LogFormat($value);
 					$returnArray[$key] = $value;
 				}
-				return self::LogFormat($returnArray);
+				return self::FormatArray($returnArray, 'StdClass', $tier);
 			}
 			else
 			{
@@ -151,6 +146,20 @@ final class System
 		elseif(!is_string($what) || $addQuotes)
 			return ClientEvent::ClientFormat($what);
 		return $what;
+	}
+	/**
+	 * @return string
+	 */
+	static function FormatArray($what, $type, $tier)
+	{
+		$indent = '    ';
+		$spacer = str_repeat($indent, $tier);
+		$text = $type . "\n$spacer(\n";
+		foreach($what as $key => $val)
+		{
+			$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
+		}
+		return rtrim($text, ', ') . "$spacer)";
 	}
 	/**
 	 * Styles a string of text by giving it a CSS class
@@ -267,6 +276,7 @@ final class System
 				else 
 					 $output .= self::LogFormat($what) . $endLine;
 				echo $output;
+				file_put_contents('emailtest.txt', $output);
 			}
 			else
 			{

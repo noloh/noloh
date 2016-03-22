@@ -58,6 +58,12 @@ class DataConnection extends Object
 	 */
 	public $ActiveConnection;
 	/**
+	 * Any additional connection parameters that are needed
+	 * 
+	 * @var array
+	 */
+	public $AdditionalParams;
+	/**
 	 * Whether the connection should convert your data results to
 	 * their PHP real type equivalents, or leave them as strings.
 	 *
@@ -82,7 +88,7 @@ class DataConnection extends Object
 	 * @param mixed $port The port you use to connect to your database. 
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false)
+	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -91,6 +97,7 @@ class DataConnection extends Object
 		$this->Password = $password;
 		$this->PasswordEncrypted = $passwordEncrypted;
 		$this->Type = $type;
+		$this->AdditionalParams = $additionalParams;
 	}
 	/**
 	 * Attempts to create a connection to your database.
@@ -126,11 +133,18 @@ class DataConnection extends Object
 		}
 		elseif($this->Type == Data::MSSQL)
 		{
-			$host = $this->Port?$this->Host . ':' . $this->Port:$this->Host;
+			$host = $this->Port ? $this->Host . ', ' . $this->Port : $this->Host;
 			if (function_exists('sqlsrv_connect'))
 			{
-				$this->ActiveConnection = sqlsrv_connect($host, 
-					array('Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $password, 'ReturnDatesAsStrings' => true));
+				$connectString = array(
+					'Database' => $this->DatabaseName,
+					'UID' => $this->Username,
+					'PWD' => $password,
+					'ReturnDatesAsStrings' => 'yes'
+				);
+				$connectionParams = array_merge($connectString, $this->AdditionalParams);
+				
+				$this->ActiveConnection = sqlsrv_connect($host, $connectionParams);
 				if (!$this->ActiveConnection)
 				{
 					$this->ErrorOut(null, null);
