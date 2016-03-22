@@ -109,6 +109,19 @@ abstract class RESTRouter extends Object
 					if ($json === null)
 					{
 						parse_str($raw, $data);
+						/* If invalid JSON, parse_str on the raw has an odd effect.
+							This attempts to detect that effect and produce a good error message.
+							I can't think of any reason anybody would pass in a 1-element array whose
+							key starts with { or [ as keys should be alphanumeric anyway. */
+						if (count($data) === 1)
+						{
+							$key = key($data);
+							$firstChar = $key[0];
+							if ($firstChar === '{' || $firstChar === '[')
+							{
+								Resource::BadRequest('Invalid JSON.');
+							}
+						}
 					}
 					else
 					{
