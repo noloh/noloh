@@ -140,7 +140,7 @@ class DataConnection extends Object
 					'Database' => $this->DatabaseName,
 					'UID' => $this->Username,
 					'PWD' => $password,
-					'ReturnDatesAsStrings' => 'yes'
+					'ReturnDatesAsStrings' => true
 				);
 				$connectionParams = array_merge($connectString, $this->AdditionalParams);
 				
