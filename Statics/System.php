@@ -130,13 +130,7 @@ final class System
 			if ($what instanceof stdClass)
 			{
 				$array = get_object_vars($what);
-				$returnArray = array();
-				foreach ($array as $key => $value)
-				{
-					$value = self::LogFormat($value);
-					$returnArray[$key] = $value;
-				}
-				return self::FormatArray($returnArray, 'StdClass', $tier);
+				return self::FormatArray($array, 'StdClass', $tier);
 			}
 			else
 			{
