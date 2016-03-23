@@ -134,7 +134,7 @@ final class System
 			}
 			else
 			{
-				return (string)$what . ' ' . get_class($what) . ' object';
+				return (string) $what . ' ' . get_class($what) . ' object';
 			}
 		}
 		elseif(!is_string($what) || $addQuotes)
@@ -149,7 +149,7 @@ final class System
 		$indent = '    ';
 		$spacer = str_repeat($indent, $tier);
 		$text = $type . "\n$spacer(\n";
-		foreach($what as $key => $val)
+		foreach ($what as $key => $val)
 		{
 			$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
 		}
