@@ -123,18 +123,37 @@ final class System
 	{
 		if(($isArray = is_array($what)) || $what instanceof Iterator)
 		{
-			$indent = '    ';
-			$spacer = str_repeat($indent, $tier);
-			$text = ($isArray ? 'Array' : get_class($what)) . "\n$spacer(\n";
-			foreach($what as $key => $val)
-				$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
-			return rtrim($text,', ') . "$spacer)";
+			$what = self::FormatArray($what, 'Array', $tier);
 		}
-		elseif(is_object($what))
-			return (string)$what . ' ' . get_class($what) . ' object';
+		elseif (is_object($what))
+		{
+			if ($what instanceof stdClass)
+			{
+				$array = get_object_vars($what);
+				return self::FormatArray($array, 'StdClass', $tier);
+			}
+			else
+			{
+				return (string) $what . ' ' . get_class($what) . ' object';
+			}
+		}
 		elseif(!is_string($what) || $addQuotes)
 			return ClientEvent::ClientFormat($what);
 		return $what;
+	}
+	/**
+	 * @return string
+	 */
+	static function FormatArray($what, $type, $tier)
+	{
+		$indent = '    ';
+		$spacer = str_repeat($indent, $tier);
+		$text = $type . "\n$spacer(\n";
+		foreach ($what as $key => $val)
+		{
+			$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
+		}
+		return rtrim($text, ', ') . "$spacer)";
 	}
 	/**
 	 * Styles a string of text by giving it a CSS class
@@ -251,6 +270,7 @@ final class System
 				else 
 					 $output .= self::LogFormat($what) . $endLine;
 				echo $output;
+				file_put_contents('emailtest.txt', $output);
 			}
 			else
 			{
@@ -273,6 +293,7 @@ final class System
 				$debugWindow->Visible = true;
 				
 				$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ';
+				
 				if(($count = func_num_args()) > 1)
 				{
 					$display->Text .= '<UL>';
