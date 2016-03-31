@@ -713,15 +713,15 @@ class DataConnection extends Object
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
 			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
-			$gzip = exec('which gzip');
+			$gzip = exec('which gzip 2>&1');
 			if (is_executable ($gzip))
 			{
 				$file .= '.gz';
-				$backup .= ' | ' . $gzip . ' -9 > ' . $file;
+				$backup .= ' | gzip -c9 > ' . $file;
 			}
 			else
 			{
-				$backup .= " -f {$file}";
+				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
 			}
 		}
 		else
@@ -731,7 +731,7 @@ class DataConnection extends Object
 			if (is_executable ($gzip))
 			{
 				$file .= '.gz';
-				$backup .= ' | ' . $gzip . ' -9 > ' . $file;
+				$backup .= ' | gzip -c9 > ' . $file;
 			}
 			else
 			{
@@ -739,6 +739,7 @@ class DataConnection extends Object
 			}
 		}
 		exec($backup);
+		System::Log($file);
 		return file_exists($file) ? $file : false;
 	}
 }
