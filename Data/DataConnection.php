@@ -696,7 +696,7 @@ class DataConnection extends Object
 			$this->ExecSQL('ROLLBACK;');
 		}
 	}
-	function DBDump($file)
+	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = Config::DBPassword;
 		if ($this->PasswordEncrypted)
@@ -717,11 +717,12 @@ class DataConnection extends Object
 			if (is_executable ($gzip))
 			{
 				$file .= '.gz';
-				$backup .= ' | gzip -c9 > ' . $file;
+				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
 			}
 			else
 			{
 				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+				$compress = true;
 			}
 		}
 		else
@@ -731,16 +732,71 @@ class DataConnection extends Object
 			if (is_executable ($gzip))
 			{
 				$file .= '.gz';
-				$backup .= ' | gzip -c9 > ' . $file;
+				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
 			}
 			else
 			{
 				$backup .= " -f {$file}";
+				$compress = true;
 			}
 		}
 		exec($backup);
-		System::Log($file);
+		
+		if (file_exists($file) && $compress)
+		{
+			$path = pathinfo($file);
+			if ($path['extension'] != 'gz')
+			{
+				$file = self::GzCompress($file, $compressionLevel, true);
+			}
+		}
+		
 		return file_exists($file) ? $file : false;
+	}
+	/**
+	 * @param $source is the path to the original file
+	 * @param int $level is the level of compression 9 is the default and the highest
+	 * @param bool $deleteOriginal will delete the original file if set to true and there are no errors in creating the gz file
+	 * @return bool|string returns false on error, path on success
+	 */
+	static public function GzCompress($source, $level = 9, $deleteOriginal = false)
+	{
+		$dest = $source . '.gz';
+		$mode = 'wb' . $level;
+		$error = false;
+		if ($fp_out = gzopen($dest, $mode))
+		{
+			if ($fp_in = fopen($source,'rb'))
+			{
+				while (!feof($fp_in))
+				{
+					gzwrite($fp_out, fread($fp_in, 1024 * 512));
+				}
+				fclose($fp_in);
+			}
+			else
+			{
+				$error = true;
+			}
+			gzclose($fp_out);
+		}
+		else
+		{
+			$error = true;
+		}
+
+		if ($error)
+		{
+			return false;
+		}
+		else
+		{
+			if ($deleteOriginal)
+			{
+				unlink($source);
+			}
+			return $dest;
+		}
 	}
 }
 ?>
