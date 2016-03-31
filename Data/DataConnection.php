@@ -698,13 +698,33 @@ class DataConnection extends Object
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
+			$gzip = exec('which gzip');
+			if (is_executable ($gzip))
+			{
+				$file .= '.gz';
+				$backup .= ' | ' . $gzip . ' -9 > ' . $file;
+			}
+			else
+			{
+				$backup .= " -f {$file}";
+			}
 		}
 		else
 		{
-			$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName} -f {$file}";
+			$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
+			$gzip = exec('where gzip 2>&1');
+			if (is_executable ($gzip))
+			{
+				$file .= '.gz';
+				$backup .= ' | ' . $gzip . ' -9 > ' . $file;
+			}
+			else
+			{
+				$backup .= " -f {$file}";
+			}
 		}
-
+		System::Log($backup, $gzip, var_export(is_executable($gzip), true));
 		exec($backup);
 		return file_exists($file) ? $file : false;
 	}
