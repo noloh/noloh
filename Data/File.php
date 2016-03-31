@@ -54,14 +54,11 @@ class File extends Object
 		{
 			$fileInfo = $_SESSION['_NFileSend'][$fileName];
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Cache-Control: public');
 			header('Content-Description: File Transfer');
-			header('Content-Type: application/octet-stream');
-			file_put_contents('/var/log/test.log', var_export($fileInfo[0], true), FILE_APPEND);
+			header('Content-Type: ' . $fileInfo[0]);
 			header('Content-Length: ' . filesize($fileName));
 			header('Content-Disposition: attachment; filename=' . basename($fileInfo[1]?$fileInfo[1]:$fileName));
 			header('Content-Transfer-Encoding: binary');
-			ob_end_flush();
 			readfile($fileName);
 			unset($_SESSION['_NFileSend'][$fileName]);
 
