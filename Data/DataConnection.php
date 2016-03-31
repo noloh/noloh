@@ -724,7 +724,6 @@ class DataConnection extends Object
 				$backup .= " -f {$file}";
 			}
 		}
-		System::Log($backup, $gzip, var_export(is_executable($gzip), true));
 		exec($backup);
 		return file_exists($file) ? $file : false;
 	}
