@@ -659,7 +659,10 @@ final class Application extends Object
 		$requestDetails['total_session_io_time'] += $benchmark;
 		$requestDetails['session_strlen'] = strlen($serializedSession);
 		$requestDetails['tokens'] = $tokenString;
-		$this->WebPage->ProcessRequestDetails($requestDetails);
+		if ($this->WebPage && !empty($requestDetails))
+		{
+			$this->WebPage->ProcessRequestDetails($requestDetails);
+		}
 		
 		if (isset($_SESSION['_NDataLinks']))
 		{

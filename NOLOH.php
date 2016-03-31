@@ -22,4 +22,6 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  */
 function GetNOLOHVersion() {return '1.8.162';}   // Run "git rev-list HEAD --count", then +1.
 
+function GetNOLOHVersion() {return '1.8.166';}   // Run "git rev-list HEAD --count", then +1.
+
 ?>
