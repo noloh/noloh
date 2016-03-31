@@ -61,7 +61,6 @@ class File extends Object
 			header('Content-Transfer-Encoding: binary');
 			readfile($fileName);
 			unset($_SESSION['_NFileSend'][$fileName]);
-
 		}
 		else 
 			BloodyMurder('You do not have permission to access that file!');
