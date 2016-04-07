@@ -696,7 +696,7 @@ class DataConnection extends Object
 			$this->ExecSQL('ROLLBACK;');
 		}
 	}
-	function DBDump($file)
+	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = Config::DBPassword;
 		if ($this->PasswordEncrypted)
@@ -712,14 +712,45 @@ class DataConnection extends Object
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
+			$gzip = exec('which gzip 2>&1');
+			if (is_executable ($gzip))
+			{
+				$file .= '.gz';
+				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
+			}
+			else
+			{
+				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+				$compress = true;
+			}
 		}
 		else
 		{
-			$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName} -f {$file}";
+			$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
+			$gzip = exec('where gzip 2>&1');
+			if (is_executable ($gzip))
+			{
+				$file .= '.gz';
+				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
+			}
+			else
+			{
+				$backup .= " -f {$file}";
+				$compress = true;
+			}
 		}
-
 		exec($backup);
+		
+		if (file_exists($file) && $compress)
+		{
+			$path = pathinfo($file);
+			if ($path['extension'] != 'gz')
+			{
+				$file = File::GzCompress($file, $compressionLevel, true);
+			}
+		}
+		
 		return file_exists($file) ? $file : false;
 	}
 }
