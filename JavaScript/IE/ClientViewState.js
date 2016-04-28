@@ -506,7 +506,12 @@ function _NChangeString()
 			changes += change + "~d0~";
 	}
 	_N.Changes = {};
-	return changes.substring(0, changes.length-4);
+
+	changes = changes
+		.substring(0, changes.length - 4)
+		.replace("&", "%26");
+
+	return changes;
 }
 function _NEventVarsString()
 {
