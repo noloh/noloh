@@ -173,7 +173,11 @@ class DataConnection extends Object
 			throw $exception;
 		}
 		elseif($type == Data::MySQL)
-			BloodyMurder(mysql_error());
+		{
+			$error = mysql_error();
+			$exception = new SqlException($error);
+			throw $exception;
+		}
 		elseif($type == Data::MSSQL)
 			if (function_exists('sqlsrv_errors'))
 			{
@@ -181,14 +185,19 @@ class DataConnection extends Object
 				$errors = sqlsrv_errors();
 				foreach($errors as $error)
 				{
-					$errStr .= 'State: '.$error[ 'SQLSTATE'] . '; ' . 
+					$errStr .= 'State: '.$error[ 'SQLSTATE'] . '; ' .
 						'Code: ' . $error['code'] . '; ' .
 						'Message: ' . $error[ 'message'] . "\n";
 				}
-				BloodyMurder($errStr);
+				$exception = new SqlException($errStr);
+				throw $exception;
 			}
 			else
-				BloodyMurder(mssql_get_last_message());
+			{
+				$error = mssql_get_last_message();
+				$exception = new SqlException($error);
+				throw $exception;
+			}
 	}
 	/**
 	 * Attempts to close the connection to your database. Note: In most circumstances, this is done automatically.
