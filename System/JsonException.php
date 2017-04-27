@@ -2,7 +2,7 @@
 
 class JsonException extends Exception
 {
-	private $Json;
+	protected $Json;
 	private $Class;
 	private $Type;
 
@@ -12,13 +12,13 @@ class JsonException extends Exception
 		$this->Class = $class;
 		parent::__construct($message, $code, $previous);
 	}
-	function getJson(){
+	function GetJson(){
 		return $this->Json;
 	}
-	function getResource(){
+	function GetResource(){
 		return $this->Class;
 	}
-	function getErrorType(){
+	function GetErrorType(){
 		return $this->Type;
 	}
 }

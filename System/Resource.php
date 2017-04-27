@@ -90,22 +90,22 @@ abstract class Resource extends Object
 
 	// Errors
 
-	public static function BadRequest($text = '', $json = null, $class)
+	public static function BadRequest($text = '', $json = null, $class = null)
 	{
 		header('HTTP/1.1 400 Bad Request');
-		$exception = new JsonException(json_encode($json), $class, '400 Bad Request', $text);
-		throw $exception;
 
 		die($text);
+		$exception = new JsonException(json_encode($json), $class, '400 Bad Request', $text);
+		throw $exception;
 	}
 
 	public static function Unauthorized($json = null, $class = 'Login')
 	{
 		header('HTTP/1.1 401 Unauthorized');
-		$exception = new JsonException($json, $class, '401 Unauthorized');
-		throw $exception;
 
 		die();
+		$exception = new JsonException($json, $class, '401 Unauthorized');
+		throw $exception;
 	}
 
 	public static function NotFound()
