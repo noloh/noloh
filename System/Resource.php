@@ -90,43 +90,44 @@ abstract class Resource extends Object
 
 	// Errors
 
-	public static function BadRequest($text = '', $json = null, $class = null)
+	public static function BadRequest($text = '', $json = null)
 	{
 		header('HTTP/1.1 400 Bad Request');
 
-		die($text);
-		$exception = new JsonException(json_encode($json), $class, '400 Bad Request', $text);
+		$exception = new JsonException(json_encode($json), '400 Bad Request', $text);
 		throw $exception;
 	}
 
-	public static function Unauthorized($json = null, $class = 'Login')
+	public static function Unauthorized($json = null)
 	{
 		header('HTTP/1.1 401 Unauthorized');
 
-		die();
-		$exception = new JsonException($json, $class, '401 Unauthorized');
+		$exception = new JsonException($json, '401 Unauthorized');
 		throw $exception;
 	}
 
-	public static function NotFound()
+	public static function NotFound($json = null)
 	{
 		header('HTTP/1.1 404 Not Found');
-		die();
+		$exception = new JsonException($json, '404 Not Found');
+		throw $exception;
 	}
 
-	public static function MethodNotAllowed($allowedList = array())
+	public static function MethodNotAllowed($allowedList = array(), $json = null)
 	{
 		header('HTTP/1.1 405 Method Not Allowed');
 		if (!empty($allowedList))
 		{
 			header('Allow: ' . implode(', ', $allowedList));
 		}
-		die();
+		$exception = new JsonException($json, '405 Method Not Allowed');
+		throw $exception;
 	}
 	
-	public static function InternalError()
+	public static function InternalError($json = null)
 	{
 		header('HTTP/1.1 500 Internal Server Error');
-		die();
+		$exception = new JsonException($json, '500 Internal Server Error');
+		throw $exception;
 	}
 }

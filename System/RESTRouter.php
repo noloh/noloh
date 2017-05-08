@@ -12,6 +12,7 @@ abstract class RESTRouter extends Object
 	const Options	= 'OPTIONS';	// Preflighted Requests
 	
 	protected $Method;
+	protected $ResourceName;
 	protected $Resource;
 	
 	function RESTRouter()
@@ -45,7 +46,17 @@ abstract class RESTRouter extends Object
 				));
 		}
 	}
-	
+
+	function GetMethod()
+	{
+		return $this->Method;
+	}
+
+	function GetResource()
+	{
+		return $this->ResourceName;
+	}
+
 	function GetPaths()
 	{
 		if (isset($_SERVER['PATH_INFO']))
@@ -84,6 +95,7 @@ abstract class RESTRouter extends Object
 		$resourceName = ucwords(str_replace('-', ' ', $resourceName));
 		$resourceName = str_replace(' ', '', $resourceName);
 		$className = $resourceName . 'Resource';
+		$this->ResourceName = $className;
 		if (is_subclass_of($className, 'Resource'))
 		{
 			$class = new ReflectionClass($className);
@@ -153,8 +165,15 @@ abstract class RESTRouter extends Object
 	public static function Bootstrap()
 	{
 		$config = new Configuration();
-		$className = $config->StartClass;		
-		new $className;
+		$className = $config->StartClass;
+		try
+		{
+			new $className;
+		}
+		catch (JsonException $e)
+		{
+			die($e->getMessage());
+		}
 	}
 }
 
