@@ -177,7 +177,7 @@ abstract class RESTRouter extends Object
 		{
 			new $className;
 		}
-		catch (MobileJsonException $e)
+		catch (ResourceException $e)
 		{
 			die($e->getMessage());
 		}

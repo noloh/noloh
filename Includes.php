@@ -36,13 +36,13 @@ function _NAutoLoad($class)
 		$_NAutoLoad = array(
 			
 			// System
-			'InnerSugar' => 			'System/InnerSugar.php',
-			'SugarException' => 		'System/SugarException.php',
-			'Multiple' => 				'System/Multiple.php',
-			'RESTRouter' =>				'System/RESTRouter.php',
-			'Resource' => 				'System/Resource.php',
-			'SqlException' => 			'System/SqlException.php',
-			'MobileJsonException' => 	'System/MobileJsonException.php',
+			'InnerSugar' => 		'System/InnerSugar.php',
+			'SugarException' => 	'System/SugarException.php',
+			'Multiple' => 			'System/Multiple.php',
+			'RESTRouter' =>			'System/RESTRouter.php',
+			'Resource' => 			'System/Resource.php',
+			'SqlException' => 		'System/SqlException.php',
+			'ResourceException' => 	'System/ResourceException.php',
 			
 			//Events
 			'RaceClientEvent' =>	'Events/RaceClientEvent.php',

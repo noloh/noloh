@@ -94,7 +94,7 @@ abstract class Resource extends Object
 	{
 		header('HTTP/1.1 400 Bad Request');
 
-		$exception = new MobileJsonException('400 Bad Request', $text);
+		$exception = new ResourceException('400 Bad Request', $text);
 		throw $exception;
 	}
 
@@ -102,14 +102,14 @@ abstract class Resource extends Object
 	{
 		header('HTTP/1.1 401 Unauthorized');
 
-		$exception = new MobileJsonException('401 Unauthorized');
+		$exception = new ResourceException('401 Unauthorized');
 		throw $exception;
 	}
 
 	public static function NotFound()
 	{
 		header('HTTP/1.1 404 Not Found');
-		$exception = new MobileJsonException('404 Not Found');
+		$exception = new ResourceException('404 Not Found');
 		throw $exception;
 	}
 
@@ -120,14 +120,14 @@ abstract class Resource extends Object
 		{
 			header('Allow: ' . implode(', ', $allowedList));
 		}
-		$exception = new MobileJsonException('405 Method Not Allowed');
+		$exception = new ResourceException('405 Method Not Allowed');
 		throw $exception;
 	}
 	
 	public static function InternalError()
 	{
 		header('HTTP/1.1 500 Internal Server Error');
-		$exception = new MobileJsonException('500 Internal Server Error');
+		$exception = new ResourceException('500 Internal Server Error');
 		throw $exception;
 	}
 }
