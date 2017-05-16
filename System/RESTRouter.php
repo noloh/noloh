@@ -14,6 +14,7 @@ abstract class RESTRouter extends Object
 	protected $Method;
 	protected $ResourceName;
 	protected $Resource;
+	protected $InputData;
 	
 	function RESTRouter()
 	{
@@ -55,6 +56,11 @@ abstract class RESTRouter extends Object
 	function GetResource()
 	{
 		return $this->ResourceName;
+	}
+
+	function GetInputData()
+	{
+		return $this->InputData;
 	}
 
 	function GetPaths()
@@ -155,6 +161,7 @@ abstract class RESTRouter extends Object
 			default:
 				$data = array();
 		}
+		$this->InputData = $data;
 		call_user_func(array($this->Resource, $method), $data);
 		$this->Resource->SendResponse();
 	}
@@ -170,7 +177,7 @@ abstract class RESTRouter extends Object
 		{
 			new $className;
 		}
-		catch (JsonException $e)
+		catch (MobileJsonException $e)
 		{
 			die($e->getMessage());
 		}
