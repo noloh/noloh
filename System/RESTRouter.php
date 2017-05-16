@@ -101,7 +101,7 @@ abstract class RESTRouter extends Object
 		$resourceName = ucwords(str_replace('-', ' ', $resourceName));
 		$resourceName = str_replace(' ', '', $resourceName);
 		$className = $resourceName . 'Resource';
-		$this->ResourceName = $className;
+		$this->ResourceName = $resourceName;
 		if (is_subclass_of($className, 'Resource'))
 		{
 			$class = new ReflectionClass($className);
