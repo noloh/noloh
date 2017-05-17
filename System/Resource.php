@@ -93,19 +93,24 @@ abstract class Resource extends Object
 	public static function BadRequest($text = '')
 	{
 		header('HTTP/1.1 400 Bad Request');
-		die($text);
+
+		$exception = new ResourceException('400 Bad Request', $text);
+		throw $exception;
 	}
 
 	public static function Unauthorized()
 	{
 		header('HTTP/1.1 401 Unauthorized');
-		die();
+
+		$exception = new ResourceException('401 Unauthorized');
+		throw $exception;
 	}
 
 	public static function NotFound()
 	{
 		header('HTTP/1.1 404 Not Found');
-		die();
+		$exception = new ResourceException('404 Not Found');
+		throw $exception;
 	}
 
 	public static function MethodNotAllowed($allowedList = array())
@@ -115,12 +120,14 @@ abstract class Resource extends Object
 		{
 			header('Allow: ' . implode(', ', $allowedList));
 		}
-		die();
+		$exception = new ResourceException('405 Method Not Allowed');
+		throw $exception;
 	}
 	
 	public static function InternalError()
 	{
 		header('HTTP/1.1 500 Internal Server Error');
-		die();
+		$exception = new ResourceException('500 Internal Server Error');
+		throw $exception;
 	}
 }
