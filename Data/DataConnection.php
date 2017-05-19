@@ -707,7 +707,7 @@ class DataConnection extends Object
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
-		$pass = Config::DBPassword;
+		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
 			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
@@ -715,9 +715,9 @@ class DataConnection extends Object
 			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
 		}
 		
-		$user = Config::DBUser;
-		$host = Config::DBHost;
-		$dbName = Config::DBName;
+		$user = $this->Username;
+		$host = $this->Host;
+		$dbName = $this->DatabaseName;
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
