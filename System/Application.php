@@ -644,9 +644,6 @@ final class Application extends Object
 		if($gzip)
 			ob_start('ob_gzhandler');
 		echo $_SESSION['_NScriptSrc'], '/*_N*/', $_SESSION['_NScript'][0], $_SESSION['_NScript'][1], $_SESSION['_NScript'][2];
-		if($gzip)
-			ob_end_flush();
-		flush();
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
 		
@@ -659,10 +656,15 @@ final class Application extends Object
 		$requestDetails['total_session_io_time'] += $benchmark;
 		$requestDetails['session_strlen'] = strlen($serializedSession);
 		$requestDetails['tokens'] = $tokenString;
-		if ($this->WebPage && !empty($requestDetails))
+		if ($this->WebPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
 		{
 			$this->WebPage->ProcessRequestDetails($requestDetails);
 		}
+		if ($gzip)
+		{
+			ob_end_flush();
+		}
+		flush();
 		
 		if (isset($_SESSION['_NDataLinks']))
 		{
