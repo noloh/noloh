@@ -108,7 +108,7 @@ abstract class Resource extends Object
 
 	public static function Forbidden($text = '')
 	{
-		header('HTTP/1,1 403 Forbidden');
+		header('HTTP/1.1 403 Forbidden');
 		
 		$exception = new ResourceException('403 Forbidden', $text);
 		throw $exception;
