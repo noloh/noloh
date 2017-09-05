@@ -106,6 +106,14 @@ abstract class Resource extends Object
 		throw $exception;
 	}
 
+	public static function Forbidden($text = '')
+	{
+		header('HTTP/1.1 403 Forbidden');
+		
+		$exception = new ResourceException('403 Forbidden', $text);
+		throw $exception;
+	}
+	
 	public static function NotFound()
 	{
 		header('HTTP/1.1 404 Not Found');
