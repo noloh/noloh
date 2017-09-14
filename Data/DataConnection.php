@@ -687,7 +687,6 @@ class DataConnection extends Object
 			}
 			elseif (Config::DBType === Data::MSSQL)
 			{
-				//$this->ExecSQL('BEGIN TRANSACTION;');
 				sqlsrv_begin_transaction($this->ActiveConnection);
 			}
 		}
@@ -703,7 +702,6 @@ class DataConnection extends Object
 			}
 			elseif (Config::DBType === Data::MSSQL)
 			{
-				//$this->ExecSQL('BEGIN TRANSACTION;');
 				sqlsrv_commit($this->ActiveConnection);
 			}
 		}
@@ -721,7 +719,6 @@ class DataConnection extends Object
 			}
 			elseif (Config::DBType === Data::MSSQL)
 			{
-				//$this->ExecSQL('BEGIN TRANSACTION;');
 				sqlsrv_commit($this->ActiveConnection);
 			}
 		}
@@ -738,7 +735,6 @@ class DataConnection extends Object
 			}
 			elseif (Config::DBType === Data::MSSQL)
 			{
-				//$this->ExecSQL('BEGIN TRANSACTION;');
 				sqlsrv_rollback($this->ActiveConnection);
 			}
 			
