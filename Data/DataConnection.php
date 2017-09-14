@@ -133,27 +133,32 @@ class DataConnection extends Object
 		}
 		elseif($this->Type == Data::MSSQL)
 		{
-			$host = $this->Port ? $this->Host . ', ' . $this->Port : $this->Host;
-			if (function_exists('sqlsrv_connect'))
+			if (!is_resource($this->ActiveConnection))
 			{
-				$connectString = array(
-					'Database' => $this->DatabaseName,
-					'UID' => $this->Username,
-					'PWD' => $password,
-					'ReturnDatesAsStrings' => true
-				);
-				$connectionParams = array_merge($connectString, $this->AdditionalParams);
+				$host = $this->Port ? $this->Host . ', ' . $this->Port : $this->Host;
 				
-				$this->ActiveConnection = sqlsrv_connect($host, $connectionParams);
-				if (!$this->ActiveConnection)
+				if (function_exists('sqlsrv_connect'))
 				{
-					$this->ErrorOut(null, null);
+					$connectString = array(
+						'Database' => $this->DatabaseName,
+						'UID' => $this->Username,
+						'PWD' => $password,
+						'ReturnDatesAsStrings' => true
+					);
+					
+					$connectionParams = array_merge($connectString, $this->AdditionalParams);
+					$this->ActiveConnection = sqlsrv_connect($host, $connectionParams);
+					
+					if (!$this->ActiveConnection)
+					{
+						$this->ErrorOut(null, null);
+					}
 				}
-			}
-			else
-			{
-				$this->ActiveConnection = mssql_connect($host, $this->Username, $password);
-				mssql_select_db($this->DatabaseName, $this->ActiveConnection);
+				else
+				{
+					$this->ActiveConnection = mssql_connect($host, $this->Username, $password);
+					mssql_select_db($this->DatabaseName, $this->ActiveConnection);
+				}
 			}
 		}
 		Application::$RequestDetails['total_database_time'] += System::Benchmark();
@@ -676,7 +681,15 @@ class DataConnection extends Object
 		static::$TransactionCounts[$this->Name]++;
 		if (static::$TransactionCounts[$this->Name] === 1)
 		{
-			$this->ExecSQL('START TRANSACTION READ WRITE;');
+			if (Config::DBType === Data::Postgres)
+			{
+				$this->ExecSQL('START TRANSACTION READ WRITE;');
+			}
+			elseif (Config::DBType === Data::MSSQL)
+			{
+				//$this->ExecSQL('BEGIN TRANSACTION;');
+				sqlsrv_begin_transaction($this->ActiveConnection);
+			}
 		}
 	}
 	function Commit()
@@ -684,17 +697,33 @@ class DataConnection extends Object
 		static::$TransactionCounts[$this->Name]--;
 		if (static::$TransactionCounts[$this->Name] === 0)
 		{
-			$this->ExecSQL('COMMIT;');
+			if (Config::DBType === Data::Postgres)
+			{
+				$this->ExecSQL('COMMIT;');
+			}
+			elseif (Config::DBType === Data::MSSQL)
+			{
+				//$this->ExecSQL('BEGIN TRANSACTION;');
+				sqlsrv_commit($this->ActiveConnection);
+			}
 		}
 	}
 	function ForceCommit()
 	{
 		if (isset(static::$TransactionCounts[$this->Name]) &&
-			static::$TransactionCounts[$this->Name] > 0 &&
-			$this->Type === Data::Postgres)
+			static::$TransactionCounts[$this->Name] > 0)
 		{
 			static::$TransactionCounts[$this->Name] = 0;
-			$this->ExecSQL('COMMIT;');
+			
+			if (Config::DBType === Data::Postgres)
+			{
+				$this->ExecSQL('COMMIT;');
+			}
+			elseif (Config::DBType === Data::MSSQL)
+			{
+				//$this->ExecSQL('BEGIN TRANSACTION;');
+				sqlsrv_commit($this->ActiveConnection);
+			}
 		}
 	}
 	function Rollback()
@@ -702,7 +731,17 @@ class DataConnection extends Object
 		if (!empty(static::$TransactionCounts[$this->Name]))
 		{
 			static::$TransactionCounts[$this->Name] = 0;
-			$this->ExecSQL('ROLLBACK;');
+			
+			if (Config::DBType === Data::Postgres)
+			{
+				$this->ExecSQL('ROLLBACK;');
+			}
+			elseif (Config::DBType === Data::MSSQL)
+			{
+				//$this->ExecSQL('BEGIN TRANSACTION;');
+				sqlsrv_rollback($this->ActiveConnection);
+			}
+			
 		}
 	}
 	function DBDump($file, $compressionLevel = 5)
