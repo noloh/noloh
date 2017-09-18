@@ -681,12 +681,16 @@ class DataConnection extends Object
 		static::$TransactionCounts[$this->Name]++;
 		if (static::$TransactionCounts[$this->Name] === 1)
 		{
-			if (Config::DBType === Data::Postgres)
+			if ($this->Type === Data::Postgres)
 			{
 				$this->ExecSQL('START TRANSACTION READ WRITE;');
 			}
-			elseif (Config::DBType === Data::MSSQL)
+			elseif ($this->Type === Data::MSSQL)
 			{
+				if ($this->ActiveConnection === null)
+				{
+					$this->ActiveConnection = $this->Connect();
+				}
 				sqlsrv_begin_transaction($this->ActiveConnection);
 			}
 		}
@@ -696,11 +700,11 @@ class DataConnection extends Object
 		static::$TransactionCounts[$this->Name]--;
 		if (static::$TransactionCounts[$this->Name] === 0)
 		{
-			if (Config::DBType === Data::Postgres)
+			if ($this->Type === Data::Postgres)
 			{
 				$this->ExecSQL('COMMIT;');
 			}
-			elseif (Config::DBType === Data::MSSQL)
+			elseif ($this->Type === Data::MSSQL)
 			{
 				sqlsrv_commit($this->ActiveConnection);
 			}
@@ -713,11 +717,11 @@ class DataConnection extends Object
 		{
 			static::$TransactionCounts[$this->Name] = 0;
 			
-			if (Config::DBType === Data::Postgres)
+			if ($this->Type === Data::Postgres)
 			{
 				$this->ExecSQL('COMMIT;');
 			}
-			elseif (Config::DBType === Data::MSSQL)
+			elseif ($this->Type === Data::MSSQL)
 			{
 				sqlsrv_commit($this->ActiveConnection);
 			}
@@ -729,15 +733,14 @@ class DataConnection extends Object
 		{
 			static::$TransactionCounts[$this->Name] = 0;
 			
-			if (Config::DBType === Data::Postgres)
+			if ($this->Type === Data::Postgres)
 			{
 				$this->ExecSQL('ROLLBACK;');
 			}
-			elseif (Config::DBType === Data::MSSQL)
+			elseif ($this->Type === Data::MSSQL)
 			{
 				sqlsrv_rollback($this->ActiveConnection);
 			}
-			
 		}
 	}
 	function DBDump($file, $compressionLevel = 5)

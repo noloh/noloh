@@ -373,7 +373,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		}
 		else
 		{
-			parent::__isset($name);
+			return false;
 		}
 	}
 }
