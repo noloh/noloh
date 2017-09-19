@@ -364,5 +364,17 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	{
 		BloodyMurder('offsetUnset is not allowed for DataReader');
 	}
+
+	public function __isset($name)
+	{
+		if ($name === 'Data')
+		{
+			return $this->Count > 0;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 ?>
