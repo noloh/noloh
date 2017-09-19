@@ -774,7 +774,15 @@ class DataConnection extends Object
 		}
 		else
 		{
-			$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
+			if ($this->Type === Data::Postgres)
+			{
+				$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
+			}
+			elseif ($this->Type === Data::MSSQL)
+			{
+				$backup = "sqlcmd -S {$host} -U {$user} -P {$pass} -Q" . " \"BACKUP DATABASE {$dbName} TO DISK='{$file}'\"";
+			}
+			
 			$gzip = exec('where gzip 2>&1');
 			if (is_executable ($gzip))
 			{
@@ -783,8 +791,11 @@ class DataConnection extends Object
 			}
 			else
 			{
-				$backup .= " -f {$file}";
-				$compress = true;
+				if ($this->Type === Data::Postgres)
+				{
+					$backup .= " -f {$file}";
+					$compress = true;
+				}
 			}
 		}
 		exec($backup);
@@ -799,6 +810,10 @@ class DataConnection extends Object
 		}
 		
 		return file_exists($file) ? $file : false;
+	}
+	function __wakeup()
+	{
+		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
 	}
 }
 ?>
