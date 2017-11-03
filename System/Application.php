@@ -173,7 +173,16 @@ final class Application extends Object
 			if(isset($_POST['_NTokenLink']))
 				$this->HandleLinkToTokens();
 			if(!empty($_POST['_NEvents']))
-				$this->HandleServerEvents();
+			{
+				try
+				{
+					$this->HandleServerEvents();
+				}
+				catch (SqlFriendlyException $e)
+				{
+					$e->CallBackExec();
+				}
+			}
 			foreach($_SESSION['_NFiles'] as $key => $val)
 			{
 				unlink($_SESSION['_NFiles'][$key]['tmp_name']);
