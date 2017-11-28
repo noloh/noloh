@@ -792,7 +792,12 @@ class DataConnection extends Object
 			}
 			elseif ($this->Type === Data::MSSQL)
 			{
-				$backup = "sqlcmd -S {$host} -U {$user} -P {$pass} -Q" . " \"BACKUP DATABASE {$dbName} TO DISK='{$file}'\"";
+				sqlsrv_configure('WarningsReturnAsErrors', 0);
+				$query = <<<SQL
+					BACKUP DATABASE {$dbName} TO DISK='{$file}';
+SQL;
+				Data::$Links->SandBox->ExecSQL($query);
+				sqlsrv_configure('WarningsReturnAsErrors', 1);
 			}
 			
 			$gzip = exec('where gzip 2>&1');
@@ -808,9 +813,16 @@ class DataConnection extends Object
 					$backup .= " -f {$file}";
 					$compress = true;
 				}
+				elseif ($this->Type === Data::MSSQL)
+				{
+					$compress = true;
+				}
 			}
 		}
-		exec($backup);
+		if ($backup != '')
+		{
+			exec($backup);
+		}
 		
 		if (file_exists($file) && $compress)
 		{
