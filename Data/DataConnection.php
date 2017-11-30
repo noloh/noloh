@@ -74,6 +74,7 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
+	private $FriendlyCallBack;
 	
 	public $Name = '_Default';
 	static $TransactionCounts;
@@ -88,7 +89,7 @@ class DataConnection extends Object
 	 * @param mixed $port The port you use to connect to your database. 
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array())
+	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -98,6 +99,7 @@ class DataConnection extends Object
 		$this->PasswordEncrypted = $passwordEncrypted;
 		$this->Type = $type;
 		$this->AdditionalParams = $additionalParams;
+		$this->FriendlyCallBack = $friendlyCallBack;
 	}
 	/**
 	 * Attempts to create a connection to your database.
@@ -172,9 +174,19 @@ class DataConnection extends Object
 		$type = $this->Type;
 		if ($type == Data::Postgres)
 		{
-			$error = pg_last_error($connection) . "\\n" . $sql;
+			$error = pg_last_error($connection);
+
+			if (strpos($error, 'SQL_FRIENDLY_EXCEPTION') && !empty($this->FriendlyCallBack))
+			{
+				$exception = new SqlFriendlyException($error, $this->FriendlyCallBack);
+			}
+			else
+			{
+				$error .= "\\n" . $sql;
+				$exception = new SqlException($error);
+			}
+
 			$this->Rollback();
-			$exception = new SqlException($error);
 			throw $exception;
 		}
 		elseif($type == Data::MySQL)

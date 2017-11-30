@@ -134,60 +134,99 @@ final class Application extends Object
 	static function GetURL()	{return System::FullAppPath();}
 	private function Application($config)
 	{
-		$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
-		$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
-		if(isset($_REQUEST['_NError']))
-			return print self::CreateError($_REQUEST['_NError']);
-		elseif(isset($_REQUEST['_NTimeout']))
-			return $this->HandleTimeout($_REQUEST['_NTimeout']);
-		elseif(isset($_GET['_NImage']))
-			if(empty($_GET['_NWidth']))
-				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
-			else
-				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams'], $_GET['_NWidth'], $_GET['_NHeight']);
-		elseif(isset($_GET['_NFileUpload']))
-			FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
-		elseif(isset($_GET['_NFileRequest']))
-			File::SendRequestedFile($_GET['_NFileRequest']);
-		elseif(
-			(!isset($_SERVER['HTTP_ACCEPT']) || strpos($_SERVER['HTTP_ACCEPT'], 'text/html')!==0) &&
-			(isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) &&
-			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) ||
-			(UserAgent::IsPPCOpera()) || 
-				$host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
+		try
 		{
-			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
-				$this->HandleIENavigation();
-			elseif($this->HandleForcedReset())
-				return;
-			$this->HandleDebugMode();
-			if(isset($_SESSION['_NOmniscientBeing']))
-				$this->TheComingOfTheOmniscientBeing();
-			if(!empty($_POST['_NEventVars']))
-				$this->HandleEventVars();
-			$this->HandleClientChanges();
-			if(!empty($_POST['_NFileUploadId']))
-				GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
-			foreach($_SESSION['_NFiles'] as $key => $val)
-				GetComponentById($key)->File = new File($val);
-			if(isset($_POST['_NTokenLink']))
-				$this->HandleLinkToTokens();
-			if(!empty($_POST['_NEvents']))
-				$this->HandleServerEvents();
-			foreach($_SESSION['_NFiles'] as $key => $val)
+			$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
+			$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
+			if (isset($_REQUEST['_NError']))
 			{
-				unlink($_SESSION['_NFiles'][$key]['tmp_name']);
-				GetComponentById($key)->File = null;
-				unset($_SESSION['_NFiles'][$key]);
+				return print self::CreateError($_REQUEST['_NError']);
 			}
-			if(isset($_POST['_NListener']))
-				Listener::Process($_POST['_NListener']);
-			$this->Run();
+			elseif (isset($_REQUEST['_NTimeout']))
+			{
+				return $this->HandleTimeout($_REQUEST['_NTimeout']);
+			}
+			elseif (isset($_GET['_NImage']))
+			{
+				if (empty($_GET['_NWidth']))
+				{
+					Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
+				}
+				else
+				{
+					Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams'], $_GET['_NWidth'], $_GET['_NHeight']);
+				}
+			}
+			elseif (isset($_GET['_NFileUpload']))
+			{
+				FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
+			}
+			elseif (isset($_GET['_NFileRequest']))
+			{
+				File::SendRequestedFile($_GET['_NFileRequest']);
+			}
+			elseif ((!isset($_SERVER['HTTP_ACCEPT']) || strpos($_SERVER['HTTP_ACCEPT'], 'text/html') !== 0) && (isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && (!($host = parse_url((isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null), PHP_URL_HOST)) || (UserAgent::IsPPCOpera()) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
+			{
+				$run = true;
+				if (isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
+				{
+					$this->HandleIENavigation();
+				}
+				elseif ($this->HandleForcedReset())
+				{
+					return;
+				}
+				$this->HandleDebugMode();
+				if (isset($_SESSION['_NOmniscientBeing']))
+				{
+					$this->TheComingOfTheOmniscientBeing();
+				}
+				if (!empty($_POST['_NEventVars']))
+				{
+					$this->HandleEventVars();
+				}
+				$this->HandleClientChanges();
+				if (!empty($_POST['_NFileUploadId']))
+				{
+					GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
+				}
+				foreach ($_SESSION['_NFiles'] as $key => $val)
+				{
+					GetComponentById($key)->File = new File($val);
+				}
+				if (isset($_POST['_NTokenLink']))
+				{
+					$this->HandleLinkToTokens();
+				}
+				if (!empty($_POST['_NEvents']))
+				{
+					$this->HandleServerEvents();
+				}
+				foreach ($_SESSION['_NFiles'] as $key => $val)
+				{
+					unlink($_SESSION['_NFiles'][$key]['tmp_name']);
+					GetComponentById($key)->File = null;
+					unset($_SESSION['_NFiles'][$key]);
+				}
+				if (isset($_POST['_NListener']))
+				{
+					Listener::Process($_POST['_NListener']);
+				}
+			}
+			else
+			{
+				self::UnsetNolohSessionVars();
+				$this->HandleFirstRun();
+			}
 		}
-		else
+		catch (SqlFriendlyException $e)
 		{
-			self::UnsetNolohSessionVars();
-			$this->HandleFirstRun();
+			$e->CallBackExec();
+		}
+
+		if (isset($run) && $run === true)
+		{
+			$this->Run();
 		}
 	}
 	private static function InitRequestDetails()
