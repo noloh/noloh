@@ -26,6 +26,7 @@ require($_NPath . 'Events/ServerEvent.php');
 require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');
 require($_NPath . 'Statics/URL.php');
+require($_NPath . 'Statics/Dir.php');
 
 function _NAutoLoad($class)
 {

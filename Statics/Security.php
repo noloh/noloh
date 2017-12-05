@@ -36,4 +36,15 @@ final class Security
 		$decrypted = openssl_decrypt($data, static::Cipher, $encryptionKey, 0, $iv);
 		return $decrypted;
 	}
+	/**
+	 * Generates an initilization vector
+	 *
+	 * @return string
+	 */
+	static function GenerateIV()
+	{
+		$iv = base64_encode(openssl_random_pseudo_bytes(openssl_cipher_iv_length(Security::Cipher)));
+
+		return $iv;
+	}
 }
