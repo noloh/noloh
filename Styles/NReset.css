@@ -4,6 +4,10 @@ html,body,div,span,input,object,iframe,fieldset,form,img,tbody,tfoot,thead,tr,td
 	margin:0;
 	padding:0;
 }
+div:focus
+{
+	outline: 0;
+}
 body
 {
 	color:#000;
