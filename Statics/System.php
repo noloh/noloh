@@ -475,6 +475,34 @@ final class System
 		$stop = microtime(true);
 		return (int)(1000 * ($stop - (self::$BenchmarkStartTime)));
 	}
+	/**
+	 * Returns true if server operating system is Windows.
+	 * @return bool
+	 */
+	static function IsWindows()
+	{
+		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	}
+	/**
+	 * Executes a shell command and returns the output of the command
+	 * @param string $shellCommand The command to be run
+	 * @param array $successCodes Defaults to an array with the code 0, but allows for custom success
+	 * codes to be passed in
+	 * @return string $output The output of the shell command
+	 * @throws Exception
+	 */
+	static function Execute($shellCommand, $successCodes = array(0))
+	{
+		exec($shellCommand . ' 2>&1', $output, $returnCode);
+		$output = implode(PHP_EOL, $output);
+
+		if (!in_array($returnCode, $successCodes))
+		{
+			throw new Exception($output, $returnCode);
+		}
+
+		return $output;
+	}
 }
 
 ?>
