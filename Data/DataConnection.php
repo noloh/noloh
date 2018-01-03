@@ -796,7 +796,7 @@ class DataConnection extends Object
 				$query = <<<SQL
 					BACKUP DATABASE {$dbName} TO DISK='{$file}';
 SQL;
-				Data::$Links->SandBox->ExecSQL($query);
+				$this->ExecSQL($query);
 				sqlsrv_configure('WarningsReturnAsErrors', 1);
 			}
 			
