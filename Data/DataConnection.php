@@ -861,12 +861,10 @@ SQL;
 
 		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username}";
 
-		$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
-		$command = $targetPsql . $drop;
+		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
 		System::Execute($command);
 
-		$copy = " -c \"CREATE DATABASE {$target->DatabaseName}_sendtocopy;\"";
-		$command = $targetPsql . $copy;
+		$command = $targetPsql . " -c \"CREATE DATABASE {$target->DatabaseName}_sendtocopy;\"";
 		System::Execute($command);
 
 		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
@@ -874,12 +872,10 @@ SQL;
 		$sendTo = "{$dump} | {$dumpTo}";
 		System::Execute($sendTo);
 
-		$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
-		$command = $targetPsql . $drop;
+		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
 		System::Execute($command);
 
-		$rename = " -c \"ALTER DATABASE {$target->DatabaseName}_sendtocopy RENAME TO {$target->DatabaseName};\"";
-		$command = $targetPsql . $rename;
+		$command = $targetPsql . " -c \"ALTER DATABASE {$target->DatabaseName}_sendtocopy RENAME TO {$target->DatabaseName};\"";
 		System::Execute($command);
 
 		return true;
