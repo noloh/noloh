@@ -839,6 +839,16 @@ SQL;
 	{
 		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
 	}
+	function DropConnections()
+	{
+		$query = <<<SQL
+			SELECT pg_terminate_backend(pg_stat_activity.pid)
+			FROM pg_stat_activity
+			WHERE pg_stat_activity.datname = $1
+			  AND pid <> pg_backend_pid()
+SQL;
+		$this->ExecSQL($query, $this->DatabaseName);
+	}
 	function SendTo(DataConnection $target, $backupPath)
 	{
 		if (System::IsWindows())
@@ -871,6 +881,8 @@ SQL;
 		$dumpTo = "{$targetPsql} {$target->DatabaseName}_sendtocopy";
 		$sendTo = "{$dump} | {$dumpTo}";
 		System::Execute($sendTo);
+
+		$target->DropConnections();
 
 		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
 		System::Execute($command);
