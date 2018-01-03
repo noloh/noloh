@@ -858,11 +858,11 @@ SQL;
 
 			$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_copy;\"";
 			$command = $targetPsql . $drop;
-			exec($command);
+			System::Execute($command);
 
 			$copy = " -c \"CREATE DATABASE {$target->DatabaseName}_copy;\"";
 			$command = $targetPsql . $copy;
-			exec($command);
+			System::Execute($command);
 
 			$dumpTo = "{$targetPsql} {$target->DatabaseName}_copy";
 			$sendTo = "{$dump} | {$dumpTo}";
@@ -872,11 +872,11 @@ SQL;
 			{
 				$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
 				$command = $targetPsql . $drop;
-				exec($command);
+				System::Execute($command);
 
 				$rename = " -c \"ALTER DATABASE {$target->DatabaseName}_copy RENAME TO {$target->DatabaseName};\"";
 				$command = $targetPsql . $rename;
-				exec($command);
+				System::Execute($command);
 
 				return true;
 			}
