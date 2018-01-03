@@ -870,7 +870,7 @@ SQL;
 
 			if (!$return)
 			{
-				$drop = " -c \"DROP DATABASE {$target->DatabaseName};\"";
+				$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
 				$command = $targetPsql . $drop;
 				exec($command);
 
