@@ -108,8 +108,13 @@ class DataConnection extends Object
 	 */
 	function Connect()
 	{
-		$password = $this->GetPassword();
-
+		$password = $this->Password;
+		if ($this->PasswordEncrypted)
+		{
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$password = Security::Decrypt($password, $encryptionKey, $iv);
+		}
 		System::BeginBenchmarking();
 		if($this->Type == Data::Postgres)
 		{
@@ -752,7 +757,13 @@ class DataConnection extends Object
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
-		$pass = $this->GetPassword();
+		$pass = $this->Password;
+		if ($this->PasswordEncrypted)
+		{
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+		}
 		
 		$user = $this->Username;
 		$host = $this->Host;
@@ -842,46 +853,46 @@ SQL;
 	}
 	function SendTo(DataConnection $target, $backUpFile)
 	{
-		if (PHP_OS !== 'Linux')
+		if (System::IsWindows())
 		{
 			BloodyMurder('SendTo currently not supported for windows operating system');
 		}
 
-		$password = $this->GetPassword();
-		$targetPassword = $target->GetPassword();
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$password = $this->PasswordEncrypted ? Security::Decrypt($this->Password, $encryptionKey, $iv) : $this->Password;
+		$targetPassword = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
-		if ($target->DBDump($backUpFile))
+		if ($target->Connect() && !$target->DBDump($backUpFile))
 		{
-			$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username}";
-
-			$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
-
-			$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_copy;\"";
-			$command = $targetPsql . $drop;
-			System::Execute($command);
-
-			$copy = " -c \"CREATE DATABASE {$target->DatabaseName}_copy;\"";
-			$command = $targetPsql . $copy;
-			System::Execute($command);
-
-			$dumpTo = "{$targetPsql} {$target->DatabaseName}_copy";
-			$sendTo = "{$dump} | {$dumpTo}";
-			exec($sendTo, $output, $return);
-
-			if (!$return)
-			{
-				$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
-				$command = $targetPsql . $drop;
-				System::Execute($command);
-
-				$rename = " -c \"ALTER DATABASE {$target->DatabaseName}_copy RENAME TO {$target->DatabaseName};\"";
-				$command = $targetPsql . $rename;
-				System::Execute($command);
-
-				return true;
-			}
+			throw new Exception('Could not take backup of target database');
 		}
-		return false;
+
+		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username}";
+
+		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
+
+		$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
+		$command = $targetPsql . $drop;
+		System::Execute($command);
+
+		$copy = " -c \"CREATE DATABASE {$target->DatabaseName}_sendtocopy;\"";
+		$command = $targetPsql . $copy;
+		System::Execute($command);
+
+		$dumpTo = "{$targetPsql} {$target->DatabaseName}_sendtocopy";
+		$sendTo = "{$dump} | {$dumpTo}";
+		System::Execute($sendTo);
+
+		$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
+		$command = $targetPsql . $drop;
+		System::Execute($command);
+
+		$rename = " -c \"ALTER DATABASE {$target->DatabaseName}_sendtocopy RENAME TO {$target->DatabaseName};\"";
+		$command = $targetPsql . $rename;
+		System::Execute($command);
+
+		return true;
 	}
 }
 ?>
