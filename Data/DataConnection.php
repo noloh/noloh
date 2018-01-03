@@ -874,7 +874,7 @@ SQL;
 				$command = $targetPsql . $drop;
 				exec($command);
 
-				$rename = " -c \"ALTER DATABASE {$target->Database}_copy RENAME TO {$target->DatabaseName};\"";
+				$rename = " -c \"ALTER DATABASE {$target->DatabaseName}_copy RENAME TO {$target->DatabaseName};\"";
 				$command = $targetPsql . $rename;
 				exec($command);
 
