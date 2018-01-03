@@ -839,18 +839,6 @@ SQL;
 	{
 		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
 	}
-	private function GetPassword()
-	{
-		$password = $this->Password;
-		if ($this->PasswordEncrypted)
-		{
-			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-			$password = Security::Decrypt($password, $encryptionKey, $iv);
-		}
-
-		return $password;
-	}
 	function SendTo(DataConnection $target, $backUpFile)
 	{
 		if (System::IsWindows())
