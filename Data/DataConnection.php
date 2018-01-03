@@ -839,7 +839,7 @@ SQL;
 	{
 		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
 	}
-	function SendTo(DataConnection $target, $backUpFile)
+	function SendTo(DataConnection $target, $backupPath)
 	{
 		if (System::IsWindows())
 		{
@@ -851,14 +851,15 @@ SQL;
 		$password = $this->PasswordEncrypted ? Security::Decrypt($this->Password, $encryptionKey, $iv) : $this->Password;
 		$targetPassword = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
-		if ($target->Connect() && !$target->DBDump($backUpFile))
+		$filename = $target->DatabaseName . '_' . date('Ymdhis');
+		$file = $backupPath . '/' . $filename;
+
+		if ($target->Connect() && !$target->DBDump($file))
 		{
 			throw new Exception('Could not take backup of target database');
 		}
 
 		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username}";
-
-		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
 
 		$drop = " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
 		$command = $targetPsql . $drop;
@@ -868,6 +869,7 @@ SQL;
 		$command = $targetPsql . $copy;
 		System::Execute($command);
 
+		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
 		$dumpTo = "{$targetPsql} {$target->DatabaseName}_sendtocopy";
 		$sendTo = "{$dump} | {$dumpTo}";
 		System::Execute($sendTo);
