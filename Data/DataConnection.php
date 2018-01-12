@@ -845,6 +845,10 @@ SQL;
 		{
 			BloodyMurder('SendTo currently not supported for windows operating system');
 		}
+		if ($this->Type !== Data::Postgres || $target->Type !== Data::Postgres)
+		{
+			BloodyMurder('SendTo only supported for Postgres data connections');
+		}
 
 		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
 		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
