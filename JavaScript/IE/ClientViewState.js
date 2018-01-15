@@ -11,6 +11,7 @@ _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
 _N.HistoryLength = history.length;
+_N.Catchers = [];
 function _NInitHelper()
 {
 	_N.Saved["N1"] = {};
