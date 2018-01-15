@@ -796,7 +796,7 @@ class DataConnection extends Object
 				$query = <<<SQL
 					BACKUP DATABASE {$dbName} TO DISK='{$file}';
 SQL;
-				Data::$Links->SandBox->ExecSQL($query);
+				$this->ExecSQL($query);
 				sqlsrv_configure('WarningsReturnAsErrors', 1);
 			}
 			
@@ -838,6 +838,53 @@ SQL;
 	function __wakeup()
 	{
 		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
+	}
+	function SendTo(DataConnection $target, $backupPath)
+	{
+		if (System::IsWindows())
+		{
+			BloodyMurder('SendTo currently not supported for windows operating system');
+		}
+		if ($this->Type !== Data::Postgres || $target->Type !== Data::Postgres)
+		{
+			BloodyMurder('SendTo only supported for Postgres data connections');
+		}
+
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$password = $this->PasswordEncrypted ? Security::Decrypt($this->Password, $encryptionKey, $iv) : $this->Password;
+		$targetPassword = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
+
+		$filename = $target->DatabaseName . '_' . date('Ymdhis');
+		$file = $backupPath . '/' . $filename;
+
+		if ($target->Connect() && !$target->DBDump($file))
+		{
+			throw new Exception('Could not take backup of target database');
+		}
+
+		$target->Close();
+
+		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username}";
+
+		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
+		System::Execute($command);
+
+		$command = $targetPsql . " -c \"CREATE DATABASE {$target->DatabaseName}_sendtocopy;\"";
+		System::Execute($command);
+
+		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
+		$dumpTo = "{$targetPsql} {$target->DatabaseName}_sendtocopy";
+		$sendTo = "{$dump} | {$dumpTo}";
+		System::Execute($sendTo);
+
+		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName};\"";
+		System::Execute($command);
+
+		$command = $targetPsql . " -c \"ALTER DATABASE {$target->DatabaseName}_sendtocopy RENAME TO {$target->DatabaseName};\"";
+		System::Execute($command);
+
+		return true;
 	}
 }
 ?>
