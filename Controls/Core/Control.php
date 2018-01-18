@@ -897,7 +897,19 @@ abstract class Control extends Component
 	 * occupying this Control. An array of all the Controls being dragged can be found in the Event::$DragCaught array.
 	 * @param Event $dragCatch
 	 */
-	function SetDragCatch($dragCatch)				{$this->SetEvent($dragCatch, 'DragCatch');}
+	function SetDragCatch($dragCatch)
+	{
+		if (UserAgent::GetName() === UserAgent::IPad)
+		{
+			ClientScript::AddNOLOHSource('Mixed/ShiftIPad.js', false);
+		}
+		else
+		{
+			ClientScript::AddNOLOHSource('Shift.js', true);
+		}
+		
+		$this->SetEvent($dragCatch, 'DragCatch');
+	}
 	/**
 	 * Returns the Focus Event, which gets launched when a user focuses this Control, e.g., by clicking or tabbing into it
 	 * @return Event
