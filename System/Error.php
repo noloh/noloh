@@ -185,6 +185,9 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
+	if(php_sapi_name() === 'cli' || $GLOBALS['_NREST'])
+		trigger_error($message, E_USER_ERROR);
+
 	if(!isset($GLOBALS['_NDebugMode']))
 		trigger_error($message);
 	elseif($_SESSION['_NVisit'] === -1)
