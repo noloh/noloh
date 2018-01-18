@@ -10,7 +10,6 @@ _N.EventDepth = 0;
 _N.HighestZ = 0;
 _N.LowestZ = 0;
 _N.Request = true;
-_N.Catchers = [];
 event = null;
 function _NInit(configs)
 {
