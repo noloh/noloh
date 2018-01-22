@@ -185,11 +185,15 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
-	if(php_sapi_name() === 'cli' || $GLOBALS['_NREST'])
-		trigger_error($message, E_USER_ERROR);
-
+	if(UserAgent::IsCLI || System::IsRESTful)
+	{
+		trigger_error($message, E_ERROR);
+	}
+	
 	if(!isset($GLOBALS['_NDebugMode']))
+	{
 		trigger_error($message);
+	}
 	elseif($_SESSION['_NVisit'] === -1)
 	{
 		echo $message;
@@ -203,8 +207,10 @@ function BloodyMurder($message)
 			$trace = debug_backtrace();
 			$trace = $trace[0];
 		}
-		else 
+		else
+		{
 			$trace = _NFirstNonNOLOHBacktrace();
+		}
 		_NErrorHandler(1, $message, $trace['file'], $trace['line']);
 	}
 }
