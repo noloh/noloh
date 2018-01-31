@@ -794,7 +794,7 @@ class DataConnection extends Object
 			{
 				sqlsrv_configure('WarningsReturnAsErrors', 0);
 				$query = <<<SQL
-					BACKUP DATABASE {$dbName} TO DISK='{$file}';
+					BACKUP DATABASE "{$dbName}" TO DISK='{$file}';
 SQL;
 				$this->ExecSQL($query);
 				sqlsrv_configure('WarningsReturnAsErrors', 1);
