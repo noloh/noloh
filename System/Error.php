@@ -189,6 +189,7 @@ function BloodyMurder($message)
 	{
 		trigger_error($message, E_ERROR);
 	}
+	
 	if(!isset($GLOBALS['_NDebugMode']))
 	{
 		trigger_error($message);
