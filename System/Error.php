@@ -185,11 +185,10 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
-	if(UserAgent::IsCLI || System::IsRESTful)
+	if(UserAgent::IsCLI() || System::IsRESTful())
 	{
 		trigger_error($message, E_ERROR);
 	}
-	
 	if(!isset($GLOBALS['_NDebugMode']))
 	{
 		trigger_error($message);
