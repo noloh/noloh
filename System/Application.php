@@ -167,6 +167,11 @@ final class Application extends Object
 			}
 			elseif ((!isset($_SERVER['HTTP_ACCEPT']) || strpos($_SERVER['HTTP_ACCEPT'], 'text/html') !== 0) && (isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && (!($host = parse_url((isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null), PHP_URL_HOST)) || (UserAgent::IsPPCOpera()) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
 			{
+				// Proxy Error, originally done for AKPartners
+				if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
+				{
+					die();
+				}
 				$run = true;
 				if (isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 				{
@@ -281,7 +286,9 @@ final class Application extends Object
 			$_SESSION['_NTokens'],
 			$_SESSION['_NTokenChain'],
 			$_SESSION['_NHighestZ'],
-			$_SESSION['_NLowestZ']);
+			$_SESSION['_NLowestZ'],
+			$_SESSION['_NOrigUserAgent']
+		);
 	}
 	private function HandleFirstRun($trulyFirst=true)
 	{
@@ -312,6 +319,7 @@ final class Application extends Object
 		$_SESSION['_NTokens'] = array();
 		$_SESSION['_NHighestZ'] = 0;
 		$_SESSION['_NLowestZ'] = 0;
+		$_SESSION['_NOrigUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
 		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
 		$_SESSION['_NPath'] = ComputeNOLOHPath();
 		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
