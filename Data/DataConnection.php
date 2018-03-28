@@ -886,5 +886,34 @@ SQL;
 
 		return true;
 	}
+	function CreateServer(DataConnection $target, $serverName)
+	{
+		if ($this->Type !== Data::Postgres || $target->Type !== Data::Postgres)
+		{
+			BloodyMurder('Create Server is only supported for Postgres data connections');
+		}
+		
+		$query = <<<SQL
+			CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+			
+			DROP SERVER IF EXISTS {$serverName};
+			
+			CREATE SERVER {$serverName}
+			FOREIGN DATA WRAPPER postgres_fdw
+			OPTIONS (host 'localhost', port $1, dbname $2);
+			
+			DROP USER MAPPING IF EXISTS FOR {$this->Username}
+			SERVER archive_database;
+			
+			CREATE USER MAPPING FOR {$this->Username}
+			SERVER {$serverName}
+			OPTIONS (user $3, password $4);
+SQL;
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$password = $this->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
+
+		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName, $target->Username, $password);
+	}
 }
 ?>
