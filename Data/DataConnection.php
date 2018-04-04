@@ -781,6 +781,12 @@ class DataConnection extends Object
 			else
 			{
 				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+
+				if ($create)
+				{
+					$backup .= ' -C';
+				}
+				
 				$compress = true;
 			}
 		}
