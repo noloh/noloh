@@ -38,6 +38,7 @@ abstract class WebPage extends Component
 	private $Title;
 	private $Width;
 	private $Height;
+	private $TimeZone;
 	private $BackColor;
 	private $LoadIndicator;
 	private $CSSPropertyArray;
@@ -71,6 +72,7 @@ abstract class WebPage extends Component
 		$_SESSION['_NStartUpPageId'] = $this->Id;
 		$this->Width = isset($GLOBALS['_NWidth']) ? $GLOBALS['_NWidth'] : 1024;
 		$this->Height = isset($GLOBALS['_NHeight']) ? $GLOBALS['_NHeight'] : 768;
+		$this->TimeZone = isset($GLOBALS['_NTimeZone']) ? $GLOBALS['_NTimeZone'] : date_default_timezone_get();
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->Title = $title;
@@ -257,6 +259,15 @@ abstract class WebPage extends Component
 		$this->Height = $height;
 		QueueClientFunction($this, 'resizeTo', array($this->Width, $this->Height));
 	}
+
+	/**
+	 * Returns the timezone of the browser, in IANA format
+	 * @return string
+	 */
+	function GetTimeZone()
+	{
+		return $this->TimeZone;
+	}
 	/**
 	 * Returns the background color of the WebPage. Can either be a string of hex like '#FF0000' or the name of a color like 'red'.
 	 * @return string
@@ -437,8 +448,9 @@ HTML;
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
-		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&")
-               + "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
+		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
+               "_NVisit=0&_NApp=" + _NApp + "&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
+               "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
         $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
         $oldOpMobile = UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
 		echo $oldOpMobile ? 

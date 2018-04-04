@@ -50,6 +50,10 @@ final class UserAgent
 	 */
 	const IE = 'ie';
 	/**
+	 * A short-hand for the Edge browser
+	 */
+	const Edge = 'ed';
+	/**
 	 * The Internet Explorer browser
 	 */
 	const InternetExplorer = 'ie';
@@ -141,32 +145,44 @@ final class UserAgent
 			$device = self::PC;
 		
 		// Browsers
-		if(preg_match('!chrome/([0-9.]+) !', $agt, $version))
-        	$browser = 'ch';
-        elseif(strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
+		if (strpos($agt, 'edge') !== false)
+		{
+			$browser = 'ed';
+		}
+		elseif (preg_match('!chrome/([0-9.]+) !', $agt, $version))
+		{
+			$browser = 'ch';
+		}
+        elseif (strpos($agt, 'konqueror') !== false || strpos($agt, 'safari') !== false)
         {
         	preg_match('!version/([0-9.]+) !', $agt, $version);
         	$browser = 'sa';
         }
-        elseif(strpos($agt, 'gecko') !== false && preg_match('!firefox/([0-9.]+)!', $agt, $version))
-        	$browser = 'ff';
-        elseif(preg_match('!opera[ /]([0-9.]+) !', $agt, $version))
-        	$browser = 'op';
-        elseif(preg_match('!msie ([0-9.]+);!', $agt, $version))
+        elseif (strpos($agt, 'gecko') !== false && preg_match('!firefox/([0-9.]+)!', $agt, $version))
+		{
+			$browser = 'ff';
+		}
+        elseif (preg_match('!opera[ /]([0-9.]+) !', $agt, $version))
+		{
+			$browser = 'op';
+		}
+        elseif (preg_match('!msie ([0-9.]+);!', $agt, $version))
         {
         	$browser = 'ie';
         	$_SESSION['_NIsIE'] = true;
         	if($version[1] == 6)
         		$_SESSION['_NIE6'] = true;
         }
-        elseif(preg_match('!links \(([0-9.]+);!', $agt, $version))
-        	$browser = 'li';
-		elseif(preg_match('!\bwindows\b.*?\brv:([0-9.]+)\b!', $agt, $version))
+        elseif (preg_match('!links \(([0-9.]+);!', $agt, $version))
+		{
+			$browser = 'li';
+		}
+		elseif (preg_match('!\bwindows\b.*?\brv:([0-9.]+)\b!', $agt, $version))
 		{
 			$browser = 'ie';
         	$_SESSION['_NIsIE'] = false;	//IE11+ is not IEish
 		}
-        elseif(empty($name))
+        elseif (empty($name))
         {
         	$browser = 'other';
 			$device = self::Spider;
