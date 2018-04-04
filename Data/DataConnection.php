@@ -755,7 +755,7 @@ class DataConnection extends Object
 			}
 		}
 	}
-	function DBDump($file, $compressionLevel = 5)
+	function DBDump($file, $compressionLevel = 5, $create = false)
 	{
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
@@ -773,7 +773,7 @@ class DataConnection extends Object
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
 			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
 			$gzip = exec('which gzip 2>&1');
-			if (is_executable ($gzip))
+			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
 				$file .= '.gz';
 				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
@@ -801,7 +801,7 @@ SQL;
 			}
 			
 			$gzip = exec('where gzip 2>&1');
-			if (is_executable ($gzip))
+			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
 				$file .= '.gz';
 				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
@@ -811,6 +811,12 @@ SQL;
 				if ($this->Type === Data::Postgres)
 				{
 					$backup .= " -f {$file}";
+					
+					if ($create)
+					{
+						$backup .= ' -C';
+					}
+					
 					$compress = true;
 				}
 				elseif ($this->Type === Data::MSSQL)
@@ -824,7 +830,7 @@ SQL;
 			exec($backup);
 		}
 		
-		if (file_exists($file) && $compress)
+		if (file_exists($file) && $compress && $compressionLevel !== 0)
 		{
 			$path = pathinfo($file);
 			if ($path['extension'] != 'gz')
@@ -833,6 +839,56 @@ SQL;
 			}
 		}
 		
+		return file_exists($file) ? $file : false;
+	}
+	function DBDumpMultiple($file, array $connections, $compressionLevel = 5)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Multiple DB Dumps are only supported for Postgres data connections');
+		}
+		
+		$combinedDump = $this->DBDump($file, 0);
+		
+		if ($combinedDump === false)
+		{
+			BloodyMurder("DB Dump failed for {$this->DatabaseName}");
+		}
+		
+		$combinedHandle = fopen($combinedDump, 'a+');
+		foreach ($connections as $target)
+		{
+			if (!($target instanceof DataConnection))
+			{
+				BloodyMurder('Connections must be DataConnection objects');
+			}
+			else if ($target->Type !== Data::Postgres)
+			{
+				BloodyMurder('Multiple DB Dumps are only supported for Postgres data connections');
+			}
+
+			$fileName = sys_get_temp_dir() . $target->DatabaseName . '_' . date("Ymd");
+			$targetDump = $target->DBDump($fileName, 0, true);
+
+			if ($targetDump === false)
+			{
+				BloodyMurder("DB Dump failed for {$target->DatabaseName}");
+			}
+			
+			fwrite($combinedHandle, "\nDROP DATABASE IF EXISTS \"{$target->DatabaseName}\";\n");
+			
+			$handle = fopen($targetDump, 'r');
+			while (!feof($handle))
+			{
+				fwrite($combinedHandle, fread($handle, 8192));
+			}
+			fclose($handle);
+		}
+		
+		fclose($combinedHandle);
+		
+		$file = File::GzCompress($combinedDump, $compressionLevel, true);
+
 		return file_exists($file) ? $file : false;
 	}
 	function __wakeup()
