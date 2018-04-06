@@ -886,7 +886,7 @@ SQL;
 			$handle = fopen($targetDump, 'r');
 			while (!feof($handle))
 			{
-				fwrite($combinedHandle, fread($handle, 8192));
+				fwrite($combinedHandle, fread($handle, 32768));
 			}
 			fclose($handle);
 		}
