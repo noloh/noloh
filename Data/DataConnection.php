@@ -881,7 +881,13 @@ SQL;
 				BloodyMurder("DB Dump failed for {$target->DatabaseName}");
 			}
 			
-			fwrite($combinedHandle, "\nDROP DATABASE IF EXISTS \"{$target->DatabaseName}\";\n");
+			$sql = <<<SQL
+				DROP DATABASE IF EXISTS "{$target->DatabaseName}_backup";
+				ALTER DATABASE "{$target->DatabaseName}" RENAME TO "{$target->DatabaseName}_backup";
+				DROP DATABASE IF EXISTS "{$target->DatabaseName}";
+
+SQL;
+			fwrite($combinedHandle, $sql);
 			
 			$handle = fopen($targetDump, 'r');
 			while (!feof($handle))
@@ -958,14 +964,11 @@ SQL;
 		$query = <<<SQL
 			CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 			
-			DROP SERVER IF EXISTS {$serverName};
+			DROP SERVER IF EXISTS {$serverName} CASCADE;
 			
 			CREATE SERVER {$serverName}
 			FOREIGN DATA WRAPPER postgres_fdw
 			OPTIONS (host 'localhost', port $1, dbname $2);
-			
-			DROP USER MAPPING IF EXISTS FOR {$this->Username}
-			SERVER archive_database;
 			
 			CREATE USER MAPPING FOR {$this->Username}
 			SERVER {$serverName}
