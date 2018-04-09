@@ -17,7 +17,6 @@ require($_NPath . 'System/Pointer.php');
 require($_NPath . 'System/WebPage.php');
 require($_NPath . 'Collections/ArrayList.php');
 require($_NPath . 'Collections/ImplicitArrayList.php');
-require($_NPath . 'Collections/Password.php');
 require($_NPath . 'Controls/Core/Control.php');
 require($_NPath . 'Statics/UserAgent.php');
 require($_NPath . 'Events/Event.php');
@@ -28,6 +27,7 @@ require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');
 require($_NPath . 'Statics/URL.php');
 require($_NPath . 'Statics/Dir.php');
+require($_NPath . 'Nodules/Password.php');
 
 function _NAutoLoad($class)
 {
