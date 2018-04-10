@@ -884,7 +884,6 @@ SQL;
 			$sql = <<<SQL
 				DROP DATABASE IF EXISTS "{$target->DatabaseName}_backup";
 				ALTER DATABASE "{$target->DatabaseName}" RENAME TO "{$target->DatabaseName}_backup";
-				DROP DATABASE IF EXISTS "{$target->DatabaseName}";
 
 SQL;
 			fwrite($combinedHandle, $sql);
