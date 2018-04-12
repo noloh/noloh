@@ -27,7 +27,6 @@ require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');
 require($_NPath . 'Statics/URL.php');
 require($_NPath . 'Statics/Dir.php');
-require($_NPath . 'Compatibility/Password.php');
 
 function _NAutoLoad($class)
 {
