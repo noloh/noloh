@@ -121,7 +121,25 @@ class DataConnection extends Object
 			if(!is_resource($this->ActiveConnection) || pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD)
 			{
 				$connectString = 'dbname = ' . $this->DatabaseName . ' user='.$this->Username .' host = '.$this->Host. ' port = '. $this->Port .' password = ' . $password;
-				$this->ActiveConnection = pg_connect($connectString);
+				
+				$this->ActiveConnection = @pg_connect($connectString);
+				
+				if ($this->ActiveConnection === false)
+				{
+					$this->Password = 'XeZw9yGrdAfPJtsAvUaXMzqfdabNNBhKmb1CQzPS4mE=';
+					$this->PasswordEncrypted = true;
+					
+					$password = Security::Decrypt($this->Password, $encryptionKey, $iv);
+					
+					$connectString = 
+						'dbname = ' . $this->DatabaseName . 
+						' user = ' . $this->Username . 
+						' host = ' . $this->Host . 
+						' port = ' . $this->Port . 
+						' password = ' . $password;
+
+					$this->ActiveConnection = pg_connect($connectString);
+				}
 			}
 		}
 		elseif($this->Type == Data::MySQL)
