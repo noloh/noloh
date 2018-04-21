@@ -35,6 +35,7 @@ function _NOBErrorHandler($buffer)
 			else
 			{
 				// For ssome bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repition appears necessary.
+				$gzip = defined('FORCE_GZIP');
 				setcookie('_NAppCookie', false);
 				if(!in_array('Cache-Control: no-cache', headers_list(), true))
 					++$_SESSION['_NVisit'];
