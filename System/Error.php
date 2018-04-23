@@ -22,45 +22,55 @@ function _NPHPInfo($info)
 function _NOBErrorHandler($buffer)
 {
 	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
+	{
 		trigger_error('~_NINFO~');
+	}
 	elseif(preg_match('/(.*): (.*) in (.*) on line ([0-9]+)/s', $buffer, $matches))
-		if($GLOBALS['_NDebugMode'] === 'Kernel')
-			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$matches[3].'~OB~'.$matches[4]);
+	{
+		if ($GLOBALS['_NDebugMode'] === 'Kernel')
+		{
+			trigger_error('~OB~' . $matches[1] . '~OB~' . $matches[2] . '~OB~' . $matches[3] . '~OB~' . $matches[4]);
+		}
 		else
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
-			$obStr = '~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['line'];
 			if (PHP_VERSION_ID < 50300)
+			{
+				$obStr = '~OB~' . $matches[1] . '~OB~' . $matches[2] . '~OB~' . $trace['file'] . '~OB~' . $trace['line'];
 				trigger_error($obStr);
+			}
 			else
 			{
 				// For ssome bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repition appears necessary.
 				setcookie('_NAppCookie', false);
-				if(!in_array('Cache-Control: no-cache', headers_list(), true))
+				if (!in_array('Cache-Control: no-cache', headers_list(), true))
+				{
 					++$_SESSION['_NVisit'];
-				$message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$matches[2]).($trace['file']?"\\nin ".str_replace("\\","\\\\",$trace['file'])."\\non line " .$trace['line']:''));
+				}
+
+				$message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $matches[2]) . ($trace['file'] ? "\\nin " . str_replace("\\", "\\\\", $trace['file']) . "\\non line " . $trace['line'] : ''));
 				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
 				NolohInternal::ResetSecureValuesQueue();
+
 				global $OmniscientBeing;
 				$_SESSION['_NScript'] = array('', '', '');
 				$_SESSION['_NScriptSrc'] = '';
-				$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+				$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
+
+				$requestDetails = &Application::UpdateRequestDetails();
+				$requestDetails['error_message'] = $message;
+				unset($requestDetails['total_session_io_time']);
+
+				$webPage = WebPage::That();
+				if ($webPage)
+				{
+					$webPage->ProcessRequestDetails($requestDetails);
+				}
+
 				return $alert;
 			}
-			
-			//return false;
-			//trigger_error(serialize(error_get_last()));
-			//trigger_error(serialize(error_get_last()));
-			//trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~?~OB~?');
-			//return new Exception('lol', 0);
-			//trigger_error('HAH');
-			//trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
-			//_NErrorHandler($matches[2], $matches[3], $matches[4]);
 		}
-	/*elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
-		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);*/
-	//else 
-	//	trigger_error('~OB~'.$buffer.'~OB~'.$buffer.'~OB~'.$buffer.'~OB~'.$buffer);
+	}
 }
 /**
  * @ignore
