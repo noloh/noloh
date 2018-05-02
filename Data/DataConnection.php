@@ -997,7 +997,7 @@ SQL;
 
 		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName, $target->Username, $password);
 	}
-	function EncryptDBPassword($password)
+	static function EncryptDBPassword($password)
 	{
 		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
 		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
