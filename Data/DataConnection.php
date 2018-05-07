@@ -121,7 +121,25 @@ class DataConnection extends Object
 			if(!is_resource($this->ActiveConnection) || pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD)
 			{
 				$connectString = 'dbname = ' . $this->DatabaseName . ' user='.$this->Username .' host = '.$this->Host. ' port = '. $this->Port .' password = ' . $password;
-				$this->ActiveConnection = pg_connect($connectString);
+				
+				$this->ActiveConnection = @pg_connect($connectString);
+				
+				if ($this->ActiveConnection === false)
+				{
+					$this->Password = 'XeZw9yGrdAfPJtsAvUaXMzqfdabNNBhKmb1CQzPS4mE=';
+					$this->PasswordEncrypted = true;
+					
+					$password = Security::Decrypt($this->Password, $encryptionKey, $iv);
+					
+					$connectString = 
+						'dbname = ' . $this->DatabaseName . 
+						' user = ' . $this->Username . 
+						' host = ' . $this->Host . 
+						' port = ' . $this->Port . 
+						' password = ' . $password;
+
+					$this->ActiveConnection = pg_connect($connectString);
+				}
 			}
 		}
 		elseif($this->Type == Data::MySQL)
@@ -978,6 +996,12 @@ SQL;
 		$password = $this->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
 		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName, $target->Username, $password);
+	}
+	static function EncryptDBPassword($password)
+	{
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		return Security::Encrypt($password, $encryptionKey, $iv);
 	}
 }
 ?>
