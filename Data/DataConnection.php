@@ -891,7 +891,7 @@ SQL;
 				BloodyMurder('Multiple DB Dumps are only supported for Postgres data connections');
 			}
 
-			$fileName = sys_get_temp_dir() . $target->DatabaseName . '_' . date("Ymd");
+			$fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $target->DatabaseName . '_' . date("Ymd");
 			$targetDump = $target->DBDump($fileName, 0, true);
 
 			if ($targetDump === false)
