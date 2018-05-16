@@ -3,6 +3,7 @@
 abstract class Resource extends Object
 {
 	protected $Response;
+	protected $ReceivesJSON = true;
 	
 	function Resource() {}
 	
@@ -137,5 +138,10 @@ abstract class Resource extends Object
 		header('HTTP/1.1 500 Internal Server Error');
 		$exception = new ResourceException('500 Internal Server Error');
 		throw $exception;
+	}
+	
+	public function GetReceivesJSON()
+	{
+		return $this->ReceivesJSON;
 	}
 }
