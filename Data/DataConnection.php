@@ -828,7 +828,7 @@ SQL;
 			{
 				if ($this->Type === Data::Postgres)
 				{
-					$backup .= " -f {$file}";					
+					$backup .= " -f {$file}";
 					$compress = true;
 				}
 				elseif ($this->Type === Data::MSSQL)
