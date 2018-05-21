@@ -773,7 +773,7 @@ class DataConnection extends Object
 			}
 		}
 	}
-	function DBDump($file, $compressionLevel = 5, $create = false)
+	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
@@ -799,12 +799,6 @@ class DataConnection extends Object
 			else
 			{
 				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
-
-				if ($create)
-				{
-					$backup .= ' -C';
-				}
-				
 				$compress = true;
 			}
 		}
@@ -835,12 +829,6 @@ SQL;
 				if ($this->Type === Data::Postgres)
 				{
 					$backup .= " -f {$file}";
-					
-					if ($create)
-					{
-						$backup .= ' -C';
-					}
-					
 					$compress = true;
 				}
 				elseif ($this->Type === Data::MSSQL)
@@ -892,7 +880,7 @@ SQL;
 			}
 
 			$fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $target->DatabaseName . '_' . date("Ymd");
-			$targetDump = $target->DBDump($fileName, 0, true);
+			$targetDump = $target->DBDump($fileName, 0);
 
 			if ($targetDump === false)
 			{
@@ -902,6 +890,7 @@ SQL;
 			$sql = <<<SQL
 				DROP DATABASE IF EXISTS "{$target->DatabaseName}_backup";
 				ALTER DATABASE "{$target->DatabaseName}" RENAME TO "{$target->DatabaseName}_backup";
+				CREATE DATABASE "{$target->DatabaseName}";
 
 SQL;
 			fwrite($combinedHandle, $sql);
