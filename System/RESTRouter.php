@@ -123,27 +123,32 @@ abstract class RESTRouter extends Object
 				if (empty($_POST))
 				{
 					$raw = file_get_contents('php://input');
-					$json = json_decode($raw, true);
-					if ($json === null)
+					if ($this->Resource->ReceivesJSON)
 					{
-						parse_str($raw, $data);
-						/* If invalid JSON, parse_str on the raw has an odd effect.
-							This attempts to detect that effect and produce a good error message.
-							I can't think of any reason anybody would pass in a 1-element array whose
-							key starts with { or [ as keys should be alphanumeric anyway. */
-						if (count($data) === 1)
+						$json = json_decode($raw, true);
+						if ($json === null)
 						{
-							$key = key($data);
-							$firstChar = $key[0];
-							if ($firstChar === '{' || $firstChar === '[')
+							parse_str($raw, $data);
+							/* If invalid JSON, parse_str on the raw has an odd effect.
+								This attempts to detect that effect and produce a good error message.
+								I can't think of any reason anybody would pass in a 1-element array whose
+								key starts with { or [ as keys should be alphanumeric anyway. */
+							if (count($data) === 1)
 							{
-								Resource::BadRequest('Invalid JSON.');
+								$key = key($data);
+								$firstChar = $key[0];
+								if ($firstChar === '{' || $firstChar === '[')
+								{
+									Resource::BadRequest('Invalid JSON.');
+								}
 							}
 						}
-					}
-					else
-					{
-						$data = $json;
+						else
+						{
+							$data = $json;
+						}
+					} else {
+						$data = $raw;
 					}
 				}
 				else
