@@ -294,19 +294,24 @@ class DataConnection extends Object
 			}
 			else
 			{
-				//$search[] = '/\$' . $paramNum . '\b/';
-				// $search[] = '/(\$' . $paramNum . ')([^.]|$)\b/';
-				// $search[] = '/(\$' . '$paramNum' . ')([^.]|$)\b/';
-				// $search[] = '/(?:\$' . $paramNum . ')([^.]|$)/';
 				$sql = preg_replace('/(?:\$' . $paramNum . ')([^\d.]|$)/', '_N_' . $paramNum . '_N_' . '${1}', $sql);
 				$search[] = '/_N_' . $paramNum . '_N_\b/';
-				$param = $this->ConvertValueToSQL($param);
-				// $param = str_replace('$', '\\$', $param);
+				
+				if ($param instanceof RawParameter)
+				{
+					$param = $param->Parameter;
+				}
+				else
+				{
+					$param = $this->ConvertValueToSQL($param);
+				}
+				
 				$replace[] = addcslashes($param, '\\$');
 			}
 			++$paramNum;
 		}
-		return preg_replace($search, $replace, $sql);
+		$sql = preg_replace($search, $replace, $sql);
+		return $sql;
 	}
 	private function GenerateFunction($spName, $paramArray=null)
 	{

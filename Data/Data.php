@@ -103,6 +103,10 @@ final class Data extends Object
 		$value->Name = $name;
 		return $_SESSION['_NDataLinks'][$name] = $value;
 	}
+	static function Raw($value)
+	{
+		return new RawParameter($value);
+	}
 }
 Data::$Links = new Data();
 ?>
