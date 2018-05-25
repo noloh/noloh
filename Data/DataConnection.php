@@ -310,8 +310,7 @@ class DataConnection extends Object
 			}
 			++$paramNum;
 		}
-		$sql = preg_replace($search, $replace, $sql);
-		return $sql;
+		return preg_replace($search, $replace, $sql);
 	}
 	private function GenerateFunction($spName, $paramArray=null)
 	{
