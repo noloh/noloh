@@ -120,7 +120,7 @@ class DataConnection extends Object
 			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
 		System::BeginBenchmarking();
-		if (!is_resource($this->ActiveConnection) || ($this->Type === 'Postgres' && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
+		if (!is_resource($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
 		{
 			if ($this->Type == Data::Postgres)
 			{
@@ -176,6 +176,11 @@ class DataConnection extends Object
 					mssql_select_db($this->DatabaseName, $this->ActiveConnection);
 				}
 			}
+			else
+			{
+				BloodyMurder("Invalid connection type {$this->Type}");
+			}
+
 			if ($this->ActiveConnection && !empty($this->AfterConnectCallBack))
 			{
 				call_user_func_array($this->AfterConnectCallBack, array($this));
