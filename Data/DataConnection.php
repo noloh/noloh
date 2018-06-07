@@ -90,7 +90,7 @@ class DataConnection extends Object
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
 	 * @param array $additionalParams additional parameters to be used
 	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
-	 * @param array $afterConnectCallBack callback function for after a succesful connection is made (postgres only)
+	 * @param array $afterConnectCallBack callback function for after a succesful connection is made
 	 */
 	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
 	{
@@ -187,6 +187,10 @@ class DataConnection extends Object
 				{
 					$this->ActiveConnection = mssql_connect($host, $this->Username, $password);
 					mssql_select_db($this->DatabaseName, $this->ActiveConnection);
+				}
+				if ($this->ActiveConnection && !empty($this->AfterConnectCallBack))
+				{
+					call_user_func_array($this->AfterConnectCallBack, array($this));
 				}
 			}
 		}
