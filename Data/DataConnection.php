@@ -181,7 +181,7 @@ class DataConnection extends Object
 				BloodyMurder("Invalid connection type {$this->Type}");
 			}
 
-			if ($this->ActiveConnection && !empty($this->AfterConnectCallBack))
+			if (is_resource($this->ActiveConnection) && !empty($this->AfterConnectCallBack))
 			{
 				call_user_func_array($this->AfterConnectCallBack, array($this));
 			}
