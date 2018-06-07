@@ -144,6 +144,7 @@ class DataConnection extends Object
 
 					$this->ActiveConnection = pg_connect($connectString);
 				}
+
 				if ($this->ActiveConnection && !empty($this->AfterConnectCallBack))
 				{
 					call_user_func_array($this->AfterConnectCallBack, array($this));
