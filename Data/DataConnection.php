@@ -74,8 +74,8 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
-	private $FriendlyCallBack;
-	
+	protected $FriendlyCallBack;
+	protected $AfterConnectCallBack;
 	public $Name = '_Default';
 	static $TransactionCounts;
 	/**
@@ -88,8 +88,11 @@ class DataConnection extends Object
 	 * @param mixed $host Your database host, e.g; localhost, http://www.noloh.com, etc.
 	 * @param mixed $port The port you use to connect to your database. 
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
+	 * @param array $additionalParams additional parameters to be used
+	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
+	 * @param array $afterConnectCallBack callback function for after a succesful connection is made (postgres only)
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array())
+	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -100,6 +103,7 @@ class DataConnection extends Object
 		$this->Type = $type;
 		$this->AdditionalParams = $additionalParams;
 		$this->FriendlyCallBack = $friendlyCallBack;
+		$this->AfterConnectCallBack = $afterConnectCallBack;
 	}
 	/**
 	 * Attempts to create a connection to your database.
@@ -139,6 +143,10 @@ class DataConnection extends Object
 						' password = ' . $password;
 
 					$this->ActiveConnection = pg_connect($connectString);
+				}
+				if ($this->ActiveConnection && !empty($this->AfterConnectCallBack))
+				{
+					call_user_func_array($this->AfterConnectCallBack, array($this));
 				}
 			}
 		}
