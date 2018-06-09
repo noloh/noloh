@@ -159,6 +159,7 @@ function DisplayError($message)
 	NolohInternal::ResetSecureValuesQueue();
 	global $OmniscientBeing;
 	$_SESSION['_NScript'] = array('', '', '');
+	$_SESSION['_NControlQueueRoot'] = array();
 	$_SESSION['_NScriptSrc'] = '';
 	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
 
