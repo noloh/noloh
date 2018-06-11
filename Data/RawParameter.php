@@ -7,7 +7,7 @@
  */
 class RawParameter extends Object
 {
-	public $Parameter;
+	protected $Parameter;
 	
 	function RawParameter($param)
 	{
@@ -19,5 +19,9 @@ class RawParameter extends Object
 		{
 			BloodyMurder('RawParameter parameter can only contain valid function, table, or column names');
 		}
+	}
+	function GetParameter()
+	{
+		return $this->Parameter;
 	}
 }
