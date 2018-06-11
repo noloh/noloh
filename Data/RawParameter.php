@@ -11,6 +11,13 @@ class RawParameter extends Object
 	
 	function RawParameter($param)
 	{
-		$this->Parameter = $param;
+		if (preg_match("/^[a-zA-Z0-9_\(\)]*$/", $param))
+		{
+			$this->Parameter = $param;
+		}
+		else
+		{
+			BloodyMurder('RawParameter parameter can only contain valid function, table, or column names');
+		}
 	}
 }
