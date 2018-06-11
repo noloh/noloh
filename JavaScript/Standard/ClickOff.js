@@ -1,7 +1,8 @@
-function _NClickOff(id, func)
+function _NClickOff(id, func, e)
 {
+	var evt = event || e;
 	if(_N.ClickOffId)
-		_NClickOffClick(event);
+		_NClickOffClick(evt);
 	_N.ClickOffId = id;
 	if(func)
 		_N.ClickOffFunc = func;

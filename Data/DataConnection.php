@@ -74,8 +74,8 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
-	private $FriendlyCallBack;
-	
+	protected $FriendlyCallBack;
+	protected $AfterConnectCallBack;
 	public $Name = '_Default';
 	static $TransactionCounts;
 	/**
@@ -88,8 +88,11 @@ class DataConnection extends Object
 	 * @param mixed $host Your database host, e.g; localhost, http://www.noloh.com, etc.
 	 * @param mixed $port The port you use to connect to your database. 
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
+	 * @param array $additionalParams additional parameters to be used
+	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
+	 * @param array $afterConnectCallBack callback function for after a succesful connection is made
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array())
+	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -100,6 +103,7 @@ class DataConnection extends Object
 		$this->Type = $type;
 		$this->AdditionalParams = $additionalParams;
 		$this->FriendlyCallBack = $friendlyCallBack;
+		$this->AfterConnectCallBack = $afterConnectCallBack;
 	}
 	/**
 	 * Attempts to create a connection to your database.
@@ -116,59 +120,51 @@ class DataConnection extends Object
 			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
 		System::BeginBenchmarking();
-		if($this->Type == Data::Postgres)
+		if (!is_resource($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
 		{
-			if(!is_resource($this->ActiveConnection) || pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD)
+			if ($this->Type == Data::Postgres)
 			{
-				$connectString = 'dbname = ' . $this->DatabaseName . ' user='.$this->Username .' host = '.$this->Host. ' port = '. $this->Port .' password = ' . $password;
-				
+				$connectString = 'dbname = ' . $this->DatabaseName . ' user=' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
+
 				$this->ActiveConnection = @pg_connect($connectString);
-				
+
 				if ($this->ActiveConnection === false)
 				{
 					$this->Password = 'XeZw9yGrdAfPJtsAvUaXMzqfdabNNBhKmb1CQzPS4mE=';
 					$this->PasswordEncrypted = true;
-					
+
 					$password = Security::Decrypt($this->Password, $encryptionKey, $iv);
-					
-					$connectString = 
-						'dbname = ' . $this->DatabaseName . 
-						' user = ' . $this->Username . 
-						' host = ' . $this->Host . 
-						' port = ' . $this->Port . 
-						' password = ' . $password;
+
+					$connectString = 'dbname = ' . $this->DatabaseName . ' user = ' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
 
 					$this->ActiveConnection = pg_connect($connectString);
 				}
 			}
-		}
-		elseif($this->Type == Data::MySQL)
-		{
-			if($this->Persistent)
-				$this->ActiveConnection = mysql_pconnect($this->Host, $this->Username, $password);
-			else
-				$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $password);
-			mysql_select_db($this->DatabaseName, $this->ActiveConnection);
-//			mysql_set_charset('utf8',$this->ActiveConnection);
-		}
-		elseif($this->Type == Data::MSSQL)
-		{
-			if (!is_resource($this->ActiveConnection))
+			elseif ($this->Type == Data::MySQL)
+			{
+				if ($this->Persistent)
+				{
+					$this->ActiveConnection = mysql_pconnect($this->Host, $this->Username, $password);
+				}
+				else
+				{
+					$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $password);
+				}
+				mysql_select_db($this->DatabaseName, $this->ActiveConnection);
+			}
+			elseif ($this->Type == Data::MSSQL)
 			{
 				$host = $this->Port ? $this->Host . ', ' . $this->Port : $this->Host;
-				
+
 				if (function_exists('sqlsrv_connect'))
 				{
 					$connectString = array(
-						'Database' => $this->DatabaseName,
-						'UID' => $this->Username,
-						'PWD' => $password,
-						'ReturnDatesAsStrings' => true
+						'Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $password, 'ReturnDatesAsStrings' => true
 					);
-					
+
 					$connectionParams = array_merge($connectString, $this->AdditionalParams);
 					$this->ActiveConnection = sqlsrv_connect($host, $connectionParams);
-					
+
 					if (!$this->ActiveConnection)
 					{
 						$this->ErrorOut(null, null);
@@ -179,6 +175,15 @@ class DataConnection extends Object
 					$this->ActiveConnection = mssql_connect($host, $this->Username, $password);
 					mssql_select_db($this->DatabaseName, $this->ActiveConnection);
 				}
+			}
+			else
+			{
+				BloodyMurder("Invalid connection type {$this->Type}");
+			}
+
+			if (is_resource($this->ActiveConnection) && !empty($this->AfterConnectCallBack))
+			{
+				call_user_func_array($this->AfterConnectCallBack, array($this));
 			}
 		}
 		Application::$RequestDetails['total_database_time'] += System::Benchmark();

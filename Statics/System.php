@@ -132,6 +132,11 @@ final class System
 				$array = get_object_vars($what);
 				return self::FormatArray($array, 'StdClass', $tier);
 			}
+			else if (method_exists($what, 'ToArray'))
+			{
+				$array = $what->ToArray();
+				return self::FormatArray($array, 'StdClass', $tier);
+			}
 			else
 			{
 				return (string) $what . ' ' . get_class($what) . ' object';
