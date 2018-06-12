@@ -49,13 +49,12 @@ function _NOBErrorHandler($buffer)
 				}
 
 				$message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $matches[2]) . ($trace['file'] ? "\\nin " . str_replace("\\", "\\\\", $trace['file']) . "\\non line " . $trace['line'] : ''));
-				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
-				NolohInternal::ResetSecureValuesQueue();
 
-				global $OmniscientBeing;
-				$_SESSION['_NScript'] = array('', '', '');
-				$_SESSION['_NScriptSrc'] = '';
-				$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
+				error_log($message);
+				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
+
+				NolohInternal::ResetSecureValuesQueue();
+				NolohInternal::ResetSession();
 
 				$requestDetails = &Application::UpdateRequestDetails();
 				$requestDetails['error_message'] = $message;
@@ -156,12 +155,9 @@ function DisplayError($message)
 		ob_end_flush();
 	}
 	flush();
+
 	NolohInternal::ResetSecureValuesQueue();
-	global $OmniscientBeing;
-	$_SESSION['_NScript'] = array('', '', '');
-	$_SESSION['_NControlQueueRoot'] = array();
-	$_SESSION['_NScriptSrc'] = '';
-	$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
+	NolohInternal::ResetSession();
 
 	$requestDetails = &Application::UpdateRequestDetails();
 	$requestDetails['error_message'] = $message;
