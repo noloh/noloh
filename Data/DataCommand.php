@@ -99,14 +99,28 @@ class DataCommand extends Object
 			$type = $this->Connection->GetType();
 			$connection = $this->Connection->Connect();
 			if($type == Data::Postgres)
+			{
 				$resource = @pg_query($connection, $this->SqlStatement);
+			}
 			elseif($type == Data::MySQL)
+			{
 				$resource = mysql_query($this->SqlStatement, $connection);
+			}
 			elseif($type == Data::MSSQL)
+			{
 				if (function_exists('sqlsrv_query'))
+				{
 					$resource = sqlsrv_query($connection, $this->SqlStatement);
+				}
 				else
+				{
 					$resource = mssql_query($this->SqlStatement, $connection);
+				}
+			}
+			elseif ($type === Data::ODBC)
+			{
+				$resource = @odbc_exec($connection, $this->SqlStatement);
+			}
 				
 			if(!$resource)
 			{

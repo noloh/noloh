@@ -74,6 +74,7 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
+	protected $ODBCParams = array();
 	protected $FriendlyCallBack;
 	protected $AfterConnectCallBack;
 	public $Name = '_Default';
@@ -85,7 +86,7 @@ class DataConnection extends Object
 	 * @param string $databaseName The name of your database
 	 * @param string $username The username used to connect to your database
 	 * @param string $password The password used to connect to your datbase
-	 * @param mixed $host Your database host, e.g; localhost, http://www.noloh.com, etc.
+	 * @param mixed $host Your database host or ODBC DSN Name, e.g; localhost, http://www.noloh.com, etc.
 	 * @param mixed $port The port you use to connect to your database. 
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
 	 * @param array $additionalParams additional parameters to be used
@@ -104,6 +105,11 @@ class DataConnection extends Object
 		$this->AdditionalParams = $additionalParams;
 		$this->FriendlyCallBack = $friendlyCallBack;
 		$this->AfterConnectCallBack = $afterConnectCallBack;
+
+		if ($type === Data::ODBC && ($databaseName !== null || $port !== null))
+		{
+			BloodyMurder('DatabaseName and Port not supported for ODBC Connections.  Pass DSN Name as Host parameter.');
+		}
 	}
 	/**
 	 * Attempts to create a connection to your database.
@@ -176,6 +182,10 @@ class DataConnection extends Object
 					mssql_select_db($this->DatabaseName, $this->ActiveConnection);
 				}
 			}
+			elseif ($this->Type === Data::ODBC)
+			{
+				$this->ActiveConnection = odbc_connect($this->Host, $this->Username, $password);
+			}
 			else
 			{
 				BloodyMurder("Invalid connection type {$this->Type}");
@@ -219,6 +229,7 @@ class DataConnection extends Object
 			throw $exception;
 		}
 		elseif($type == Data::MSSQL)
+		{
 			if (function_exists('sqlsrv_errors'))
 			{
 				$errStr = '';
@@ -238,6 +249,11 @@ class DataConnection extends Object
 				$exception = new SqlException($error);
 				throw $exception;
 			}
+		}
+		else if ($type === Data::ODBC)
+		{
+			throw new SqlException(odbc_errormsg($connection));
+		}
 	}
 	/**
 	 * Attempts to close the connection to your database. Note: In most circumstances, this is done automatically.
@@ -247,15 +263,31 @@ class DataConnection extends Object
 	function Close()
 	{
 		if(is_resource($this->ActiveConnection))
+		{
 			if($this->Type == Data::Postgres)
+			{
 				return pg_close($this->ActiveConnection);
+			}
 			elseif($this->Type == Data::MySQL)
+			{
 				return mysql_close($this->ActiveConnection);
+			}
 			elseif($this->Type == Data::MSSQL)
+			{
 				if (function_exists('sqlsrv_close'))
+				{
 					return sqlsrv_close($this->ActiveConnection);
+				}
 				else
+				{
 					return mssql_close($this->ActiveConnection);
+				}
+			}
+			elseif ($this->Type === Data::ODBC)
+			{
+				return odbc_close($this->ActiveConnection);
+			}
+		}
 		return false;
 	}
 	/**
