@@ -304,6 +304,7 @@ final class NolohInternal
 		++$_SESSION['_NVisit'];
 		$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
 	}
+
 	public static function SaveSessionState()
 	{
 		static::$SessionState = array();
