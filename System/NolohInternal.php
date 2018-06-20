@@ -4,7 +4,7 @@
  */
 final class NolohInternal
 {
-	public static $InitialSessionState;
+	private static $SessionState;
 
 	private function NolohInternal(){}
 
@@ -296,10 +296,21 @@ final class NolohInternal
 	{
 		global $OmniscientBeing;
 
-		$visit = $_SESSION['_NVisit'];
-		$_SESSION = static::$InitialSessionState;
-		$_SESSION['_NVisit'] = $visit;
+		foreach (static::$SessionState as $key => $val)
+		{
+			$_SESSION[$key] = $val;
+		}
+
+		++$_SESSION['_NVisit'];
 		$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
+	}
+	public static function SaveSessionState()
+	{
+		static::$SessionState = array();
+		foreach ($_SESSION as $key => $val)
+		{
+			static::$SessionState[$key] = $val;
+		}
 	}
 }
 ?>

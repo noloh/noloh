@@ -43,10 +43,6 @@ function _NOBErrorHandler($buffer)
 			{
 				// For ssome bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repition appears necessary.
 				setcookie('_NAppCookie', false);
-				if (!in_array('Cache-Control: no-cache', headers_list(), true))
-				{
-					++$_SESSION['_NVisit'];
-				}
 
 				$message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $matches[2]) . ($trace['file'] ? "\\nin " . str_replace("\\", "\\\\", $trace['file']) . "\\non line " . $trace['line'] : ''));
 
@@ -143,11 +139,7 @@ function DisplayError($message)
 	{
 		ob_start('ob_gzhandler');
 	}
-	if (!in_array('Cache-Control: no-cache', headers_list(), true))
-	{
-		++$_SESSION['_NVisit'];
-	}
-	
+
 	error_log($message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message)));
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : 'An application error has occurred.', '");';
 	if ($gzip)
