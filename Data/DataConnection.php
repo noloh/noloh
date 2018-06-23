@@ -414,7 +414,9 @@ class DataConnection extends Object
 	public function ConvertValueToSQL($value)
 	{
 		if($this->Type == Data::Postgres)
+		{
 			$formattedValue = self::ConvertTypeToPostgres($value);
+		}
 		elseif($this->Type == Data::MySQL)
 		{
 			$resource = $this->Connect();
@@ -425,7 +427,44 @@ class DataConnection extends Object
 		{
 			$formattedValue = self::ConvertTypeToMSSQL($value);
 		}
+		else
+		{
+			$formattedValue = self::ConvertTypeToGeneric($value);
+		}
 		return $formattedValue;
+	}
+	/**
+	 * @ignore
+	 */
+	private static function ConvertTypeToGeneric($value, $quote = "'")
+	{
+		if(is_string($value))
+		{
+			$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
+			$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+			$tmpArg = "$quote" . str_replace($search, $replace, $value) . "$quote";
+		}
+		elseif(is_int($value))
+		{
+			$tmpArg = (int)$value;
+		}
+		elseif(is_double($value))
+		{
+			$tmpArg = (double)$value;
+		}
+		elseif(is_bool($value))
+		{
+			$tmpArg = ($value)?'true':'false';
+		}
+		elseif(is_array($value))
+		{
+			$tmpArg = self::ConvertToPostgresArray($value);
+		}
+		elseif($value === null || $value == 'null')
+		{
+			$tmpArg = 'null';
+		}
+		return $tmpArg;
 	}
 	/**
 	 * @ignore
@@ -1028,6 +1067,17 @@ SQL;
 		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
 		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
 		return Security::Encrypt($password, $encryptionKey, $iv);
+	}
+	static function ODBCByDSN($dsn, $username = null, $password = null)
+	{
+		return new DataConnection(
+			Data::ODBC,
+			null,
+			$username,
+			$password,
+			$dsn,
+			null
+		);
 	}
 }
 ?>
