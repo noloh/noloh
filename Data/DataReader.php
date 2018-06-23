@@ -222,7 +222,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 
 			$rows = ($count > 0) ? $data : $data[0];
 		}
-		elseif (Data::ODBC)
+		elseif ($type === Data::ODBC)
 		{
 			while($row = odbc_fetch_array($resource))
 			{
