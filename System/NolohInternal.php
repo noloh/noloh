@@ -296,7 +296,7 @@ final class NolohInternal
 	{
 		global $OmniscientBeing;
 
-		foreach (static::$SessionState as $key => $val)
+		foreach (unserialize(static::$SessionState) as $key => $val)
 		{
 			$_SESSION[$key] = $val;
 		}
@@ -307,11 +307,14 @@ final class NolohInternal
 
 	public static function SaveSessionState()
 	{
-		static::$SessionState = array();
-		foreach ($_SESSION as $key => $val)
+		$session = array();
+		foreach ($_SESSION as $key => $value)
 		{
-			static::$SessionState[$key] = $val;
+			$session[$key] = $value;
 		}
+
+		unset($session['_NOmniscientBeing']);
+		static::$SessionState = serialize($session);
 	}
 }
 ?>
