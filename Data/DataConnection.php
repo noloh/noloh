@@ -427,10 +427,11 @@ class DataConnection extends Object
 		{
 			$formattedValue = self::ConvertTypeToMSSQL($value);
 		}
-		else
+		elseif($this->Type == Data::ODBC)
 		{
-			$formattedValue = self::ConvertTypeToGeneric($value);
+			$formattedValue = $value;
 		}
+		
 		return $formattedValue;
 	}
 	/**
