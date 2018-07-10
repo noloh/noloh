@@ -455,7 +455,7 @@ class DataConnection extends Object
 		}
 		elseif(is_bool($value))
 		{
-			$tmpArg = ($value)?'true':'false';
+			$tmpArg = ($value) ? 'true' : 'false';
 		}
 		elseif(is_array($value))
 		{
