@@ -140,6 +140,8 @@ final class Application extends Object
 	static function GetURL()	{return System::FullAppPath();}
 	private function Application($config)
 	{
+		NolohInternal::SaveSessionState();
+
 		try
 		{
 			$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
