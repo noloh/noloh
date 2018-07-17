@@ -439,29 +439,29 @@ class DataConnection extends Object
 	 */
 	private static function ConvertTypeToGeneric($value, $quote = "'")
 	{
-		if(is_string($value))
+		if (is_string($value))
 		{
 			$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
-			$replace = array("\\\\","\\0","\\n", "\\r", "\'", '\"', "\\Z");
+			$replace = array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z");
 			$tmpArg = "$quote" . str_replace($search, $replace, $value) . "$quote";
 		}
-		elseif(is_int($value))
+		elseif (is_int($value))
 		{
 			$tmpArg = (int)$value;
 		}
-		elseif(is_double($value))
+		elseif (is_double($value))
 		{
 			$tmpArg = (double)$value;
 		}
-		elseif(is_bool($value))
+		elseif (is_bool($value))
 		{
-			$tmpArg = ($value)?'true':'false';
+			$tmpArg = ($value) ? 'true' : 'false';
 		}
-		elseif(is_array($value))
+		elseif (is_array($value))
 		{
 			$tmpArg = self::ConvertToPostgresArray($value);
 		}
-		elseif($value === null || $value == 'null')
+		elseif ($value === null || $value == 'null')
 		{
 			$tmpArg = 'null';
 		}
