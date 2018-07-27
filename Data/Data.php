@@ -27,6 +27,8 @@ final class Data extends Object
 	 * Represents a generic ODBC database connector type, to be used in conjuction with other data related functions.
 	 */
 	const ODBC = 'odbc';
+
+	const AccessODBCDriver = 'Microsoft Access Driver (*.mdb)';
 	/**
 	 * Data is returned associatively, this means that all data indices will be indexed by their column names, and not
 	 * their numeric indices.
