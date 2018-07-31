@@ -437,7 +437,7 @@ class DataConnection extends Object
 		}
 		elseif($this->Type == Data::ODBC)
 		{
-			if ($this->ODBCDriver === Data::AccessODBCDriver)
+			if (strpos($this->ODBCDriver, Data::MSAccessFileExtension) !== false)
 			{
 				$formattedValue = self::ConvertTypeToAccess($value);
 			}

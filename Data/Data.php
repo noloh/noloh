@@ -28,7 +28,7 @@ final class Data extends Object
 	 */
 	const ODBC = 'odbc';
 
-	const AccessODBCDriver = 'Microsoft Access Driver (*.mdb)';
+	const MSAccessFileExtension = '.mdb';
 	/**
 	 * Data is returned associatively, this means that all data indices will be indexed by their column names, and not
 	 * their numeric indices.
