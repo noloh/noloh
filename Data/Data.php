@@ -27,8 +27,6 @@ final class Data extends Object
 	 * Represents a generic ODBC database connector type, to be used in conjuction with other data related functions.
 	 */
 	const ODBC = 'odbc';
-
-	const MSAccessFileExtension = '.mdb';
 	/**
 	 * Data is returned associatively, this means that all data indices will be indexed by their column names, and not
 	 * their numeric indices.
@@ -66,6 +64,20 @@ final class Data extends Object
 	 * Stored function and stored procedures are examples of this.
 	 */
 	const Func = 'function';
+	/**
+	 * List of supported ODBC driver types
+	 */
+	static $ODBCTypes = array(
+		'Access'
+	);
+	/**
+	 * String used to identify Access ODBC drivers
+	 */
+	const ODBCAccess = 'Access';
+	/**
+	 * Empty row constant for Access
+	 */
+	const AccessEmptyRow = '<Empty Row>';
 	/**
 	 * $Links is a direct conduit to access any open Data Links/Connections. Multiple DataConnections can be accessed through 
 	 * the $Links Data object.
