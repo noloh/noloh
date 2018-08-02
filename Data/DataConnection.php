@@ -450,7 +450,7 @@ class DataConnection extends Object
 	{
 		if (is_string($value))
 		{
-			$search = array("\\", "\x00", "\n",  "\r",  $quote, "\x1a");
+			$search = array("\\", "\x00", "\n", "\r",  $quote, "\x1a");
 			if ($escapeQuoteWithQuote)
 			{
 				$replace = array("\\\\", "\\0", "\\n", "\\r", "{$quote}{$quote}", "\\Z");
