@@ -118,6 +118,8 @@ class DataConnection extends Object
 			{
 				BloodyMurder('A valid odbc_type is required as an additional param for ODBC connections');
 			}
+
+			$this->ODBCType = $additionalParams['odbc_type'];
 		}
 	}
 	/**
