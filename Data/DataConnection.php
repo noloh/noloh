@@ -74,11 +74,13 @@ class DataConnection extends Object
 	public $ConvertType;
 	private $Type;
 	private $Persistent;
-	protected $ODBCParams = array();
+
 	protected $FriendlyCallBack;
 	protected $AfterConnectCallBack;
 	public $Name = '_Default';
 	static $TransactionCounts;
+
+	private $ODBCType;
 	/**
 	 * Constructor
 	 * Be sure to call this from the constructor of any class that extends DataConnection.
@@ -106,9 +108,16 @@ class DataConnection extends Object
 		$this->FriendlyCallBack = $friendlyCallBack;
 		$this->AfterConnectCallBack = $afterConnectCallBack;
 
-		if ($type === Data::ODBC && ($databaseName !== null || $port !== null))
+		if ($type === Data::ODBC)
 		{
-			BloodyMurder('DatabaseName and Port not supported for ODBC Connections.  Pass DSN Name as Host parameter.');
+			if ($databaseName !== null || $port !== null)
+			{
+				BloodyMurder('DatabaseName and Port not supported for ODBC Connections. Pass DSN Name as Host parameter.');
+			}
+			if (empty($additionalParams['odbc_type']) || !in_array($additionalParams['odbc_type'], Data::$ODBCTypes, true))
+			{
+				BloodyMurder('A valid odbc_type is required as an additional param for ODBC connections');
+			}
 		}
 	}
 	/**
@@ -429,7 +438,7 @@ class DataConnection extends Object
 		}
 		elseif($this->Type == Data::ODBC)
 		{
-			$formattedValue = $value;
+			$formattedValue = self::ConvertTypeToGeneric($value, "'", ($this->ODBCType === Data::ODBCAccess));
 		}
 		
 		return $formattedValue;
@@ -437,12 +446,19 @@ class DataConnection extends Object
 	/**
 	 * @ignore
 	 */
-	private static function ConvertTypeToGeneric($value, $quote = "'")
+	private static function ConvertTypeToGeneric($value, $quote = "'", $escapeQuoteWithQuote = false)
 	{
 		if (is_string($value))
 		{
-			$search = array("\\",  "\x00", "\n",  "\r",  "'",  '"', "\x1a");
-			$replace = array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z");
+			$search = array("\\", "\x00", "\n", "\r",  $quote, "\x1a");
+			if ($escapeQuoteWithQuote)
+			{
+				$replace = array("\\\\", "\\0", "\\n", "\\r", "{$quote}{$quote}", "\\Z");
+			}
+			else
+			{
+				$replace = array("\\\\", "\\0", "\\n", "\\r", "\\{$quote}", "\\Z");
+			}
 			$tmpArg = "$quote" . str_replace($search, $replace, $value) . "$quote";
 		}
 		elseif (is_int($value))
@@ -459,7 +475,7 @@ class DataConnection extends Object
 		}
 		elseif (is_array($value))
 		{
-			$tmpArg = self::ConvertToPostgresArray($value);
+			BloodyMurder('Array parameters not supported for this connection type');
 		}
 		elseif ($value === null || $value == 'null')
 		{
@@ -1069,16 +1085,24 @@ SQL;
 		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
 		return Security::Encrypt($password, $encryptionKey, $iv);
 	}
-	static function ODBCByDSN($dsn, $username = null, $password = null)
+	static function ODBCByDSN($dsn, $type, $username = null, $password = null)
 	{
-		return new DataConnection(
+		$connection = new DataConnection(
 			Data::ODBC,
 			null,
 			$username,
 			$password,
 			$dsn,
-			null
+			null,
+			false,
+			array('odbc_type' => $type)
 		);
+
+		return $connection;
+	}
+	public function GetODBCType()
+	{
+		return $this->ODBCType;
 	}
 }
 ?>

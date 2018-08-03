@@ -65,6 +65,20 @@ final class Data extends Object
 	 */
 	const Func = 'function';
 	/**
+	 * List of supported ODBC driver types
+	 */
+	static $ODBCTypes = array(
+		'Access'
+	);
+	/**
+	 * String used to identify Access ODBC drivers
+	 */
+	const ODBCAccess = 'Access';
+	/**
+	 * Empty row constant for Access
+	 */
+	const AccessEmptyRow = '<Empty Row>';
+	/**
 	 * $Links is a direct conduit to access any open Data Links/Connections. Multiple DataConnections can be accessed through 
 	 * the $Links Data object.
 	 * 

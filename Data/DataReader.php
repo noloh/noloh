@@ -224,7 +224,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		}
 		elseif ($type === Data::ODBC)
 		{
-			while ($row = odbc_fetch_array($resource))
+			while ($row = @odbc_fetch_array($resource))
 			{
 				if (isset($callBack['constraint']))
 				{
