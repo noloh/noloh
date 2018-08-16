@@ -222,6 +222,23 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 
 			$rows = ($count > 0) ? $data : $data[0];
 		}
+		elseif ($type === Data::ODBC)
+		{
+			while ($row = @odbc_fetch_array($resource))
+			{
+				if (isset($callBack['constraint']))
+				{
+					$row = self::HandleConstraint($row, $callBack['constraint']);
+				}
+
+				$rows[] = $row;
+				if ($callBack)
+				{
+					$args = array_merge(array($row), $callBack['params']);
+					call_user_func_array($callArray, $args);
+				}
+			}
+		}
 		
 		if (!$rows)
 		{
@@ -258,6 +275,14 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 				$numCols = mssql_num_fields($resource);
 				for($i=0; $i < $numCols; ++$i)
 					$this->ColumnTypes[] = mssql_field_type($resource, $i);
+			}
+		}
+		elseif ($dbType === Data::ODBC)
+		{
+			$numCols = odbc_num_fields($resource);
+			for ($i = 1; $i <= $numCols; ++$i)
+			{
+				$this->ColumnTypes[] = odbc_field_type($resource, $i);
 			}
 		}
 	}

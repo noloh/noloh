@@ -4,6 +4,8 @@
  */
 final class NolohInternal
 {
+	private static $SessionState;
+
 	private function NolohInternal(){}
 
 	public static function Queues()
@@ -288,6 +290,31 @@ final class NolohInternal
 					$GLOBALS['_NQueueDisabled'] = null;
 				}
 			}
+	}
+
+	public static function ResetSession()
+	{
+		global $OmniscientBeing;
+
+		foreach (unserialize(static::$SessionState) as $key => $val)
+		{
+			$_SESSION[$key] = $val;
+		}
+
+		++$_SESSION['_NVisit'];
+		$_SESSION['_NOmniscientBeing'] = defined('FORCE_GZIP') ? gzcompress(serialize($OmniscientBeing), 1) : serialize($OmniscientBeing);
+	}
+
+	public static function SaveSessionState()
+	{
+		$session = array();
+		foreach ($_SESSION as $key => $value)
+		{
+			$session[$key] = $value;
+		}
+
+		unset($session['_NOmniscientBeing']);
+		static::$SessionState = serialize($session);
 	}
 }
 ?>
