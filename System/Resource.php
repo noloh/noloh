@@ -85,7 +85,7 @@ abstract class Resource extends Object
 		// TODO: Possibly send cache headers on GET requests
 		header('HTTP/1.1 200 OK');
 		header('Content-Type: application/json');
-
+$asdf = json_encode($data);
 		echo json_encode($data);
 	}
 
