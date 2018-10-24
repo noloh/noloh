@@ -6,7 +6,7 @@
 * 
 * @package System
 */
-class InnerSugar extends Object
+class InnerSugar extends Base
 {
 	const Get = 'Get';
 	const Set = 'Set';

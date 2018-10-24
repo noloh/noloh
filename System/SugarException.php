@@ -6,7 +6,7 @@
  * a SugarException can be thrown from a function handling the InnerSugar invocation to indicate that a property or method
  * is not available, as follows:
  * 
- * class Example extends Object
+ * class Example extends Base
  * {
  * 	static $_InBundle = 'Handler';
  * 	function Handler()

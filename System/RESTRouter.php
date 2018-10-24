@@ -2,7 +2,7 @@
 
 ini_set('html_errors', 0);
 
-abstract class RESTRouter extends Object
+abstract class RESTRouter extends Base
 {
 	const Post 		= 'POST';		// Create
 	const Get 		= 'GET';		// Read
@@ -18,7 +18,7 @@ abstract class RESTRouter extends Object
 	
 	function RESTRouter()
 	{
-		parent::Object();
+		parent::Base();
 
 		// CORS whitelist all origins
 		header('Access-Control-Allow-Origin: *');

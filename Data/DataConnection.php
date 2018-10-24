@@ -24,7 +24,7 @@
  *
  * @package Data
  */
-class DataConnection extends Object
+class DataConnection extends Base
 {
 	/**
 	 * The username used to connect to your database

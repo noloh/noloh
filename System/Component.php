@@ -8,7 +8,7 @@
  *
  * @package System
  */
-abstract class Component extends Object
+abstract class Component extends Base
 {
 	/**
 	 * A possible ShowStatus for the Component. NotShown indicates that the Component has never been shown.

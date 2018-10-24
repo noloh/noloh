@@ -8,7 +8,7 @@
  * 
  * @package System
  */
-final class Application extends Object
+final class Application extends Base
 {
 	/**
 	 * @ignore

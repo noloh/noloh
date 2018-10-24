@@ -47,7 +47,7 @@
  * 
  * @package Collections
  */
-class ArrayList extends Object implements ArrayAccess, Countable, Iterator
+class ArrayList extends Base implements ArrayAccess, Countable, Iterator
 {
 	/**
 	 * The underlying array of the ArrayList.
