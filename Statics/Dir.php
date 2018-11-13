@@ -144,7 +144,6 @@ final class Dir
 	 *
 	 * @param $path
 	 * @return array
-	 * @throws Exception
  	 */
 	public static function RecursiveScanDir($path)
 	{
