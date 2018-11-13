@@ -138,4 +138,44 @@ final class Dir
 			throw new Exception("Unable to set permissions for directory {$directory}. $e->getMessage()");
 		}
 	}
+	/**
+ 	 * Returns an array of all files present at all depths in the directory provided.
+ 	 * The full file path will be returned.
+	 *
+	 * @param $path
+	 * @return array
+	 * @throws Exception
+ 	 */
+	public static function RecursiveScanDir($path)
+	{
+		$fullPath = realpath($path);
+
+		// Check that path exists and that it is a directory
+		if (file_exists($fullPath) === false)
+		{
+			BloodyMurder('Recursive scan failed: Directory not found');
+		}
+		elseif (is_file($fullPath))
+		{
+			BloodyMurder('Recursive scan failed: Path is not a directory');
+		}
+
+		$files = array();
+
+		$dirContents = scandir($fullPath);
+
+		foreach ($dirContents as $content)
+		{
+			if (is_file($fullPath . DIRECTORY_SEPARATOR . $content))
+			{
+				$files[] = $fullPath . DIRECTORY_SEPARATOR . $content;
+			}
+			elseif ($content !== '.' && $content !== '..')
+			{
+				$files = array_merge($files, self::RecursiveScanDir($fullPath . DIRECTORY_SEPARATOR . $content));
+			}
+		}
+
+		return $files;
+	}
 }
