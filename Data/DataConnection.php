@@ -425,26 +425,23 @@ class DataConnection extends Object
 		{
 			$formattedValue = $value->Parameter;
 		}
-		else
+		elseif($this->Type == Data::Postgres)
 		{
-			if($this->Type == Data::Postgres)
-			{
-				$formattedValue = self::ConvertTypeToPostgres($value);
-			}
-			elseif($this->Type == Data::MySQL)
-			{
-				$resource = $this->Connect();
-				$formattedValue = self::ConvertTypeToMySQL($value, "'", $resource);
-				$this->Close();
-			}
-			elseif($this->Type == Data::MSSQL)
-			{
-				$formattedValue = self::ConvertTypeToMSSQL($value);
-			}
-			elseif($this->Type == Data::ODBC)
-			{
-				$formattedValue = self::ConvertTypeToGeneric($value, "'", ($this->ODBCType === Data::ODBCAccess));
-			}
+			$formattedValue = self::ConvertTypeToPostgres($value);
+		}
+		elseif($this->Type == Data::MySQL)
+		{
+			$resource = $this->Connect();
+			$formattedValue = self::ConvertTypeToMySQL($value, "'", $resource);
+			$this->Close();
+		}
+		elseif($this->Type == Data::MSSQL)
+		{
+			$formattedValue = self::ConvertTypeToMSSQL($value);
+		}
+		elseif($this->Type == Data::ODBC)
+		{
+			$formattedValue = self::ConvertTypeToGeneric($value, "'", ($this->ODBCType === Data::ODBCAccess));
 		}
 
 		return $formattedValue;
