@@ -11,8 +11,8 @@ class RawParameter extends Object
 	
 	function RawParameter($param)
 	{
-		/* Only allows alphanumeric characters and parenthesis */
-		if (preg_match("/^[a-zA-Z0-9_\(\)]+$/", $param))
+		/* Only allows alphanumeric characters, parenthesis, and double quotes */
+		if (preg_match("/^[a-zA-Z0-9_\(\)\"]+$/", $param))
 		{
 			$this->Parameter = $param;
 		}
