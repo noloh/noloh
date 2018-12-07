@@ -146,7 +146,8 @@ function DisplayError($message)
 	{
 		++$_SESSION['_NVisit'];
 	}
-	error_log($message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message)));
+	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
+	@error_log($message);
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : 'An application error has occurred.', '");';
 	if ($gzip)
 	{

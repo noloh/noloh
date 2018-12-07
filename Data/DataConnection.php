@@ -342,14 +342,11 @@ class DataConnection extends Base
 			}
 			else
 			{
-				//$search[] = '/\$' . $paramNum . '\b/';
-				// $search[] = '/(\$' . $paramNum . ')([^.]|$)\b/';
-				// $search[] = '/(\$' . '$paramNum' . ')([^.]|$)\b/';
-				// $search[] = '/(?:\$' . $paramNum . ')([^.]|$)/';
 				$sql = preg_replace('/(?:\$' . $paramNum . ')([^\d.]|$)/', '_N_' . $paramNum . '_N_' . '${1}', $sql);
 				$search[] = '/_N_' . $paramNum . '_N_\b/';
+
 				$param = $this->ConvertValueToSQL($param);
-				// $param = str_replace('$', '\\$', $param);
+
 				$replace[] = addcslashes($param, '\\$');
 			}
 			++$paramNum;
@@ -424,25 +421,29 @@ class DataConnection extends Base
 	 */
 	public function ConvertValueToSQL($value)
 	{
-		if($this->Type == Data::Postgres)
+		if ($value instanceof RawParameter)
+		{
+			$formattedValue = $value->Parameter;
+		}
+		else if ($this->Type == Data::Postgres)
 		{
 			$formattedValue = self::ConvertTypeToPostgres($value);
 		}
-		elseif($this->Type == Data::MySQL)
+		else if ($this->Type == Data::MySQL)
 		{
 			$resource = $this->Connect();
 			$formattedValue = self::ConvertTypeToMySQL($value, "'", $resource);
 			$this->Close();
 		}
-		elseif($this->Type == Data::MSSQL)
+		else if ($this->Type == Data::MSSQL)
 		{
 			$formattedValue = self::ConvertTypeToMSSQL($value);
 		}
-		elseif($this->Type == Data::ODBC)
+		else if ($this->Type == Data::ODBC)
 		{
 			$formattedValue = self::ConvertTypeToGeneric($value, "'", ($this->ODBCType === Data::ODBCAccess));
 		}
-		
+
 		return $formattedValue;
 	}
 	/**
