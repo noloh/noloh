@@ -55,13 +55,14 @@ function _NAutoLoad($class)
 			'Item' => 				'Collections/Item.php',
 			
 			// Data
-			'Data' => 				'Data/Data.php',
-			'DataConnection' => 	'Data/DataConnection.php',
-			'DataCommand' => 		'Data/DataCommand.php',
-			'DataConstraint' => 	'Data/DataConstraint.php',
-			'DataReader' => 		'Data/DataReader.php',
+			'Data' 				 => 'Data/Data.php',
+			'DataConnection' 	 => 'Data/DataConnection.php',
+			'DataCommand' 		 => 'Data/DataCommand.php',
+			'DataConstraint' 	 => 'Data/DataConstraint.php',
+			'DataReader' 		 => 'Data/DataReader.php',
 			'DataReaderIterator' => 'Data/DataReaderIterator.php',
-			'File' => 				'Data/File.php',
+			'File' 				 => 'Data/File.php',
+			'RawParameter'		 =>	'Data/RawParameter.php',
 			
 			// Core Controls
 			'Button' => 			'Controls/Core/Button.php',
