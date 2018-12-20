@@ -7,7 +7,7 @@
  * 
  * @package Data
  */
-class File extends Object
+class File extends Base
 {
 	/**
 	 * Open a file for reading only

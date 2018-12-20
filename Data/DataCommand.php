@@ -22,7 +22,7 @@
  * 
  * @package Data
  */
-class DataCommand extends Object
+class DataCommand extends Base
 {
 	private $Connection;
 	private $SqlStatement;

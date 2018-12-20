@@ -7,7 +7,7 @@
  * 
  * @package Collections
  */
-class Item extends Object
+class Item extends Base
 {
 	/**
 	 * The Item's Text
