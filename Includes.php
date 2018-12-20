@@ -7,9 +7,7 @@ require($_NPath . 'Interfaces/MultiGroupable.php');
 require($_NPath . 'Interfaces/MobileApp.php');
 require($_NPath . 'Interfaces/Singleton.php');
 require($_NPath . 'System/Base.php');
-if (version_compare(PHP_VERSION, '7.2.0') < 0) {
-	require($_NPath . 'System/Object.php');
-}
+require($_NPath . 'System/Object.php');
 require($_NPath . 'System/Configuration.php');
 require($_NPath . 'System/Application.php');
 require($_NPath . 'System/Component.php');
