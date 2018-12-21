@@ -30,7 +30,7 @@
  * 
  * @package Events
  */
-class Event extends Object implements ArrayAccess
+class Event extends Base implements ArrayAccess
 {
 	/**
 	 * @ignore

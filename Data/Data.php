@@ -9,7 +9,7 @@
  * @property DataConnection $Flow
  * @property DataConnection $SandBox
  */
-final class Data extends Object
+final class Data extends Base
 {	
 	/**
 	 * Represents the PostgreSQL database type, to be used in conjuction with other data related functions.

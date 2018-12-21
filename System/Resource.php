@@ -1,6 +1,6 @@
 <?php
 
-abstract class Resource extends Object
+abstract class Resource extends Base
 {
 	protected $Response;
 	protected $ReceivesJSON = true;
