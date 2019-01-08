@@ -100,7 +100,18 @@ abstract class RESTRouter extends Base
 		$resourceName = array_shift($paths);
 		$resourceName = ucwords(str_replace('-', ' ', $resourceName));
 		$resourceName = str_replace(' ', '', $resourceName);
-		$className = $resourceName . 'Resource';
+
+		// Allows .php files in URL when using resources
+		if (strpos($resourceName, '.php') === false)
+		{
+			$className = $resourceName . 'Resource';
+		}
+		else
+		{
+			$resourceName = str_replace('.php', '', $resourceName);
+			$className = $resourceName;
+		}
+
 		$this->ResourceName = $resourceName;
 		if (is_subclass_of($className, 'Resource'))
 		{
