@@ -167,13 +167,13 @@ abstract class RESTRouter extends Base
 					$data = $_POST;
 				}
 				break;
-				
+
+			case self::Delete:
 			case self::Get:
 				// TODO: Possibly return Not Modified response, for cache
 				$data = $_GET;
 				break;
-				
-			case self::Delete:
+
 			default:
 				$data = array();
 		}
