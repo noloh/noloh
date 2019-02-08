@@ -885,7 +885,7 @@ class DataConnection extends Base
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
+			$backup = "PGPASSWORD={$pass} {$path} -Fc -h {$host} -U {$user} {$dbName}";
 			$gzip = exec('which gzip 2>&1');
 			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
@@ -894,7 +894,7 @@ class DataConnection extends Base
 			}
 			else
 			{
-				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+				$backup = "PGPASSWORD={$pass} {$path} -Fc -h {$host} -U {$user} -f {$file} {$dbName}";
 				$compress = true;
 			}
 		}
@@ -902,7 +902,7 @@ class DataConnection extends Base
 		{
 			if ($this->Type === Data::Postgres)
 			{
-				$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
+				$backup = "SET PGPASSWORD={$pass}&& pg_dump -Fc -h {$host} -U {$user} -d {$dbName}";
 			}
 			elseif ($this->Type === Data::MSSQL)
 			{
