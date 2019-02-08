@@ -869,7 +869,7 @@ class DataConnection extends Base
 			}
 		}
 	}
-	function DBDump($file, $compressionLevel = 5)
+	function DBDump($file, $compressionLevel = 5, $format = 'c')
 	{
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
@@ -885,16 +885,16 @@ class DataConnection extends Base
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -Fc -h {$host} -U {$user} {$dbName}";
+			$backup = "PGPASSWORD={$pass} {$path} -F{$format} -h {$host} -U {$user} {$dbName}";
 			$gzip = exec('which gzip 2>&1');
-			if (is_executable ($gzip) && $compressionLevel !== 0)
+			if (is_executable ($gzip) && $format !== 'c')
 			{
 				$file .= '.gz';
 				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
 			}
 			else
 			{
-				$backup = "PGPASSWORD={$pass} {$path} -Fc -h {$host} -U {$user} -f {$file} {$dbName}";
+				$backup = "PGPASSWORD={$pass} {$path} -F{$format} -h {$host} -U {$user} -f {$file} {$dbName}";
 				$compress = true;
 			}
 		}
@@ -902,7 +902,7 @@ class DataConnection extends Base
 		{
 			if ($this->Type === Data::Postgres)
 			{
-				$backup = "SET PGPASSWORD={$pass}&& pg_dump -Fc -h {$host} -U {$user} -d {$dbName}";
+				$backup = "SET PGPASSWORD={$pass}&& pg_dump -F{$format} -h {$host} -U {$user} -d {$dbName}";
 			}
 			elseif ($this->Type === Data::MSSQL)
 			{
@@ -915,7 +915,7 @@ SQL;
 			}
 			
 			$gzip = exec('where gzip 2>&1');
-			if (is_executable ($gzip) && $compressionLevel !== 0)
+			if (is_executable ($gzip) && $format !== 'c')
 			{
 				$file .= '.gz';
 				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
@@ -938,7 +938,7 @@ SQL;
 			exec($backup);
 		}
 		
-		if (file_exists($file) && $compress && $compressionLevel !== 0)
+		if (file_exists($file) && $compress && $format !== 'c')
 		{
 			$path = pathinfo($file);
 			if ($path['extension'] != 'gz')
@@ -997,17 +997,13 @@ SQL;
 			$files[] = $targetDump;
 		}
 
-		$tar->compress(Phar::GZ);
 		unset($tar); // Removes open file handles held by the PharData object
-		Phar::unlinkArchive($tarFile);
-
 		foreach ($files as $file)
 		{
 			unlink($file);
 		}
 
-		$file = $tarFile . '.gz';
-		return file_exists($file) ? $file : false;
+		return file_exists($tarFile) ? $tarFile : false;
 	}
 	function __wakeup()
 	{
