@@ -2,7 +2,7 @@
 /**
  * @ignore
  */
-class DataConstraint extends Object
+class DataConstraint extends Base
 {
 	private $Columns;
 	

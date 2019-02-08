@@ -26,7 +26,7 @@
  * 
  * @package Data
  */
-class DataReader extends Object implements ArrayAccess, Countable, Iterator
+class DataReader extends Base implements ArrayAccess, Countable, Iterator
 {
 	/**
 	 * An array containing the results of your DataCommand

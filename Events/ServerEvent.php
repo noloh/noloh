@@ -113,7 +113,7 @@ class ServerEvent extends Event
 	 * no object is set, or if the event is a function of a static class then null
 	 * is returned.
      *
-     * @return Object|null
+     * @return Base|null
      */
     function GetOwner()
     {

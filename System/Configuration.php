@@ -8,7 +8,7 @@
  * 
  * @package System
  */
-class Configuration extends Object implements Singleton
+class Configuration extends Base implements Singleton
 {
 	/**
 	 *  A possible value for the TimeoutAction property, Alert indicates that a simple alert will be displayed.
@@ -107,7 +107,7 @@ class Configuration extends Object implements Singleton
 	 */
 	function Configuration()
 	{
-		parent::Object();
+		parent::Base();
 		$args = func_get_args();
 		$argLength = func_num_args();
         $firstIndex = 0;

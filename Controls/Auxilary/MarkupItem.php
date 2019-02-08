@@ -20,7 +20,7 @@
  * 
  * @package Controls/Auxiliary
  */
-abstract class MarkupItem extends Object
+abstract class MarkupItem extends Base
 {
 	/**
 	 * @ignore

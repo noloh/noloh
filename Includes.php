@@ -6,6 +6,7 @@ require($_NPath . 'Interfaces/Groupable.php');
 require($_NPath . 'Interfaces/MultiGroupable.php');
 require($_NPath . 'Interfaces/MobileApp.php');
 require($_NPath . 'Interfaces/Singleton.php');
+require($_NPath . 'System/Base.php');
 require($_NPath . 'System/Object.php');
 require($_NPath . 'System/Configuration.php');
 require($_NPath . 'System/Application.php');
