@@ -89,6 +89,8 @@ function _NAutoLoad($class)
 			'TextArea' => 			'Controls/Core/TextArea.php',
 			'TextBox' => 			'Controls/Core/TextBox.php',
 			'Timer' => 				'Controls/Core/Timer.php',
+			'UnorderedList' => 		'Controls/Core/UnorderedList.php',
+			'ListItem' =>			'Controls/Core/ListItem.php',
 			
 			// Extended Controls
 			'Accordion' => 			'Controls/Extended/Accordion.php',
