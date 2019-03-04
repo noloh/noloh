@@ -15,7 +15,7 @@ class ListItem extends Control
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 
-		$this->CSSPosition = 'static';
+		$this->CSSPosition = null;
 		$this->SetText($text);
 	}
 	function SetText($text)
