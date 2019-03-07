@@ -226,6 +226,10 @@ function _NChangeByObj(obj, property, value)
 			case "className":
 				obj.className = obj.className.indexOf("NClickable")!=-1 && value.indexOf("NClickable")==-1 ? "NClickable " + value : value;
 				break;
+			case "value":
+				obj.value = value;
+				$(obj).trigger('input');
+				break;
 			default:
 				eval("obj." + property + " = value;");
 		}
