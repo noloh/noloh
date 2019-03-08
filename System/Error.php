@@ -193,7 +193,7 @@ function BloodyMurder($message)
 {
 	if(UserAgent::IsCLI() || System::IsRESTful())
 	{
-		trigger_error($message, E_ERROR);
+		trigger_error($message, E_USER_ERROR);
 	}
 	
 	if(!isset($GLOBALS['_NDebugMode']))
