@@ -228,7 +228,9 @@ function _NChangeByObj(obj, property, value)
 				break;
 			case "value":
 				obj.value = value;
-				$(obj).trigger('input');
+				var event = document.createEvent('Event');
+				event.initEvent('input', true, false);
+				obj.dispatchEvent(event);
 				break;
 			default:
 				eval("obj." + property + " = value;");
