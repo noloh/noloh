@@ -228,9 +228,7 @@ function _NChangeByObj(obj, property, value)
 				break;
 			case "value":
 				obj.value = value;
-				var event = document.createEvent('Event');
-				event.initEvent('input', true, false);
-				obj.dispatchEvent(event);
+				obj.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': false}));
 				break;
 			default:
 				eval("obj." + property + " = value;");
