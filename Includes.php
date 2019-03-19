@@ -28,12 +28,15 @@ require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');
 require($_NPath . 'Statics/URL.php');
 require($_NPath . 'Statics/Dir.php');
-require($_NPath . 'Nodules/Guzzle/3.9/autoload.php');
 
 // Guzzle 5.3.3 requires at least PHP version 5.5 so we are reserving it's use for PHP 7 clients
 if (version_compare(PHP_VERSION, '7.2.0') >= 0)
 {
 	require($_NPath . 'Nodules/Guzzle/5.3.3/autoload.php');
+}
+else
+{
+	require($_NPath . 'Nodules/Guzzle/3.9/autoload.php');
 }
 
 function _NAutoLoad($class)
@@ -202,6 +205,5 @@ function _NAutoLoad($class)
 	}
 }
 
-spl_autoload_register('_NAutoLoad');
-
+spl_autoload_register('_NAutoLoad', true, true);
 ?>
