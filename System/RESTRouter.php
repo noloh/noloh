@@ -42,7 +42,7 @@ abstract class RESTRouter extends Base
 				break;
 			
 			default:
-				Resource::MethodNotAllowed(array(
+				Resource::MethodNotAllowed('Method not supported: ' . $this->Method, array(
 					self::Post, self::Get, self::Put, self::Delete, self::Options
 				));
 		}
@@ -131,6 +131,7 @@ abstract class RESTRouter extends Base
 		{
 			case self::Post:
 			case self::Put:
+			case self::Delete:
 				if (empty($_POST))
 				{
 					$raw = file_get_contents('php://input');
@@ -168,7 +169,6 @@ abstract class RESTRouter extends Base
 				}
 				break;
 
-			case self::Delete:
 			case self::Get:
 				// TODO: Possibly return Not Modified response, for cache
 				$data = $_GET;
