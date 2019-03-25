@@ -178,7 +178,7 @@ function _NAutoLoad($class)
 				if ($callLoad && $autoload !== '_NAutoLoad')
 				{
 					call_user_func($autoload, $class);
-					if (class_exists($class, false))
+					if (class_exists($class, false) || interface_exists($class, false))
 					{
 						return;
 					}
