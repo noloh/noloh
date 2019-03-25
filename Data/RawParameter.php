@@ -12,7 +12,7 @@ class RawParameter extends Base
 	function RawParameter($param)
 	{
 		/* Only allow certain characters used in SQL */
-		if (preg_match("/^[a-zA-Z0-9_\(\)\:\s\*,\"]+$/", $param))
+		if (preg_match("/^[a-zA-Z0-9_\(\)\:\s\*,\'\|\^<>@~!=\"]+$/", $param))
 		{
 			$this->Parameter = $param;
 		}
