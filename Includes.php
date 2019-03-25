@@ -32,11 +32,11 @@ require($_NPath . 'Statics/Dir.php');
 // Guzzle 5.3.3 requires at least PHP version 5.5 so we are reserving it's use for PHP 7 clients
 if (version_compare(PHP_VERSION, '7.2.0') >= 0)
 {
-	require_once($_NPath . 'Nodules/Guzzle/5.3.3/autoload.php');
+	require($_NPath . 'Nodules/Guzzle/5.3.3/autoload.php');
 }
 else
 {
-	require_once($_NPath . 'Nodules/Guzzle/3.9/autoload.php');
+	require($_NPath . 'Nodules/Guzzle/3.9/autoload.php');
 }
 
 function _NAutoLoad($class)
