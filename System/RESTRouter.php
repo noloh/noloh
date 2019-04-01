@@ -126,7 +126,13 @@ abstract class RESTRouter extends Base
 	
 	public function Route()
 	{
-		$method = ucfirst($this->Method);
+		$this->ProcessData();
+		call_user_func(array($this->Resource, ucfirst($this->Method)), $this->InputData);
+		$this->Resource->SendResponse();
+	}
+
+	function ProcessData()
+	{
 		switch ($this->Method)
 		{
 			case self::Post:
@@ -178,13 +184,8 @@ abstract class RESTRouter extends Base
 				$data = array();
 		}
 		$this->InputData = $data;
-		$this->ProcessData();
-		call_user_func(array($this->Resource, $method), $data);
-		$this->Resource->SendResponse();
 	}
-	function ProcessData(){}
-	
-	
+
 	// Bootstrap
 	
 	public static function Bootstrap()
