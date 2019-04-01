@@ -131,7 +131,7 @@ abstract class RESTRouter extends Base
 		$this->Resource->SendResponse();
 	}
 
-	function ProcessData()
+	protected function ProcessData()
 	{
 		switch ($this->Method)
 		{
