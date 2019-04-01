@@ -178,9 +178,11 @@ abstract class RESTRouter extends Base
 				$data = array();
 		}
 		$this->InputData = $data;
+		$this->ProcessData();
 		call_user_func(array($this->Resource, $method), $data);
 		$this->Resource->SendResponse();
 	}
+	function ProcessData(){}
 	
 	
 	// Bootstrap
