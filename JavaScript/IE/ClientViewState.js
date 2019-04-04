@@ -290,6 +290,10 @@ function _NChangeByObj(obj, property, value)
 			case "ContextMenu":
 				if(!obj.oncontextmenu)
 					_NChangeByObj(obj, "oncontextmenu", "");
+			case "value":
+				obj.value = value;
+				obj.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
+				break;
 			default:
 				eval("obj." + property + " = value;");
 		}
