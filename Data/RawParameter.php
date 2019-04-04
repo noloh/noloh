@@ -11,14 +11,14 @@ class RawParameter extends Base
 	
 	function RawParameter($param)
 	{
-		/* Only allows alphanumeric characters, parenthesis, and double quotes */
-		if (preg_match("/^[a-zA-Z0-9_\(\)\"]+$/", $param))
+		/* Only allow certain characters used in SQL */
+		if (preg_match("/^[a-zA-Z0-9_\(\)\:\s\*,\'\|\^<>@~!=\"]+$/", $param))
 		{
 			$this->Parameter = $param;
 		}
 		else
 		{
-			BloodyMurder('RawParameter parameter can only contain valid function, table, or column names');
+			BloodyMurder('RawParameter parameter contains invalid characters');
 		}
 	}
 	function GetParameter()
