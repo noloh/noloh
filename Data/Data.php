@@ -117,9 +117,16 @@ final class Data extends Base
 		$value->Name = $name;
 		return $_SESSION['_NDataLinks'][$name] = $value;
 	}
-	static function Raw($value)
+	/**
+	 * A raw SQL string to be injected into a query
+	 * @param string $rawString
+	 * @param mixed ...$param list of values to be escaped within $rawString
+	 * @return RawParameter
+	 */
+	static function Raw()
 	{
-		return new RawParameter($value);
+		$raw = new ReflectionClass('RawParameter');
+		return $raw->newInstanceArgs(func_get_args());
 	}
 }
 Data::$Links = new Data();
