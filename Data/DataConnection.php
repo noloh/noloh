@@ -423,7 +423,7 @@ class DataConnection extends Base
 	{
 		if ($value instanceof RawParameter)
 		{
-			$formattedValue = $value->Parameter;
+			$formattedValue = $value->GetParameter($this);
 		}
 		else if ($this->Type == Data::Postgres)
 		{
