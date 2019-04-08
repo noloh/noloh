@@ -508,6 +508,12 @@ final class System
 
 		return $output;
 	}
+
+	public static function GetHTTPHeader($name)
+	{
+		$formattedKey = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
+		return isset($_SERVER[$formattedKey]) ? $_SERVER[$formattedKey] : null;
+	}
 }
 
 ?>

@@ -10,7 +10,12 @@ abstract class RESTRouter extends Base
 	const Delete 	= 'DELETE';		// Delete
 	
 	const Options	= 'OPTIONS';	// Preflighted Requests
-	
+
+	// It is strongly recommended that these be changed from default
+	protected static $JSONErrors = false;
+	protected $APIAccessKey = null;
+	protected $RequireHTTPS = false;
+
 	protected $Method;
 	protected $ResourceName;
 	protected $Resource;
@@ -24,12 +29,25 @@ abstract class RESTRouter extends Base
 		header('Access-Control-Allow-Origin: *');
 		
 		// TODO: Output buffering
-		
+
+		$this->ValidateSecurity();
 		$this->InitMethod();
 		$this->InitResources();
 	}
+
+	protected function ValidateSecurity()
+	{
+		if (!empty($this->APIAccessKey) && ($this->APIAccessKey !== System::GetHTTPHeader('API-Access-Key')))
+		{
+			Resource::Unauthorized('Invalid API Access Key');
+		}
+		if ($this->RequireHTTPS && (URL::GetProtocol() !== 'https'))
+		{
+			Resource::Forbidden('HTTPS is required');
+		}
+	}
 	
-	function InitMethod()
+	protected function InitMethod()
 	{
 		$this->Method = strtoupper($_SERVER['REQUEST_METHOD']);
 		switch ($this->Method)
@@ -87,7 +105,7 @@ abstract class RESTRouter extends Base
 		return $paths;
 	}
 	
-	function InitResources()
+	protected function InitResources()
 	{
 		$paths = $this->GetPaths();
 			
@@ -194,12 +212,37 @@ abstract class RESTRouter extends Base
 		$className = $config->StartClass;
 		try
 		{
+			static::$JSONErrors = $className::$JSONErrors;
 			new $className;
 		}
-		catch (ResourceException $e)
+		catch (Exception $e)
 		{
-			die($e->getMessage());
+			static::ErrorHandling($e);
 		}
+	}
+
+	protected static function ErrorHandling(Exception $exception)
+	{
+		if (!($exception instanceof ResourceException))
+		{
+			header('HTTP/1.1 500 Internal Server Error');
+		}
+
+		if (static::$JSONErrors)
+		{
+			$error = array(
+				//'code' => $exception->getCode(),
+				'type' => $exception->GetErrorType(),
+				'message' => $exception->getMessage()
+			);
+			$error = json_encode($error);
+		}
+		else
+		{
+			$error = $exception->getMessage();
+		}
+
+		echo $error;
 	}
 }
 
