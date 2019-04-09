@@ -223,7 +223,8 @@ abstract class RESTRouter extends Base
 
 	protected static function ErrorHandling(Exception $exception)
 	{
-		if (!($exception instanceof ResourceException))
+		$resourceException = ($exception instanceof ResourceException);
+		if (!$resourceException)
 		{
 			header('HTTP/1.1 500 Internal Server Error');
 		}
@@ -232,7 +233,7 @@ abstract class RESTRouter extends Base
 		{
 			$error = array(
 				//'code' => $exception->getCode(),
-				'type' => $exception->GetErrorType(),
+				'type' => $resourceException ? $exception->GetErrorType() : get_class($exception),
 				'message' => $exception->getMessage()
 			);
 			$error = json_encode($error);
