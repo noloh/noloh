@@ -517,11 +517,11 @@ final class System
 	{
 		if (static::IsWindows())
 		{
-			pclose(popen("start /B ". $shellCommand, "r"));
+			pclose(popen('start /B '. $shellCommand, 'r'));
 		}
 		else
 		{
-			exec($shellCommand . " > /dev/null &");
+			exec($shellCommand . ' > /dev/null &');
 		}
 	}
 	/**
