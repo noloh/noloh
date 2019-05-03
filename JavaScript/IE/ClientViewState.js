@@ -313,7 +313,7 @@ function _NNoBubble()
 function _NCreateEvent(eventType)
 {
 	var event;
-	if(typeof(Event) === 'function') {
+	if (typeof(Event) === 'function') {
 		event = new Event(eventType, {bubbles: true, cancelable: true});
 	} else {
 		event = document.createEvent('Event');
