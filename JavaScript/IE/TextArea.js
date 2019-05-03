@@ -21,5 +21,5 @@ function _NTATxt(id, text)
 {
 	var obj = _N(id);
 	_N.Saved[id]["value"] = obj.value = text.replace(/<Nendl>/g,"\n");
-	obj.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
+	obj.dispatchEvent(_NCreateEvent('input'));
 }
