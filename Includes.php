@@ -72,6 +72,7 @@ function _NAutoLoad($class)
 			'DataConstraint' 	 => 'Data/DataConstraint.php',
 			'DataReader' 		 => 'Data/DataReader.php',
 			'DataReaderIterator' => 'Data/DataReaderIterator.php',
+			'DataSequence'		 => 'Data/DataSequence.php',
 			'File' 				 => 'Data/File.php',
 			'RawParameter'		 =>	'Data/RawParameter.php',
 			
