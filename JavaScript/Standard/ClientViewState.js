@@ -523,42 +523,46 @@ function _NUnServer(loadIndicator)
 }
 function _NReqStateChange()
 {
-	var req = _N.Request;
+	var req = _N.Request, loadIndicator = _N.LoadIndicator;
 	if(req.readyState == 4)
+	{
 		if(req.status == 200)
 		{
-   			var text = _N.Request.responseText, loadIndicator = _N.LoadIndicator;
+			var text = _N.Request.responseText;
 			if(_N.DebugMode == null)
 			{
 				_NProcessResponse(text);
-				_NUnServer(loadIndicator);
-			}
-			else
-	   			try
-	   			{
-					_NProcessResponse(text);
-	   			}
-	   			catch(err)
-	   			{
-	   				var el = document.createElement("DIV");
-	   				el.innerHTML = text;
-	   				text = el.textContent;
-	   				var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
-	   				if(matches)
-	   					alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
-	   				else
-						_NAlertError(err);
-	   			}
-		        finally
-		        {
-					_NUnServer(loadIndicator);
-		        }
 			}
 			else
 			{
-				alert("HTTP error: " + req.status + "\n" + req.statusText);
-				_NUnServer();
+				try
+				{
+					_NProcessResponse(text);
+				}
+				catch(err)
+				{
+					var el = document.createElement("DIV");
+					el.innerHTML = text;
+					text = el.textContent;
+					var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
+					if(matches)
+						alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
+					else
+						_NAlertError(err);
+				}
 			}
+		}
+		else if (req.status == 0)
+		{
+			alert("Unable to contact server. Please Check your connection.");
+		}
+		else
+		{
+			alert("HTTP error: " + req.status + "\n" + req.statusText);
+		}
+
+		_NUnServer(loadIndicator);
+	}
 }
 function _NSE(eventType, id, uploads)
 {
