@@ -554,7 +554,7 @@ function _NReqStateChange()
 		}
 		else if (req.status == 0)
 		{
-			alert("Unable to contact server. Please Check your connection.");
+			alert("Unable to contact server. Please check your connection.");
 		}
 		else
 		{
