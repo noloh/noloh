@@ -44,11 +44,11 @@ abstract class Resource extends Base
 			case RESTRouter::Get:
 			case RESTRouter::Put:
 			case RESTRouter::Delete:
-				return self::MethodNotAllowed($this->GetAllowedMethods());
+				return self::MethodNotAllowed('Method not defined: ' . $name, $this->GetAllowedMethods());
 				break;
 				
 			default:
-				self::InternalError();
+				self::InternalError('Unsupported and undefined method: ' . $name);
 		}
 	}
 	
@@ -99,11 +99,11 @@ abstract class Resource extends Base
 		throw $exception;
 	}
 
-	public static function Unauthorized()
+	public static function Unauthorized($text = '')
 	{
 		header('HTTP/1.1 401 Unauthorized');
 
-		$exception = new ResourceException('401 Unauthorized');
+		$exception = new ResourceException('401 Unauthorized', $text);
 		throw $exception;
 	}
 
@@ -115,28 +115,36 @@ abstract class Resource extends Base
 		throw $exception;
 	}
 	
-	public static function NotFound()
+	public static function NotFound($text = '')
 	{
 		header('HTTP/1.1 404 Not Found');
-		$exception = new ResourceException('404 Not Found');
+		$exception = new ResourceException('404 Not Found', $text);
 		throw $exception;
 	}
 
-	public static function MethodNotAllowed($allowedList = array())
+	public static function MethodNotAllowed($text = '', $allowedList = array())
 	{
+		// Old usage - deprecated
+		if (is_array($text))
+		{
+			$temp = $allowedList;
+			$allowedList = $text;
+			$text = $temp;
+		}
+
 		header('HTTP/1.1 405 Method Not Allowed');
 		if (!empty($allowedList))
 		{
 			header('Allow: ' . implode(', ', $allowedList));
 		}
-		$exception = new ResourceException('405 Method Not Allowed');
+		$exception = new ResourceException('405 Method Not Allowed', $text);
 		throw $exception;
 	}
 	
-	public static function InternalError()
+	public static function InternalError($text = '')
 	{
 		header('HTTP/1.1 500 Internal Server Error');
-		$exception = new ResourceException('500 Internal Server Error');
+		$exception = new ResourceException('500 Internal Server Error', $text);
 		throw $exception;
 	}
 	

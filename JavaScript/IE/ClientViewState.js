@@ -290,6 +290,10 @@ function _NChangeByObj(obj, property, value)
 			case "ContextMenu":
 				if(!obj.oncontextmenu)
 					_NChangeByObj(obj, "oncontextmenu", "");
+			case "value":
+				obj.value = value;
+				obj.dispatchEvent(_NCreateEvent('input'));
+				break;
 			default:
 				eval("obj." + property + " = value;");
 		}
@@ -305,6 +309,18 @@ function _NNoBubble()
 {
 	if(window.event)
 		window.event.cancelBubble = true;
+}
+function _NCreateEvent(eventType)
+{
+	var event;
+	if (typeof(Event) === 'function') {
+		event = new Event(eventType, {bubbles: true, cancelable: true});
+	} else {
+		event = document.createEvent('Event');
+		event.initEvent(eventType, true, true);
+	}
+
+	return event;
 }
 function _NSave(id, property, value)
 {

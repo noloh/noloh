@@ -8,21 +8,25 @@
 class RawParameter extends Base
 {
 	protected $Parameter;
+	public $Values;
 	
-	function RawParameter($param)
+	function RawParameter($paramsDotDotDot)
 	{
-		/* Only allows alphanumeric characters, parenthesis, and double quotes */
-		if (preg_match("/^[a-zA-Z0-9_\(\)\"]+$/", $param))
-		{
-			$this->Parameter = $param;
-		}
-		else
-		{
-			BloodyMurder('RawParameter parameter can only contain valid function, table, or column names');
-		}
+		$args = func_get_args();
+
+		$this->Parameter = array_shift($args);
+		$this->Values = $args;
 	}
-	function GetParameter()
+	function GetParameter(DataConnection $connection)
 	{
-		return $this->Parameter;
+		$search = array();
+		$replace = array();
+		foreach ($this->Values as $i => $value)
+		{
+			$search[] = '$' . ++$i;
+			$replace[] = $connection->ConvertValueToSQL($value);
+		}
+
+		return str_replace($search, $replace, $this->Parameter);
 	}
 }

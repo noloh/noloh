@@ -423,7 +423,7 @@ class DataConnection extends Base
 	{
 		if ($value instanceof RawParameter)
 		{
-			$formattedValue = $value->Parameter;
+			$formattedValue = $value->GetParameter($this);
 		}
 		else if ($this->Type == Data::Postgres)
 		{
@@ -869,7 +869,7 @@ class DataConnection extends Base
 			}
 		}
 	}
-	function DBDump($file, $compressionLevel = 5, $format = 'c')
+	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
@@ -885,16 +885,16 @@ class DataConnection extends Base
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -F{$format} -h {$host} -U {$user} {$dbName}";
+			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
 			$gzip = exec('which gzip 2>&1');
-			if (is_executable ($gzip) && $format !== 'c')
+			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
 				$file .= '.gz';
 				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
 			}
 			else
 			{
-				$backup = "PGPASSWORD={$pass} {$path} -F{$format} -h {$host} -U {$user} -f {$file} {$dbName}";
+				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
 				$compress = true;
 			}
 		}
@@ -902,7 +902,7 @@ class DataConnection extends Base
 		{
 			if ($this->Type === Data::Postgres)
 			{
-				$backup = "SET PGPASSWORD={$pass}&& pg_dump -F{$format} -h {$host} -U {$user} -d {$dbName}";
+				$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
 			}
 			elseif ($this->Type === Data::MSSQL)
 			{
@@ -915,7 +915,7 @@ SQL;
 			}
 			
 			$gzip = exec('where gzip 2>&1');
-			if (is_executable ($gzip) && $format !== 'c')
+			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
 				$file .= '.gz';
 				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
@@ -938,7 +938,7 @@ SQL;
 			exec($backup);
 		}
 		
-		if (file_exists($file) && $compress && $format !== 'c')
+		if (file_exists($file) && $compress && $compressionLevel !== 0)
 		{
 			$path = pathinfo($file);
 			if ($path['extension'] != 'gz')

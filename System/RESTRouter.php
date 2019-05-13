@@ -10,7 +10,12 @@ abstract class RESTRouter extends Base
 	const Delete 	= 'DELETE';		// Delete
 	
 	const Options	= 'OPTIONS';	// Preflighted Requests
-	
+
+	// It is strongly recommended that these be changed from default
+	protected static $JSONErrors = false;
+	protected $APIAccessKey = null;
+	protected $RequireHTTPS = false;
+
 	protected $Method;
 	protected $ResourceName;
 	protected $Resource;
@@ -24,12 +29,25 @@ abstract class RESTRouter extends Base
 		header('Access-Control-Allow-Origin: *');
 		
 		// TODO: Output buffering
-		
+
+		$this->ValidateSecurity();
 		$this->InitMethod();
 		$this->InitResources();
 	}
+
+	protected function ValidateSecurity()
+	{
+		if (!empty($this->APIAccessKey) && ($this->APIAccessKey !== System::GetHTTPHeader('API-Access-Key')))
+		{
+			Resource::Unauthorized('Invalid API Access Key');
+		}
+		if ($this->RequireHTTPS && (URL::GetProtocol() !== 'https'))
+		{
+			Resource::Forbidden('HTTPS is required');
+		}
+	}
 	
-	function InitMethod()
+	protected function InitMethod()
 	{
 		$this->Method = strtoupper($_SERVER['REQUEST_METHOD']);
 		switch ($this->Method)
@@ -42,7 +60,7 @@ abstract class RESTRouter extends Base
 				break;
 			
 			default:
-				Resource::MethodNotAllowed(array(
+				Resource::MethodNotAllowed('Method not supported: ' . $this->Method, array(
 					self::Post, self::Get, self::Put, self::Delete, self::Options
 				));
 		}
@@ -87,7 +105,7 @@ abstract class RESTRouter extends Base
 		return $paths;
 	}
 	
-	function InitResources()
+	protected function InitResources()
 	{
 		$paths = $this->GetPaths();
 			
@@ -126,11 +144,18 @@ abstract class RESTRouter extends Base
 	
 	public function Route()
 	{
-		$method = ucfirst($this->Method);
+		$this->ProcessData();
+		call_user_func(array($this->Resource, ucfirst($this->Method)), $this->InputData);
+		$this->Resource->SendResponse();
+	}
+
+	protected function ProcessData()
+	{
 		switch ($this->Method)
 		{
 			case self::Post:
 			case self::Put:
+			case self::Delete:
 				if (empty($_POST))
 				{
 					$raw = file_get_contents('php://input');
@@ -168,7 +193,6 @@ abstract class RESTRouter extends Base
 				}
 				break;
 
-			case self::Delete:
 			case self::Get:
 				// TODO: Possibly return Not Modified response, for cache
 				$data = $_GET;
@@ -178,11 +202,8 @@ abstract class RESTRouter extends Base
 				$data = array();
 		}
 		$this->InputData = $data;
-		call_user_func(array($this->Resource, $method), $data);
-		$this->Resource->SendResponse();
 	}
-	
-	
+
 	// Bootstrap
 	
 	public static function Bootstrap()
@@ -191,12 +212,38 @@ abstract class RESTRouter extends Base
 		$className = $config->StartClass;
 		try
 		{
+			static::$JSONErrors = $className::$JSONErrors;
 			new $className;
 		}
-		catch (ResourceException $e)
+		catch (Exception $e)
 		{
-			die($e->getMessage());
+			static::ErrorHandling($e);
 		}
+	}
+
+	protected static function ErrorHandling(Exception $exception)
+	{
+		$resourceException = ($exception instanceof ResourceException);
+		if (!$resourceException)
+		{
+			header('HTTP/1.1 500 Internal Server Error');
+		}
+
+		if (static::$JSONErrors)
+		{
+			$error = array(
+				//'code' => $exception->getCode(),
+				'type' => $resourceException ? $exception->GetErrorType() : get_class($exception),
+				'message' => $exception->getMessage()
+			);
+			$error = json_encode($error);
+		}
+		else
+		{
+			$error = $exception->getMessage();
+		}
+
+		echo $error;
 	}
 }
 
