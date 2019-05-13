@@ -508,7 +508,27 @@ final class System
 
 		return $output;
 	}
-
+	/**
+	 * Runs a command in a background, forked process
+	 * @param string $shellCommand
+	 * @see https://www.php.net/manual/en/function.popen.php#116948
+	 */
+	static function ExecuteInBackground($shellCommand)
+	{
+		if (static::IsWindows())
+		{
+			pclose(popen('start /B '. $shellCommand, 'r'));
+		}
+		else
+		{
+			exec($shellCommand . ' > /dev/null &');
+		}
+	}
+	/**
+	 * Get the value of a request header
+	 * @param string $name
+	 * @return mixed|null
+	 */
 	public static function GetHTTPHeader($name)
 	{
 		$formattedKey = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
