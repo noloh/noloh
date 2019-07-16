@@ -129,10 +129,12 @@ final class ClientScript
 				if(is_array($paramsArray))
 				{
 					$paramsArray = array_map(array('ClientScript', 'ClientFormat'), $paramsArray);
-					$paramsArray = implode(',', $paramsArray);
 				}
 				elseif($paramsArray !== null)
+				{
 					$paramsArray = array(ClientScript::ClientFormat($paramsArray));
+				}
+				$paramsArray = implode(',', $paramsArray);
 				$codeOrFunction = 'function(){' . $codeOrFunction . '('. $paramsArray .')}'; 	
 			}
 			$codeOrFunction = new ClientEvent($codeOrFunction);
