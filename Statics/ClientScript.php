@@ -129,10 +129,12 @@ final class ClientScript
 				if(is_array($paramsArray))
 				{
 					$paramsArray = array_map(array('ClientScript', 'ClientFormat'), $paramsArray);
-					$paramsArray = implode(',', $paramsArray);
 				}
 				elseif($paramsArray !== null)
+				{
 					$paramsArray = array(ClientScript::ClientFormat($paramsArray));
+				}
+				$paramsArray = implode(',', $paramsArray);
 				$codeOrFunction = 'function(){' . $codeOrFunction . '('. $paramsArray .')}'; 	
 			}
 			$codeOrFunction = new ClientEvent($codeOrFunction);
@@ -146,8 +148,9 @@ final class ClientScript
 	 * {@see ClientScript::Add} to add actual code as opposed to files.
 	 * @param string $path A path to the javascript file.
 	 * @param bool $combine Whether you want the source file to be combined with other source files, or added separately.
+	 * @param bool|null $addMTime Whether mtime is added to the request for caching purposes. Null defaults to Configuration value
 	 */
-	static function AddSource($path, $combine=true)
+	static function AddSource($path, $combine = true, $addMTime = null)
 	{
 		if(!isset($_SESSION['_NScriptSrcs'][$path]))
 		{
@@ -156,7 +159,11 @@ final class ClientScript
 			else
 			{
 				self::AddNOLOHSource('AddExternal.js');
-				$path2 = Configuration::That()->AddMTimeToExternals ? self::AddMTime($path) : $path;
+				if ($addMTime === null)
+				{
+					$addMTime = Configuration::That()->AddMTimeToExternals;
+				}
+				$path2 = $addMTime ? self::AddMTime($path) : $path;
 				ClientScript::Add("_NAddExtSource('$path2');", Priority::High);
 			}
 			$_SESSION['_NScriptSrcs'][$path] = true;
