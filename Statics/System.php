@@ -358,7 +358,8 @@ final class System
 		
 		$close = new ServerEvent('Animate', 'Opacity', $modal, Animate::Oblivion, $duration);
 		$obj->Leave[] = $close;
-		$backLabel->Click = $close;
+		$backLabel->Click[] = $close;
+		$backLabel->Click[] = Factory::CustomEvent($obj->Id, 'Leave');
 		$modal->Click->Liquid = true;
 		$modal->DataValue = $backLabel;
 		$modal->Controls->Add($obj);

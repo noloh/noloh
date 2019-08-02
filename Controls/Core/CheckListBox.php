@@ -83,7 +83,7 @@ class CheckListBox extends ListControl
 			}
 			elseif($item instanceof CheckBox)
 			{
-				$checkItem = new Item($item->Text, $item->Text);
+				$checkItem = new Item($item->Text, $item->Value);
 				$newCheckBox = $item;
 				$newCheckBox->SetLeft(0);
 				$newCheckBox->SetTop($top);

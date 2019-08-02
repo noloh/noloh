@@ -41,7 +41,8 @@ function _NOBErrorHandler($buffer)
 			}
 			else
 			{
-				// For ssome bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repition appears necessary.
+				$processRequestDetails = true;
+				// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
 				setcookie('_NAppCookie', false);
 				if (!in_array('Cache-Control: no-cache', headers_list(), true))
 				{
@@ -49,6 +50,12 @@ function _NOBErrorHandler($buffer)
 				}
 
 				$message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $matches[2]) . ($trace['file'] ? "\\nin " . str_replace("\\", "\\\\", $trace['file']) . "\\non line " . $trace['line'] : ''));
+
+				if (strpos($message, 'Class \'Object\' not found') !== false)
+				{
+					$message = 'This project requires PHP 5.x but is currently running on ' . PHP_VERSION;
+					$processRequestDetails = false;
+				}
 
 				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
 
@@ -60,7 +67,7 @@ function _NOBErrorHandler($buffer)
 				unset($requestDetails['total_session_io_time']);
 
 				$webPage = WebPage::That();
-				if ($webPage)
+				if ($webPage && $processRequestDetails)
 				{
 					$webPage->ProcessRequestDetails($requestDetails);
 				}

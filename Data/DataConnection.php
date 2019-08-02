@@ -155,6 +155,11 @@ class DataConnection extends Base
 					$connectString = 'dbname = ' . $this->DatabaseName . ' user = ' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
 
 					$this->ActiveConnection = pg_connect($connectString);
+					
+					if ($this->ActiveConnection === false)
+					{
+						throw new Exception("Failed to connect to database: {$this->DatabaseName}");
+					}
 				}
 			}
 			elseif ($this->Type == Data::MySQL)
