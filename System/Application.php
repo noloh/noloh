@@ -423,19 +423,25 @@ final class Application extends Base
 		$_SESSION['_NScriptSrcs'] = $srcs;
 		AddScript('_N.Visit=-1', Priority::High);
 	}
-	private function HandleDebugMode()
+	public static function EnableErrorHandlers()
 	{
 		$debugMode = Configuration::That()->DebugMode;
-		if($debugMode !== 'Unhandled')
+		if ($debugMode !== 'Unhandled')
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting() | E_USER_NOTICE);
 			set_exception_handler('_NExceptionHandler');
 			ob_start('_NOBErrorHandler');
-			if($debugMode === System::Full)
+			if ($debugMode === System::Full)
+			{
 				ClientScript::AddNOLOHSource('DebugFull.js');
+			}
 		}
+	}
+	private function HandleDebugMode()
+	{
+		static::EnableErrorHandlers();
 	}
 	private function TheComingOfTheOmniscientBeing()
 	{

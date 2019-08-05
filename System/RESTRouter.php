@@ -108,38 +108,7 @@ abstract class RESTRouter extends Base
 	protected function InitResources()
 	{
 		$paths = $this->GetPaths();
-			
-		// TODO: Might want to allow cascading resources, loop through, etc...
-		if (count($paths) > 2)
-		{
-			Resource::BadRequest();
-		}
-		
-		$resourceName = array_shift($paths);
-		$resourceName = ucwords(str_replace('-', ' ', $resourceName));
-		$resourceName = str_replace(' ', '', $resourceName);
-
-		// Allows .php files in URL when using resources
-		if (strpos($resourceName, '.php') === false)
-		{
-			$className = $resourceName . 'Resource';
-		}
-		else
-		{
-			$resourceName = str_replace('.php', '', $resourceName);
-			$className = $resourceName;
-		}
-
-		$this->ResourceName = $resourceName;
-		if (is_subclass_of($className, 'Resource'))
-		{
-			$class = new ReflectionClass($className);
-			$this->Resource = $class->newInstanceArgs($paths);
-		}
-		else
-		{
-			Resource::NotFound();
-		}
+		$this->Resource = Resource::Create($paths, $this->ResourceName);
 	}
 	
 	public function Route()
@@ -255,4 +224,3 @@ abstract class RESTRouter extends Base
 
 $GLOBALS['_NREST'] = true;
 register_shutdown_function(array('RESTRouter', 'Bootstrap'));
-
