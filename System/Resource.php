@@ -130,7 +130,7 @@ abstract class Resource extends Base
 		}
 		else
 		{
-			Resource::NotFound();
+			Resource::NotFound('Resource not found.');
 		}
 	}
 
