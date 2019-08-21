@@ -146,13 +146,23 @@ function _NAutoLoad($class)
 			'Shift' => 				'Statics/Shift.php'
 		);
 	}
-	
+
 	if (isset($_NAutoLoad[$class]))
 	{
 		require($_NPath . $_NAutoLoad[$class]);
 	}
-	elseif (is_dir($dir = ($_NPath . 'Nodules/' . $class)))
+	elseif (
+		is_dir($dir = ($_NPath . 'Nodules/' . $class))
+		|| ($namespaceFileExists = file_exists($dir . '.php'))
+	)
 	{
+		if ($namespaceFileExists)
+		{
+			$splitClass = explode('\\', $class);
+			$dir = $_NPath . 'Nodules/' . $splitClass[0];
+			$class = $splitClass[1];
+		}
+
 		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
 		require($dir . '/' . $class . '.php');
 		if (!class_exists($class, false))

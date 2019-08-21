@@ -228,7 +228,11 @@ function _NChangeByObj(obj, property, value)
 				break;
 			case "value":
 				obj.value = value;
-				obj.dispatchEvent(_NCreateEvent('input'));
+
+                if (!obj.classList.contains('disable-dispatch-input'))
+                {
+                    obj.dispatchEvent(_NCreateEvent('input'));
+                }
 				break;
 			default:
 				eval("obj." + property + " = value;");
