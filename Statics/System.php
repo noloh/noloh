@@ -499,7 +499,8 @@ final class System
 	 */
 	static function Execute($shellCommand, $successCodes = array(0))
 	{
-		exec($shellCommand . ' 2>&1', $output, $returnCode);
+		$command = System::IsWindows() ? $shellCommand : $shellCommand . ' 2>&1';
+		exec($command, $output, $returnCode);
 		$output = implode(PHP_EOL, $output);
 
 		if (!in_array($returnCode, $successCodes))
