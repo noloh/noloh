@@ -1,7 +1,6 @@
 <?php
 
-require_once('../Statics/System.php');
-require_once('../NOLOHConfig.php');
+require_once('../NOLOH.php');
 
 chdir('..');
 
@@ -14,13 +13,9 @@ if ($fileContents === false)
 	die('NOLOH.php is missing or corrupted.');
 }
 
-$nolohVersionFunctionLocation = strpos($fileContents, 'GetNOLOHVersion');
-$nolohVersionValueStartLocation = strpos($fileContents, "'", $nolohVersionFunctionLocation) + 1;
-$nolohVersionValueEndLocation = strpos($fileContents, "'", $nolohVersionValueStartLocation) - 1;
-$nolohVersionValue = substr(
-	$fileContents,
-	$nolohVersionValueStartLocation,
-	($nolohVersionValueEndLocation - $nolohVersionValueStartLocation) + 1
-);
-$fileContents = str_replace($nolohVersionValue, NOLOHConfig::NOLOHBaseVersion . '.' . $revCount, $fileContents);
+$nolohVersionValue = GetNOLOHVersion();
+$versionSections = explode('.', $nolohVersionValue);
+$versionSections[2] = $revCount;
+$newNolohVersionValue = implode('.', $versionSections);
+$fileContents = str_replace($nolohVersionValue, $newNolohVersionValue, $fileContents);
 file_put_contents('NOLOH.php', $fileContents);

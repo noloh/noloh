@@ -10,6 +10,5 @@ final class NOLOHConfig
 	 * from your server.
 	 */
 	const NOLOHURL = '';
-	const NOLOHBaseVersion = '1.8';
 }
 ?>
