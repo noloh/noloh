@@ -10,6 +10,8 @@
  */
 class Label extends Control 
 {
+	public $Tag = 'DIV';
+
 	/**
 	 * @ignore
 	 */
@@ -333,7 +335,7 @@ class Label extends Control
 	{
 		//$initialProperties = parent::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
-		NolohInternal::Show('DIV', parent::Show(), $this);
+		NolohInternal::Show($this->Tag, parent::Show(), $this);
 		//return $initialProperties;
 	}
 	/**
