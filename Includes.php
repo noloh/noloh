@@ -147,20 +147,24 @@ function _NAutoLoad($class)
 		);
 	}
 
+	$namespace = null;
+	$classWithoutNamespace = null;
+	if (strpos($class, '\\'))
+	{
+		$splitClass = explode('\\', $class);
+		$namespace = $splitClass[0];
+		$classWithoutNamespace = $splitClass[1];
+	}
+
 	if (isset($_NAutoLoad[$class]))
 	{
 		require($_NPath . $_NAutoLoad[$class]);
 	}
-	elseif (
-		is_dir($dir = ($_NPath . 'Nodules/' . $class))
-		|| ($namespaceFileExists = file_exists($dir . '.php'))
-	)
+	elseif (is_dir($dir = ($_NPath . 'Nodules/' . ($namespace !== null ? $namespace : $class))))
 	{
-		if ($namespaceFileExists)
+		if ($namespace !== null)
 		{
-			$splitClass = explode('\\', $class);
-			$dir = $_NPath . 'Nodules/' . $splitClass[0];
-			$class = $splitClass[1];
+			$class = $classWithoutNamespace;
 		}
 
 		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
