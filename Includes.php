@@ -149,7 +149,7 @@ function _NAutoLoad($class)
 
 	$namespace = null;
 	$classWithoutNamespace = null;
-	if (strpos($class, '\\'))
+	if (strpos($class, '\\') !== false)
 	{
 		$splitClass = explode('\\', $class);
 		$namespace = $splitClass[0];
