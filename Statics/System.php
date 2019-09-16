@@ -358,7 +358,8 @@ final class System
 		
 		$close = new ServerEvent('Animate', 'Opacity', $modal, Animate::Oblivion, $duration);
 		$obj->Leave[] = $close;
-		$backLabel->Click = $close;
+		$backLabel->Click[] = $close;
+		$backLabel->Click[] = Factory::CustomEvent($obj->Id, 'Leave');
 		$modal->Click->Liquid = true;
 		$modal->DataValue = $backLabel;
 		$modal->Controls->Add($obj);
@@ -508,7 +509,27 @@ final class System
 
 		return $output;
 	}
-
+	/**
+	 * Runs a command in a background, forked process
+	 * @param string $shellCommand
+	 * @see https://www.php.net/manual/en/function.popen.php#116948
+	 */
+	static function ExecuteInBackground($shellCommand)
+	{
+		if (static::IsWindows())
+		{
+			pclose(popen('start /B '. $shellCommand, 'r'));
+		}
+		else
+		{
+			exec($shellCommand . ' > /dev/null &');
+		}
+	}
+	/**
+	 * Get the value of a request header
+	 * @param string $name
+	 * @return mixed|null
+	 */
 	public static function GetHTTPHeader($name)
 	{
 		$formattedKey = 'HTTP_' . strtoupper(str_replace('-', '_', $name));

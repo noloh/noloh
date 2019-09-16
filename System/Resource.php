@@ -89,6 +89,51 @@ abstract class Resource extends Base
 		echo json_encode($data);
 	}
 
+	static function ParseClass(&$paths, &$resourceName = null)
+	{
+		if (is_string($paths))
+		{
+			$paths = explode('/', $paths);
+		}
+		// TODO: Might want to allow cascading resources, loop through, etc...
+		if (count($paths) > 2)
+		{
+			Resource::BadRequest('API does not support resources more than 1 level deep');
+		}
+
+		$resourceName = array_shift($paths);
+		$resourceName = ucwords(str_replace('-', ' ', $resourceName));
+		$resourceName = str_replace(' ', '', $resourceName);
+
+		// Allows .php files in URL when using resources
+		if (strpos($resourceName, '.php') === false)
+		{
+			$className = $resourceName . 'Resource';
+		}
+		else
+		{
+			$resourceName = str_replace('.php', '', $resourceName);
+			$className = $resourceName;
+		}
+
+		return $className;
+	}
+
+	static function Create($paths, &$resourceName = null)
+	{
+		$className = static::ParseClass($paths, $resourceName);
+
+		if (is_subclass_of($className, 'Resource'))
+		{
+			$class = new ReflectionClass($className);
+			return $class->newInstanceArgs($paths);
+		}
+		else
+		{
+			Resource::NotFound('Resource not found.');
+		}
+	}
+
 	// Errors
 
 	public static function BadRequest($text = '')

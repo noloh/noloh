@@ -155,6 +155,11 @@ class DataConnection extends Base
 					$connectString = 'dbname = ' . $this->DatabaseName . ' user = ' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
 
 					$this->ActiveConnection = pg_connect($connectString);
+					
+					if ($this->ActiveConnection === false)
+					{
+						throw new Exception("Failed to connect to database: {$this->DatabaseName}");
+					}
 				}
 			}
 			elseif ($this->Type == Data::MySQL)
@@ -882,19 +887,21 @@ class DataConnection extends Base
 		$user = $this->Username;
 		$host = $this->Host;
 		$dbName = $this->DatabaseName;
+		$port = $this->Port;
+
 		if (PHP_OS === 'Linux')
 		{
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} {$dbName}";
+			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -p {$port}";
 			$gzip = exec('which gzip 2>&1');
 			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
 				$file .= '.gz';
-				$backup .= ' | gzip -c' . $compressionLevel . ' > ' . $file;
+				$backup .= " {$dbName} | gzip -c" . $compressionLevel . ' > ' . $file;
 			}
 			else
 			{
-				$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -f {$file} {$dbName}";
+				$backup .= "-f {$file} {$dbName}";
 				$compress = true;
 			}
 		}
@@ -902,7 +909,7 @@ class DataConnection extends Base
 		{
 			if ($this->Type === Data::Postgres)
 			{
-				$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -d {$dbName}";
+				$backup = "SET PGPASSWORD={$pass} && pg_dump -h {$host} -U {$user} -p {$port} -d {$dbName}";
 			}
 			elseif ($this->Type === Data::MSSQL)
 			{
@@ -933,6 +940,7 @@ SQL;
 				}
 			}
 		}
+
 		if ($backup != '')
 		{
 			exec($backup);
@@ -1035,7 +1043,7 @@ SQL;
 
 		$target->Close();
 
-		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username}";
+		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username} -p {$target->Port}";
 
 		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
 		System::Execute($command);
@@ -1043,7 +1051,7 @@ SQL;
 		$command = $targetPsql . " -c \"CREATE DATABASE {$target->DatabaseName}_sendtocopy;\"";
 		System::Execute($command);
 
-		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} {$this->DatabaseName}";
+		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} -p {$this->Port} {$this->DatabaseName}";
 		$dumpTo = "{$targetPsql} {$target->DatabaseName}_sendtocopy";
 		$sendTo = "{$dump} | {$dumpTo}";
 		System::Execute($sendTo);
