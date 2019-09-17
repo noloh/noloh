@@ -167,8 +167,22 @@ function _NAutoLoad($class)
 			$class = $classWithoutNamespace;
 		}
 
+		$path = $dir . '/' . $class . '.php';
+		if (!file_exists($path))
+		{
+			$error = 'Auto include failed for: ' . $namespace . '/' . $class;
+			$trace = debug_backtrace();
+			for ($i = 1; $i < count($trace); $i++)
+			{
+				$file = str_replace('\\', '/', $trace[$i]['file']);
+				$error .= "\n{$file} on line {$trace[$i]['line']}";
+			}
+
+			BloodyMurder($error);
+		}
+
 		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
-		require($dir . '/' . $class . '.php');
+		require($path);
 		if (!class_exists($class, false))
 		{
 			$autoloads = spl_autoload_functions();
