@@ -146,15 +146,43 @@ function _NAutoLoad($class)
 			'Shift' => 				'Statics/Shift.php'
 		);
 	}
-	
+
+	$namespace = null;
+	$classWithoutNamespace = null;
+	if (strpos($class, '\\') !== false)
+	{
+		$splitClass = explode('\\', $class);
+		$namespace = $splitClass[0];
+		$classWithoutNamespace = $splitClass[1];
+	}
+
 	if (isset($_NAutoLoad[$class]))
 	{
 		require($_NPath . $_NAutoLoad[$class]);
 	}
-	elseif (is_dir($dir = ($_NPath . 'Nodules/' . $class)))
+	elseif (is_dir($dir = ($_NPath . 'Nodules/' . ($namespace !== null ? $namespace : $class))))
 	{
+		if ($namespace !== null)
+		{
+			$class = $classWithoutNamespace;
+		}
+
+		$path = $dir . '/' . $class . '.php';
+		if (!file_exists($path))
+		{
+			$error = 'Auto include failed for: ' . $namespace . '/' . $class;
+			$trace = debug_backtrace();
+			for ($i = 1; $i < count($trace); $i++)
+			{
+				$file = str_replace('\\', '/', $trace[$i]['file']);
+				$error .= "\n{$file} on line {$trace[$i]['line']}";
+			}
+
+			BloodyMurder($error);
+		}
+
 		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
-		require($dir . '/' . $class . '.php');
+		require($path);
 		if (!class_exists($class, false))
 		{
 			$autoloads = spl_autoload_functions();
