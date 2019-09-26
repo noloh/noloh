@@ -10,9 +10,9 @@
  */
 class Label extends Control 
 {
-	const DIV = 'DIV';
-	const SPAN = 'SPAN';
-	const LABEL = 'LABEL';
+	const Div = 'DIV';
+	const Span = 'SPAN';
+	const Label = 'LABEL';
 
 	/**
 	 * @ignore
@@ -31,7 +31,7 @@ class Label extends Control
 	private $Overflow;
 	private $EditInPlace;
 	private $FontSize;
-	private $Tag = self::DIV;
+	private $Tag = self::Div;
 
 	/**
 	 * Constructor.
@@ -99,7 +99,7 @@ class Label extends Control
 		{
 			BloodyMurder('Label.SetTag is only supported before being shown');
 		}
-		elseif (!in_array($tag, array(static::DIV, static::SPAN, static::LABEL)))
+		elseif (!in_array($tag, array(static::Div, static::Span, static::Label)))
 		{
 			BloodyMurder('Label.SetTag invalid tag: ' . $tag);
 		}
