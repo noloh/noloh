@@ -95,13 +95,13 @@ class Label extends Control
 	}
 	function SetTag($tag)
 	{
-		if ($this->ShowStatus === Component::Shown)
+		if ($this->ShowStatus !== Component::NotShown)
 		{
-			BloodyMurder('Label.SetTag is only supported before being shown');
+			BloodyMurder('Label::SetTag is only supported before being shown');
 		}
 		elseif (!in_array($tag, array(static::Div, static::Span, static::Label)))
 		{
-			BloodyMurder('Label.SetTag invalid tag: ' . $tag);
+			BloodyMurder('Label::SetTag invalid tag: ' . $tag);
 		}
 
 		$this->Tag = $tag;
