@@ -1,10 +1,15 @@
 function _NCMShow(obj)
 {
 	_NCMHide();
-	var id = _N.ContextMenu = obj.ContextMenu, contextMenu = _N(id);
+	var id = _N.ContextMenu = obj.ContextMenu,
+		contextMenu = _N(id),
+		top = window.event.clientY + document.documentElement.scrollTop;
+	if (contextMenu.alignBottom) {
+		top -= $('#' + id).outerHeight();
+	}
 	contextMenu.style.display = "";
 	_NSet(id, "style.left", window.event.clientX + document.documentElement.scrollLeft + "px");
-	_NSet(id, "style.top", window.event.clientY + document.documentElement.scrollTop + "px");
+	_NSet(id, "style.top", top + "px");
 	_N.EventVars.ContextMenuSource = obj.id;
 	_NClickOff(id, _NCMHide);
 	_NNoBubble();
