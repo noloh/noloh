@@ -62,6 +62,10 @@ class ContextMenu extends Menu
 		$this->SetBorder('1px solid #A0A0A0');
 		$this->SetVisible(System::Vacuous);
 	}
+	function SetAlignBottom()
+	{
+		NolohInternal::SetProperty('alignBottom', true, $this);
+	}
 	/**
 	 * @ignore
 	 */
