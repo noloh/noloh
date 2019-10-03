@@ -10,6 +10,10 @@
  */
 class Label extends Control 
 {
+	const Div = 'DIV';
+	const Span = 'SPAN';
+	const Label = 'LABEL';
+
 	/**
 	 * @ignore
 	 */
@@ -27,6 +31,8 @@ class Label extends Control
 	private $Overflow;
 	private $EditInPlace;
 	private $FontSize;
+	private $Tag = self::Div;
+
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Label
@@ -82,6 +88,23 @@ class Label extends Control
 		$this->FontSize = $size;
 		$this->ResetCache();
 		NolohInternal::SetProperty('style.fontSize', $size.'pt', $this);
+	}
+	function GetTag()
+	{
+		return $this->Tag;
+	}
+	function SetTag($tag)
+	{
+		if ($this->ShowStatus !== Component::NotShown)
+		{
+			BloodyMurder('Label::SetTag is only supported before being shown');
+		}
+		elseif (!in_array($tag, array(static::Div, static::Span, static::Label)))
+		{
+			BloodyMurder('Label::SetTag invalid tag: ' . $tag);
+		}
+
+		$this->Tag = $tag;
 	}
 	/**
 	 * @ignore
@@ -333,7 +356,7 @@ class Label extends Control
 	{
 		//$initialProperties = parent::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
-		NolohInternal::Show('DIV', parent::Show(), $this);
+		NolohInternal::Show($this->Tag, parent::Show(), $this);
 		//return $initialProperties;
 	}
 	/**
