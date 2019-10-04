@@ -957,7 +957,7 @@ SQL;
 		
 		return file_exists($file) ? $file : false;
 	}
-	function DBDumpMultiple($tarFile, array $connections)
+	function DBDumpMultiple($tarFile, array $connections, $compressionLevel = 5)
 	{
 		if ($this->Type !== Data::Postgres)
 		{
@@ -1011,6 +1011,10 @@ SQL;
 			unlink($file);
 		}
 
+		if ($compressionLevel !== 0)
+		{
+			$tarFile = File::GzCompress($tarFile, $compressionLevel, true);
+		}
 		return file_exists($tarFile) ? $tarFile : false;
 	}
 	function __wakeup()
