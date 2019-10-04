@@ -265,5 +265,17 @@ class File extends Base
 			return $dest;
 		}
 	}
+
+	/**
+	 * Checks if the file exists before unlinking it, does nothing if it does not exist
+	 * @param $file Path to the file
+	 */
+	public static function DeleteIfExists($file)
+	{
+		if (file_exists($file))
+		{
+			unlink($file);
+		}
+	}
 }
 ?>
