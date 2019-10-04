@@ -901,7 +901,7 @@ class DataConnection extends Base
 			}
 			else
 			{
-				$backup .= "-f {$file} {$dbName}";
+				$backup .= " -f {$file} {$dbName}";
 				$compress = true;
 			}
 		}
