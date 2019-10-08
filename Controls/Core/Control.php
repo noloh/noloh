@@ -627,11 +627,14 @@ abstract class Control extends Component
 	 * Sets the ContextMenu of the Control. It is a Menu that appears when the Control is right-clicked.
 	 * @param ContextMenu $contextMenu
 	 */
-    function SetContextMenu(ContextMenu $contextMenu)
+    function SetContextMenu($contextMenu)
     {
 		$this->ContextMenu = &$contextMenu;
-        $contextMenu->SetParentId(WebPage::That()->Id);
-		NolohInternal::SetProperty('ContextMenu', $contextMenu->Id, $this);
+		if ($contextMenu)
+		{
+			$contextMenu->SetParentId(WebPage::That()->Id);
+		}
+		NolohInternal::SetProperty('ContextMenu', $contextMenu ? $contextMenu->Id : null, $this);
     }
 	/**
 	 * Returns whether or not the Control is Buoyant. Buoyant Controls always float to the top, and compete with only other Buoyant
