@@ -144,6 +144,10 @@ class File extends Base
 	 */
 	function Close()
 	{
+		if ($this->PointerToFile == null)
+		{
+			return;
+		}
 		fclose($this->PointerToFile);
 	}
 	/**
@@ -221,6 +225,113 @@ class File extends Base
 		return $this->Filename;
 	}
 	/**
+	 * @param int $level is the level of compression 9 is the default and the highest
+	 * @param bool $deleteOriginal will delete the original file if set to true and there are no errors in creating the gz file
+	 * @return bool|string returns false on error, path on success
+	 */
+	public function FileGzCompress($level = 9, $deleteOriginal = false)
+	{
+		if ($this->Filename == null)
+		{
+			return false;
+		}
+
+		$dest = realpath($this->Filename) . '.gz';
+		$mode = 'wb' . $level;
+		$error = false;
+		if ($fp_out = gzopen($dest, $mode))
+		{
+			if (isset($this->PointerToFile))
+			{
+				$this->Close();
+			}
+			try
+			{
+				$this->Open();
+
+				$contents = $this->Read();
+
+				gzwrite($fp_out, $contents);
+			}
+			catch (Exception $e)
+			{
+				$error = true;
+			}
+			gzclose($fp_out);
+		}
+		else
+		{
+			$error = true;
+		}
+
+		if ($error)
+		{
+			return false;
+		}
+		else
+		{
+			if ($deleteOriginal)
+			{
+				$this->Delete();
+			}
+			else
+			{
+				$this->Close();
+			}
+			return $dest;
+		}
+	}
+	/**
+	 * Make the file readable, writable, and executable by everyone
+	 */
+	public function GiveAllPermissions()
+	{
+		$this->SetFilePermission(0777);
+	}
+	/**
+	 * Wrapper for chmod php function
+	 * @param int $permission expects the same value as $mode from php chmod
+	 */
+	public function SetFilePermission($permission)
+	{
+		if ($this->Filename == null)
+		{
+			return;
+		}
+
+		$path = realpath($this->Filename);
+		if (file_exists($path))
+		{
+			chmod($path, $permission);
+		}
+	}
+	/**
+	 * Checks if the file exists before unlinking it
+	 * Sets all object properties to null
+	 */
+	public function Delete()
+	{
+		if ($this->Filename == null)
+		{
+			return;
+		}
+
+		$path = realpath($this->Filename);
+		if (file_exists($path))
+		{
+			$this->Close();
+			unlink($path);
+		}
+
+		$this->Filename = null;
+		$this->File = null;
+		$this->Type = null;
+		$this->Size = null;
+		$this->PointerToFile = null;
+		$this->TempFilename = null;
+	}
+	/**
+	 * @deprecated
 	 * @param $source is the path to the original file
 	 * @param int $level is the level of compression 9 is the default and the highest
 	 * @param bool $deleteOriginal will delete the original file if set to true and there are no errors in creating the gz file
