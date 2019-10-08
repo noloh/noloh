@@ -901,7 +901,7 @@ class DataConnection extends Base
 			}
 			else
 			{
-				$backup .= "-f {$file} {$dbName}";
+				$backup .= " -f {$file} {$dbName}";
 				$compress = true;
 			}
 		}
@@ -957,61 +957,65 @@ SQL;
 		
 		return file_exists($file) ? $file : false;
 	}
-	function DBDumpMultiple($file, array $connections, $compressionLevel = 5)
+	function DBDumpMultiple($tarFile, array $connections, $compressionLevel = 5)
 	{
 		if ($this->Type !== Data::Postgres)
 		{
 			BloodyMurder('Multiple DB Dumps are only supported for Postgres data connections');
 		}
+
+		$info = pathinfo($tarFile);
+		$tarFile = $info['filename'] . '.tar';
+
+		$fileName  = $this->DatabaseName . '_' . date("Ymd") . '_' . '.bak';
+		$primaryDump = $this->DBDump($info['dirname'] . DIRECTORY_SEPARATOR . $fileName, 0);
 		
-		$combinedDump = $this->DBDump($file, 0);
-		
-		if ($combinedDump === false)
+		if ($primaryDump === false)
 		{
 			BloodyMurder("DB Dump failed for {$this->DatabaseName}");
 		}
-		
-		$combinedHandle = fopen($combinedDump, 'a+');
+
+		$tar = new PharData($tarFile);
+		$tar->addFile($primaryDump, $fileName);
+		$files = array($primaryDump);
+
 		foreach ($connections as $target)
 		{
 			if (!($target instanceof DataConnection))
 			{
 				BloodyMurder('Connections must be DataConnection objects');
 			}
-			else if ($target->Type !== Data::Postgres)
+			else
 			{
-				BloodyMurder('Multiple DB Dumps are only supported for Postgres data connections');
+				if ($target->Type !== Data::Postgres)
+				{
+					BloodyMurder('Multiple DB Dumps are only supported for Postgres data connections');
+				}
 			}
 
-			$fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $target->DatabaseName . '_' . date("Ymd");
-			$targetDump = $target->DBDump($fileName, 0);
+			$fileName = $target->DatabaseName . '_' . date("Ymd") . '_' . '.bak';
+			$targetDump = $target->DBDump($info['dirname'] . DIRECTORY_SEPARATOR . $fileName, 0);
 
 			if ($targetDump === false)
 			{
 				BloodyMurder("DB Dump failed for {$target->DatabaseName}");
 			}
-			
-			$sql = <<<SQL
-				DROP DATABASE IF EXISTS "{$target->DatabaseName}_backup";
-				ALTER DATABASE "{$target->DatabaseName}" RENAME TO "{$target->DatabaseName}_backup";
-				CREATE DATABASE "{$target->DatabaseName}";
 
-SQL;
-			fwrite($combinedHandle, $sql);
-			
-			$handle = fopen($targetDump, 'r');
-			while (!feof($handle))
-			{
-				fwrite($combinedHandle, fread($handle, 32768));
-			}
-			fclose($handle);
+			$tar->addFile($targetDump, $fileName);
+			$files[] = $targetDump;
 		}
-		
-		fclose($combinedHandle);
-		
-		$file = File::GzCompress($combinedDump, $compressionLevel, true);
 
-		return file_exists($file) ? $file : false;
+		unset($tar); // Removes open file handles held by the PharData object
+		foreach ($files as $file)
+		{
+			unlink($file);
+		}
+
+		if ($compressionLevel !== 0)
+		{
+			$tarFile = File::GzCompress($tarFile, $compressionLevel, true);
+		}
+		return file_exists($tarFile) ? $tarFile : false;
 	}
 	function __wakeup()
 	{
