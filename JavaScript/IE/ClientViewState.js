@@ -288,8 +288,11 @@ function _NChangeByObj(obj, property, value)
 				obj.className = obj.className.indexOf("NClickable")!=-1 && value.indexOf("NClickable")==-1 ? "NClickable " + value : value;
 				break;
 			case "ContextMenu":
-				if(!obj.oncontextmenu)
+				if (!value) {
+					obj.oncontextmenu = null;
+				} else if(!obj.oncontextmenu) {
 					_NChangeByObj(obj, "oncontextmenu", "");
+				}
 			case "value":
 				obj.value = value;
 
