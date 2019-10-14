@@ -141,9 +141,12 @@ function _NChangeByObj(obj, property, value)
 				eval("obj." + property + " = " + value + ";");
 				break;
 			case "ContextMenu":
-				if(!obj.oncontextmenu)
+				if (!value) {
+					obj.oncontextmenu = null;
+				} else if(!obj.oncontextmenu) {
 					_NChangeByObj(obj, "oncontextmenu", "");
-					obj.ContextMenu = value;
+				}
+				obj.ContextMenu = value;
 				break;
 			case "GroupM":
 				obj._NMultiGroupable = true;
