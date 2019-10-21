@@ -431,7 +431,13 @@ abstract class WebPage extends Component
             $autoIncludes = '';
             foreach (self::$AutoIncludes as $include)
             {
-                $autoIncludes .= '<script src="' . $include . '?mtime=' . filemtime(GetAbsolutePath($include)) . '"></script>';
+				// Check if the file exists, this returns false for urls
+				if (file_exists($include))
+				{
+					$include .= '?mtime=' . filemtime(GetAbsolutePath($include));
+				}
+
+                $autoIncludes .= '<script src="' . $include . '"></script>';
             }
             
 		header('Cache-Control: no-store');
