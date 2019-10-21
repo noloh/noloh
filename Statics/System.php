@@ -290,6 +290,9 @@ final class System
 				{
 					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
 					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, '100%', '100%');
+					$button = new Button('Clear', $debugWindow->Width - 85, 5, 40, 20);
+					$button->Click = Factory::CustomEvent('System', 'ClearDebugWindow');
+					$debugWindow->WindowPanelComponents->Add($button);
 					//$display->CSSFontFamily = 'consolas, monospace';
 					$old = false;
 					$debugWindow->Buoyant = true;
@@ -534,6 +537,17 @@ final class System
 	{
 		$formattedKey = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
 		return isset($_SERVER[$formattedKey]) ? $_SERVER[$formattedKey] : null;
+	}
+	/**
+	 * Clears the text in the debug window
+	 */
+	static function ClearDebugWindow()
+	{
+		$webPage = WebPage::That();
+		$debugWindow = $webPage->DebugWindow;
+		$display = $debugWindow->Controls['Display'];
+		
+		$display->Text = '';
 	}
 }
 
