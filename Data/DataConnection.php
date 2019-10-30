@@ -909,7 +909,7 @@ class DataConnection extends Base
 		{
 			if ($this->Type === Data::Postgres)
 			{
-				$backup = "SET PGPASSWORD={$pass} && pg_dump -h {$host} -U {$user} -p {$port} -d {$dbName}";
+				$backup = "SET PGPASSWORD={$pass}&& pg_dump -h {$host} -U {$user} -p {$port} -d {$dbName}";
 			}
 			elseif ($this->Type === Data::MSSQL)
 			{
@@ -945,7 +945,7 @@ SQL;
 		{
 			exec($backup);
 		}
-		
+
 		if (file_exists($file) && $compress && $compressionLevel !== 0)
 		{
 			$path = pathinfo($file);
