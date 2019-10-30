@@ -225,19 +225,20 @@ function BloodyMurder($message)
 		else
 		{
 			global $_NPath;
-
-			$traceList = array();
+			
+			$traceCount = 0;
 			foreach ($trace as $error)
 			{
 				if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
 				{
-					$traceList[] = $error;
+					$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
+					$traceCount++;
 				}
-			}
-
-			foreach ($traceList as $trace)
-			{
-				$message .= PHP_EOL . ($trace['file'] ? "\\nin " . str_replace("\\", "\\\\", $trace['file']) . "\\non line {$trace['line']}" : '');
+				
+				if ($traceCount == 2)
+				{
+					break;
+				}
 			}
 
 			DisplayError($message);
