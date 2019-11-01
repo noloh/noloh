@@ -55,12 +55,13 @@ function _NByntStp(id)
 }
 function _NByntMv(id)
 {
-	var obj = _N(id);
-	if(obj)
-	{
-		var parent = _N(obj.Buoyant.ParentId), xProps, yProps;
-//		obj.style.left = _NFindX(obj.BuoyantParentId) + (parseInt(parent.style.borderLeftWidth,10)|0) + obj.BuoyantLeft + "px";
-//		obj.style.top = _NFindY(obj.BuoyantParentId) + (parseInt(parent.style.borderTopWidth,10)|0) + obj.BuoyantTop + "px";
+	var obj = _N(id),
+		parent, xProp, yProp;
+	if (obj) {
+		parent = _N(obj.Buoyant.ParentId);
+		if (!parent) {
+			return;
+		}
 		/*Changed | to || and added || for Bouyant Check. Single pipe will continue to evaluate.
 		 For ex. try true | alert('nonsense') vs true || alert('nonsense')*/
 		xProp = obj.Buoyant["Right"]?['right', 'borderRightWidth', 'Right']:['left', 'borderLeftWidth', 'Left'];
