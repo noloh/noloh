@@ -145,11 +145,19 @@ abstract class WebPage extends Component
 	{
 		if(!isset($this->CSSFiles) || !$this->CSSFiles->Contains($path))
 		{
+			if (preg_match('/.(less|scss)$/i', $path, $matches)) 
+			{
+				$defaultRelType = '/' . $matches[1];
+			} 
+			else 
+			{
+				$defaultRelType = '';
+			}
 			$tmp = $_SESSION['_NPropertyQueue'];
 			unset($_SESSION['_NPropertyQueue']);
 			$path2 = Configuration::That()->AddMTimeToExternals ? ($path . '?mtime=' . filemtime(GetAbsolutePath($path))) : $path;
-			$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path2.'\'';
-			//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\'';
+			$initialProperties = '\'rel\',\'stylesheet' . $defaultRelType . '\',\'type\',\'text/css\',\'href\',\''.$path2.'\'';
+			//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\''
 			NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
 			if($this->CSSFiles)
 				$this->CSSFiles->Add($path, true);
@@ -423,7 +431,13 @@ abstract class WebPage extends Component
             $autoIncludes = '';
             foreach (self::$AutoIncludes as $include)
             {
-                $autoIncludes .= '<script src="' . $include . '?mtime=' . filemtime(GetAbsolutePath($include)) . '"></script>';
+				// Check if the file exists, this returns false for urls
+				if (file_exists($include))
+				{
+					$include .= '?mtime=' . filemtime(GetAbsolutePath($include));
+				}
+
+                $autoIncludes .= '<script src="' . $include . '"></script>';
             }
             
 		header('Cache-Control: no-store');
