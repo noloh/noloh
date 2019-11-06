@@ -185,11 +185,25 @@ function _NFirstNonNOLOHBacktrace()
 	global $_NPath;
 	$backtrace = debug_backtrace();
 	$backtraceCount = count($backtrace);
-	for($i=0; $i<$backtraceCount; ++$i)
-		if(isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
-			return $backtrace[$i];
-	if(function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
+	if ($GLOBALS['_NDebugMode'] === 'Kernel')
+	{
+		return $backtrace[0];
+	}
+	else
+	{
+		for ($i = 0; $i < $backtraceCount; ++$i)
+		{
+			if (isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
+			{
+				return $backtrace[$i];
+			}
+		}
+	}
+
+	if (function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
+	{
 		return $errorLast;
+	}
 	return array('file' => null, 'line' => null);
 }
 /**
@@ -215,15 +229,7 @@ function BloodyMurder($message)
 	}
 	else
 	{
-		if($GLOBALS['_NDebugMode'] === 'Kernel')
-		{
-			$trace = debug_backtrace();
-			$trace = $trace[0];
-		}
-		else
-		{
-			$trace = _NFirstNonNOLOHBacktrace();
-		}
+		$trace = _NFirstNonNOLOHBacktrace();
 		_NErrorHandler(1, $message, $trace['file'], $trace['line']);
 	}
 }
