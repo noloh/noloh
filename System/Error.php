@@ -215,16 +215,34 @@ function BloodyMurder($message)
 	}
 	else
 	{
-		if($GLOBALS['_NDebugMode'] === 'Kernel')
+		$trace = debug_backtrace();
+		if ($GLOBALS['_NDebugMode'] === 'Kernel')
 		{
-			$trace = debug_backtrace();
 			$trace = $trace[0];
+
+			_NErrorHandler(1, $message, $trace['file'], $trace['line']);
 		}
 		else
 		{
-			$trace = _NFirstNonNOLOHBacktrace();
+			global $_NPath;
+			
+			$traceCount = 0;
+			foreach ($trace as $error)
+			{
+				if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
+				{
+					$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
+					$traceCount++;
+				}
+				
+				if ($traceCount == 2)
+				{
+					break;
+				}
+			}
+
+			DisplayError($message);
 		}
-		_NErrorHandler(1, $message, $trace['file'], $trace['line']);
 	}
 }
 ?>
