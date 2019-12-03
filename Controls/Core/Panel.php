@@ -99,9 +99,9 @@ class Panel extends Control
     /**
      * @ignore
      */
-	function SetCSSClass($cssClass=null)
+	function SetCSSClass($cssClass = null)
 	{
-		parent::SetCSSClass('NPanel '.$cssClass);
+		parent::SetCSSClass('NPanel ' . trim($cssClass));
 	}
 	/**
 	 * Opens the Panel and only the Panel in a separate window so that the user may print it. The user's browser must
