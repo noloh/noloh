@@ -291,7 +291,7 @@ final class System
 					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
 					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, '100%', '100%');
 					$button = new Button('Clear', $debugWindow->Width - 85, 5, 40, 20);
-					$button->Click = Factory::CustomEvent('System', 'ClearDebugWindow');
+					$button->Click = new ServerEvent('System', 'ClearDebugWindow');
 					$debugWindow->WindowPanelComponents->Add($button);
 					//$display->CSSFontFamily = 'consolas, monospace';
 					$old = false;
