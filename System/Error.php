@@ -185,11 +185,25 @@ function _NFirstNonNOLOHBacktrace()
 	global $_NPath;
 	$backtrace = debug_backtrace();
 	$backtraceCount = count($backtrace);
-	for($i=0; $i<$backtraceCount; ++$i)
-		if(isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
-			return $backtrace[$i];
-	if(function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
+	if ($GLOBALS['_NDebugMode'] === 'Kernel')
+	{
+		return $backtrace[0];
+	}
+	else
+	{
+		for ($i = 0; $i < $backtraceCount; ++$i)
+		{
+			if (isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
+			{
+				return $backtrace[$i];
+			}
+		}
+	}
+
+	if (function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
+	{
 		return $errorLast;
+	}
 	return array('file' => null, 'line' => null);
 }
 /**
@@ -225,7 +239,7 @@ function BloodyMurder($message)
 		else
 		{
 			global $_NPath;
-			
+
 			$traceCount = 0;
 			foreach ($trace as $error)
 			{
@@ -234,7 +248,7 @@ function BloodyMurder($message)
 					$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
 					$traceCount++;
 				}
-				
+
 				if ($traceCount == 2)
 				{
 					break;
