@@ -87,7 +87,11 @@ class Label extends Control
 	{
 		$this->FontSize = $size;
 		$this->ResetCache();
-		NolohInternal::SetProperty('style.fontSize', $size.'pt', $this);
+		if (is_numeric($size))
+		{
+			$size = $size . 'pt';
+		}
+		NolohInternal::SetProperty('style.fontSize', $size, $this);
 	}
 	function GetTag()
 	{
