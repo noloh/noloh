@@ -53,12 +53,12 @@ final class Application extends Base
 				ini_set('session.use_cookies', 0);
 			else
 				session_set_cookie_params(30);
-			System::BeginBenchmarking('_N/Application::Strt');
+			System::BeginBenchmarking('_N/Application::Start');
 			session_name('_NS');
 			session_id(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
-			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Strt');
+			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
 			if(isset($_SESSION['_NConfiguration']))
 				$config = $_SESSION['_NConfiguration'];
 			else 

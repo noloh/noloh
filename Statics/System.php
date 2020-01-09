@@ -9,7 +9,7 @@
  */
 final class System
 {
-	private static $BenchmarkStartTime = array();
+	private static $BenchmarkStartTimes = array();
 	/**
 	 * @ignore
 	 */
@@ -484,7 +484,7 @@ final class System
 			BloodyMurder('Key used for BeginBenchmarking must be an integer or string.');
 		}
 
-		self::$BenchmarkStartTime[$key] = microtime(true);
+		self::$BenchmarkStartTimes[$key] = microtime(true);
 		return $key;
 	}
 	/**
@@ -497,19 +497,19 @@ final class System
 		if ($key === null)
 		{
 			// Grab last entry
-			$start = end(self::$BenchmarkStartTime);
+			$start = end(self::$BenchmarkStartTimes);
 		}
 		elseif (!is_int($key) && !is_string($key))
 		{
 			BloodyMurder('Key used for Benchmark must be an integer or string.');
 		}
-		elseif (!isset(self::$BenchmarkStartTime[$key]))
+		elseif (!isset(self::$BenchmarkStartTimes[$key]))
 		{
 			BloodyMurder('Benchmarking never started.');
 		}
 		else
 		{
-			$start = self::$BenchmarkStartTime[$key];
+			$start = self::$BenchmarkStartTimes[$key];
 		}
 
 		$stop = microtime(true);
