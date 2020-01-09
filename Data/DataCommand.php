@@ -95,7 +95,7 @@ class DataCommand extends Base
 	{
 		if ($this->Connection != null && $this->SqlStatement != null)
 		{
-			System::BeginBenchmarking();
+			System::BeginBenchmarking('_N/DataCommand::Execute');
 			$type = $this->Connection->GetType();
 			$connection = $this->Connection->Connect();
 
@@ -139,7 +139,7 @@ class DataCommand extends Base
 				$reader = new DataReader($type, $resource, $resultType, $this->Callback);
 			}
 
-			Application::$RequestDetails['total_database_time'] += System::Benchmark();
+			Application::$RequestDetails['total_database_time'] += System::Benchmark('_N/DataCommand::Execute');
 			return $reader;
 		}
 		return false;

@@ -9,7 +9,7 @@
  */
 final class System
 {
-	private static $BenchmarkStartTime = null;
+	private static $BenchmarkStartTime = array();
 	/**
 	 * @ignore
 	 */
@@ -470,19 +470,50 @@ final class System
 
 	/**
 	 * Allows one to clock the time operation(s) took. Call this before before beginning those operations.
+	 * @param integer|string $key An identifier used for this timing test
+	 * @return integer|string
 	 */
-	static function BeginBenchmarking()
+	static function BeginBenchmarking($key = null)
 	{
-		self::$BenchmarkStartTime = microtime(true);
+		if ($key === null)
+		{
+			$key = time();
+		}
+		elseif (!is_int($key) && !is_string($key))
+		{
+			BloodyMurder('Key used for BeginBenchmarking must be an integer or string.');
+		}
+
+		self::$BenchmarkStartTime[$key] = microtime(true);
+		return $key;
 	}
 	/**
-	 * Returns the number of milliseconds that transpired since the call to BeginBenchmarking. 
+	 * Returns the number of milliseconds that transpired since the call to BeginBenchmarking.
+	 * @param integer|string $key An identifier used for this timing test
 	 * @return int
 	 */
-	static function Benchmark()
+	static function Benchmark($key = null)
 	{
+		if ($key === null)
+		{
+			// Grab last entry
+			$start = end(self::$BenchmarkStartTime);
+		}
+		elseif (!is_int($key) && !is_string($key))
+		{
+			BloodyMurder('Key used for Benchmark must be an integer or string.');
+		}
+		elseif (!isset(self::$BenchmarkStartTime[$key]))
+		{
+			BloodyMurder('Benchmarking never started.');
+		}
+		else
+		{
+			$start = self::$BenchmarkStartTime[$key];
+		}
+
 		$stop = microtime(true);
-		return (int)(1000 * ($stop - (self::$BenchmarkStartTime)));
+		return (int)(1000 * ($stop - $start));
 	}
 	/**
 	 * Returns true if server operating system is Windows.
