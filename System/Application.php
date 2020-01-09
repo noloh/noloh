@@ -53,12 +53,12 @@ final class Application extends Base
 				ini_set('session.use_cookies', 0);
 			else
 				session_set_cookie_params(30);
-			System::BeginBenchmarking();
+			System::BeginBenchmarking('_N/Application::Start');
 			session_name('_NS');
 			session_id(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
-			self::$RequestDetails['total_session_io_time'] += System::Benchmark();
+			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
 			if(isset($_SESSION['_NConfiguration']))
 				$config = $_SESSION['_NConfiguration'];
 			else 
@@ -446,9 +446,9 @@ final class Application extends Base
 	private function TheComingOfTheOmniscientBeing()
 	{
 		global $OmniscientBeing;
-		System::BeginBenchmarking();
+		System::BeginBenchmarking('_N/Application::TheComingOfTheOmniscientBeing');
 		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['_NOmniscientBeing']) : $_SESSION['_NOmniscientBeing']);
-		self::$RequestDetails['total_session_io_time'] += System::Benchmark();
+		self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::TheComingOfTheOmniscientBeing');
 		unset($_SESSION['_NOmniscientBeing']);
 		$idArrayStr = '';
 		$idShftWithArr = array();
@@ -709,10 +709,10 @@ final class Application extends Base
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
 		
-		System::BeginBenchmarking();
+		System::BeginBenchmarking('_N/Application::Run');
 		$serializedSession = serialize($OmniscientBeing);
 		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress($serializedSession, 1) : $serializedSession;
-		$benchmark = System::Benchmark();
+		$benchmark = System::Benchmark('_N/Application::Run');
 
 		$requestDetails = &self::UpdateRequestDetails();
 		$requestDetails['total_session_io_time'] += $benchmark;

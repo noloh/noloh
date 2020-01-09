@@ -136,7 +136,7 @@ class DataConnection extends Base
 			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
 			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
-		System::BeginBenchmarking();
+		System::BeginBenchmarking('_N/DataCommand::Connect');
 		if (!is_resource($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
 		{
 			if ($this->Type == Data::Postgres)
@@ -212,7 +212,7 @@ class DataConnection extends Base
 				call_user_func_array($this->AfterConnectCallBack, array($this));
 			}
 		}
-		Application::$RequestDetails['total_database_time'] += System::Benchmark();
+		Application::$RequestDetails['total_database_time'] += System::Benchmark('_N/DataCommand::Connect');
 		return $this->ActiveConnection;
 	}
 	/**
