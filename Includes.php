@@ -105,6 +105,7 @@ function _NAutoLoad($class)
 			
 			// Extended Controls
 			'Accordion' => 			'Controls/Extended/Accordion.php',
+			'AdaptiveControl' =>	'Controls/Extended/AdaptiveControl.php',
 			'ListView' => 			'Controls/Extended/ListView.php',
 			'CheckListView' => 		'Controls/Extended/CheckListView.php',
 			'CollapsePanel' => 		'Controls/Extended/CollapsePanel.php',
@@ -120,7 +121,6 @@ function _NAutoLoad($class)
 			'TreeList' => 			'Controls/Extended/TreeList.php',
 			'Paginator' => 			'Controls/Extended/Paginator.php',
 			'WindowPanel' => 		'Controls/Extended/WindowPanel.php',
-			'AdaptiveControl' =>	'Controls/Extended/AdaptiveControl.php',
 			
 			// Auxiliary
 			'AccordionPart' => 		'Controls/Auxilary/AccordionPart.php',
