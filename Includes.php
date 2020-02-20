@@ -120,6 +120,7 @@ function _NAutoLoad($class)
 			'TreeList' => 			'Controls/Extended/TreeList.php',
 			'Paginator' => 			'Controls/Extended/Paginator.php',
 			'WindowPanel' => 		'Controls/Extended/WindowPanel.php',
+			'AdaptiveControl' =>	'Controls/Extended/AdaptiveControl.php',
 			
 			// Auxiliary
 			'AccordionPart' => 		'Controls/Auxilary/AccordionPart.php',

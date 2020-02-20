@@ -86,6 +86,7 @@ abstract class WebPage extends Component
 			$this->AddCSSFile($config->CSSResetLegacyIE ? $config->CSSResetLegacyIE : (System::AssetPath() .'/Styles/NResetIE.css'));
 		$this->CSSFiles = new ImplicitArrayList($this, 'AddCSSFile', 'RemoveCSSFileAt', 'ClearCSSFiles');
 		$this->CSSFiles->Add(System::AssetPath() .'/Styles/NStyles.css');
+		$this->CSSFiles->Add(System::AssetPath() .'/Styles/AdaptiveControl.css');
 		
 		if(isset($GLOBALS['_NShowStrategy']) && $GLOBALS['_NShowStrategy'])
 		{
