@@ -132,11 +132,14 @@ function _NSetTitle(title)
 {
 	document.title = _N.Title = title;
 }
-function _NSet(id, property, value)
+function _NSet(id, property, value, force)
 {
-	//_NChange(id, property, value);
 	_NChangeByObj(_N(id), property, value);
 	_NSave(id, property, value);
+	if (force)
+	{
+		_N.Saved[id][property] = !value;
+	}
 	return value;
 }
 function _NSetProperty(id, property, value)	{return _NSet(id, property, value)}
