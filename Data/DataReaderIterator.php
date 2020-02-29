@@ -142,5 +142,9 @@ class DataReaderIterator extends DataReader
 		}
 		return array_keys((array)$this);
 	}
+	public function __toString()
+	{
+		return (string) var_export($this->GetData(), true);
+	}
 }
 ?>

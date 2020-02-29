@@ -105,6 +105,7 @@ function _NAutoLoad($class)
 			
 			// Extended Controls
 			'Accordion' => 			'Controls/Extended/Accordion.php',
+			'AdaptiveControl' =>	'Controls/Extended/AdaptiveControl.php',
 			'ListView' => 			'Controls/Extended/ListView.php',
 			'CheckListView' => 		'Controls/Extended/CheckListView.php',
 			'CollapsePanel' => 		'Controls/Extended/CollapsePanel.php',
