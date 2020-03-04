@@ -1119,5 +1119,22 @@ SQL;
 	{
 		return $this->ODBCType;
 	}
+	public function ColumnExists($table, $column)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('ColumnExists only currently supported in Postgres');
+		}
+
+		$query = <<<SQL
+			SELECT column_name 
+			FROM information_schema.columns 
+			WHERE table_name = $1
+				AND column_name = $2;
+SQL;
+		$column = $this->ExecSQL(Data::Assoc, $query, $table, $column);
+
+		return (isset($column[0]) && $column[0]['column_name'] !== $column);
+	}
 }
 ?>
