@@ -1119,5 +1119,25 @@ SQL;
 	{
 		return $this->ODBCType;
 	}
+	public function TableExists($tableName)
+	{
+		$query = <<<SQL
+			SELECT table_name
+			FROM information_schema.tables
+			WHERE table_name = $1
+SQL;
+		$results = $this->ExecSQL($query, $tableName);
+		return isset($results[0]['table_name']);
+	}
+	public function DatabaseExists($dbName)
+	{
+		$query = <<<SQL
+			SELECT datname
+			FROM pg_catalog.pg_database
+			WHERE datname = $1;
+SQL;
+		$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+		return isset($results[0]['datname']);
+	}
 }
 ?>
