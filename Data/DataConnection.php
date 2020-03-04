@@ -1132,9 +1132,28 @@ SQL;
 			WHERE table_name = $1
 				AND column_name = $2;
 SQL;
-		$column = $this->ExecSQL(Data::Assoc, $query, $table, $column);
-
-		return (isset($column[0]) && $column[0]['column_name'] !== $column);
+		$results = $this->ExecSQL(Data::Assoc, $query, $table, $column);
+		return isset($results[0]['column_name']);
+	}
+	public function TableExists($tableName)
+	{
+		$query = <<<SQL
+			SELECT table_name
+			FROM information_schema.tables
+			WHERE table_name = $1
+SQL;
+		$results = $this->ExecSQL(Data::Assoc, $query, $tableName);
+		return isset($results[0]['table_name']);
+	}
+	public function DatabaseExists($dbName)
+	{
+		$query = <<<SQL
+			SELECT datname
+			FROM pg_catalog.pg_database
+			WHERE datname = $1;
+SQL;
+		$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+		return isset($results[0]['datname']);
 	}
 }
 ?>
