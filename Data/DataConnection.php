@@ -1137,6 +1137,11 @@ SQL;
 	}
 	public function TableExists($tableName)
 	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('TableExists only currently supported in Postgres');
+		}
+
 		$query = <<<SQL
 			SELECT table_name
 			FROM information_schema.tables
@@ -1147,6 +1152,11 @@ SQL;
 	}
 	public function DatabaseExists($dbName)
 	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('DatabaseExists only currently supported in Postgres');
+		}
+
 		$query = <<<SQL
 			SELECT datname
 			FROM pg_catalog.pg_database
