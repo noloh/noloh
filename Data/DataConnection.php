@@ -1119,5 +1119,51 @@ SQL;
 	{
 		return $this->ODBCType;
 	}
+	public function ColumnExists($table, $column)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('ColumnExists only currently supported in Postgres');
+		}
+
+		$query = <<<SQL
+			SELECT column_name 
+			FROM information_schema.columns 
+			WHERE table_name = $1
+				AND column_name = $2;
+SQL;
+		$results = $this->ExecSQL(Data::Assoc, $query, $table, $column);
+		return isset($results[0]['column_name']);
+	}
+	public function TableExists($tableName)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('TableExists only currently supported in Postgres');
+		}
+
+		$query = <<<SQL
+			SELECT table_name
+			FROM information_schema.tables
+			WHERE table_name = $1
+SQL;
+		$results = $this->ExecSQL(Data::Assoc, $query, $tableName);
+		return isset($results[0]['table_name']);
+	}
+	public function DatabaseExists($dbName)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('DatabaseExists only currently supported in Postgres');
+		}
+
+		$query = <<<SQL
+			SELECT datname
+			FROM pg_catalog.pg_database
+			WHERE datname = $1;
+SQL;
+		$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+		return isset($results[0]['datname']);
+	}
 }
 ?>
