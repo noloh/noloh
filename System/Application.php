@@ -586,7 +586,7 @@ final class Application extends Base
 	{
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
-		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight'], $_GET['_NTimeZone']);
+		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight'], $_GET['_NTimeZone'], $_GET['_NMaxTouchPoints'], $_GET['_NBrowserPlatform']);
 		if(isset($_GET['_escaped_fragment_']))
 			parse_str(urldecode($_GET['_escaped_fragment_']), $_GET);
 		if($GLOBALS['_NURLTokenMode'] == 1)
@@ -675,12 +675,14 @@ final class Application extends Base
 		//header('Cache-Control: no-store');
 		if (++$_SESSION['_NVisit'] === 0)
 		{
-			global $_NShowStrategy, $_NWidth, $_NHeight, $_NTimeZone;
+			global $_NShowStrategy, $_NWidth, $_NHeight, $_NTimeZone, $_NMaxTouchPoints, $_NBrowserPlatform;
 			if(isset($_COOKIE['_NAppCookie']))
 				setcookie('_NAppCookie', $_COOKIE['_NAppCookie'], 1);
 			$_NWidth = isset($_GET['_NWidth']) ? $_GET['_NWidth'] : 1024;
 			$_NHeight = isset($_GET['_NHeight']) ? $_GET['_NHeight'] : 768;
 			$_NTimeZone = isset($_GET['_NTimeZone']) ? $_GET['_NTimeZone'] : date_default_timezone_get();
+			$_NMaxTouchPoints = isset($_GET['_NMaxTouchPoints']) ? intval($_GET['_NMaxTouchPoints']) : 0;
+			$_NBrowserPlatform = isset($_GET['_NBrowserPlatform']) ? $_GET['_NBrowserPlatform'] : '';
 			$this->HandleTokens();
 			$_NShowStrategy = (empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()));
 			$className = Configuration::That()->StartClass;
