@@ -41,6 +41,19 @@ class DataReaderIterator extends DataReader
 		}
 		return $this->ReadData();
 	}
+	function GetNumColumns()
+	{
+		return pg_num_fields($this->Resource);
+	}
+	function GetColumns()
+	{
+		$columns = array();
+		for ($i = 0, $l = $this->GetNumColumns(); $i < $l; ++$i)
+		{
+			$columns[] = pg_field_name($this->Resource, $i);
+		}
+		return $columns;
+	}
 	/**
 	 * @ignore
 	 */
