@@ -580,6 +580,34 @@ final class System
 		
 		$display->Text = '';
 	}
+	/**
+	 * Checks if the connected device is a mobile device or not. (Apple or Android)
+	 * @return bool
+	 */
+	static function IsMobileDevice()
+	{
+		return static::IsAppleDevice() || static::IsAndroidDevice();
+	}
+	/**
+	 * Checks if the connected device is a mobile Apple device or not.
+	 * @return bool
+	 */
+	static function IsAppleDevice()
+	{
+		return in_array(UserAgent::GetName(), array(UserAgent::IPhone, UserAgent::IPad), true) ||
+			in_array(strtolower($_SESSION['_NBrowserPlatform']), array('ipad', 'iphone', 'ipod')) ||
+			(UserAgent::GetOperatingSystem() === UserAgent::Mac && $_SESSION['_NMaxTouchPoints'] > 1);
+	}
+	/**
+	 * Checks if the connected device is a mobile Android device or not.
+	 * @return bool
+	 */
+	static function IsAndroidDevice()
+	{
+		return UserAgent::GetName() === UserAgent::Android ||
+			stripos($_SESSION['_NBrowserPlatform'], 'linux armv') !== false ||
+			(UserAgent::GetOperatingSystem() === UserAgent::Linux && $_SESSION['_NMaxTouchPoints'] > 1);
+	}
 }
 
 ?>
