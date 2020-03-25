@@ -1088,7 +1088,7 @@ SQL;
 
 		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
 		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-		$password = $this->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
+		$password = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
 		// Validate format of additional users array
 		foreach ($userMappings as $user)
