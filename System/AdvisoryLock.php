@@ -10,10 +10,20 @@ class AdvisoryLock extends Base
 		$this->FileName = static::LockFileName($key);
 		$this->FilePointer = static::GetLockPointer($key);
 	}
+
 	/*
 	 * This destructor will remove the need to handle clean up manually. When the object is no longer referenced,
 	 * or the process is terminating this will handle clean up automatically.
 	 */
+	function __destruct()
+	{
+		if ($this->TryLock(false))
+		{
+			unlink($this->FileName);
+		}
+
+		fclose($this->FilePointer);
+	}
 
 	/**
 	 * Generates the full lock filename from the given key
@@ -37,16 +47,6 @@ class AdvisoryLock extends Base
 		$lockHandle = fopen(static::LockFileName($key), 'c');
 
 		return $lockHandle;
-	}
-
-	function __destruct()
-	{
-		if ($this->TryLock(false))
-		{
-			unlink($this->FileName);
-		}
-
-		fclose($this->FilePointer);
 	}
 
 	/**
