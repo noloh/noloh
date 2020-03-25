@@ -81,10 +81,6 @@ class DataConnection extends Base
 	static $TransactionCounts;
 
 	private $ODBCType;
-
-	const EncryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-	const IV = 'lwHnoY6T0KZy7rkqdsHJgw==';
-
 	/**
 	 * Constructor
 	 * Be sure to call this from the constructor of any class that extends DataConnection.
@@ -136,7 +132,9 @@ class DataConnection extends Base
 		$password = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$password = Security::Decrypt($password, self::EncryptionKey, self::IV);
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
 		System::BeginBenchmarking('_N/DataCommand::Connect');
 		if (!is_resource($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
@@ -152,7 +150,7 @@ class DataConnection extends Base
 					$this->Password = 'XeZw9yGrdAfPJtsAvUaXMzqfdabNNBhKmb1CQzPS4mE=';
 					$this->PasswordEncrypted = true;
 
-					$password = Security::Decrypt($this->Password, self::EncryptionKey, self::IV);
+					$password = Security::Decrypt($this->Password, $encryptionKey, $iv);
 
 					$connectString = 'dbname = ' . $this->DatabaseName . ' user = ' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
 
@@ -881,7 +879,9 @@ class DataConnection extends Base
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$pass = Security::Decrypt($pass, self::EncryptionKey, self::IV);
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
 		}
 		
 		$user = $this->Username;
@@ -1032,8 +1032,10 @@ SQL;
 			BloodyMurder('SendTo only supported for Postgres data connections');
 		}
 
-		$password = $this->PasswordEncrypted ? Security::Decrypt($this->Password, self::EncryptionKey, self::IV) : $this->Password;
-		$targetPassword = $target->PasswordEncrypted ? Security::Decrypt($target->Password, self::EncryptionKey, self::IV) : $target->Password;
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$password = $this->PasswordEncrypted ? Security::Decrypt($this->Password, $encryptionKey, $iv) : $this->Password;
+		$targetPassword = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
 		$filename = $target->DatabaseName . '_' . date('Ymdhis');
 		$file = $backupPath . '/' . $filename;
@@ -1084,7 +1086,9 @@ SQL;
 			BloodyMurder('Create Server is only supported for Postgres data connections');
 		}
 
-		$password = $this->PasswordEncrypted ? Security::Decrypt($target->Password, self::EncryptionKey, self::IV) : $target->Password;
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$password = $this->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
 		// Validate format of additional users array
 		foreach ($userMappings as $user)
@@ -1127,7 +1131,9 @@ SQL;
 	}
 	static function EncryptDBPassword($password)
 	{
-		return Security::Encrypt($password, self::EncryptionKey, self::IV);
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		return Security::Encrypt($password, $encryptionKey, $iv);
 	}
 	static function ODBCByDSN($dsn, $type, $username = null, $password = null)
 	{
