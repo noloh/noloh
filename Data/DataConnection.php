@@ -965,7 +965,7 @@ SQL;
 		}
 
 		$info = pathinfo($tarFile);
-		$tarFile = $info['filename'] . '.tar';
+		$tarFile = "{$info['dirname']}/{$info['filename']}" . '.tar';
 
 		$fileName  = $this->DatabaseName . '_' . date("Ymd") . '_' . '.bak';
 		$primaryDump = $this->DBDump($info['dirname'] . DIRECTORY_SEPARATOR . $fileName, 0);
@@ -1068,11 +1068,35 @@ SQL;
 
 		return true;
 	}
-	function CreateServer(DataConnection $target, $serverName)
+	/**
+	 * @param DataConnection $target
+	 * @param $serverName
+	 * @param array $userMappings array additional users to map to this foreign server connections
+	 * example:
+	 * 		array(
+	 * 			array('user' => 'user1', 'password' => 'pass1'),
+	 * 			array('user' => 'user2', 'password' => 'pass2')
+	 * 		)
+	 * NOTE: User associated with this DataConnection is added by default
+	 */
+	function CreateServer(DataConnection $target, $serverName, $userMappings = array())
 	{
 		if ($this->Type !== Data::Postgres || $target->Type !== Data::Postgres)
 		{
 			BloodyMurder('Create Server is only supported for Postgres data connections');
+		}
+
+		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$password = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
+
+		// Validate format of additional users array
+		foreach ($userMappings as $user)
+		{
+			if ($user['user'] === null || $user['password'] === null)
+			{
+				BloodyMurder('Invalid format passed for additional users array');
+			}
 		}
 		
 		$query = <<<SQL
@@ -1083,16 +1107,27 @@ SQL;
 			CREATE SERVER {$serverName}
 			FOREIGN DATA WRAPPER postgres_fdw
 			OPTIONS (host 'localhost', port $1, dbname $2);
-			
-			CREATE USER MAPPING FOR {$this->Username}
-			SERVER {$serverName}
-			OPTIONS (user $3, password $4);
 SQL;
-		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-		$password = $this->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
 
-		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName, $target->Username, $password);
+		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName);
+
+		// Add connection user to mappings array
+		array_push($userMappings, array('user' => $target->Username, 'password' => $password));
+
+		foreach ($userMappings as $creds)
+		{
+			$this->CreateUserMapping($serverName, $creds['user'], $creds['password']);
+		}
+	}
+	function CreateUserMapping($serverName, $user, $pass)
+	{
+		$query = <<<SQL
+			CREATE USER MAPPING FOR {$user}
+			SERVER {$serverName}
+			OPTIONS (user '{$user}', password '{$pass}');
+SQL;
+
+		$this->ExecSQL($query);
 	}
 	static function EncryptDBPassword($password)
 	{
@@ -1164,6 +1199,19 @@ SQL;
 SQL;
 		$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
 		return isset($results[0]['datname']);
+	}
+	public function UserMappingExists($foreignServer, $user)
+	{
+		$query = <<<SQL
+			SELECT *
+			FROM information_schema.user_mappings
+			WHERE foreign_server_name = '{$foreignServer}'
+				AND authorization_identifier = '{$user}';
+SQL;
+
+		$result = $this->ExecSQL($query);
+
+		return $result->Count > 0;
 	}
 }
 ?>
