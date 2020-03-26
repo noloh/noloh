@@ -295,7 +295,9 @@ final class Application extends Base
 			$_SESSION['_NTokenChain'],
 			$_SESSION['_NHighestZ'],
 			$_SESSION['_NLowestZ'],
-			$_SESSION['_NOrigUserAgent']
+			$_SESSION['_NOrigUserAgent'],
+			$_SESSION['_NMaxTouchPoints'],
+			$_SESSION['_NBrowserPlatform']
 		);
 	}
 	private function HandleFirstRun($trulyFirst=true)
