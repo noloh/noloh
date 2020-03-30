@@ -473,7 +473,8 @@ HTML;
 		$symbol = empty($_GET) ? '?' : '&';
 		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
                "_NVisit=0&_NApp=" + _NApp + "&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
-               "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
+               "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight + "&_NMaxTouchPoints=" + 
+               _NMaxTouchPoints + "&_NBrowserPlatform=" + _NBrowserPlatform';
         $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
         $oldOpMobile = UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
 		echo $oldOpMobile ? 
@@ -508,7 +509,9 @@ UserAgent::IsIE() ? '
 
 <SCRIPT type="text/javascript">
   _NApp = ', $GLOBALS['_NApp'], ';
-  document.cookie = "_NAppCookie=0";', $symbol === '&' ? '
+  document.cookie = "_NAppCookie=0";
+  _NMaxTouchPoints = navigator.maxTouchPoints;
+  _NBrowserPlatform = navigator.platform;', $symbol === '&' ? '
   if(document.URL.indexOf("?") != -1)
   	location.replace(document.URL.replace("?", "#!/"));' : 
 (UserAgent::GetBrowser()===UserAgent::Firefox ? '
