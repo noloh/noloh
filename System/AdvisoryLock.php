@@ -5,8 +5,20 @@ class AdvisoryLock extends Base
 	private $FilePointer;
 	private $FileName;
 
-	function __construct($key)
+	/**
+	 * AdvisoryLock constructor.
+	 *
+	 * @param $key
+	 * @param bool $processIndependent create this lock to work independent from this process. e.g. across network requests
+	 */
+	function __construct($key, $processIndependent = false)
 	{
+		if ($processIndependent)
+		{
+			// TODO
+			BloodyMurder('Process independent locking functionality has not been implemented yet');
+		}
+
 		$this->FileName = static::LockFileName($key);
 		$this->FilePointer = static::GetLockPointer($key);
 	}
@@ -57,7 +69,9 @@ class AdvisoryLock extends Base
 	 */
 	public function TryLock($block = true)
 	{
-		$flags = $block ? LOCK_EX : LOCK_EX | LOCK_NB;
+		$flags = $block
+			? LOCK_EX
+			: (LOCK_EX | LOCK_NB);
 
 		return flock($this->FilePointer, $flags);
 	}
