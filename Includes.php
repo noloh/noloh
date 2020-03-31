@@ -56,6 +56,7 @@ function _NAutoLoad($class)
 			'SqlException' => 			'System/SqlException.php',
 			'SqlFriendlyException' =>	'System/SqlFriendlyException.php',
 			'ResourceException' => 		'System/ResourceException.php',
+			'AdvisoryLock' =>			'System/AdvisoryLock.php',
 			
 			//Events
 			'RaceClientEvent' =>	'Events/RaceClientEvent.php',
