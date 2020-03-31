@@ -16,6 +16,7 @@ require($_NPath . 'System/GeneralFunctions.php');
 require($_NPath . 'System/NolohInternal.php');
 require($_NPath . 'System/Pointer.php');
 require($_NPath . 'System/WebPage.php');
+require($_NPath . 'System/AdvisoryLock.php');
 require($_NPath . 'Collections/ArrayList.php');
 require($_NPath . 'Collections/ImplicitArrayList.php');
 require($_NPath . 'Controls/Core/Control.php');
