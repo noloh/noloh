@@ -965,7 +965,7 @@ SQL;
 		}
 
 		$info = pathinfo($tarFile);
-		$tarFile = $info['filename'] . '.tar';
+		$tarFile = "{$info['dirname']}/{$info['filename']}" . '.tar';
 
 		$fileName  = $this->DatabaseName . '_' . date("Ymd") . '_' . '.bak';
 		$primaryDump = $this->DBDump($info['dirname'] . DIRECTORY_SEPARATOR . $fileName, 0);
