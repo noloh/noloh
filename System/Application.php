@@ -295,7 +295,9 @@ final class Application extends Base
 			$_SESSION['_NTokenChain'],
 			$_SESSION['_NHighestZ'],
 			$_SESSION['_NLowestZ'],
-			$_SESSION['_NOrigUserAgent']
+			$_SESSION['_NOrigUserAgent'],
+			$_SESSION['_NMaxTouchPoints'],
+			$_SESSION['_NBrowserPlatform']
 		);
 	}
 	private function HandleFirstRun($trulyFirst=true)
@@ -586,7 +588,7 @@ final class Application extends Base
 	{
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
-		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight'], $_GET['_NTimeZone']);
+		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight'], $_GET['_NTimeZone'], $_GET['_NMaxTouchPoints'], $_GET['_NBrowserPlatform']);
 		if(isset($_GET['_escaped_fragment_']))
 			parse_str(urldecode($_GET['_escaped_fragment_']), $_GET);
 		if($GLOBALS['_NURLTokenMode'] == 1)
@@ -681,6 +683,8 @@ final class Application extends Base
 			$_NWidth = isset($_GET['_NWidth']) ? $_GET['_NWidth'] : 1024;
 			$_NHeight = isset($_GET['_NHeight']) ? $_GET['_NHeight'] : 768;
 			$_NTimeZone = isset($_GET['_NTimeZone']) ? $_GET['_NTimeZone'] : date_default_timezone_get();
+			$_SESSION['_NMaxTouchPoints'] = isset($_GET['_NMaxTouchPoints']) ? intval($_GET['_NMaxTouchPoints']) : 0;
+			$_SESSION['_NBrowserPlatform'] = isset($_GET['_NBrowserPlatform']) ? $_GET['_NBrowserPlatform'] : '';
 			$this->HandleTokens();
 			$_NShowStrategy = (empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()));
 			$className = Configuration::That()->StartClass;
