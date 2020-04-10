@@ -376,6 +376,7 @@ final class System
 		{
 			$backLabel->Layout = Layout::Fixed;
 			WebPage::That()->Controls->Add($modal);
+			WebPage::That()->LoadIndicator->ZIndex = $modal->ZIndex + 1;
 		}
 		return $modal;
 	}
