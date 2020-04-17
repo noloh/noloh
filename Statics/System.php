@@ -376,7 +376,6 @@ final class System
 		{
 			$backLabel->Layout = Layout::Fixed;
 			WebPage::That()->Controls->Add($modal);
-			WebPage::That()->LoadIndicator->BringToFront();
 		}
 		return $modal;
 	}

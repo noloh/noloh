@@ -89,11 +89,13 @@ abstract class WebPage extends Component
 		
 		if(isset($GLOBALS['_NShowStrategy']) && $GLOBALS['_NShowStrategy'])
 		{
-			$this->SetLoadIndicator($loadIndicator = new Label('Loading...', 7, 7, null, null));
+			$this->SetLoadIndicator(
+				$loadIndicator = new Label('Loading...', 7, 7, null, null),
+				false,
+				true
+			);
 			$loadIndicator->Layout = Layout::Fixed;
 			$loadIndicator->Opacity = 75;
-			$loadIndicator->CSSClass = 'NLoadIndiLabel';
-			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 		
 		$unload = parent::GetEvent('Unload');
@@ -314,7 +316,7 @@ abstract class WebPage extends Component
 	 * Sets the Control that NOLOH will display when a ServerEvent is launched as a visual indicator to the user.
 	 * @param Control $control
 	 */
-	function SetLoadIndicator($control)
+	function SetLoadIndicator($control, $kendo = true, $showStrategy = false)
 	{
 		if($this->LoadIndicator !== $control)
 		{
@@ -332,6 +334,15 @@ abstract class WebPage extends Component
 			if($this->LoadIndicator)
 				$this->LoadIndicator->ParentId = null;
 			$this->LoadIndicator = $control;
+			
+			$this->LoadIndicator->CSSClass = $showStrategy
+				? 'NLoadIndiLabel'
+				: (
+					$kendo
+						? 'k-loading-image loading-indicator'
+						: 'loading-indicator'
+				);
+			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 	}
 	/**
