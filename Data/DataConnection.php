@@ -95,7 +95,7 @@ class DataConnection extends Base
 	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
 	 * @param array $afterConnectCallBack callback function for after a succesful connection is made
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = '', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
+	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -1106,10 +1106,10 @@ SQL;
 			
 			CREATE SERVER {$serverName}
 			FOREIGN DATA WRAPPER postgres_fdw
-			OPTIONS (host 'localhost', port $1, dbname $2);
+			OPTIONS (host $1, port $2, dbname $3);
 SQL;
 
-		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName);
+		$this->ExecSQL($query, $target->Host, (string)$target->Port, $target->DatabaseName);
 
 		// Add connection user to mappings array
 		array_push($userMappings, array('user' => $target->Username, 'password' => $password));
