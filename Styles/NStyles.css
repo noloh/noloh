@@ -193,8 +193,8 @@ a.NPag:hover
 	margin: 0;
 }
 .NPanel.loading-indicator,
-.NPanel.k-loading-image,
-.NPanel.k-loading-image.loading-indicator
+.NPanel.k-loading-image.loading-indicator,
+.loading-indicator
 {
 	z-index: 9999999;
 }

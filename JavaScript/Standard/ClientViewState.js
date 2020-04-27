@@ -41,8 +41,11 @@ function _NSetLoadIndi(id)
 {
 	_N.LoadIndicator = id;
 	var loadIndicator = _N(id);
-	if(loadIndicator)
+	if (loadIndicator)
+	{
 		loadIndicator.style.visibility = "hidden";
+		loadIndicator.className += " loading-indicator";
+	}
 }
 function _NCheckURL()
 {
