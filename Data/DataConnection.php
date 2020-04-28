@@ -1106,10 +1106,10 @@ SQL;
 			
 			CREATE SERVER {$serverName}
 			FOREIGN DATA WRAPPER postgres_fdw
-			OPTIONS (host 'localhost', port $1, dbname $2);
+			OPTIONS (host $1, port $2, dbname $3);
 SQL;
 
-		$this->ExecSQL($query, (string)$target->Port, $target->DatabaseName);
+		$this->ExecSQL($query, $target->Host, (string)$target->Port, $target->DatabaseName);
 
 		// Add connection user to mappings array
 		array_push($userMappings, array('user' => $target->Username, 'password' => $password));
