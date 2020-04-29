@@ -764,7 +764,7 @@ final class Application extends Base
 		{
 			$memoryInfo = exec('free | grep buffers/cache');
 			preg_match('/(?:-\/\+ buffers\/cache:\s*\w+\s*)(\d*)/', $memoryInfo, $matches);
-			$freeMemory = $matches[1];
+			$freeMemory = isset($matches[1])?$matches[1]:null;
 		}
 		$requestDetails['free_memory'] = $freeMemory / 1000;
 
