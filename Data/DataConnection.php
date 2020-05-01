@@ -880,41 +880,62 @@ class DataConnection extends Base
 	 * call Commit or ForceCommit. If $xact is false, pg_advisory_lock is started and must be explicitly
 	 * unlocked via AdvisoryUnlock.
 	 *
-	 * @param string $tableName is used in conjuction with $id to create unique lock id
-	 * @param UUID or INT $id is used in conjunction with $tableName to create unique lock id
+	 * @param string $str is used to create the 64 bit hash key for the lock
 	 * @param bool $xact is used to decide which type of lock to use
 	 */
-	function StartAdvisoryLock($tableName, $id, $xact = true)
+	function StartAdvisoryLock($str, $xact = true)
 	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Not yet supported for this database type');
+		}
+
+		$key = $this->Get64BitHash($str);
+
 		if ($xact)
 		{
 			$this->BeginTransaction();
 
 			$query = <<<SQL
-				SELECT pg_advisory_xact_lock(fn_get_lock_id($1 || '_' || $2));
+				SELECT pg_advisory_xact_lock($1::BIGINT);
 SQL;
 		}
 		else
 		{
 			$query = <<<SQL
-				SELECT pg_advisory_lock(fn_get_lock_id($1 || '_' || $2));
+				SELECT pg_advisory_lock($1::BIGINT);
 SQL;
 		}
 
-		$this->ExecSQL($query, $tableName, $id);
+		$this->ExecSQL($query, $key);
 	}
 	/*
 	 * Unlocks pg_advisory_lock
 	 *
-	 * @param string $tableName is used in conjuction with $id to create unique lock id
-	 * @param UUID or INT $id is used in conjunction with $tableName to create unique lock id
+	 * @param string $str is used to create the 64 bit hash key for the lock
 	 */
-	function AdvisoryUnlock($tableName, $id)
+	function AdvisoryUnlock($str)
 	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Not yet supported for this database type');
+		}
+
+		$key = $this->Get64BitHash($str);
+
 		$query = <<<SQL
-			SELECT pg_advisory_unlock(fn_get_lock_id($1 || '_' || $2));
+			SELECT pg_advisory_unlock($1::BIGINT);
 SQL;
-		$this->ExecSQL($query, $tableName, $id);
+		$this->ExecSQL($query, $key);
+	}
+	/*
+	 * Returns 64 bit hash of input string
+	 *
+	 * @param string $str
+	 */
+	function Get64BitHash($str)
+	{
+		return intval(substr(md5($str), 0, 16), 16);
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
