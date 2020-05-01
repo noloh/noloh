@@ -874,6 +874,48 @@ class DataConnection extends Base
 			}
 		}
 	}
+	/*
+	 * Creates either pg_advisory_lock or pg_advisory_xact_lock depending on the $xact perameter.
+	 * If $xact is true, pg_advisory_xact_lock is started, as well as a new transaction. To unlock,
+	 * call Commit or ForceCommit. If $xact is false, pg_advisory_lock is started and must be explicitly
+	 * unlocked via AdvisoryUnlock.
+	 *
+	 * @param string $tableName is used in conjuction with $id to create unique lock id
+	 * @param UUID or INT $id is used in conjunction with $tableName to create unique lock id
+	 * @param bool $xact is used to decide which type of lock to use
+	 */
+	function StartAdvisoryLock($tableName, $id, $xact = true)
+	{
+		if ($xact)
+		{
+			$this->BeginTransaction();
+
+			$query = <<<SQL
+				SELECT pg_advisory_xact_lock(fn_get_lock_id($1 || '_' || $2));
+SQL;
+		}
+		else
+		{
+			$query = <<<SQL
+				SELECT pg_advisory_lock(fn_get_lock_id($1 || '_' || $2));
+SQL;
+		}
+
+		$this->ExecSQL($query, $tableName, $id);
+	}
+	/*
+	 * Unlocks pg_advisory_lock
+	 *
+	 * @param string $tableName is used in conjuction with $id to create unique lock id
+	 * @param UUID or INT $id is used in conjunction with $tableName to create unique lock id
+	 */
+	function AdvisoryUnlock($tableName, $id)
+	{
+		$query = <<<SQL
+			SELECT pg_advisory_unlock(fn_get_lock_id($1 || '_' || $2));
+SQL;
+		$this->ExecSQL($query, $tableName, $id);
+	}
 	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = $this->Password;
