@@ -69,7 +69,14 @@ function _NOBErrorHandler($buffer)
 				$webPage = WebPage::That();
 				if ($webPage && $processRequestDetails)
 				{
-					$webPage->ProcessRequestDetails($requestDetails);
+					if(strpos($message, 'syntax error') !== false)
+					{
+						echo $message;
+					}
+					else
+					{
+						$webPage->ProcessRequestDetails($requestDetails);
+					}
 				}
 
 				return $alert;
