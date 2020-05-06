@@ -192,3 +192,9 @@ a.NPag:hover
 	transform: translate(0, -16px) scale(0.8, 0.8);
 	margin: 0;
 }
+.NPanel.loading-indicator,
+.NPanel.k-loading-image.loading-indicator,
+.loading-indicator
+{
+	z-index: 9999999;
+}

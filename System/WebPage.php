@@ -93,7 +93,6 @@ abstract class WebPage extends Component
 			$loadIndicator->Layout = Layout::Fixed;
 			$loadIndicator->Opacity = 75;
 			$loadIndicator->CSSClass = 'NLoadIndiLabel';
-			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 		
 		$unload = parent::GetEvent('Unload');
@@ -332,6 +331,7 @@ abstract class WebPage extends Component
 			if($this->LoadIndicator)
 				$this->LoadIndicator->ParentId = null;
 			$this->LoadIndicator = $control;
+			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 	}
 	/**
