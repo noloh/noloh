@@ -1078,8 +1078,9 @@ SQL;
 	 * 			array('user' => 'user2', 'password' => 'pass2')
 	 * 		)
 	 * NOTE: User associated with this DataConnection is added by default
+	 * @param string $host The host of the target DB, but from the point of the view of the source database
 	 */
-	function CreateServer(DataConnection $target, $serverName, $userMappings = array())
+	function CreateServer(DataConnection $target, $serverName, $userMappings = array(), $host = 'localhost')
 	{
 		if ($this->Type !== Data::Postgres || $target->Type !== Data::Postgres)
 		{
@@ -1109,7 +1110,11 @@ SQL;
 			OPTIONS (host $1, port $2, dbname $3);
 SQL;
 
-		$this->ExecSQL($query, $target->Host, (string)$target->Port, $target->DatabaseName);
+		if ($host === null)
+		{
+			$host = $target->Host;
+		}
+		$this->ExecSQL($query, $host, (string)$target->Port, $target->DatabaseName);
 
 		// Add connection user to mappings array
 		array_push($userMappings, array('user' => $target->Username, 'password' => $password));
