@@ -883,14 +883,14 @@ class DataConnection extends Base
 	 * @param string $str is used to create the 64 bit hash key for the lock
 	 * @param bool $xact is used to decide which type of lock to use
 	 */
-	function StartAdvisoryLock($str, $xact = true)
+	function AdvisoryLock($key, $xact = true)
 	{
 		if ($this->Type !== Data::Postgres)
 		{
 			BloodyMurder('Not yet supported for this database type');
 		}
 
-		$key = $this->Get64BitHash($str);
+		$key = System::Get64BitHash($key);
 
 		if ($xact)
 		{
@@ -914,28 +914,19 @@ SQL;
 	 *
 	 * @param string $str is used to create the 64 bit hash key for the lock
 	 */
-	function AdvisoryUnlock($str)
+	function AdvisoryUnlock($key)
 	{
 		if ($this->Type !== Data::Postgres)
 		{
 			BloodyMurder('Not yet supported for this database type');
 		}
 
-		$key = $this->Get64BitHash($str);
+		$key = System::Get64BitHash($key);
 
 		$query = <<<SQL
 			SELECT pg_advisory_unlock($1::BIGINT);
 SQL;
 		$this->ExecSQL($query, $key);
-	}
-	/*
-	 * Returns 64 bit hash of input string
-	 *
-	 * @param string $str
-	 */
-	function Get64BitHash($str)
-	{
-		return intval(substr(md5($str), 0, 16), 16);
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
