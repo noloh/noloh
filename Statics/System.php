@@ -608,6 +608,15 @@ final class System
 			stripos($_SESSION['_NBrowserPlatform'], 'linux armv') !== false ||
 			(UserAgent::GetOperatingSystem() === UserAgent::Linux && $_SESSION['_NMaxTouchPoints'] > 1);
 	}
+	/*
+	 * Returns 64 bit hash of input string
+	 *
+	 * @param string $str
+	 */
+	static function Get64BitHash($str)
+	{
+		return intval(substr(md5($str), 0, 16), 16);
+	}
 }
 
 ?>
