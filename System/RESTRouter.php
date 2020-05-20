@@ -30,6 +30,8 @@ abstract class RESTRouter extends Base
 		
 		// TODO: Output buffering
 
+		Application::SetNolohSessionVars();
+
 		$this->ValidateSecurity();
 		$this->InitMethod();
 		$this->InitResources();
