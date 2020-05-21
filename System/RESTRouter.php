@@ -30,8 +30,6 @@ abstract class RESTRouter extends Base
 		
 		// TODO: Output buffering
 
-		Application::SetNolohSessionVars();
-
 		$this->ValidateSecurity();
 		$this->InitMethod();
 		$this->InitResources();
@@ -181,6 +179,8 @@ abstract class RESTRouter extends Base
 	{
 		$config = new Configuration();
 		$className = $config->StartClass;
+
+		Application::SetNolohSessionVars();
 
 		if (System::IsRESTful() && getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
 		{
