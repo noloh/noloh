@@ -72,22 +72,29 @@ class ContextMenu extends Menu
 	function AddMenuItem($menuItem)
 	{
 		if(!is_object($menuItem))
+		{
 			$menuItem = new MenuItem($menuItem);
+		}
 			
 		$menuItem->Layout = Layout::Relative;
 		$menuItem->SetLeft(0);
-//		$menuItem->MenuItemsPanel->Buoyant = true;
-		if($this->GetWidth() < ($width = $menuItem->GetWidth()))
+		if($this->GetWidth() <= ($width = $menuItem->GetWidth()))
 		{
-			$this->SetWidth($width);
+			$this->SetWidth($width + 10);
 			$count = $this->MenuItems->Count();
 			
 			for($i=0; $i<$count; ++$i)
-				$this->MenuItems[$i]->SetWidth($width); 
+			{
+				$this->MenuItems[$i]->SetWidth($width);
+			}
+
 			$menuItem->MenuItemsPanel->SetLeft($width);
 		}
 		else
+		{
 			$menuItem->SetWidth($this->GetWidth());
+		}
+
 		$menuItem->MenuItemsPanel->BackColor = '#F1F1ED';
 		$this->MenuItems->Add($menuItem, true);
 		$this->Height += $menuItem->GetHeight();
