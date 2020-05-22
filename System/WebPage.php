@@ -93,7 +93,6 @@ abstract class WebPage extends Component
 			$loadIndicator->Layout = Layout::Fixed;
 			$loadIndicator->Opacity = 75;
 			$loadIndicator->CSSClass = 'NLoadIndiLabel';
-			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 		
 		$unload = parent::GetEvent('Unload');
@@ -332,6 +331,7 @@ abstract class WebPage extends Component
 			if($this->LoadIndicator)
 				$this->LoadIndicator->ParentId = null;
 			$this->LoadIndicator = $control;
+			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 	}
 	/**
@@ -471,7 +471,7 @@ HTML;
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
-		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
+		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash||"#","")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
                "_NVisit=0&_NApp=" + _NApp + "&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
                "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight + "&_NMaxTouchPoints=" + 
                _NMaxTouchPoints + "&_NBrowserPlatform=" + _NBrowserPlatform';
