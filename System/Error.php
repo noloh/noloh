@@ -72,8 +72,7 @@ function _NOBErrorHandler($buffer)
 					/*
 					 * Checking for a syntax error message.
 					 * This is a critical error that is not reached in normal cases.
-					 * The issue is caused by a syntactic incompatibility between a higher version of PHP with
-					 * a lower version.
+					 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
 					 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
 					 * !It is not recommended to continue using!
 					*/
