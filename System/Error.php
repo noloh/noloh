@@ -69,9 +69,15 @@ function _NOBErrorHandler($buffer)
 				$webPage = WebPage::That();
 				if ($webPage && $processRequestDetails)
 				{
-					if(strpos($message, 'syntax error') !== false)
+					if (strpos($message, 'syntax error') !== false)
 					{
-						echo $message;
+						/*
+						 * This is a critical error that is not reached in normal cases.
+						 * The issue is caused by a syntactic incompatibility between a higher version of PHP with
+						 * a lower version.
+						 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
+						 * !It is not recommended to continue using!
+						*/
 					}
 					else
 					{
