@@ -311,37 +311,9 @@ final class Application extends Base
 			exit();
 		}
 		$home = null;
-		$_SESSION['_NVisit'] = -1;
-		$_SESSION['_NNumberOfComponents'] = 0;
-		$_SESSION['_NControlQueueRoot'] = array();
-		$_SESSION['_NControlQueueDeep'] = array();
-		$_SESSION['_NControlInserts'] = array();
-		$_SESSION['_NFunctionQueue'] = array();
-		$_SESSION['_NPropertyQueue'] = array();
-		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['_NScriptSrcs'] = array();
-		$_SESSION['_NGlobals'] = array();
-		$_SESSION['_NSingletons'] = array();
-		$_SESSION['_NFiles'] = array();
-		$_SESSION['_NFileSend'] = array();
-		$_SESSION['_NGarbage'] = array();
-		$_SESSION['_NTokens'] = array();
-		$_SESSION['_NHighestZ'] = 0;
-		$_SESSION['_NLowestZ'] = 0;
-		$_SESSION['_NOrigUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
-		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
-		$_SESSION['_NPath'] = ComputeNOLOHPath();
-		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
-		$_SESSION['_NRAPath'] = rtrim(
-			NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : 
-			/*(str_repeat('../', substr_count($_SESSION['_NURL'], '/', strlen(dirname($_SESSION['_NURL']))+1)) 
-				. (($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ? 
-				GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
-				$_SESSION['_NRPath']));*/
-			(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false))
-				? System::GetRelativePath($selfDir, '/', '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'], '/')
-				: $_SESSION['_NRPath']), '/');
+
+		static::SetNolohSessionVars();
+
 		if($home)
 			$_SESSION['_NUserDir'] = true;
 		UserAgent::LoadInformation();
@@ -859,6 +831,40 @@ final class Application extends Base
 		}
 	}
 	*/
+	static function SetNolohSessionVars()
+	{
+		$_SESSION['_NVisit'] = -1;
+		$_SESSION['_NNumberOfComponents'] = 0;
+		$_SESSION['_NControlQueueRoot'] = array();
+		$_SESSION['_NControlQueueDeep'] = array();
+		$_SESSION['_NControlInserts'] = array();
+		$_SESSION['_NFunctionQueue'] = array();
+		$_SESSION['_NPropertyQueue'] = array();
+		$_SESSION['_NScript'] = array('', '', '');
+		$_SESSION['_NScriptSrc'] = '';
+		$_SESSION['_NScriptSrcs'] = array();
+		$_SESSION['_NGlobals'] = array();
+		$_SESSION['_NSingletons'] = array();
+		$_SESSION['_NFiles'] = array();
+		$_SESSION['_NFileSend'] = array();
+		$_SESSION['_NGarbage'] = array();
+		$_SESSION['_NTokens'] = array();
+		$_SESSION['_NHighestZ'] = 0;
+		$_SESSION['_NLowestZ'] = 0;
+		$_SESSION['_NOrigUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
+		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
+		$_SESSION['_NPath'] = ComputeNOLOHPath();
+		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
+		$_SESSION['_NRAPath'] = rtrim(
+			NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL :
+				/*(str_repeat('../', substr_count($_SESSION['_NURL'], '/', strlen(dirname($_SESSION['_NURL']))+1))
+					. (($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ?
+					GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
+					$_SESSION['_NRPath']));*/
+				(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false))
+					? System::GetRelativePath($selfDir, '/', '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'], '/')
+					: $_SESSION['_NRPath']), '/');
+	}
 }
 
 // DEPRECATED! Use Application::SetStartUpPage instead.
