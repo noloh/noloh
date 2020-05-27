@@ -180,6 +180,8 @@ abstract class RESTRouter extends Base
 		$config = new Configuration();
 		$className = $config->StartClass;
 
+		Application::SetNolohSessionVars();
+
 		if (System::IsRESTful() && getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
 		{
 			exit('Error: Incorrect Working directory');
