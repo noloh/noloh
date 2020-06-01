@@ -34,7 +34,7 @@ final class Layout
 	 */
 	const Fixed = 3;
 	/**
-	 * A possible value for the Layout property of a Control, Sticky is similar to Fixed, however it starts it's Fixed behavior after it's top property.
+	 * A possible value for the Layout property of a Control, Sticky is similar to Fixed, however it starts its Fixed behavior after its top property.
 	 */
 	const Sticky = 4;
 	/**
