@@ -511,9 +511,13 @@ UserAgent::IsIE() ? '
   _NApp = ', $GLOBALS['_NApp'], ';
   document.cookie = "_NAppCookie=0";
   _NMaxTouchPoints = navigator.maxTouchPoints;
-  _NBrowserPlatform = navigator.platform;', $symbol === '&' ? '
+  _NBrowserPlatform = navigator.platform;
+  queryString = false;', $symbol === '&' ? '
   if(document.URL.indexOf("?") != -1)
-  	location.replace(document.URL.replace("?", "#!/"));' : 
+  {
+  	location.replace(document.URL.replace("?", "#!/"));
+  	queryString = true;
+  }' :
 (UserAgent::GetBrowser()===UserAgent::Firefox ? '
   if(document.URL.indexOf("#/") != -1)
   {
@@ -530,7 +534,8 @@ UserAgent::IsIE6() ? '
 	    var script = document.createElement("SCRIPT");
 	    script.type = "text/javascript";
 	    script.text = req.responseText;
-	    document.getElementById("NHead").appendChild(script);
+	    if(!queryString)
+	    	document.getElementById("NHead").appendChild(script);
   	}
   }
   
@@ -542,7 +547,8 @@ UserAgent::IsIE6() ? '
   var script = document.createElement("SCRIPT");
   script.type = "text/javascript";
   script.src = ' . $url . ';
-  document.getElementById("NHead").appendChild(script);', '
+  if(!queryString)
+	document.getElementById("NHead").appendChild(script);', '
 </SCRIPT>';
 	}
 	/**

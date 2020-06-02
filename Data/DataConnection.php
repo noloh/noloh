@@ -874,6 +874,60 @@ class DataConnection extends Base
 			}
 		}
 	}
+	/*
+	 * Creates either pg_advisory_lock or pg_advisory_xact_lock depending on the $xact perameter.
+	 * If $xact is true, pg_advisory_xact_lock is started, as well as a new transaction. To unlock,
+	 * call Commit or ForceCommit. If $xact is false, pg_advisory_lock is started and must be explicitly
+	 * unlocked via AdvisoryUnlock.
+	 *
+	 * @param string $str is used to create the 64 bit hash key for the lock
+	 * @param bool $xact is used to decide which type of lock to use
+	 */
+	function AdvisoryLock($key, $xact = true)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Not yet supported for this database type');
+		}
+
+		$key = System::Get64BitHash($key);
+
+		if ($xact)
+		{
+			$this->BeginTransaction();
+
+			$query = <<<SQL
+				SELECT pg_advisory_xact_lock($1::BIGINT);
+SQL;
+		}
+		else
+		{
+			$query = <<<SQL
+				SELECT pg_advisory_lock($1::BIGINT);
+SQL;
+		}
+
+		$this->ExecSQL($query, $key);
+	}
+	/*
+	 * Unlocks pg_advisory_lock
+	 *
+	 * @param string $str is used to create the 64 bit hash key for the lock
+	 */
+	function AdvisoryUnlock($key)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Not yet supported for this database type');
+		}
+
+		$key = System::Get64BitHash($key);
+
+		$query = <<<SQL
+			SELECT pg_advisory_unlock($1::BIGINT);
+SQL;
+		$this->ExecSQL($query, $key);
+	}
 	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = $this->Password;
