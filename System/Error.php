@@ -69,7 +69,17 @@ function _NOBErrorHandler($buffer)
 				$webPage = WebPage::That();
 				if ($webPage && $processRequestDetails)
 				{
-					$webPage->ProcessRequestDetails($requestDetails);
+					/*
+					 * Checking for a syntax error message.
+					 * This is a critical error that is not reached in normal cases.
+					 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
+					 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
+					 * !It is not recommended to continue using!
+					*/
+					if (strpos($message, 'syntax error') === false)
+					{
+						$webPage->ProcessRequestDetails($requestDetails);
+					}
 				}
 
 				return $alert;
