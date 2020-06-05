@@ -5,7 +5,7 @@
  * A DataConnection represents a connection to your database. DataConnection is usually used in conjuction with Data::$Links.
  * Each Link residing in Data::$Links should be an instantiated DataConnection. It is also possible to use DataConnections independently
  * of Data::$Links.
- * 
+ *
  * The following example shows the use of a DataConnection independently of Data::$Links:
  * <pre>
  *     $peopleDatabase = new DataConnection(Data::Postgres, 'new_york_people');
@@ -59,7 +59,7 @@ class DataConnection extends Base
 	public $ActiveConnection;
 	/**
 	 * Any additional connection parameters that are needed
-	 * 
+	 *
 	 * @var array
 	 */
 	public $AdditionalParams;
@@ -89,7 +89,7 @@ class DataConnection extends Base
 	 * @param string $username The username used to connect to your database
 	 * @param string $password The password used to connect to your datbase
 	 * @param mixed $host Your database host or ODBC DSN Name, e.g; localhost, http://www.noloh.com, etc.
-	 * @param mixed $port The port you use to connect to your database. 
+	 * @param mixed $port The port you use to connect to your database.
 	 * @param bool $passwordEncrypted Whether the password is encrypted or not
 	 * @param array $additionalParams additional parameters to be used
 	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
@@ -125,7 +125,7 @@ class DataConnection extends Base
 	/**
 	 * Attempts to create a connection to your database.
 	 * Returns The database link identifier.
-	 * @return resource 
+	 * @return resource
 	 */
 	function Connect()
 	{
@@ -155,7 +155,7 @@ class DataConnection extends Base
 					$connectString = 'dbname = ' . $this->DatabaseName . ' user = ' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
 
 					$this->ActiveConnection = pg_connect($connectString);
-					
+
 					if ($this->ActiveConnection === false)
 					{
 						throw new Exception("Failed to connect to database: {$this->DatabaseName}");
@@ -313,7 +313,7 @@ class DataConnection extends Base
 	function SetType($type)	{$this->Type = $type;}
 	/**
 	 * Gets the type of the database you're connecting to.
-	 * @return Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC 
+	 * @return Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC
 	 */
 	function GetType()		{return $this->Type;}
 	//Database Query Helper Functions
@@ -324,7 +324,7 @@ class DataConnection extends Base
 		{
 			return $sql;
 		}
-		
+
 		$paramNum = 1;
 		$search = array();
 		$replace = array();
@@ -343,7 +343,7 @@ class DataConnection extends Base
 				{
 					$search[] =  '/' . preg_quote($param[0], '/')  . '\b/';
 					$replace[] = $this->ConvertValueToSQL($param[1]);
-				}			
+				}
 			}
 			else
 			{
@@ -362,7 +362,7 @@ class DataConnection extends Base
 	{
 		if($spName == null)
 			return null;
-			
+
 		if($this->Type != Data::MSSQL)
 		{
 			$query = 'SELECT ';
@@ -384,7 +384,7 @@ class DataConnection extends Base
 			for($i = 0; $i < $numArgs; ++$i)
 			{
 				$tmpArg = self::ConvertTypeToPostgres($paramArray[$i]);
-				$query .= $tmpArg . ",";		
+				$query .= $tmpArg . ",";
 			}
 		}
 		elseif($this->Type == Data::MSSQL)
@@ -392,7 +392,7 @@ class DataConnection extends Base
 			for($i = 0; $i < $numArgs; ++$i)
 			{
 				$tmpArg = self::ConvertTypeToMSSQL($paramArray[$i]);
-				$query .= $tmpArg . ",";		
+				$query .= $tmpArg . ",";
 			}
 		}
 		else
@@ -401,11 +401,11 @@ class DataConnection extends Base
 			for($i = 0; $i < $numArgs; ++$i)
 			{
 				$tmpArg = self::ConvertTypeToMySQL($paramArray[$i], "'", $resource);
-				$query .= $tmpArg . ",";		
+				$query .= $tmpArg . ",";
 			}
 			$this->Close();
 		}
-		
+
 		if($numArgs > 0)
 			$query = rtrim($query, ',');
 		$query .= $end . ';';
@@ -509,7 +509,7 @@ class DataConnection extends Base
 			$tmpArg = ($value)?'true':'false';
 		elseif(is_array($value))
 			$tmpArg = self::ConvertToPostgresArray($value);
-		elseif($value === null || $value == 'null') 
+		elseif($value === null || $value == 'null')
 			$tmpArg = 'null';
 		return $tmpArg;
 	}
@@ -526,7 +526,7 @@ class DataConnection extends Base
 			$tmpArg = (double)$value;
 		elseif(is_bool($value))
 			$tmpArg = ($value)?'true':'false';
-		elseif($value === null || $value == 'null') 
+		elseif($value === null || $value == 'null')
 			$tmpArg = 'null';
 		return $tmpArg;
 	}
@@ -544,7 +544,7 @@ class DataConnection extends Base
 			$tmpArg = (double)$value;
 		elseif(is_bool($value))
 			$tmpArg = ($value)?'true':'false';
-		elseif($value === null || $value == 'null') 
+		elseif($value === null || $value == 'null')
 			$tmpArg = 'null';
 		return $tmpArg;
 	}
@@ -566,9 +566,9 @@ class DataConnection extends Base
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people');
 	 * </pre>
-	 * 
+	 *
 	 * Also you can set replacements to your query using parameters. You can use numbered paramaters, or your own through an array.
-	 * 
+	 *
 	 * For example, we can specify replacements for our city and state using numbered replacements. NOLOH will automatically replace your $n using the parameters you specified in sequence.
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecSQL('SELECT * FROM people WHERE city=$1 and state = $2', 'Brooklyn', 'New York');
@@ -588,7 +588,7 @@ class DataConnection extends Base
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 * @param string $sql The SQL query.
 	 * @param mixed,... $paramsDotDotDot Optional: Replacements to your SQL query. NOLOH takes care of formatting the value properly for your database.
-	 * 
+	 *
 	 * @return DataReader A DataReader containing the resulting data of your query.
 	 */
 	function ExecSQL($resultType, $sql='', $paramsDotDotDot = null)
@@ -609,7 +609,7 @@ class DataConnection extends Base
 	/**
 	 * Executes a stored procedure or stored function in your database. You can natively pass in as many parameters to your function as you wish
 	 * through the dotdotdot syntactic sugar.
-	 * 
+	 *
 	 * Note: The first parameter is optional, we can execute this function in the following ways:
 	 * <pre>
 	 *     $city = 'Brooklyn';
@@ -626,9 +626,9 @@ class DataConnection extends Base
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecFunction('sp_get_people');
 	 * </pre>
-	 * 
+	 *
 	 * Please see the Data::$Links article for more information and examples.
-	 * 
+	 *
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
 	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.sp_get_convertibles'.
@@ -649,8 +649,8 @@ class DataConnection extends Base
 		return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 	}
 	/**
-	 * Executes a view in your database. 
-	 * 
+	 * Executes a view in your database.
+	 *
 	 * <pre>
 	 *     $people = Data::$Links->People->ExecFunction(Data::Assoc, 'v_get_all_people');
 	 * </pre>
@@ -663,9 +663,9 @@ class DataConnection extends Base
 	 *     //This will offset the result by 10 rows and limit the result to a maximum of 100 rows.
 	 *     $people = Data::$Links->People->ExecFunction('v_get_all_people', 10, 100);
 	 * </pre>
-	 * 
+	 *
 	 * Please see the Data::$Links article for more information and examples.
-	 * 
+	 *
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 * @param string $view The name of the database stored procedure or stored function that you wish to execute. Note: If your database
 	 * supports schemas and you want to access a non-public schema make sure you prefix the name with your schema name, e.g; 'cars.v_get_all_convertibles'.
@@ -686,20 +686,20 @@ class DataConnection extends Base
 				$limit = $args[3];
 		}
 		$query = self::GenerateView($view, $offset, $limit);
-		
+
 		$dbCmd = new DataCommand($this, $query);
 		return $dbCmd->Execute($hasResultOption?$resultOption:Data::Both);
 	}
 	/**
-	 * Creates a command based on a SQL string, a View, a Stored Procedure, or Stored Function in your database. 
-	 * 
-	 * CreateCommand operates similar to the corresponding Exec functions. For instance, 
+	 * Creates a command based on a SQL string, a View, a Stored Procedure, or Stored Function in your database.
+	 *
+	 * CreateCommand operates similar to the corresponding Exec functions. For instance,
 	 * when using it in the context of SQL, or Function, you can natively pass in as many parameters to your function as you wish
 	 * through the dotdotdot syntactic sugar.
 	 *
-	 * Note: The first parameter is optional when creating a Function command. 
+	 * Note: The first parameter is optional when creating a Function command.
 	 * The second, resultType paramater is optional across the board.
-	 * 
+	 *
 	 * We can create a command based on a database function in the following ways:
 	 * <pre>
 	 *     $city = 'Brooklyn';
@@ -716,33 +716,33 @@ class DataConnection extends Base
 	 * <pre>
 	 *     $peopleCommand = Data::$Links->People->CreateCommand('sp_get_people');
 	 * </pre>
-	 * 
+	 *
 	 * We can create a command based on SQL in the following ways:
-	 * 
+	 *
 	 * <pre>
 	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::SQL, Data::Assoc, "SELECT * FROM people WHERE city='Brooklyn' AND state='New York'");
 	 * </pre>
-	 * 
+	 *
 	 * Furthermore, we can create the command using paramaters for our SQL, like in ExecSQL.
 	 * <pre>
 	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::SQL, Data::Assoc, "SELECT * FROM people WHERE city=$1 AND state=$2", $city, $state);
 	 * </pre>
-	 * 
+	 *
 	 * We can also choose not to specify a column indices type.
 	 * <pre>
 	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::SQL, "SELECT * FROM people WHERE city=$1 AND state=$2", $city, $state);
 	 * </pre>
-	 * 
+	 *
 	 * We can create a command based on a View in the following ways:
 	 * <pre>
 	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::View, Data::Assoc, 'v_get_all_people');
 	 * </pre>
-	 * 
+	 *
 	 * We can also choose not to specify a column indicies type.
 	 * <pre>
 	 *     $peopleCommand = Data::$Links->People->CreateCommand(Data::View, 'v_get_all_people');
 	 * </pre>
-	 * 
+	 *
 	 * At a later point we can execute the command:
 	 * <pre>
 	 *     $people = $peopleCommand->Execute();
@@ -753,9 +753,9 @@ class DataConnection extends Base
 	 *     $listView->Bind($peopleCommand);
 	 *     //See ListView Bind() for more information on Bind.
 	 * </pre>
-	 * 
+	 *
 	 * Please see the Data::$Links article for more information and examples.
-	 * 
+	 *
 	 * @param mixed Data::SQL|Data::View|Data::Function $commandType Optional: The type of query you're creating.
 	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 * @param string $spName The name of the database stored procedure or stored function that you wish to execute. Note: If your database
@@ -847,7 +847,7 @@ class DataConnection extends Base
 			static::$TransactionCounts[$this->Name] > 0)
 		{
 			static::$TransactionCounts[$this->Name] = 0;
-			
+
 			if ($this->Type === Data::Postgres)
 			{
 				$this->ExecSQL('COMMIT;');
@@ -863,7 +863,7 @@ class DataConnection extends Base
 		if (!empty(static::$TransactionCounts[$this->Name]))
 		{
 			static::$TransactionCounts[$this->Name] = 0;
-			
+
 			if ($this->Type === Data::Postgres)
 			{
 				$this->ExecSQL('ROLLBACK;');
@@ -937,7 +937,7 @@ SQL;
 			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
 			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
 		}
-		
+
 		$user = $this->Username;
 		$host = $this->Host;
 		$dbName = $this->DatabaseName;
@@ -974,7 +974,7 @@ SQL;
 				$this->ExecSQL($query);
 				sqlsrv_configure('WarningsReturnAsErrors', 1);
 			}
-			
+
 			$gzip = exec('where gzip 2>&1');
 			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
@@ -1008,7 +1008,7 @@ SQL;
 				$file = File::GzCompress($file, $compressionLevel, true);
 			}
 		}
-		
+
 		return file_exists($file) ? $file : false;
 	}
 	function DBDumpMultiple($tarFile, array $connections, $compressionLevel = 5)
@@ -1023,7 +1023,7 @@ SQL;
 
 		$fileName  = $this->DatabaseName . '_' . date("Ymd") . '_' . '.bak';
 		$primaryDump = $this->DBDump($info['dirname'] . DIRECTORY_SEPARATOR . $fileName, 0);
-		
+
 		if ($primaryDump === false)
 		{
 			BloodyMurder("DB Dump failed for {$this->DatabaseName}");
@@ -1153,7 +1153,7 @@ SQL;
 				BloodyMurder('Invalid format passed for additional users array');
 			}
 		}
-		
+
 		$query = <<<SQL
 			CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 			
@@ -1271,6 +1271,60 @@ SQL;
 		$result = $this->ExecSQL($query);
 
 		return $result->Count > 0;
+	}
+	/**
+	 * Creates SQL command from array of data
+	 * @param array $data
+	 * @return string
+	 */
+	public function CreateArraySQL(array $data)
+	{
+		$this->Type !== Data::Postgres && BloodyMurder('CreateArraySQL only supports Postgres data connections');
+
+		if (empty($data))
+		{
+			$query = <<<SQL
+				SELECT NULL AS id WHERE FALSE
+SQL;
+
+		}
+		else
+		{
+			$json = json_encode($data);
+			$definition = static::CreateArraySQLDefinition(array_keys($data[0]));
+			$query = <<<SQL
+				SELECT x.* 
+				FROM jsonb_to_recordset(\$\${$json}\$\$)
+				AS x({$definition})
+SQL;
+		}
+
+		return $query;
+	}
+	/**
+	 * Creates SQL command from array of data
+	 * @param $data
+	 * @return DataCommand
+	 */
+	public function CreateArrayCommand(array $data)
+	{
+		$query = $this->CreateArraySQL($data);
+		return $this->CreateCommand(Data::SQL, Data::Assoc, $query);
+	}
+	/**
+	 * Creates a column definition for array of columns
+	 * NOTE: Uses flexible TEXT datatype for all fields
+	 * @param array $columns
+	 * @return string
+	 */
+	protected static function CreateArraySQLDefinition(array $columns)
+	{
+		$cols = array();
+		foreach ($columns as $col)
+		{
+			$cols[] = "{$col} TEXT";
+		}
+		return implode(', ', $cols);
 	}
 }
 ?>
