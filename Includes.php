@@ -178,7 +178,7 @@ function _NAutoLoad($class)
 				require_once($dir . '/autoload.php');
 
 				// If class now exists after including autoload.php, we're good
-				if (class_exists($namespace . '\\' . $class))
+				if (class_exists($namespace . '\\' . $class, false))
 				{
 					return;
 				}
