@@ -154,6 +154,7 @@ function DisplayError($message)
 		ob_end_clean();
 	}
 	setcookie('_NAppCookie', false);
+	header('Content-Type: text/javascript');
 
 	$gzip = defined('FORCE_GZIP');
 	if ($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
