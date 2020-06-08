@@ -44,6 +44,7 @@ function _NOBErrorHandler($buffer)
 				$processRequestDetails = true;
 				// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
 				setcookie('_NAppCookie', false);
+				header('Content-Type: text/javascript');
 				if (!in_array('Cache-Control: no-cache', headers_list(), true))
 				{
 					++$_SESSION['_NVisit'];
@@ -233,6 +234,7 @@ function BloodyMurder($message)
 	}
 	elseif($_SESSION['_NVisit'] === -1)
 	{
+		header('Content-Type: text/html');
 		echo $message;
 		session_destroy();
 		exit();
