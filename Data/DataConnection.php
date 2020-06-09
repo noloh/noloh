@@ -1277,7 +1277,7 @@ SQL;
 	 * @param array $data
 	 * @return string
 	 */
-	public function CreateArraySQL(array $data)
+	public function CreateDataArraySQL(array $data)
 	{
 		if ($this->Type !== Data::Postgres)
 		{
@@ -1294,7 +1294,7 @@ SQL;
 		else
 		{
 			$json = json_encode($data);
-			$definition = static::CreateArraySQLDefinition(array_keys($data[0]));
+			$definition = static::CreateDataArraySQLDefinition(array_keys($data[0]));
 			$query = <<<SQL
 				SELECT x.* 
 				FROM jsonb_to_recordset(\$\${$json}\$\$)
@@ -1309,9 +1309,9 @@ SQL;
 	 * @param $data
 	 * @return DataCommand
 	 */
-	public function CreateArrayCommand(array $data)
+	public function CreateDataArrayCommand(array $data)
 	{
-		$query = $this->CreateArraySQL($data);
+		$query = $this->CreateDataArraySQL($data);
 		return $this->CreateCommand(Data::SQL, Data::Assoc, $query);
 	}
 	/**
@@ -1320,7 +1320,7 @@ SQL;
 	 * @param array $columns
 	 * @return string
 	 */
-	protected static function CreateArraySQLDefinition(array $columns)
+	protected static function CreateDataArraySQLDefinition(array $columns)
 	{
 		$cols = array();
 		foreach ($columns as $col)
