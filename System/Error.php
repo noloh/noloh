@@ -212,6 +212,23 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
+	global $_NPath;
+	$trace = debug_backtrace();
+	$traceCount = 0;
+	foreach ($trace as $error)
+	{
+		if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
+		{
+			$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
+			$traceCount++;
+		}
+
+		if ($traceCount == 2)
+		{
+			break;
+		}
+	}
+
 	if(UserAgent::IsCLI() || System::IsRESTful())
 	{
 		trigger_error($message, E_USER_ERROR);
@@ -229,7 +246,6 @@ function BloodyMurder($message)
 	}
 	else
 	{
-		$trace = debug_backtrace();
 		if ($GLOBALS['_NDebugMode'] === 'Kernel')
 		{
 			$trace = $trace[0];
@@ -238,23 +254,6 @@ function BloodyMurder($message)
 		}
 		else
 		{
-			global $_NPath;
-
-			$traceCount = 0;
-			foreach ($trace as $error)
-			{
-				if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
-				{
-					$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
-					$traceCount++;
-				}
-
-				if ($traceCount == 2)
-				{
-					break;
-				}
-			}
-
 			DisplayError($message);
 		}
 	}

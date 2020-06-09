@@ -1273,13 +1273,16 @@ SQL;
 		return $result->Count > 0;
 	}
 	/**
-	 * Creates SQL command from array of data
+	 * Creates SQL statement from array of data
 	 * @param array $data
 	 * @return string
 	 */
 	public function CreateArraySQL(array $data)
 	{
-		$this->Type !== Data::Postgres && BloodyMurder('CreateArraySQL only supports Postgres data connections');
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('CreateArraySQL only supports Postgres data connections');
+		}
 
 		if (empty($data))
 		{

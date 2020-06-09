@@ -41,22 +41,11 @@ else
 
 function _NAutoLoad($class)
 {
-	$errorOut = function($message)
-	{
-		$trace = debug_backtrace();
-		for ($i = 1; $i < count($trace); $i++)
-		{
-			$file = str_replace('\\', '/', $trace[$i]['file']);
-			$message .= "\n{$file} on line {$trace[$i]['line']}";
-		}
-		BloodyMurder($message);
-	};
-
 	// Prevents infinite loop when Nodules autoload failed
 	static $loadedClasses = array();
 	if ($loadedClasses[$class] === true)
 	{
-		$errorOut('Auto include failed for: ' . $class);
+		BloodyMurder('Auto include failed for: ' . $class);
 	}
 	$loadedClasses[$class] = true;
 
@@ -214,7 +203,7 @@ function _NAutoLoad($class)
 			 * 1. file doesnt exists
 			 * 2. autoload.php doesn't exist or the class isn't included within the autoload
 			 */
-			$errorOut('Auto include failed for: ' . $namespace . '/' . $class);
+			BloodyMurder('Auto include failed for: ' . $namespace . '/' . $class);
 		}
 
 		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
@@ -261,7 +250,7 @@ function _NAutoLoad($class)
 		{
 			if ((include $includeFile) === false)
 			{
-				$errorOut('The class ' . $class . ' is not defined.');
+				BloodyMurder('The class ' . $class . ' is not defined.');
 			}
 		}
 //		require($class . '.php');
