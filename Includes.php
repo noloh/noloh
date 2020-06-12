@@ -41,13 +41,13 @@ else
 
 function _NAutoLoad($class)
 {
+	static $nodulesClassLoading = array();
+
 	// Prevents infinite loop when Nodules autoload failed
-	static $loadedClasses = array();
-	if ($loadedClasses[$class] === true)
+	if (!empty($nodulesClassLoading[$class]))
 	{
-		BloodyMurder('Auto include failed for: ' . $class);
+		return;
 	}
-	$loadedClasses[$class] = true;
 
 	global $_NAutoLoad, $_NPath;
 
@@ -184,6 +184,7 @@ function _NAutoLoad($class)
 			if (file_exists($dir . '/autoload.php'))
 			{
 				require_once($dir . '/autoload.php');
+
 				$fullClassName = $namespace . '\\' . $class;
 
 				// If class now exists after including autoload.php, we're good
@@ -192,7 +193,9 @@ function _NAutoLoad($class)
 					return;
 				}
 
+				$nodulesClassLoading[$fullClassName] = true;
 				spl_autoload_call($fullClassName);
+				unset($nodulesClassLoading[$fullClassName]);
 				if (class_exists($fullClassName, false))
 				{
 					return;
