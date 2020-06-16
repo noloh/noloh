@@ -44,6 +44,7 @@ function _NOBErrorHandler($buffer)
 				$processRequestDetails = true;
 				// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
 				setcookie('_NAppCookie', false);
+				header('Content-Type: text/javascript');
 				if (!in_array('Cache-Control: no-cache', headers_list(), true))
 				{
 					++$_SESSION['_NVisit'];
@@ -69,7 +70,17 @@ function _NOBErrorHandler($buffer)
 				$webPage = WebPage::That();
 				if ($webPage && $processRequestDetails)
 				{
-					$webPage->ProcessRequestDetails($requestDetails);
+					/*
+					 * Checking for a syntax error message.
+					 * This is a critical error that is not reached in normal cases.
+					 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
+					 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
+					 * !It is not recommended to continue using!
+					*/
+					if (strpos($message, 'syntax error') === false)
+					{
+						$webPage->ProcessRequestDetails($requestDetails);
+					}
 				}
 
 				return $alert;
@@ -143,6 +154,7 @@ function DisplayError($message)
 		ob_end_clean();
 	}
 	setcookie('_NAppCookie', false);
+	header('Content-Type: text/javascript');
 
 	$gzip = defined('FORCE_GZIP');
 	if ($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
@@ -240,6 +252,7 @@ function BloodyMurder($message)
 	}
 	elseif($_SESSION['_NVisit'] === -1)
 	{
+		header('Content-Type: text/html');
 		echo $message;
 		session_destroy();
 		exit();
