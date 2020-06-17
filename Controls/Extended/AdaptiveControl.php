@@ -8,8 +8,8 @@ class AdaptiveControl extends ControlPair
 	function AdaptiveControl($placeholder, $secondControl = null, $left = 0, $top = 0)
 	{
 		$firstControl = new AdaptiveLabel($placeholder);
-		$firstControl->Top = 22;
 		$firstControl->CSSPadding = '0px';
+		$removePadding = class_exists('KendoSettings') && KendoSettings::RemoveAdaptiveControlPadding;
 
 		if ($secondControl == null)
 		{
@@ -22,6 +22,16 @@ class AdaptiveControl extends ControlPair
 
 		$secondControl->CSSBoxSizing = 'border-box';
 		$secondControl->CSSClass = 'FieldValue';
+
+		if ($removePadding)
+		{
+			$firstControl->Top = 15;
+			$secondControl->Top -= 7;
+		}
+		else
+		{
+			$firstControl->Top = 22;
+		}
 
 		parent::ControlPair($firstControl, $secondControl, $left, $top, Layout::Vertical);
 
@@ -36,6 +46,11 @@ class AdaptiveControl extends ControlPair
 		{
 			$this->ContextMenu = WebPage::That()->LabelContextMenu;
 		}
+
+		if ($removePadding)
+		{
+			$this->Height -= 20;
+		}
 	}
 	function SetCSSClass($cssClass = null)
 	{
@@ -44,7 +59,7 @@ class AdaptiveControl extends ControlPair
 	function Show()
 	{
 		ClientScript::AddNOLOHSource('AdaptiveControl.js');
-		
+
 		parent::Show();
 
 		if (!in_array($this->Second->Value, array(null, ''), true))
