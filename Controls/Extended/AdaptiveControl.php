@@ -9,7 +9,10 @@ class AdaptiveControl extends ControlPair
 	{
 		$firstControl = new AdaptiveLabel($placeholder);
 		$firstControl->CSSPadding = '0px';
-		$removePadding = class_exists('KendoSettings') && KendoSettings::RemoveAdaptiveControlPadding;
+
+		$removePadding = (class_exists('KendoSettings') && defined('KendoSettings::RemoveAdaptiveControlPadding')) ?
+			KendoSettings::RemoveAdaptiveControlPadding :
+			false;
 
 		if ($secondControl == null)
 		{
