@@ -41,12 +41,20 @@ else
 
 function _NAutoLoad($class)
 {
+	static $nodulesClassLoading = array();
+
+	// Prevents infinite loop when Nodules autoload failed
+	if (!empty($nodulesClassLoading[$class]))
+	{
+		return;
+	}
+
 	global $_NAutoLoad, $_NPath;
-	
+
 	if (!isset($_NAutoLoad))
 	{
 		$_NAutoLoad = array(
-			
+
 			// System
 			'InnerSugar' 	=> 			'System/InnerSugar.php',
 			'SugarException' => 		'System/SugarException.php',
@@ -57,7 +65,7 @@ function _NAutoLoad($class)
 			'SqlFriendlyException' =>	'System/SqlFriendlyException.php',
 			'ResourceException' => 		'System/ResourceException.php',
 			'AdvisoryLock' =>			'System/AdvisoryLock.php',
-			
+
 			//Events
 			'RaceClientEvent' =>	'Events/RaceClientEvent.php',
 			// Collections
@@ -65,7 +73,7 @@ function _NAutoLoad($class)
 			'ControlPair' => 		'Collections/ControlPair.php',
 			'Group' => 				'Collections/Group.php',
 			'Item' => 				'Collections/Item.php',
-			
+
 			// Data
 			'Data' 				 => 'Data/Data.php',
 			'DataConnection' 	 => 'Data/DataConnection.php',
@@ -76,7 +84,7 @@ function _NAutoLoad($class)
 			'DataSequence'		 => 'Data/DataSequence.php',
 			'File' 				 => 'Data/File.php',
 			'RawParameter'		 =>	'Data/RawParameter.php',
-			
+
 			// Core Controls
 			'Button' => 			'Controls/Core/Button.php',
 			'Panel' => 				'Controls/Core/Panel.php',
@@ -103,7 +111,7 @@ function _NAutoLoad($class)
 			'Timer' => 				'Controls/Core/Timer.php',
 			'UnorderedList' => 		'Controls/Core/UnorderedList.php',
 			'ListItem' =>			'Controls/Core/ListItem.php',
-			
+
 			// Extended Controls
 			'Accordion' => 			'Controls/Extended/Accordion.php',
 			'AdaptiveControl' =>	'Controls/Extended/AdaptiveControl.php',
@@ -122,7 +130,7 @@ function _NAutoLoad($class)
 			'TreeList' => 			'Controls/Extended/TreeList.php',
 			'Paginator' => 			'Controls/Extended/Paginator.php',
 			'WindowPanel' => 		'Controls/Extended/WindowPanel.php',
-			
+
 			// Auxiliary
 			'AccordionPart' => 		'Controls/Auxilary/AccordionPart.php',
 			'ColumnHeader' => 		'Controls/Auxilary/ColumnHeader.php',
@@ -136,7 +144,7 @@ function _NAutoLoad($class)
 			'TableRow' => 			'Controls/Auxilary/TableRow.php',
 			'TabPage' => 			'Controls/Auxilary/TabPage.php',
 			'TreeNode' => 			'Controls/Auxilary/TreeNode.php',
-			
+
 			// Statics
 			'Animate' => 			'Statics/Animate.php',
 			'ClientScript' => 		'Statics/ClientScript.php',
@@ -172,15 +180,33 @@ function _NAutoLoad($class)
 		$path = $dir . '/' . $class . '.php';
 		if (!file_exists($path))
 		{
-			$error = 'Auto include failed for: ' . $namespace . '/' . $class;
-			$trace = debug_backtrace();
-			for ($i = 1; $i < count($trace); $i++)
+			// File doesn't exist, check for autoload.php file within the Nodule directory
+			if (file_exists($dir . '/autoload.php'))
 			{
-				$file = str_replace('\\', '/', $trace[$i]['file']);
-				$error .= "\n{$file} on line {$trace[$i]['line']}";
+				require_once($dir . '/autoload.php');
+
+				$fullClassName = $namespace . '\\' . $class;
+
+				// If class now exists after including autoload.php, we're good
+				if (class_exists($fullClassName, false))
+				{
+					return;
+				}
+
+				$nodulesClassLoading[$fullClassName] = true;
+				spl_autoload_call($fullClassName);
+				unset($nodulesClassLoading[$fullClassName]);
+				if (class_exists($fullClassName, false))
+				{
+					return;
+				}
 			}
 
-			BloodyMurder($error);
+			/* Error out because at this point:
+			 * 1. file doesnt exists
+			 * 2. autoload.php doesn't exist or the class isn't included within the autoload
+			 */
+			BloodyMurder('Auto include failed for: ' . $namespace . '/' . $class);
 		}
 
 		$numAutoloadsBeforeInclude = count(spl_autoload_functions());
@@ -220,8 +246,7 @@ function _NAutoLoad($class)
 				}
 			}
 		}
-		
-		
+
 		if (stream_resolve_include_path($includeFile = ($class . '.php')) ||
 			stream_resolve_include_path($includeFile = (str_replace('_', '/', $class) . '.php')) ||
 			stream_resolve_include_path($includeFile = (strtolower($class) . '.php')))
