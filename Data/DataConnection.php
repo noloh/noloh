@@ -1231,18 +1231,35 @@ SQL;
 	}
 	public function TableExists($tableName)
 	{
-		if ($this->Type !== Data::Postgres)
+		$tableNameKey = $this->Type === Data::MSSQL
+			? 'TABLE_NAME'
+			: 'table_name';
+
+		if ($this->Type === Data::MSSQL)
 		{
-			BloodyMurder('TableExists only currently supported in Postgres');
+			$query = <<<SQL
+				SELECT * 
+				FROM INFORMATION_SCHEMA.TABLES 
+				WHERE TABLE_SCHEMA = 'dbo' 
+				AND TABLE_NAME = $1
+SQL;
+		}
+		elseif ($this->Type === Data::Postgres)
+		{
+			$query = <<<SQL
+				SELECT table_name
+				FROM information_schema.tables
+				WHERE table_name = $1
+SQL;
+		}
+		else
+		{
+			BloodyMurder('TableExists only currently supported in Postgres and MSSQL');
 		}
 
-		$query = <<<SQL
-			SELECT table_name
-			FROM information_schema.tables
-			WHERE table_name = $1
-SQL;
 		$results = $this->ExecSQL(Data::Assoc, $query, $tableName);
-		return isset($results[0]['table_name']);
+
+		return isset($results[0][$tableNameKey]);
 	}
 	public function DatabaseExists($dbName)
 	{
