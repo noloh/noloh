@@ -1060,6 +1060,26 @@ abstract class Control extends Component
 	 */
 	function SetShiftStop($shiftStop)				{$this->SetEvent($shiftStop, 'ShiftStop');}
 	/**
+	 * Returns the ShiftsWithStart Event, which gets launched when a user starts shifting another control that this control shifts with
+	 * @return Event
+	 */
+	function GetShiftsWithStart()					{return $this->GetEvent('ShiftsWithStart');}
+	/**
+	 * Sets the ShiftsWithStart Event, which gets launched when a user starts shifting another control that this control shifts with
+	 * @param Event $shiftsWithStart
+	 */
+	function SetShiftsWithStart($shiftsWithStart)	{$this->SetEvent($shiftsWithStart, 'ShiftsWithStart');}
+	/**
+	 * Returns the ShiftsWithStop Event, which gets launched when a user stops shifting another control that this control shifts with
+	 * @return Event
+	 */
+	function GetShiftsWithStop()					{return $this->GetEvent('ShiftsWithStop');}
+	/**
+	 * Sets the ShiftsWithStop Event, which gets launched when a user stops shifting another control that this control shifts with
+	 * @param Event $shiftsWithStop
+	 */
+	function SetShiftsWithStop($shiftsWithStop)		{$this->SetEvent($shiftsWithStop, 'ShiftsWithStop');}
+	/**
 	 * Returns the Leave Event, which gets launched when a Control is removed from it's parent
 	 * @return Event
 	 */
