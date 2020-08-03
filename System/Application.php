@@ -193,6 +193,26 @@ final class Application extends Base
 				if (isset($_SESSION['_NOmniscientBeing']))
 				{
 					$this->TheComingOfTheOmniscientBeing();
+
+					/*
+					 * Enforce read-only user permissions if we can. This is put here so that it runs on every request
+					 * and since this core code will be encrypted, it cannot be modified to get around the license
+					 */
+					if (
+						class_exists('UserModel')
+						// This will not be called, but if it's there we know the read-only system is in place
+						&& method_exists('UserModel', 'IsReadOnly')
+					)
+					{
+						$user = UserModel::CreateSimpleCommand()
+							->CasFilter('id', WebPage::That()->User['id'])
+							->Model;
+
+						if (isset($user) && $user->ReadOnly === 'Yes')
+						{
+							WebPage::That()->Permissions = UserModel::ReadOnlyPermissionsOverride(WebPage::That()->Permissions);
+						}
+					}
 				}
 				if (!empty($_POST['_NEventVars']))
 				{
