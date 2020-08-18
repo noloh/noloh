@@ -74,7 +74,7 @@ function _NShftObjs(objects, deltaX, deltaY, isShiftsWith) {
 	for (var i = 0; i < count; ++i) {
 		id = objects[i][0];
 		if (obj = _N(id)) {
-			if (!_N.Shifts.ShiftsWithObjsStarted[id] && isShiftsWith) {
+			if (isShiftsWith && !_N.Shifts.ShiftsWithObjsStarted[id]) {
 				if (obj.ShiftsWithStart && typeof obj.ShiftsWithStart === "function") {
 					obj.ShiftsWithStart.call(obj);
 				}
