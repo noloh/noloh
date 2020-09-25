@@ -45,6 +45,11 @@ class AdaptiveControl extends ControlPair
 			$firstControl->AlwaysFocused = true;
 		}
 
+		if (!empty(WebPage::That()->Permissions['DataDictionaryFields']['can_edit']) && isset(WebPage::That()->LabelContextMenu))
+		{
+			$this->ContextMenu = WebPage::That()->LabelContextMenu;
+		}
+
 		if ($removePadding)
 		{
 			$this->Height -= 20;
