@@ -89,8 +89,7 @@ SQL;
 		$maxValString = $maxVal === null ? '' : "MAXVALUE {$maxVal}";
 
 		$query = <<<SQL
-			CREATE SEQUENCE "{$this->Name}"
-			{$ifNotExistsString}
+			CREATE SEQUENCE {$ifNotExistsString} "{$this->Name}"
 			INCREMENT BY {$incrementBy}
 			{$minValString}
 			{$maxValString}
@@ -114,8 +113,7 @@ SQL;
 		$ifExistString = $ifExists ? 'IF EXISTS' : '';
 
 		$query = <<<SQL
-			DROP SEQUENCE "{$this->Name}"
-			{$ifExistString}
+			DROP SEQUENCE {$ifExistString} "{$this->Name}"
 SQL;
 		$this->Connection->ExecSQL(Data::Assoc, $query);
 	}
