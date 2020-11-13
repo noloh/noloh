@@ -494,7 +494,7 @@ class DataConnection extends Base
 	/**
 	 * @ignore
 	 */
-	private static function ConvertTypeToPostgres($value, $quote="'")
+	public static function ConvertTypeToPostgres($value, $quote="'")
 	{
 		if(is_string($value))
 		{
