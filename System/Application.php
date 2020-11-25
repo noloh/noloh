@@ -400,6 +400,8 @@ final class Application extends Base
 	public static function EnableErrorHandlers()
 	{
 		$debugMode = Configuration::That()->DebugMode;
+		$debugModeError = Configuration::That()->DebugModeError;
+		
 		if ($debugMode !== 'Unhandled')
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
@@ -412,6 +414,8 @@ final class Application extends Base
 				ClientScript::AddNOLOHSource('DebugFull.js');
 			}
 		}
+		
+		$GLOBALS['_NDebugModeError'] = $debugModeError;
 	}
 	private function HandleDebugMode()
 	{
