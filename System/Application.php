@@ -405,6 +405,8 @@ final class Application extends Base
 		if ($debugMode !== 'Unhandled')
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
+			$GLOBALS['_NDebugModeError'] = $debugModeError;
+			
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting() | E_USER_NOTICE);
 			set_exception_handler('_NExceptionHandler');
@@ -414,8 +416,6 @@ final class Application extends Base
 				ClientScript::AddNOLOHSource('DebugFull.js');
 			}
 		}
-		
-		$GLOBALS['_NDebugModeError'] = $debugModeError;
 	}
 	private function HandleDebugMode()
 	{
