@@ -400,9 +400,13 @@ final class Application extends Base
 	public static function EnableErrorHandlers()
 	{
 		$debugMode = Configuration::That()->DebugMode;
+		$debugModeError = Configuration::That()->DebugModeError;
+		
 		if ($debugMode !== 'Unhandled')
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
+			$GLOBALS['_NDebugModeError'] = $debugModeError;
+			
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting() | E_USER_NOTICE);
 			set_exception_handler('_NExceptionHandler');
