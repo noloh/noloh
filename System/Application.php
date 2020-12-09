@@ -549,9 +549,8 @@ final class Application extends Base
 			}
 			if($obj = &GetComponentById($eventInfo[1]))
 	        {
-				$log = !($obj instanceof Kendo\Grid) || !(in_array($obj->TableName, array('log', 'request_logs')));
 	            $execClientEvents = false;
-				$obj->GetEvent($eventInfo[0])->Exec($execClientEvents, false, $log);
+	            $obj->GetEvent($eventInfo[0])->Exec($execClientEvents, false, true);
 	        }
 			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
 				GetComponentById(substr($eventInfo[1], 0, $pos))->ExecEvent($eventInfo[0], $eventInfo[1]);
@@ -699,12 +698,7 @@ final class Application extends Base
 		$requestDetails['total_session_io_time'] += $benchmark;
 		$requestDetails['session_strlen'] = strlen($serializedSession);
 		$requestDetails['tokens'] = $tokenString;
-		if (
-			$this->WebPage
-				&& method_exists($this->WebPage, 'ProcessRequestDetails')
-				&& !empty($requestDetails)
-				&& !empty($requestDetails['server_events'])
-		)
+		if ($this->WebPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
 		{
 			$this->WebPage->ProcessRequestDetails($requestDetails);
 		}
