@@ -387,7 +387,7 @@ abstract class Component extends Base
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow()			{}
+	function NoScriptShow($indent)	{}
 	/**
 	 * @ignore
 	 */

@@ -575,7 +575,7 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow()
+	function NoScriptShow($indent)
 	{
 		ob_end_clean();
 		if(defined('FORCE_GZIP'));

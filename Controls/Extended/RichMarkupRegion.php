@@ -76,9 +76,9 @@ class RichMarkupRegion extends MarkupRegion
 	{
 //		do
 //		{
-//        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([\w\s?_-]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
-        	//$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^:]+)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
-        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([”"\'])([^:]+?)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
+//        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([ï¿½"\'])([\w\s?_-]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
+        	//$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([ï¿½"\'])([^:]+)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
+        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([ï¿½"\'])([^:]+?)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
         	array(&$this, 'MarkupReplace'), $text);
 //  	}while ($count);
   		return $tmpText;
@@ -245,7 +245,7 @@ class RichMarkupRegion extends MarkupRegion
 	{
 		// Needs to parse TempString to get the Larvae, check if it is morphed in ComponentSpace
 		// and show the Component inside the tag!
-		$str = Control::NoScriptShow($indent);
+		$str = Control::NoScriptShowIndent($indent);
 		if($str !== false)
 		{
 			$text = str_replace(array('<Nendl>', '<NQt2>', '<NQt1>'), array("\n", "\"", "'"), $this->TempString);
