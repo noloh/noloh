@@ -173,63 +173,74 @@ final class Application extends Base
 			{
 				File::SendRequestedFile($_GET['_NFileRequest']);
 			}
-			elseif ((!isset($_SERVER['HTTP_ACCEPT']) || strpos($_SERVER['HTTP_ACCEPT'], 'text/html') !== 0) && (isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) && (!($host = parse_url((isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null), PHP_URL_HOST)) || (UserAgent::IsPPCOpera()) || $host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
-			{
-				// Proxy Error, originally done for AKPartners
-				if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
-				{
-					die();
-				}
-				$run = true;
-				if (isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
-				{
-					$this->HandleIENavigation();
-				}
-				elseif ($this->HandleForcedReset())
-				{
-					return;
-				}
-				$this->HandleDebugMode();
-				if (isset($_SESSION['_NOmniscientBeing']))
-				{
-					$this->TheComingOfTheOmniscientBeing();
-				}
-				if (!empty($_POST['_NEventVars']))
-				{
-					$this->HandleEventVars();
-				}
-				$this->HandleClientChanges();
-				if (!empty($_POST['_NFileUploadId']))
-				{
-					GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
-				}
-				foreach ($_SESSION['_NFiles'] as $key => $val)
-				{
-					GetComponentById($key)->File = new File($val);
-				}
-				if (isset($_POST['_NTokenLink']))
-				{
-					$this->HandleLinkToTokens();
-				}
-				if (!empty($_POST['_NEvents']))
-				{
-					$this->HandleServerEvents();
-				}
-				foreach ($_SESSION['_NFiles'] as $key => $val)
-				{
-					unlink($_SESSION['_NFiles'][$key]['tmp_name']);
-					GetComponentById($key)->File = null;
-					unset($_SESSION['_NFiles'][$key]);
-				}
-				if (isset($_POST['_NListener']))
-				{
-					Listener::Process($_POST['_NListener']);
-				}
-			}
 			else
 			{
-				self::UnsetNolohSessionVars();
-				$this->HandleFirstRun();
+				$requestingStrictlyHtml = (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === 0);
+				$hasRequestingVisit = (isset($_SESSION['_NVisit']) || isset($_POST['_NVisit']));
+				$refererHost = parse_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null, PHP_URL_HOST);
+				// Remove potential port off the end
+				$realHost = preg_replace('/:\d*$/', '', $_SERVER['HTTP_HOST']);
+				$refererHostMatchesRealHost = !$refererHost || ($refererHost === $realHost);
+				$subsequentRun = !$requestingStrictlyHtml && $hasRequestingVisit && ($refererHostMatchesRealHost || UserAgent::IsPPCOpera());
+
+				if ($subsequentRun)
+				{
+					// Proxy Error, originally done for AKPartners
+					if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
+					{
+						die();
+					}
+					$run = true;
+					if (isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
+					{
+						$this->HandleIENavigation();
+					}
+					elseif ($this->HandleForcedReset())
+					{
+						return;
+					}
+					$this->HandleDebugMode();
+					if (isset($_SESSION['_NOmniscientBeing']))
+					{
+						$this->TheComingOfTheOmniscientBeing();
+					}
+					if (!empty($_POST['_NEventVars']))
+					{
+						$this->HandleEventVars();
+					}
+					$this->HandleClientChanges();
+					if (!empty($_POST['_NFileUploadId']))
+					{
+						GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
+					}
+					foreach ($_SESSION['_NFiles'] as $key => $val)
+					{
+						GetComponentById($key)->File = new File($val);
+					}
+					if (isset($_POST['_NTokenLink']))
+					{
+						$this->HandleLinkToTokens();
+					}
+					if (!empty($_POST['_NEvents']))
+					{
+						$this->HandleServerEvents();
+					}
+					foreach ($_SESSION['_NFiles'] as $key => $val)
+					{
+						unlink($_SESSION['_NFiles'][$key]['tmp_name']);
+						GetComponentById($key)->File = null;
+						unset($_SESSION['_NFiles'][$key]);
+					}
+					if (isset($_POST['_NListener']))
+					{
+						Listener::Process($_POST['_NListener']);
+					}
+				}
+				else
+				{
+					self::UnsetNolohSessionVars();
+					$this->HandleFirstRun();
+				}
 			}
 		}
 		catch (SqlFriendlyException $e)
