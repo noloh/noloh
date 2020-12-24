@@ -74,13 +74,11 @@ class RichMarkupRegion extends MarkupRegion
 	}
 	private function ParseItems($text)
 	{
-//		do
-//		{
-//        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([�"\'])([\w\s?_-]+)(?::([^"\']+))?\3(.*?)>(.*?)</n:\1>!is',
-        	//$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([�"\'])([^:]+)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
-        	$tmpText = preg_replace_callback('!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*([�"\'])([^:]+?)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
-        	array(&$this, 'MarkupReplace'), $text);
-//  	}while ($count);
+		$tmpText = preg_replace_callback(
+			'!<n:(.*?)(\s+.*?)?\s*descriptor\s*=\s*(["\'])([^:]+?)(?::([^"\']+))?\3(.*?)(?:/\s*>|(?:>(.*?)</n:\1>))!is',
+        	array(&$this, 'MarkupReplace'),
+			$text
+		);
   		return $tmpText;
 	}
 	private function MarkupReplace($matches)
