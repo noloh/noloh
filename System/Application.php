@@ -679,7 +679,7 @@ final class Application extends Base
 			if($_NShowStrategy)
 				$this->WebPage->Show();
 			else
-				return $this->WebPage->NoScriptShow();
+				return $this->WebPage->NoScriptShow('');
 			AddScript('_N.Request=null;', Priority::Low);
 		}
 		header('Content-Type: text/javascript; charset=UTF-8');
