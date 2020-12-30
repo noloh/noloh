@@ -74,6 +74,10 @@ function _NShftObjs(objects, deltaX, deltaY, isShiftsWith) {
 	for (var i = 0; i < count; ++i) {
 		id = objects[i][0];
 		if (obj = _N(id)) {
+			if (_N.Shifts === null)
+			{
+				return;
+			}
 			if (isShiftsWith && !_N.Shifts.ShiftsWithObjsStarted[id]) {
 				if (obj.ShiftsWithStart && typeof obj.ShiftsWithStart === "function") {
 					obj.ShiftsWithStart.call(obj);
@@ -178,6 +182,10 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 }
 function _NShftStp(e)
 {
+	if (_N.Shifts === null)
+	{
+		return;
+	}
 	event = e;
 	var count, obj;
 	if((count = _N.Catchers.length) && _N.Shifts.HasMoved)
