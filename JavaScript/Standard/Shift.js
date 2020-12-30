@@ -74,16 +74,12 @@ function _NShftObjs(objects, deltaX, deltaY, isShiftsWith) {
 	for (var i = 0; i < count; ++i) {
 		id = objects[i][0];
 		if (obj = _N(id)) {
-			if (_N.Shifts === null)
-			{
-				return;
-			}
-			if (isShiftsWith && !_N.Shifts.ShiftsWithObjsStarted[id]) {
-				if (obj.ShiftsWithStart && typeof obj.ShiftsWithStart === "function") {
-					obj.ShiftsWithStart.call(obj);
-				}
-				_N.Shifts.ShiftsWithObjsStarted[id] = obj;
-			}
+            if (_N.Shifts !== null && isShiftsWith && !_N.Shifts.ShiftsWithObjsStarted[id]) {
+                if (obj.ShiftsWithStart && typeof obj.ShiftsWithStart === "function") {
+                    obj.ShiftsWithStart.call(obj);
+                }
+                _N.Shifts.ShiftsWithObjsStarted[id] = obj;
+            }
 
 			if (objects[i][1] == 1) {
 				_NShftProcObj(obj, objects[i], 1, "style.width", 1, (tmp = obj.style.width) ? tmp : obj.offsetWidth, deltaX, (!objects[i][7] || objects[i][3]) ? null : (tmp = obj.style.left) ? tmp : obj.offsetLeft);
