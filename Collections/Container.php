@@ -56,7 +56,7 @@ class Container extends Component
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow()
+	function NoScriptShow($indent)
 	{
 		$this->NoScriptShowChildren($indent);
 	}
