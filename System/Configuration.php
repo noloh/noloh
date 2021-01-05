@@ -52,6 +52,11 @@ class Configuration extends Base implements Singleton
 	 */
 	public $DebugMode = true;
 	/**
+	 * Error message displayed when not in debug mode.
+	 * @var string
+	 */
+	public $DebugModeError = 'An application error has occurred.';
+	/**
 	 * @ignore
 	 */
 	public $DefaultUnit = 'px';

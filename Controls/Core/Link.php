@@ -358,7 +358,7 @@ class Link extends Label
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = Control::NoScriptShow($indent);
+		$str = Control::NoScriptShowIndent($indent);
 		if($str !== false)
 		{
 			echo $indent, '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SESSION['_NURL'].'?'.$this->TokenString()) : $this->Destination, '" ', $str, '>';

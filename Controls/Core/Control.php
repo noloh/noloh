@@ -1335,7 +1335,7 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow(&$indent)
+	function NoScriptShowIndent(&$indent)
 	{
 		if($this->Visible === 0)
 			return false;

@@ -96,7 +96,7 @@ class ComboBox extends ListControl
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = Control::NoScriptShow($indent);
+		$str = Control::NoScriptShowIndent($indent);
 		if($str !== false)
 			echo $indent, '<SELECT ', $str, ">\n", ListControl::NoScriptShow($indent), $indent, "</INPUT>\n";
 	}

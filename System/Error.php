@@ -58,7 +58,7 @@ function _NOBErrorHandler($buffer)
 					$processRequestDetails = false;
 				}
 
-				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
+				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : $GLOBALS['_NDebugModeError']) . '");';
 
 				NolohInternal::ResetSecureValuesQueue();
 				NolohInternal::ResetSession();
@@ -167,7 +167,7 @@ function DisplayError($message)
 	}
 	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
 	@error_log($message);
-	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : 'An application error has occurred.', '");';
+	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
 	if ($gzip)
 	{
 		ob_end_flush();
