@@ -89,7 +89,7 @@ class FileUpload extends Control
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		echo $indent, '<INPUT type="file" ', $str, "></INPUT>\n";
 	}
 }
