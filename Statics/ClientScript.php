@@ -154,8 +154,10 @@ final class ClientScript
 	{
 		if(!isset($_SESSION['_NScriptSrcs'][$path]))
 		{
-			if($combine)
-				$_SESSION['_NScriptSrc'] .= preg_replace('/^\/\/# sourceMappingURL.*map$/g', '', file_get_contents($path));
+			if ($combine)
+			{
+				$_SESSION['_NScriptSrc'] .= preg_replace('!//# sourceMappingURL.*?map\n|$!', '', file_get_contents($path));
+			}
 			else
 			{
 				self::AddNOLOHSource('AddExternal.js');
