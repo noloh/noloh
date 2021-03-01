@@ -156,7 +156,7 @@ final class ClientScript
 		{
 			if ($combine)
 			{
-				$_SESSION['_NScriptSrc'] .= preg_replace('/\/\/# sourceMappingURL.*map/', '', file_get_contents($path));
+				$_SESSION['_NScriptSrc'] .= preg_replace('!//# sourceMappingURL.*?map\n|$!', '', file_get_contents($path));
 			}
 			else
 			{
