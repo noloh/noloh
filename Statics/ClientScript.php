@@ -149,17 +149,14 @@ final class ClientScript
 	 * @param string $path A path to the javascript file.
 	 * @param bool $combine Whether you want the source file to be combined with other source files, or added separately.
 	 * @param bool|null $addMTime Whether mtime is added to the request for caching purposes. Null defaults to Configuration value
-	 * @param bool $sourceMap Whether you want to remove the sourceMappingURL line from the source
 	 */
-	static function AddSource($path, $combine = true, $addMTime = null, $sourceMap = false)
+	static function AddSource($path, $combine = true, $addMTime = null)
 	{
 		if(!isset($_SESSION['_NScriptSrcs'][$path]))
 		{
 			if ($combine)
 			{
-				$_SESSION['_NScriptSrc'] .= $sourceMap
-					? preg_replace('/^\/\/# sourceMappingURL.*map$/g', '', file_get_contents($path))
-					: file_get_contents($path);
+				$_SESSION['_NScriptSrc'] .= preg_replace('/\/\/# sourceMappingURL.*map/', '', file_get_contents($path));
 			}
 			else
 			{
