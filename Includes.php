@@ -156,6 +156,13 @@ function _NAutoLoad($class)
 			'Semantics' =>			'Statics/Semantics.php',
 			'Shift' => 				'Statics/Shift.php'
 		);
+
+		if (version_compare(PHP_VERSION, '7.2.0') >= 0)
+		{
+			$_NAutoLoad = array_merge($_NAutoLoad, array(
+				'SwiftEmailHelper' => 'Nodules/EmailHelper/SwiftEmailHelper.php'
+			));
+		}
 	}
 
 	$namespace = null;
