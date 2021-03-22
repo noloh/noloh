@@ -114,7 +114,22 @@ abstract class RESTRouter extends Base
 	public function Route()
 	{
 		$this->ProcessData();
+
+		/*
+		 * InputMiddleware allows data transformations to be performed on all request data BEFORE it hits the individual resource
+		 */
+		if (method_exists($this->Resource, 'InputMiddleware'))
+		{
+			$this->InputData = call_user_func(array($this->Resource, 'InputMiddleware'), $this->InputData);
+		}
+
 		call_user_func(array($this->Resource, ucfirst($this->Method)), $this->InputData);
+
+		if (method_exists($this->Resource, 'OutputMiddleware'))
+		{
+			call_user_func(array($this->Resource, 'OutputMiddleware'));
+		}
+
 		$this->Resource->SendResponse();
 	}
 
