@@ -80,14 +80,18 @@ class Image extends Control
 			{
 				NolohInternal::SetProperty('style.filter', 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $path . '",sizingMethod="scale")', $this);
 				//NolohInternal::SetProperty('style.display', 'inline-block', $this);
-				if(!$this->IE6PNGFix)
+				if (!$this->IE6PNGFix)
+				{
 					NolohInternal::SetProperty('src', System::ImagePath() . 'Blank.gif', $this);
+				}
 				$this->IE6PNGFix = true;
 			}
 			else
 			{
 				if($this->IE6PNGFix)
+				{
 					NolohInternal::SetProperty('style.filter', '', $this);
+				}
 				NolohInternal::SetProperty('src', $path, $this);
 				$this->IE6PNGFix = null;
 			}
