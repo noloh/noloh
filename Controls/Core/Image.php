@@ -88,7 +88,7 @@ class Image extends Control
 			}
 			else
 			{
-				if($this->IE6PNGFix)
+				if ($this->IE6PNGFix)
 				{
 					NolohInternal::SetProperty('style.filter', '', $this);
 				}
