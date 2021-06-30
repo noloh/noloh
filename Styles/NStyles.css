@@ -200,3 +200,7 @@ a.NPag:hover
 {
 	z-index: 9999999 !important;
 }
+.menu-relative-filter > div > ul
+{
+	overflow: visible !important;
+}
