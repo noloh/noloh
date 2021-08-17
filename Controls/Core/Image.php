@@ -70,30 +70,43 @@ class Image extends Control
 		//if(!is_file($newSrc))
 		//	BloodyMurder('The Src ' . $newSrc . ' does not exist.');
 		$this->Src = $path;
-		if($this->Magician)
-			$this->SetMagicianSrc();
-		elseif(UserAgent::IsIE6())
+		if ($this->Magician)
 		{
-			if(preg_match('/\.png$/i', $path))
+			$this->SetMagicianSrc();
+		}
+		elseif (UserAgent::IsIE6())
+		{
+			if (preg_match('/\.png$/i', $path))
 			{
 				NolohInternal::SetProperty('style.filter', 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $path . '",sizingMethod="scale")', $this);
 				//NolohInternal::SetProperty('style.display', 'inline-block', $this);
-				if(!$this->IE6PNGFix)
+				if (!$this->IE6PNGFix)
+				{
 					NolohInternal::SetProperty('src', System::ImagePath() . 'Blank.gif', $this);
+				}
 				$this->IE6PNGFix = true;
 			}
 			else
 			{
-				if($this->IE6PNGFix)
+				if ($this->IE6PNGFix)
+				{
 					NolohInternal::SetProperty('style.filter', '', $this);
+				}
 				NolohInternal::SetProperty('src', $path, $this);
 				$this->IE6PNGFix = null;
 			}
 		}
-		else
+		elseif ($path)
+		{
 			NolohInternal::SetProperty('src', $path, $this);
+		}
+		else
+		{
+			// Empty image because a null src will make some browsers generate a silhoutte indicating invalid value
+			NolohInternal::SetProperty('src', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=', $this);
+		}
         //NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
-		if($adjustSize)
+		if ($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
 			$this->SetHeight(System::Auto);
@@ -279,7 +292,7 @@ class Image extends Control
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 			echo $indent, '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), $str?(' '.$str):'', ">\n";
 	}

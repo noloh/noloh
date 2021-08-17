@@ -1,4 +1,4 @@
-/*!Easing Equations by Robert Penner, Copyright © 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
+/*!Easing Equations by Robert Penner, Copyright ï¿½ 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
 
 function _NAni(id, prpty, to, duration, units, easing, from, fps)
 {
@@ -99,9 +99,9 @@ _NAni.prototype.Move = function(delta)
 		_NSet(this.ObjId, this.Property, this.From + delta + this.Units);
 		if(this.Obj.ShiftsWith && this.Obj.ShiftsWith[this.ShiftType])
 			if(this.ShiftType == 1 || this.ShiftType == 4)
-				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], delta - this.LastDelta, 0);
+				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], delta - this.LastDelta, 0, false);
 			else
-				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], 0, delta - this.LastDelta);
+				_NShftObjs(this.Obj.ShiftsWith[this.ShiftType], 0, delta - this.LastDelta, false);
 		this.LastDelta = delta;
 	}
 	if(this.Obj.AnimationStep)

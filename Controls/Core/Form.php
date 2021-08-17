@@ -180,7 +180,7 @@ class Form extends Component
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 		{
 			echo $indent, '<FORM action="', $this->Action, '" method="', $this->Method, "\">\n";

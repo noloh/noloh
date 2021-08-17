@@ -20,6 +20,9 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  * Gets the current version of NOLOH
  * @return string
  */
-function GetNOLOHVersion() {return '1.9.243';}   // Run "git rev-list HEAD --count" % 1000, then +1.
+function GetNOLOHVersion()
+{
+	return '1.9.802'; // Run "git rev-list HEAD --count" % 1000, then +1.
+}
 
 ?>

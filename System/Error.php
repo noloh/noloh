@@ -44,6 +44,7 @@ function _NOBErrorHandler($buffer)
 				$processRequestDetails = true;
 				// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
 				setcookie('_NAppCookie', false);
+				header('Content-Type: text/javascript');
 				if (!in_array('Cache-Control: no-cache', headers_list(), true))
 				{
 					++$_SESSION['_NVisit'];
@@ -57,7 +58,7 @@ function _NOBErrorHandler($buffer)
 					$processRequestDetails = false;
 				}
 
-				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
+				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : $GLOBALS['_NDebugModeError']) . '");';
 
 				NolohInternal::ResetSecureValuesQueue();
 				NolohInternal::ResetSession();
@@ -69,7 +70,17 @@ function _NOBErrorHandler($buffer)
 				$webPage = WebPage::That();
 				if ($webPage && $processRequestDetails)
 				{
-					$webPage->ProcessRequestDetails($requestDetails);
+					/*
+					 * Checking for a syntax error message.
+					 * This is a critical error that is not reached in normal cases.
+					 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
+					 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
+					 * !It is not recommended to continue using!
+					*/
+					if (strpos($message, 'syntax error') === false)
+					{
+						$webPage->ProcessRequestDetails($requestDetails);
+					}
 				}
 
 				return $alert;
@@ -143,6 +154,7 @@ function DisplayError($message)
 		ob_end_clean();
 	}
 	setcookie('_NAppCookie', false);
+	header('Content-Type: text/javascript');
 
 	$gzip = defined('FORCE_GZIP');
 	if ($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
@@ -155,7 +167,7 @@ function DisplayError($message)
 	}
 	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
 	@error_log($message);
-	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : 'An application error has occurred.', '");';
+	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
 	if ($gzip)
 	{
 		ob_end_flush();
@@ -212,6 +224,23 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
+	global $_NPath;
+	$trace = debug_backtrace();
+	$traceCount = 0;
+	foreach ($trace as $error)
+	{
+		if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
+		{
+			$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
+			$traceCount++;
+		}
+
+		if ($traceCount == 2)
+		{
+			break;
+		}
+	}
+
 	if(UserAgent::IsCLI() || System::IsRESTful())
 	{
 		trigger_error($message, E_USER_ERROR);
@@ -223,13 +252,13 @@ function BloodyMurder($message)
 	}
 	elseif($_SESSION['_NVisit'] === -1)
 	{
+		header('Content-Type: text/html');
 		echo $message;
 		session_destroy();
 		exit();
 	}
 	else
 	{
-		$trace = debug_backtrace();
 		if ($GLOBALS['_NDebugMode'] === 'Kernel')
 		{
 			$trace = $trace[0];
@@ -238,23 +267,6 @@ function BloodyMurder($message)
 		}
 		else
 		{
-			global $_NPath;
-
-			$traceCount = 0;
-			foreach ($trace as $error)
-			{
-				if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
-				{
-					$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
-					$traceCount++;
-				}
-
-				if ($traceCount == 2)
-				{
-					break;
-				}
-			}
-
 			DisplayError($message);
 		}
 	}

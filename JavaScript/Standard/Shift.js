@@ -7,6 +7,7 @@ function _NShftSta(objArray)
 	_N.Shifts.Ghosts = [];
 	_N.Shifts.ObjsWithStart = [];
 	_N.Shifts.ObjsWithStop = [];
+	_N.Shifts.ShiftsWithObjsStarted = [];
 	_N.Shifts.ActualCount = [];
 	_N.Shifts.HasMoved = false;
 	_N.Shifts.CursorX = event.clientX + window.pageXOffset;
@@ -62,24 +63,34 @@ function _NShftGo(e)
 	var deltaY = yPos - _N.Shifts.CursorY;
 	_N.Shifts.CursorX = xPos;
 	_N.Shifts.CursorY = yPos;
-	_NShftObjs(_N.Shifts, deltaX, deltaY);
+	_NShftObjs(_N.Shifts, deltaX, deltaY, false);
 	e.preventDefault();
 	event = null;
 }
-function _NShftObjs(objects, deltaX, deltaY)
-{
-	var obj, tmp, count = objects.length;
-	for(var i=0; i<count; ++i)
-	{
-		if(obj = _N(objects[i][0]))
-			if(objects[i][1] == 1)
-				_NShftProcObj(obj, objects[i], 1, "style.width", 1, (tmp=obj.style.width)?tmp:obj.offsetWidth, deltaX, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.left)?tmp:obj.offsetLeft);
-			else if(objects[i][1] == 2)
-				_NShftProcObj(obj, objects[i], 2, "style.height", 0, (tmp=obj.style.height)?tmp:obj.offsetHeight, deltaY, (!objects[i][7]||objects[i][3])?null:(tmp=obj.style.top)?tmp:obj.offsetTop);
-			else if(objects[i][1] == 4)
-				_NShftProcObj(obj, objects[i], 4, "style.left", 1, (tmp=obj.style.left)?tmp:obj.offsetLeft, deltaX, objects[i][3]?null:(tmp=obj.style.width)?tmp:obj.offsetWidth);
-			else
-				_NShftProcObj(obj, objects[i], 5, "style.top", 0, (tmp=obj.style.top)?tmp:tmp.offsetTop, deltaY, objects[i][3]?null:(tmp=obj.style.height)?tmp:obj.offsetHeight);
+function _NShftObjs(objects, deltaX, deltaY, isShiftsWith) {
+	var obj, tmp, id,
+		count = objects.length;
+
+	for (var i = 0; i < count; ++i) {
+		id = objects[i][0];
+		if (obj = _N(id)) {
+            if (_N.Shifts !== null && isShiftsWith && !_N.Shifts.ShiftsWithObjsStarted[id]) {
+                if (obj.ShiftsWithStart && typeof obj.ShiftsWithStart === "function") {
+                    obj.ShiftsWithStart.call(obj);
+                }
+                _N.Shifts.ShiftsWithObjsStarted[id] = obj;
+            }
+
+			if (objects[i][1] == 1) {
+				_NShftProcObj(obj, objects[i], 1, "style.width", 1, (tmp = obj.style.width) ? tmp : obj.offsetWidth, deltaX, (!objects[i][7] || objects[i][3]) ? null : (tmp = obj.style.left) ? tmp : obj.offsetLeft);
+			} else if (objects[i][1] == 2) {
+				_NShftProcObj(obj, objects[i], 2, "style.height", 0, (tmp = obj.style.height) ? tmp : obj.offsetHeight, deltaY, (!objects[i][7] || objects[i][3]) ? null:(tmp = obj.style.top) ? tmp : obj.offsetTop);
+			} else if (objects[i][1] == 4) {
+				_NShftProcObj(obj, objects[i], 4, "style.left", 1, (tmp = obj.style.left) ? tmp : obj.offsetLeft, deltaX, objects[i][3] ? null : (tmp = obj.style.width) ? tmp : obj.offsetWidth);
+			} else {
+				_NShftProcObj(obj, objects[i], 5, "style.top", 0, (tmp = obj.style.top) ? tmp : tmp.offsetTop, deltaY, objects[i][3] ? null : (tmp = obj.style.height) ? tmp : obj.offsetHeight);
+			}
+		}
 	}
 }
 function _NShftCalcPrcnt(obj, prcnt, prop)
@@ -133,7 +144,7 @@ function _NShftProcObj(obj, info, propNum, propStr, axis, startPx, delta, opposi
 		if(delta)
 		{
 			if((shiftsWith=obj.ShiftsWith) && shiftsWith[propNum])
-				_NShftObjs(shiftsWith[propNum], delta, delta);
+				_NShftObjs(shiftsWith[propNum], delta, delta, true);
 			if(obj.ShiftStep)
 				obj.ShiftStep.call(obj);
 		}
@@ -167,6 +178,10 @@ function _NShftObj(id, property, start, delta, minBound, maxBound, ratio, grid, 
 }
 function _NShftStp(e)
 {
+	if (_N.Shifts === null)
+	{
+		return;
+	}
 	event = e;
 	var count, obj;
 	if((count = _N.Catchers.length) && _N.Shifts.HasMoved)
@@ -208,6 +223,12 @@ function _NShftStp(e)
 		{
 			obj = _N.Shifts.ObjsWithStop[id];
 			obj.ShiftStop.call(obj);
+		}
+		for (var id in _N.Shifts.ShiftsWithObjsStarted) {
+			obj = _N.Shifts.ShiftsWithObjsStarted[id];
+			if (obj && obj.ShiftsWithStop && typeof obj.ShiftsWithStop === "function") {
+				obj.ShiftsWithStop.call(obj);
+			}
 		}
 		document.removeEventListener("mousemove", _NShftGo, true);
 		_N.DisableClicks = true;
@@ -276,7 +297,7 @@ function _NShiftWithBody(body)
 {
 	var tmp;
 	if(body.ShiftsWith[1])
-		_NShftObjs(body.ShiftsWith[1], window.outerWidth - _N.WindowWidth, 0);
+		_NShftObjs(body.ShiftsWith[1], window.outerWidth - _N.WindowWidth, 0, true);
 	if(body.ShiftsWith[2])
-		_NShftObjs(body.ShiftsWith[2], 0, (tmp = window.outerHeight - _N.WindowHeight)?tmp:(document.documentElement.clientHeight - body.Height));
+		_NShftObjs(body.ShiftsWith[2], 0, (tmp = window.outerHeight - _N.WindowHeight)?tmp:(document.documentElement.clientHeight - body.Height), true);
 }
