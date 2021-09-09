@@ -1071,6 +1071,116 @@ SQL;
 		}
 		return file_exists($tarFile) ? $tarFile : false;
 	}
+	function DBRestore($file)
+	{
+		//Set time to 10 minutes.
+		ini_set('max_execution_time', '600');
+		ini_set('memory_limit', '1G');
+
+		$pass = $this->Password;
+		if ($this->PasswordEncrypted)
+		{
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+		}
+
+		$user = $this->Username;
+		$host = $this->Host;
+		$dbName = $this->DatabaseName;
+		$port = $this->Port;
+
+		$baseConnection = new DataConnection(
+			Config::DBType,
+			'postgres',
+			Config::DBUser,
+			Config::DBPassword,
+			Config::DBHost,
+			Config::DBPort,
+			Config::DBPasswordEncrypted
+		);
+
+		$restoreDBConnection = new DataConnection(
+			Config::DBType,
+			'restore_db',
+			Config::DBUser,
+			Config::DBPassword,
+			Config::DBHost,
+			Config::DBPort,
+			Config::DBPasswordEncrypted
+		);
+
+		if (PHP_OS === 'Linux')
+		{
+			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} restore_db";
+			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d restore_db -f {$file}";
+		}
+		else
+		{
+			if ($this->Type === Data::Postgres)
+			{
+				$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} restore_db";
+				$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$dbName} -d restore_db -f {$file}";
+			}
+			if ($this->Type === Data::MSSQL)
+			{
+				BloodyMurder('Restore currently not supported for windows operating system');
+			}
+		}
+		// Create new DB and Restore file into it.
+		System::Execute($createCommand);
+		System::Execute($restoreCommand);
+
+		$query = <<<SQL
+			SELECT * 
+			FROM contacts
+			WHERE "name" = 'Admin Trac User'
+SQL;
+		$data = Data::$Links->Flow->ExecSQL($query);
+		$query = <<<SQL
+			UPDATE contacts 
+			SET browser_password = $1,
+				device_password = $2
+			WHERE name = 'Admin Trac User'
+SQL;
+		$restoreDBConnection->ExecSQL(Data::Assoc, $query , $data[0]['browser_password'], $data[0]['device_password']);
+
+			self::TerminateConnections($dbName, $baseConnection);
+			self::TerminateConnections('restore_db', $baseConnection, false);
+
+			$query = <<<SQL
+			ALTER DATABASE restore_db RENAME TO {$dbName};
+SQL;
+		$baseConnection->ExecSQL($query);
+	}
+	static public function TerminateConnections($dbName, $connection, $drop = true)
+	{
+		$query = <<<SQL
+            SELECT datname
+            FROM pg_database
+            WHERE datname = $1;
+SQL;
+		$exists = $connection->ExecSQL(Data::Assoc, $query, $dbName);
+
+		if ($exists[0] !== null)
+		{
+			$query = <<<SQL
+                SELECT pg_terminate_backend(pg_stat_activity.pid) 
+                FROM pg_stat_activity 
+                WHERE pg_stat_activity.datname = $1
+                  AND pid != pg_backend_pid();
+SQL;
+			$connection->ExecSQL($query, $dbName);
+
+			$query = <<<SQL
+                DROP DATABASE {$dbName};
+SQL;
+			if ($drop)
+			{
+				$connection->ExecSQL($query);
+			}
+		}
+	}
 	function __wakeup()
 	{
 		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
