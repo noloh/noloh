@@ -36,9 +36,9 @@ class IFrame extends Control
 	* @param integer $height
 	* @return IFrame
 	*/
-	function IFrame($src ='', $left=0, $top=0, $width=300, $height=300)
+	function __construct($src ='', $left=0, $top=0, $width=300, $height=300)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetSrc($src);
 	}
 	/**
@@ -137,7 +137,7 @@ class IFrame extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<A href="', $this->Src, '"', parent::SearchEngineShow(true), '>', $this->Text ? $this->Text : $this->Src, '</A>';
+		echo '<A href="', $this->Src, '"', parent::SearchEngineShowClassAttr(), '>', $this->Text ? $this->Text : $this->Src, '</A>';
 	}
 	/**
 	 * @ignore

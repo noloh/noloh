@@ -32,9 +32,9 @@ abstract class CheckControl extends Control
 	 * @param integer $height The height of this element
 	 * @return CheckControl
 	 */
-	function CheckControl($text='', $left = 0, $top = 0, $width = 50, $height = 20)
+	function __construct($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		if(is_object($text) && !($text instanceof Item))
 			$this->Caption = $text;
 		else

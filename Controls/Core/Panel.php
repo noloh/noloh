@@ -29,9 +29,9 @@ class Panel extends Control
 	 * @param Control $implicitObject If you want an ImplicitArrayList instantiated instead of a regular ArrayList, this parameter signifies the implicit object, usually $this
 	 * @return Panel
 	 */
-	function Panel($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
+	function __construct($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if($implicitObject == null)
 			$this->Controls = new ArrayList();
 		elseif($implicitObject === $this)
@@ -281,7 +281,7 @@ class Panel extends Control
 	{
 		$tag = $this->GetSearchEngineTag();
 		if($tag)
-			echo '<', $tag, parent::SearchEngineShow(true), '>';
+			echo '<', $tag, parent::SearchEngineShowClassAttr(), '>';
 		$this->SearchEngineShowChildren();
 		if($tag)
 			echo '</', $tag, '>';

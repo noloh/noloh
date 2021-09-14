@@ -55,9 +55,9 @@ class Button extends Control
 	* @param string $type The type of this button
 	* @return Button
 	*/
-	function Button($text='', $left = 0, $top = 0, $width = 80, $height = 24, $type = Button::Normal)
+	function __construct($text='', $left = 0, $top = 0, $width = 80, $height = 24, $type = Button::Normal)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetType($type);
 		$this->SetText($text);
 	}

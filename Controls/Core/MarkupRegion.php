@@ -32,9 +32,9 @@ class MarkupRegion extends Control
 	 * @param integer $height The Height dimension of this element
 	 * @return MarkupRegion
 	 */
-	function MarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
+	function __construct($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;
 		if($markupStringOrFile !== null)

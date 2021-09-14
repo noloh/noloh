@@ -38,9 +38,9 @@ class Accordion extends Panel
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function Accordion($left=0, $top=0, $width=200, $height=300)
+	function __construct($left=0, $top=0, $width=200, $height=300)
 	{
-		parent::Panel($left, $top, $width, null, $this);
+		parent::__construct($left, $top, $width, null, $this);
 		$this->PartGroup = new Group();
 		$this->PartGroup->ParentId = $this->Id;
 		NolohInternal::SetProperty('TitleHeight', 0, $this);

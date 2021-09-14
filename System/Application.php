@@ -14,6 +14,9 @@ final class Application extends Base
 	 * @ignore
 	 */
 	const Name = '@APPNAME';
+	/**
+	 * @var WebPage
+	 */
 	private $WebPage;
 	
 	public static $RequestDetails;
@@ -64,8 +67,10 @@ final class Application extends Base
 			else 
 			{
 				$args = func_get_args();
-				if(count($args) === 1 && $args[0] instanceof Configuration)
+				if (count($args) === 1 && $args[0] instanceof Configuration)
+				{
 					$config = $args[0];
+				}
 				else 
 				{
 					$reflect = new ReflectionClass('Configuration');
@@ -138,7 +143,7 @@ final class Application extends Base
 	 * @return string
 	 */
 	static function GetURL()	{return System::FullAppPath();}
-	private function Application($config)
+	private function __construct($config)
 	{
 		NolohInternal::SaveSessionState();
 
@@ -820,7 +825,9 @@ final class Application extends Base
 			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
 			$canonicalURL = System::FullAppPath() . ($tokenString ? (UserAgent::GetName()===UserAgent::Googlebot?'#!/':'?') . $tokenString : '');
 		}
-		$this->WebPage->SearchEngineShow($canonicalURL, '<UL>'.$tokenLinks.'</UL>');
+		$this->WebPage->CanonicalUrl = $canonicalURL;
+		$this->WebPage->SearchEngineTokenLinks = $tokenLinks;
+		$this->WebPage->SearchEngineShow();
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)

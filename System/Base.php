@@ -53,7 +53,7 @@ abstract class Base
 	/**
 	 * @ignore
 	 */
-	function Base()	{}
+	function __construct()	{}
 	/**
 	 * @ignore
 	 */

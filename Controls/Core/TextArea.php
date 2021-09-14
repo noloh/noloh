@@ -23,9 +23,9 @@ class TextArea extends Control
 	 * @param integer $maxLength The maximum number of characters that are allowed in the TextArea
 	 * @return TextArea
 	 */
-	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)
+	function __construct($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetMaxLength($maxLength);
 		if($text != null)
 			$this->SetText($text);

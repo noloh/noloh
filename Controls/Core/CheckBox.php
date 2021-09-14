@@ -34,9 +34,9 @@ class CheckBox extends CheckControl implements MultiGroupable
      * integer, percentage, System::Auto
      * @return CheckBox
      */
-	function CheckBox($text='', $left = 0, $top = 0, $width = 50, $height = 20)
+	function __construct($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		parent::CheckControl($text, $left, $top, $width, $height);
+		parent::__construct($text, $left, $top, $width, $height);
 		//$this->Caption->Click = new ClientEvent('_NCBCptClk("'.$this->Id.'");');
 	}
 	/**

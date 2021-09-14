@@ -40,9 +40,9 @@ class DatePicker extends Panel
 	 * @param integer $width The width of this Control
 	 * @param integer $height The height of this Control
 	 */
-	function DatePicker($left = 0, $top = 0, $width = 219, $height = 21)
+	function __construct($left = 0, $top = 0, $width = 219, $height = 21)
 	{
-		parent::Panel($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->PullDown = new ComboBox(0, 0, $width, 20);
 		$this->Calendar = new Calendar(0, 21, 217, 200);
 		$this->Calendar->Buoyant = true;

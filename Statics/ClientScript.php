@@ -14,7 +14,7 @@ final class ClientScript
 	const JQuery = 'jquery', JQueryUI = 'jqueryui', Angular = 'angularjs', 
 	MooTools = 'mootools', Dojo = 'dojo', Prototype = 'prototype';
 	
-	private function ClientScript() {}
+	private function __construct() {}
 	/**
 	 * Adds Javascript code to be run immediately on the client.<br>
 	 * {@see ClientScript::AddSource} to add script files as opposed to code, or {$see ClientScript::Queue} to run code when a specific object has shown.

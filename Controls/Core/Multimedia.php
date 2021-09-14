@@ -38,9 +38,9 @@ class Multimedia extends Control
 	 * @param boolean $isMovie
 	 * @return Multimedia
 	 */
-	public function Multimedia($data = null, $left = 0, $top = 0, $width = 100, $height = 100, $isMovie=false)
+	public function __construct($data = null, $left = 0, $top = 0, $width = 100, $height = 100, $isMovie=false)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 		$this->Parameters = new ImplicitArrayList($this, 'AddParameter', 'RemoveParameter', 'ClearParameters');

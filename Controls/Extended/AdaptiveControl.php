@@ -5,7 +5,7 @@ class AdaptiveControl extends ControlPair
 	public $Translated = false;
 	public $Styled = false;
 
-	function AdaptiveControl($placeholder, $secondControl = null, $left = 0, $top = 0)
+	function __construct($placeholder, $secondControl = null, $left = 0, $top = 0)
 	{
 		$firstControl = new AdaptiveLabel($placeholder);
 		$firstControl->CSSPadding = '0px';
@@ -36,7 +36,7 @@ class AdaptiveControl extends ControlPair
 			$firstControl->Top = 22;
 		}
 
-		parent::ControlPair($firstControl, $secondControl, $left, $top, Layout::Vertical);
+		parent::__construct($firstControl, $secondControl, $left, $top, Layout::Vertical);
 
 		ClientScript::Queue($this, "AdaptiveControl", array($this->First->Id, $this->Second->Id));
 

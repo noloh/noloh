@@ -7,7 +7,7 @@ final class Security
 	/**
 	 * @ignore
 	 */
-	private function Security() {}
+	private function __construct() {}
 	/**
 	 * @param $data
 	 * The data to be encrypted

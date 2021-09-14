@@ -44,7 +44,7 @@ abstract class Component extends Base
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Component.
 	 */
-	function Component()
+	function __construct()
 	{
 		$this->ShowStatus = 0;
 		global $OmniscientBeing;
@@ -265,8 +265,24 @@ abstract class Component extends Base
 	 * Returns the only instance of a specified class that implements Singleton. Should not be called directly outside of your own That() methods.
 	 * @param string $className The name of the class, as a string.
 	 */
-	static function That($className)
+	static function That()
 	{
+		if (func_num_args() === 1)
+		{
+			$className = func_get_arg(0);
+		}
+		elseif (function_exists('get_called_class'))
+		{
+			$className = get_called_class();
+		}
+		else
+		{
+			BloodyMurder('::That cannot get defining key');
+		}
+		
+		if (!is_string($className)) {
+			BloodyMurder('Parameter to That() must be a valid string');
+		}
 		return isset($_SESSION['_NSingletons'][$className]) ? GetComponentById($_SESSION['_NSingletons'][$className]) : null;
 	}
 	/**

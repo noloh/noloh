@@ -33,9 +33,9 @@ class RolloverLabel extends Label implements Groupable
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function RolloverLabel($text, $outColor='#000000', $overColor='#FFFFFF', $selectedColor='#FFFFFF', $left = 0, $top = 0, $width = System::Auto, $height = 18)
+	function __construct($text, $outColor='#000000', $overColor='#FFFFFF', $selectedColor='#FFFFFF', $left = 0, $top = 0, $width = System::Auto, $height = 18)
 	{
-		parent::Label($text, $left, $top, $width, $height);
+		parent::__construct($text, $left, $top, $width, $height);
 		$click = parent::GetClick();
 		$click['System'] = new Event();
 		$click['User'] = new Event();

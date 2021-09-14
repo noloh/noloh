@@ -6,9 +6,9 @@ class CheckListView extends ListView
 {
 	private $CheckColumn;
 	
-	function CheckListView($left, $top, $width, $height)
+	function __construct($left, $top, $width, $height)
 	{
-		parent::ListView($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->CheckColumn = new ColumnHeader(null, 0, 25, $this->ColumnsPanel->GetHeight());
 		$this->CheckColumn->Click = null;
 		$this->CheckColumn->ParentId = $this->ColumnsPanel->Id;

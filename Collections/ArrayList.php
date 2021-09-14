@@ -64,7 +64,7 @@ class ArrayList extends Base implements ArrayAccess, Countable, Iterator
 	 * Be sure to call this from the constructor of any class that extends ArrayList.
 	 * @param array $elements An array representing the initial elements.
 	 */ 
-	function ArrayList($elements=null)
+	function __construct($elements=null)
 	{
 		if($elements === null)
 			$this->Elements = array();

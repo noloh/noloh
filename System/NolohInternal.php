@@ -6,7 +6,7 @@ final class NolohInternal
 {
 	private static $SessionState;
 
-	private function NolohInternal(){}
+	private function __construct(){}
 
 	public static function Queues()
 	{

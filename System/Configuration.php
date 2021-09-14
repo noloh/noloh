@@ -2,7 +2,7 @@
 /**
  * Configuration class
  *
- * A Configuration object is used together with Application::Start to set some application-wide, 
+ * A Configuration object is used together with Application::Start to set some application-wide,
  * global settings. Alternatively, an associative array (indexed by the names of the properties,
  * in the same case and format) can be used for an equivalent purpose.
  * 
@@ -110,9 +110,9 @@ class Configuration extends Base implements Singleton
 	 * Constructor
 	 * @return Configuration
 	 */
-	function Configuration()
+	public function __construct()
 	{
-		parent::Base();
+		parent::__construct();
 		$args = func_get_args();
 		$argLength = func_num_args();
         $firstIndex = 0;

@@ -32,9 +32,9 @@ class Table extends Control
 	 * @param integer $height The Height dimension of this element
 	 * @return Table
 	 */
-	function Table($left=0, $top=0, $width=500, $height=500)
+	function __construct($left=0, $top=0, $width=500, $height=500)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 		$this->Rows = new ArrayList();

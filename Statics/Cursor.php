@@ -34,7 +34,7 @@ final class Cursor
 	const RowResize = 'row-resize';
 	const NotAllowed = 'not-allowed';
 
-	private function Cursor(){}
+	private function __construct(){}
 	/**
 	 * Provides a URL for the image of a mouse cursor 
 	 * @param string $str

@@ -28,10 +28,10 @@ class RichMarkupRegion extends MarkupRegion
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function RichMarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
+	function __construct($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
 		$this->ComponentSpace = array();
-		parent::MarkupRegion($markupStringOrFile, $left, $top, $width, $height);
+		parent::__construct($markupStringOrFile, $left, $top, $width, $height);
 	}
 	/**
 	 * @ignore

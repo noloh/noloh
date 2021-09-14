@@ -133,7 +133,7 @@ class Event extends Base implements ArrayAccess
 	 * @param array $eventArray An array of events that this multiple event will hold
 	 * @return Event
 	 */
-	function Event($eventArray=array(), $handles=array())
+	function __construct($eventArray=array(), $handles=array())
 	{
 		$this->ExecuteFunction = $eventArray;
 		if(is_array($eventArray))
@@ -178,7 +178,7 @@ class Event extends Base implements ArrayAccess
 			if($info[0] !== '')
 				$ret .= ClientEvent::GenerateString($eventType, $info[0]);
 			if(!$onlyClientEvents)
-				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3]===0?0 : $info[2]===$info[3]?1 : 2, $info['spinner']);
+				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3] === 0 ? 0 : ($info[2] === $info[3] ? 1 : 2), $info['spinner']);
 			if(isset($arr[4]))
 				$ret .= '_NNoBubble();';
 			return $ret;
@@ -397,7 +397,7 @@ class Event extends Base implements ArrayAccess
 	/**
 	 * @ignore
 	 */
-	function __get($nm)
+	function &__get($nm)
 	{
 		if($nm === 'Uploads' && is_array($this->ExecuteFunction))
 		{
