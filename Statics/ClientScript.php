@@ -36,27 +36,47 @@ final class ClientScript
 	 * @param mixed $paramsArray An array of parameters passed into the function
 	 * @param boolean $replace
 	 * @param mixed $priority Determines the order in which scripts run. Can be: Priority::Low, Priority::Medium, or Priority::High 
+	 * @param boolean $formatParams Determines if the parameters will be formatted.
 	 */
-	static function Queue($component, $codeOrFunction, $paramsArray=array(), $replace=true, $priority=Priority::Medium)
+	static function Queue($component, $codeOrFunction, $paramsArray = array(), $replace = true, $priority = Priority::Medium, $formatParams = true)
 	{
 		$id = $component->Id;
-		if(!isset($GLOBALS['_NQueueDisabled']) || $GLOBALS['_NQueueDisabled'] != $id)
+		if (!isset($GLOBALS['_NQueueDisabled']) || $GLOBALS['_NQueueDisabled'] != $id)
 		{
-			if(preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
+			if ($formatParams)
+			{
+				if (is_array($paramsArray))
+				{
+					$paramsArray = array_map(array('ClientScript', 'ClientFormat'), $paramsArray);
+				}
+				elseif ($paramsArray === null)
+				{
+					$paramsArray = array();
+				}
+				else
+				{
+					$paramsArray = array(ClientScript::ClientFormat($paramsArray));
+				}
+			}
+
+			// Checking for code that doesn't accept parameters
+			if (preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
+			{
 				$paramsArray = null;
-			elseif(is_array($paramsArray))
-				$paramsArray = array_map(array('ClientScript', 'ClientFormat'), $paramsArray);
-			elseif($paramsArray === null)
-				$paramsArray = array();
-			else 
-				$paramsArray = array(ClientScript::ClientFormat($paramsArray));
+			}
 			
-			if(!isset($_SESSION['_NFunctionQueue'][$id]))
+			if (!isset($_SESSION['_NFunctionQueue'][$id]))
+			{
 				$_SESSION['_NFunctionQueue'][$id] = array();
-			if($replace)
+			}
+			if ($replace)
+			{
 				$_SESSION['_NFunctionQueue'][$id][$codeOrFunction] = array($paramsArray, $priority);
+			}
 			else
-				$_SESSION['_NFunctionQueue'][$id][] = array($codeOrFunction, $paramsArray, $priority);			
+			{
+				$_SESSION['_NFunctionQueue'][$id][] = array($codeOrFunction, $paramsArray, $priority);
+			}
 		}
 	}
 	private static function AddMTime($path)
@@ -82,6 +102,7 @@ final class ClientScript
 	/**
 	 * Queues either a JavaScript function or a full JavaScript statement associated with a specific Component to be executed on the client AFTER a race condition is met. <br>
 	 * The code will not be sent to the client, until the given Component has shown.<br>
+	 * The function parameters will NOT be formatted when queued.
 	 * <pre>
 	 * 	ClientScript::RaceQueue($this, 'someWidget.state == "ready"', alert', array("someWidget is ready for use"));
 	 * </pre>
@@ -94,7 +115,11 @@ final class ClientScript
 	 */
 	static function RaceQueue($component, $condition, $codeOrFunction, $paramsArray=null, $replace=true, $priority=Priority::Medium)
 	{
-		if(!$condition instanceof ClientEvent)
+		if ($condition instanceof  ClientEvent)
+		{
+			$condition = $condition->ExecuteFunction;
+		}
+		else
 		{	
 			if (preg_match('/^[a-z$_][\w$()\']+\.[\w$()\'.]+$/i', $condition))
 			{
@@ -115,10 +140,13 @@ final class ClientScript
 				$condition = "function(){return $condition;}";
 			else
 				$condition = "function(){return typeof($condition) != 'undefined';}";	
-			$condition = new ClientEvent($condition);	
 		}
-		if(!$codeOrFunction instanceof ClientEvent)
-		{	
+		if ($codeOrFunction instanceof  ClientEvent)
+		{
+			$codeOrFunction = $codeOrFunction->ExecuteFunction;
+		}
+		else
+		{
 			if(preg_match('/(?:;|})\s*?\z/', $codeOrFunction))
 			{
 				$paramsArray = null;
@@ -137,10 +165,10 @@ final class ClientScript
 				$paramsArray = implode(',', $paramsArray);
 				$codeOrFunction = 'function(){' . $codeOrFunction . '('. $paramsArray .')}'; 	
 			}
-			$codeOrFunction = new ClientEvent($codeOrFunction);
 		}
+
 		self::AddNOLOHSource('RaceCall.js');
-		ClientScript::Queue($component, '_NChkCond', array($condition, $codeOrFunction), /*$replace*/false, $priority);
+		ClientScript::Queue($component, '_NChkCond', array($condition, $codeOrFunction), /*$replace*/false, $priority, false);
 	}
 	/**
 	 * Adds a Javascript script file to be run immediately on the client <br>
