@@ -144,21 +144,10 @@ class ListBox extends ListControl
 	/**
 	 * Selects or deselects an Item whose index in the Items ArrayList matches the parameter
 	 * @param integer $index
-	 * @param boolean $select Indicates whether the Item should be selected or deseleted
 	 */
-	function SetSelected($index, $select)
+	function SetSelected($index)
 	{
-		if($select)
-			$this->SetSelectedIndex($index);
-		elseif(in_array($index, $this->SelectedIndices, true))
-		{
-			//NolohInternal::SetProperty("options[$index].selected", false, $this);
-			//QueueClientFunction($this, "_N('$this->Id').options[$index].selected=false;void", array(0));
-			ClientScript::Queue($this, '_NLstCtrDesel', array($this, $index), false);
-			//AddScript("_N('$this->Id').options[$index].selected=false");
-			unset($this->SelectedIndices[array_search($index, $this->SelectedIndices)]);
-			ClientScript::Queue($this, '_NLstCtrSaveSelInds', array($this), true, Priority::Low);
-		}
+		$this->SetSelectedIndex($index);
 	}
 	/**
 	 * Deselects all of the ListBox's Items

@@ -253,7 +253,7 @@ class ServerEvent extends Event
     /**
      * @ignore
      */
-    function &__get($nm)
+    function __get($nm)
     {
         if($nm == 'Uploads')
         {

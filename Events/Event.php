@@ -397,7 +397,7 @@ class Event extends Base implements ArrayAccess
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if($nm === 'Uploads' && is_array($this->ExecuteFunction))
 		{

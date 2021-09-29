@@ -69,7 +69,7 @@ class Panel extends Control
 	 */
     function SetScrollLeft($scrollLeft)
     {
-    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+    	$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
         if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
@@ -89,7 +89,7 @@ class Panel extends Control
 	 */
     function SetScrollTop($scrollTop)
     {
-    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+    	$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
     	if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else

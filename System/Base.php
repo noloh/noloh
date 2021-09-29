@@ -79,7 +79,7 @@ abstract class Base
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if (method_exists($this, $func = 'Get' . $nm))
 		{

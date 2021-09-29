@@ -48,10 +48,14 @@ final class NolohInternal
 	
 	public static function ControlQueue()
 	{
-        while(list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
+		foreach ($_SESSION['_NControlQueueRoot'] as $objId => $bool)
+		{
 			self::ShowControl($objId, $bool);
+		}
 		if(isset($GLOBALS['_NAddedSomething']))
+		{
 			AddScript('_NQ()', Priority::High);
+		}
 	}
 
 	public static function ShowControl($id, $bool)
@@ -70,8 +74,11 @@ final class NolohInternal
 			$control->Bury();
 		if(isset($_SESSION['_NControlQueueDeep'][$id]))
 		{
-			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$id]))
+			//while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$id]))
+			foreach ($_SESSION['_NControlQueueDeep'][$id] as $childObjId => $bool)
+			{
 				self::ShowControl($childObjId/*, $control*/, $bool);
+			}
 			unset($_SESSION['_NControlQueueDeep'][$id]);
 		}
 	}

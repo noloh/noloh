@@ -49,9 +49,9 @@ class RaceClientEvent extends ClientEvent
 		}
 		else
 			$allCodeAsString = str_replace("\n", ' ', $allCodeAsString);*/
-		$args = func_get_args();
-		call_user_func_array(array('ClientEvent', 'ClientEvent'), array_splice($args, 1));
-		//parent::__construct($allCodeAsString, $params);
+		//$args = func_get_args();
+		//call_user_func_array(array('ClientEvent', 'ClientEvent'), array_splice($args, 1));
+		parent::__construct($allCodeAsString, $params);
 		if(!$condition instanceof ClientEvent)
 		{	
 			if(!preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', $condition))

@@ -50,7 +50,7 @@ class Configuration extends Base implements Singleton
 	 * Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
 	 * @var boolean|System::Unhandled
 	 */
-	public $DebugMode = true;
+	private $DebugMode = true;
 	/**
 	 * Error message displayed when not in debug mode.
 	 * @var string
@@ -141,6 +141,8 @@ class Configuration extends Base implements Singleton
 				$this->{$setStartupLegacy[$i]} = $args[$i];
 			}
 		}
+
+		$GLOBALS['_NDebugMode'] = $this->DebugMode;
 	}
     private function DetectStartClass()
     {
@@ -197,6 +199,22 @@ class Configuration extends Base implements Singleton
 				unset($arr[$key]);*/
 		return $arr;
     }
+
+	/**
+	 * @ignore
+	 */
+    public function GetDebugMode()
+	{
+		return $this->DebugMode;
+	}
+	/**
+	 * @ignore
+	 */
+	public function SetDebugMode($debugMode)
+	{
+		$GLOBALS['_NDebugMode'] = $debugMode;
+		$this->DebugMode = $debugMode;
+	}
 	/**
 	 * Returns the instance of Configuration currently in use. The name is a pun on the "this" concept. See also Singleton interface.
 	 * @return Configuration

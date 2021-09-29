@@ -1412,7 +1412,7 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass' && $nm !== 'CSSClasses')
 		{

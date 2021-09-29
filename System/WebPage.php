@@ -661,7 +661,7 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0)
 		{

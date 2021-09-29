@@ -71,7 +71,7 @@ class IFrame extends Control
 	 */
 	function SetScrollLeft($scrollLeft)
 	{
-		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+		$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
 		$this->ScrollLeft = $scrollLeft;
 		NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
 	}
@@ -88,7 +88,7 @@ class IFrame extends Control
 	 */
 	function SetScrollTop($scrollTop)
 	{
-		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+		$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
 		$this->ScrollTop = $scrollTop;
 		NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
 	}
