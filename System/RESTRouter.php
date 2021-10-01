@@ -142,9 +142,20 @@ abstract class RESTRouter extends Base
 			case self::Delete:
 				if (empty($_POST))
 				{
-					$raw = file_get_contents('php://input');
+					$raw = trim(file_get_contents('php://input'));
+
 					if ($this->Resource->ReceivesJSON)
 					{
+						if (preg_match('/(<\?xml)/', $raw))
+						{
+							$xml = simplexml_load_string($raw);
+							if (!$xml)
+							{
+								Resource::BadRequest('Invalid XML.');
+							}
+							$raw = json_encode($xml);
+						}
+
 						$json = json_decode($raw, true);
 						if ($json === null)
 						{
