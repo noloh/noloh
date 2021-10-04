@@ -144,35 +144,33 @@ abstract class RESTRouter extends Base
 				{
 					$raw = trim(file_get_contents('php://input'));
 
-					if ($this->Resource->ReceivesJSON)
+					if (!$this->Resource->ReceivesJSON ||$_SERVER['HTTP_CONTENT_TYPE'] === 'application/xml')
 					{
-						if ($_SERVER['HTTP_CONTENT_TYPE'] === 'application/xml')
+						$xml = simplexml_load_string($raw);
+						if (!$xml)
 						{
-							$xml = simplexml_load_string($raw);
-							if (!$xml)
-							{
-								Resource::BadRequest('Invalid XML.');
-							}
-							$json = (array) $xml;
+							Resource::BadRequest('Invalid XML.');
 						}
-						else
+						$json = (array) $xml;
+						$data = $json;
+					}
+					else if ($this->Resource->ReceivesJSON)
+					{
+						$json = json_decode($raw, true);
+						if ($json === null)
 						{
-							$json = json_decode($raw, true);
-							if ($json === null)
+							parse_str($raw, $json);
+							/* If invalid JSON, parse_str on the raw has an odd effect.
+								This attempts to detect that effect and produce a good error message.
+								I can't think of any reason anybody would pass in a 1-element array whose
+								key starts with { or [ as keys should be alphanumeric anyway. */
+							if (count($json) === 1)
 							{
-								parse_str($raw, $json);
-								/* If invalid JSON, parse_str on the raw has an odd effect.
-									This attempts to detect that effect and produce a good error message.
-									I can't think of any reason anybody would pass in a 1-element array whose
-									key starts with { or [ as keys should be alphanumeric anyway. */
-								if (count($json) === 1)
+								$key = key($json);
+								$firstChar = $key[0];
+								if ($firstChar === '{' || $firstChar === '[')
 								{
-									$key = key($json);
-									$firstChar = $key[0];
-									if ($firstChar === '{' || $firstChar === '[')
-									{
-										Resource::BadRequest('Invalid JSON.');
-									}
+									Resource::BadRequest('Invalid JSON.');
 								}
 							}
 						}
