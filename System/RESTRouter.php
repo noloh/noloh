@@ -144,17 +144,22 @@ abstract class RESTRouter extends Base
 				{
 					$raw = trim(file_get_contents('php://input'));
 
-					if (!$this->Resource->ReceivesJSON ||$_SERVER['HTTP_CONTENT_TYPE'] === 'application/xml')
+					if (
+						!$this->Resource->ReceivesJSON
+						|| (
+							isset($_SERVER['HTTP_CONTENT_TYPE'])
+							&& $_SERVER['HTTP_CONTENT_TYPE'] === 'application/xml'
+						)
+					)
 					{
 						$xml = simplexml_load_string($raw);
 						if (!$xml)
 						{
 							Resource::BadRequest('Invalid XML.');
 						}
-						$json = (array) $xml;
-						$data = $json;
+						$data = (array) $xml;
 					}
-					else if ($this->Resource->ReceivesJSON)
+					elseif ($this->Resource->ReceivesJSON)
 					{
 						$json = json_decode($raw, true);
 						if ($json === null)
