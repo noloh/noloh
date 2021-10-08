@@ -1071,18 +1071,19 @@ SQL;
 		}
 		return file_exists($tarFile) ? $tarFile : false;
 	}
-	function DBRestore($file)
+	/*
+	 * Creates a new Database from dump file. Must be a .bak file.
+	 * Callback removes both active connections and current db then renames new db to Config::DBName
+	 */
+	function DBRestore($file, $callback = array())
 	{
-		//Set time to 10 minutes.
+		// Set time to 10 minutes.
 		ini_set('max_execution_time', '600');
 		ini_set('memory_limit', '1G');
 
-		$pass = $this->Password;
-		if ($this->PasswordEncrypted)
+		if ($this->Type === Data::MSSQL)
 		{
-			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+			BloodyMurder('Restore currently not supported for windows operating system');
 		}
 
 		$user = $this->Username;
@@ -1090,90 +1091,56 @@ SQL;
 		$dbName = $this->DatabaseName;
 		$port = $this->Port;
 
-		$baseConnection = new DataConnection(
-			Config::DBType,
-			'postgres',
-			Config::DBUser,
-			Config::DBPassword,
-			Config::DBHost,
-			Config::DBPort,
-			Config::DBPasswordEncrypted
-		);
+		$pass = $this->Password;
 
-		$restoreDBConnection = new DataConnection(
-			Config::DBType,
-			'restore_db',
-			Config::DBUser,
-			Config::DBPassword,
-			Config::DBHost,
-			Config::DBPort,
-			Config::DBPasswordEncrypted
-		);
-
-		if (PHP_OS === 'Linux')
+		if ($this->PasswordEncrypted)
 		{
-			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} restore_db";
-			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d restore_db -f {$file}";
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
 		}
-		else
+		$tempName = 'restore_db_' . date("YmdHis");
+
+		$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} " . $tempName;
+		$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$dbName} -d " . $tempName . " -f {$file}";
+
+		if (!System::IsWindows())
 		{
-			if ($this->Type === Data::Postgres)
-			{
-				$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} restore_db";
-				$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$dbName} -d restore_db -f {$file}";
-			}
-			if ($this->Type === Data::MSSQL)
-			{
-				BloodyMurder('Restore currently not supported for windows operating system');
-			}
+			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
 		}
 		// Create new DB and Restore file into it.
 		System::Execute($createCommand);
 		System::Execute($restoreCommand);
 
-		$query = <<<SQL
-			SELECT * 
-			FROM contacts
-			WHERE "name" = 'Admin Trac User'
-SQL;
-		$data = Data::$Links->Flow->ExecSQL($query);
-		$query = <<<SQL
-			UPDATE contacts 
-			SET browser_password = $1,
-				device_password = $2
-			WHERE name = 'Admin Trac User'
-SQL;
-		$restoreDBConnection->ExecSQL(Data::Assoc, $query , $data[0]['browser_password'], $data[0]['device_password']);
-
-			self::TerminateConnections($dbName, $baseConnection);
-			self::TerminateConnections('restore_db', $baseConnection, false);
-
-			$query = <<<SQL
-			ALTER DATABASE restore_db RENAME TO {$dbName};
-SQL;
-		$baseConnection->ExecSQL($query);
+		call_user_func($callback, $tempName);
 	}
+	/*
+	 * Terminates active db connections.
+	 * Pass in dbName and connection.
+	 * If drop is true drops db afterwards.
+	 */
 	static public function TerminateConnections($dbName, $connection, $drop = true)
 	{
 		$query = <<<SQL
-            SELECT datname
-            FROM pg_database
-            WHERE datname = $1;
+			SELECT datname
+			FROM pg_database
+			WHERE datname = $1;
 SQL;
 		$exists = $connection->ExecSQL(Data::Assoc, $query, $dbName);
 
 		if ($exists[0] !== null)
 		{
 			$query = <<<SQL
-                SELECT pg_terminate_backend(pg_stat_activity.pid) 
-                FROM pg_stat_activity 
-                WHERE pg_stat_activity.datname = $1
-                  AND pid != pg_backend_pid();
+				SELECT pg_terminate_backend(pg_stat_activity.pid) 
+				FROM pg_stat_activity 
+				WHERE pg_stat_activity.datname = $1
+				  AND pid != pg_backend_pid();
 SQL;
 			$connection->ExecSQL($query, $dbName);
 
 			$query = <<<SQL
-                DROP DATABASE {$dbName};
+				DROP DATABASE {$dbName};
 SQL;
 			if ($drop)
 			{
