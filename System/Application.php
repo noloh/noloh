@@ -62,8 +62,10 @@ final class Application extends Base
 			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
 			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
-			if(isset($_SESSION['_NConfiguration']))
+			if (isset($_SESSION['_NConfiguration']))
+			{
 				$config = $_SESSION['_NConfiguration'];
+			}
 			else 
 			{
 				$args = func_get_args();
@@ -78,8 +80,10 @@ final class Application extends Base
 				}
 				$_SESSION['_NConfiguration'] = &$config;
 			}
-            if($config->StartClass)
+            if ($config->StartClass)
+			{
 			    new Application($config);
+			}
 			return $config;
 		}
 		else
@@ -143,7 +147,7 @@ final class Application extends Base
 	 * @return string
 	 */
 	static function GetURL()	{return System::FullAppPath();}
-	private function __construct($config)
+	function __construct($config)
 	{
 		NolohInternal::SaveSessionState();
 
