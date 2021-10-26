@@ -48,11 +48,23 @@ final class NolohInternal
 	
 	public static function ControlQueue()
 	{
-		foreach ($_SESSION['_NControlQueueRoot'] as $objId => $bool)
+		$did = array();
+		while (!empty($_SESSION['_NControlQueueRoot']))
 		{
-			self::ShowControl($objId, $bool);
+			foreach ($_SESSION['_NControlQueueRoot'] as $objId => $bool)
+			{
+				if (isset($did[$objId]))
+				{
+					BloodyMurder("Could not clear {$objId} from the control queue.");
+				}
+				else
+				{
+					self::ShowControl($objId, $bool);
+					$did[$objId] = true;
+				}
+			}
 		}
-		if(isset($GLOBALS['_NAddedSomething']))
+		if (isset($GLOBALS['_NAddedSomething']))
 		{
 			AddScript('_NQ()', Priority::High);
 		}
@@ -61,23 +73,30 @@ final class NolohInternal
 	public static function ShowControl($id, $bool)
 	{
 		$control = GetComponentById($id);
-		if($bool)
+		if ($bool)
 		{
-			if($control->GetShowStatus()===0)
+			if ($control->GetShowStatus() === 0)
+			{
 				$control->Show();
-            elseif($control->GetShowStatus()===1)
+			}
+            elseif ($control->GetShowStatus() === 1)
+			{
             	$control->Adopt();
-			elseif($control->GetShowStatus()===2)
+			}
+			elseif ($control->GetShowStatus() === 2)
+			{
 				$control->Resurrect();
+			}
 		}
-		elseif($control->GetShowStatus()!==0)
-			$control->Bury();
-		if(isset($_SESSION['_NControlQueueDeep'][$id]))
+		elseif ($control->GetShowStatus() !== 0)
 		{
-			//while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$id]))
+			$control->Bury();
+		}
+		if (isset($_SESSION['_NControlQueueDeep'][$id]))
+		{
 			foreach ($_SESSION['_NControlQueueDeep'][$id] as $childObjId => $bool)
 			{
-				self::ShowControl($childObjId/*, $control*/, $bool);
+				self::ShowControl($childObjId, $bool);
 			}
 			unset($_SESSION['_NControlQueueDeep'][$id]);
 		}
