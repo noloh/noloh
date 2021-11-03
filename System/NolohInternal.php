@@ -229,6 +229,10 @@ final class NolohInternal
 	public static function SetProperty($name, $value, $obj)
 	{
         $objId = is_object($obj) ? $obj->Id : $obj;
+        if (!$objId)
+		{
+			BloodyMurder('No ID when setting property: ' . $name);
+		}
 		if(!isset($GLOBALS['_NQueueDisabled']) || $GLOBALS['_NQueueDisabled'] !== $objId)
 		{
 			if(!isset($_SESSION['_NPropertyQueue'][$objId]))
