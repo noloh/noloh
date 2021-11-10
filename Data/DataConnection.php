@@ -77,6 +77,7 @@ class DataConnection extends Base
 
 	protected $FriendlyCallBack;
 	protected $AfterConnectCallBack;
+	protected $AfterConnectCalled = false;
 	public $Name = '_Default';
 	static $TransactionCounts;
 
@@ -206,11 +207,17 @@ class DataConnection extends Base
 			{
 				BloodyMurder("Invalid connection type {$this->Type}");
 			}
+		}
 
-			if (is_resource($this->ActiveConnection) && !empty($this->AfterConnectCallBack))
-			{
-				call_user_func_array($this->AfterConnectCallBack, array($this));
-			}
+		if (
+			!$this->AfterConnectCalled
+			&& empty($_SESSION['_NOmniscientBeing'])	// Only empty after OmniscientBeing finished unserializing properly
+			&& is_resource($this->ActiveConnection)
+			&& !empty($this->AfterConnectCallBack)
+		)
+		{
+			$this->AfterConnectCalled = true;
+			call_user_func_array($this->AfterConnectCallBack, array($this));
 		}
 		Application::$RequestDetails['total_database_time'] += System::Benchmark('_N/DataCommand::Connect');
 		return $this->ActiveConnection;
@@ -1167,6 +1174,7 @@ SQL;
 	}
 	function __wakeup()
 	{
+		$this->AfterConnectCalled = false;
 		$this->ActiveConnection = &Data::$Links->{$this->Name}->ActiveConnection;
 	}
 	function SendTo(DataConnection $target, $backupPath)
