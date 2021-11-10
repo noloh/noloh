@@ -1071,11 +1071,13 @@ SQL;
 		}
 		return file_exists($tarFile) ? $tarFile : false;
 	}
-	/*
-	 * Creates a new Database from dump file. Must be a .bak file.
-	 * Callback removes both active connections and current db then renames new db to Config::DBName
+
+	/**
+	 * Takes in a file and restores the current DB from that file.
+	 * @param $file
+	 * Must be a .bak file or a text file dump.
 	 */
-	function DBRestore($file, $callback = array())
+	function DBRestore($file)
 	{
 		// Set time to 10 minutes.
 		ini_set('max_execution_time', '600');
@@ -1090,7 +1092,6 @@ SQL;
 		$host = $this->Host;
 		$dbName = $this->DatabaseName;
 		$port = $this->Port;
-
 		$pass = $this->Password;
 
 		if ($this->PasswordEncrypted)
@@ -1101,50 +1102,66 @@ SQL;
 		}
 		$tempName = 'restore_db_' . date("YmdHis");
 
-		$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} " . $tempName;
-		$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$dbName} -d " . $tempName . " -f {$file}";
-
 		if (!System::IsWindows())
 		{
 			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
 			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
 		}
+		else
+		{
+			$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$dbName} {$tempName} -f {$file}";
+		}
+
 		// Create new DB and Restore file into it.
 		System::Execute($createCommand);
 		System::Execute($restoreCommand);
 
-		call_user_func($callback, $tempName);
+		$baseConnection = new DataConnection(
+			$this->Type,
+			'postgres',
+			$user,
+			$pass,
+			$host,
+			$port,
+			true
+		);
+
+		$this->Close();
+		$baseConnection->TerminateConnections($dbName, true);
+		$baseConnection->TerminateConnections($tempName);
+		$baseConnection->RenameDBTo($tempName, $dbName);
 	}
 	/*
 	 * Terminates active db connections.
-	 * Pass in dbName and connection.
-	 * If drop is true drops db afterwards.
+	 * @param
+	 * DbName string, drop boolean,
 	 */
-	static public function TerminateConnections($dbName, $connection, $drop = true)
+	public function TerminateConnections($dbName, $drop = false)
 	{
 		$query = <<<SQL
 			SELECT datname
 			FROM pg_database
 			WHERE datname = $1;
 SQL;
-		$exists = $connection->ExecSQL(Data::Assoc, $query, $dbName);
+		$exists = $this->ExecSQL(Data::Assoc, $query, $dbName);
 
 		if ($exists[0] !== null)
 		{
 			$query = <<<SQL
-				SELECT pg_terminate_backend(pg_stat_activity.pid) 
-				FROM pg_stat_activity 
+				SELECT pg_terminate_backend(pg_stat_activity.pid)
+				FROM pg_stat_activity
 				WHERE pg_stat_activity.datname = $1
 				  AND pid != pg_backend_pid();
 SQL;
-			$connection->ExecSQL($query, $dbName);
+			$this->ExecSQL($query, $dbName);
 
 			$query = <<<SQL
 				DROP DATABASE {$dbName};
 SQL;
 			if ($drop)
 			{
-				$connection->ExecSQL($query);
+				$this->ExecSQL($query);
 			}
 		}
 	}
@@ -1422,6 +1439,19 @@ SQL;
 			$cols[] = "{$col} TEXT";
 		}
 		return implode(', ', $cols);
+	}
+
+	/** Renames Database
+	 * @param $dbName
+	 * @param $renameDB
+	 * Both Strings
+	 */
+	public function RenameDBTo($dbName, $renameDB)
+	{
+		$query = <<<SQL
+		ALTER DATABASE "{$dbName}" RENAME TO "{$renameDB}";
+SQL;
+		$this->ExecSQL(Data::Assoc, $query);
 	}
 }
 ?>
