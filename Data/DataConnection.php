@@ -1143,8 +1143,7 @@ SQL;
 	}
 	/*
 	 * Terminates active db connections.
-	 * @param
-	 * DbName string, drop boolean,
+	 * @param boolean $closeSelf
 	 */
 	public function TerminateConnections($closeSelf = false)
 	{
