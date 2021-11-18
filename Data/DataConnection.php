@@ -1081,8 +1081,7 @@ SQL;
 
 	/**
 	 * Takes in a file and restores the current DB from that file.
-	 * @param $file
-	 * Must be a .bak file or a text file dump.
+	 * @param .bak $file Must be a .bak file or a text file dump.
 	 */
 	function DBRestore($file)
 	{
@@ -1090,9 +1089,9 @@ SQL;
 		ini_set('max_execution_time', '600');
 		ini_set('memory_limit', '1G');
 
-		if ($this->Type === Data::MSSQL)
+		if ($this->Type !== Data::Postgres)
 		{
-			BloodyMurder('Restore currently not supported for windows operating system');
+			BloodyMurder('Restore currently not supported for non Postgres Databases');
 		}
 
 		$user = $this->Username;
@@ -1117,26 +1116,29 @@ SQL;
 		else
 		{
 			$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} {$tempName}";
-			$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$dbName} {$tempName} -f {$file}";
+			$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
 		}
 
 		// Create new DB and Restore file into it.
 		System::Execute($createCommand);
 		System::Execute($restoreCommand);
 
+		$this->TerminateConnections(true);
+
 		$baseConnection = new DataConnection(
 			$this->Type,
 			'postgres',
-			$user,
+			$this->Username,
 			$pass,
-			$host,
-			$port,
-			true
+			$this->Host,
+			$this->Port,
+			$this->PasswordEncrypted
 		);
 
-		$this->Close();
-		$baseConnection->TerminateConnections($dbName, true);
-		$baseConnection->TerminateConnections($tempName);
+		$query = <<<SQL
+			DROP DATABASE "{$dbName}";
+SQL;
+		$baseConnection->ExecSQL($query);
 		$baseConnection->RenameDBTo($tempName, $dbName);
 	}
 	/*
@@ -1144,14 +1146,14 @@ SQL;
 	 * @param
 	 * DbName string, drop boolean,
 	 */
-	public function TerminateConnections($dbName, $drop = false)
+	public function TerminateConnections($closeSelf = false)
 	{
 		$query = <<<SQL
 			SELECT datname
 			FROM pg_database
 			WHERE datname = $1;
 SQL;
-		$exists = $this->ExecSQL(Data::Assoc, $query, $dbName);
+		$exists = $this->ExecSQL(Data::Assoc, $query, $this->DatabaseName);
 
 		if ($exists[0] !== null)
 		{
@@ -1161,15 +1163,12 @@ SQL;
 				WHERE pg_stat_activity.datname = $1
 				  AND pid != pg_backend_pid();
 SQL;
-			$this->ExecSQL($query, $dbName);
+			$this->ExecSQL($query, $this->DatabaseName);
+		}
 
-			$query = <<<SQL
-				DROP DATABASE {$dbName};
-SQL;
-			if ($drop)
-			{
-				$this->ExecSQL($query);
-			}
+		if ($closeSelf)
+		{
+			$this->Close();
 		}
 	}
 	function __wakeup()
@@ -1450,14 +1449,16 @@ SQL;
 	}
 
 	/** Renames Database
-	 * @param $dbName
-	 * @param $renameDB
-	 * Both Strings
+	 * @param string $dbName
+	 * @param string $renameDB
 	 */
-	public function RenameDBTo($dbName, $renameDB)
+	public function RenameDBTo($dbName, $renameDb)
 	{
+		$dbName = pg_escape_string($dbName);
+		$renameDb = pg_escape_string($renameDb);
+
 		$query = <<<SQL
-		ALTER DATABASE "{$dbName}" RENAME TO "{$renameDB}";
+			ALTER DATABASE "{$dbName}" RENAME TO "{$renameDb}";
 SQL;
 		$this->ExecSQL(Data::Assoc, $query);
 	}
