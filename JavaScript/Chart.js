@@ -1,5 +1,5 @@
-var printChartPDF = function() {
-	var chart = $(".k-chart").getKendoChart();
+var printChartPDF = function(id) {
+	var chart = $("#" + id).getKendoChart();
 	chart.exportPDF({paperSize: "A5", landscape: true}).done(function(data) {
 		kendo.saveAs({
 			dataURI: data,
@@ -8,8 +8,8 @@ var printChartPDF = function() {
 	});
 };
 
-var printChartImage = function() {
-	var chart = $(".k-chart").getKendoChart();
+var printChartImage = function(id) {
+	var chart = $("#" + id).getKendoChart();
 	chart.exportImage().done(function(data) {
 		kendo.saveAs({
 			dataURI: data,
