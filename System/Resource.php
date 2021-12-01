@@ -126,7 +126,7 @@ abstract class Resource extends Base
 			{
 				$val = reset($val);
 			}
-			header("$key: $val");
+			header("{$key}: {$val}");
 		}
 
 		echo (string)$obj->getBody();
