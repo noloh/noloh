@@ -5,7 +5,15 @@ abstract class Resource extends Base
 	protected $Response;
 	protected $ReceivesJSON = true;
 	
-	function Resource() {}
+	function Resource() {
+		if (
+			class_exists('WhitelistedIpModel')
+			&& !WhitelistedIpModel::IsWhitelisted($_SERVER['REMOTE_ADDR'], get_class($this))
+		)
+		{
+			self::Forbidden('Forbidden');
+		}
+	}
 	
 	function Options()
 	{
@@ -113,7 +121,7 @@ abstract class Resource extends Base
 		}
 		return true;
 	}
-	
+
 	private static function SendResponseFromInterface($obj)
 	{
 		$statusCode = $obj->getStatusCode();
