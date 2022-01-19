@@ -213,8 +213,15 @@ class TextBox extends Control
 		else
 			parent::Focus($delay);
 		if($highlight)
-			ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
-//			QueueClientFunction($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+			if ($delay !== 0)
+			{
+				ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').select;}, {$delay});", array(), true, Priority::Low);
+
+			}
+			else
+			{
+				ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+			}
 	}
     /**
      * @ignore

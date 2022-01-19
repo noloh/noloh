@@ -1296,7 +1296,14 @@ abstract class Control extends Component
 	 */
 	function Focus($delay = 0)
 	{
-		ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').focus();}, {$delay});", array(), true, Priority::Low);
+		if ($delay !== 0)
+		{
+			ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').focus();}, {$delay});", array(), true, Priority::Low);
+		}
+		else
+		{
+			QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+		}
 	}
 	/**
 	 * @ignore
