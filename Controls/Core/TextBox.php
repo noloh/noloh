@@ -211,16 +211,20 @@ class TextBox extends Control
 			ClientScript::Queue($this, '_NKeyEvntsMoTimeout', $this);
 		}
 		else
+		{
 			parent::Focus($delay);
+		}
 		if($highlight)
+		{
 			if (isset($delay))
 			{
-				ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').select}, {$delay});", array(), true, Priority::Low);
+				ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').select();}, {$delay});", array(), true, Priority::Low);
 			}
 			else
 			{
 				ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
 			}
+		}
 	}
     /**
      * @ignore
