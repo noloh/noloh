@@ -204,7 +204,7 @@ class TextBox extends Control
 	 * @param boolean $highlight
 	 * @param integer $delay
 	 */
-	function Focus($highlight = true, $delay = 0)
+	function Focus($highlight = true, $delay = null)
 	{
 		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
 		{
@@ -213,10 +213,9 @@ class TextBox extends Control
 		else
 			parent::Focus($delay);
 		if($highlight)
-			if ($delay !== 0)
+			if (isset($delay))
 			{
-				ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').select;}, {$delay});", array(), true, Priority::Low);
-
+				ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').select}, {$delay});", array(), true, Priority::Low);
 			}
 			else
 			{
