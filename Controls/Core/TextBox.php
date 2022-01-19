@@ -202,15 +202,16 @@ class TextBox extends Control
     /**
 	 * Gives the TextBox the active Focus. Optionally, its Text can also be highlighted.
 	 * @param boolean $highlight
+	 * @param integer $delay
 	 */
-	function Focus($highlight = true)
+	function Focus($highlight = true, $delay = 0)
 	{
 		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
 		{
 			ClientScript::Queue($this, '_NKeyEvntsMoTimeout', $this);
 		}
 		else
-			parent::Focus();
+			parent::Focus($delay);
 		if($highlight)
 			ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
 //			QueueClientFunction($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);

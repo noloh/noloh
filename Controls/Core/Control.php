@@ -1292,10 +1292,11 @@ abstract class Control extends Component
 	}
 	/**
 	 * Gives this Control the active Focus.
+	 * @param integer $delay
 	 */
-	function Focus()
+	function Focus($delay = 0)
 	{
-		QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+		ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').focus();}, {$delay});", array(), true, Priority::Low);
 	}
 	/**
 	 * @ignore
