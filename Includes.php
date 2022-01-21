@@ -34,6 +34,7 @@ if (version_compare(PHP_VERSION, '7.2.0') >= 0)
 {
 	require($_NPath . 'Nodules/Guzzle/5.3.3/autoload.php');
 	include($_NPath . 'vendor/autoload.php');
+	include($_NPath . 'Nodules/AWS/vendor/autoload.php');
 }
 else
 {
