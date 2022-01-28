@@ -34,7 +34,6 @@ if (version_compare(PHP_VERSION, '7.2.0') >= 0)
 {
 	require($_NPath . 'Nodules/Guzzle/5.3.3/autoload.php');
 	include($_NPath . 'vendor/autoload.php');
-	include($_NPath . 'Nodules/AWS/vendor/autoload.php');
 }
 else
 {
@@ -159,20 +158,29 @@ function _NAutoLoad($class)
 		);
 	}
 
+	$namespaceAliases = array(
+		'Aws' => 'AmazonWebServices'
+	);
+
 	$namespace = null;
 	$classWithoutNamespace = null;
 	if (strpos($class, '\\') !== false)
 	{
 		$splitClass = explode('\\', $class);
+		$topClass = $splitClass[0];
 		$classWithoutNamespace = array_pop($splitClass);
-		$namespace = implode('\\', $splitClass);
+		$namespace = $namespaceFolder = implode('\\', $splitClass);
+		if (isset($namespaceAliases[$topClass]))
+		{
+			$namespaceFolder = $namespaceAliases[$topClass];
+		}
 	}
 
 	if (isset($_NAutoLoad[$class]))
 	{
 		require($_NPath . $_NAutoLoad[$class]);
 	}
-	elseif (is_dir($dir = ($_NPath . 'Nodules/' . ($namespace !== null ? $namespace : $class))))
+	elseif (is_dir($dir = ($_NPath . 'Nodules/' . ($namespaceFolder!== null ? $namespaceFolder : $class))))
 	{
 		if ($namespace !== null)
 		{
