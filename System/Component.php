@@ -399,6 +399,13 @@ abstract class Component extends Base
 	/**
 	 * @ignore
 	 */
+	function __wakeup()
+	{
+
+	}
+	/**
+	 * @ignore
+	 */
 	function __sleep()
 	{
 		/*if(isset($GLOBALS['_NChunking']))

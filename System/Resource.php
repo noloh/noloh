@@ -75,6 +75,11 @@ abstract class Resource extends Base
 			{
 				$data = $data->Data;
 			}
+			elseif (static::IsAResponseInterface($data))		// Namely for handling GuzzleHttp\Psr7\Response
+			{
+				static::SendResponseFromInterface($data);
+				return;
+			}
 			else
 			{
 				$data = get_object_vars($data);
@@ -87,6 +92,44 @@ abstract class Resource extends Base
 		header('Content-Type: application/json');
 
 		echo json_encode($data);
+	}
+
+	private static function IsAResponseInterface($obj)
+	{
+		/* Checking for method existence is going to be a little more reliable than checking instanceof GuzzleHttp\Psr7\Response
+			because at the time of this writing, we are already using 3 different versions of Guzzle, a moving target. */
+		$methods = array(
+			'getStatusCode',
+			'getReasonPhrase',
+			'getHeaders',
+			'getBody'
+		);
+		foreach ($methods as $method)
+		{
+			if (!method_exists($obj, $method))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private static function SendResponseFromInterface($obj)
+	{
+		$statusCode = $obj->getStatusCode();
+		$reasonPhrase = $obj->getReasonPhrase();
+		header("HTTP/1.1 {$statusCode} {$reasonPhrase}");
+
+		foreach ($obj->getHeaders() as $key => $val)
+		{
+			if (is_array($val))
+			{
+				$val = reset($val);
+			}
+			header("{$key}: {$val}");
+		}
+
+		echo (string)$obj->getBody();
 	}
 
 	static function ParseClass(&$paths, &$resourceName = null)

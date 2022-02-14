@@ -142,20 +142,36 @@ abstract class RESTRouter extends Base
 			case self::Delete:
 				if (empty($_POST))
 				{
-					$raw = file_get_contents('php://input');
-					if ($this->Resource->ReceivesJSON)
+					$raw = trim(file_get_contents('php://input'));
+
+					if (
+						!$this->Resource->ReceivesJSON
+						|| (
+							isset($_SERVER['HTTP_CONTENT_TYPE'])
+							&& $_SERVER['HTTP_CONTENT_TYPE'] === 'application/xml'
+						)
+					)
+					{
+						$xml = simplexml_load_string($raw);
+						if (!$xml)
+						{
+							Resource::BadRequest('Invalid XML.');
+						}
+						$data = (array) $xml;
+					}
+					elseif ($this->Resource->ReceivesJSON)
 					{
 						$json = json_decode($raw, true);
 						if ($json === null)
 						{
-							parse_str($raw, $data);
+							parse_str($raw, $json);
 							/* If invalid JSON, parse_str on the raw has an odd effect.
 								This attempts to detect that effect and produce a good error message.
 								I can't think of any reason anybody would pass in a 1-element array whose
 								key starts with { or [ as keys should be alphanumeric anyway. */
-							if (count($data) === 1)
+							if (count($json) === 1)
 							{
-								$key = key($data);
+								$key = key($json);
 								$firstChar = $key[0];
 								if ($firstChar === '{' || $firstChar === '[')
 								{
@@ -163,11 +179,10 @@ abstract class RESTRouter extends Base
 								}
 							}
 						}
-						else
-						{
-							$data = $json;
-						}
-					} else {
+						$data = $json;
+					}
+					else
+					{
 						$data = $raw;
 					}
 				}
