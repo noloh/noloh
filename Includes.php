@@ -163,6 +163,7 @@ function _NAutoLoad($class)
 	);
 
 	$namespace = null;
+	$namespaceFolder = null;
 	$classWithoutNamespace = null;
 	if (strpos($class, '\\') !== false)
 	{
