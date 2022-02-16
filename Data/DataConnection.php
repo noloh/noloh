@@ -811,6 +811,15 @@ class DataConnection extends Base
 	 */
 	function __call($name, $args)
 	{
+		// Duplicated from Base because this cannot parent::__call
+		// Backwards compatibility before PHP8
+		if (class_exists($name, false) && is_a($this, $name))
+		{
+			$constructor = new ReflectionMethod($name, '__construct');
+			return $constructor->invokeArgs($this, $args);
+		}
+
+
 		array_splice($args, 0, 0, $name);
 		call_user_func_array(array($this, 'ExecFunction'), $args);
 	}

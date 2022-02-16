@@ -53,14 +53,14 @@ final class NolohInternal
 		{
 			foreach ($_SESSION['_NControlQueueRoot'] as $objId => $bool)
 			{
-				if (isset($did[$objId]))
+				if (isset($did[$objId]) && $did[$objId] === $bool)
 				{
 					BloodyMurder("Could not clear {$objId} from the control queue.");
 				}
 				else
 				{
 					self::ShowControl($objId, $bool);
-					$did[$objId] = true;
+					$did[$objId] = $bool;
 				}
 			}
 		}
