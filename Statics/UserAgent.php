@@ -127,7 +127,7 @@ final class UserAgent
 	/**
 	 * @ignore
 	 */
-	private function UserAgent() {}
+	private function __construct() {}
 	/**
 	 * @ignore
 	 */
@@ -343,14 +343,14 @@ final class UserAgent
 	 * Returns whether or not PHP is running from the command-line.
 	 * @return boolean
 	 */
-	function IsCLI() 
+	public static function IsCLI()
 	{
 		return php_sapi_name() === 'cli' && empty($_SERVER['REMOTE_ADDR']);
 	}
 	/**
 	 * Returns whether or not the user agent is a spider, e.g., a search bot.
 	 */
-	function IsSpider()
+	public static function IsSpider()
 	{
 		return $_SESSION['_NBrowser'] === 'other' && $_SESSION['_NOS'] === 'other';
 	}

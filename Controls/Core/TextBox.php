@@ -23,9 +23,9 @@ class TextBox extends Control
 	 * @param integer $height The height of this element
 	 * @return TextBox
 	 */
-	function TextBox($left = 0, $top = 0, $width = 83, $height = 16)
+	function __construct($left = 0, $top = 0, $width = 83, $height = 16)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 	}
 	/**
 	 * @ignore

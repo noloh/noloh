@@ -21,9 +21,9 @@ abstract class RESTRouter extends Base
 	protected $Resource;
 	protected $InputData;
 	
-	function RESTRouter()
+	function __construct()
 	{
-		parent::Base();
+		parent::__construct();
 
 		// CORS whitelist all origins
 		header('Access-Control-Allow-Origin: *');

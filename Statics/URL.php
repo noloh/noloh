@@ -59,7 +59,7 @@ final class URL
 	/**
 	 * @ignore
 	 */
-	private function URL() {}
+	private function __construct() {}
 	/**
 	 * Gets the value of a particular URL token. If that token has not been set, then $defaultValue will be returned
 	 * @param string $tokenName

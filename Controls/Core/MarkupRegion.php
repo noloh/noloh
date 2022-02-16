@@ -32,9 +32,9 @@ class MarkupRegion extends Control
 	 * @param integer $height The Height dimension of this element
 	 * @return MarkupRegion
 	 */
-	function MarkupRegion($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
+	function __construct($markupStringOrFile, $left=0, $top=0, $width = 200, $height = 200)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetScrolling(System::Auto);
 		//$this->AutoScroll = true;
 		if($markupStringOrFile !== null)
@@ -150,7 +150,7 @@ class MarkupRegion extends Control
 	 */
     function SetScrollLeft($scrollLeft)
     {
-    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+    	$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
         if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
@@ -170,7 +170,7 @@ class MarkupRegion extends Control
      */
     function SetScrollTop($scrollTop)
     {
-    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+    	$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
     	if($_SESSION['_NIsIE'])
     		ClientScript::Queue($this, '_NChange', array($this->Id, 'scrollTop', $scrollTop), false, Priority::High);
 //    		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);

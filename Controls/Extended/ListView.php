@@ -90,9 +90,9 @@ class ListView extends Panel
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function ListView($left=0, $top=0, $width=300, $height=200)
+	function __construct($left=0, $top=0, $width=300, $height=200)
 	{
-		parent::Panel($left, $top, $width, null)/*, $this)*/;
+		parent::__construct($left, $top, $width, null)/*, $this)*/;
 		$this->Scrolling = false;
 		$this->ColumnsPanel = new Panel(0, 0, $width, 22, $this);
 		$this->ColumnsPanel->CSSBackgroundImage = "url(". System::ImagePath() . "Std/HeadBlue.gif)";

@@ -33,7 +33,7 @@ class InnerSugar extends Base
 	/**
 	 * @ignore
 	 */
-	function InnerSugar($obj, $chain, $tail, $var)
+	function __construct($obj, $chain, $tail, $var)
 	{
 		$this->Obj = $obj;
 		$this->CurrentChain = $chain;

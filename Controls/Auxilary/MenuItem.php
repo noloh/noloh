@@ -45,9 +45,9 @@ class MenuItem extends Panel
 	 * @param string|Control $textOrControl
 	 * @param integer $height The Height of this element
 	 */
-	function MenuItem($textOrControl, $height=18)
+	function __construct($textOrControl, $height=18)
 	{
-		parent::Panel(null, null, null, $height);
+		parent::__construct(null, null, null, $height);
 		if($textOrControl instanceof Control)
 			$this->TextLabel = $textOrControl;
 		else

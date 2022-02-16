@@ -5,7 +5,7 @@ abstract class Resource extends Base
 	protected $Response;
 	protected $ReceivesJSON = true;
 	
-	function Resource() {}
+	function __construct() {}
 	
 	function Options()
 	{

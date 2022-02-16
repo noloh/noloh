@@ -39,7 +39,7 @@ final class Animate
 	 */
 	const Hiding = 'Hiding';
 	
-	private function Animate() {}
+	private function __construct() {}
 	/**
 	 * Animates a specified Control's specified property (in the sense of JavaScript e.g., "style.borderWidth") to a specified position over time.
 	 * @param Control $control The Control to be animated

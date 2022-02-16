@@ -21,70 +21,81 @@ function _NPHPInfo($info)
  */
 function _NOBErrorHandler($buffer)
 {
-	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
+	if (strpos($buffer, '<title>phpinfo()</title>') !== false)
 	{
 		trigger_error('~_NINFO~');
 	}
-	elseif(preg_match('/(.*): (.*) in (.*) on line ([0-9]+)/s', $buffer, $matches))
+	elseif (preg_match('/(.*?): (.*) in (.*?) on line ([0-9]+)/s', $buffer, $matches))
 	{
+		$error = $matches[2];
 		if ($GLOBALS['_NDebugMode'] === 'Kernel')
 		{
-			trigger_error('~OB~' . $matches[1] . '~OB~' . $matches[2] . '~OB~' . $matches[3] . '~OB~' . $matches[4]);
+			$file = $matches[3];
+			$line = $matches[4];
 		}
 		else
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
-			if (PHP_VERSION_ID < 50300)
+			$file = $trace['file'];
+			$line = $trace['line'];
+		}
+
+		if (PHP_VERSION_ID < 50300)
+		{
+			$obStr = '~OB~' . $matches[1] . '~OB~' . $matches[2] . '~OB~' . $file . '~OB~' . $line;
+			trigger_error($obStr);
+		}
+		else
+		{
+
+			$processRequestDetails = true;
+			// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
+			setcookie('_NAppCookie', false);
+			header('Content-Type: text/javascript');
+			if (!in_array('Cache-Control: no-cache', headers_list(), true))
 			{
-				$obStr = '~OB~' . $matches[1] . '~OB~' . $matches[2] . '~OB~' . $trace['file'] . '~OB~' . $trace['line'];
-				trigger_error($obStr);
+				++$_SESSION['_NVisit'];
 			}
-			else
+
+			$message = (
+				str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $error)
+				. ($file
+					? "\\nin " . str_replace("\\", "\\\\", $file) . "\\non line " . $line
+					: '')
+			);
+
+			if (strpos($message, 'Class \'Object\' not found') !== false)
 			{
-				$processRequestDetails = true;
-				// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
-				setcookie('_NAppCookie', false);
-				header('Content-Type: text/javascript');
-				if (!in_array('Cache-Control: no-cache', headers_list(), true))
-				{
-					++$_SESSION['_NVisit'];
-				}
-
-				$message = (str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $matches[2]) . ($trace['file'] ? "\\nin " . str_replace("\\", "\\\\", $trace['file']) . "\\non line " . $trace['line'] : ''));
-
-				if (strpos($message, 'Class \'Object\' not found') !== false)
-				{
-					$message = 'This project requires PHP 5.x but is currently running on ' . PHP_VERSION;
-					$processRequestDetails = false;
-				}
-
-				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : $GLOBALS['_NDebugModeError']) . '");';
-
-				NolohInternal::ResetSecureValuesQueue();
-				NolohInternal::ResetSession();
-
-				$requestDetails = &Application::UpdateRequestDetails();
-				$requestDetails['error_message'] = $message;
-				unset($requestDetails['total_session_io_time']);
-
-				$webPage = WebPage::That();
-				if ($webPage && $processRequestDetails)
-				{
-					/*
-					 * Checking for a syntax error message.
-					 * This is a critical error that is not reached in normal cases.
-					 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
-					 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
-					 * !It is not recommended to continue using!
-					*/
-					if (strpos($message, 'syntax error') === false)
-					{
-						$webPage->ProcessRequestDetails($requestDetails);
-					}
-				}
-
-				return $alert;
+				$message = 'This project requires PHP 5.x but is currently running on ' . PHP_VERSION;
+				$processRequestDetails = false;
 			}
+
+			$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : $GLOBALS['_NDebugModeError']) . '");';
+
+			NolohInternal::ResetSecureValuesQueue();
+			NolohInternal::ResetSession();
+
+			$requestDetails = &Application::UpdateRequestDetails();
+			$requestDetails['error_message'] = $message;
+			unset($requestDetails['total_session_io_time']);
+
+			$webPage = WebPage::That();
+			if ($webPage && $processRequestDetails && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
+			{
+				/*
+				 * Checking for a syntax error message.
+				 * This is a critical error that is not reached in normal cases.
+				 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
+				 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
+				 * !It is not recommended to continue using!
+				*/
+				if (strpos($message, 'syntax error') === false)
+				{
+					$webPage->ProcessRequestDetails($requestDetails);
+				}
+			}
+
+			return $alert;
 		}
 	}
 }
@@ -134,9 +145,17 @@ function _NExceptionHandler($exception)
 	
 	$traces = $exception->getTrace();
 	$message = $exception->getMessage();
+	$debugKernel = $GLOBALS['_NDebugMode'] === 'Kernel';
+
+	if ($debugKernel || strpos($exception->getFile(), $_NPath) === false)
+	{
+		$message .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $exception->getFile()) . "\\non line " . $exception->getLine();
+	}
+
+	$traces = array_slice($traces, 0, 4);
 	foreach ($traces as $trace)
 	{
-		if (strpos($trace['file'], $_NPath) === false
+		if (($debugKernel || strpos($trace['file'], $_NPath) === false)
 			&& isset($trace['file'])
 			&& isset($trace['line']))
 		{
@@ -181,7 +200,7 @@ function DisplayError($message)
 	$requestDetails['error_message'] = $message;
 	unset($requestDetails['total_session_io_time']);
 	$webPage = WebPage::That();
-	if ($webPage)
+	if ($webPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
 	{
 		$webPage->ProcessRequestDetails($requestDetails);
 	}
@@ -195,11 +214,11 @@ function DisplayError($message)
 function _NFirstNonNOLOHBacktrace()
 {
 	global $_NPath;
-	$backtrace = debug_backtrace();
+	$backtrace = debug_backtrace(0);
 	$backtraceCount = count($backtrace);
 	if ($GLOBALS['_NDebugMode'] === 'Kernel')
 	{
-		return $backtrace[0];
+		return $backtrace[1];
 	}
 	else
 	{

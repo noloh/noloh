@@ -43,9 +43,9 @@ class Label extends Control
 	 * @param integer $height The height of this element
 	 * @return Label
 	 */
-	function Label($text='', $left = 0, $top = 0, $width = 83, $height = 18)
+	function __construct($text='', $left = 0, $top = 0, $width = 83, $height = 18)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if($width !== null)
 			parent::SetWidth($width);
 		if($height !== null)

@@ -2,7 +2,7 @@
 
 final class Dir
 {
-	private function Dir() {}
+	private function __construct() {}
 	/**
 	 * Generates a hash of a directory.
 	 *

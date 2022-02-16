@@ -53,9 +53,9 @@ class Calendar extends Panel
 	 * @param integer $timestamp The selected date, given in the number of seconds since the UNIX Epoch, i.e., January 1 1970 00:00:00 GMT. A value of null corresponds to today.
 	 * @return Calendar
 	 */
-	function Calendar($left=0, $top=0, $width=215, $height=200, $timestamp=null)
+	function __construct($left=0, $top=0, $width=215, $height=200, $timestamp=null)
 	{
-		parent::Panel($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->Border = '1px solid #000000';
 		$this->BackColor = '#FFFFCC';
 		$daysOfWeek = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');

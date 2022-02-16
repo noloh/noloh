@@ -50,9 +50,9 @@ class ListViewItem extends Panel //extends Component
 	 * This can also be an Array of SubItems.
 	 * @param integer $height The height of the ListViewItem within the ArrayList
 	 */	
-	function ListViewItem($objOrText = null, $height=20)
+	function __construct($objOrText = null, $height=20)
 	{
-		parent::Panel(null, null, '100%', null, $this);
+		parent::__construct(null, null, '100%', null, $this);
 		$this->CSSClasses->Add('NLVRow');
 		$this->SetLayout(Layout::Relative);
 		$this->SubItems = new ImplicitArrayList($this, 'AddSubItem');

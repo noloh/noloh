@@ -31,9 +31,9 @@ class Timer extends Component
 	 * @param boolean $repeats Indicates whether or not the Event will keep executing periodically
 	 * @return Timer
 	 */
-	function Timer($interval, $repeats=false)
+	function __construct($interval, $repeats=false)
 	{
-		parent::Component();
+		parent::__construct();
 		$this->Interval = $interval;
 		$this->Repeat = $repeats;
 	}

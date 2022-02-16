@@ -8,9 +8,9 @@ class UnorderedList extends Control
 	 */
 	public $Controls;
 
-	function UnorderedList($left = 0, $top = 0)
+	function __construct($left = 0, $top = 0)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
