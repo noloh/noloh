@@ -1363,5 +1363,58 @@ SQL;
 		}
 		return implode(', ', $cols);
 	}
+	/**
+	 * Creates a copy of this database
+	 * @param $toDbName string name of the new database
+	 * @return DataConnection The connection to the new database
+	 */
+	public function CloneDatabase($toDbName)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('CloneDatabase only supports Postgres data connections');
+		}
+		if (preg_match('/[^a-zA-Z0-9_]+/', $toDbName))
+		{
+			BloodyMurder('Invalid database name');
+		}
+
+		$pass = $this->Password;
+		if ($this->PasswordEncrypted)
+		{
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+		}
+
+		$user = escapeshellarg($this->Username);
+		$host = escapeshellarg($this->Host);
+		$dbName = escapeshellarg($this->DatabaseName);
+		$port = escapeshellarg($this->Port);
+		$cloneDbName = escapeshellarg($toDbName);
+
+		if (System::IsWindows())
+		{
+			$create = "SET PGPASSWORD={$pass} && createdb -U {$user} -p {$port} {$cloneDbName}";
+			$transfer = "SET PGPASSWORD={$pass} && pg_dump -U {$user}-p {$port} -h {$host} {$dbName} | psql -U {$user} -p {$port} -h {$host} {$cloneDbName}";
+		}
+		else
+		{
+			$create = "export PGPASSWORD={$pass} && createdb -U {$user} -p {$port} -h {$host} {$cloneDbName}";
+			$transfer = "export PGPASSWORD={$pass} && pg_dump -U {$user} -p {$port} -h {$host} {$dbName} | psql -U {$user} -p {$port} -h {$host} {$cloneDbName}";
+		}
+		exec($create);
+		exec($transfer);
+
+		return new DataConnection(
+			$this->Type,
+			$toDbName,
+			$this->Username,
+			$this->Password,
+			$this->Host,
+			$this->Port,
+			$this->PasswordEncrypted
+		);
+	}
 }
 ?>
