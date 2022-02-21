@@ -1081,7 +1081,8 @@ SQL;
 
 	/**
 	 * Takes in a file and restores the current DB from that file.
-	 * @param .bak $file Must be a .bak file or a text file dump.
+	 *
+	 * @param string $file Must be a text file dump.
 	 */
 	function DBRestore($file)
 	{
@@ -1108,15 +1109,15 @@ SQL;
 		}
 		$tempName = 'restore_db_' . date("YmdHis");
 
-		if (!System::IsWindows())
-		{
-			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
-			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
-		}
-		else
+		if (System::IsWindows())
 		{
 			$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} {$tempName}";
 			$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
+		}
+		else
+		{
+			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
 		}
 
 		// Create new DB and Restore file into it.
