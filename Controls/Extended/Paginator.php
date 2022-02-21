@@ -67,9 +67,9 @@ class Paginator extends RichMarkupRegion implements Countable
      * @param integer $width The Width dimension of this element
      * @param integer $height The Height dimension of this element
      */
-    function Paginator($resultsPanel=null, $left=0, $top=0, $width=300, $height=25)
+    function __construct($resultsPanel=null, $left=0, $top=0, $width=300, $height=25)
     {
-        parent::RichMarkupRegion(null, $left, $top, $width, $height);
+        parent::__construct(null, $left, $top, $width, $height);
         $this->Init($resultsPanel);
     }
     private function Init($resultsPanel)

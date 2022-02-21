@@ -33,9 +33,9 @@ class Group extends Component implements ArrayAccess, Countable, Iterator
 	 * Be sure to call this from the constructor of any class that extends Group.
 	 * @return Group
 	 */
-	function Group()
+	function __construct()
 	{
-		parent::Component();
+		parent::__construct();
 		$this->Groupees = new ArrayList();
 		$this->Groupees->ParentId = $this->Id;
 		$this->WaitingList = array();

@@ -52,9 +52,9 @@ class TabPanel extends Panel
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function TabPanel($left = 0, $top = 0, $width = 500, $height = 500)
+	function __construct($left = 0, $top = 0, $width = 500, $height = 500)
 	{
-		parent::Panel($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		$this->Tabs = new Group();
 		$this->Tabs->Change = new ClientEvent('_NTbPgSt', $this->Tabs->Id);
 

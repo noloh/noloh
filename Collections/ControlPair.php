@@ -42,9 +42,9 @@ class ControlPair extends Panel implements ArrayAccess
 	 * @param integer $margin
 	 * @return ControlPair
 	 */
-	function ControlPair($firstControl, $secondControl=null, $left=0, $top=0, $orientation=Layout::Horizontal, $margin = 0)
+	function __construct($firstControl, $secondControl=null, $left=0, $top=0, $orientation=Layout::Horizontal, $margin = 0)
 	{
-		parent::Panel($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if(!is_object($firstControl))
 			$firstControl = new Label($firstControl, 0, 0, null, null);
 		$this->SetFirst($firstControl);

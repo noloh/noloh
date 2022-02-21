@@ -52,7 +52,7 @@ class DataReader extends Base implements ArrayAccess, Countable, Iterator
 	 * @param ServerEvent $callBack
 	 * @param Boolean $convertType Whether to convert returned data into their native PHP equivalents, instead of strings.
 	 */
-	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null, $convertType=false)
+	function __construct($type, $resource, $resultType=Data::Assoc, $callBack=null, $convertType=false)
 	{
 		$this->Type = $type;
 		$this->ResultType = $resultType;

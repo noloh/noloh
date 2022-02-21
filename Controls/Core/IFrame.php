@@ -36,9 +36,9 @@ class IFrame extends Control
 	* @param integer $height
 	* @return IFrame
 	*/
-	function IFrame($src ='', $left=0, $top=0, $width=300, $height=300)
+	function __construct($src ='', $left=0, $top=0, $width=300, $height=300)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetSrc($src);
 	}
 	/**
@@ -71,7 +71,7 @@ class IFrame extends Control
 	 */
 	function SetScrollLeft($scrollLeft)
 	{
-		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+		$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
 		$this->ScrollLeft = $scrollLeft;
 		NolohInternal::SetProperty('scrollLeft', $scrollLeft, $this);
 	}
@@ -88,7 +88,7 @@ class IFrame extends Control
 	 */
 	function SetScrollTop($scrollTop)
 	{
-		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+		$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
 		$this->ScrollTop = $scrollTop;
 		NolohInternal::SetProperty('scrollTop', $scrollTop, $this);
 	}
@@ -137,7 +137,7 @@ class IFrame extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<A href="', $this->Src, '"', parent::SearchEngineShow(true), '>', $this->Text ? $this->Text : $this->Src, '</A>';
+		echo '<A href="', $this->Src, '"', parent::SearchEngineShowClassAttr(), '>', $this->Text ? $this->Text : $this->Src, '</A>';
 	}
 	/**
 	 * @ignore
