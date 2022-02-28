@@ -122,7 +122,7 @@ abstract class Resource extends Base
 		}
 		return true;
 	}
-	
+
 	private static function SendResponseFromInterface($obj)
 	{
 		$statusCode = $obj->getStatusCode();

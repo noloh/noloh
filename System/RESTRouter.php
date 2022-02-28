@@ -35,6 +35,81 @@ abstract class RESTRouter extends Base
 		$this->InitResources();
 	}
 
+	protected function ValidateIpWhitelisting($ip, $range)
+	{
+		if (empty($range))
+		{
+			return true;
+		}
+
+
+		$validateFunction = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
+			? 'ValidateIpv4SubnetRange'
+			: 'ValidateIpv6SubnetRange';
+		foreach ($range as $whitelisting)
+		{
+			if ($this->$validateFunction($ip, $whitelisting))
+			{
+				return true;
+			}
+		}
+
+
+		Resource::Forbidden("Unauthorized IP for {$this->ResourceName}.");
+	}
+
+	/**
+	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv6, return false.
+	 * @param string $ip IPv4 Address
+	 * @param string $range A subnet range to validate $ip against.
+	 * @return bool
+	 */
+	protected function ValidateIpv4SubnetRange($ip, $range)
+	{
+		list($subnet, $mask) = explode('/', $range);
+		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+		{
+			return false;
+		}
+		$ip = ip2long($ip);
+		$subnet = ip2long($subnet);
+		$mask = -1 << (32 - $mask);
+		$subnet &= $mask;
+		return ($ip & $mask) == $subnet;
+	}
+
+	/**
+	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv4, return false.
+	 * @param string $ip IPv6 Address
+	 * @param string $range A subnet range to validate $ip against.
+	 * @return bool
+	 */
+	protected function ValidateIpv6SubnetRange($ip, $range)
+	{
+		list($subnet, $mask) = explode('/',$range);
+		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+		{
+			return false;
+		}
+		$binaryip = $this->InetToBits(inet_pton($ip));
+		$binarynet = $this->InetToBits(inet_pton($subnet));
+
+		$ip_net_bits = substr($binaryip,0,$mask);
+		$net_bits = substr($binarynet,0,$mask);
+		return $ip_net_bits == $net_bits;
+	}
+
+	protected function InetToBits($inet)
+	{
+		$split = str_split($inet);
+		$binaryip = '';
+		foreach ($split as $char)
+		{
+			$binaryip .= str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT);
+		}
+		return $binaryip;
+	}
+
 	protected function ValidateSecurity()
 	{
 		if (!empty($this->APIAccessKey) && ($this->APIAccessKey !== System::GetHTTPHeader('API-Access-Key')))
