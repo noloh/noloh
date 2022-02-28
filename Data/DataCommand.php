@@ -39,7 +39,7 @@ class DataCommand extends Base
 	 * @param string $sql The SQL statement you wish to execute.
 	 * @param Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 */
-	function DataCommand($connection = null, $sql = '', $resultType = Data::Both)
+	function __construct($connection = null, $sql = '', $resultType = Data::Both)
 	{
 		$this->Connection = $connection;
 		$this->SqlStatement = $sql;

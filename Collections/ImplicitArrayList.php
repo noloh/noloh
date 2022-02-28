@@ -68,9 +68,9 @@ class ImplicitArrayList extends ArrayList
 	 * @param string $clearFunctionName
 	 * @return ImplicitArrayList
 	 */
-	function ImplicitArrayList($obj=null, $addFunctionName='', $removeAtFunctionName='', $clearFunctionName='')
+	function __construct($obj=null, $addFunctionName='', $removeAtFunctionName='', $clearFunctionName='')
 	{
-		parent::ArrayList();
+		parent::__construct();
 		$this->Source = $obj instanceof Component ? $obj->Id : $obj;
 		$this->AddFunctionName = $addFunctionName;
 		$this->RemoveAtFunctionName = $removeAtFunctionName;

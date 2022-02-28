@@ -39,7 +39,7 @@ class ClientEvent extends Event
 	 * @param string $allCodeAsString Either the full JavaScript code to be executed or the name of a JavaScript function as a string
 	 * @param mixed,... $params the optional params to be passed to your JavaScript function
 	 */
-	function ClientEvent($allCodeAsString, $params=null)
+	function __construct($allCodeAsString, $params=null)
 	{
 		if($allCodeAsString !== '' && !preg_match('/(?:;|})\s*?\z/', $allCodeAsString))
 		{
@@ -49,10 +49,10 @@ class ClientEvent extends Event
 			for($i=1;$i<$count;++$i)
 				$allCodeAsString .= self::ClientFormat($params[$i]) .',';
 			$allCodeAsString = rtrim($allCodeAsString, ',') . ');';
-			parent::Event($allCodeAsString);
+			parent::__construct($allCodeAsString);
 		}
 		else
-			parent::Event(str_replace("\n", ' ', $allCodeAsString));
+			parent::__construct(str_replace("\n", ' ', $allCodeAsString));
 	}
 	/**
 	 * @ignore

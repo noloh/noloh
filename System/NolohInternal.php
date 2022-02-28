@@ -6,7 +6,7 @@ final class NolohInternal
 {
 	private static $SessionState;
 
-	private function NolohInternal(){}
+	private function __construct(){}
 
 	public static function Queues()
 	{
@@ -48,30 +48,56 @@ final class NolohInternal
 	
 	public static function ControlQueue()
 	{
-        while(list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
-			self::ShowControl($objId, $bool);
-		if(isset($GLOBALS['_NAddedSomething']))
+		$did = array();
+		while (!empty($_SESSION['_NControlQueueRoot']))
+		{
+			foreach ($_SESSION['_NControlQueueRoot'] as $objId => $bool)
+			{
+				if (isset($did[$objId]) && $did[$objId] === $bool)
+				{
+					BloodyMurder("Could not clear {$objId} from the control queue.");
+				}
+				else
+				{
+					self::ShowControl($objId, $bool);
+					$did[$objId] = $bool;
+				}
+			}
+		}
+		if (isset($GLOBALS['_NAddedSomething']))
+		{
 			AddScript('_NQ()', Priority::High);
+		}
 	}
 
 	public static function ShowControl($id, $bool)
 	{
 		$control = GetComponentById($id);
-		if($bool)
+		if ($bool)
 		{
-			if($control->GetShowStatus()===0)
+			if ($control->GetShowStatus() === 0)
+			{
 				$control->Show();
-            elseif($control->GetShowStatus()===1)
+			}
+            elseif ($control->GetShowStatus() === 1)
+			{
             	$control->Adopt();
-			elseif($control->GetShowStatus()===2)
+			}
+			elseif ($control->GetShowStatus() === 2)
+			{
 				$control->Resurrect();
+			}
 		}
-		elseif($control->GetShowStatus()!==0)
-			$control->Bury();
-		if(isset($_SESSION['_NControlQueueDeep'][$id]))
+		elseif ($control->GetShowStatus() !== 0)
 		{
-			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$id]))
-				self::ShowControl($childObjId/*, $control*/, $bool);
+			$control->Bury();
+		}
+		if (isset($_SESSION['_NControlQueueDeep'][$id]))
+		{
+			foreach ($_SESSION['_NControlQueueDeep'][$id] as $childObjId => $bool)
+			{
+				self::ShowControl($childObjId, $bool);
+			}
 			unset($_SESSION['_NControlQueueDeep'][$id]);
 		}
 	}
@@ -203,6 +229,10 @@ final class NolohInternal
 	public static function SetProperty($name, $value, $obj)
 	{
         $objId = is_object($obj) ? $obj->Id : $obj;
+        if (!$objId)
+		{
+			BloodyMurder('No ID when setting property: ' . $name);
+		}
 		if(!isset($GLOBALS['_NQueueDisabled']) || $GLOBALS['_NQueueDisabled'] !== $objId)
 		{
 			if(!isset($_SESSION['_NPropertyQueue'][$objId]))

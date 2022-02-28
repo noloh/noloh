@@ -583,7 +583,7 @@ final class Color
 	 */
 	const YellowGreen = '#9ACD32';
 	
-	private function Color(){}
+	private function __construct(){}
 	/**
 	 * @ignore
 	 */

@@ -49,9 +49,9 @@ class Listener extends Component
 	 * @param integer $interval
 	 * @return Listener
 	 */
-	function Listener($source, $update = null, $transport = self::LongPoll, $interval = 500)
+	function __construct($source, $update = null, $transport = self::LongPoll, $interval = 500)
 	{
-		parent::Component();
+		parent::__construct();
 		$this->SetSource($source);
 		if($update)
 			$this->SetUpdate($update);

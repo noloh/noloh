@@ -10,7 +10,7 @@ class RawParameter extends Base
 	protected $Parameter;
 	public $Values;
 	
-	function RawParameter($paramsDotDotDot)
+	function __construct($paramsDotDotDot)
 	{
 		$args = func_get_args();
 

@@ -11,9 +11,9 @@ class DataSequence extends Base
 	protected $Name;
 	protected $Connection;
 
-	function DataSequence($name, DataConnection $connection)
+	function __construct($name, DataConnection $connection)
 	{
-		parent::Base();
+		parent::__construct();
 
 		if (!preg_match('/^[a-zA-Z0-9_]+$/', $name))
 		{

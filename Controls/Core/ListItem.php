@@ -8,9 +8,9 @@ class ListItem extends Control
 	 */
 	public $Controls;
 
-	function ListItem($text = '')
+	function __construct($text = '')
 	{
-		parent::Control(null, null, null, null);
+		parent::__construct(null, null, null, null);
 
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;

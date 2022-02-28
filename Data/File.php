@@ -70,7 +70,7 @@ class File extends Base
 	 * @param string|array $file A path to the file or an array of file information in the sense of PHP's file() function
 	 * @return File
 	 */
-	function File($file = null)
+	function __construct($file = null)
 	{
 		if(is_array($file))
 		{

@@ -96,7 +96,7 @@ class DataConnection extends Base
 	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
 	 * @param array $afterConnectCallBack callback function for after a succesful connection is made
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
+	function __construct($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -811,6 +811,15 @@ class DataConnection extends Base
 	 */
 	function __call($name, $args)
 	{
+		// Duplicated from Base because this cannot parent::__call
+		// Backwards compatibility before PHP8
+		if (class_exists($name, false) && is_a($this, $name))
+		{
+			$constructor = new ReflectionMethod($name, '__construct');
+			return $constructor->invokeArgs($this, $args);
+		}
+
+
 		array_splice($args, 0, 0, $name);
 		call_user_func_array(array($this, 'ExecFunction'), $args);
 	}
