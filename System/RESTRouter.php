@@ -42,7 +42,6 @@ abstract class RESTRouter extends Base
 			return true;
 		}
 
-
 		$validateFunction = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
 			? 'ValidateIpv4SubnetRange'
 			: 'ValidateIpv6SubnetRange';
