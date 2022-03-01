@@ -35,17 +35,27 @@ abstract class RESTRouter extends Base
 		$this->InitResources();
 	}
 
-	protected function ValidateIpWhitelisting($ip, $range)
+	protected function ValidateIpWhitelisting($ip, $cidr)
 	{
-		if (empty($range))
+		if (empty($cidr))
 		{
 			return true;
 		}
 
-		$validateFunction = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
-			? 'ValidateIpv4SubnetRange'
-			: 'ValidateIpv6SubnetRange';
-		foreach ($range as $whitelisting)
+		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+		{
+			$validateFunction = 'ValidateIpv4SubnetRange';
+		}
+		elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+		{
+			$validateFunction = 'ValidateIpv6SubnetRange';
+		}
+		else
+		{
+			Resource::BadRequest('Invalid IP Address detected.');
+		}
+
+		foreach ($cidr as $whitelisting)
 		{
 			if ($this->$validateFunction($ip, $whitelisting))
 			{
@@ -60,12 +70,12 @@ abstract class RESTRouter extends Base
 	/**
 	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv6, return false.
 	 * @param string $ip IPv4 Address
-	 * @param string $range A subnet range to validate $ip against.
+	 * @param string $cidr A subnet range to validate $ip against.
 	 * @return bool
 	 */
-	protected function ValidateIpv4SubnetRange($ip, $range)
+	protected function ValidateIpv4SubnetRange($ip, $cidr)
 	{
-		list($subnet, $mask) = explode('/', $range);
+		list($subnet, $mask) = explode('/', $cidr);
 		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 		{
 			return false;
@@ -80,33 +90,33 @@ abstract class RESTRouter extends Base
 	/**
 	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv4, return false.
 	 * @param string $ip IPv6 Address
-	 * @param string $range A subnet range to validate $ip against.
+	 * @param string $cidr A subnet range to validate $ip against.
 	 * @return bool
 	 */
-	protected function ValidateIpv6SubnetRange($ip, $range)
+	protected function ValidateIpv6SubnetRange($ip, $cidr)
 	{
-		list($subnet, $mask) = explode('/',$range);
+		list($subnet, $mask) = explode('/', $cidr);
 		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
 		{
 			return false;
 		}
-		$binaryip = $this->InetToBits(inet_pton($ip));
-		$binarynet = $this->InetToBits(inet_pton($subnet));
+		$binaryIp = $this->InetToBits(inet_pton($ip));
+		$binaryNet = $this->InetToBits(inet_pton($subnet));
 
-		$ip_net_bits = substr($binaryip,0,$mask);
-		$net_bits = substr($binarynet,0,$mask);
-		return $ip_net_bits == $net_bits;
+		$ipNetBits = substr($binaryIp, 0, $mask);
+		$netBits = substr($binaryNet, 0, $mask);
+		return $ipNetBits == $netBits;
 	}
 
 	protected function InetToBits($inet)
 	{
 		$split = str_split($inet);
-		$binaryip = '';
+		$binaryIp = '';
 		foreach ($split as $char)
 		{
-			$binaryip .= str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT);
+			$binaryIp .= str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT);
 		}
-		return $binaryip;
+		return $binaryIp;
 	}
 
 	protected function ValidateSecurity()
