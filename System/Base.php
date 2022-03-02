@@ -53,7 +53,7 @@ abstract class Base
 	/**
 	 * @ignore
 	 */
-	function Base()	{}
+	function __construct()	{}
 	/**
 	 * @ignore
 	 */
@@ -79,7 +79,7 @@ abstract class Base
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if (method_exists($this, $func = 'Get' . $nm))
 		{
@@ -155,7 +155,13 @@ abstract class Base
 	 */
 	function __call($nm, $args)
 	{
-		if (strpos($nm, 'Cas') === 0)
+		// Backwards compatibility before PHP8
+		if (class_exists($nm, false) && is_a($this, $nm))
+		{
+			$constructor = new ReflectionMethod($nm, '__construct');
+			$constructor->invokeArgs($this, $args);
+		}
+		elseif (strpos($nm, 'Cas') === 0)
 		{
 			$prop = substr($nm, 3);
 			if (method_exists($this, $prop))

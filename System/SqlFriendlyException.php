@@ -4,7 +4,7 @@ class SqlFriendlyException extends Exception
 {
 	protected $CallBack;
 
-	function SqlFriendlyException($message, $callBack)
+	function __construct($message, $callBack)
 	{
 		$this->CallBack = $callBack;
 

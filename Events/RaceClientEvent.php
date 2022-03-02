@@ -36,7 +36,7 @@ class RaceClientEvent extends ClientEvent
 	 * @param string $allCodeAsString Either the full JavaScript code to be executed or the name of a JavaScript function as a string
 	 * @param mixed,... $params the optional params to be passed to your JavaScript function
 	 */
-	function RaceClientEvent($condition, $allCodeAsString, $params=null)
+	function __construct($condition, $allCodeAsString, $params=null)
 	{
 /*		if($allCodeAsString !== '' && !preg_match('/(?:;|})\s*?\z/', $allCodeAsString))
 		{
@@ -49,9 +49,9 @@ class RaceClientEvent extends ClientEvent
 		}
 		else
 			$allCodeAsString = str_replace("\n", ' ', $allCodeAsString);*/
-		$args = func_get_args();
-		call_user_func_array(array('ClientEvent', 'ClientEvent'), array_splice($args, 1));
-		//parent::ClientEvent($allCodeAsString, $params);
+		//$args = func_get_args();
+		//call_user_func_array(array('ClientEvent', 'ClientEvent'), array_splice($args, 1));
+		parent::__construct($allCodeAsString, $params);
 		if(!$condition instanceof ClientEvent)
 		{	
 			if(!preg_match('/^\s*?function\s*\(.*\)?\s*?\{.*\}\s*?$/si', $condition))

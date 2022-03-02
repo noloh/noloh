@@ -51,7 +51,7 @@ class WindowPanel extends Panel
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function WindowPanel($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200)
+	function __construct($title = 'WindowPanel', $left=0, $top=0, $width=300, $height = 200)
 	{
 		$this->BodyPanel = new Panel(0, 0, null, null);
 		$imagesRoot = System::ImagePath();
@@ -68,7 +68,7 @@ class WindowPanel extends Panel
 		
 		$topMargin = 7;
 		
-		parent::Panel($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		$this->WindowPanelComponents = new ArrayList();
 		$this->WindowPanelComponents->ParentId = $this->Id;
 		$this->ResizeImage = new Image($imagesRoot.'Std/WinResize.gif', null, null);

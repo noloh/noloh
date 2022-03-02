@@ -13,7 +13,7 @@ class DataReaderIterator extends DataReader
 	 * @param ServerEvent $callBack
 	 * @param Boolean $convertType Whether to convert returned data into their native PHP equivalents, instead of strings.
 	 */
-	function DataReaderIterator($resource, $resultType = Data::Assoc, $callBack = null, $convertType = false)
+	function __construct($resource, $resultType = Data::Assoc, $callBack = null, $convertType = false)
 	{
 		$this->Type = Data::Postgres;
 		$this->ResultType = $resultType;

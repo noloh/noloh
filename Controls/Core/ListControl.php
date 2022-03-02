@@ -24,7 +24,7 @@ abstract class ListControl extends Control
 	 * @param integer $width
 	 * @param integer $height
 	 */
-	function ListControl($left=0, $top=0, $width=0, $height=0)
+	function __construct($left=0, $top=0, $width=0, $height=0)
 	{
 		Control::Control($left, $top, $width, $height);
 		$this->Items = new ImplicitArrayList($this, 'AddItem', 'RemoveItemAt', 'ClearItems');

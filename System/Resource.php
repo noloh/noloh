@@ -5,7 +5,7 @@ abstract class Resource extends Base
 	protected $Response;
 	protected $ReceivesJSON = true;
 	
-	function Resource() {}
+	function __construct() {}
 	
 	function Options()
 	{
@@ -37,6 +37,15 @@ abstract class Resource extends Base
 	
 	function __call($name, $args)
 	{
+		// Duplicated from Base because this cannot parent::__call
+		// Backwards compatibility before PHP8
+		if (class_exists($name, false) && is_a($this, $name))
+		{
+			$constructor = new ReflectionMethod($name, '__construct');
+			return $constructor->invokeArgs($this, $args);
+		}
+
+
 		$name = strtoupper($name);
 		switch ($name)
 		{

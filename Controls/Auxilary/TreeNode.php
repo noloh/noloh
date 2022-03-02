@@ -78,9 +78,9 @@ class TreeNode extends Panel
 	 * @param integer $left
 	 * @return TreeNode
 	 */
-	function TreeNode($element, $left=10)
+	function __construct($element, $left=10)
 	{
-		parent::Panel(0, 0, null, null);
+		parent::__construct(0, 0, null, null);
 		$this->SetScrolling(System::Full);
 		$this->SetLayout(Layout::Relative);
 		if($left != null)

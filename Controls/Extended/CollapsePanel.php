@@ -39,10 +39,10 @@ class CollapsePanel extends Panel implements Groupable
 	 * @param integer $height The Height dimension of this element
 	 * @param integer $titleHeight The height of the Title
 	 */
-	function CollapsePanel($text='', $left=0, $top=0, $width=200, $height=200, $titleHeight=28)
+	function __construct($text='', $left=0, $top=0, $width=200, $height=200, $titleHeight=28)
 	{
 		$this->BodyPanel = new Panel(0, 0, '100%', null);
-		parent::Panel($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		parent::SetScrolling(false);
 		$this->SetSelected(true);
 		

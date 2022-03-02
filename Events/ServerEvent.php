@@ -88,9 +88,9 @@ class ServerEvent extends Event
      * @param mixed $parametersAsDotDotDot An unlimited number of parameters that will in turn be passed as parameters into the specified function
      * @return ServerEvent
      */
-    function ServerEvent($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
+    function __construct($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
     {
-        parent::Event($functionAsString);
+        parent::__construct($functionAsString);
         $this->Owner = is_object($objOrClassName) && $objOrClassName instanceof Component
             ? new Pointer($objOrClassName)
             : $objOrClassName;
