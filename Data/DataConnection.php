@@ -1157,6 +1157,11 @@ SQL;
 	 */
 	public function TerminateConnections($closeSelf = false)
 	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Terminate Connections currently not supported for non Postgres Databases');
+		}
+
 		$query = <<<SQL
 			SELECT datname
 			FROM pg_database
@@ -1170,7 +1175,7 @@ SQL;
 				SELECT pg_terminate_backend(pg_stat_activity.pid)
 				FROM pg_stat_activity
 				WHERE pg_stat_activity.datname = $1
-				  AND pid != pg_backend_pid();
+					AND pid != pg_backend_pid();
 SQL;
 			$this->ExecSQL($query, $this->DatabaseName);
 		}
@@ -1463,13 +1468,30 @@ SQL;
 	 */
 	public function RenameDBTo($dbName, $renameDb)
 	{
-		$dbName = pg_escape_string($dbName);
-		$renameDb = pg_escape_string($renameDb);
+		if ($this->Type === Data::MySQL)
+		{
+			$dbName = mysql_real_escape_string($dbName);
+			$renameDb = mysql_real_escape_string($renameDb);
 
-		$query = <<<SQL
+			$query = <<<SQL
+			ALTER DATABASE "{$dbName}" MODIFY NAME = "{$renameDb}";
+SQL;
+			$this->ExecSQL(Data::Assoc, $query);
+		}
+		elseif ($this->Type === Data::Postgres)
+		{
+			$dbName = pg_escape_string($dbName);
+			$renameDb = pg_escape_string($renameDb);
+
+			$query = <<<SQL
 			ALTER DATABASE "{$dbName}" RENAME TO "{$renameDb}";
 SQL;
-		$this->ExecSQL(Data::Assoc, $query);
+			$this->ExecSQL(Data::Assoc, $query);
+		}
+		else
+		{
+			BloodyMurder('Database Type Currently Not Supported');
+		}
 	}
 }
 ?>
