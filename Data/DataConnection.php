@@ -1474,7 +1474,7 @@ SQL;
 			$renameDb = mysql_real_escape_string($renameDb);
 
 			$query = <<<SQL
-			ALTER DATABASE "{$dbName}" MODIFY NAME = "{$renameDb}";
+				ALTER DATABASE "{$dbName}" MODIFY NAME = "{$renameDb}";
 SQL;
 			$this->ExecSQL(Data::Assoc, $query);
 		}
@@ -1484,7 +1484,7 @@ SQL;
 			$renameDb = pg_escape_string($renameDb);
 
 			$query = <<<SQL
-			ALTER DATABASE "{$dbName}" RENAME TO "{$renameDb}";
+				ALTER DATABASE "{$dbName}" RENAME TO "{$renameDb}";
 SQL;
 			$this->ExecSQL(Data::Assoc, $query);
 		}
