@@ -16,7 +16,6 @@ require($_NPath . 'System/GeneralFunctions.php');
 require($_NPath . 'System/NolohInternal.php');
 require($_NPath . 'System/Pointer.php');
 require($_NPath . 'System/WebPage.php');
-require($_NPath . 'System/IpLibrary.php');
 require($_NPath . 'Collections/ArrayList.php');
 require($_NPath . 'Collections/ImplicitArrayList.php');
 require($_NPath . 'Controls/Core/Control.php');
@@ -155,7 +154,8 @@ function _NAutoLoad($class)
 			'Layout' => 			'Statics/Layout.php',
 			'Security' =>			'Statics/Security.php',
 			'Semantics' =>			'Statics/Semantics.php',
-			'Shift' => 				'Statics/Shift.php'
+			'Shift' => 				'Statics/Shift.php',
+			'IP' => 				'Statics/IP.php'
 		);
 	}
 

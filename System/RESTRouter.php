@@ -35,20 +35,19 @@ abstract class RESTRouter extends Base
 		$this->InitResources();
 	}
 
-	protected function ValidateIpWhitelisting($ip, $cidr)
+	protected function ValidateIpWhitelisting($ip, $cidrs)
 	{
-		$result = IpLibrary::ValidateIpWhitelisting($ip, $cidr);
-		if ($result['code'] === 400)
+		try
 		{
-			Resource::BadRequest($result['error_message']);
+			$valid = IP::ValidateIpCidrRanges($ip, $cidrs);
+			if (!$valid)
+			{
+				Resource::Unauthorized("Unauthorized IP for {$this->ResourceName}.");
+			}
 		}
-		elseif ($result['code'] === 401)
+		catch (Exception $e)
 		{
-			Resource::Unauthorized("Unauthorized IP for {$this->ResourceName}.");
-		}
-		else
-		{
-			return true;
+			Resource::BadRequest($e->getMessage());
 		}
 	}
 

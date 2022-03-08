@@ -1,42 +1,54 @@
 <?php
 
-abstract class IpLibrary extends Base
+/**
+ * Class IP
+ *
+ * The IP class contains static functions pertaining to IP Addresses.
+ *
+ * @package Statics
+ */
+final class IP
 {
-	static function ValidateIpWhitelisting($ip, $cidr)
+	/**
+	 * @ignore
+	 */
+	private function __construct() {}
+	/**
+	 * Validates whether the IP is a valid address against a range of CIDRs.
+	 * @param string $ip IPv4 or IPv6 address
+	 * @param array $cidrs
+	 * @return bool
+	 * @throws Exception
+	 */
+	static function ValidateIpCidrRanges($ip, $cidrs)
 	{
-		$result = array();
-
-		if (empty($cidr))
+		if (empty($cidrs))
 		{
-			return $result;
+			return true;
 		}
 
 		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
 		{
-			$validateFunction = 'ValidateIpv4SubnetRange';
+			$validateFunction = 'ValidateIpv4CidrRange';
 		}
 		elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 		{
-			$validateFunction = 'ValidateIpv6SubnetRange';
+			$validateFunction = 'ValidateIpv6CidrRange';
 		}
 		else
 		{
-			$result['code'] = 400;
-			$result['error_message'] = 'Invalid IP Address detected.';
-			return $result;
+			throw new Exception('Invalid IP Address.');
 		}
 
-		foreach ($cidr as $whitelisting)
+		foreach ($cidrs as $cidr)
 		{
-			if (static::$validateFunction($ip, $whitelisting))
+			if (static::$validateFunction($ip, $cidr))
 			{
 				return true;
 			}
 		}
 
-		$result['code'] = 401;
-		$result['error_message'] = 'Unauthorized IP.';
-		return $result;
+		return false;
 	}
 	/**
 	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv6, return false.
@@ -44,7 +56,7 @@ abstract class IpLibrary extends Base
 	 * @param string $cidr A subnet range to validate $ip against.
 	 * @return bool
 	 */
-	static function ValidateIpv4SubnetRange($ip, $cidr)
+	static function ValidateIpv4CidrRange($ip, $cidr)
 	{
 		list($subnet, $mask) = explode('/', $cidr);
 		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
@@ -63,7 +75,7 @@ abstract class IpLibrary extends Base
 	 * @param string $cidr A subnet range to validate $ip against.
 	 * @return bool
 	 */
-	static function ValidateIpv6SubnetRange($ip, $cidr)
+	static function ValidateIpv6CidrRange($ip, $cidr)
 	{
 		list($subnet, $mask) = explode('/', $cidr);
 		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
@@ -77,6 +89,12 @@ abstract class IpLibrary extends Base
 		$netBits = substr($binaryNet, 0, $mask);
 		return $ipNetBits == $netBits;
 	}
+	/**
+	 * Returns a binary representation of an IP in its packed in_addr representation.
+	 * An IP can be converted to its packed in_addr form by called inet_pton(<ip>).
+	 * @param string $inet
+	 * @return string
+	 */
 	static function InetToBits($inet)
 	{
 		$split = str_split($inet);
