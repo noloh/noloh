@@ -151,11 +151,11 @@ function _NAutoLoad($class)
 			'ClientScript' => 		'Statics/ClientScript.php',
 			'Color' => 				'Statics/Color.php',
 			'Cursor' => 			'Statics/Cursor.php',
+			'IP' => 				'Statics/IP.php',
 			'Layout' => 			'Statics/Layout.php',
 			'Security' =>			'Statics/Security.php',
 			'Semantics' =>			'Statics/Semantics.php',
-			'Shift' => 				'Statics/Shift.php',
-			'IP' => 				'Statics/IP.php'
+			'Shift' => 				'Statics/Shift.php'
 		);
 	}
 
