@@ -57,7 +57,6 @@ abstract class IpLibrary extends Base
 		$subnet &= $mask;
 		return ($ip & $mask) == $subnet;
 	}
-
 	/**
 	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv4, return false.
 	 * @param string $ip IPv6 Address
@@ -78,7 +77,6 @@ abstract class IpLibrary extends Base
 		$netBits = substr($binaryNet, 0, $mask);
 		return $ipNetBits == $netBits;
 	}
-
 	static function InetToBits($inet)
 	{
 		$split = str_split($inet);
