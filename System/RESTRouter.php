@@ -37,17 +37,14 @@ abstract class RESTRouter extends Base
 
 	protected function ValidateIpWhitelisting($ip, $cidrs)
 	{
-		try
+		$valid = IP::ValidateIpCidrRanges($ip, $cidrs);
+		if (is_string($valid))
 		{
-			$valid = IP::ValidateIpCidrRanges($ip, $cidrs);
-			if (!$valid)
-			{
-				Resource::Unauthorized("Unauthorized IP for {$this->ResourceName}.");
-			}
+			Resource::BadRequest($valid);
 		}
-		catch (Exception $e)
+		elseif (!$valid)
 		{
-			Resource::BadRequest($e->getMessage());
+			Resource::Unauthorized("Unauthorized IP for {$this->ResourceName}.");
 		}
 	}
 

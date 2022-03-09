@@ -17,8 +17,7 @@ final class IP
 	 * Validates whether the IP is a valid address against a range of CIDRs.
 	 * @param string $ip IPv4 or IPv6 address
 	 * @param array $cidrs
-	 * @return bool
-	 * @throws Exception
+	 * @return bool|string
 	 */
 	static function ValidateIpCidrRanges($ip, $cidrs)
 	{
@@ -37,7 +36,7 @@ final class IP
 		}
 		else
 		{
-			throw new Exception('Invalid IP Address.');
+			return 'Invalid IP Address.';
 		}
 
 		foreach ($cidrs as $cidr)
