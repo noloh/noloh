@@ -1087,6 +1087,104 @@ SQL;
 		}
 		return file_exists($tarFile) ? $tarFile : false;
 	}
+
+	/**
+	 * Takes in a file and restores the current DB from that file.
+	 *
+	 * @param string $file Must be a text file dump.
+	 */
+	function DBRestore($file)
+	{
+		// Set time to 10 minutes.
+		ini_set('max_execution_time', '600');
+		ini_set('memory_limit', '1G');
+
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Restore currently not supported for non Postgres Databases');
+		}
+
+		$user = $this->Username;
+		$host = $this->Host;
+		$dbName = $this->DatabaseName;
+		$port = $this->Port;
+		$pass = $this->Password;
+
+		if ($this->PasswordEncrypted)
+		{
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+		}
+		$tempName = 'restore_db_' . date("YmdHis");
+
+		if (System::IsWindows())
+		{
+			$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
+		}
+		else
+		{
+			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
+		}
+
+		// Create new DB and Restore file into it.
+		System::Execute($createCommand);
+		System::Execute($restoreCommand);
+
+		$this->TerminateConnections(true);
+
+		$baseConnection = new DataConnection(
+			$this->Type,
+			'postgres',
+			$this->Username,
+			$pass,
+			$this->Host,
+			$this->Port,
+			$this->PasswordEncrypted
+		);
+
+		$query = <<<SQL
+			DROP DATABASE "{$dbName}";
+SQL;
+		$baseConnection->ExecSQL($query);
+		$baseConnection->RenameDBTo($tempName, $dbName);
+	}
+	/*
+	 * Terminates active db connections.
+	 * @param boolean $closeSelf
+	 */
+	public function TerminateConnections($closeSelf = false)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Terminate Connections currently not supported for non Postgres Databases');
+		}
+
+		$query = <<<SQL
+			SELECT datname
+			FROM pg_database
+			WHERE datname = $1;
+SQL;
+		$exists = $this->ExecSQL(Data::Assoc, $query, $this->DatabaseName);
+
+		if ($exists[0] !== null)
+		{
+			$query = <<<SQL
+				SELECT pg_terminate_backend(pg_stat_activity.pid)
+				FROM pg_stat_activity
+				WHERE pg_stat_activity.datname = $1
+					AND pid != pg_backend_pid();
+SQL;
+			$this->ExecSQL($query, $this->DatabaseName);
+		}
+
+		if ($closeSelf)
+		{
+			$this->Close();
+		}
+	}
 	function __wakeup()
 	{
 		$this->AfterConnectCalled = false;
@@ -1363,58 +1461,37 @@ SQL;
 		}
 		return implode(', ', $cols);
 	}
-	/**
-	 * Creates a copy of this database
-	 * @param $toDbName string name of the new database
-	 * @return DataConnection The connection to the new database
+
+	/** Renames Database
+	 * @param string $dbName
+	 * @param string $renameDB
 	 */
-	public function CloneDatabase($toDbName)
+	public function RenameDBTo($dbName, $renameDb)
 	{
-		if ($this->Type !== Data::Postgres)
+		if ($this->Type === Data::MySQL)
 		{
-			BloodyMurder('CloneDatabase only supports Postgres data connections');
-		}
-		if (preg_match('/[^a-zA-Z0-9_]+/', $toDbName))
-		{
-			BloodyMurder('Invalid database name');
-		}
+			$dbName = mysql_real_escape_string($dbName);
+			$renameDb = mysql_real_escape_string($renameDb);
 
-		$pass = $this->Password;
-		if ($this->PasswordEncrypted)
-		{
-			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+			$query = <<<SQL
+				ALTER DATABASE "{$dbName}" MODIFY NAME = "{$renameDb}";
+SQL;
+			$this->ExecSQL(Data::Assoc, $query);
 		}
-
-		$user = escapeshellarg($this->Username);
-		$host = escapeshellarg($this->Host);
-		$dbName = escapeshellarg($this->DatabaseName);
-		$port = escapeshellarg($this->Port);
-		$cloneDbName = escapeshellarg($toDbName);
-
-		if (System::IsWindows())
+		elseif ($this->Type === Data::Postgres)
 		{
-			$create = "SET PGPASSWORD={$pass} && createdb -U {$user} -p {$port} {$cloneDbName}";
-			$transfer = "SET PGPASSWORD={$pass} && pg_dump -U {$user}-p {$port} -h {$host} {$dbName} | psql -U {$user} -p {$port} -h {$host} {$cloneDbName}";
+			$dbName = pg_escape_string($dbName);
+			$renameDb = pg_escape_string($renameDb);
+
+			$query = <<<SQL
+				ALTER DATABASE "{$dbName}" RENAME TO "{$renameDb}";
+SQL;
+			$this->ExecSQL(Data::Assoc, $query);
 		}
 		else
 		{
-			$create = "export PGPASSWORD={$pass} && createdb -U {$user} -p {$port} -h {$host} {$cloneDbName}";
-			$transfer = "export PGPASSWORD={$pass} && pg_dump -U {$user} -p {$port} -h {$host} {$dbName} | psql -U {$user} -p {$port} -h {$host} {$cloneDbName}";
+			BloodyMurder('Database Type Currently Not Supported');
 		}
-		exec($create);
-		exec($transfer);
-
-		return new DataConnection(
-			$this->Type,
-			$toDbName,
-			$this->Username,
-			$this->Password,
-			$this->Host,
-			$this->Port,
-			$this->PasswordEncrypted
-		);
 	}
 }
 ?>

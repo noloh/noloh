@@ -35,6 +35,90 @@ abstract class RESTRouter extends Base
 		$this->InitResources();
 	}
 
+	protected function ValidateIpWhitelisting($ip, $cidr)
+	{
+		if (empty($cidr))
+		{
+			return true;
+		}
+
+		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+		{
+			$validateFunction = 'ValidateIpv4SubnetRange';
+		}
+		elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+		{
+			$validateFunction = 'ValidateIpv6SubnetRange';
+		}
+		else
+		{
+			Resource::BadRequest('Invalid IP Address detected.');
+		}
+
+		foreach ($cidr as $whitelisting)
+		{
+			if ($this->$validateFunction($ip, $whitelisting))
+			{
+				return true;
+			}
+		}
+
+
+		Resource::Forbidden("Unauthorized IP for {$this->ResourceName}.");
+	}
+
+	/**
+	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv6, return false.
+	 * @param string $ip IPv4 Address
+	 * @param string $cidr A subnet range to validate $ip against.
+	 * @return bool
+	 */
+	protected function ValidateIpv4SubnetRange($ip, $cidr)
+	{
+		list($subnet, $mask) = explode('/', $cidr);
+		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+		{
+			return false;
+		}
+		$ip = ip2long($ip);
+		$subnet = ip2long($subnet);
+		$mask = -1 << (32 - $mask);
+		$subnet &= $mask;
+		return ($ip & $mask) == $subnet;
+	}
+
+	/**
+	 * Checks if provided IP is a valid subnet within the subnet range. If the provided range is IPv4, return false.
+	 * @param string $ip IPv6 Address
+	 * @param string $cidr A subnet range to validate $ip against.
+	 * @return bool
+	 */
+	protected function ValidateIpv6SubnetRange($ip, $cidr)
+	{
+		list($subnet, $mask) = explode('/', $cidr);
+		if (filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+		{
+			return false;
+		}
+		$binaryIp = $this->InetToBits(inet_pton($ip));
+		$binaryNet = $this->InetToBits(inet_pton($subnet));
+
+		$ipNetBits = substr($binaryIp, 0, $mask);
+		$netBits = substr($binaryNet, 0, $mask);
+		return $ipNetBits == $netBits;
+	}
+
+	protected function InetToBits($inet)
+	{
+		$split = str_split($inet);
+		$binaryIp = '';
+		foreach ($split as $char)
+		{
+			$binaryIp .= str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT);
+		}
+		return $binaryIp;
+	}
+
 	protected function ValidateSecurity()
 	{
 		if (!empty($this->APIAccessKey) && ($this->APIAccessKey !== System::GetHTTPHeader('API-Access-Key')))
