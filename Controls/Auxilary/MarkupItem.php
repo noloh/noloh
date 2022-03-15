@@ -38,7 +38,7 @@ abstract class MarkupItem extends Base
 	/**
 	 * @ignore
 	 */
-	function MarkupItem($id, $keyword, $value, $panelId)
+	function __construct($id, $keyword, $value, $panelId)
 	{
 		$this->Id = $id;
 		$this->Keyword = $keyword;

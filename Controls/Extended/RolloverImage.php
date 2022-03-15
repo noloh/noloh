@@ -39,9 +39,9 @@ class RolloverImage extends Image implements Groupable
 	 * @param integer $width The Width dimension of this element, by default the proper measurement is calculated for you. Use # to denote a percentage of the image width, ex. 50# for 50% of the full Image width.
 	 * @param integer $height The Height dimension of this element, by default the proper measurement is calculated for you. Use # to denote a percentage of the image height, ex. 50# for 50% of the full Image height.
 	 */
-	function RolloverImage($outPath=null, $overPath=null, $left=0, $top=0, $width=System::Auto, $height=System::Auto)
+	function __construct($outPath=null, $overPath=null, $left=0, $top=0, $width=System::Auto, $height=System::Auto)
 	{
-		parent::Image($outPath, $left, $top, $width, $height);
+		parent::__construct($outPath, $left, $top, $width, $height);
 		$click = parent::GetClick();
 		$click['System'] = new Event();
 		$click['User'] = new Event();
@@ -103,11 +103,12 @@ class RolloverImage extends Image implements Groupable
 	 * The path is relative to your main file 
 	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
 	 * @param string $outPath
-	 * @return string 
+	 * @param boolean $adjustSize
+	 * @return string
 	 */
-	function SetPath($outPath)
+	function SetPath($outPath, $adjustSize = false)
 	{
-		parent::SetPath($outPath);
+		parent::SetPath($outPath, $adjustSize);
 		$this->OutSrc = $outPath;
 		NolohInternal::SetProperty('Out', $outPath, $this);
 		if($outPath)
@@ -171,9 +172,10 @@ class RolloverImage extends Image implements Groupable
 	 * <b>!Important!</b> If Overriding, make sure to call parent::SetSrc($newSrc)
 	 * @deprecated use Path instead
 	 * @param string $outSrc
-	 * @return string 
+	 * @param boolean $adjustSize
+	 * @return string
 	 */
-	function SetSrc($outSrc)	{$this->SetPath($outSrc);}
+	function SetSrc($outSrc, $adjustSize = false)	{$this->SetPath($outSrc, $adjustSize);}
 	/**
 	 * Sets the path to the image that is shown during the over state
 	 * The path is relative to your main file 

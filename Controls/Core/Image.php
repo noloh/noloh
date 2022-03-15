@@ -36,9 +36,9 @@ class Image extends Control
 	 * @param integer $width
 	 * @param integer $height
 	 */
-	function Image($path='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
+	function __construct($path='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if(!empty($path))
 			$this->SetPath($path);
 		$this->SetWidth($width);
@@ -276,7 +276,7 @@ class Image extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true), ' alt="';
+		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShowClassAttr(), ' alt="';
 		$text = $this->GetText();
 		if($text === System::Auto)
 			if($this->ToolTip)

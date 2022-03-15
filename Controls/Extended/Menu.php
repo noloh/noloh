@@ -46,9 +46,9 @@ class Menu extends Panel
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function Menu($left = 0, $top = 0, $width = 0/*, $behavior=self::MouseOver*/)
+	function __construct($left = 0, $top = 0, $width = 0/*, $behavior=self::MouseOver*/)
 	{
-		parent::Panel($left, $top, $width, 18, $this);
+		parent::__construct($left, $top, $width, 18, $this);
 		$this->BackColor = '#F1F1ED';
 		$this->MenuItems = &$this->Controls;
 		$this->MenuItems->AddFunctionName = 'AddMenuItem';

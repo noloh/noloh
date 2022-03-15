@@ -21,9 +21,9 @@ abstract class RESTRouter extends Base
 	protected $Resource;
 	protected $InputData;
 	
-	function RESTRouter()
+	function __construct()
 	{
-		parent::Base();
+		parent::__construct();
 
 		// CORS whitelist all origins
 		header('Access-Control-Allow-Origin: *');
@@ -33,6 +33,19 @@ abstract class RESTRouter extends Base
 		$this->ValidateSecurity();
 		$this->InitMethod();
 		$this->InitResources();
+	}
+
+	protected function ValidateIpWhitelisting($ip, $cidrs)
+	{
+		$valid = IP::ValidateIpCidrRanges($ip, $cidrs);
+		if (is_string($valid))
+		{
+			Resource::BadRequest($valid);
+		}
+		elseif (!$valid)
+		{
+			Resource::Unauthorized("Unauthorized IP for {$this->ResourceName}.");
+		}
 	}
 
 	protected function ValidateSecurity()

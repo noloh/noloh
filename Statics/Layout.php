@@ -74,6 +74,6 @@ final class Layout
 	 */
 	const Vertical = 1;
 	
-	private function Layout(){}
+	private function __construct(){}
 }
 ?>

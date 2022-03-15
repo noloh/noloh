@@ -14,6 +14,6 @@ final class Semantics
 	const Heading3 = 'H3';
 	const Grouped = 'DIV';
 	
-	private function Semantics(){}
+	private function __construct(){}
 }
 ?>

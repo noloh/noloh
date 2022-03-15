@@ -25,14 +25,14 @@ class Item extends Base
 	 * @param mixed $value
 	 * @return Item
 	 */
-	function Item($text = '', $value = '')
+	function __construct($text = '', $value = '')
 	{
 		$this->Text = $text;
 		$this->Value = func_num_args()==0 ? $text : $value;
 	}
 	
 	/*
-	function Item($value = '', $text = '')
+	function __construct($value = '', $text = '')
 	{
 		$this->Value = $value;
 		$this->Text = $text;

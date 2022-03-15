@@ -9,9 +9,9 @@ class TransferPanel extends Panel
 	public $ToRight;
 	public $ToLeft;
 	
-	function TransferPanel($left=0, $top=0, $width=300, $height=100)
+	function __construct($left=0, $top=0, $width=300, $height=100)
 	{	
-		parent::Panel($left, $top);
+		parent::__construct($left, $top);
 		$this->ToRight = new Button('>', 0,0,25,25);
 		$this->ToLeft = new Button('<', 0,0,25,25);
 		$this->LeftPanel = new ListBox();

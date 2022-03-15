@@ -36,9 +36,9 @@ class TreeList extends Panel
 	 * @param integer $height
 	 * @return TreeList
 	 */
-	function TreeList($left=0, $top=0, $width=200, $height=500)
+	function __construct($left=0, $top=0, $width=200, $height=500)
 	{
-		parent::Panel($left, $top, $width, $height, $this);
+		parent::__construct($left, $top, $width, $height, $this);
 		$this->SelectedTreeNodes = array();
 		$this->SetScrolling(System::Auto);
 		$this->TreeNodes = &$this->Controls;

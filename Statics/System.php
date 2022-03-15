@@ -13,7 +13,7 @@ final class System
 	/**
 	 * @ignore
 	 */
-	private function System(){}
+	private function __construct(){}
 	/**
 	 * System::Auto is used to indicate that various properties should figured out their values automatically.
 	 * For example:
@@ -379,7 +379,7 @@ final class System
 		}
 		return $modal;
 	}
-	function IsRESTful()
+	static function IsRESTful()
 	{
 		return isset($GLOBALS['_NREST']);
 	}
