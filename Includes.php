@@ -176,7 +176,7 @@ function _NAutoLoad($class)
 		{
 			$namespaceFolder = $namespaceAliases[$topClass];
 		}
-		$namespaceFolder = str_replace(array('C:','\\'),array('','/'),$namespaceFolder);
+		$namespaceFolder = str_replace(array('C:','\\'), array('','/'), $namespaceFolder);
 	}
 
 	if (isset($_NAutoLoad[$class]))
