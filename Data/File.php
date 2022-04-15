@@ -382,7 +382,7 @@ class File extends Base
 	 */
 	static function NormalizeDirectorySlashes($path)
 	{
-		$normalized = str_replace(array('C:','\\'), array('','/'),$path);
+		$normalized = str_replace(array('C:','\\'), array('','/'), $path);
 		return $normalized;
 	}
 }
