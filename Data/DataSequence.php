@@ -19,13 +19,17 @@ class DataSequence extends Base
 		{
 			BloodyMurder('Bad sequence name: ' . $name);
 		}
-		if ($connection->Type !== Data::Postgres)
+
+		if (in_array($connection->Type, array(Data::Postgres, Data::MSSQL)))
+		{
+			$this->Name = $name;
+			$this->Connection = $connection;
+		}
+		else
 		{
 			BloodyMurder('Connection type not supported');
 		}
 
-		$this->Name = $name;
-		$this->Connection = $connection;
 	}
 
 	/**
@@ -34,11 +38,22 @@ class DataSequence extends Base
 	 */
 	function Current()
 	{
-		$query = <<<SQL
-			SELECT last_value FROM {$this->Name}
+		if ($this->Connection->Type === Data::Postgres)
+		{
+			$query = <<<SQL
+				SELECT last_value FROM {$this->Name}
 SQL;
-		return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
-			->Data[0]['last_value'];
+			return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
+				->Data[0]['last_value'];
+		}
+		else
+		{
+			$query = <<<SQL
+				SELECT current_value FROM sys.sequences WHERE name = "{$this->Name}"
+SQL;
+			return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
+				->Data[0]['current_value'];
+		}
 	}
 
 	/**
@@ -47,9 +62,18 @@ SQL;
 	 */
 	function Next()
 	{
-		$query = <<<SQL
-			SELECT nextval($1) AS val
+		if ($this->Connection->Type === Data::Postgres)
+		{
+			$query = <<<SQL
+				SELECT nextval("{$this->Name}") AS val
 SQL;
+		}
+		else
+		{
+			$query = <<<SQL
+				NEXT VALUE FOR "{$this->Name}" AS val
+SQL;
+		}
 		return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
 			->Data[0]['val'];
 	}
@@ -62,13 +86,26 @@ SQL;
 	function Set($val, $isCalled = true)
 	{
 		$val = (int)$val;
-		$isCalled = $isCalled ? 'true' : 'false';
 
-		$query = <<<SQL
-			SELECT setval($1, {$val}, {$isCalled}) AS val
+		if ($this->Connection->Type === Data::Postgres)
+		{
+			$isCalled = $isCalled ? 'true' : 'false';
+
+			$query = <<<SQL
+				SELECT setval("{$this->Name}", {$val}, {$isCalled}) AS val
 SQL;
-		$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
-			->Data[0]['val'];
+			$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
+				->Data[0]['val'];
+		}
+		else
+		{
+			$val = $isCalled ? ($val - 1) : $val;
+			$query = <<<SQL
+				ALTER SEQUENCE "{$this->Name}"
+				RESTART WITH {$val};
+SQL;
+			$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
+		}
 	}
 
 	/**
@@ -88,14 +125,28 @@ SQL;
 		$minValString = $minVal === null ? '' : "MINVALUE {$minVal}";
 		$maxValString = $maxVal === null ? '' : "MAXVALUE {$maxVal}";
 
-		$query = <<<SQL
-			CREATE SEQUENCE {$ifNotExistsString} "{$this->Name}"
-			INCREMENT BY {$incrementBy}
-			{$minValString}
-			{$maxValString}
-			START WITH {$startWith}
-			{$cycleString}
+		if ($this->Connection->Type === Data::Postgres)
+		{
+			$query = <<<SQL
+				CREATE SEQUENCE {$ifNotExistsString} "{$this->Name}"
+				INCREMENT BY {$incrementBy}
+				{$minValString}
+				{$maxValString}
+				START WITH {$startWith}
+				{$cycleString}
 SQL;
+		}
+		else
+		{
+			$query = <<<SQL
+				CREATE SEQUENCE "{$this->Name}"
+				START WITH {$startWith}
+				INCREMENT BY {$incrementBy}
+				{$minValString}
+				{$maxValString}
+				{$cycleString}
+SQL;
+		}
 		$this->Connection->ExecSQL(Data::Assoc, $query);
 
 		if ($isCalled)
