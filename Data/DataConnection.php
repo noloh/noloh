@@ -901,29 +901,40 @@ class DataConnection extends Base
 	 */
 	function AdvisoryLock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
-			BloodyMurder('Not yet supported for this database type');
-		}
+			if ($this->Type->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
 
-		$key = System::Get64BitHash($key);
+				if ($xact)
+				{
+					$this->BeginTransaction();
 
-		if ($xact)
-		{
-			$this->BeginTransaction();
-
-			$query = <<<SQL
-				SELECT pg_advisory_xact_lock($1::BIGINT);
+					$query = <<<SQL
+						SELECT pg_advisory_xact_lock($1::BIGINT);
 SQL;
+				}
+				else
+				{
+					$query = <<<SQL
+						SELECT pg_advisory_lock($1::BIGINT);
+SQL;
+				}
+			}
+			else
+			{
+				$query = <<<SQL
+					EXEC @result = sp_GetAppLock @Resource = $1, @LockMode = 'Exclusive';
+SQL;
+			}
+
+			$this->ExecSQL($query, $key);
 		}
 		else
 		{
-			$query = <<<SQL
-				SELECT pg_advisory_lock($1::BIGINT);
-SQL;
+			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$this->ExecSQL($query, $key);
 	}
 	/*
 	 * Unlocks pg_advisory_lock
@@ -932,17 +943,29 @@ SQL;
 	 */
 	function AdvisoryUnlock($key)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
+		{
+			if ($this->Type !== Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
+
+				$query = <<<SQL
+					SELECT pg_advisory_unlock($1::BIGINT);
+SQL;
+			}
+			else
+			{
+				$query = <<<SQL
+					EXEC @result = sp_ReleaseAppLock @Resource = $1;
+SQL;
+			}
+
+			$this->ExecSQL($query, $key);
+		}
+		else
 		{
 			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$key = System::Get64BitHash($key);
-
-		$query = <<<SQL
-			SELECT pg_advisory_unlock($1::BIGINT);
-SQL;
-		$this->ExecSQL($query, $key);
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
