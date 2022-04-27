@@ -925,7 +925,7 @@ SQL;
 			else
 			{
 				$query = <<<SQL
-					EXEC @result = sp_GetAppLock @Resource = $1, @LockMode = 'Exclusive';
+					EXEC sp_GetAppLock $1, 'Exclusive';
 SQL;
 			}
 
@@ -945,7 +945,7 @@ SQL;
 	{
 		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
-			if ($this->Type !== Data::Postgres)
+			if ($this->Type === Data::Postgres)
 			{
 				$key = System::Get64BitHash($key);
 
@@ -956,7 +956,7 @@ SQL;
 			else
 			{
 				$query = <<<SQL
-					EXEC @result = sp_ReleaseAppLock @Resource = $1;
+					EXEC sp_ReleaseAppLock $1;
 SQL;
 			}
 

@@ -41,18 +41,16 @@ class DataSequence extends Base
 		if ($this->Connection->Type === Data::Postgres)
 		{
 			$query = <<<SQL
-				SELECT last_value FROM {$this->Name}
+				SELECT last_value FROM $1
 SQL;
 			return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
 				->Data[0]['last_value'];
 		}
 		else
 		{
-			$query = <<<SQL
-				SELECT current_value FROM sys.sequences WHERE name = "{$this->Name}"
-SQL;
-			return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
-				->Data[0]['current_value'];
+			$current = $this->Next();
+			$this->Set($current, false);
+			return $current;
 		}
 	}
 
@@ -65,13 +63,13 @@ SQL;
 		if ($this->Connection->Type === Data::Postgres)
 		{
 			$query = <<<SQL
-				SELECT nextval("{$this->Name}") AS val
+				SELECT nextval($1) AS val
 SQL;
 		}
 		else
 		{
 			$query = <<<SQL
-				NEXT VALUE FOR "{$this->Name}" AS val
+				SELECT NEXT VALUE FOR $1 AS val
 SQL;
 		}
 		return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
@@ -92,16 +90,16 @@ SQL;
 			$isCalled = $isCalled ? 'true' : 'false';
 
 			$query = <<<SQL
-				SELECT setval("{$this->Name}", {$val}, {$isCalled}) AS val
+				SELECT setval($1, {$val}, {$isCalled}) AS val
 SQL;
 			$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
 				->Data[0]['val'];
 		}
 		else
 		{
-			$val = $isCalled ? ($val - 1) : $val;
+			$val = $isCalled ? ($val + 1) : $val;
 			$query = <<<SQL
-				ALTER SEQUENCE "{$this->Name}"
+				ALTER SEQUENCE $1
 				RESTART WITH {$val};
 SQL;
 			$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
@@ -128,7 +126,7 @@ SQL;
 		if ($this->Connection->Type === Data::Postgres)
 		{
 			$query = <<<SQL
-				CREATE SEQUENCE {$ifNotExistsString} "{$this->Name}"
+				CREATE SEQUENCE {$ifNotExistsString} $1
 				INCREMENT BY {$incrementBy}
 				{$minValString}
 				{$maxValString}
@@ -139,7 +137,7 @@ SQL;
 		else
 		{
 			$query = <<<SQL
-				CREATE SEQUENCE "{$this->Name}"
+				CREATE SEQUENCE $1
 				START WITH {$startWith}
 				INCREMENT BY {$incrementBy}
 				{$minValString}
@@ -147,7 +145,7 @@ SQL;
 				{$cycleString}
 SQL;
 		}
-		$this->Connection->ExecSQL(Data::Assoc, $query);
+		$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
 
 		if ($isCalled)
 		{
@@ -164,9 +162,9 @@ SQL;
 		$ifExistString = $ifExists ? 'IF EXISTS' : '';
 
 		$query = <<<SQL
-			DROP SEQUENCE {$ifExistString} "{$this->Name}"
+			DROP SEQUENCE {$ifExistString} $1
 SQL;
-		$this->Connection->ExecSQL(Data::Assoc, $query);
+		$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
 	}
 
 }
