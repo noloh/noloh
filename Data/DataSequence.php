@@ -67,7 +67,7 @@ SQL;
 		else
 		{
 			$query = <<<SQL
-				SELECT NEXT VALUE FOR $1 AS val
+				SELECT NEXT VALUE FOR {$this->Name} AS val
 SQL;
 		}
 		return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
@@ -116,13 +116,14 @@ SQL;
 	 */
 	function Create($ifNotExists = false, $incrementBy = 1, $minVal = 1, $maxVal = null, $startWith = 1, $cycle = false, $isCalled = false)
 	{
-		$ifNotExistsString = $ifNotExists ? 'IF NOT EXISTS' : '';
 		$cycleString = $cycle ? 'CYCLE' : 'NO CYCLE';
 		$minValString = $minVal === null ? '' : "MINVALUE {$minVal}";
 		$maxValString = $maxVal === null ? '' : "MAXVALUE {$maxVal}";
 
 		if ($this->Connection->Type === Data::Postgres)
 		{
+			$ifNotExistsString = $ifNotExists ? 'IF NOT EXISTS' : '';
+
 			$query = <<<SQL
 				CREATE SEQUENCE {$ifNotExistsString} "{$this->Name}"
 				INCREMENT BY {$incrementBy}
@@ -142,6 +143,14 @@ SQL;
 				{$maxValString}
 				{$cycleString}
 SQL;
+
+			if ($ifNotExists)
+			{
+				$query = <<<SQL
+					IF NOT EXISTS(SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{$this->Name}') AND "type" = 'SO')
+						{$query}
+SQL;
+			}
 		}
 		$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
 
@@ -160,7 +169,7 @@ SQL;
 		$ifExistString = $ifExists ? 'IF EXISTS' : '';
 
 		$query = <<<SQL
-			DROP SEQUENCE {$ifExistString} "{$this->Name}"
+			DROP SEQUENCE {$ifExistString} {$this->Name}
 SQL;
 		$this->Connection->ExecSQL(Data::Assoc, $query);
 	}
