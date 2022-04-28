@@ -41,16 +41,14 @@ class DataSequence extends Base
 		if ($this->Connection->Type === Data::Postgres)
 		{
 			$query = <<<SQL
-				SELECT last_value FROM $1
+				SELECT last_value FROM {$this->Name}
 SQL;
-			return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
+			return $this->Connection->ExecSQL(Data::Assoc, $query)
 				->Data[0]['last_value'];
 		}
 		else
 		{
-			$current = $this->Next();
-			$this->Set($current, false);
-			return $current;
+			BloodyMurder('Current() not supported for this connection type.');
 		}
 	}
 
@@ -126,7 +124,7 @@ SQL;
 		if ($this->Connection->Type === Data::Postgres)
 		{
 			$query = <<<SQL
-				CREATE SEQUENCE {$ifNotExistsString} $1
+				CREATE SEQUENCE {$ifNotExistsString} "{$this->Name}"
 				INCREMENT BY {$incrementBy}
 				{$minValString}
 				{$maxValString}
@@ -137,7 +135,7 @@ SQL;
 		else
 		{
 			$query = <<<SQL
-				CREATE SEQUENCE $1
+				CREATE SEQUENCE "{$this->Name}"
 				START WITH {$startWith}
 				INCREMENT BY {$incrementBy}
 				{$minValString}
@@ -162,9 +160,9 @@ SQL;
 		$ifExistString = $ifExists ? 'IF EXISTS' : '';
 
 		$query = <<<SQL
-			DROP SEQUENCE {$ifExistString} $1
+			DROP SEQUENCE {$ifExistString} "{$this->Name}"
 SQL;
-		$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
+		$this->Connection->ExecSQL(Data::Assoc, $query);
 	}
 
 }
