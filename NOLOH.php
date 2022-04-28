@@ -22,7 +22,7 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  */
 function GetNOLOHVersion()
 {
-	return '1.9.2011'; // Run "git rev-list HEAD --count" then +1.
+	return '1.9.2016'; // Run "git rev-list HEAD --count" then +1.
 }
 
 ?>
