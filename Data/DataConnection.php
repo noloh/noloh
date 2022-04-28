@@ -921,15 +921,17 @@ SQL;
 						SELECT pg_advisory_lock($1::BIGINT);
 SQL;
 				}
+
+				$this->ExecSQL($query, $key);
 			}
 			else
 			{
+				$owner = $xact ? 'Transaction' : 'Session';
 				$query = <<<SQL
-					EXEC sp_GetAppLock $1, 'Exclusive';
+					EXEC sp_GetAppLock $1, 'Exclusive', $2;
 SQL;
+				$this->ExecSQL($query, $key, $owner);
 			}
-
-			$this->ExecSQL($query, $key);
 		}
 		else
 		{
