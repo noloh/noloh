@@ -943,7 +943,7 @@ SQL;
 	 *
 	 * @param string $str is used to create the 64 bit hash key for the lock
 	 */
-	function AdvisoryUnlock($key)
+	function AdvisoryUnlock($key, $xact = true)
 	{
 		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
@@ -954,15 +954,16 @@ SQL;
 				$query = <<<SQL
 					SELECT pg_advisory_unlock($1::BIGINT);
 SQL;
+				$this->ExecSQL($query, $key);
 			}
 			else
 			{
+				$owner = $xact ? 'Transaction' : 'Session';
 				$query = <<<SQL
-					EXEC sp_ReleaseAppLock $1;
+					EXEC sp_ReleaseAppLock $1, $2;
 SQL;
+				$this->ExecSQL($query, $key, $owner);
 			}
-
-			$this->ExecSQL($query, $key);
 		}
 		else
 		{
