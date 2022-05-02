@@ -169,7 +169,7 @@ SQL;
 		$ifExistString = $ifExists ? 'IF EXISTS' : '';
 
 		$query = <<<SQL
-			DROP SEQUENCE {$ifExistString} {$this->Name}
+			DROP SEQUENCE {$ifExistString} "{$this->Name}"
 SQL;
 		$this->Connection->ExecSQL(Data::Assoc, $query);
 	}
