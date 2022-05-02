@@ -250,10 +250,10 @@ abstract class RESTRouter extends Base
 		if (!$resourceException)
 		{
 			header('HTTP/1.1 500 Internal Server Error');
+			$config = Configuration::That();
 
-			if (isset($GLOBALS['_NConfiguration']))
+			if (isset($config))
 			{
-				$config = Configuration::That();
 				$debugModeError = $config->DebugModeError;
 				$debugType = $config::Alert;
 			}
