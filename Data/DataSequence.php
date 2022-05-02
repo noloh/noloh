@@ -67,7 +67,7 @@ SQL;
 		else
 		{
 			$query = <<<SQL
-				SELECT NEXT VALUE FOR {$this->Name} AS val
+				SELECT NEXT VALUE FOR "{$this->Name}" AS val
 SQL;
 		}
 		return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
