@@ -243,6 +243,17 @@ abstract class RESTRouter extends Base
 
 	protected static function ErrorHandling(Exception $exception)
 	{
+		if (isset($GLOBALS['_NConfiguration']))
+		{
+			$debugModeError = $GLOBALS['_NConfiguration']->DebugModeError;
+			$debugType = $GLOBALS['_NConfiguration']::Alert;
+		}
+		else
+		{
+			$debugModeError = null;
+			$debugType = null;
+		}
+
 		$resourceException = ($exception instanceof ResourceException);
 		if (!$resourceException)
 		{
@@ -253,14 +264,14 @@ abstract class RESTRouter extends Base
 		{
 			$error = array(
 				//'code' => $exception->getCode(),
-				'type' => $resourceException ? $exception->GetErrorType() : get_class($exception),
-				'message' => $exception->getMessage()
+				'type' => $debugType ?: (($resourceException) ? $exception->GetErrorType() : get_class($exception)),
+				'message' => $debugModeError ?: $exception->getMessage()
 			);
 			$error = json_encode($error);
 		}
 		else
 		{
-			$error = $exception->getMessage();
+			$error = $debugModeError ?: $exception->getMessage();
 		}
 
 		echo $error;
