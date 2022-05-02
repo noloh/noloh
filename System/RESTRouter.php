@@ -253,8 +253,9 @@ abstract class RESTRouter extends Base
 
 			if (isset($GLOBALS['_NConfiguration']))
 			{
-				$debugModeError = $GLOBALS['_NConfiguration']->DebugModeError;
-				$debugType = $GLOBALS['_NConfiguration']::Alert;
+				$config = Configuration::That();
+				$debugModeError = $config->DebugModeError;
+				$debugType = $config::Alert;
 			}
 		}
 
