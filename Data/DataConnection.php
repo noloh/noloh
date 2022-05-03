@@ -901,48 +901,74 @@ class DataConnection extends Base
 	 */
 	function AdvisoryLock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
-			BloodyMurder('Not yet supported for this database type');
-		}
+			if ($this->Type->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
 
-		$key = System::Get64BitHash($key);
+				if ($xact)
+				{
+					$this->BeginTransaction();
 
-		if ($xact)
-		{
-			$this->BeginTransaction();
-
-			$query = <<<SQL
-				SELECT pg_advisory_xact_lock($1::BIGINT);
+					$query = <<<SQL
+						SELECT pg_advisory_xact_lock($1::BIGINT);
 SQL;
+				}
+				else
+				{
+					$query = <<<SQL
+						SELECT pg_advisory_lock($1::BIGINT);
+SQL;
+				}
+
+				$this->ExecSQL($query, $key);
+			}
+			else
+			{
+				$owner = $xact ? 'Transaction' : 'Session';
+				$query = <<<SQL
+					EXEC sp_GetAppLock $1, 'Exclusive', $2;
+SQL;
+				$this->ExecSQL($query, $key, $owner);
+			}
 		}
 		else
 		{
-			$query = <<<SQL
-				SELECT pg_advisory_lock($1::BIGINT);
-SQL;
+			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$this->ExecSQL($query, $key);
 	}
 	/*
 	 * Unlocks pg_advisory_lock
 	 *
 	 * @param string $str is used to create the 64 bit hash key for the lock
 	 */
-	function AdvisoryUnlock($key)
+	function AdvisoryUnlock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
+		{
+			if ($this->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
+
+				$query = <<<SQL
+					SELECT pg_advisory_unlock($1::BIGINT);
+SQL;
+				$this->ExecSQL($query, $key);
+			}
+			else
+			{
+				$owner = $xact ? 'Transaction' : 'Session';
+				$query = <<<SQL
+					EXEC sp_ReleaseAppLock $1, $2;
+SQL;
+				$this->ExecSQL($query, $key, $owner);
+			}
+		}
+		else
 		{
 			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$key = System::Get64BitHash($key);
-
-		$query = <<<SQL
-			SELECT pg_advisory_unlock($1::BIGINT);
-SQL;
-		$this->ExecSQL($query, $key);
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
