@@ -143,6 +143,11 @@ class Configuration extends Base implements Singleton
 		}
 
 		$GLOBALS['_NDebugMode'] = $this->DebugMode;
+
+		if (System::IsRESTful())
+		{
+			$GLOBALS['_NConfiguration'] = $this;
+		}
 	}
     private function DetectStartClass()
     {
@@ -221,7 +226,7 @@ class Configuration extends Base implements Singleton
 	 */
 	static function That()
 	{
-		return $_SESSION['_NConfiguration'];
+		return isset($_SESSION['_NConfiguration']) ? $_SESSION['_NConfiguration'] : $GLOBALS['_NConfiguration'];
 	}
 }
 ?>

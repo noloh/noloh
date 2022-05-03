@@ -243,24 +243,34 @@ abstract class RESTRouter extends Base
 
 	protected static function ErrorHandling(Exception $exception)
 	{
+		$debugModeError = null;
+		$debugType = null;
+
 		$resourceException = ($exception instanceof ResourceException);
 		if (!$resourceException)
 		{
 			header('HTTP/1.1 500 Internal Server Error');
+			$config = Configuration::That();
+
+			if (isset($config))
+			{
+				$debugModeError = $config->DebugModeError;
+				$debugType = $config::Alert;
+			}
 		}
 
 		if (static::$JSONErrors)
 		{
 			$error = array(
 				//'code' => $exception->getCode(),
-				'type' => $resourceException ? $exception->GetErrorType() : get_class($exception),
-				'message' => $exception->getMessage()
+				'type' => $debugType ?: (($resourceException) ? $exception->GetErrorType() : get_class($exception)),
+				'message' => $debugModeError ?: $exception->getMessage()
 			);
 			$error = json_encode($error);
 		}
 		else
 		{
-			$error = $exception->getMessage();
+			$error = $debugModeError ?: $exception->getMessage();
 		}
 
 		echo $error;
