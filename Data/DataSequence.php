@@ -97,10 +97,10 @@ SQL;
 		{
 			$val = $isCalled ? ($val + 1) : $val;
 			$query = <<<SQL
-				ALTER SEQUENCE $1
+				ALTER SEQUENCE "{$this->Name}"
 				RESTART WITH {$val};
 SQL;
-			$this->Connection->ExecSQL(Data::Assoc, $query, $this->Name);
+			$this->Connection->ExecSQL(Data::Assoc, $query);
 		}
 	}
 
