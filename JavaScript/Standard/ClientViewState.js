@@ -54,7 +54,7 @@ function _NCheckURL()
 	if(++ _N.TimeoutCount == _N.TimeoutTicks)
 	{
 		var serverArg = _N.TimeoutDuration ? _NTimeoutTicker() : "Ping";
-		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NApp="+_NApp+"&_NTimeout="+serverArg);
+		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NTimeout="+serverArg);
 		_N.TimeoutCount = 0;
 	}
 }
@@ -338,7 +338,14 @@ function _NQ()
 {
 	var addTo, id, info, roots = _N.IncubatorRoots;
 	for(addTo in roots)
-		_N(addTo).appendChild(roots[addTo]);
+	{
+		var obj = _N(addTo);
+		if (!obj)
+		{
+			debugger;
+		}
+		obj.appendChild(roots[addTo]);
+	}
 	for(id in _N.IncubatorRootsIns)
 	{
 		info = _N.IncubatorRootsIns[id];
@@ -605,7 +612,7 @@ function _NServer()
 	if(!_N.Request)
 	{
 		var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
-		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
+		var str = "_NVisit="+ ++_N.Visit+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 		for(var i=0; i<sECount; ++i)
 		{
 			if(_N.SEQ[i][0] == "Unload")

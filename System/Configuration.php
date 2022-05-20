@@ -107,6 +107,11 @@ class Configuration extends Base implements Singleton
 	 */
 	public $AddMTimeToExternals = false;
 	/**
+	 * Whether or not HTTPS is forced
+	 * @var boolean
+	 */
+	public $ForceSecureProtocol = false;
+	/**
 	 * Constructor
 	 * @return Configuration
 	 */

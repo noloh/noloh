@@ -57,10 +57,19 @@ final class Application extends Base
 			else
 				session_set_cookie_params(30);
 			System::BeginBenchmarking('_N/Application::Start');
-			session_name('_NS');
-			session_id(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
-			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
+
+
+			$sessionName = '_NS' . hash('crc32', $_SERVER['PHP_SELF']);	// Protection from different folders or files grabbing same session
+			session_name($sessionName);
+			Cookie::SetSessionParams();
+			if (isset($_COOKIE[$sessionName]))
+			{
+				session_id($_COOKIE[$sessionName]);
+			}
 			session_start();
+			$GLOBALS['_NApp'] = session_id();
+
+
 			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
 			if (isset($_SESSION['_NConfiguration']))
 			{
@@ -296,6 +305,7 @@ final class Application extends Base
 	{
 		unset($_SESSION['_NVisit'],
 			$_SESSION['_NNumberOfComponents'],
+			$_SESSION['_NShowStrategy'],
 			$_SESSION['_NOmniscientBeing'],
 			$_SESSION['_NControlQueueRoot'],
 			$_SESSION['_NControlQueueDeep'],
@@ -324,8 +334,8 @@ final class Application extends Base
 	{
 		if(isset($_COOKIE['_NPHPInfo']))
 		{
-			setcookie('_NPHPInfo', false);
-			unset($_COOKIE['_NPHPInfo'], $_REQUEST['_NPHPInfo']);
+			Cookie::Delete('_NPHPInfo');
+			unset($_REQUEST['_NPHPInfo']);
 			ob_start('_NPHPInfo');
 			phpinfo();
 			exit();
@@ -334,11 +344,13 @@ final class Application extends Base
 
 		static::SetNolohSessionVars();
 
-		if($home)
+		if ($home)
+		{
 			$_SESSION['_NUserDir'] = true;
+		}
 		UserAgent::LoadInformation();
 		$config = Configuration::That();
-		if($config->ShowURLFilename !== 'Auto')
+		if ($config->ShowURLFilename !== 'Auto')
 		{
 			$fileName = basename($_SERVER['SCRIPT_FILENAME']);
 			$appears = preg_match('/'.$fileName.'$/i', $fullPath = System::FullAppPath());
@@ -352,14 +364,17 @@ final class Application extends Base
 				exit();
 			}
 		}
-		if($config->MobileAppURL && System::FullAppPath()!=$config->MobileAppURL && UserAgent::GetDevice()===UserAgent::Mobile)
+		if ($config->MobileAppURL && System::FullAppPath() != $config->MobileAppURL && UserAgent::GetDevice() === UserAgent::Mobile)
 		{
 			header('Location: ' . $config->MobileAppURL);
 			exit();
 		}
-		if($trulyFirst)
-			if(UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
+		if ($trulyFirst)
+		{
+			if (UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
+			{
 				$this->SearchEngineRun();
+			}
 			else 
 			{
 				$config = Configuration::That();
@@ -368,23 +383,26 @@ final class Application extends Base
 				{
 					$webPage = new $className();
 				}
-				catch(Exception $e)
+				catch (AbortConstructorException $e)
 				{
-					if($e->getCode() == $GLOBALS['_NApp'])
+					if ($e->getKey() == $GLOBALS['_NApp'])
 					{
-						if(empty($_GET))
-							setcookie('_NAppCookie', $GLOBALS['_NApp']);
 						WebPage::SkeletalShow($GLOBALS['_NTitle'], $config->UnsupportedURL, $GLOBALS['_NFavIcon'], $GLOBALS['_NMobileApp']);
 						return;
 					}
-					else 
+					else
 					{
 						$message = $e->getMessage();
 					}
 				}
+				catch (Exception $e)
+				{
+					$message = $e->getMessage();
+				}
 				echo 'Critical error: Could not construct WebPage.<br>', $message ? $message : 'Please make sure the WebPage constructor is properly called from the ' . $className . ' constructor.';
 				session_destroy();
 			}
+		}
 	}
 	private function HandleForcedReset()
 	{
@@ -395,7 +413,9 @@ final class Application extends Base
 			if(UserAgent::IsPPCOpera() || !isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['_NEvents']) || !isset($_SESSION['_NVisit']) || isset($_GET['_NWidth']))
+				{
 					self::Reset(false, false);
+				}
 				$this->TheComingOfTheOmniscientBeing();
 				$webPage = WebPage::That();
 				if($webPage !== null && !$webPage->GetUnload()->Blank())
@@ -560,10 +580,7 @@ final class Application extends Base
 			$eventInfo = explode('@', $events[$i]);
 			if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
 			{
-				$params = session_get_cookie_params();
-			    setcookie(session_name(), '', time() - 42000,
-			        $params["path"], $params["domain"],
-			        $params["secure"], $params["httponly"]);
+				Cookie::Delete(session_name());
 				session_destroy();
 				exit();
 			}
@@ -674,21 +691,28 @@ final class Application extends Base
 		if (++$_SESSION['_NVisit'] === 0)
 		{
 			global $_NShowStrategy, $_NWidth, $_NHeight, $_NTimeZone;
-			if(isset($_COOKIE['_NAppCookie']))
-				setcookie('_NAppCookie', $_COOKIE['_NAppCookie'], 1);
 			$_NWidth = isset($_GET['_NWidth']) ? $_GET['_NWidth'] : 1024;
 			$_NHeight = isset($_GET['_NHeight']) ? $_GET['_NHeight'] : 768;
 			$_NTimeZone = isset($_GET['_NTimeZone']) ? $_GET['_NTimeZone'] : date_default_timezone_get();
 			$_SESSION['_NMaxTouchPoints'] = isset($_GET['_NMaxTouchPoints']) ? intval($_GET['_NMaxTouchPoints']) : 0;
 			$_SESSION['_NBrowserPlatform'] = isset($_GET['_NBrowserPlatform']) ? $_GET['_NBrowserPlatform'] : '';
 			$this->HandleTokens();
-			$_NShowStrategy = (empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()));
+			$_NShowStrategy = (
+				!empty($_SESSION['_NShowStrategy']) ||
+				(isset($_GET['_NStrategy']) && $_GET['_NStrategy'] === 'Show') ||
+				(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath())
+			);
 			$className = Configuration::That()->StartClass;
 			$this->WebPage = new $className();
-			if($_NShowStrategy)
+			if ($_NShowStrategy)
+			{
+				$_SESSION['_NShowStrategy'] = true;
 				$this->WebPage->Show();
+			}
 			else
+			{
 				return $this->WebPage->NoScriptShow('');
+			}
 			AddScript('_N.Request=null;', Priority::Low);
 		}
 		header('Content-Type: text/javascript; charset=UTF-8');
@@ -861,6 +885,7 @@ final class Application extends Base
 	{
 		$_SESSION['_NVisit'] = -1;
 		$_SESSION['_NNumberOfComponents'] = 0;
+		$_SESSION['_NShowStrategy'] = 0;
 		$_SESSION['_NControlQueueRoot'] = array();
 		$_SESSION['_NControlQueueDeep'] = array();
 		$_SESSION['_NControlInserts'] = array();
