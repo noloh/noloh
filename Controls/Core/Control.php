@@ -208,22 +208,18 @@ abstract class Control extends Component
 	function SetWidth($width)
 	{
 		$this->Width = $width;
-		if (strpos($width, 'calc(') === 0)
-		{
-			NolohInternal::SetProperty('style.width', $width, $this);
-		}
-		elseif(is_numeric($width))
+		if (is_numeric($width))
 		{
 			if ($width >= 0)
 			{
-				NolohInternal::SetProperty('style.width', $width.'px', $this);
+				NolohInternal::SetProperty('style.width', $width . 'px', $this);
 			}
 			else
 			{
 				BloodyMurder('Cannot set Width to a negative value.');
 			}
 		}
-		elseif (is_numeric(rtrim($width, '%')))
+		elseif (is_string($width))
 		{
 			NolohInternal::SetProperty('style.width', $width, $this);
 		}
@@ -247,22 +243,18 @@ abstract class Control extends Component
 	function SetHeight($height)
 	{
 		$this->Height = $height;
-		if (strpos($height, 'calc(') === 0)
-		{
-			NolohInternal::SetProperty('style.height', $height, $this);
-		}
-		elseif (is_numeric($height))
+		if (is_numeric($height))
 		{
 			if ($height >= 0)
 			{
-				NolohInternal::SetProperty('style.height', $height.'px', $this);
+				NolohInternal::SetProperty('style.height', $height . 'px', $this);
 			}
 			else
 			{
 				BloodyMurder('Cannot set Height to a negative value.');
 			}
 		}
-		elseif (is_numeric(rtrim($height, '%')))
+		elseif (is_string($height))
 		{
 			NolohInternal::SetProperty('style.height', $height, $this);
 		}
@@ -326,15 +318,11 @@ abstract class Control extends Component
 	function SetLeft($left)
 	{
 		$this->Left = $left;
-		if (strpos($left, 'calc(') === 0)
+		if (is_numeric($left))
 		{
-			NolohInternal::SetProperty('style.left', $left, $this);
+			NolohInternal::SetProperty('style.left', $left . 'px', $this);
 		}
-		elseif (is_numeric($left))
-		{
-			NolohInternal::SetProperty('style.left', $left.'px', $this);
-		}
-		elseif (is_numeric(rtrim($left, '%')))
+		elseif (is_string($left))
 		{
 			NolohInternal::SetProperty('style.left', $left, $this);
 		}
@@ -358,15 +346,11 @@ abstract class Control extends Component
 	function SetTop($top)
 	{
 		$this->Top = $top;
-		if (strpos($top, 'calc(') === 0)
+		if (is_numeric($top))
 		{
-			NolohInternal::SetProperty('style.top', $top, $this);
+			NolohInternal::SetProperty('style.top', $top . 'px', $this);
 		}
-		elseif (is_numeric($top))
-		{
-			NolohInternal::SetProperty('style.top', $top.'px', $this);
-		}
-		elseif (is_numeric(rtrim($top, '%')))
+		elseif (is_string($top))
 		{
 			NolohInternal::SetProperty('style.top', $top, $this);
 		}
