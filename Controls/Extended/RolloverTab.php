@@ -43,9 +43,9 @@ class RolloverTab extends Panel implements Groupable
 	 * @param integer $width The Width dimension of this element
 	 * @param integer $height The Height dimension of this element
 	 */
-	function RolloverTab($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::AutoHtmlTrim, $height = null)
+	function __construct($text = null, $outTab=null, $selectedTab=null, $left = 0, $top = 0, $width = System::AutoHtmlTrim, $height = null)
 	{
-		parent::Panel($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		$click = parent::GetClick();
 		$click['System'] = new Event();
 		$click['User'] = new Event();

@@ -4,8 +4,7 @@ require_once('../NOLOH.php');
 
 chdir('..');
 
-$revCount = System::Execute('git rev-list HEAD --count') % 1000;
-$revCount += 1;
+$revCount = System::Execute('git rev-list HEAD --count') + 1;
 
 $fileContents = file_get_contents('NOLOH.php');
 if ($fileContents === false)

@@ -14,6 +14,9 @@ final class Application extends Base
 	 * @ignore
 	 */
 	const Name = '@APPNAME';
+	/**
+	 * @var WebPage
+	 */
 	private $WebPage;
 	
 	public static $RequestDetails;
@@ -59,13 +62,17 @@ final class Application extends Base
 			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
 			session_start();
 			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
-			if(isset($_SESSION['_NConfiguration']))
+			if (isset($_SESSION['_NConfiguration']))
+			{
 				$config = $_SESSION['_NConfiguration'];
+			}
 			else 
 			{
 				$args = func_get_args();
-				if(count($args) === 1 && $args[0] instanceof Configuration)
+				if (count($args) === 1 && $args[0] instanceof Configuration)
+				{
 					$config = $args[0];
+				}
 				else 
 				{
 					$reflect = new ReflectionClass('Configuration');
@@ -73,8 +80,10 @@ final class Application extends Base
 				}
 				$_SESSION['_NConfiguration'] = &$config;
 			}
-            if($config->StartClass)
+            if ($config->StartClass)
+			{
 			    new Application($config);
+			}
 			return $config;
 		}
 		else
@@ -138,7 +147,7 @@ final class Application extends Base
 	 * @return string
 	 */
 	static function GetURL()	{return System::FullAppPath();}
-	private function Application($config)
+	function __construct($config)
 	{
 		NolohInternal::SaveSessionState();
 
@@ -820,7 +829,9 @@ final class Application extends Base
 			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
 			$canonicalURL = System::FullAppPath() . ($tokenString ? (UserAgent::GetName()===UserAgent::Googlebot?'#!/':'?') . $tokenString : '');
 		}
-		$this->WebPage->SearchEngineShow($canonicalURL, '<UL>'.$tokenLinks.'</UL>');
+		$this->WebPage->CanonicalUrl = $canonicalURL;
+		$this->WebPage->SearchEngineTokenLinks = $tokenLinks;
+		$this->WebPage->SearchEngineShow();
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)

@@ -70,7 +70,7 @@ class File extends Base
 	 * @param string|array $file A path to the file or an array of file information in the sense of PHP's file() function
 	 * @return File
 	 */
-	function File($file = null)
+	function __construct($file = null)
 	{
 		if(is_array($file))
 		{
@@ -375,6 +375,15 @@ class File extends Base
 			}
 			return $dest;
 		}
+	}
+	/**
+	 * @param string $path is the path you wish to normalize
+	 * @return string of normalized path.
+	 */
+	static function NormalizeDirectorySlashes($path)
+	{
+		$normalized = str_replace(array('C:', '\\'), array('', '/'), $path);
+		return $normalized;
 	}
 }
 ?>

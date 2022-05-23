@@ -151,6 +151,7 @@ function _NAutoLoad($class)
 			'ClientScript' => 		'Statics/ClientScript.php',
 			'Color' => 				'Statics/Color.php',
 			'Cursor' => 			'Statics/Cursor.php',
+			'IP' => 				'Statics/IP.php',
 			'Layout' => 			'Statics/Layout.php',
 			'Security' =>			'Statics/Security.php',
 			'Semantics' =>			'Statics/Semantics.php',
@@ -158,20 +159,31 @@ function _NAutoLoad($class)
 		);
 	}
 
+	$namespaceAliases = array(
+		'Aws' => 'AmazonWebServices'
+	);
+
 	$namespace = null;
+	$namespaceFolder = null;
 	$classWithoutNamespace = null;
 	if (strpos($class, '\\') !== false)
 	{
 		$splitClass = explode('\\', $class);
+		$topClass = $splitClass[0];
 		$classWithoutNamespace = array_pop($splitClass);
-		$namespace = implode('\\', $splitClass);
+		$namespace = $namespaceFolder = implode('\\', $splitClass);
+		if (isset($namespaceAliases[$topClass]))
+		{
+			$namespaceFolder = $namespaceAliases[$topClass];
+		}
+		$namespaceFolder = File::NormalizeDirectorySlashes($namespaceFolder);
 	}
 
 	if (isset($_NAutoLoad[$class]))
 	{
 		require($_NPath . $_NAutoLoad[$class]);
 	}
-	elseif (is_dir($dir = ($_NPath . 'Nodules/' . ($namespace !== null ? $namespace : $class))))
+	elseif (is_dir($dir = ($_NPath . 'Nodules/' . ($namespaceFolder!== null ? $namespaceFolder : $class))))
 	{
 		if ($namespace !== null)
 		{

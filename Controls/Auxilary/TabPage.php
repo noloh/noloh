@@ -21,9 +21,9 @@ class TabPage extends Panel
 	 * @param string|Control $text
 	 * @return TabPage
 	 */
-	function TabPage($text='TabPage')
+	function __construct($text='TabPage')
 	{
-		parent::Panel(0, 0, '100%', '100%');
+		parent::__construct(0, 0, '100%', '100%');
 		$this->SetRolloverTab($text);
 	}
 	/**

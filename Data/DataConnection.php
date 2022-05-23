@@ -96,7 +96,7 @@ class DataConnection extends Base
 	 * @param array $friendlyCallBack callback function for handling SQLFriendlyException
 	 * @param array $afterConnectCallBack callback function for after a succesful connection is made
 	 */
-	function DataConnection($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
+	function __construct($type = Data::Postgres, $databaseName = '',  $username = '', $password = '', $host = 'localhost', $port = '5432', $passwordEncrypted = false, $additionalParams = array(), $friendlyCallBack = array(), $afterConnectCallBack = array())
 	{
 		$this->Username = $username;
 		$this->DatabaseName = $databaseName;
@@ -811,6 +811,15 @@ class DataConnection extends Base
 	 */
 	function __call($name, $args)
 	{
+		// Duplicated from Base because this cannot parent::__call
+		// Backwards compatibility before PHP8
+		if (class_exists($name, false) && is_a($this, $name))
+		{
+			$constructor = new ReflectionMethod($name, '__construct');
+			return $constructor->invokeArgs($this, $args);
+		}
+
+
 		array_splice($args, 0, 0, $name);
 		call_user_func_array(array($this, 'ExecFunction'), $args);
 	}
@@ -892,48 +901,74 @@ class DataConnection extends Base
 	 */
 	function AdvisoryLock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
-			BloodyMurder('Not yet supported for this database type');
-		}
+			if ($this->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
 
-		$key = System::Get64BitHash($key);
+				if ($xact)
+				{
+					$this->BeginTransaction();
 
-		if ($xact)
-		{
-			$this->BeginTransaction();
-
-			$query = <<<SQL
-				SELECT pg_advisory_xact_lock($1::BIGINT);
+					$query = <<<SQL
+						SELECT pg_advisory_xact_lock($1::BIGINT);
 SQL;
+				}
+				else
+				{
+					$query = <<<SQL
+						SELECT pg_advisory_lock($1::BIGINT);
+SQL;
+				}
+
+				$this->ExecSQL($query, $key);
+			}
+			else
+			{
+				$owner = $xact ? 'Transaction' : 'Session';
+				$query = <<<SQL
+					EXEC sp_GetAppLock $1, 'Exclusive', $2;
+SQL;
+				$this->ExecSQL($query, $key, $owner);
+			}
 		}
 		else
 		{
-			$query = <<<SQL
-				SELECT pg_advisory_lock($1::BIGINT);
-SQL;
+			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$this->ExecSQL($query, $key);
 	}
 	/*
 	 * Unlocks pg_advisory_lock
 	 *
 	 * @param string $str is used to create the 64 bit hash key for the lock
 	 */
-	function AdvisoryUnlock($key)
+	function AdvisoryUnlock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
+		{
+			if ($this->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
+
+				$query = <<<SQL
+					SELECT pg_advisory_unlock($1::BIGINT);
+SQL;
+				$this->ExecSQL($query, $key);
+			}
+			else
+			{
+				$owner = $xact ? 'Transaction' : 'Session';
+				$query = <<<SQL
+					EXEC sp_ReleaseAppLock $1, $2;
+SQL;
+				$this->ExecSQL($query, $key, $owner);
+			}
+		}
+		else
 		{
 			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$key = System::Get64BitHash($key);
-
-		$query = <<<SQL
-			SELECT pg_advisory_unlock($1::BIGINT);
-SQL;
-		$this->ExecSQL($query, $key);
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
@@ -1077,6 +1112,104 @@ SQL;
 			$tarFile = File::GzCompress($tarFile, $compressionLevel, true);
 		}
 		return file_exists($tarFile) ? $tarFile : false;
+	}
+
+	/**
+	 * Takes in a file and restores the current DB from that file.
+	 *
+	 * @param string $file Must be a text file dump.
+	 */
+	function DBRestore($file)
+	{
+		// Set time to 10 minutes.
+		ini_set('max_execution_time', '600');
+		ini_set('memory_limit', '1G');
+
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Restore currently not supported for non Postgres Databases');
+		}
+
+		$user = $this->Username;
+		$host = $this->Host;
+		$dbName = $this->DatabaseName;
+		$port = $this->Port;
+		$pass = $this->Password;
+
+		if ($this->PasswordEncrypted)
+		{
+			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
+			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+		}
+		$tempName = 'restore_db_' . date("YmdHis");
+
+		if (System::IsWindows())
+		{
+			$createCommand = "SET PGPASSWORD={$pass}&& createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "SET PGPASSWORD={$pass}&& psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
+		}
+		else
+		{
+			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
+		}
+
+		// Create new DB and Restore file into it.
+		System::Execute($createCommand);
+		System::Execute($restoreCommand);
+
+		$this->TerminateConnections(true);
+
+		$baseConnection = new DataConnection(
+			$this->Type,
+			'postgres',
+			$this->Username,
+			$pass,
+			$this->Host,
+			$this->Port,
+			$this->PasswordEncrypted
+		);
+
+		$query = <<<SQL
+			DROP DATABASE "{$dbName}";
+SQL;
+		$baseConnection->ExecSQL($query);
+		$baseConnection->RenameDBTo($tempName, $dbName);
+	}
+	/*
+	 * Terminates active db connections.
+	 * @param boolean $closeSelf
+	 */
+	public function TerminateConnections($closeSelf = false)
+	{
+		if ($this->Type !== Data::Postgres)
+		{
+			BloodyMurder('Terminate Connections currently not supported for non Postgres Databases');
+		}
+
+		$query = <<<SQL
+			SELECT datname
+			FROM pg_database
+			WHERE datname = $1;
+SQL;
+		$exists = $this->ExecSQL(Data::Assoc, $query, $this->DatabaseName);
+
+		if ($exists[0] !== null)
+		{
+			$query = <<<SQL
+				SELECT pg_terminate_backend(pg_stat_activity.pid)
+				FROM pg_stat_activity
+				WHERE pg_stat_activity.datname = $1
+					AND pid != pg_backend_pid();
+SQL;
+			$this->ExecSQL($query, $this->DatabaseName);
+		}
+
+		if ($closeSelf)
+		{
+			$this->Close();
+		}
 	}
 	function __wakeup()
 	{
@@ -1353,6 +1486,38 @@ SQL;
 			$cols[] = "{$col} TEXT";
 		}
 		return implode(', ', $cols);
+	}
+
+	/** Renames Database
+	 * @param string $dbName
+	 * @param string $renameDB
+	 */
+	public function RenameDBTo($dbName, $renameDb)
+	{
+		if ($this->Type === Data::MySQL)
+		{
+			$dbName = mysql_real_escape_string($dbName);
+			$renameDb = mysql_real_escape_string($renameDb);
+
+			$query = <<<SQL
+				ALTER DATABASE "{$dbName}" MODIFY NAME = "{$renameDb}";
+SQL;
+			$this->ExecSQL(Data::Assoc, $query);
+		}
+		elseif ($this->Type === Data::Postgres)
+		{
+			$dbName = pg_escape_string($dbName);
+			$renameDb = pg_escape_string($renameDb);
+
+			$query = <<<SQL
+				ALTER DATABASE "{$dbName}" RENAME TO "{$renameDb}";
+SQL;
+			$this->ExecSQL(Data::Assoc, $query);
+		}
+		else
+		{
+			BloodyMurder('Database Type Currently Not Supported');
+		}
 	}
 }
 ?>

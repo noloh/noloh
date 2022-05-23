@@ -54,9 +54,9 @@ class ContextMenu extends Menu
 	 * Be sure to call this from the constructor of any class that extends ContextMenu
 	 * @return ContextMenu
 	 */
-	function ContextMenu()
+	function __construct()
 	{
-		parent::Menu();
+		parent::__construct();
 		$this->Buoyant = true;
 		$this->SetHeight(0);
 		$this->SetBorder('1px solid #A0A0A0');

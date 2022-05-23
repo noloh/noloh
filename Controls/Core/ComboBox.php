@@ -21,9 +21,9 @@ class ComboBox extends ListControl
 	 * @param integer $height The height of this element
 	 * @return ComboBox
 	 */
-	function ComboBox($left = 0, $top = 0, $width = 83, $height = 20)
+	function __construct($left = 0, $top = 0, $width = 83, $height = 20)
 	{
-		parent::ListControl($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		//$this->SetSelectedIndex(0);
 	}
 	/**

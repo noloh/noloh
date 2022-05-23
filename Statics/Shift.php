@@ -86,7 +86,7 @@ final class Shift
 	 */
 	const All = 7;
 
-	private function Shift() {}
+	private function __construct() {}
 	/**
 	 * Allows the Width of a specified Control to be changed via dragging.
 	 * @param Control $control The Control to be shifted.

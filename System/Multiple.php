@@ -20,9 +20,9 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 	 * @param mixed,... $extendsClassesAsDotDotDot
 	 * @return Multiple
 	 */
-	function Multiple($extendsClassesAsDotDotDot)
+	function __construct($extendsClassesAsDotDotDot)
 	{
-		parent::Component();
+		parent::__construct();
 		$args = func_get_args();
 		$numArgs = count($args);
 		if($numArgs == 0)

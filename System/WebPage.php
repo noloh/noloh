@@ -34,6 +34,14 @@ abstract class WebPage extends Component
 	 * @ignore
 	 */
 	public $DebugWindow;
+	/**
+	 * @ignore
+	 */
+	public $CanonicalUrl;
+	/**
+	 * @ignore
+	 */
+	public $SearchEngineTokenLinks;
 	
 	private $Title;
 	private $Width;
@@ -55,7 +63,7 @@ abstract class WebPage extends Component
 	 * @param string $vanityMessage A message you would like to display in the source of the WebPage
 	 * @return WebPage
 	 */
-	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null, $autoIncludes = array())
+	function __construct($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null, $autoIncludes = array())
 	{
             self::$AutoIncludes = $autoIncludes;
 		if($_SESSION['_NVisit'] === -1)
@@ -67,7 +75,7 @@ abstract class WebPage extends Component
 			$appId = $GLOBALS['_NApp']?$GLOBALS['_NApp']:0;
 			throw new Exception('Fatal cookie behavior.', $appId);
 		}
-		parent::Component();
+		parent::__construct();
 		parent::Show();
 		$_SESSION['_NStartUpPageId'] = $this->Id;
 		$this->Width = isset($GLOBALS['_NWidth']) ? $GLOBALS['_NWidth'] : 1024;
@@ -356,7 +364,7 @@ abstract class WebPage extends Component
 	 */
 	function SetScrollLeft($scrollLeft)
 	{
-		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+		$scrollLeft = ($scrollLeft == Layout::Left ? 0: ($scrollLeft == Layout::Right ? 9999 : $scrollLeft));
 		ClientScript::Queue($this, 'document.documentElement.scrollLeft='.$scrollLeft.';', null);
 	}
 	/**
@@ -372,7 +380,7 @@ abstract class WebPage extends Component
 	 */
 	function SetScrollTop($scrollTop)
 	{
-		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+		$scrollTop = ($scrollTop == Layout::Top ? 0 : ($scrollTop==Layout::Bottom ? 9999 : $scrollTop));
 		ClientScript::Queue($this, 'document.documentElement.scrollTop='.$scrollTop.';', null);
 	}
 	/**
@@ -554,13 +562,15 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function SearchEngineShow($canonicalURL, $tokenLinks)
+	function SearchEngineShow()
 	{
 		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><META http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>', $this->Title, "</TITLE>\r\n",
 			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '">',"\r\n",
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,'">',"\r\n";
-		if($canonicalURL)
-			echo '<LINK rel="canonical" href="', $canonicalURL, '">';
+		if ($this->CanonicalUrl)
+		{
+			echo '<LINK rel="canonical" href="', $this->CanonicalUrl, '">';
+		}
 		foreach($this->CSSFiles as $path)
 			echo '<LINK rel="stylesheet" type="text/css" href="', $path, '">';
 		echo '</HEAD><BODY><DIV>',"\r\n";
@@ -570,7 +580,7 @@ UserAgent::IsIE6() ? '
 			if($show && $obj)
 				$obj->SearchEngineShow();
 		}
-		echo " <BR>\r\n", $tokenLinks, "\r\n</DIV></BODY></HTML>";
+		echo " <BR>\r\n<UL>", $this->SearchEngineTokenLinks, "</UL>\r\n</DIV></BODY></HTML>";
 	}
 	/**
 	 * @ignore
@@ -622,7 +632,7 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function GetAddId()
+	function GetAddId($obj)
 	{
 		return $this->Id;
 	}
@@ -651,7 +661,7 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0)
 		{

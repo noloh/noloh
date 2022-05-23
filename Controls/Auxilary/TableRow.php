@@ -25,9 +25,9 @@ class TableRow extends Control
 	 * @param array $columns
 	 * @return TableRow
 	 */
-	function TableRow($columns = null)
+	function __construct($columns = null)
 	{
-		parent::Control(0, 0, null, null);
+		parent::__construct(0, 0, null, null);
 		$this->Layout = Layout::Relative;
 		$this->Columns = new ImplicitArrayList($this, 'AddColumn');
 		$this->Columns->ParentId = $this->Id;

@@ -31,9 +31,9 @@ class CheckListBox extends ListControl
 	* @param integer $width
 	* @param integer $height
 	*/
-	function CheckListBox($left = 0, $top = 0, $width = 83, $height = 40)
+	function __construct($left = 0, $top = 0, $width = 83, $height = 40)
 	{
-		parent::ListControl($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->CheckBoxes = new Group();
 		$this->CheckBoxes->SetParentId($this->Id);
 		$this->SetCSSClass();

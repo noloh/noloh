@@ -50,9 +50,9 @@ abstract class Control extends Component
 	* @param integer $width The width of this element
 	* @param integer $height The height of this element
  	*/
-	function Control($left = 0, $top = 0, $width = 0, $height = 0)
+	function __construct($left = 0, $top = 0, $width = 0, $height = 0)
 	{
-		parent::Component();
+		parent::__construct();
 		if($left !== null)
 			$this->SetLeft($left);
 		if($top !== null)
@@ -1340,15 +1340,23 @@ abstract class Control extends Component
 	}
 	/**
 	 * Gives this Control the active Focus.
+	 * @param integer $delay
 	 */
-	function Focus()
+	function Focus($delay = null)
 	{
-		QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+		if (isset($delay))
+		{
+			ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').focus();}, {$delay});", array(), true, Priority::Low);
+		}
+		else
+		{
+			QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+		}
 	}
 	/**
 	 * @ignore
 	 */
-	function GetAddId()
+	function GetAddId($obj)
 	{
 		return $this->Id;
 	}
@@ -1365,19 +1373,21 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function SearchEngineShow($returnClass=false)
+	function SearchEngineShowClassAttr()
 	{
-		if($returnClass)
-		{
-			//$this->Show();
-			return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className'])) 
-				? ' class="'.$_SESSION['_NPropertyQueue'][$this->Id]['className'].'"' 
-				: '';
-		}
-		elseif($this->Text)
+		return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className']))
+			? ' class="' . $_SESSION['_NPropertyQueue'][$this->Id]['className'] . '"'
+			: '';
+	}
+	/**
+	 * @ignore
+	 */
+	function SearchEngineShow()
+	{
+		if ($this->Text)
 		{
 			$tag = $this->GetSearchEngineTag();
-			echo '<',$tag, self::SearchEngineShow(true),'>', $this->Text, '</',$tag,'>';
+			echo '<', $tag, self::SearchEngineShowClassAttr(), '>', $this->Text, '</', $tag, '>';
 		}
 	}
 	/**
@@ -1458,7 +1468,7 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass' && $nm !== 'CSSClasses')
 		{

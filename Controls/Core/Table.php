@@ -32,9 +32,9 @@ class Table extends Control
 	 * @param integer $height The Height dimension of this element
 	 * @return Table
 	 */
-	function Table($left=0, $top=0, $width=500, $height=500)
+	function __construct($left=0, $top=0, $width=500, $height=500)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		$this->SetWidth($width);
 		$this->SetHeight($height);
 		$this->Rows = new ArrayList();
@@ -81,7 +81,7 @@ class Table extends Control
 	 */
     function SetScrollLeft($scrollLeft)
     {
-    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+    	$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
         if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
@@ -102,7 +102,7 @@ class Table extends Control
 	 */
     function SetScrollTop($scrollTop)
     {
-    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+    	$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
     	if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else

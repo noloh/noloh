@@ -23,9 +23,9 @@ class TextBox extends Control
 	 * @param integer $height The height of this element
 	 * @return TextBox
 	 */
-	function TextBox($left = 0, $top = 0, $width = 83, $height = 16)
+	function __construct($left = 0, $top = 0, $width = 83, $height = 16)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 	}
 	/**
 	 * @ignore
@@ -202,18 +202,29 @@ class TextBox extends Control
     /**
 	 * Gives the TextBox the active Focus. Optionally, its Text can also be highlighted.
 	 * @param boolean $highlight
+	 * @param integer $delay
 	 */
-	function Focus($highlight = true)
+	function Focus($highlight = true, $delay = null)
 	{
 		if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
 		{
 			ClientScript::Queue($this, '_NKeyEvntsMoTimeout', $this);
 		}
 		else
-			parent::Focus();
+		{
+			parent::Focus($delay);
+		}
 		if($highlight)
-			ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
-//			QueueClientFunction($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+		{
+			if (isset($delay))
+			{
+				ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').select();}, {$delay});", array(), true, Priority::Low);
+			}
+			else
+			{
+				ClientScript::Queue($this, '_N("'.$this->Id.'").select', array(), false, Priority::Low);
+			}
+		}
 	}
     /**
      * @ignore

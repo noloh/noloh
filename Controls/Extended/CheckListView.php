@@ -6,9 +6,9 @@ class CheckListView extends ListView
 {
 	private $CheckColumn;
 	
-	function CheckListView($left, $top, $width, $height)
+	function __construct($left, $top, $width, $height)
 	{
-		parent::ListView($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->CheckColumn = new ColumnHeader(null, 0, 25, $this->ColumnsPanel->GetHeight());
 		$this->CheckColumn->Click = null;
 		$this->CheckColumn->ParentId = $this->ColumnsPanel->Id;
@@ -16,16 +16,24 @@ class CheckListView extends ListView
 	/**
 	 * @ignore
 	 */
-	public function AddListViewItem(ListViewItem $listViewItem)
+	public function AddListViewItem($listViewItem)
 	{
+		if (!($listViewItem instanceof ListViewItem))
+		{
+			BloodyMurder('CheckListView::AddListViewItem must use ListViewItem');
+		}
 		parent::AddListViewItem($listViewItem);
 		$listViewItem->SubItems->PositionalInsert(new CheckBox(null, 0, 0, 25), 'Check', 0);
 	}
 	/**
 	 * @ignore
 	 */
-	public function InsertListViewItem(ListViewItem $listViewItem, $idx)
+	public function InsertListViewItem($listViewItem, $idx)
 	{
+		if (!($listViewItem instanceof ListViewItem))
+		{
+			BloodyMurder('CheckListView::InsertListViewItem must use ListViewItem');
+		}
 		parent::InsertListViewItem($listViewItem, $idx);
 		$listViewItem->SubItems->PositionalInsert($tmpCheck = new CheckBox(null, 0, 0, 25), 'Check', 0);
 //		$tmpCheck->Click[] = new ClientEvent('event.cancelBubble=true;event.stopPropagation();');
