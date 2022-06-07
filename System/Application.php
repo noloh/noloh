@@ -388,9 +388,11 @@ final class Application extends Base
 	}
 	private function HandleForcedReset()
 	{
-		if(!isset($_SESSION['_NVisit']) || 
-			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
-			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit']) && !isset($_POST['_NListener'])))
+		$sessionVisit = isset($_SESSION['_NVisit']);
+		$visitMismatch = (isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']);
+		$paramsPassedUp = ((isset($_POST['_NVisit']) && isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) || $_SESSION['_NVisit'] < 0 || isset($_GET['_NVisit']) || isset($_POST['_NListener']));
+
+		if (!$sessionVisit || $visitMismatch || !$paramsPassedUp)
 		{
 			if(UserAgent::IsPPCOpera() || !isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
@@ -405,8 +407,10 @@ final class Application extends Base
 			}
 			return true;//!isset($_COOKIE['_NApp']);
 		}
-		if($_SESSION['_NVisit']===0 && (isset($_GET['_NVisit']) && $_GET['_NVisit']==0) && count($_POST)===0)	//FireBug bug
+		if ($_SESSION['_NVisit'] === 0 && (isset($_GET['_NVisit']) && $_GET['_NVisit'] == 0) && count($_POST) === 0)	//FireBug bug
+		{
 			return true;
+		}
 		return false;
 	}
 	private function HandleIENavigation()
@@ -703,8 +707,10 @@ final class Application extends Base
 		NolohInternal::Queues();
 		ob_end_clean();
 		$gzip = defined('FORCE_GZIP');
-		if($gzip)
+		if ($gzip)
+		{
 			ob_start('ob_gzhandler');
+		}
 		echo $_SESSION['_NScriptSrc'], '/*_N*/', $_SESSION['_NScript'][0], $_SESSION['_NScript'][1], $_SESSION['_NScript'][2];
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
@@ -718,7 +724,7 @@ final class Application extends Base
 		$requestDetails['total_session_io_time'] += $benchmark;
 		$requestDetails['session_strlen'] = strlen($serializedSession);
 		$requestDetails['tokens'] = $tokenString;
-		if ($this->WebPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
+		if ($this->WebPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
 		{
 			$this->WebPage->ProcessRequestDetails($requestDetails);
 		}
