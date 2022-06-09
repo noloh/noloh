@@ -260,19 +260,20 @@ function _NAutoLoad($class)
 			}
 		}
 
-		if ($namespace !== null)
+		foreach ([$classWithoutNamespace, $class] as $file)
 		{
-			$class = $classWithoutNamespace;
-		}
-
-		if (
-			stream_resolve_include_path($includeFile = ($class . '.php'))
-			|| stream_resolve_include_path($includeFile = (str_replace('_', '/', $class) . '.php'))
-			|| stream_resolve_include_path($includeFile = (strtolower($class) . '.php')))
-		{
-			if ((include $includeFile) === false)
+			if (
+				stream_resolve_include_path($includeFile = ($file . '.php'))
+				|| stream_resolve_include_path($includeFile = (str_replace('_', '/', $file) . '.php'))
+				|| stream_resolve_include_path($includeFile = (strtolower($file) . '.php'))
+			)
 			{
-				BloodyMurder('The class ' . $class . ' is not defined.');
+				if ((include $includeFile) === false)
+				{
+					BloodyMurder('The class ' . $class . ' is not defined.');
+				}
+
+				break;
 			}
 		}
 //		require($class . '.php');
