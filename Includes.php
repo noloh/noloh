@@ -260,7 +260,7 @@ function _NAutoLoad($class)
 			}
 		}
 
-		foreach ([$classWithoutNamespace, $class] as $file)
+		foreach (array($classWithoutNamespace, $class) as $file)
 		{
 			if (
 				stream_resolve_include_path($includeFile = ($file . '.php'))
