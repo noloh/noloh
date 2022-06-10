@@ -617,6 +617,16 @@ final class System
 	{
 		return intval(substr(md5($str), 0, 16), 16);
 	}
+
+	/**
+	 * Checks if both backend and frontend can negotiate zipped content
+	 * @return bool
+	 */
+	static function SupportsZip()
+	{
+		return defined('FORCE_GZIP') && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+			&& preg_match('/\bgzip\b/i', $_SERVER['HTTP_ACCEPT_ENCODING']);
+	}
 }
 
 ?>
