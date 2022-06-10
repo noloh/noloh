@@ -903,7 +903,7 @@ class DataConnection extends Base
 	{
 		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
-			if ($this->Type->Type === Data::Postgres)
+			if ($this->Type === Data::Postgres)
 			{
 				$key = System::Get64BitHash($key);
 
