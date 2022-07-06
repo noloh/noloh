@@ -145,13 +145,15 @@ class Image extends Control
 	 */
 	function SetWidth($width)
 	{
-		if($width !== null && !is_numeric($width))
+		if ($width !== null && !is_numeric($width))
 		{
-			if(substr($width, -1) != '%')
+			if (substr($width, -1) != '%' && !empty($this->Src))
 			{
 				$imageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($width == System::Auto)
+				if ($width == System::Auto)
+				{
 					$width = $imageSize[0];
+				}
 				else
 				{
 					$width = intval($width)/100;
@@ -159,8 +161,10 @@ class Image extends Control
 				}
 			}
 		}
-		if($this->Magician != null)
+		if ($this->Magician != null)
+		{
 			$this->SetMagicianSrc();
+		}
 		parent::SetWidth($width);
 	}
 	/**
@@ -181,13 +185,15 @@ class Image extends Control
 	 */
 	function SetHeight($height)
 	{
-		if($height !== null && !is_numeric($height))
+		if ($height !== null && !is_numeric($height))
 		{
-			if(substr($height, -1) != '%')
+			if (substr($height, -1) != '%' && !empty($this->Src))
 			{
 				$imageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($height == System::Auto)
+				if ($height == System::Auto)
+				{
 					$height = $imageSize[1];
+				}
 				else
 				{
 					$height = intval($height)/100;
@@ -195,8 +201,10 @@ class Image extends Control
 				}
 			}
 		}
-		if($this->Magician != null)
+		if ($this->Magician != null)
+		{
 			$this->SetMagicianSrc();
+		}
 		parent::SetHeight($height);
 	}
 	/**

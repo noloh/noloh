@@ -138,7 +138,7 @@ class DataConnection extends Base
 			$password = Security::Decrypt($password, $encryptionKey, $iv);
 		}
 		System::BeginBenchmarking('_N/DataCommand::Connect');
-		if (!is_resource($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
+		if (!self::IsActiveConnection($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
 		{
 			if ($this->Type == Data::Postgres)
 			{
@@ -212,7 +212,7 @@ class DataConnection extends Base
 		if (
 			!$this->AfterConnectCalled
 			&& empty($_SESSION['_NOmniscientBeing'])	// Only empty after OmniscientBeing finished unserializing properly
-			&& is_resource($this->ActiveConnection)
+			&& self::IsActiveConnection($this->ActiveConnection)
 			&& !empty($this->AfterConnectCallBack)
 		)
 		{
@@ -285,31 +285,38 @@ class DataConnection extends Base
 	 */
 	function Close()
 	{
-		if(is_resource($this->ActiveConnection))
+		if (self::IsActiveConnection($this->ActiveConnection))
 		{
-			if($this->Type == Data::Postgres)
+			$ret = false;
+			if ($this->Type == Data::Postgres)
 			{
-				return pg_close($this->ActiveConnection);
+				$ret = @pg_close($this->ActiveConnection);
 			}
-			elseif($this->Type == Data::MySQL)
+			elseif ($this->Type == Data::MySQL)
 			{
-				return mysql_close($this->ActiveConnection);
+				$ret = mysql_close($this->ActiveConnection);
 			}
-			elseif($this->Type == Data::MSSQL)
+			elseif ($this->Type == Data::MSSQL)
 			{
 				if (function_exists('sqlsrv_close'))
 				{
-					return sqlsrv_close($this->ActiveConnection);
+					$ret = sqlsrv_close($this->ActiveConnection);
 				}
 				else
 				{
-					return mssql_close($this->ActiveConnection);
+					$ret = mssql_close($this->ActiveConnection);
 				}
 			}
 			elseif ($this->Type === Data::ODBC)
 			{
-				return odbc_close($this->ActiveConnection);
+				$ret = odbc_close($this->ActiveConnection);
 			}
+
+			if ($ret)
+			{
+				$this->ActiveConnection = null;
+			}
+			return $ret;
 		}
 		return false;
 	}
@@ -901,48 +908,74 @@ class DataConnection extends Base
 	 */
 	function AdvisoryLock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
 		{
-			BloodyMurder('Not yet supported for this database type');
-		}
+			if ($this->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
 
-		$key = System::Get64BitHash($key);
+				if ($xact)
+				{
+					$this->BeginTransaction();
 
-		if ($xact)
-		{
-			$this->BeginTransaction();
-
-			$query = <<<SQL
-				SELECT pg_advisory_xact_lock($1::BIGINT);
+					$query = <<<SQL
+						SELECT pg_advisory_xact_lock($1::BIGINT);
 SQL;
+				}
+				else
+				{
+					$query = <<<SQL
+						SELECT pg_advisory_lock($1::BIGINT);
+SQL;
+				}
+
+				$this->ExecSQL($query, $key);
+			}
+			else
+			{
+				$owner = $xact ? 'Transaction' : 'Session';
+				$query = <<<SQL
+					EXEC sp_GetAppLock $1, 'Exclusive', $2;
+SQL;
+				$this->ExecSQL($query, $key, $owner);
+			}
 		}
 		else
 		{
-			$query = <<<SQL
-				SELECT pg_advisory_lock($1::BIGINT);
-SQL;
+			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$this->ExecSQL($query, $key);
 	}
 	/*
 	 * Unlocks pg_advisory_lock
 	 *
 	 * @param string $str is used to create the 64 bit hash key for the lock
 	 */
-	function AdvisoryUnlock($key)
+	function AdvisoryUnlock($key, $xact = true)
 	{
-		if ($this->Type !== Data::Postgres)
+		if (in_array($this->Type, array(Data::Postgres, Data::MSSQL)))
+		{
+			if ($this->Type === Data::Postgres)
+			{
+				$key = System::Get64BitHash($key);
+
+				$query = <<<SQL
+					SELECT pg_advisory_unlock($1::BIGINT);
+SQL;
+				$this->ExecSQL($query, $key);
+			}
+			else
+			{
+				$owner = $xact ? 'Transaction' : 'Session';
+				$query = <<<SQL
+					EXEC sp_ReleaseAppLock $1, $2;
+SQL;
+				$this->ExecSQL($query, $key, $owner);
+			}
+		}
+		else
 		{
 			BloodyMurder('Not yet supported for this database type');
 		}
-
-		$key = System::Get64BitHash($key);
-
-		$query = <<<SQL
-			SELECT pg_advisory_unlock($1::BIGINT);
-SQL;
-		$this->ExecSQL($query, $key);
 	}
 	function DBDump($file, $compressionLevel = 5)
 	{
@@ -1462,9 +1495,10 @@ SQL;
 		return implode(', ', $cols);
 	}
 
-	/** Renames Database
+	/**
+	 * Renames Database
 	 * @param string $dbName
-	 * @param string $renameDB
+	 * @param string $renameDb
 	 */
 	public function RenameDBTo($dbName, $renameDb)
 	{
@@ -1492,6 +1526,27 @@ SQL;
 		{
 			BloodyMurder('Database Type Currently Not Supported');
 		}
+	}
+
+	/**
+	 * Checks whether a passed in candidate is possi
+	 * @param $candidate
+	 * @return boolean
+	 */
+	protected function IsActiveConnection($candidate)
+	{
+		if ($this->Type === Data::Postgres && PHP_VERSION_ID >= 80100)
+		{
+			return ($candidate instanceof PgSql\Connection);
+		}
+
+		return is_resource($candidate);
+	}
+
+	function __serialize()
+	{
+		$this->ActiveConnection = null;
+		return (array)$this;
 	}
 }
 ?>

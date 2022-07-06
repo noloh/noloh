@@ -376,5 +376,14 @@ class File extends Base
 			return $dest;
 		}
 	}
+	/**
+	 * @param string $path is the path you wish to normalize
+	 * @return string of normalized path.
+	 */
+	static function NormalizeDirectorySlashes($path)
+	{
+		$normalized = str_replace(array('C:', '\\'), array('', '/'), $path);
+		return $normalized;
+	}
 }
 ?>
