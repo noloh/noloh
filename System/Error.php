@@ -79,7 +79,7 @@ function _NOBErrorHandler($buffer)
 			unset($requestDetails['total_session_io_time']);
 
 			$webPage = WebPage::That();
-			if ($webPage && $processRequestDetails && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
+			if ($webPage && $processRequestDetails && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
 			{
 				/*
 				 * Checking for a syntax error message.
@@ -198,7 +198,7 @@ function DisplayError($message)
 	$requestDetails['error_message'] = $message;
 	unset($requestDetails['total_session_io_time']);
 	$webPage = WebPage::That();
-	if ($webPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails))
+	if ($webPage && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
 	{
 		$webPage->ProcessRequestDetails($requestDetails);
 	}

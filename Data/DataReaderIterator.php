@@ -153,6 +153,7 @@ class DataReaderIterator extends DataReader
 		{
 			$this->Data = $this->ReadData();
 		}
+		$this->Resource = null;
 		return array_keys((array)$this);
 	}
 	public function __toString()
