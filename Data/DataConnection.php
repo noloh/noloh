@@ -263,7 +263,15 @@ class DataConnection extends Base
 						'Code: ' . $error['code'] . '; ' .
 						'Message: ' . $error[ 'message'] . "\n";
 				}
-				$exception = new SqlException($errStr);
+				if (strpos($errStr, 'SQL_FRIENDLY_EXCEPTION') && !empty($this->FriendlyCallBack))
+				{
+					$exception = new SqlFriendlyException($errStr, $this->FriendlyCallBack);
+				}
+				else
+				{
+					$exception = new SqlException($errStr);
+				}
+
 				throw $exception;
 			}
 			else
@@ -1411,18 +1419,30 @@ SQL;
 	}
 	public function DatabaseExists($dbName)
 	{
-		if ($this->Type !== Data::Postgres)
+		if ($this->Type === Data::Postgres)
 		{
-			BloodyMurder('DatabaseExists only currently supported in Postgres');
-		}
-
-		$query = <<<SQL
+			$query = <<<SQL
 			SELECT datname
 			FROM pg_catalog.pg_database
 			WHERE datname = $1;
 SQL;
-		$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
-		return isset($results[0]['datname']);
+			$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+			return isset($results[0]['datname']);
+		}
+		elseif ($this->Type === Data::MSSQL)
+		{
+			$query = <<<SQL
+			SELECT "name"
+			FROM sys.databases
+			WHERE "name" = $1;
+SQL;
+			$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+			return isset($results[0]['name']);
+		}
+		else
+		{
+			BloodyMurder('DatabaseExists is not supported for this connection type');
+		}
 	}
 	public function UserMappingExists($foreignServer, $user)
 	{

@@ -46,6 +46,16 @@ SQL;
 			return $this->Connection->ExecSQL(Data::Assoc, $query)
 				->Data[0]['last_value'];
 		}
+		elseif ($this->Connection->Type === Data::MSSQL)
+		{
+			$query = <<<SQL
+				SELECT current_value 
+				FROM sys.sequences 
+				WHERE "name" = '{$this->Name}'
+SQL;
+			return $this->Connection->ExecSQL(Data::Assoc, $query)
+				->Data[0]['current_value'];
+		}
 		else
 		{
 			BloodyMurder('Current() not supported for this connection type.');
