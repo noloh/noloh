@@ -25,7 +25,6 @@ final class Cookie
 		}
 
 		$config = Configuration::That();
-		$path = dirname($_SERVER['REQUEST_URI']);
 		$sameSite = 'Strict';
 		$secure = ($config && $config->ForceSecureProtocol);
 		$httpOnly = true;
@@ -36,7 +35,7 @@ final class Cookie
 				$name,
 				$value,
 				$expires,
-				$path . '; samesite=' . $sameSite,
+				'; samesite=' . $sameSite,
 				null,
 				$secure,
 				$httpOnly
@@ -49,7 +48,7 @@ final class Cookie
 				$value,
 				array(
 					'expires' => $expires,
-					'path' => $path,
+//					'path' => $path,
 //					'domain' => $domain,
 					'secure' => $secure,
 					'httponly' => $httpOnly,
@@ -70,7 +69,6 @@ final class Cookie
 		$config = Configuration::That();
 
 		$maxLifeTime = 0;	// Until the browser is closed
-		$path = dirname($_SERVER['REQUEST_URI']);
 		$sameSite = 'Strict';
 		$secure = ($config && $config->ForceSecureProtocol);
 		$httpOnly = true;
@@ -80,7 +78,7 @@ final class Cookie
 		{
 			session_set_cookie_params(
 				$maxLifeTime,
-				$path . '; samesite=' . $sameSite,
+				'; samesite=' . $sameSite,
 				null,
 				$secure,
 				$httpOnly
@@ -90,7 +88,7 @@ final class Cookie
 		{
 			session_set_cookie_params(array(
 				'lifetime' => $maxLifeTime,
-				'path' => $path,
+//				'path' => $path,
 //				'domain' => $domain,
 				'secure' => $secure,
 				'httponly' => $httpOnly,
