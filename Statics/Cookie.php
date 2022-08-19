@@ -25,9 +25,8 @@ final class Cookie
 		}
 
 		$config = Configuration::That();
-		$path = '/';		// TODO: This is default but maybe dirname($_SERVER['REQUEST_URI']) is better?
+		$path = dirname($_SERVER['REQUEST_URI']);
 		$sameSite = 'Strict';
-		//$domain = $_SERVER['HTTP_HOST'];
 		$secure = ($config && $config->ForceSecureProtocol);
 		$httpOnly = true;
 
@@ -71,11 +70,8 @@ final class Cookie
 		$config = Configuration::That();
 
 		$maxLifeTime = 0;	// Until the browser is closed
-		$uri = $_SERVER['REQUEST_URI'];
-		$pos = strpos($uri, '?');
-		$path = $pos === false ? $uri : substr($uri, 0, $pos);
+		$path = dirname($_SERVER['REQUEST_URI']);
 		$sameSite = 'Strict';
-		//$domain = $_SERVER['HTTP_HOST'];
 		$secure = ($config && $config->ForceSecureProtocol);
 		$httpOnly = true;
 

@@ -47,7 +47,7 @@ final class Application extends Base
 	 */
 	public static function &Start($dotDotDot=null)
 	{
-		if(empty($GLOBALS['_NApp']))
+		if (empty($GLOBALS['_NApp']))
 		{
 			self::InitRequestDetails();
             if(!UserAgent::IsCLI() && getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
@@ -96,8 +96,9 @@ final class Application extends Base
 			return $config;
 		}
 		else
-//			return Configuration::That();
+		{
 			return $_SESSION['_NConfiguration'];
+		}
 		return false;
 	}
 	/**

@@ -148,11 +148,7 @@ class Configuration extends Base implements Singleton
 		}
 
 		$GLOBALS['_NDebugMode'] = $this->DebugMode;
-
-		if (System::IsRESTful())
-		{
-			$GLOBALS['_NConfiguration'] = $this;
-		}
+		$GLOBALS['_NConfiguration'] = $this;
 	}
     private function DetectStartClass()
     {
