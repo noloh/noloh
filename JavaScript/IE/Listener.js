@@ -101,7 +101,6 @@ _NListenerBundle.prototype.Start = function()
 			iframe.contentWindow.document.close();  
 			iframe.contentWindow.document.body.innerHTML = "<FORM id='frm' method='POST' target=_self action='" + url + 
 				"'><INPUT type='text' name='_NVisit' value='"+ ++_N.Visit +
-				"'><INPUT type='text' name='_NApp' value='"+ _NApp +
 				"'><INPUT type='text' name='_NListener' value='"+ ids +
 				"'></FORM>";
 			iframe.contentWindow.document.getElementById("frm").submit();
@@ -110,7 +109,7 @@ _NListenerBundle.prototype.Start = function()
 		else
 		{
 			this.Request = _NXHR("POST", url, function() {_NListenerReqStateChange.call(ref);}, true);
-			this.Request.send("_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NListener="+ids);
+			this.Request.send("_NVisit="+ ++_N.Visit+"&_NListener="+ids);
 		}
 	}
 };

@@ -74,7 +74,7 @@ function _NCheckURL()
 	if((_N.Hash != location.hash && _N.Hash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_N.URL != inner))
 	{
 		clearInterval(_N.URLChecker);
-		var str = "_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp + "&_NSkeletonless=true", bodyEle = _N("N1");
+		var str = "_NVisit="+ ++_N.Visit + "&_NSkeletonless=true", bodyEle = _N("N1");
 		_N(_N.LoadIndicator).style.visibility = "visible";
 		if(_N.HistoryLength+1==history.length)
 			var targetURL = inner;
@@ -92,7 +92,7 @@ function _NCheckURL()
 		_N.URL = location.href;
 		_N.Request = _NXHR("POST", 
 			(targetURL.indexOf("#!/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#!/",targetURL.indexOf("?")==-1?"?":"&")+"&")
-           	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
+           	+ "_NVisit=0&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
            	_NReqStateChange, true);
         _N.Request.send(str);
         if(bodyEle.NonControls)
@@ -108,7 +108,7 @@ function _NCheckURL()
 	if(++ _N.TimeoutCount == _N.TimeoutTicks)
 	{
 		var serverArg = _N.TimeoutDuration ? _NTimeoutTicker() : "Ping";
-		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NApp="+_NApp+"&_NTimeout="+serverArg);
+		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NTimeout="+serverArg);
 		_N.TimeoutCount = 0;
 	}
 }
@@ -660,7 +660,7 @@ function _NServer()
 		{
 			clearInterval(_N.URLChecker);
 			var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
-			var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
+			var str = "_NVisit="+ ++_N.Visit+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 			for(var i=0; i<sECount; ++i)
 			{
 				if(_N.SEQ[i][0] == "Unload")
