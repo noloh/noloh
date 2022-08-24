@@ -173,16 +173,9 @@ final class Application extends Base
 			{
 				return $this->HandleTimeout($_REQUEST['_NTimeout']);
 			}
-			elseif (isset($_GET['_NImage']))
+			elseif (isset($_GET['_NImageId']))
 			{
-				if (empty($_GET['_NWidth']))
-				{
-					Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
-				}
-				else
-				{
-					Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams'], $_GET['_NWidth'], $_GET['_NHeight']);
-				}
+				Image::MagicGeneration($_GET['_NImageId']);
 			}
 			elseif (isset($_GET['_NFileUpload']))
 			{
