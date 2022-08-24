@@ -910,7 +910,7 @@ final class Application extends Base
 		$_SESSION['_NHighestZ'] = 0;
 		$_SESSION['_NLowestZ'] = 0;
 		$_SESSION['_NOrigUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
-		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
+		$_SESSION['_NURL'] = System::RequestUri(); 
 		$_SESSION['_NPath'] = ComputeNOLOHPath();
 		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
 		$_SESSION['_NRAPath'] = rtrim(
