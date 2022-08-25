@@ -325,7 +325,7 @@ class Image extends Control
 		$magicianArgs = $magician['args'];
 		$class = $magicianArgs[0];
 		$function = $magicianArgs[1];
-		$params = array_Slice($magicianArgs, 2);
+		$params = array_slice($magicianArgs, 2);
 
 		if($src != '')
 		{
