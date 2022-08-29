@@ -467,6 +467,24 @@ final class System
 	 * @ignore
 	 */
 	static function FullAppPath()			{return URL::GetProtocol() . '://' . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
+	/**
+	 * Returns the URI as it was requested
+	 * @param bool $queryString Whether the query string will be returned
+	 * @return tring
+	 */
+	static function RequestUri($queryString = false)
+	{
+		$uri = $_SERVER['REQUEST_URI'];
+		if (!$queryString)
+		{
+			$pos = strpos($uri, '?');
+			if ($pos !== false)
+			{
+				$uri = substr($uri, 0, $pos);
+			}
+		}
+		return $uri;
+	}
 
 	/**
 	 * Allows one to clock the time operation(s) took. Call this before before beginning those operations.
@@ -616,6 +634,16 @@ final class System
 	static function Get64BitHash($str)
 	{
 		return intval(substr(md5($str), 0, 16), 16);
+	}
+
+	/**
+	 * Checks if both backend and frontend can negotiate zipped content
+	 * @return bool
+	 */
+	static function SupportsZip()
+	{
+		return defined('FORCE_GZIP') && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+			&& preg_match('/\bgzip\b/i', $_SERVER['HTTP_ACCEPT_ENCODING']);
 	}
 }
 

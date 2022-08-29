@@ -145,13 +145,15 @@ class Image extends Control
 	 */
 	function SetWidth($width)
 	{
-		if($width !== null && !is_numeric($width))
+		if ($width !== null && !is_numeric($width))
 		{
-			if(substr($width, -1) != '%')
+			if (substr($width, -1) != '%' && !empty($this->Src))
 			{
 				$imageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($width == System::Auto)
+				if ($width == System::Auto)
+				{
 					$width = $imageSize[0];
+				}
 				else
 				{
 					$width = intval($width)/100;
@@ -159,8 +161,10 @@ class Image extends Control
 				}
 			}
 		}
-		if($this->Magician != null)
+		if ($this->Magician != null)
+		{
 			$this->SetMagicianSrc();
+		}
 		parent::SetWidth($width);
 	}
 	/**
@@ -181,13 +185,15 @@ class Image extends Control
 	 */
 	function SetHeight($height)
 	{
-		if($height !== null && !is_numeric($height))
+		if ($height !== null && !is_numeric($height))
 		{
-			if(substr($height, -1) != '%')
+			if (substr($height, -1) != '%' && !empty($this->Src))
 			{
 				$imageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($height == System::Auto)
+				if ($height == System::Auto)
+				{
 					$height = $imageSize[1];
+				}
 				else
 				{
 					$height = intval($height)/100;
@@ -195,8 +201,10 @@ class Image extends Control
 				}
 			}
 		}
-		if($this->Magician != null)
+		if ($this->Magician != null)
+		{
 			$this->SetMagicianSrc();
+		}
 		parent::SetHeight($height);
 	}
 	/**
@@ -246,19 +254,26 @@ class Image extends Control
     function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
 		$this->Magician = func_get_args();
+		if (!isset($_SESSION['_NMagicians']))
+		{
+			$_SESSION['_NMagicians'] = array();
+		}
+		// TODO: Garbage collect
+		$_SESSION['_NMagicians'][$this->Id] = array(
+			'src' => $this->Src,
+			'args' => $this->Magician,
+			'width' => $this->Width,
+			'height' => $this->Height
+		);
 		$this->SetMagicianPath();
-        //NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
-        //$this->Magician = array($className, $functionName);
     }
 	/**
 	 * @ignore
 	 */
 	private function SetMagicianPath()
 	{
-		if($this->Src)
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))), $this);
-		else
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))).'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight(), $this);
+		$src = System::RequestUri() . '?_NImageId=' . $this->Id;
+		NolohInternal::SetProperty('src', $src, $this);
 	}
 	/**
 	 * @ignore
@@ -299,8 +314,19 @@ class Image extends Control
 	/**
 	 * @ignore 
 	 */
-	static function MagicGeneration($src, $class, $function, $params, $width=300, $height=200)
+	static function MagicGeneration($id)
 	{
+		if (!isset($_SESSION['_NMagicians']) || !isset($_SESSION['_NMagicians'][$id]))
+		{
+			BloodyMurder('Invalid id for image magic');
+		}
+		$magician = $_SESSION['_NMagicians'][$id];
+		$src = GetAbsolutePath($magician['src']);
+		$magicianArgs = $magician['args'];
+		$class = $magicianArgs[0];
+		$function = $magicianArgs[1];
+		$params = array_slice($magicianArgs, 2);
+
 		if($src != '')
 		{
 			$splitString = explode('.', $src);
@@ -313,10 +339,13 @@ class Image extends Control
 			//	'$im = imagecreatefrom'.$extension.'($src);');
 			if(imagetypes() & constant('IMG_'.strtoupper($extension)))
 				$im = call_user_func('imagecreatefrom'.$extension, $src);
-//			file_put_contents('/tmp/magic', $src);
+
 		}
 		else
 		{
+			$width = $magician['width'] ?: 300;
+			$height = $magician['height'] ?: 200;
+
 			$extension = 'png';
 			$im = imagecreatetruecolor($width, $height);
 			$white = imagecolorallocate($im, 255, 255, 255);

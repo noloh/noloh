@@ -94,13 +94,26 @@ abstract class Resource extends Base
 				$data = get_object_vars($data);
 			}
 		}
-		// TODO: End buffering
-		// TODO: gzip
-		// TODO: Possibly send cache headers on GET requests
+		$output = json_encode($data);
+
+		while (ob_get_level())
+		{
+			ob_end_clean();
+		}
+
+		if (System::SupportsZip())
+		{
+			$output = gzencode($output);
+			header('Content-Encoding: gzip');
+			header('Content-Length: ' . strlen($output));
+		}
+
 		header('HTTP/1.1 200 OK');
 		header('Content-Type: application/json');
+		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+		header('Pragma: no-cache');
 
-		echo json_encode($data);
+		echo $output;
 	}
 
 	private static function IsAResponseInterface($obj)

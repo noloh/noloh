@@ -57,105 +57,114 @@ function _NAutoLoad($class)
 		$_NAutoLoad = array(
 
 			// System
-			'InnerSugar' 	=> 			'System/InnerSugar.php',
-			'SugarException' => 		'System/SugarException.php',
-			'Multiple' => 				'System/Multiple.php',
-			'RESTRouter' =>				'System/RESTRouter.php',
-			'Resource' => 				'System/Resource.php',
-			'SqlException' => 			'System/SqlException.php',
-			'SqlFriendlyException' =>	'System/SqlFriendlyException.php',
-			'ResourceException' => 		'System/ResourceException.php',
-			'AdvisoryLock' =>			'System/AdvisoryLock.php',
+			'InnerSugar' => 'System/InnerSugar.php',
+			'SugarException' => 'System/SugarException.php',
+			'Multiple' => 'System/Multiple.php',
+			'RESTRouter' => 'System/RESTRouter.php',
+			'Resource' => 'System/Resource.php',
+			'SqlException' => 'System/SqlException.php',
+			'SqlFriendlyException' => 'System/SqlFriendlyException.php',
+			'ResourceException' => 'System/ResourceException.php',
+			'AdvisoryLock' => 'System/AdvisoryLock.php',
+			
+			// Exceptions
+			'AbortConstructorException' => 'Exceptions/AbortConstructorException.php',
+			'ResourceException' => 'Exceptions/ResourceException.php',
+			'SqlException' => 'Exceptions/SqlException.php',
+			'SqlFriendlyException' => 'Exceptions/SqlFriendlyException.php',
+			'SugarException' => 'Exceptions/SugarException.php',
 
-			//Events
-			'RaceClientEvent' =>	'Events/RaceClientEvent.php',
+			// Events
+			'RaceClientEvent' => 'Events/RaceClientEvent.php',
+
 			// Collections
-			'Container' => 			'Collections/Container.php',
-			'ControlPair' => 		'Collections/ControlPair.php',
-			'Group' => 				'Collections/Group.php',
-			'Item' => 				'Collections/Item.php',
+			'Container' => 'Collections/Container.php',
+			'ControlPair' => 'Collections/ControlPair.php',
+			'Group' => 'Collections/Group.php',
+			'Item' => 'Collections/Item.php',
 
 			// Data
-			'Data' 				 => 'Data/Data.php',
-			'DataConnection' 	 => 'Data/DataConnection.php',
-			'DataCommand' 		 => 'Data/DataCommand.php',
-			'DataConstraint' 	 => 'Data/DataConstraint.php',
-			'DataReader' 		 => 'Data/DataReader.php',
+			'Data' => 'Data/Data.php',
+			'DataConnection' => 'Data/DataConnection.php',
+			'DataCommand' => 'Data/DataCommand.php',
+			'DataConstraint' => 'Data/DataConstraint.php',
+			'DataReader' => 'Data/DataReader.php',
 			'DataReaderIterator' => 'Data/DataReaderIterator.php',
-			'DataSequence'		 => 'Data/DataSequence.php',
-			'File' 				 => 'Data/File.php',
-			'RawParameter'		 =>	'Data/RawParameter.php',
+			'DataSequence' => 'Data/DataSequence.php',
+			'File' => 'Data/File.php',
+			'RawParameter' => 'Data/RawParameter.php',
 
 			// Core Controls
-			'Button' => 			'Controls/Core/Button.php',
-			'Panel' => 				'Controls/Core/Panel.php',
-			'Calendar' => 			'Controls/Core/Calendar.php',
-			'CheckControl' => 		'Controls/Core/CheckControl.php',
-			'CheckBox' => 			'Controls/Core/CheckBox.php',
-			'ListControl' => 		'Controls/Core/ListControl.php',
-			'CheckListBox' => 		'Controls/Core/CheckListBox.php',
-			'ComboBox' => 			'Controls/Core/ComboBox.php',
-			'FileUpload' => 		'Controls/Core/FileUpload.php',
-			'Form' => 				'Controls/Core/Form.php',
-			'IFrame' => 			'Controls/Core/IFrame.php',
-			'Image' => 				'Controls/Core/Image.php',
-			'Label' => 				'Controls/Core/Label.php',
-			'Link' => 				'Controls/Core/Link.php',
-			'ListBox' => 			'Controls/Core/ListBox.php',
-			'Listener' => 			'Controls/Core/Listener.php',
-			'MarkupRegion' => 		'Controls/Core/MarkupRegion.php',
-			'Multimedia' => 		'Controls/Core/Multimedia.php',
-			'RadioButton' => 		'Controls/Core/RadioButton.php',
-			'Table' => 				'Controls/Core/Table.php',
-			'TextArea' => 			'Controls/Core/TextArea.php',
-			'TextBox' => 			'Controls/Core/TextBox.php',
-			'Timer' => 				'Controls/Core/Timer.php',
-			'UnorderedList' => 		'Controls/Core/UnorderedList.php',
-			'ListItem' =>			'Controls/Core/ListItem.php',
+			'Button' => 'Controls/Core/Button.php',
+			'Panel' => 'Controls/Core/Panel.php',
+			'Calendar' => 'Controls/Core/Calendar.php',
+			'CheckControl' => 'Controls/Core/CheckControl.php',
+			'CheckBox' => 'Controls/Core/CheckBox.php',
+			'ListControl' => 'Controls/Core/ListControl.php',
+			'CheckListBox' => 'Controls/Core/CheckListBox.php',
+			'ComboBox' => 'Controls/Core/ComboBox.php',
+			'FileUpload' => 'Controls/Core/FileUpload.php',
+			'Form' => 'Controls/Core/Form.php',
+			'IFrame' => 'Controls/Core/IFrame.php',
+			'Image' => 'Controls/Core/Image.php',
+			'Label' => 'Controls/Core/Label.php',
+			'Link' => 'Controls/Core/Link.php',
+			'ListBox' => 'Controls/Core/ListBox.php',
+			'Listener' => 'Controls/Core/Listener.php',
+			'MarkupRegion' => 'Controls/Core/MarkupRegion.php',
+			'Multimedia' => 'Controls/Core/Multimedia.php',
+			'RadioButton' => 'Controls/Core/RadioButton.php',
+			'Table' => 'Controls/Core/Table.php',
+			'TextArea' => 'Controls/Core/TextArea.php',
+			'TextBox' => 'Controls/Core/TextBox.php',
+			'Timer' => 'Controls/Core/Timer.php',
+			'UnorderedList' => 'Controls/Core/UnorderedList.php',
+			'ListItem' => 'Controls/Core/ListItem.php',
 
 			// Extended Controls
-			'Accordion' => 			'Controls/Extended/Accordion.php',
-			'AdaptiveControl' =>	'Controls/Extended/AdaptiveControl.php',
-			'ListView' => 			'Controls/Extended/ListView.php',
-			'CheckListView' => 		'Controls/Extended/CheckListView.php',
-			'CollapsePanel' => 		'Controls/Extended/CollapsePanel.php',
-			'Menu' => 				'Controls/Extended/Menu.php',
-			'ContextMenu' => 		'Controls/Extended/ContextMenu.php',
-			'DatePicker' => 		'Controls/Extended/DatePicker.php',
-			'RichMarkupRegion' => 	'Controls/Extended/RichMarkupRegion.php',
-			'RolloverImage' => 		'Controls/Extended/RolloverImage.php',
-			'RolloverLabel' => 		'Controls/Extended/RolloverLabel.php',
-			'RolloverTab' => 		'Controls/Extended/RolloverTab.php',
-			'TabPanel' => 			'Controls/Extended/TabPanel.php',
-			'TransferPanel' => 		'Controls/Extended/TransferPanel.php',
-			'TreeList' => 			'Controls/Extended/TreeList.php',
-			'Paginator' => 			'Controls/Extended/Paginator.php',
-			'WindowPanel' => 		'Controls/Extended/WindowPanel.php',
+			'Accordion' => 'Controls/Extended/Accordion.php',
+			'AdaptiveControl' => 'Controls/Extended/AdaptiveControl.php',
+			'ListView' => 'Controls/Extended/ListView.php',
+			'CheckListView' => 'Controls/Extended/CheckListView.php',
+			'CollapsePanel' => 'Controls/Extended/CollapsePanel.php',
+			'Menu' => 'Controls/Extended/Menu.php',
+			'ContextMenu' => 'Controls/Extended/ContextMenu.php',
+			'DatePicker' => 'Controls/Extended/DatePicker.php',
+			'RichMarkupRegion' => 'Controls/Extended/RichMarkupRegion.php',
+			'RolloverImage' => 'Controls/Extended/RolloverImage.php',
+			'RolloverLabel' => 'Controls/Extended/RolloverLabel.php',
+			'RolloverTab' => 'Controls/Extended/RolloverTab.php',
+			'TabPanel' => 'Controls/Extended/TabPanel.php',
+			'TransferPanel' => 'Controls/Extended/TransferPanel.php',
+			'TreeList' => 'Controls/Extended/TreeList.php',
+			'Paginator' => 'Controls/Extended/Paginator.php',
+			'WindowPanel' => 'Controls/Extended/WindowPanel.php',
 
 			// Auxiliary
-			'AccordionPart' => 		'Controls/Auxilary/AccordionPart.php',
-			'ColumnHeader' => 		'Controls/Auxilary/ColumnHeader.php',
-			'MarkupItem' => 		'Controls/Auxilary/MarkupItem.php',
-			'Eventee' => 			'Controls/Auxilary/Eventee.php',
-			'Larva' => 				'Controls/Auxilary/Larva.php',
-			'ListViewItem' => 		'Controls/Auxilary/ListViewItem.php',
-			'MenuItem' => 			'Controls/Auxilary/MenuItem.php',
-			'Tab' => 				'Controls/Auxilary/Tab.php',
-			'TableColumn' => 		'Controls/Auxilary/TableColumn.php',
-			'TableRow' => 			'Controls/Auxilary/TableRow.php',
-			'TabPage' => 			'Controls/Auxilary/TabPage.php',
-			'TreeNode' => 			'Controls/Auxilary/TreeNode.php',
+			'AccordionPart' => 'Controls/Auxilary/AccordionPart.php',
+			'ColumnHeader' => 'Controls/Auxilary/ColumnHeader.php',
+			'MarkupItem' => 'Controls/Auxilary/MarkupItem.php',
+			'Eventee' => 'Controls/Auxilary/Eventee.php',
+			'Larva' => 'Controls/Auxilary/Larva.php',
+			'ListViewItem' => 'Controls/Auxilary/ListViewItem.php',
+			'MenuItem' => 'Controls/Auxilary/MenuItem.php',
+			'Tab' => 'Controls/Auxilary/Tab.php',
+			'TableColumn' => 'Controls/Auxilary/TableColumn.php',
+			'TableRow' => 'Controls/Auxilary/TableRow.php',
+			'TabPage' => 'Controls/Auxilary/TabPage.php',
+			'TreeNode' => 'Controls/Auxilary/TreeNode.php',
 
 			// Statics
-			'Animate' => 			'Statics/Animate.php',
-			'ClientScript' => 		'Statics/ClientScript.php',
-			'Color' => 				'Statics/Color.php',
-			'Cursor' => 			'Statics/Cursor.php',
-			'IP' => 				'Statics/IP.php',
-			'Layout' => 			'Statics/Layout.php',
-			'Security' =>			'Statics/Security.php',
-			'Semantics' =>			'Statics/Semantics.php',
-			'Shift' => 				'Statics/Shift.php'
+			'Animate' => 'Statics/Animate.php',
+			'ClientScript' => 'Statics/ClientScript.php',
+			'Color' => 'Statics/Color.php',
+			'Cookie' => 'Statics/Cookie.php',
+			'Cursor' => 'Statics/Cursor.php',
+			'IP' => 'Statics/IP.php',
+			'Layout' => 'Statics/Layout.php',
+			'Security' => 'Statics/Security.php',
+			'Semantics' => 'Statics/Semantics.php',
+			'Shift' => 'Statics/Shift.php'
 		);
 	}
 
@@ -260,13 +269,20 @@ function _NAutoLoad($class)
 			}
 		}
 
-		if (stream_resolve_include_path($includeFile = ($class . '.php')) ||
-			stream_resolve_include_path($includeFile = (str_replace('_', '/', $class) . '.php')) ||
-			stream_resolve_include_path($includeFile = (strtolower($class) . '.php')))
+		foreach (array($classWithoutNamespace, $class) as $className)
 		{
-			if ((include $includeFile) === false)
+			if (
+				stream_resolve_include_path($includeFile = ($className . '.php'))
+				|| stream_resolve_include_path($includeFile = (str_replace('_', '/', $className) . '.php'))
+				|| stream_resolve_include_path($includeFile = (strtolower($className) . '.php'))
+			)
 			{
-				BloodyMurder('The class ' . $class . ' is not defined.');
+				if ((include $includeFile) === false)
+				{
+					BloodyMurder('The class ' . $className . ' is not defined.');
+				}
+
+				break;
 			}
 		}
 //		require($class . '.php');
