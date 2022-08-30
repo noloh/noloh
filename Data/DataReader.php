@@ -401,5 +401,11 @@ class DataReader extends Base implements ArrayAccess, Countable, Iterator
 			return false;
 		}
 	}
+
+	function __serialize()
+	{
+		$this->Resource = null;
+		return (array)$this;
+	}
 }
 ?>
