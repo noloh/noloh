@@ -208,15 +208,25 @@ abstract class Control extends Component
 	function SetWidth($width)
 	{
 		$this->Width = $width;
-		if(is_numeric($width))
-			if($width >= 0)
-				NolohInternal::SetProperty('style.width', $width.'px', $this);
+		if (is_numeric($width))
+		{
+			if ($width >= 0)
+			{
+				NolohInternal::SetProperty('style.width', $width . 'px', $this);
+			}
 			else
+			{
 				BloodyMurder('Cannot set Width to a negative value.');
-		elseif(is_numeric(rtrim($width, '%')))
+			}
+		}
+		elseif (is_string($width))
+		{
 			NolohInternal::SetProperty('style.width', $width, $this);
-		elseif(is_null($width))
+		}
+		elseif (is_null($width))
+		{
 			NolohInternal::SetProperty('style.width', '', $this);
+		}
 	}
 	/**
 	 * Returns the Height of this Control. Can be either an integer signifying Height in pixels, or can be a string for percents, e.g., '50%'
@@ -233,15 +243,25 @@ abstract class Control extends Component
 	function SetHeight($height)
 	{
 		$this->Height = $height;
-		if(is_numeric($height))
-			if($height >= 0)
-				NolohInternal::SetProperty('style.height', $height.'px', $this);
+		if (is_numeric($height))
+		{
+			if ($height >= 0)
+			{
+				NolohInternal::SetProperty('style.height', $height . 'px', $this);
+			}
 			else
+			{
 				BloodyMurder('Cannot set Height to a negative value.');
-		elseif(is_numeric(rtrim($height, '%')))
+			}
+		}
+		elseif (is_string($height))
+		{
 			NolohInternal::SetProperty('style.height', $height, $this);
-		elseif(is_null($height))
+		}
+		elseif (is_null($height))
+		{
 			NolohInternal::SetProperty('style.height', '', $this);
+		}
 	}
 	/**
 	 * Returns the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
@@ -298,12 +318,18 @@ abstract class Control extends Component
 	function SetLeft($left)
 	{
 		$this->Left = $left;
-		if(is_numeric($left))
-			NolohInternal::SetProperty('style.left', $left.'px', $this);
-		elseif(is_numeric(rtrim($left, '%')))
+		if (is_numeric($left))
+		{
+			NolohInternal::SetProperty('style.left', $left . 'px', $this);
+		}
+		elseif (is_string($left))
+		{
 			NolohInternal::SetProperty('style.left', $left, $this);
-		elseif(is_null($left))
+		}
+		elseif (is_null($left))
+		{
 			NolohInternal::SetProperty('style.left', '', $this);
+		}
 	}
 	/**
 	 * Returns the Top of this Control. Can be either an integer signifying Top in pixels, or can be a string for percents, e.g., '50%'
@@ -320,12 +346,18 @@ abstract class Control extends Component
 	function SetTop($top)
 	{
 		$this->Top = $top;
-		if(is_numeric($top))
-			NolohInternal::SetProperty('style.top', $top.'px', $this);
-		elseif(is_numeric(rtrim($top, '%')))
+		if (is_numeric($top))
+		{
+			NolohInternal::SetProperty('style.top', $top . 'px', $this);
+		}
+		elseif (is_string($top))
+		{
 			NolohInternal::SetProperty('style.top', $top, $this);
-		elseif(is_null($top))
+		}
+		elseif (is_null($top))
+		{
 			NolohInternal::SetProperty('style.top', '', $this);
+		}
 	}
 	/**
 	 * Returns the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
