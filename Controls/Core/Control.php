@@ -219,7 +219,7 @@ abstract class Control extends Component
 				BloodyMurder('Cannot set Width to a negative value.');
 			}
 		}
-		elseif (is_string($width))
+		elseif (is_string($width) && $width !== System::Auto)
 		{
 			NolohInternal::SetProperty('style.width', $width, $this);
 		}
@@ -254,7 +254,7 @@ abstract class Control extends Component
 				BloodyMurder('Cannot set Height to a negative value.');
 			}
 		}
-		elseif (is_string($height))
+		elseif (is_string($height) && $height !== System::Auto)
 		{
 			NolohInternal::SetProperty('style.height', $height, $this);
 		}
