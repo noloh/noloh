@@ -51,9 +51,9 @@ SQL;
 			$query = <<<SQL
 				SELECT current_value 
 				FROM sys.sequences 
-				WHERE "name" = '{$this->Name}'
+				WHERE "name" = $1
 SQL;
-			return $this->Connection->ExecSQL(Data::Assoc, $query)
+			return $this->Connection->ExecSQL(Data::Assoc, $query, $this->Name)
 				->Data[0]['current_value'];
 		}
 		else
