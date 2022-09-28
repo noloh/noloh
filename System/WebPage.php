@@ -621,9 +621,7 @@ UserAgent::IsIE6() ? '
 ' blah </BODY>
 </HTML>';
 		ob_flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
-				$connection->Close();
+		DataConnection::CloseAll(false);
 		session_destroy();
 	}
 	/**

@@ -143,6 +143,8 @@ abstract class RESTRouter extends Base
 			call_user_func(array($this->Resource, 'OutputMiddleware'));
 		}
 
+		DataConnection::CloseAll(true);
+
 		$this->Resource->SendResponse();
 	}
 
@@ -252,7 +254,11 @@ abstract class RESTRouter extends Base
 			header('HTTP/1.1 500 Internal Server Error');
 			$config = Configuration::That();
 
-			if (isset($config))
+			if ($exception instanceof SqlFriendlyException)
+			{
+				$debugType = 'SQL';
+			}
+			elseif (isset($config))
 			{
 				$debugModeError = $config->DebugModeError;
 				$debugType = $config::Alert;
