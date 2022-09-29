@@ -1543,6 +1543,25 @@ SQL;
 		return is_resource($candidate);
 	}
 
+	/**
+	 * @ignore
+	 */
+	function CloseAll($forceCommit = false)
+	{
+		if (isset($_SESSION['_NDataLinks']))
+		{
+			foreach ($_SESSION['_NDataLinks'] as $connection)
+			{
+				if ($forceCommit)
+				{
+					$connection->ForceCommit();
+				}
+
+				$connection->Close();
+			}
+		}
+	}
+
 	function __serialize()
 	{
 		$this->ActiveConnection = null;

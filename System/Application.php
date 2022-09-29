@@ -752,14 +752,7 @@ final class Application extends Base
 		}
 		flush();
 		
-		if (isset($_SESSION['_NDataLinks']))
-		{
-			foreach ($_SESSION['_NDataLinks'] as $connection)
-			{
-				$connection->ForceCommit();
-				$connection->Close();
-			}
-		}
+		DataConnection::CloseAll(true);
 		$GLOBALS['_NGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['_NGarbage']);
@@ -857,9 +850,7 @@ final class Application extends Base
 		$this->WebPage->SearchEngineTokenLinks = $tokenLinks;
 		$this->WebPage->SearchEngineShow();
 		ob_flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
-				$connection->Close();
+		DataConnection::CloseAll(false);
 		session_destroy();
 	}
 	private function ExplodeDragCatch($objectsString)
