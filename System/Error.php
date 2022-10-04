@@ -50,7 +50,6 @@ function _NOBErrorHandler($buffer)
 
 			$processRequestDetails = true;
 			// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
-			setcookie('_NAppCookie', false);
 			header('Content-Type: text/javascript');
 			if (!in_array('Cache-Control: no-cache', headers_list(), true))
 			{
@@ -123,7 +122,7 @@ function _NErrorHandler($number, $string, $file, $line)
 		}
 		elseif ($string === '~_NINFO~')
 		{
-			setcookie('_NPHPInfo', true);
+			Cookie::Set('_NPHPInfo', 1, '5 minutes');
 			Application::Reset(true, false);
 		}
 		elseif ($GLOBALS['_NDebugMode'] !== 'Kernel')
@@ -172,7 +171,6 @@ function DisplayError($message)
 	{
 		ob_end_clean();
 	}
-	setcookie('_NAppCookie', false);
 	header('Content-Type: text/javascript');
 
 	$gzip = defined('FORCE_GZIP');

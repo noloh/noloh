@@ -65,15 +65,15 @@ abstract class WebPage extends Component
 	 */
 	function __construct($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null, $autoIncludes = array())
 	{
-            self::$AutoIncludes = $autoIncludes;
-		if($_SESSION['_NVisit'] === -1)
+		self::$AutoIncludes = $autoIncludes;
+		if ($_SESSION['_NVisit'] === -1)
 		{
 			$GLOBALS['_NTitle'] = $title;
 			$GLOBALS['_NFavIcon'] = $favIconPath;
 			$GLOBALS['_NMobileApp'] = $this instanceof MobileApp;
 			$GLOBALS['_NVanity'] = $vanityMessage;
-			$appId = $GLOBALS['_NApp']?$GLOBALS['_NApp']:0;
-			throw new Exception('Fatal cookie behavior.', $appId);
+			$appId = ($GLOBALS['_NApp'] ? $GLOBALS['_NApp'] : 0);
+			throw new AbortConstructorException('Fatal cookie behavior.', $appId);
 		}
 		parent::__construct();
 		parent::Show();
@@ -480,9 +480,9 @@ HTML;
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
 		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash||"#","")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
-               "_NVisit=0&_NApp=" + _NApp + "&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
+               "_NVisit=0&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
                "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight + "&_NMaxTouchPoints=" + 
-               _NMaxTouchPoints + "&_NBrowserPlatform=" + _NBrowserPlatform';
+               _NMaxTouchPoints + "&_NBrowserPlatform=" + _NBrowserPlatform + "&_NStrategy=Show"';
         $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
         $oldOpMobile = UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
 		echo $oldOpMobile ? 
@@ -516,8 +516,6 @@ UserAgent::IsIE() ? '
 </HTML>
 
 <SCRIPT type="text/javascript">
-  _NApp = ', $GLOBALS['_NApp'], ';
-  document.cookie = "_NAppCookie=0";
   _NMaxTouchPoints = navigator.maxTouchPoints;
   _NBrowserPlatform = navigator.platform;
   queryString = false;', $symbol === '&' ? '
@@ -622,11 +620,8 @@ UserAgent::IsIE6() ? '
 		echo 
 ' blah </BODY>
 </HTML>';
-		setcookie('_NAppCookie', 0);
 		ob_flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
-				$connection->Close();
+		DataConnection::CloseAll(false);
 		session_destroy();
 	}
 	/**
