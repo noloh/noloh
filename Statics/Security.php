@@ -21,24 +21,61 @@ final class Security
 	 * $iv = base64_encode(openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher)));
 	 * @return string
 	 */
-	static function Encrypt($data, $encryptionKey, $iv)
+	static function Encrypt($data, $encryptionKey, $iv = null)
 	{
+		if ($iv === null)
+		{
+			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(static::Cipher));
+		}
+
 		$encryptionKey = base64_decode($encryptionKey);
 		$iv = base64_decode($iv);
-		
+
 		// Encrypt $data using aes-256-cbc cipher with the given encryption key and 
 		// our initialization vector. The 0 gives us the default options, but can
 		// be changed to OPENSSL_RAW_DATA or OPENSSL_ZERO_PADDING
 		$encrypted = openssl_encrypt($data, static::Cipher, $encryptionKey, 0, $iv);
+
+		if ($iv === null)
+		{
+			$encrypted = str_replace('=', '', base64_encode($iv)) . base64_encode($encrypted);
+		}
+
 		return $encrypted;
 	}
-	static function Decrypt($data, $encryptionKey, $iv)
+	static function Decrypt($data, $encryptionKey, $iv = null)
 	{
+		if ($iv === null)
+		{
+			$ivLen = openssl_cipher_iv_length(static::Cipher);
+
+			// Total length of base64 encoded string given $ivLen bytes
+			$ivStrLength = ((4 * $ivLen / 3) + 3) & ~3;
+
+			// Length of '=' padding
+			$padding = $ivStrLength - ceil((4 * $ivLen / 3));
+
+			$iv = substr($data, 0, $ivStrLength - $padding);
+			$iv .= str_repeat('=', $padding);
+			$iv = base64_decode($iv);
+
+			$cipher = substr($data, $ivStrLength - $padding);
+			$data = base64_decode($cipher);
+		}
+
 		$encryptionKey = base64_decode($encryptionKey);
 		$iv = base64_decode($iv);
 		
 		$decrypted = openssl_decrypt($data, static::Cipher, $encryptionKey, 0, $iv);
-		return $decrypted;
+
+		if ($decrypted)
+		{
+			return $decrypted;
+		}
+		else
+		{
+			throw new Exception('Invalid decryption result. Verify your key is correct.');
+		}
 	}
 	/**
 	 * Generates an initilization vector
@@ -257,5 +294,25 @@ final class Security
 			return mb_substr($binaryString, $start, $length, '8bit');
 		}
 		return substr($binaryString, $start, $length);
+	}
+	/**
+	 * Get custom encryption key from file
+	 *
+	 * @param string $path The path to the encryption key file
+	 *
+	 * @throws Exception File not found or empty
+	 *
+	 * @return string The extracted key
+	 */
+	static function FetchCustomEncryptionKeyFromFile($path)
+	{
+		$key = file_get_contents($path);
+
+		if ($key === false)
+		{
+			throw new Exception('Encryption key file not found or empty.');
+		}
+
+		return $key;
 	}
 }
