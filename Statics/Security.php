@@ -23,20 +23,19 @@ final class Security
 	 */
 	static function Encrypt($data, $encryptionKey, $iv = null)
 	{
-		if ($iv === null)
+		$generatedIV = ($iv === null);
+
+		if ($generatedIV)
 		{
 			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(static::Cipher));
 		}
 
-		$encryptionKey = base64_decode($encryptionKey);
-		$iv = base64_decode($iv);
-
 		// Encrypt $data using aes-256-cbc cipher with the given encryption key and 
 		// our initialization vector. The 0 gives us the default options, but can
 		// be changed to OPENSSL_RAW_DATA or OPENSSL_ZERO_PADDING
-		$encrypted = openssl_encrypt($data, static::Cipher, $encryptionKey, 0, $iv);
+		$encrypted = openssl_encrypt($data, static::Cipher, base64_decode($encryptionKey), 0, base64_decode($iv));
 
-		if ($iv === null)
+		if ($generatedIV)
 		{
 			$encrypted = str_replace('=', '', base64_encode($iv)) . base64_encode($encrypted);
 		}
@@ -63,9 +62,9 @@ final class Security
 			$data = base64_decode($cipher);
 		}
 
-		$encryptionKey = base64_decode($encryptionKey);
 		$iv = base64_decode($iv);
-		
+		$encryptionKey = base64_decode($encryptionKey);
+
 		$decrypted = openssl_decrypt($data, static::Cipher, $encryptionKey, 0, $iv);
 
 		if ($decrypted)
