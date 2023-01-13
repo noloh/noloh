@@ -44,6 +44,11 @@ final class Security
 	}
 	static function Decrypt($data, $encryptionKey, $iv = null)
 	{
+		if ($data == null)
+		{
+			return '';
+		}
+
 		if ($iv === null)
 		{
 			$ivLen = openssl_cipher_iv_length(static::Cipher);
