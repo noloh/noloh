@@ -299,24 +299,4 @@ final class Security
 		}
 		return substr($binaryString, $start, $length);
 	}
-	/**
-	 * Get custom encryption key from file
-	 *
-	 * @param string $path The path to the encryption key file
-	 *
-	 * @throws Exception File not found or empty
-	 *
-	 * @return string The extracted key
-	 */
-	static function FetchCustomEncryptionKeyFromFile($path)
-	{
-		$key = file_get_contents($path);
-
-		if ($key === false)
-		{
-			throw new Exception('Encryption key file not found or empty.');
-		}
-
-		return $key;
-	}
 }
