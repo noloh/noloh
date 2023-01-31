@@ -182,8 +182,18 @@ class DataConnection extends Base
 				if (function_exists('sqlsrv_connect'))
 				{
 					$connectString = array(
-						'Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $password, 'ReturnDatesAsStrings' => true
+						'Database' => $this->DatabaseName, 'ReturnDatesAsStrings' => true
 					);
+
+					if (!is_null($password))
+					{
+						$connectString['PWD'] = $password;
+					}
+
+					if (!is_null($this->Username))
+					{
+						$connectString['UID'] = $this->Username;
+					}
 
 					$connectionParams = array_merge($connectString, $this->AdditionalParams);
 					$this->ActiveConnection = sqlsrv_connect($host, $connectionParams);
