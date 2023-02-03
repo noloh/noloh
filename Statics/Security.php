@@ -23,6 +23,11 @@ final class Security
 	 */
 	static function Encrypt($data, $encryptionKey, $iv = null)
 	{
+		if ($data == null)
+		{
+			return '';
+		}
+
 		$generatedIV = ($iv === null);
 
 		if ($generatedIV)
