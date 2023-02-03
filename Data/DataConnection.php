@@ -1546,7 +1546,7 @@ SQL;
 	/**
 	 * @ignore
 	 */
-	function CloseAll($forceCommit = false)
+	static function CloseAll($forceCommit = false)
 	{
 		if (isset($_SESSION['_NDataLinks']))
 		{
