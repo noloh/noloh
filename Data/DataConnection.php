@@ -182,8 +182,18 @@ class DataConnection extends Base
 				if (function_exists('sqlsrv_connect'))
 				{
 					$connectString = array(
-						'Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $password, 'ReturnDatesAsStrings' => true
+						'Database' => $this->DatabaseName, 'ReturnDatesAsStrings' => true
 					);
+
+					if (!is_null($password))
+					{
+						$connectString['PWD'] = $password;
+					}
+
+					if (!is_null($this->Username))
+					{
+						$connectString['UID'] = $this->Username;
+					}
 
 					$connectionParams = array_merge($connectString, $this->AdditionalParams);
 					$this->ActiveConnection = sqlsrv_connect($host, $connectionParams);
@@ -231,52 +241,48 @@ class DataConnection extends Base
 		if ($type == Data::Postgres)
 		{
 			$error = pg_last_error($connection);
-
-			if (strpos($error, 'SQL_FRIENDLY_EXCEPTION') && !empty($this->FriendlyCallBack))
-			{
-				$exception = new SqlFriendlyException($error, $this->FriendlyCallBack);
-			}
-			else
-			{
-				$error .= "\\n" . $sql;
-				$exception = new SqlException($error);
-			}
-
-			$this->Rollback();
-			throw $exception;
 		}
 		elseif($type == Data::MySQL)
 		{
 			$error = mysql_error();
-			$exception = new SqlException($error);
-			throw $exception;
 		}
 		elseif($type == Data::MSSQL)
 		{
 			if (function_exists('sqlsrv_errors'))
 			{
-				$errStr = '';
+				$error = '';
 				$errors = sqlsrv_errors();
-				foreach($errors as $error)
+				foreach($errors as $errStr)
 				{
-					$errStr .= 'State: '.$error[ 'SQLSTATE'] . '; ' .
-						'Code: ' . $error['code'] . '; ' .
-						'Message: ' . $error[ 'message'] . "\n";
+					$error .= 'State: '.$errStr[ 'SQLSTATE'] . '; ' .
+						'Code: ' . $errStr['code'] . '; ' .
+						'Message: ' . $errStr[ 'message'] . "\n";
 				}
-				$exception = new SqlException($errStr);
-				throw $exception;
 			}
 			else
 			{
 				$error = mssql_get_last_message();
-				$exception = new SqlException($error);
-				throw $exception;
 			}
 		}
 		else if ($type === Data::ODBC)
 		{
-			throw new SqlException(odbc_errormsg($connection));
+			$error = odbc_errormsg($connection);
 		}
+
+		if (strpos($error, 'SQL_FRIENDLY_EXCEPTION') && !empty($this->FriendlyCallBack))
+		{
+			$exception = new SqlFriendlyException($error, $this->FriendlyCallBack);
+		}
+		else
+		{
+			$exception = new SqlException($error);
+		}
+
+		if ($type == Data::Postgres)
+		{
+			$this->Rollback();
+		}
+		throw $exception;
 	}
 	/**
 	 * Attempts to close the connection to your database. Note: In most circumstances, this is done automatically.
@@ -1411,18 +1417,30 @@ SQL;
 	}
 	public function DatabaseExists($dbName)
 	{
-		if ($this->Type !== Data::Postgres)
+		if ($this->Type === Data::Postgres)
 		{
-			BloodyMurder('DatabaseExists only currently supported in Postgres');
-		}
-
-		$query = <<<SQL
-			SELECT datname
-			FROM pg_catalog.pg_database
-			WHERE datname = $1;
+			$query = <<<SQL
+				SELECT datname
+				FROM pg_catalog.pg_database
+				WHERE datname = $1;
 SQL;
-		$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
-		return isset($results[0]['datname']);
+			$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+			return isset($results[0]);
+		}
+		elseif ($this->Type === Data::MSSQL)
+		{
+			$query = <<<SQL
+				SELECT "name"
+				FROM sys.databases
+				WHERE "name" = $1;
+SQL;
+			$results = $this->ExecSQL(Data::Assoc, $query, $dbName);
+			return isset($results[0]);
+		}
+		else
+		{
+			BloodyMurder('DatabaseExists is not supported for this connection type');
+		}
 	}
 	public function UserMappingExists($foreignServer, $user)
 	{
