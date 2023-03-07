@@ -44,6 +44,7 @@ final class Application extends Base
 	 * Starts the Application, optionally with some Configuration parameters.
 	 * @param mixed,... $dotDotDot 
 	 * @return Configuration
+	 * @throws
 	 */
 	public static function &Start($dotDotDot=null)
 	{
