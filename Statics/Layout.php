@@ -34,6 +34,14 @@ final class Layout
 	 */
 	const Fixed = 3;
 	/**
+	 * A possible value for the Layout property of a Control, Sticky is similar to Fixed, however it starts its Fixed behavior after its top property.
+	 */
+	const Sticky = 4;
+	/**
+	 * A possible value for the Layout property of a Control, None specifies no layout property allowing you to specify it completely via CSS.
+	 */
+	const None = -1;
+	/**
 	 * A possible value for the Align property of some Controls.
 	 */
 	const Left = 'left';
