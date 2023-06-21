@@ -53,6 +53,15 @@ final class NolohInternal
 		{
 			foreach ($_SESSION['_NControlQueueRoot'] as $objId => $bool)
 			{
+				/*
+				 * We are testing whether the control still exists in the "QueueRoot"; in the event that the control
+				 * was unset after the loop started since the array is cached within foreach.
+				 */
+				if (!isset($_SESSION['_NControlQueueRoot'][$objId]))
+				{
+					continue;
+				}
+
 				if (isset($did[$objId]) && $did[$objId] === $bool)
 				{
 					BloodyMurder("Could not clear {$objId} from the control queue.");

@@ -301,7 +301,7 @@ function _NSave(id, property, value)
 			_N.Changes[id]["Opacity"] = value * 100;
 			break;
 		default:
-			_N.Changes[id][property] = typeof value == "boolean" ? (value ? 1 : 0) : value;
+			_N.Changes[id][property] = (typeof value == "boolean") ? (value ? 1 : 0) : ((typeof value == "object") ? JSON.stringify(value) : value);
 	}
 }
 /*
