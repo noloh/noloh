@@ -412,6 +412,11 @@ class DataReader extends Base implements ArrayAccess, Countable, Iterator
 	}
 	function GetColumns()
 	{
+		if ($this->Type !== Data::MSSQL)
+		{
+			BloodyMurder("DataReader::GetColumns is not supported for this database type");
+		}
+
 		return $this->ColumnNames;
 	}
 }
