@@ -2,11 +2,11 @@
 /**
  * @ignore
  */
-class DataConstraint extends Object
+class DataConstraint extends Base
 {
 	private $Columns;
 	
-	function DataConstraint($columns)
+	function __construct($columns)
 	{
 		$this->SetColumns($columns);
 	}

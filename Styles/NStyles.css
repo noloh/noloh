@@ -160,3 +160,47 @@ a.NPag:hover
 	font-weight:bold;
 	font-family:arial, sans-serif;
 }
+.AdaptiveControl .AdaptiveLabel
+{
+	display: inline-block;
+	text-decoration: none;
+	margin: 0em .45em;
+	color: #898989;
+	-webkit-transition: 0.1s ease-in-out;
+	transition: 0.1s ease-in-out;
+	-webkit-background-size: 100% 5px;
+	text-align: right;
+	pointer-events: none;
+	line-height: 1em;
+	font-size: 10pt;
+	overflow: visible;
+}
+.AdaptiveControl .AdaptiveLabel.AdaptiveLabelFocused.FieldLabelLink
+{
+	pointer-events: auto;
+	text-align: left;
+	color: #3962dd;
+}
+.AdaptiveControl .AdaptiveLabel.AdaptiveLabelFocused
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#ffffff));
+	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
+	background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+	-webkit-background-size: 100% 5px;
+	-webkit-transform: translate(0, -16px) scale(0.8, 0.8);
+	-ms-transform: translate(0, -16px) scale(0.8, 0.8);
+	transform-origin: 0 0;
+	transform: translate(5px, -16px) scale(0.8, 0.8);
+	margin: 0;
+}
+.NMainContextMenu,
+.NPanel.loading-indicator,
+.NPanel.k-loading-image.loading-indicator,
+.loading-indicator
+{
+	z-index: 9999999 !important;
+}
+.menu-relative-filter > div > ul
+{
+	overflow: visible !important;
+}

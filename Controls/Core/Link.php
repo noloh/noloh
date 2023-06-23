@@ -52,20 +52,20 @@ class Link extends Label
 	* @param integer $width The width of this element
 	* @param integer $height The height of this element
 	*/
-	function Link($destination='', $textOrControl='', $left = 0, $top = 0, $width = 83, $height = 20)  
+	function __construct($destination='', $textOrControl='', $left = 0, $top = 0, $width = 83, $height = 20)  
 	{
 		if(is_object($textOrControl))
 		{
 			if($textOrControl instanceof Control)
 			{
-				parent::Label(null, $left, $top, $width, $height);
+				parent::__construct(null, $left, $top, $width, $height);
 				$this->SetControl($textOrControl);
 			}
 			else
 				BloodyMurder('Invalid type passed into the 2nd parameter of Link constructor. Must be either a string or Control.');
 		}
 		else 
-			parent::Label($textOrControl, $left, $top, $width, $height);
+			parent::__construct($textOrControl, $left, $top, $width, $height);
 		$this->SetDestination($destination);
 		$this->Tokens = array();
 		//$this->RemoveSubsequents = array();
@@ -358,7 +358,7 @@ class Link extends Label
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = Control::NoScriptShow($indent);
+		$str = Control::NoScriptShowIndent($indent);
 		if($str !== false)
 		{
 			echo $indent, '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SESSION['_NURL'].'?'.$this->TokenString()) : $this->Destination, '" ', $str, '>';

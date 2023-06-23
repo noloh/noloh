@@ -49,9 +49,9 @@ class Form extends Component
 	 * @param string $encType Specifies the content-type to be used when the Method is Form::Post; The default used is 'application/x-www-form-urlencoded'
 	 * @return Form
 	 */
-	function Form($action, $method = Form::Post, $target = Form::Here, $encType = 'application/x-www-form-urlencoded')
+	function __construct($action, $method = Form::Post, $target = Form::Here, $encType = 'application/x-www-form-urlencoded')
 	{
-		parent::Component();
+		parent::__construct();
 		//parent::Control($left, $top, $width, $height);
 //		$this->Controls = new ArrayList();
 		$this->Controls = new ImplicitArrayList($this, 'AddControl');
@@ -150,7 +150,7 @@ class Form extends Component
 	/**
 	 * @ignore
 	 */
-	function GetAddId()
+	function GetAddId($obj)
 	{
 		return $this->Id;
 	}
@@ -180,7 +180,7 @@ class Form extends Component
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 		{
 			echo $indent, '<FORM action="', $this->Action, '" method="', $this->Method, "\">\n";

@@ -6,8 +6,10 @@
  * rather you can use certain statics of the class in conjuction with the methods of the other Data related classes.
  * 
  * @package Data
+ * @property DataConnection $Flow
+ * @property DataConnection $SandBox
  */
-final class Data extends Object
+final class Data extends Base
 {	
 	/**
 	 * Represents the PostgreSQL database type, to be used in conjuction with other data related functions.
@@ -63,6 +65,20 @@ final class Data extends Object
 	 */
 	const Func = 'function';
 	/**
+	 * List of supported ODBC driver types
+	 */
+	static $ODBCTypes = array(
+		'Access'
+	);
+	/**
+	 * String used to identify Access ODBC drivers
+	 */
+	const ODBCAccess = 'Access';
+	/**
+	 * Empty row constant for Access
+	 */
+	const AccessEmptyRow = '<Empty Row>';
+	/**
 	 * $Links is a direct conduit to access any open Data Links/Connections. Multiple DataConnections can be accessed through 
 	 * the $Links Data object.
 	 * 
@@ -98,7 +114,19 @@ final class Data extends Object
 	 */
 	function __set($name, $value)
 	{
+		$value->Name = $name;
 		return $_SESSION['_NDataLinks'][$name] = $value;
+	}
+	/**
+	 * A raw SQL string to be injected into a query
+	 * @param string $rawString
+	 * @param mixed ...$param list of values to be escaped within $rawString
+	 * @return RawParameter
+	 */
+	static function Raw()
+	{
+		$raw = new ReflectionClass('RawParameter');
+		return $raw->newInstanceArgs(func_get_args());
 	}
 }
 Data::$Links = new Data();

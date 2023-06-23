@@ -30,7 +30,7 @@
  * 
  * @package Events
  */
-class Event extends Object implements ArrayAccess
+class Event extends Base implements ArrayAccess
 {
 	/**
 	 * @ignore
@@ -133,7 +133,7 @@ class Event extends Object implements ArrayAccess
 	 * @param array $eventArray An array of events that this multiple event will hold
 	 * @return Event
 	 */
-	function Event($eventArray=array(), $handles=array())
+	function __construct($eventArray=array(), $handles=array())
 	{
 		$this->ExecuteFunction = $eventArray;
 		if(is_array($eventArray))
@@ -172,13 +172,13 @@ class Event extends Object implements ArrayAccess
 		if($this->GetEnabled())
 		{
 			$onlyClientEvents = true;
-            $arr = array('', array(), 0, 0);
+            $arr = array('', array(), 0, 0, 'spinner' => true);
 			$info = $this->GetInfo($arr, $onlyClientEvents);
 			$ret = '';
 			if($info[0] !== '')
 				$ret .= ClientEvent::GenerateString($eventType, $info[0]);
 			if(!$onlyClientEvents)
-				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3]===0?0 : $info[2]===$info[3]?1 : 2);
+				$ret .= ServerEvent::GenerateString($eventType, $objsId, $info[1], $info[3] === 0 ? 0 : ($info[2] === $info[3] ? 1 : 2), $info['spinner']);
 			if(isset($arr[4]))
 				$ret .= '_NNoBubble();';
 			return $ret;
@@ -191,11 +191,11 @@ class Event extends Object implements ArrayAccess
 	 * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
 	 * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
 	 */
-	function Exec(&$execClientEvents=true, $liquidParent=false)
+	function Exec(&$execClientEvents = true, $liquidParent = false, $log = false)
 	{
 		foreach($this->ExecuteFunction as $event)
 			if($event->GetEnabled())
-				$event->Exec($execClientEvents, $liquidParent || $this->Liquid);
+				$event->Exec($execClientEvents, $liquidParent || $this->Liquid, $log);
 	}
 	/**
 	 * @ignore

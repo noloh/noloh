@@ -57,16 +57,25 @@ class ServerEvent extends Event
      * @ignore
      */
     public $Parameters;
-    
+    /**
+     * Ability to disable the spinner
+     * @var bool
+     */
+    public $Spinner = true;
     /**
      * @ignore
      */
-    static function GenerateString($eventType, $objId, $uploadArray, $liquids)
+    static function GenerateString($eventType, $objId, $uploadArray, $liquids, $spinner)
     {
         $str = '_NSE("' . $eventType . '","' . $objId .
             (count($uploadArray)
                 ? '",[' . implode(',', $uploadArray) . ']);'
                 : '");');
+
+        if ($spinner === false)
+        {
+            $str = '_N.Spinner=false;' . $str;
+        }
         //return $allLiquid ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : $str;         
         return $liquids === 0 ? $str : 
             ($liquids === 1 ? 'if(liq){_N.EventVars.LiquidExec=1;' . $str . '}' : 
@@ -79,9 +88,9 @@ class ServerEvent extends Event
      * @param mixed $parametersAsDotDotDot An unlimited number of parameters that will in turn be passed as parameters into the specified function
      * @return ServerEvent
      */
-    function ServerEvent($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
+    function __construct($objOrClassName, $functionAsString, $parametersAsDotDotDot = null)
     {
-        parent::Event($functionAsString);
+        parent::__construct($functionAsString);
         $this->Owner = is_object($objOrClassName) && $objOrClassName instanceof Component
             ? new Pointer($objOrClassName)
             : $objOrClassName;
@@ -104,7 +113,7 @@ class ServerEvent extends Event
 	 * no object is set, or if the event is a function of a static class then null
 	 * is returned.
      *
-     * @return Object|null
+     * @return Base|null
      */
     function GetOwner()
     {
@@ -123,6 +132,10 @@ class ServerEvent extends Event
             ++$arr[3];
         if($this->Bubbles === false)
             $arr[4] = false;
+        if ($this->Spinner === false)
+        {
+            $arr['spinner'] = false;
+        }
         return $this->Uploads->Count()===0 ? $arr : array_splice($arr[1], -1, 0, $this->GetUploadIds());
     }
     /**
@@ -132,7 +145,7 @@ class ServerEvent extends Event
     {
         if($this->GetEnabled())
         {
-            $txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid);
+            $txt = ServerEvent::GenerateString($eventType, $objsId, $this->GetUploadIds(), (int)$this->Liquid, $this->Spinner);
             if($this->Bubbles === false)
                 $txt .= '_NNoBubble();';
             return $txt;
@@ -161,7 +174,7 @@ class ServerEvent extends Event
      * @param boolean $execClientEvents Indicates whether client-side code will execute. <br>
      * Modifying this parameter is highly discouraged as it may lead to unintended behavior.<br>
      */
-    function Exec(&$execClientEvents=true, $liquidParent=false)
+    function Exec(&$execClientEvents = true, $liquidParent = false, $log = false)
     {
         if(!empty($GLOBALS['_NQueueDisabled']) || $this->Enabled===false 
             || (($liquidParent||$this->Liquid) && isset($GLOBALS['_NSEFromClient']) && !Event::$LiquidExec))
@@ -200,15 +213,38 @@ class ServerEvent extends Event
         else
             Event::$Source = $handles;
         
-        if(is_object($this->Owner))
-            if($this->Owner instanceof Pointer)
-                $callBack = array($this->Owner->Dereference(), $this->ExecuteFunction);
+        if (is_object($this->Owner))
+        {
+            if ($this->Owner instanceof Pointer)
+            {
+                $object = $this->Owner->Dereference();
+                $class = get_class($object);
+                $callBack = array($object, $this->ExecuteFunction);
+            }
             else
+            {
+                $class = get_class($this->Owner);
                 $callBack = array($this->Owner, $this->ExecuteFunction);
-        elseif(is_string($this->Owner))
+            }
+        }
+        elseif (is_string($this->Owner))
+        {
+            $class = $this->Owner;
             $callBack = array($this->Owner, $this->ExecuteFunction);
-        else 
+        }
+        else
+        {
             $callBack = $this->ExecuteFunction;
+        }
+        
+        if ($log)
+        {
+            $callbackString = $class . '::' . $this->ExecuteFunction;
+            Application::$RequestDetails['server_events'] .= 
+                (Application::$RequestDetails['server_events'] === '' ? '' : ', ') . 
+                $callbackString;
+        }
+            
         $return = call_user_func_array($callBack, $this->Parameters);
         
         Event::$Source = &$source;

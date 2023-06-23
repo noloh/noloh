@@ -2,13 +2,13 @@
 /**
  * Configuration class
  *
- * A Configuration object is used together with Application::Start to set some application-wide, 
+ * A Configuration object is used together with Application::Start to set some application-wide,
  * global settings. Alternatively, an associative array (indexed by the names of the properties,
  * in the same case and format) can be used for an equivalent purpose.
  * 
  * @package System
  */
-class Configuration extends Object implements Singleton
+class Configuration extends Base implements Singleton
 {
 	/**
 	 *  A possible value for the TimeoutAction property, Alert indicates that a simple alert will be displayed.
@@ -50,7 +50,12 @@ class Configuration extends Object implements Singleton
 	 * Specifies the level of error-handling: true gives specific errors for developers, false gives generic errors for users, and System::Unhandled does not fail gracefully but crashes
 	 * @var boolean|System::Unhandled
 	 */
-	public $DebugMode = true;
+	private $DebugMode = true;
+	/**
+	 * Error message displayed when not in debug mode.
+	 * @var string
+	 */
+	public $DebugModeError = 'An application error has occurred.';
 	/**
 	 * @ignore
 	 */
@@ -102,12 +107,17 @@ class Configuration extends Object implements Singleton
 	 */
 	public $AddMTimeToExternals = false;
 	/**
+	 * Whether or not HTTPS is forced
+	 * @var boolean
+	 */
+	public $ForceSecureProtocol = false;
+	/**
 	 * Constructor
 	 * @return Configuration
 	 */
-	function Configuration()
+	public function __construct()
 	{
-		parent::Object();
+		parent::__construct();
 		$args = func_get_args();
 		$argLength = func_num_args();
         $firstIndex = 0;
@@ -136,17 +146,23 @@ class Configuration extends Object implements Singleton
 				$this->{$setStartupLegacy[$i]} = $args[$i];
 			}
 		}
+
+		$GLOBALS['_NDebugMode'] = $this->DebugMode;
+		$GLOBALS['_NConfiguration'] = $this;
 	}
     private function DetectStartClass()
     {
         $classes = get_declared_classes();
         $classLength = count($classes);
-        for($i=$classLength-1; $i; --$i)
-            if(is_subclass_of($classes[$i], 'WebPage'))
-            {
-                $this->StartClass = $classes[$i];
-                break;
-            }    
+        for ($i = $classLength - 1; $i; --$i)
+		{
+			if (is_subclass_of($classes[$i], 'WebPage') ||
+				is_subclass_of($classes[$i], 'RESTRouter'))
+			{
+				$this->StartClass = $classes[$i];
+				break;
+			}
+		}
     }
     /**
      * @ignore
@@ -189,13 +205,29 @@ class Configuration extends Object implements Singleton
 				unset($arr[$key]);*/
 		return $arr;
     }
+
+	/**
+	 * @ignore
+	 */
+    public function GetDebugMode()
+	{
+		return $this->DebugMode;
+	}
+	/**
+	 * @ignore
+	 */
+	public function SetDebugMode($debugMode)
+	{
+		$GLOBALS['_NDebugMode'] = $debugMode;
+		$this->DebugMode = $debugMode;
+	}
 	/**
 	 * Returns the instance of Configuration currently in use. The name is a pun on the "this" concept. See also Singleton interface.
 	 * @return Configuration
 	 */
 	static function That()
 	{
-		return $_SESSION['_NConfiguration'];
+		return isset($_SESSION['_NConfiguration']) ? $_SESSION['_NConfiguration'] : $GLOBALS['_NConfiguration'];
 	}
 }
 ?>

@@ -21,9 +21,9 @@ class RadioButton extends CheckControl implements Groupable
 	 * @param integer $height The Height of this element
 	 * @return RadioButton
 	 */
-	function RadioButton($text='', $left = 0, $top = 0, $width = 50, $height = 20)
+	function __construct($text='', $left = 0, $top = 0, $width = 50, $height = 20)
 	{
-		parent::CheckControl($text, $left, $top, $width, $height);
+		parent::__construct($text, $left, $top, $width, $height);
 		//$this->Caption->Click = new ClientEvent('_N("'.$this->Id.'I").click();');
 	}
 	/**
@@ -58,7 +58,7 @@ class RadioButton extends CheckControl implements Groupable
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 			echo $indent, '<INPUT type="radio" ', $str, '>', $this->Text, "</INPUT>\n";
 	}

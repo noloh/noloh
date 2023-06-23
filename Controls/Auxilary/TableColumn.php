@@ -23,7 +23,7 @@ class TableColumn extends Panel
 	 * @param mixed $width The Width of the Column,
 	 * @param mixed $height The Height of the Column
 	 */
-	function TableColumn($object=null, $width=null, $height=null)
+	function __construct($object=null, $width=null, $height=null)
 	{
 		Panel::Panel(null, null, $width, $height, $this);
 		$this->Controls->AddFunctionName = "AddControl";
@@ -107,7 +107,7 @@ class TableColumn extends Panel
 	/**
 	 * @ignore
 	 */
-	function GetAddId()
+	function GetAddId($obj)
 	{
 		return $this->Id . 'IC';
 	}

@@ -27,7 +27,7 @@ class Larva extends MarkupItem
 	 */
 	function Eventee($id, $keyword, $value, $panelId)
 	{
-		parent::MarkupItem($id, $keyword, $value, $panelId);
+		parent::__construct($id, $keyword, $value, $panelId);
 	}
 	/**
 	 * Morph inserts a Component object into where your n:larva tag would have been. The Component's Layout will 

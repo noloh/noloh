@@ -6,7 +6,7 @@
 * 
 * @package System
 */
-class InnerSugar extends Object
+class InnerSugar extends Base
 {
 	const Get = 'Get';
 	const Set = 'Set';
@@ -33,7 +33,7 @@ class InnerSugar extends Object
 	/**
 	 * @ignore
 	 */
-	function InnerSugar($obj, $chain, $tail, $var)
+	function __construct($obj, $chain, $tail, $var)
 	{
 		$this->Obj = $obj;
 		$this->CurrentChain = $chain;

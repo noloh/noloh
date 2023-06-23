@@ -34,10 +34,19 @@ abstract class WebPage extends Component
 	 * @ignore
 	 */
 	public $DebugWindow;
+	/**
+	 * @ignore
+	 */
+	public $CanonicalUrl;
+	/**
+	 * @ignore
+	 */
+	public $SearchEngineTokenLinks;
 	
 	private $Title;
 	private $Width;
 	private $Height;
+	private $TimeZone;
 	private $BackColor;
 	private $LoadIndicator;
 	private $CSSPropertyArray;
@@ -54,23 +63,24 @@ abstract class WebPage extends Component
 	 * @param string $vanityMessage A message you would like to display in the source of the WebPage
 	 * @return WebPage
 	 */
-	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null, $autoIncludes = array())
+	function __construct($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null, $autoIncludes = array())
 	{
-            self::$AutoIncludes = $autoIncludes;
-		if($_SESSION['_NVisit'] === -1)
+		self::$AutoIncludes = $autoIncludes;
+		if ($_SESSION['_NVisit'] === -1)
 		{
 			$GLOBALS['_NTitle'] = $title;
 			$GLOBALS['_NFavIcon'] = $favIconPath;
 			$GLOBALS['_NMobileApp'] = $this instanceof MobileApp;
 			$GLOBALS['_NVanity'] = $vanityMessage;
-			$appId = $GLOBALS['_NApp']?$GLOBALS['_NApp']:0;
-			throw new Exception('Fatal cookie behavior.', $appId);
+			$appId = ($GLOBALS['_NApp'] ? $GLOBALS['_NApp'] : 0);
+			throw new AbortConstructorException('Fatal cookie behavior.', $appId);
 		}
-		parent::Component();
+		parent::__construct();
 		parent::Show();
 		$_SESSION['_NStartUpPageId'] = $this->Id;
 		$this->Width = isset($GLOBALS['_NWidth']) ? $GLOBALS['_NWidth'] : 1024;
 		$this->Height = isset($GLOBALS['_NHeight']) ? $GLOBALS['_NHeight'] : 768;
+		$this->TimeZone = isset($GLOBALS['_NTimeZone']) ? $GLOBALS['_NTimeZone'] : date_default_timezone_get();
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 		$this->Title = $title;
@@ -91,7 +101,6 @@ abstract class WebPage extends Component
 			$loadIndicator->Layout = Layout::Fixed;
 			$loadIndicator->Opacity = 75;
 			$loadIndicator->CSSClass = 'NLoadIndiLabel';
-			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 		
 		$unload = parent::GetEvent('Unload');
@@ -105,9 +114,18 @@ abstract class WebPage extends Component
 		AddNolohScriptSrc('ClientViewState.js', true);
 		switch(UserAgent::GetBrowser())
 		{
-			case 'ie': case 'sa': case 'ch':	AddNolohScriptSrc('Mixed/FindPositionIESa.js'); break;
-			case 'ff': 							AddNolohScriptSrc('Mixed/FindPositionFF.js'); break;
-			case 'op':							AddNolohScriptSrc('Mixed/FindPositionOp.js');
+			case 'ed':
+			case 'ie':
+			case 'sa':
+			case 'ch':	
+				AddNolohScriptSrc('Mixed/FindPositionIESa.js');
+				break;
+			case 'ff': 							
+				AddNolohScriptSrc('Mixed/FindPositionFF.js');
+				break;
+			case 'op':							
+				AddNolohScriptSrc('Mixed/FindPositionOp.js');
+				break;
 		}
 		if(!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE())
 			/*AddScript('_NInit(' . 
@@ -123,17 +141,30 @@ abstract class WebPage extends Component
 		return $this;
 	}
 	/**
+	 * This can be overridden in order to log request details
+	 * @param array $details
+	 */
+	function ProcessRequestDetails($details)	{}
+	/**
 	 * @ignore
 	 */
 	function AddCSSFile($path)
 	{
 		if(!isset($this->CSSFiles) || !$this->CSSFiles->Contains($path))
 		{
+			if (preg_match('/.(less|scss)$/i', $path, $matches)) 
+			{
+				$defaultRelType = '/' . $matches[1];
+			} 
+			else 
+			{
+				$defaultRelType = '';
+			}
 			$tmp = $_SESSION['_NPropertyQueue'];
 			unset($_SESSION['_NPropertyQueue']);
 			$path2 = Configuration::That()->AddMTimeToExternals ? ($path . '?mtime=' . filemtime(GetAbsolutePath($path))) : $path;
-			$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path2.'\'';
-			//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\'';
+			$initialProperties = '\'rel\',\'stylesheet' . $defaultRelType . '\',\'type\',\'text/css\',\'href\',\''.$path2.'\'';
+			//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\''
 			NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
 			if($this->CSSFiles)
 				$this->CSSFiles->Add($path, true);
@@ -252,6 +283,15 @@ abstract class WebPage extends Component
 		$this->Height = $height;
 		QueueClientFunction($this, 'resizeTo', array($this->Width, $this->Height));
 	}
+
+	/**
+	 * Returns the timezone of the browser, in IANA format
+	 * @return string
+	 */
+	function GetTimeZone()
+	{
+		return $this->TimeZone;
+	}
 	/**
 	 * Returns the background color of the WebPage. Can either be a string of hex like '#FF0000' or the name of a color like 'red'.
 	 * @return string
@@ -299,6 +339,7 @@ abstract class WebPage extends Component
 			if($this->LoadIndicator)
 				$this->LoadIndicator->ParentId = null;
 			$this->LoadIndicator = $control;
+			unset($_SESSION['_NPropertyQueue'][$this->LoadIndicator->Id]['style.zIndex']);
 		}
 	}
 	/**
@@ -323,7 +364,7 @@ abstract class WebPage extends Component
 	 */
 	function SetScrollLeft($scrollLeft)
 	{
-		$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+		$scrollLeft = ($scrollLeft == Layout::Left ? 0: ($scrollLeft == Layout::Right ? 9999 : $scrollLeft));
 		ClientScript::Queue($this, 'document.documentElement.scrollLeft='.$scrollLeft.';', null);
 	}
 	/**
@@ -339,7 +380,7 @@ abstract class WebPage extends Component
 	 */
 	function SetScrollTop($scrollTop)
 	{
-		$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+		$scrollTop = ($scrollTop == Layout::Top ? 0 : ($scrollTop==Layout::Bottom ? 9999 : $scrollTop));
 		ClientScript::Queue($this, 'document.documentElement.scrollTop='.$scrollTop.';', null);
 	}
 	/**
@@ -398,7 +439,13 @@ abstract class WebPage extends Component
             $autoIncludes = '';
             foreach (self::$AutoIncludes as $include)
             {
-                $autoIncludes .= '<script src="' . $include . '?mtime=' . filemtime(GetAbsolutePath($include)) . '"></script>';
+				// Check if the file exists, this returns false for urls
+				if (file_exists($include))
+				{
+					$include .= '?mtime=' . filemtime(GetAbsolutePath($include));
+				}
+
+                $autoIncludes .= '<script src="' . $include . '"></script>';
             }
             
 		header('Cache-Control: no-store');
@@ -432,8 +479,10 @@ HTML;
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
-		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&")
-               + "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
+		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash||"#","")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
+               "_NVisit=0&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
+               "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight + "&_NMaxTouchPoints=" + 
+               _NMaxTouchPoints + "&_NBrowserPlatform=" + _NBrowserPlatform + "&_NStrategy=Show"';
         $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
         $oldOpMobile = UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
 		echo $oldOpMobile ? 
@@ -467,10 +516,14 @@ UserAgent::IsIE() ? '
 </HTML>
 
 <SCRIPT type="text/javascript">
-  _NApp = ', $GLOBALS['_NApp'], ';
-  document.cookie = "_NAppCookie=0";', $symbol === '&' ? '
+  _NMaxTouchPoints = navigator.maxTouchPoints;
+  _NBrowserPlatform = navigator.platform;
+  queryString = false;', $symbol === '&' ? '
   if(document.URL.indexOf("?") != -1)
-  	location.replace(document.URL.replace("?", "#!/"));' : 
+  {
+  	location.replace(document.URL.replace("?", "#!/"));
+  	queryString = true;
+  }' :
 (UserAgent::GetBrowser()===UserAgent::Firefox ? '
   if(document.URL.indexOf("#/") != -1)
   {
@@ -487,7 +540,8 @@ UserAgent::IsIE6() ? '
 	    var script = document.createElement("SCRIPT");
 	    script.type = "text/javascript";
 	    script.text = req.responseText;
-	    document.getElementById("NHead").appendChild(script);
+	    if(!queryString)
+	    	document.getElementById("NHead").appendChild(script);
   	}
   }
   
@@ -499,19 +553,22 @@ UserAgent::IsIE6() ? '
   var script = document.createElement("SCRIPT");
   script.type = "text/javascript";
   script.src = ' . $url . ';
-  document.getElementById("NHead").appendChild(script);', '
+  if(!queryString)
+	document.getElementById("NHead").appendChild(script);', '
 </SCRIPT>';
 	}
 	/**
 	 * @ignore
 	 */
-	function SearchEngineShow($canonicalURL, $tokenLinks)
+	function SearchEngineShow()
 	{
 		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"><HTML lang="en"><HEAD><META http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>', $this->Title, "</TITLE>\r\n",
 			'<META name="keywords" content="', is_file($this->Keywords)?file_get_contents($this->Keywords):$this->Keywords, '">',"\r\n",
 			'<META name="description" content="', is_file($this->Description)?file_get_contents($this->Description):$this->Description,'">',"\r\n";
-		if($canonicalURL)
-			echo '<LINK rel="canonical" href="', $canonicalURL, '">';
+		if ($this->CanonicalUrl)
+		{
+			echo '<LINK rel="canonical" href="', $this->CanonicalUrl, '">';
+		}
 		foreach($this->CSSFiles as $path)
 			echo '<LINK rel="stylesheet" type="text/css" href="', $path, '">';
 		echo '</HEAD><BODY><DIV>',"\r\n";
@@ -521,12 +578,12 @@ UserAgent::IsIE6() ? '
 			if($show && $obj)
 				$obj->SearchEngineShow();
 		}
-		echo " <BR>\r\n", $tokenLinks, "\r\n</DIV></BODY></HTML>";
+		echo " <BR>\r\n<UL>", $this->SearchEngineTokenLinks, "</UL>\r\n</DIV></BODY></HTML>";
 	}
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow()
+	function NoScriptShow($indent)
 	{
 		ob_end_clean();
 		if(defined('FORCE_GZIP'));
@@ -563,17 +620,14 @@ UserAgent::IsIE6() ? '
 		echo 
 ' blah </BODY>
 </HTML>';
-		setcookie('_NAppCookie', 0);
 		ob_flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
-				$connection->Close();
+		DataConnection::CloseAll(false);
 		session_destroy();
 	}
 	/**
 	 * @ignore
 	 */
-	function GetAddId()
+	function GetAddId($obj)
 	{
 		return $this->Id;
 	}
@@ -602,7 +656,7 @@ UserAgent::IsIE6() ? '
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0)
 		{

@@ -41,8 +41,11 @@ function _NSetLoadIndi(id)
 {
 	_N.LoadIndicator = id;
 	var loadIndicator = _N(id);
-	if(loadIndicator)
+	if (loadIndicator)
+	{
 		loadIndicator.style.visibility = "hidden";
+		loadIndicator.className += " loading-indicator";
+	}
 }
 function _NCheckURL()
 {
@@ -51,7 +54,7 @@ function _NCheckURL()
 	if(++ _N.TimeoutCount == _N.TimeoutTicks)
 	{
 		var serverArg = _N.TimeoutDuration ? _NTimeoutTicker() : "Ping";
-		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NApp="+_NApp+"&_NTimeout="+serverArg);
+		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NTimeout="+serverArg);
 		_N.TimeoutCount = 0;
 	}
 }
@@ -67,11 +70,14 @@ function _NSetTokens(hash, id)
 {
 	_NSetURL(document.URL.split("#",1)[0] + "#!/" + hash, id);
 }
-function _NSet(id, property, value)
+function _NSet(id, property, value, force)
 {
-	//_NChange(id, property, value);
 	_NChangeByObj(_N(id), property, value);
 	_NSave(id, property, value);
+	if (force)
+	{
+		_N.Saved[id][property] = !value;
+	}
 	return value;
 }
 function _NSetProperty(id, property, value)	{return _NSet(id, property, value)}
@@ -141,9 +147,12 @@ function _NChangeByObj(obj, property, value)
 				eval("obj." + property + " = " + value + ";");
 				break;
 			case "ContextMenu":
-				if(!obj.oncontextmenu)
+				if (!value) {
+					obj.oncontextmenu = null;
+				} else if(!obj.oncontextmenu) {
 					_NChangeByObj(obj, "oncontextmenu", "");
-					obj.ContextMenu = value;
+				}
+				obj.ContextMenu = value;
 				break;
 			case "GroupM":
 				obj._NMultiGroupable = true;
@@ -226,16 +235,37 @@ function _NChangeByObj(obj, property, value)
 			case "className":
 				obj.className = obj.className.indexOf("NClickable")!=-1 && value.indexOf("NClickable")==-1 ? "NClickable " + value : value;
 				break;
+			case "value":
+				obj.value = value;
+
+                if (!obj.classList.contains('disable-dispatch-input'))
+                {
+                    obj.dispatchEvent(_NCreateEvent('input'));
+                }
+				break;
 			default:
 				eval("obj." + property + " = value;");
 		}
 	return value;
 }
+
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
 	eval("var func = function(e) {if(_N.QueueDisabled!='"+id+"') {if(e) event=e; var liq=(event && event.target.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth) if(_N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}}");
 	return func;
+}
+function _NCreateEvent(eventType)
+{
+	var event;
+	if (typeof(Event) === 'function') {
+		event = new Event(eventType, {bubbles: true, cancelable: true});
+	} else {
+		event = document.createEvent('Event');
+		event.initEvent(eventType, true, true);
+	}
+
+	return event;
 }
 function _NNoBubble()
 {
@@ -271,7 +301,7 @@ function _NSave(id, property, value)
 			_N.Changes[id]["Opacity"] = value * 100;
 			break;
 		default:
-			_N.Changes[id][property] = typeof value == "boolean" ? (value ? 1 : 0) : value;
+			_N.Changes[id][property] = (typeof value == "boolean") ? (value ? 1 : 0) : ((typeof value == "object") ? JSON.stringify(value) : value);
 	}
 }
 /*
@@ -308,7 +338,14 @@ function _NQ()
 {
 	var addTo, id, info, roots = _N.IncubatorRoots;
 	for(addTo in roots)
-		_N(addTo).appendChild(roots[addTo]);
+	{
+		var obj = _N(addTo);
+		if (!obj)
+		{
+			debugger;
+		}
+		obj.appendChild(roots[addTo]);
+	}
 	for(id in _N.IncubatorRootsIns)
 	{
 		info = _N.IncubatorRootsIns[id];
@@ -441,7 +478,12 @@ function _NChangeString()
 			changes += change + "~d0~";
 	}
 	_N.Changes = {};
-	return changes.substring(0, changes.length-4);
+
+	changes = changes
+		.substring(0, changes.length - 4)
+		.replace("&", "%26");
+
+	return changes;
 }
 function _NEventVarsString()
 {
@@ -494,48 +536,53 @@ function _NUnServer(loadIndicator)
 		_N.TimeoutWorking = null;
 	_N.LoadIndicator = loadIndicator;
 	_N(loadIndicator).style.visibility = "hidden";
+	_N.Spinner = null;
 	_N.Request = null;
 	if(_N.Listeners)
 		_NListenersCont();
 }
 function _NReqStateChange()
 {
-	var req = _N.Request;
+	var req = _N.Request, loadIndicator = _N.LoadIndicator;
 	if(req.readyState == 4)
+	{
 		if(req.status == 200)
 		{
-   			var text = _N.Request.responseText, loadIndicator = _N.LoadIndicator;
+			var text = _N.Request.responseText;
 			if(_N.DebugMode == null)
 			{
 				_NProcessResponse(text);
-				_NUnServer(loadIndicator);
-			}
-			else
-	   			try
-	   			{
-					_NProcessResponse(text);
-	   			}
-	   			catch(err)
-	   			{
-	   				var el = document.createElement("DIV");
-	   				el.innerHTML = text;
-	   				text = el.textContent;
-	   				var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
-	   				if(matches)
-	   					alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
-	   				else
-						_NAlertError(err);
-	   			}
-		        finally
-		        {
-					_NUnServer(loadIndicator);
-		        }
 			}
 			else
 			{
-				alert("HTTP error: " + req.status + "\n" + req.statusText);
-				_NUnServer();
+				try
+				{
+					_NProcessResponse(text);
+				}
+				catch(err)
+				{
+					var el = document.createElement("DIV");
+					el.innerHTML = text;
+					text = el.textContent;
+					var matches = text.match(/(.*): (.*) in (.*) on line ([0-9]+)/);
+					if(matches)
+						alert(matches[1] + matches[2] + "\nin " + matches[3] + "\non line " + matches[4]);
+					else
+						_NAlertError(err);
+				}
 			}
+		}
+		else if (req.status == 0)
+		{
+			alert("Unable to contact server. Please check your connection.");
+		}
+		else
+		{
+			alert("HTTP error: " + req.status + "\n" + req.statusText);
+		}
+
+		_NUnServer(loadIndicator);
+	}
 }
 function _NSE(eventType, id, uploads)
 {
@@ -565,7 +612,7 @@ function _NServer()
 	if(!_N.Request)
 	{
 		var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
-		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
+		var str = "_NVisit="+ ++_N.Visit+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 		for(var i=0; i<sECount; ++i)
 		{
 			if(_N.SEQ[i][0] == "Unload")
@@ -579,7 +626,10 @@ function _NServer()
 			str += "&_NTokenLink="+_N.URLTokenLink;
 			_N.URLTokenLink = null;
 		}
-		_N(_N.LoadIndicator).style.visibility = "visible";
+		if (_N.Spinner !== false)
+		{
+			_N(_N.LoadIndicator).style.visibility = "visible";
+		}
 		_N.Request = _NXHR("POST", 
 	    	hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
 	    	notUnload ? _NReqStateChange : null,

@@ -29,6 +29,6 @@ final class Priority
 	 */
 	const Low = 2;
 	
-	private function Priority(){}
+	private function __construct(){}
 }
 ?>

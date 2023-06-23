@@ -23,9 +23,9 @@ class TextArea extends Control
 	 * @param integer $maxLength The maximum number of characters that are allowed in the TextArea
 	 * @return TextArea
 	 */
-	function TextArea($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)
+	function __construct($text = null, $left = 0, $top = 0, $width = 200, $height = 100, $maxLength = null)
 	{
-		parent::Control($left, $top, $width, $height);
+		parent::__construct($left, $top, $width, $height);
 		$this->SetMaxLength($maxLength);
 		if($text != null)
 			$this->SetText($text);
@@ -72,7 +72,7 @@ class TextArea extends Control
 	 */
     function SetScrollLeft($scrollLeft)
     {
-    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+    	$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
         if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
@@ -89,7 +89,7 @@ class TextArea extends Control
 	 */
     function SetScrollTop($scrollTop)
     {
-    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+    	$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
     	if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
@@ -216,7 +216,7 @@ class TextArea extends Control
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 			echo $indent, '<TEXTAREA ', $str, "></TEXTAREA>\n";
 	}

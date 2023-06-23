@@ -18,5 +18,7 @@ function _NTAInput(event)
 }
 function _NTATxt(id, text)
 {
-	_N.Saved[id]["value"] = _N(id).value = text.replace(/<Nendl>/g,"\n");
+	var obj = _N(id);
+	_N.Saved[id]["value"] = obj.value = text.replace(/<Nendl>/g,"\n");
+	obj.dispatchEvent(_NCreateEvent('input'));
 }

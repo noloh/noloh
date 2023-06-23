@@ -36,7 +36,7 @@ class ColumnHeader extends Panel
 	 * @param integer $width Width of the column
 	 * @param integer $height Height of the column
 	 */
-	function ColumnHeader($text=null, $left = System::Auto, $width = System::Auto, $height=20)
+	function __construct($text=null, $left = System::Auto, $width = System::Auto, $height=20)
 	{
 		//Shift Needs to be able to work with nulls before this can work
 //		$this->Caption = new Label($text, 0, 0, null, null);
@@ -51,7 +51,7 @@ class ColumnHeader extends Panel
 //		$this->CSSPaddingLeft = '10px';
 //		$this->CSSPaddingRight = '10px';
 //		 ?$this->Caption->GetWidth() + 25:$width
-		parent::Panel($left, 0, $width, $height);
+		parent::__construct($left, 0, $width, $height);
 		$this->CSSBackgroundRepeat = "repeat-x";
 		//SizeHandle
 		$this->SizeHandle = new Image(System::ImagePath() . 'Std/ColSep.gif', 0, 6);

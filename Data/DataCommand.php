@@ -22,7 +22,7 @@
  * 
  * @package Data
  */
-class DataCommand extends Object
+class DataCommand extends Base
 {
 	private $Connection;
 	private $SqlStatement;
@@ -39,7 +39,7 @@ class DataCommand extends Object
 	 * @param string $sql The SQL statement you wish to execute.
 	 * @param Data::Assoc|Data::Numeric|Data::Both $resultType Optional: The format of the data column indices returned by the function.
 	 */
-	function DataCommand($connection = null, $sql = '', $resultType = Data::Both)
+	function __construct($connection = null, $sql = '', $resultType = Data::Both)
 	{
 		$this->Connection = $connection;
 		$this->SqlStatement = $sql;
@@ -93,27 +93,54 @@ class DataCommand extends Object
 	 */
 	function Execute($resultType = null)
 	{
-		if($this->Connection != null && $this->SqlStatement != null)
+		if ($this->Connection != null && $this->SqlStatement != null)
 		{
+			System::BeginBenchmarking('_N/DataCommand::Execute');
 			$type = $this->Connection->GetType();
 			$connection = $this->Connection->Connect();
-			if($type == Data::Postgres)
-				$resource = pg_query($connection, $this->SqlStatement);
-			elseif($type == Data::MySQL)
-				$resource = mysql_query($this->SqlStatement, $connection);
-			elseif($type == Data::MSSQL)
-				if (function_exists('sqlsrv_query'))
-					$resource = sqlsrv_query($connection, $this->SqlStatement);
-				else
-					$resource = mssql_query($this->SqlStatement, $connection);
-				
-			if(!$resource)
+
+			if ($type === Data::Postgres)
 			{
-				$this->Connection->ErrorOut();
+				$resource = @pg_query($connection, $this->SqlStatement);
+			}
+			elseif ($type === Data::MySQL)
+			{
+				$resource = mysql_query($this->SqlStatement, $connection);
+			}
+			elseif ($type === Data::MSSQL)
+			{
+				if (function_exists('sqlsrv_query'))
+				{
+					$resource = sqlsrv_query($connection, $this->SqlStatement);
+				}
+				else
+				{
+					$resource = mssql_query($this->SqlStatement, $connection);
+				}
+			}
+			elseif ($type === Data::ODBC)
+			{
+				$resource = @odbc_exec($connection, $this->SqlStatement);
+			}
+				
+			if (!$resource)
+			{
+				$this->Connection->ErrorOut($connection, $this->SqlStatement);
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;
-			return new DataReader($type, $resource, $resultType, $this->Callback);
+			
+			if ($type === Data::Postgres)
+			{
+				$reader = new DataReaderIterator($resource, $resultType, $this->Callback);
+			}
+			else
+			{
+				$reader = new DataReader($type, $resource, $resultType, $this->Callback);
+			}
+
+			Application::$RequestDetails['total_database_time'] += System::Benchmark('_N/DataCommand::Execute');
+			return $reader;
 		}
 		return false;
 	}

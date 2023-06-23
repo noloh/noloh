@@ -20,9 +20,9 @@ class AccordionPart extends CollapsePanel implements Groupable
 	 * @param string $title The title you wish to display in the titlebar.
 	 * @param int $titleHeight The height of the titlebar.
 	 */
-	function AccordionPart($title, $titleHeight = 28)
+	function __construct($title, $titleHeight = 28)
 	{
-		parent::CollapsePanel($title, 0, 0, '100%', 28, $titleHeight);
+		parent::__construct($title, 0, 0, '100%', 28, $titleHeight);
 		$this->SetCollapsed(true);
 //		$this->SetTogglesOff(false);
 		$select = Control::GetSelect();

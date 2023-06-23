@@ -39,9 +39,9 @@ class Eventee extends MarkupItem
 	/**
 	 * @ignore
 	 */
-	function Eventee($id, $tag, $keyword, $value, $panelId)
+	function __construct($id, $tag, $keyword, $value, $panelId)
 	{
-		parent::MarkupItem($id, $keyword, $value, $panelId);
+		parent::__construct($id, $keyword, $value, $panelId);
 		if($tag == 'a' || $tag == 'A')
 			$this->ATag = true;
 	}

@@ -8,51 +8,81 @@
  * 
  * @package System
  */
-final class Application extends Object
+final class Application extends Base
 {
 	/**
 	 * @ignore
 	 */
 	const Name = '@APPNAME';
+	/**
+	 * @var WebPage
+	 */
 	private $WebPage;
 	
+	public static $RequestDetails;
 	/**
 	 * @ignore
 	 */
 	public static function AutoStart()
 	{
-		$GLOBALS['_NAutoStart'] = true;
-		if(isset($GLOBALS['_NApplication']) && $GLOBALS['_NApplication'] instanceof Application)
-			$GLOBALS['_NApplication']->HandleFirstRun();
-		else
-			Application::Start();
+		if (empty($GLOBALS['_NREST']))
+		{
+			$GLOBALS['_NAutoStart'] = true;
+			if (isset($GLOBALS['_NApplication']) &&
+				$GLOBALS['_NApplication'] instanceof Application
+			)
+			{
+				$GLOBALS['_NApplication']->HandleFirstRun();
+			}
+			else
+			{
+				Application::Start();
+			}
+		}
 	}
 	/**
 	 * Starts the Application, optionally with some Configuration parameters.
 	 * @param mixed,... $dotDotDot 
 	 * @return Configuration
+	 * @throws
 	 */
 	public static function &Start($dotDotDot=null)
 	{
-		if(empty($GLOBALS['_NApp']))
+		if (empty($GLOBALS['_NApp']))
 		{
+			self::InitRequestDetails();
             if(!UserAgent::IsCLI() && getcwd() !== $GLOBALS['_NCWD'] && !chdir($GLOBALS['_NCWD']))
             	exit('Error with working directory. This could be caused by two reasons: you do a chdir in main after including the kernel, or your server is not compatible with not allowing a Application::Start call.');
 			if(isset($_REQUEST['_NApp']))
 				ini_set('session.use_cookies', 0);
 			else
 				session_set_cookie_params(30);
-			session_name('_NS');
-			session_id(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
-			//session_name(hash('md5', $GLOBALS['_NApp'] = (isset($_REQUEST['_NApp']) ? $_REQUEST['_NApp'] : (empty($_COOKIE['_NAppCookie']) ? rand(1, 99999999) : $_COOKIE['_NAppCookie']))));
+			System::BeginBenchmarking('_N/Application::Start');
+
+
+			$sessionName = '_NS' . hash('crc32', $_SERVER['PHP_SELF']);	// Protection from different folders or files grabbing same session
+			session_name($sessionName);
+			Cookie::SetSessionParams();
+			if (isset($_COOKIE[$sessionName]))
+			{
+				session_id($_COOKIE[$sessionName]);
+			}
 			session_start();
-			if(isset($_SESSION['_NConfiguration']))
+			$GLOBALS['_NApp'] = session_id();
+
+
+			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
+			if (isset($_SESSION['_NConfiguration']))
+			{
 				$config = $_SESSION['_NConfiguration'];
+			}
 			else 
 			{
 				$args = func_get_args();
-				if(count($args) === 1 && $args[0] instanceof Configuration)
+				if (count($args) === 1 && $args[0] instanceof Configuration)
+				{
 					$config = $args[0];
+				}
 				else 
 				{
 					$reflect = new ReflectionClass('Configuration');
@@ -60,13 +90,16 @@ final class Application extends Object
 				}
 				$_SESSION['_NConfiguration'] = &$config;
 			}
-            if($config->StartClass)
+            if ($config->StartClass)
+			{
 			    new Application($config);
+			}
 			return $config;
 		}
 		else
-//			return Configuration::That();
+		{
 			return $_SESSION['_NConfiguration'];
+		}
 		return false;
 	}
 	/**
@@ -92,15 +125,32 @@ final class Application extends Object
 			session_destroy();
 		else
 			self::UnsetNolohSessionVars();
-		$url = $clearURLTokens ? ('"'.$_SERVER['PHP_SELF'].'"') : 'location.href';
-		$browser = GetBrowser();
-		if($browser==='ie' || $browser==='ff')
-			if($clearURLTokens)
-				echo 'window.location.replace(', $url, ');';
-			else
-				echo 'window.location.reload(true);';
+		if ($clearURLTokens)
+		{
+			// Used to be PHP_SELF, without parsing. That failed for webserver proxy.
+			$uri = $_SERVER['DOCUMENT_URI'];
+			$url = '"' . substr($uri, 0, strpos($uri, '?')) . '"';
+		}
 		else
+		{
+			$url = 'location.href';
+		}
+		$browser = GetBrowser();
+		if ($browser === 'ie' || $browser === 'ff' || $browser === 'ch' || $browser === 'ed')
+		{
+			if ($clearURLTokens)
+			{
+				echo 'window.location.replace(', $url, ');';
+			}
+			else
+			{
+				echo 'window.location.reload(true);';
+			}
+		}
+		else
+		{
 			echo 'var frm=document.createElement("FORM");frm.action=', $url, ';frm.method="post";document.body.appendChild(frm);frm.submit();';
+		}
 		exit();
 	}
 	/**
@@ -108,63 +158,122 @@ final class Application extends Object
 	 * @return string
 	 */
 	static function GetURL()	{return System::FullAppPath();}
-	private function Application($config)
+	function __construct($config)
 	{
-		$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
-		$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
-		if(isset($_REQUEST['_NError']))
-			return print self::CreateError($_REQUEST['_NError']);
-		elseif(isset($_REQUEST['_NTimeout']))
-			return $this->HandleTimeout($_REQUEST['_NTimeout']);
-		elseif(isset($_GET['_NImage']))
-			if(empty($_GET['_NWidth']))
-				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams']);
-			else
-				Image::MagicGeneration($_GET['_NImage'], $_GET['_NClass'], $_GET['_NFunction'], $_GET['_NParams'], $_GET['_NWidth'], $_GET['_NHeight']);
-		elseif(isset($_GET['_NFileUpload']))
-			FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
-		elseif(isset($_GET['_NFileRequest']))
-			File::SendRequestedFile($_GET['_NFileRequest']);
-		elseif(
-			(!isset($_SERVER['HTTP_ACCEPT']) || strpos($_SERVER['HTTP_ACCEPT'], 'text/html')!==0) &&
-			(isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) &&
-			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) ||
-			(UserAgent::IsPPCOpera()) || 
-				$host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
+		NolohInternal::SaveSessionState();
+
+		try
 		{
-			if(isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
-				$this->HandleIENavigation();
-			elseif($this->HandleForcedReset())
-				return;
-			$this->HandleDebugMode();
-			if(isset($_SESSION['_NOmniscientBeing']))
-				$this->TheComingOfTheOmniscientBeing();
-			if(!empty($_POST['_NEventVars']))
-				$this->HandleEventVars();
-			$this->HandleClientChanges();
-			if(!empty($_POST['_NFileUploadId']))
-				GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
-			foreach($_SESSION['_NFiles'] as $key => $val)
-				GetComponentById($key)->File = new File($val);
-			if(isset($_POST['_NTokenLink']))
-				$this->HandleLinkToTokens();
-			if(!empty($_POST['_NEvents']))
-				$this->HandleServerEvents();
-			foreach($_SESSION['_NFiles'] as $key => $val)
+			$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
+			$GLOBALS['_NTokenTrailsExpiration'] = $config->TokenTrailsExpiration;
+			if (isset($_REQUEST['_NError']))
 			{
-				unlink($_SESSION['_NFiles'][$key]['tmp_name']);
-				GetComponentById($key)->File = null;
-				unset($_SESSION['_NFiles'][$key]);
+				return print self::CreateError($_REQUEST['_NError']);
 			}
-			if(isset($_POST['_NListener']))
-				Listener::Process($_POST['_NListener']);
+			elseif (isset($_REQUEST['_NTimeout']))
+			{
+				return $this->HandleTimeout($_REQUEST['_NTimeout']);
+			}
+			elseif (isset($_GET['_NImageId']))
+			{
+				Image::MagicGeneration($_GET['_NImageId']);
+			}
+			elseif (isset($_GET['_NFileUpload']))
+			{
+				FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
+			}
+			elseif (isset($_GET['_NFileRequest']))
+			{
+				File::SendRequestedFile($_GET['_NFileRequest']);
+			}
+			else
+			{
+				$requestingStrictlyHtml = (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === 0);
+				$hasRequestingVisit = (isset($_SESSION['_NVisit']) || isset($_POST['_NVisit']));
+				$refererHost = parse_url(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null, PHP_URL_HOST);
+				// Remove potential port off the end
+				$realHost = preg_replace('/:\d*$/', '', $_SERVER['HTTP_HOST']);
+				$refererHostMatchesRealHost = !$refererHost || ($refererHost === $realHost);
+				$subsequentRun = !$requestingStrictlyHtml && $hasRequestingVisit && ($refererHostMatchesRealHost || UserAgent::IsPPCOpera());
+
+				if ($subsequentRun)
+				{
+					// Proxy Error, originally done for AKPartners
+					if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
+					{
+						die();
+					}
+					$run = true;
+					if (isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
+					{
+						$this->HandleIENavigation();
+					}
+					elseif ($this->HandleForcedReset())
+					{
+						return;
+					}
+					$this->HandleDebugMode();
+					if (isset($_SESSION['_NOmniscientBeing']))
+					{
+						$this->TheComingOfTheOmniscientBeing();
+					}
+					if (!empty($_POST['_NEventVars']))
+					{
+						$this->HandleEventVars();
+					}
+					$this->HandleClientChanges();
+					if (!empty($_POST['_NFileUploadId']))
+					{
+						GetComponentById($_POST['_NFileUploadId'])->File = &$_FILES['_NFileUpload'];
+					}
+					foreach ($_SESSION['_NFiles'] as $key => $val)
+					{
+						GetComponentById($key)->File = new File($val);
+					}
+					if (isset($_POST['_NTokenLink']))
+					{
+						$this->HandleLinkToTokens();
+					}
+					if (!empty($_POST['_NEvents']))
+					{
+						$this->HandleServerEvents();
+					}
+					foreach ($_SESSION['_NFiles'] as $key => $val)
+					{
+						unlink($_SESSION['_NFiles'][$key]['tmp_name']);
+						GetComponentById($key)->File = null;
+						unset($_SESSION['_NFiles'][$key]);
+					}
+					if (isset($_POST['_NListener']))
+					{
+						Listener::Process($_POST['_NListener']);
+					}
+				}
+				else
+				{
+					self::UnsetNolohSessionVars();
+					$this->HandleFirstRun();
+				}
+			}
+		}
+		catch (SqlFriendlyException $e)
+		{
+			$e->CallBackExec();
+		}
+
+		if (isset($run) && $run === true)
+		{
 			$this->Run();
 		}
-		else
-		{
-			self::UnsetNolohSessionVars();
-			$this->HandleFirstRun();
-		}
+	}
+	private static function InitRequestDetails()
+	{
+		self::$RequestDetails = array(
+			'server_events'			=> '',
+			'total_database_time'	=> 0,
+			'total_session_io_time'	=> 0,
+			'timestamp'				=> microtime(true)
+		);
 	}
 	private static function CreateError($type)
 	{
@@ -191,6 +300,7 @@ final class Application extends Object
 	{
 		unset($_SESSION['_NVisit'],
 			$_SESSION['_NNumberOfComponents'],
+			$_SESSION['_NShowStrategy'],
 			$_SESSION['_NOmniscientBeing'],
 			$_SESSION['_NControlQueueRoot'],
 			$_SESSION['_NControlQueueDeep'],
@@ -209,54 +319,33 @@ final class Application extends Object
 			$_SESSION['_NTokens'],
 			$_SESSION['_NTokenChain'],
 			$_SESSION['_NHighestZ'],
-			$_SESSION['_NLowestZ']);
+			$_SESSION['_NLowestZ'],
+			$_SESSION['_NOrigUserAgent'],
+			$_SESSION['_NMaxTouchPoints'],
+			$_SESSION['_NBrowserPlatform']
+		);
 	}
 	private function HandleFirstRun($trulyFirst=true)
 	{
 		if(isset($_COOKIE['_NPHPInfo']))
 		{
-			setcookie('_NPHPInfo', false);
-			unset($_COOKIE['_NPHPInfo'], $_REQUEST['_NPHPInfo']);
+			Cookie::Delete('_NPHPInfo');
+			unset($_REQUEST['_NPHPInfo']);
 			ob_start('_NPHPInfo');
 			phpinfo();
 			exit();
 		}
 		$home = null;
-		$_SESSION['_NVisit'] = -1;
-		$_SESSION['_NNumberOfComponents'] = 0;
-		$_SESSION['_NControlQueueRoot'] = array();
-		$_SESSION['_NControlQueueDeep'] = array();
-		$_SESSION['_NControlInserts'] = array();
-		$_SESSION['_NFunctionQueue'] = array();
-		$_SESSION['_NPropertyQueue'] = array();
-		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['_NScriptSrcs'] = array();
-		$_SESSION['_NGlobals'] = array();
-		$_SESSION['_NSingletons'] = array();
-		$_SESSION['_NFiles'] = array();
-		$_SESSION['_NFileSend'] = array();
-		$_SESSION['_NGarbage'] = array();
-		$_SESSION['_NTokens'] = array();
-		$_SESSION['_NHighestZ'] = 0;
-		$_SESSION['_NLowestZ'] = 0;
-		$_SESSION['_NURL'] = rtrim($_SERVER['QUERY_STRING'] ? rtrim($_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']) : $_SERVER['REQUEST_URI'], '?');
-		$_SESSION['_NPath'] = ComputeNOLOHPath();
-		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
-		$_SESSION['_NRAPath'] = rtrim(
-			NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : 
-			/*(str_repeat('../', substr_count($_SESSION['_NURL'], '/', strlen(dirname($_SESSION['_NURL']))+1)) 
-				. (($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ? 
-				GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
-				$_SESSION['_NRPath']));*/
-			(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false))
-				? System::GetRelativePath($selfDir, '/', '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'], '/')
-				: $_SESSION['_NRPath']), '/');
-		if($home)
+
+		static::SetNolohSessionVars();
+
+		if ($home)
+		{
 			$_SESSION['_NUserDir'] = true;
+		}
 		UserAgent::LoadInformation();
 		$config = Configuration::That();
-		if($config->ShowURLFilename !== 'Auto')
+		if ($config->ShowURLFilename !== 'Auto')
 		{
 			$fileName = basename($_SERVER['SCRIPT_FILENAME']);
 			$appears = preg_match('/'.$fileName.'$/i', $fullPath = System::FullAppPath());
@@ -270,14 +359,17 @@ final class Application extends Object
 				exit();
 			}
 		}
-		if($config->MobileAppURL && System::FullAppPath()!=$config->MobileAppURL && UserAgent::GetDevice()===UserAgent::Mobile)
+		if ($config->MobileAppURL && System::FullAppPath() != $config->MobileAppURL && UserAgent::GetDevice() === UserAgent::Mobile)
 		{
 			header('Location: ' . $config->MobileAppURL);
 			exit();
 		}
-		if($trulyFirst)
-			if(UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
+		if ($trulyFirst)
+		{
+			if (UserAgent::IsSpider() || UserAgent::GetBrowser() === UserAgent::Links)
+			{
 				$this->SearchEngineRun();
+			}
 			else 
 			{
 				$config = Configuration::That();
@@ -286,34 +378,41 @@ final class Application extends Object
 				{
 					$webPage = new $className();
 				}
-				catch(Exception $e)
+				catch (AbortConstructorException $e)
 				{
-					if($e->getCode() == $GLOBALS['_NApp'])
+					if ($e->getKey() == $GLOBALS['_NApp'])
 					{
-						if(empty($_GET))
-							setcookie('_NAppCookie', $GLOBALS['_NApp']);
 						WebPage::SkeletalShow($GLOBALS['_NTitle'], $config->UnsupportedURL, $GLOBALS['_NFavIcon'], $GLOBALS['_NMobileApp']);
 						return;
 					}
-					else 
+					else
 					{
 						$message = $e->getMessage();
 					}
 				}
+				catch (Exception $e)
+				{
+					$message = $e->getMessage();
+				}
 				echo 'Critical error: Could not construct WebPage.<br>', $message ? $message : 'Please make sure the WebPage constructor is properly called from the ' . $className . ' constructor.';
 				session_destroy();
 			}
+		}
 	}
 	private function HandleForcedReset()
 	{
-		if(!isset($_SESSION['_NVisit']) || 
-			(isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']) ||
-			((!isset($_POST['_NVisit']) || !isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) && $_SESSION['_NVisit']>=0 && !isset($_GET['_NVisit']) && !isset($_POST['_NListener'])))
+		$sessionVisit = isset($_SESSION['_NVisit']);
+		$visitMismatch = (isset($_POST['_NVisit']) && $_SESSION['_NVisit'] != $_POST['_NVisit']);
+		$paramsPassedUp = ((isset($_POST['_NVisit']) && isset($_SERVER['HTTP_REMOTE_SCRIPTING'])) || $_SESSION['_NVisit'] < 0 || isset($_GET['_NVisit']) || isset($_POST['_NListener']));
+
+		if (!$sessionVisit || $visitMismatch || !$paramsPassedUp)
 		{
 			if(UserAgent::IsPPCOpera() || !isset($_POST['_NEvents']) || $_POST['_NEvents'] !== ('Unload@'.$_SESSION['_NStartUpPageId']))
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['_NEvents']) || !isset($_SESSION['_NVisit']) || isset($_GET['_NWidth']))
+				{
 					self::Reset(false, false);
+				}
 				$this->TheComingOfTheOmniscientBeing();
 				$webPage = WebPage::That();
 				if($webPage !== null && !$webPage->GetUnload()->Blank())
@@ -323,8 +422,10 @@ final class Application extends Object
 			}
 			return true;//!isset($_COOKIE['_NApp']);
 		}
-		if($_SESSION['_NVisit']===0 && (isset($_GET['_NVisit']) && $_GET['_NVisit']==0) && count($_POST)===0)	//FireBug bug
+		if ($_SESSION['_NVisit'] === 0 && (isset($_GET['_NVisit']) && $_GET['_NVisit'] == 0) && count($_POST) === 0)	//FireBug bug
+		{
 			return true;
+		}
 		return false;
 	}
 	private function HandleIENavigation()
@@ -335,23 +436,36 @@ final class Application extends Object
 		$_SESSION['_NScriptSrcs'] = $srcs;
 		AddScript('_N.Visit=-1', Priority::High);
 	}
-	private function HandleDebugMode()
+	public static function EnableErrorHandlers()
 	{
 		$debugMode = Configuration::That()->DebugMode;
-		if($debugMode !== 'Unhandled')
+		$debugModeError = Configuration::That()->DebugModeError;
+		
+		if ($debugMode !== 'Unhandled')
 		{
 			$GLOBALS['_NDebugMode'] = $debugMode;
+			$GLOBALS['_NDebugModeError'] = $debugModeError;
+			
 			ini_set('html_errors', false);
 			set_error_handler('_NErrorHandler', error_reporting() | E_USER_NOTICE);
+			set_exception_handler('_NExceptionHandler');
 			ob_start('_NOBErrorHandler');
-			if($debugMode === System::Full)
+			if ($debugMode === System::Full)
+			{
 				ClientScript::AddNOLOHSource('DebugFull.js');
+			}
 		}
+	}
+	private function HandleDebugMode()
+	{
+		static::EnableErrorHandlers();
 	}
 	private function TheComingOfTheOmniscientBeing()
 	{
 		global $OmniscientBeing;
+		System::BeginBenchmarking('_N/Application::TheComingOfTheOmniscientBeing');
 		$OmniscientBeing = unserialize(defined('FORCE_GZIP') ? gzuncompress($_SESSION['_NOmniscientBeing']) : $_SESSION['_NOmniscientBeing']);
+		self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::TheComingOfTheOmniscientBeing');
 		unset($_SESSION['_NOmniscientBeing']);
 		$idArrayStr = '';
 		$idShftWithArr = array();
@@ -465,17 +579,14 @@ final class Application extends Object
 			$eventInfo = explode('@', $events[$i]);
 			if($eventInfo[1] === $_SESSION['_NStartUpPageId'] && $eventInfo[0] === 'Unload')
 			{
-				$params = session_get_cookie_params();
-			    setcookie(session_name(), '', time() - 42000,
-			        $params["path"], $params["domain"],
-			        $params["secure"], $params["httponly"]);
+				Cookie::Delete(session_name());
 				session_destroy();
 				exit();
 			}
 			if($obj = &GetComponentById($eventInfo[1]))
 	        {
 	            $execClientEvents = false;
-	            $obj->GetEvent($eventInfo[0])->Exec($execClientEvents);
+	            $obj->GetEvent($eventInfo[0])->Exec($execClientEvents, false, true);
 	        }
 			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
 				GetComponentById(substr($eventInfo[1], 0, $pos))->ExecEvent($eventInfo[0], $eventInfo[1]);
@@ -489,7 +600,7 @@ final class Application extends Object
 	{
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
-		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight']);
+		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight'], $_GET['_NTimeZone'], $_GET['_NMaxTouchPoints'], $_GET['_NBrowserPlatform']);
 		if(isset($_GET['_escaped_fragment_']))
 			parse_str(urldecode($_GET['_escaped_fragment_']), $_GET);
 		if($GLOBALS['_NURLTokenMode'] == 1)
@@ -576,44 +687,105 @@ final class Application extends Object
 		header('Cache-Control: no-cache');
 		header('Pragma: no-cache');
 		//header('Cache-Control: no-store');
-		if(++$_SESSION['_NVisit'] === 0)
+		if (++$_SESSION['_NVisit'] === 0)
 		{
-			global $_NShowStrategy, $_NWidth, $_NHeight;
-			if(isset($_COOKIE['_NAppCookie']))
-				setcookie('_NAppCookie', $_COOKIE['_NAppCookie'], 1);
+			global $_NShowStrategy, $_NWidth, $_NHeight, $_NTimeZone;
 			$_NWidth = isset($_GET['_NWidth']) ? $_GET['_NWidth'] : 1024;
 			$_NHeight = isset($_GET['_NHeight']) ? $_GET['_NHeight'] : 768;
+			$_NTimeZone = isset($_GET['_NTimeZone']) ? $_GET['_NTimeZone'] : date_default_timezone_get();
+			$_SESSION['_NMaxTouchPoints'] = isset($_GET['_NMaxTouchPoints']) ? intval($_GET['_NMaxTouchPoints']) : 0;
+			$_SESSION['_NBrowserPlatform'] = isset($_GET['_NBrowserPlatform']) ? $_GET['_NBrowserPlatform'] : '';
 			$this->HandleTokens();
-			$_NShowStrategy = (empty($_COOKIE['_NAppCookie']) || (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath()));
+			$_NShowStrategy = (
+				!empty($_SESSION['_NShowStrategy']) ||
+				(isset($_GET['_NStrategy']) && $_GET['_NStrategy'] === 'Show') ||
+				(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != System::FullAppPath())
+			);
 			$className = Configuration::That()->StartClass;
 			$this->WebPage = new $className();
-			if($_NShowStrategy)
+			if ($_NShowStrategy)
+			{
+				$_SESSION['_NShowStrategy'] = true;
 				$this->WebPage->Show();
+			}
 			else
-				return $this->WebPage->NoScriptShow();
+			{
+				return $this->WebPage->NoScriptShow('');
+			}
 			AddScript('_N.Request=null;', Priority::Low);
 		}
 		header('Content-Type: text/javascript; charset=UTF-8');
-		if(isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
-			URL::UpdateTokens();
+		if (isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
+		{
+			$tokenString = URL::UpdateTokens();
+		}
+		else
+		{
+			$tokenString = $_SERVER['QUERY_STRING'];
+		}
 		NolohInternal::Queues();
 		ob_end_clean();
 		$gzip = defined('FORCE_GZIP');
-		if($gzip)
+		if ($gzip)
+		{
 			ob_start('ob_gzhandler');
+		}
 		echo $_SESSION['_NScriptSrc'], '/*_N*/', $_SESSION['_NScript'][0], $_SESSION['_NScript'][1], $_SESSION['_NScript'][2];
-		if($gzip)
-			ob_end_flush();
-		flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
-				$connection->Close();
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+		
+		System::BeginBenchmarking('_N/Application::Run');
+		$serializedSession = serialize($OmniscientBeing);
+		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress($serializedSession, 1) : $serializedSession;
+		$benchmark = System::Benchmark('_N/Application::Run');
+
+		$requestDetails = &self::UpdateRequestDetails();
+		$requestDetails['total_session_io_time'] += $benchmark;
+		$requestDetails['session_strlen'] = strlen($serializedSession);
+		$requestDetails['tokens'] = $tokenString;
+		if ($this->WebPage && method_exists($this->WebPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
+		{
+			$this->WebPage->ProcessRequestDetails($requestDetails);
+		}
+		if ($gzip)
+		{
+			ob_end_flush();
+		}
+		flush();
+		
+		DataConnection::CloseAll(true);
 		$GLOBALS['_NGarbage'] = true;
 		unset($OmniscientBeing, $GLOBALS['OmniscientBeing']);
 		unset($GLOBALS['_NGarbage']);
+	}
+	public static function &UpdateRequestDetails()
+	{
+		global $OmniscientBeing;
+		$requestDetails = &self::$RequestDetails;
+		
+		$requestDetails['visit'] = $_SESSION['_NVisit'];
+		$requestDetails['components'] = count($OmniscientBeing);
+		$requestDetails['session_id'] = session_id();
+		$requestDetails['memory_peak_usage'] = memory_get_peak_usage(true) / 1048576; // 1024^2
+		
+		if (substr(strtoupper(PHP_OS), 0, 3) === 'WIN')
+		{
+			exec('wmic OS get FreePhysicalMemory /Value', $output);
+			$memoryInfo = implode($output);
+			$freeMemory = (int)(substr($memoryInfo, strpos($memoryInfo, '=') + 1));
+		}
+		else
+		{
+			$memoryInfo = exec('free | grep buffers/cache');
+			preg_match('/(?:-\/\+ buffers\/cache:\s*\w+\s*)(\d*)/', $memoryInfo, $matches);
+			$freeMemory = isset($matches[1]) ? $matches[1] : null;
+		}
+		$requestDetails['free_memory'] = $freeMemory / 1000;
+
+		$requestDetails['total_server_time'] = (int)(1000 * (microtime(true) - $requestDetails['timestamp']));
+		unset($requestDetails['timestamp']);
+		
+		return $requestDetails;
 	}
 	private function SearchEngineRun()
 	{
@@ -675,11 +847,11 @@ final class Application extends Object
 			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
 			$canonicalURL = System::FullAppPath() . ($tokenString ? (UserAgent::GetName()===UserAgent::Googlebot?'#!/':'?') . $tokenString : '');
 		}
-		$this->WebPage->SearchEngineShow($canonicalURL, '<UL>'.$tokenLinks.'</UL>');
+		$this->WebPage->CanonicalUrl = $canonicalURL;
+		$this->WebPage->SearchEngineTokenLinks = $tokenLinks;
+		$this->WebPage->SearchEngineShow();
 		ob_flush();
-		if(isset($_SESSION['_NDataLinks']))
-			foreach($_SESSION['_NDataLinks'] as $connection)
-				$connection->Close();
+		DataConnection::CloseAll(false);
 		session_destroy();
 	}
 	private function ExplodeDragCatch($objectsString)
@@ -701,6 +873,41 @@ final class Application extends Object
 		}
 	}
 	*/
+	static function SetNolohSessionVars()
+	{
+		$_SESSION['_NVisit'] = -1;
+		$_SESSION['_NNumberOfComponents'] = 0;
+		$_SESSION['_NShowStrategy'] = 0;
+		$_SESSION['_NControlQueueRoot'] = array();
+		$_SESSION['_NControlQueueDeep'] = array();
+		$_SESSION['_NControlInserts'] = array();
+		$_SESSION['_NFunctionQueue'] = array();
+		$_SESSION['_NPropertyQueue'] = array();
+		$_SESSION['_NScript'] = array('', '', '');
+		$_SESSION['_NScriptSrc'] = '';
+		$_SESSION['_NScriptSrcs'] = array();
+		$_SESSION['_NGlobals'] = array();
+		$_SESSION['_NSingletons'] = array();
+		$_SESSION['_NFiles'] = array();
+		$_SESSION['_NFileSend'] = array();
+		$_SESSION['_NGarbage'] = array();
+		$_SESSION['_NTokens'] = array();
+		$_SESSION['_NHighestZ'] = 0;
+		$_SESSION['_NLowestZ'] = 0;
+		$_SESSION['_NOrigUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
+		$_SESSION['_NURL'] = System::RequestUri(); 
+		$_SESSION['_NPath'] = ComputeNOLOHPath();
+		$_SESSION['_NRPath'] = NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL : System::GetRelativePath(dirname($_SERVER['SCRIPT_FILENAME']), $_SESSION['_NPath'], '/');
+		$_SESSION['_NRAPath'] = rtrim(
+			NOLOHConfig::NOLOHURL ? NOLOHConfig::NOLOHURL :
+				/*(str_repeat('../', substr_count($_SESSION['_NURL'], '/', strlen(dirname($_SESSION['_NURL']))+1))
+					. (($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false)) ?
+					GetRelativePath($selfDir, '/') . GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath']) :
+					$_SESSION['_NRPath']));*/
+				(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false))
+					? System::GetRelativePath($selfDir, '/', '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'], '/')
+					: $_SESSION['_NRPath']), '/');
+	}
 }
 
 // DEPRECATED! Use Application::SetStartUpPage instead.

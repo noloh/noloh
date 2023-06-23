@@ -21,46 +21,82 @@ function _NPHPInfo($info)
  */
 function _NOBErrorHandler($buffer)
 {
-	if(strpos($buffer, '<title>phpinfo()</title>') !== false)
+	if (strpos($buffer, '<title>phpinfo()</title>') !== false)
+	{
 		trigger_error('~_NINFO~');
-	elseif(preg_match('/(.*): (.*) in (.*) on line ([0-9]+)/s', $buffer, $matches))
-		if($GLOBALS['_NDebugMode'] === 'Kernel')
-			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$matches[3].'~OB~'.$matches[4]);
+	}
+	elseif (preg_match('/(.*?): (.*) in (.*?) on line ([0-9]+)/s', $buffer, $matches))
+	{
+		$error = $matches[2];
+		if ($GLOBALS['_NDebugMode'] === 'Kernel')
+		{
+			$file = $matches[3];
+			$line = $matches[4];
+		}
 		else
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
-			$obStr = '~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['line'];
-			if (PHP_VERSION_ID < 50300)
-				trigger_error($obStr);
-			else
-			{
-				// For ssome bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repition appears necessary.
-				setcookie('_NAppCookie', false);
-				if(!in_array('Cache-Control: no-cache', headers_list(), true))
-					++$_SESSION['_NVisit'];
-				$message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$matches[2]).($trace['file']?"\\nin ".str_replace("\\","\\\\",$trace['file'])."\\non line " .$trace['line']:''));
-				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
-				NolohInternal::ResetSecureValuesQueue();
-				global $OmniscientBeing;
-				$_SESSION['_NScript'] = array('', '', '');
-				$_SESSION['_NScriptSrc'] = '';
-				$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-				return $alert;
-			}
-			
-			//return false;
-			//trigger_error(serialize(error_get_last()));
-			//trigger_error(serialize(error_get_last()));
-			//trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~?~OB~?');
-			//return new Exception('lol', 0);
-			//trigger_error('HAH');
-			//trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);
-			//_NErrorHandler($matches[2], $matches[3], $matches[4]);
+			$file = $trace['file'];
+			$line = $trace['line'];
 		}
-	/*elseif(ereg('([^:]+): (.+) in (.+) on line ([0-9]+)', $buffer, $matches))
-		trigger_error('~OB~'.$matches[1].'~'.$matches[2].'~'.$matches[3].'~'.$matches[4]);*/
-	//else 
-	//	trigger_error('~OB~'.$buffer.'~OB~'.$buffer.'~OB~'.$buffer.'~OB~'.$buffer);
+
+		if (PHP_VERSION_ID < 50300)
+		{
+			$obStr = '~OB~' . $matches[1] . '~OB~' . $matches[2] . '~OB~' . $file . '~OB~' . $line;
+			trigger_error($obStr);
+		}
+		else
+		{
+
+			$processRequestDetails = true;
+			// For some bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repetition appears necessary.
+			header('Content-Type: text/javascript');
+			if (!in_array('Cache-Control: no-cache', headers_list(), true))
+			{
+				++$_SESSION['_NVisit'];
+			}
+
+			$message = (
+				str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $error)
+				. ($file
+					? "\\nin " . str_replace("\\", "\\\\", $file) . "\\non line " . $line
+					: '')
+			);
+
+			if (strpos($message, 'Class \'Object\' not found') !== false)
+			{
+				$message = 'This project requires PHP 5.x but is currently running on ' . PHP_VERSION;
+				$processRequestDetails = false;
+			}
+
+			$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : $GLOBALS['_NDebugModeError']) . '");';
+
+			NolohInternal::ResetSecureValuesQueue();
+			NolohInternal::ResetSession();
+
+			$requestDetails = &Application::UpdateRequestDetails();
+			$requestDetails['error_message'] = $message;
+			unset($requestDetails['total_session_io_time']);
+
+			$webPage = WebPage::That();
+			if ($webPage && $processRequestDetails && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
+			{
+				/*
+				 * Checking for a syntax error message.
+				 * This is a critical error that is not reached in normal cases.
+				 * This issue can be caused by any syntax error that results from the ProcessRequestDetails process.
+				 * As a result there will be missing classes, views, etc. that is caused by this silent crash.
+				 * !It is not recommended to continue using!
+				*/
+				if (strpos($message, 'syntax error') === false)
+				{
+					$webPage->ProcessRequestDetails($requestDetails);
+				}
+			}
+
+			return $alert;
+		}
+	}
 }
 /**
  * @ignore
@@ -76,48 +112,98 @@ function _NErrorHandler($number, $string, $file, $line)
 		else
 			$number = 1;
 	}
-	if($number & error_reporting())
+	if ($number & error_reporting())
 	{
-		$level = ob_get_level();
-		for($i=0; $i<$level; ++$i)
-			ob_end_clean();
-		setcookie('_NAppCookie', false);
-		if($ob)
+		if ($ob)
 		{
 			$string = $matches[2];
 			$file = $matches[3];
 			$line = $matches[4];
 		}
-		elseif($string === '~_NINFO~')
+		elseif ($string === '~_NINFO~')
 		{
-			setcookie('_NPHPInfo', true);
+			Cookie::Set('_NPHPInfo', 1, '5 minutes');
 			Application::Reset(true, false);
 		}
-		elseif($GLOBALS['_NDebugMode'] !== 'Kernel')
+		elseif ($GLOBALS['_NDebugMode'] !== 'Kernel')
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
 			$file = $trace['file'];
 			$line = $trace['line'];
 		}
-		$gzip = defined('FORCE_GZIP');
-		if($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
-			ob_start('ob_gzhandler');
-		if(!in_array('Cache-Control: no-cache', headers_list(), true))
-			++$_SESSION['_NVisit'];
-		error_log($message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$string).($file?"\\nin ".str_replace("\\","\\\\",$file)."\\non line $line":'')));
-		echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.', '");';
-		if($gzip)
-			ob_end_flush();
-		flush();
-		NolohInternal::ResetSecureValuesQueue();
-		global $OmniscientBeing;
-		$_SESSION['_NScript'] = array('', '', '');
-		$_SESSION['_NScriptSrc'] = '';
-		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-		exit();
+		
+		$message = $string . ($file ? "\\nin " . str_replace("\\", "\\\\", $file) . "\\non line $line" : '');
+		DisplayError($message);
 	}
 	else
 		return false;
+}
+function _NExceptionHandler($exception)
+{
+	global $_NPath;
+	
+	$traces = $exception->getTrace();
+	$message = $exception->getMessage();
+	$debugKernel = $GLOBALS['_NDebugMode'] === 'Kernel';
+
+	if ($debugKernel || strpos($exception->getFile(), $_NPath) === false)
+	{
+		$message .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $exception->getFile()) . "\\non line " . $exception->getLine();
+	}
+
+	$traces = array_slice($traces, 0, 4);
+	foreach ($traces as $trace)
+	{
+		if (($debugKernel || strpos($trace['file'], $_NPath) === false)
+			&& isset($trace['file'])
+			&& isset($trace['line']))
+		{
+			$message .= PHP_EOL . 'in ' . str_replace('\\', '\\\\', $trace['file']) . "\\non line " . $trace['line'];
+		}
+	}
+	
+	DisplayError($message);
+}
+function DisplayError($message)
+{
+	$level = ob_get_level();
+	for ($i = 0; $i < $level; ++$i)
+	{
+		ob_end_clean();
+	}
+	header('Content-Type: text/javascript');
+
+	$gzip = defined('FORCE_GZIP');
+	if ($gzip && !in_array('ob_gzhandler', ob_list_handlers(), true))
+	{
+		ob_start('ob_gzhandler');
+	}
+	if (!in_array('Cache-Control: no-cache', headers_list(), true))
+	{
+		++$_SESSION['_NVisit'];
+	}
+	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
+	@error_log($message);
+	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
+	if ($gzip)
+	{
+		ob_end_flush();
+	}
+	flush();
+
+	NolohInternal::ResetSecureValuesQueue();
+	NolohInternal::ResetSession();
+
+	$requestDetails = &Application::UpdateRequestDetails();
+	$requestDetails['error_message'] = $message;
+	unset($requestDetails['total_session_io_time']);
+	$webPage = WebPage::That();
+	if ($webPage && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
+	{
+		$webPage->ProcessRequestDetails($requestDetails);
+	}
+	
+	exit();
 }
 /**
  * Finds the first array of trace information before a NOLOH file
@@ -126,13 +212,27 @@ function _NErrorHandler($number, $string, $file, $line)
 function _NFirstNonNOLOHBacktrace()
 {
 	global $_NPath;
-	$backtrace = debug_backtrace();
+	$backtrace = debug_backtrace(0);
 	$backtraceCount = count($backtrace);
-	for($i=0; $i<$backtraceCount; ++$i)
-		if(isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
-			return $backtrace[$i];
-	if(function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
+	if ($GLOBALS['_NDebugMode'] === 'Kernel')
+	{
+		return $backtrace[1];
+	}
+	else
+	{
+		for ($i = 0; $i < $backtraceCount; ++$i)
+		{
+			if (isset($backtrace[$i]['file']) && strpos($backtrace[$i]['file'], $_NPath) === false)
+			{
+				return $backtrace[$i];
+			}
+		}
+	}
+
+	if (function_exists('error_get_last') && ($errorLast = error_get_last()) && isset($errorLast['file']) && strpos($errorLast['file'], $_NPath) === false)
+	{
 		return $errorLast;
+	}
 	return array('file' => null, 'line' => null);
 }
 /**
@@ -141,24 +241,51 @@ function _NFirstNonNOLOHBacktrace()
  */
 function BloodyMurder($message)
 {
+	global $_NPath;
+	$trace = debug_backtrace();
+	$traceCount = 0;
+	foreach ($trace as $error)
+	{
+		if (isset($error['file']) && strpos($error['file'], $_NPath) === false)
+		{
+			$message .= PHP_EOL . ($error['file'] ? "\\nin " . str_replace("\\", "\\\\", $error['file']) . "\\non line {$error['line']}" : '');
+			$traceCount++;
+		}
+
+		if ($traceCount == 2)
+		{
+			break;
+		}
+	}
+
+	if(UserAgent::IsCLI() || System::IsRESTful())
+	{
+		trigger_error($message, E_USER_ERROR);
+	}
+	
 	if(!isset($GLOBALS['_NDebugMode']))
+	{
 		trigger_error($message);
+	}
 	elseif($_SESSION['_NVisit'] === -1)
 	{
+		header('Content-Type: text/html');
 		echo $message;
 		session_destroy();
 		exit();
 	}
 	else
 	{
-		if($GLOBALS['_NDebugMode'] === 'Kernel')
+		if ($GLOBALS['_NDebugMode'] === 'Kernel')
 		{
-			$trace = debug_backtrace();
 			$trace = $trace[0];
+
+			_NErrorHandler(1, $message, $trace['file'], $trace['line']);
 		}
-		else 
-			$trace = _NFirstNonNOLOHBacktrace();
-		_NErrorHandler(1, $message, $trace['file'], $trace['line']);
+		else
+		{
+			DisplayError($message);
+		}
 	}
 }
 ?>

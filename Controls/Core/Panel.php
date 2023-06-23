@@ -29,9 +29,9 @@ class Panel extends Control
 	 * @param Control $implicitObject If you want an ImplicitArrayList instantiated instead of a regular ArrayList, this parameter signifies the implicit object, usually $this
 	 * @return Panel
 	 */
-	function Panel($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
+	function __construct($left = 0, $top = 0, $width = 100, $height = 100, $implicitObject = null)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if($implicitObject == null)
 			$this->Controls = new ArrayList();
 		elseif($implicitObject === $this)
@@ -69,7 +69,7 @@ class Panel extends Control
 	 */
     function SetScrollLeft($scrollLeft)
     {
-    	$scrollLeft = $scrollLeft==Layout::Left?0: $scrollLeft==Layout::Right?9999: $scrollLeft;
+    	$scrollLeft = $scrollLeft == Layout::Left ? 0 : ($scrollLeft == Layout::Right ? 9999 : $scrollLeft);
         if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollLeft\'', $scrollLeft), false, Priority::High);
     	else
@@ -89,7 +89,7 @@ class Panel extends Control
 	 */
     function SetScrollTop($scrollTop)
     {
-    	$scrollTop = $scrollTop==Layout::Top?0: $scrollTop==Layout::Bottom?9999: $scrollTop;
+    	$scrollTop = $scrollTop == Layout::Top ? 0 : ($scrollTop == Layout::Bottom ? 9999 : $scrollTop);
     	if($_SESSION['_NIsIE'])
     		QueueClientFunction($this, '_NChange', array('\''.$this->Id.'\'', '\'scrollTop\'', $scrollTop), false, Priority::High);
     	else
@@ -99,9 +99,9 @@ class Panel extends Control
     /**
      * @ignore
      */
-	function SetCSSClass($cssClass=null)
+	function SetCSSClass($cssClass = null)
 	{
-		parent::SetCSSClass('NPanel '.$cssClass);
+		parent::SetCSSClass('NPanel ' . trim($cssClass));
 	}
 	/**
 	 * Opens the Panel and only the Panel in a separate window so that the user may print it. The user's browser must
@@ -281,7 +281,7 @@ class Panel extends Control
 	{
 		$tag = $this->GetSearchEngineTag();
 		if($tag)
-			echo '<', $tag, parent::SearchEngineShow(true), '>';
+			echo '<', $tag, parent::SearchEngineShowClassAttr(), '>';
 		$this->SearchEngineShowChildren();
 		if($tag)
 			echo '</', $tag, '>';
@@ -291,7 +291,7 @@ class Panel extends Control
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 		{
 			echo $indent, '<DIV ', $str, ">\n";

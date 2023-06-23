@@ -62,8 +62,11 @@ function _NSetLoadIndi(id)
 {
 	_N.LoadIndicator = id;
 	var loadIndicator = _N(id);
-	if(loadIndicator)
+	if (loadIndicator)
+	{
 		loadIndicator.style.visibility = "hidden";
+		loadIndicator.className += " loading-indicator";
+	}
 }
 function _NCheckURL()
 {
@@ -71,7 +74,7 @@ function _NCheckURL()
 	if((_N.Hash != location.hash && _N.Hash.charAt(1)=="/" && location.hash.charAt(1)=="/") || (_N.URL != inner))
 	{
 		clearInterval(_N.URLChecker);
-		var str = "_NVisit="+ ++_N.Visit + "&_NApp=" + _NApp + "&_NSkeletonless=true", bodyEle = _N("N1");
+		var str = "_NVisit="+ ++_N.Visit + "&_NSkeletonless=true", bodyEle = _N("N1");
 		_N(_N.LoadIndicator).style.visibility = "visible";
 		if(_N.HistoryLength+1==history.length)
 			var targetURL = inner;
@@ -89,7 +92,7 @@ function _NCheckURL()
 		_N.URL = location.href;
 		_N.Request = _NXHR("POST", 
 			(targetURL.indexOf("#!/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#!/",targetURL.indexOf("?")==-1?"?":"&")+"&")
-           	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
+           	+ "_NVisit=0&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
            	_NReqStateChange, true);
         _N.Request.send(str);
         if(bodyEle.NonControls)
@@ -105,7 +108,7 @@ function _NCheckURL()
 	if(++ _N.TimeoutCount == _N.TimeoutTicks)
 	{
 		var serverArg = _N.TimeoutDuration ? _NTimeoutTicker() : "Ping";
-		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NApp="+_NApp+"&_NTimeout="+serverArg);
+		_NXHR("POST", location.href.toString().replace(location.hash, ""), null, true).send("_NTimeout="+serverArg);
 		_N.TimeoutCount = 0;
 	}
 }
@@ -132,11 +135,14 @@ function _NSetTitle(title)
 {
 	document.title = _N.Title = title;
 }
-function _NSet(id, property, value)
+function _NSet(id, property, value, force)
 {
-	//_NChange(id, property, value);
 	_NChangeByObj(_N(id), property, value);
 	_NSave(id, property, value);
+	if (force)
+	{
+		_N.Saved[id][property] = !value;
+	}
 	return value;
 }
 function _NSetProperty(id, property, value)	{return _NSet(id, property, value)}
@@ -288,8 +294,19 @@ function _NChangeByObj(obj, property, value)
 				obj.className = obj.className.indexOf("NClickable")!=-1 && value.indexOf("NClickable")==-1 ? "NClickable " + value : value;
 				break;
 			case "ContextMenu":
-				if(!obj.oncontextmenu)
+				if (!value) {
+					obj.oncontextmenu = null;
+				} else if(!obj.oncontextmenu) {
 					_NChangeByObj(obj, "oncontextmenu", "");
+				}
+			case "value":
+				obj.value = value;
+
+                if (!obj.classList.contains('disable-dispatch-input'))
+                {
+                    obj.dispatchEvent(_NCreateEvent('input'));
+                }
+				break;
 			default:
 				eval("obj." + property + " = value;");
 		}
@@ -305,6 +322,18 @@ function _NNoBubble()
 {
 	if(window.event)
 		window.event.cancelBubble = true;
+}
+function _NCreateEvent(eventType)
+{
+	var event;
+	if (typeof(Event) === 'function') {
+		event = new Event(eventType, {bubbles: true, cancelable: true});
+	} else {
+		event = document.createEvent('Event');
+		event.initEvent(eventType, true, true);
+	}
+
+	return event;
 }
 function _NSave(id, property, value)
 {
@@ -506,7 +535,12 @@ function _NChangeString()
 			changes += change + "~d0~";
 	}
 	_N.Changes = {};
-	return changes.substring(0, changes.length-4);
+
+	changes = changes
+		.substring(0, changes.length - 4)
+		.replace("&", "%26");
+
+	return changes;
 }
 function _NEventVarsString()
 {
@@ -549,6 +583,7 @@ function _NUnServer()
 	if(_N.TimeoutWorking)
 		_N.TimeoutWorking = null;
 	_N(_N.LoadIndicator).style.visibility = "hidden";
+	_N.Spinner = null;
 	_N.Request = null;
 	_N.URLChecker = setInterval(_NCheckURL, 500);
 	if(_N.Listeners)
@@ -625,7 +660,7 @@ function _NServer()
 		{
 			clearInterval(_N.URLChecker);
 			var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
-			var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
+			var str = "_NVisit="+ ++_N.Visit+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 			for(var i=0; i<sECount; ++i)
 			{
 				if(_N.SEQ[i][0] == "Unload")
@@ -639,7 +674,10 @@ function _NServer()
 				str += "&_NTokenLink="+_N.URLTokenLink;
 				_N.URLTokenLink = null;
 			}
-			_N(_N.LoadIndicator).style.visibility = "visible";
+			if (_N.Spinner !== false)
+			{
+				_N(_N.LoadIndicator).style.visibility = "visible";
+			}
 		    _N.Request = _NXHR("POST",
 	    		hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
 	    		notUnload ? _NReqStateChange : null,

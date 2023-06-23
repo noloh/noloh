@@ -36,9 +36,9 @@ class Image extends Control
 	 * @param integer $width
 	 * @param integer $height
 	 */
-	function Image($path='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
+	function __construct($path='', $left = 0, $top = 0, $width = System::Auto, $height = System::Auto)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if(!empty($path))
 			$this->SetPath($path);
 		$this->SetWidth($width);
@@ -70,30 +70,43 @@ class Image extends Control
 		//if(!is_file($newSrc))
 		//	BloodyMurder('The Src ' . $newSrc . ' does not exist.');
 		$this->Src = $path;
-		if($this->Magician)
-			$this->SetMagicianSrc();
-		elseif(UserAgent::IsIE6())
+		if ($this->Magician)
 		{
-			if(preg_match('/\.png$/i', $path))
+			$this->SetMagicianSrc();
+		}
+		elseif (UserAgent::IsIE6())
+		{
+			if (preg_match('/\.png$/i', $path))
 			{
 				NolohInternal::SetProperty('style.filter', 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' . $path . '",sizingMethod="scale")', $this);
 				//NolohInternal::SetProperty('style.display', 'inline-block', $this);
-				if(!$this->IE6PNGFix)
+				if (!$this->IE6PNGFix)
+				{
 					NolohInternal::SetProperty('src', System::ImagePath() . 'Blank.gif', $this);
+				}
 				$this->IE6PNGFix = true;
 			}
 			else
 			{
-				if($this->IE6PNGFix)
+				if ($this->IE6PNGFix)
+				{
 					NolohInternal::SetProperty('style.filter', '', $this);
+				}
 				NolohInternal::SetProperty('src', $path, $this);
 				$this->IE6PNGFix = null;
 			}
 		}
-		else
+		elseif ($path)
+		{
 			NolohInternal::SetProperty('src', $path, $this);
+		}
+		else
+		{
+			// Empty image because a null src will make some browsers generate a silhoutte indicating invalid value
+			NolohInternal::SetProperty('src', 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=', $this);
+		}
         //NolohInternal::SetProperty('src', $this->Magician == null ? $newSrc : ($_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$this->Magician[0].'&Function='.$this->Magician[1].'&Params='.implode(',', array_slice($this->Magician, 2))), $this);
-		if($adjustSize)
+		if ($adjustSize)
 		{
 			$this->SetWidth(System::Auto);
 			$this->SetHeight(System::Auto);
@@ -132,13 +145,15 @@ class Image extends Control
 	 */
 	function SetWidth($width)
 	{
-		if($width !== null && !is_numeric($width))
+		if ($width !== null && !is_numeric($width))
 		{
-			if(substr($width, -1) != '%')
+			if (substr($width, -1) != '%' && !empty($this->Src))
 			{
 				$imageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($width == System::Auto)
+				if ($width == System::Auto)
+				{
 					$width = $imageSize[0];
+				}
 				else
 				{
 					$width = intval($width)/100;
@@ -146,8 +161,10 @@ class Image extends Control
 				}
 			}
 		}
-		if($this->Magician != null)
+		if ($this->Magician != null)
+		{
 			$this->SetMagicianSrc();
+		}
 		parent::SetWidth($width);
 	}
 	/**
@@ -168,13 +185,15 @@ class Image extends Control
 	 */
 	function SetHeight($height)
 	{
-		if($height !== null && !is_numeric($height))
+		if ($height !== null && !is_numeric($height))
 		{
-			if(substr($height, -1) != '%')
+			if (substr($height, -1) != '%' && !empty($this->Src))
 			{
 				$imageSize = getimagesize(GetAbsolutePath($this->Src));
-				if($height == System::Auto)
+				if ($height == System::Auto)
+				{
 					$height = $imageSize[1];
+				}
 				else
 				{
 					$height = intval($height)/100;
@@ -182,8 +201,10 @@ class Image extends Control
 				}
 			}
 		}
-		if($this->Magician != null)
+		if ($this->Magician != null)
+		{
 			$this->SetMagicianSrc();
+		}
 		parent::SetHeight($height);
 	}
 	/**
@@ -233,19 +254,26 @@ class Image extends Control
     function Conjure($className, $functionName, $paramsAsDotDotDot = null)
     {
 		$this->Magician = func_get_args();
+		if (!isset($_SESSION['_NMagicians']))
+		{
+			$_SESSION['_NMagicians'] = array();
+		}
+		// TODO: Garbage collect
+		$_SESSION['_NMagicians'][$this->Id] = array(
+			'src' => $this->Src,
+			'args' => $this->Magician,
+			'width' => $this->Width,
+			'height' => $this->Height
+		);
 		$this->SetMagicianPath();
-        //NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?NOLOHImage='.GetAbsolutePath($this->Src).'&Class='.$className.'&Function='.$functionName.'&Params='.implode(',', array_slice($this->Magician, 2)), $this);
-        //$this->Magician = array($className, $functionName);
     }
 	/**
 	 * @ignore
 	 */
 	private function SetMagicianPath()
 	{
-		if($this->Src)
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))), $this);
-		else
-			NolohInternal::SetProperty('src', $_SERVER['PHP_SELF'].'?_NImage='.GetAbsolutePath($this->Src).'&_NClass='.$this->Magician[0].'&_NFunction='.$this->Magician[1].'&_NParams='.urlencode(implode(',', array_slice($this->Magician, 2))).'&_NWidth='.$this->GetWidth().'&_NHeight='.$this->GetHeight(), $this);
+		$src = System::RequestUri() . '?_NImageId=' . $this->Id;
+		NolohInternal::SetProperty('src', $src, $this);
 	}
 	/**
 	 * @ignore
@@ -263,7 +291,7 @@ class Image extends Control
 	 */
 	function SearchEngineShow()
 	{
-		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShow(true), ' alt="';
+		echo '<IMG src="', $this->Src, '"', parent::SearchEngineShowClassAttr(), ' alt="';
 		$text = $this->GetText();
 		if($text === System::Auto)
 			if($this->ToolTip)
@@ -279,15 +307,26 @@ class Image extends Control
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 			echo $indent, '<IMG src="', $this->Src, '"', $this->ToolTip===null?'':(' alt="'.$this->ToolTip.'"'), $str?(' '.$str):'', ">\n";
 	}
 	/**
 	 * @ignore 
 	 */
-	static function MagicGeneration($src, $class, $function, $params, $width=300, $height=200)
+	static function MagicGeneration($id)
 	{
+		if (!isset($_SESSION['_NMagicians']) || !isset($_SESSION['_NMagicians'][$id]))
+		{
+			BloodyMurder('Invalid id for image magic');
+		}
+		$magician = $_SESSION['_NMagicians'][$id];
+		$src = GetAbsolutePath($magician['src']);
+		$magicianArgs = $magician['args'];
+		$class = $magicianArgs[0];
+		$function = $magicianArgs[1];
+		$params = array_slice($magicianArgs, 2);
+
 		if($src != '')
 		{
 			$splitString = explode('.', $src);
@@ -300,10 +339,13 @@ class Image extends Control
 			//	'$im = imagecreatefrom'.$extension.'($src);');
 			if(imagetypes() & constant('IMG_'.strtoupper($extension)))
 				$im = call_user_func('imagecreatefrom'.$extension, $src);
-//			file_put_contents('/tmp/magic', $src);
+
 		}
 		else
 		{
+			$width = $magician['width'] ?: 300;
+			$height = $magician['height'] ?: 200;
+
 			$extension = 'png';
 			$im = imagecreatetruecolor($width, $height);
 			$white = imagecolorallocate($im, 255, 255, 255);

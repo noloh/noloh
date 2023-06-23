@@ -54,13 +54,17 @@ class ContextMenu extends Menu
 	 * Be sure to call this from the constructor of any class that extends ContextMenu
 	 * @return ContextMenu
 	 */
-	function ContextMenu()
+	function __construct()
 	{
-		parent::Menu();
+		parent::__construct();
 		$this->Buoyant = true;
 		$this->SetHeight(0);
 		$this->SetBorder('1px solid #A0A0A0');
 		$this->SetVisible(System::Vacuous);
+	}
+	function SetAlignBottom()
+	{
+		NolohInternal::SetProperty('alignBottom', true, $this);
 	}
 	/**
 	 * @ignore
@@ -68,22 +72,29 @@ class ContextMenu extends Menu
 	function AddMenuItem($menuItem)
 	{
 		if(!is_object($menuItem))
+		{
 			$menuItem = new MenuItem($menuItem);
+		}
 			
 		$menuItem->Layout = Layout::Relative;
 		$menuItem->SetLeft(0);
-//		$menuItem->MenuItemsPanel->Buoyant = true;
-		if($this->GetWidth() < ($width = $menuItem->GetWidth()))
+		if($this->GetWidth() <= ($width = $menuItem->GetWidth()))
 		{
-			$this->SetWidth($width);
+			$this->SetWidth($width + 10);
 			$count = $this->MenuItems->Count();
 			
 			for($i=0; $i<$count; ++$i)
-				$this->MenuItems[$i]->SetWidth($width); 
+			{
+				$this->MenuItems[$i]->SetWidth($width);
+			}
+
 			$menuItem->MenuItemsPanel->SetLeft($width);
 		}
 		else
+		{
 			$menuItem->SetWidth($this->GetWidth());
+		}
+
 		$menuItem->MenuItemsPanel->BackColor = '#F1F1ED';
 		$this->MenuItems->Add($menuItem, true);
 		$this->Height += $menuItem->GetHeight();

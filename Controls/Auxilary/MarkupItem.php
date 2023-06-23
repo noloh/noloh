@@ -20,7 +20,7 @@
  * 
  * @package Controls/Auxiliary
  */
-abstract class MarkupItem extends Object
+abstract class MarkupItem extends Base
 {
 	/**
 	 * @ignore
@@ -38,7 +38,7 @@ abstract class MarkupItem extends Object
 	/**
 	 * @ignore
 	 */
-	function MarkupItem($id, $keyword, $value, $panelId)
+	function __construct($id, $keyword, $value, $panelId)
 	{
 		$this->Id = $id;
 		$this->Keyword = $keyword;

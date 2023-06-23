@@ -32,8 +32,9 @@ final class Cursor
 	const Wait = 'wait';
 	const ColumnResize = 'col-resize';
 	const RowResize = 'row-resize';
-	
-	private function Cursor(){}
+	const NotAllowed = 'not-allowed';
+
+	private function __construct(){}
 	/**
 	 * Provides a URL for the image of a mouse cursor 
 	 * @param string $str

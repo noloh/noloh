@@ -6,7 +6,7 @@ class Pointer
 {
 	public $RefId;
 	
-	function Pointer(Component $comp)
+	function __construct(Component $comp)
 	{
 		$this->RefId = $comp->Id;
 	}

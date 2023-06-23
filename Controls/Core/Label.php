@@ -10,6 +10,10 @@
  */
 class Label extends Control 
 {
+	const Div = 'DIV';
+	const Span = 'SPAN';
+	const Label = 'LABEL';
+
 	/**
 	 * @ignore
 	 */
@@ -27,6 +31,8 @@ class Label extends Control
 	private $Overflow;
 	private $EditInPlace;
 	private $FontSize;
+	private $Tag = self::Div;
+
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends Label
@@ -37,9 +43,9 @@ class Label extends Control
 	 * @param integer $height The height of this element
 	 * @return Label
 	 */
-	function Label($text='', $left = 0, $top = 0, $width = 83, $height = 18)
+	function __construct($text='', $left = 0, $top = 0, $width = 83, $height = 18)
 	{
-		parent::Control($left, $top, null, null);
+		parent::__construct($left, $top, null, null);
 		if($width !== null)
 			parent::SetWidth($width);
 		if($height !== null)
@@ -81,7 +87,28 @@ class Label extends Control
 	{
 		$this->FontSize = $size;
 		$this->ResetCache();
-		NolohInternal::SetProperty('style.fontSize', $size.'pt', $this);
+		if (is_numeric($size))
+		{
+			$size = $size . 'pt';
+		}
+		NolohInternal::SetProperty('style.fontSize', $size, $this);
+	}
+	function GetTag()
+	{
+		return $this->Tag;
+	}
+	function SetTag($tag)
+	{
+		if ($this->ShowStatus !== Component::NotShown)
+		{
+			BloodyMurder('Label::SetTag is only supported before being shown');
+		}
+		elseif (!in_array($tag, array(static::Div, static::Span, static::Label)))
+		{
+			BloodyMurder('Label::SetTag invalid tag: ' . $tag);
+		}
+
+		$this->Tag = $tag;
 	}
 	/**
 	 * @ignore
@@ -333,7 +360,7 @@ class Label extends Control
 	{
 		//$initialProperties = parent::Show();
 		//$initialProperties .= ",'style.wordWrap','break-word','style.overflow','hidden'";
-		NolohInternal::Show('DIV', parent::Show(), $this);
+		NolohInternal::Show($this->Tag, parent::Show(), $this);
 		//return $initialProperties;
 	}
 	/**
@@ -363,7 +390,7 @@ class Label extends Control
 	 */
 	function NoScriptShow($indent)
 	{
-		$str = parent::NoScriptShow($indent);
+		$str = parent::NoScriptShowIndent($indent);
 		if($str !== false)
 			echo $indent, '<DIV ', $str, '>', $this->Text, "</DIV>\r\n";
 	}

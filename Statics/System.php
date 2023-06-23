@@ -9,10 +9,11 @@
  */
 final class System
 {
+	private static $BenchmarkStartTimes = array();
 	/**
 	 * @ignore
 	 */
-	private function System(){}
+	private function __construct(){}
 	/**
 	 * System::Auto is used to indicate that various properties should figured out their values automatically.
 	 * For example:
@@ -105,8 +106,14 @@ final class System
 		$separator = constant('PATH_SEPARATOR');
 		$paths = explode($separator, get_include_path());
 		$funcArgs = func_get_args();
-		foreach($funcArgs as $val)
-			$paths[] = realpath($val);
+		foreach ($funcArgs as $val)
+		{
+			$path = realpath($val);
+			if ($path)
+			{
+				$paths[] = $path;
+			}
+		}
 		set_include_path(implode($separator, $paths));
 	}
 	/**
@@ -116,18 +123,42 @@ final class System
 	{
 		if(($isArray = is_array($what)) || $what instanceof Iterator)
 		{
-			$indent = '    ';
-			$spacer = str_repeat($indent, $tier);
-			$text = ($isArray ? 'Array' : get_class($what)) . "\n$spacer(\n";
-			foreach($what as $key => $val)
-				$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
-			return rtrim($text,', ') . "$spacer)";
+			$what = self::FormatArray($what, 'Array', $tier);
 		}
-		elseif(is_object($what))
-			return (string)$what . ' ' . get_class($what) . ' object';
+		elseif (is_object($what))
+		{
+			if ($what instanceof stdClass)
+			{
+				$array = get_object_vars($what);
+				return self::FormatArray($array, 'StdClass', $tier);
+			}
+			else if (method_exists($what, 'ToArray'))
+			{
+				$array = $what->ToArray();
+				return self::FormatArray($array, 'StdClass', $tier);
+			}
+			else
+			{
+				return (string) $what . ' ' . get_class($what) . ' object';
+			}
+		}
 		elseif(!is_string($what) || $addQuotes)
 			return ClientEvent::ClientFormat($what);
 		return $what;
+	}
+	/**
+	 * @return string
+	 */
+	static function FormatArray($what, $type, $tier)
+	{
+		$indent = '    ';
+		$spacer = str_repeat($indent, $tier);
+		$text = $type . "\n$spacer(\n";
+		foreach ($what as $key => $val)
+		{
+			$text .= $indent . $spacer . $key . ' => ' . self::LogFormat($val, true, $tier + 1) . "\n";
+		}
+		return rtrim($text, ', ') . "$spacer)";
 	}
 	/**
 	 * Styles a string of text by giving it a CSS class
@@ -162,12 +193,12 @@ final class System
 	 */
 	static function GetAbsolutePath($path)
 	{
-		if(isset($_SESSION['_NUserDir']) && strpos($path, System::AssetPath())===0)
+		if (isset($_SESSION['_NUserDir']) && strpos($path, System::AssetPath())===0)
 			return System::RelativePath() . substr($path, strlen(System::AssetPath()));
 	
-		if($path[0] == '\\' || $path[0] == '/')
+		if ($path[0] == '\\' || $path[0] == '/')
 			return realpath($_SERVER['DOCUMENT_ROOT'].$path);
-		if(strpos($path, 'http://') >= 0)
+		if (strpos($path, URL::GetProtocol() . '://') >= 0)
 			return $path;
 		else
 			return realpath($path);
@@ -244,6 +275,7 @@ final class System
 				else 
 					 $output .= self::LogFormat($what) . $endLine;
 				echo $output;
+				file_put_contents('emailtest.txt', $output);
 			}
 			else
 			{
@@ -258,6 +290,9 @@ final class System
 				{
 					$debugWindow = $webPage->DebugWindow = new WindowPanel('Debug', 500, 0, 400, 300);
 					$display = $debugWindow->Controls['Display'] = new MarkupRegion('', 0, 0, '100%', '100%');
+					$button = new Button('Clear', $debugWindow->Width - 85, 5, 40, 20);
+					$button->Click = new ServerEvent('System', 'ClearDebugWindow');
+					$debugWindow->WindowPanelComponents->Add($button);
 					//$display->CSSFontFamily = 'consolas, monospace';
 					$old = false;
 					$debugWindow->Buoyant = true;
@@ -266,6 +301,7 @@ final class System
 				$debugWindow->Visible = true;
 				
 				$display->Text .= ($old?'<BR>':'') . '<SPAN style="font-weight:bold; font-size: 8pt;">' . $stamp . '</SPAN>: ';
+				
 				if(($count = func_num_args()) > 1)
 				{
 					$display->Text .= '<UL>';
@@ -325,7 +361,8 @@ final class System
 		
 		$close = new ServerEvent('Animate', 'Opacity', $modal, Animate::Oblivion, $duration);
 		$obj->Leave[] = $close;
-		$backLabel->Click = $close;
+		$backLabel->Click[] = $close;
+		$backLabel->Click[] = Factory::CustomEvent($obj->Id, 'Leave');
 		$modal->Click->Liquid = true;
 		$modal->DataValue = $backLabel;
 		$modal->Controls->Add($obj);
@@ -342,7 +379,10 @@ final class System
 		}
 		return $modal;
 	}
-	
+	static function IsRESTful()
+	{
+		return isset($GLOBALS['_NREST']);
+	}
 	/**
 	 * Produces an HTTP error with a specified status code and optional redirect.
 	 * @param integer $statusCode
@@ -427,6 +467,184 @@ final class System
 	 * @ignore
 	 */
 	static function FullAppPath()			{return URL::GetProtocol() . '://' . $_SERVER['HTTP_HOST'] . $_SESSION['_NURL'];}
+	/**
+	 * Returns the URI as it was requested
+	 * @param bool $queryString Whether the query string will be returned
+	 * @return tring
+	 */
+	static function RequestUri($queryString = false)
+	{
+		$uri = $_SERVER['REQUEST_URI'];
+		if (!$queryString)
+		{
+			$pos = strpos($uri, '?');
+			if ($pos !== false)
+			{
+				$uri = substr($uri, 0, $pos);
+			}
+		}
+		return $uri;
+	}
+
+	/**
+	 * Allows one to clock the time operation(s) took. Call this before before beginning those operations.
+	 * @param integer|string $key An identifier used for this timing test
+	 * @return integer|string
+	 */
+	static function BeginBenchmarking($key = null)
+	{
+		if ($key === null)
+		{
+			$key = time();
+		}
+		elseif (!is_int($key) && !is_string($key))
+		{
+			BloodyMurder('Key used for BeginBenchmarking must be an integer or string.');
+		}
+
+		self::$BenchmarkStartTimes[$key] = microtime(true);
+		return $key;
+	}
+	/**
+	 * Returns the number of milliseconds that transpired since the call to BeginBenchmarking.
+	 * @param integer|string $key An identifier used for this timing test
+	 * @return int
+	 */
+	static function Benchmark($key = null)
+	{
+		if ($key === null)
+		{
+			// Grab last entry
+			$start = end(self::$BenchmarkStartTimes);
+		}
+		elseif (!is_int($key) && !is_string($key))
+		{
+			BloodyMurder('Key used for Benchmark must be an integer or string.');
+		}
+		elseif (!isset(self::$BenchmarkStartTimes[$key]))
+		{
+			BloodyMurder('Benchmarking never started.');
+		}
+		else
+		{
+			$start = self::$BenchmarkStartTimes[$key];
+		}
+
+		$stop = microtime(true);
+		return (int)(1000 * ($stop - $start));
+	}
+	/**
+	 * Returns true if server operating system is Windows.
+	 * @return bool
+	 */
+	static function IsWindows()
+	{
+		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	}
+	/**
+	 * Executes a shell command and returns the output of the command
+	 * @param string $shellCommand The command to be run
+	 * @param array $successCodes Defaults to an array with the code 0, but allows for custom success
+	 * codes to be passed in
+	 * @return string $output The output of the shell command
+	 * @throws Exception
+	 */
+	static function Execute($shellCommand, $successCodes = array(0))
+	{
+		exec($shellCommand . ' 2>&1', $output, $returnCode);
+		$output = implode(PHP_EOL, $output);
+
+		if (!in_array($returnCode, $successCodes))
+		{
+			throw new Exception($output, $returnCode);
+		}
+
+		return $output;
+	}
+	/**
+	 * Runs a command in a background, forked process
+	 * @param string $shellCommand
+	 * @see https://www.php.net/manual/en/function.popen.php#116948
+	 */
+	static function ExecuteInBackground($shellCommand)
+	{
+		if (static::IsWindows())
+		{
+			pclose(popen('start /B '. $shellCommand, 'r'));
+		}
+		else
+		{
+			exec($shellCommand . ' > /dev/null &');
+		}
+	}
+	/**
+	 * Get the value of a request header
+	 * @param string $name
+	 * @return mixed|null
+	 */
+	public static function GetHTTPHeader($name)
+	{
+		$formattedKey = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
+		return isset($_SERVER[$formattedKey]) ? $_SERVER[$formattedKey] : null;
+	}
+	/**
+	 * Clears the text in the debug window
+	 */
+	static function ClearDebugWindow()
+	{
+		$webPage = WebPage::That();
+		$debugWindow = $webPage->DebugWindow;
+		$display = $debugWindow->Controls['Display'];
+		
+		$display->Text = '';
+	}
+	/**
+	 * Checks if the connected device is a mobile device or not. (Apple or Android)
+	 * @return bool
+	 */
+	static function IsMobileDevice()
+	{
+		return static::IsAppleDevice() || static::IsAndroidDevice();
+	}
+	/**
+	 * Checks if the connected device is a mobile Apple device or not.
+	 * @return bool
+	 */
+	static function IsAppleDevice()
+	{
+		return in_array(UserAgent::GetName(), array(UserAgent::IPhone, UserAgent::IPad), true) ||
+			in_array(strtolower($_SESSION['_NBrowserPlatform']), array('ipad', 'iphone', 'ipod')) ||
+			(UserAgent::GetOperatingSystem() === UserAgent::Mac && $_SESSION['_NMaxTouchPoints'] > 1);
+	}
+	/**
+	 * Checks if the connected device is a mobile Android device or not.
+	 * @return bool
+	 */
+	static function IsAndroidDevice()
+	{
+		return UserAgent::GetName() === UserAgent::Android ||
+			stripos($_SESSION['_NBrowserPlatform'], 'linux armv') !== false ||
+			(UserAgent::GetOperatingSystem() === UserAgent::Linux && $_SESSION['_NMaxTouchPoints'] > 1);
+	}
+	/*
+	 * Returns 64 bit hash of input string
+	 *
+	 * @param string $str
+	 */
+	static function Get64BitHash($str)
+	{
+		return intval(substr(md5($str), 0, 16), 16);
+	}
+
+	/**
+	 * Checks if both backend and frontend can negotiate zipped content
+	 * @return bool
+	 */
+	static function SupportsZip()
+	{
+		return defined('FORCE_GZIP') && isset($_SERVER['HTTP_ACCEPT_ENCODING'])
+			&& preg_match('/\bgzip\b/i', $_SERVER['HTTP_ACCEPT_ENCODING']);
+	}
 }
 
 ?>

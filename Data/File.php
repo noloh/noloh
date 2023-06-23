@@ -7,7 +7,7 @@
  * 
  * @package Data
  */
-class File extends Object
+class File extends Base
 {
 	/**
 	 * Open a file for reading only
@@ -42,7 +42,7 @@ class File extends Object
 	static function Send($fileName, $contentType='application/octet-stream', $alias=null)
 	{
 		ClientScript::AddNOLOHSource('SendFile.js');
-		AddScript('_NFileReq("' . $_SERVER['PHP_SELF'] . '?_NApp=' . $GLOBALS['_NApp'] . '&_NFileRequest=' . $fileName . '")');
+		AddScript('_NFileReq("' . System::RequestUri() . '?_NFileRequest=' . $fileName . '")');
 		$_SESSION['_NFileSend'][$fileName] = array($contentType, $alias);
 	}
 	/**
@@ -53,11 +53,12 @@ class File extends Object
 		if(isset($_SESSION['_NFileSend'][$fileName]))
 		{
 			$fileInfo = $_SESSION['_NFileSend'][$fileName];
-		    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		    header('Content-Description: File Transfer');
-		    header('Content-Type: ' . $fileInfo[0]);
-		    header('Content-Length: ' . filesize($fileName));
-	    	header('Content-Disposition: attachment; filename=' . basename($fileInfo[1]?$fileInfo[1]:$fileName));
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Content-Description: File Transfer');
+			header('Content-Type: ' . $fileInfo[0]);
+			header('Content-Length: ' . filesize($fileName));
+			header('Content-Disposition: attachment; filename=' . basename($fileInfo[1]?$fileInfo[1]:$fileName));
+			header('Content-Transfer-Encoding: binary');
 			readfile($fileName);
 			unset($_SESSION['_NFileSend'][$fileName]);
 		}
@@ -69,7 +70,7 @@ class File extends Object
 	 * @param string|array $file A path to the file or an array of file information in the sense of PHP's file() function
 	 * @return File
 	 */
-	function File($file = null)
+	function __construct($file = null)
 	{
 		if(is_array($file))
 		{
@@ -143,6 +144,10 @@ class File extends Object
 	 */
 	function Close()
 	{
+		if ($this->PointerToFile == null)
+		{
+			return;
+		}
 		fclose($this->PointerToFile);
 	}
 	/**
@@ -218,6 +223,167 @@ class File extends Object
 	function __toString()
 	{
 		return $this->Filename;
+	}
+	/**
+	 * @param int $level is the level of compression 9 is the default and the highest
+	 * @param bool $deleteOriginal will delete the original file if set to true and there are no errors in creating the gz file
+	 * @return bool|string returns false on error, path on success
+	 */
+	public function FileGzCompress($level = 9, $deleteOriginal = false)
+	{
+		if ($this->Filename == null)
+		{
+			return false;
+		}
+
+		$dest = realpath($this->Filename) . '.gz';
+		$mode = 'wb' . $level;
+		$error = false;
+		if ($fp_out = gzopen($dest, $mode))
+		{
+			if (isset($this->PointerToFile))
+			{
+				$this->Close();
+			}
+			try
+			{
+				$this->Open();
+
+				$contents = $this->Read();
+
+				gzwrite($fp_out, $contents);
+			}
+			catch (Exception $e)
+			{
+				$error = true;
+			}
+			gzclose($fp_out);
+		}
+		else
+		{
+			$error = true;
+		}
+
+		if ($error)
+		{
+			return false;
+		}
+		else
+		{
+			if ($deleteOriginal)
+			{
+				$this->Delete();
+			}
+			else
+			{
+				$this->Close();
+			}
+			return $dest;
+		}
+	}
+	/**
+	 * Make the file readable, writable, and executable by everyone
+	 */
+	public function GiveAllPermissions()
+	{
+		$this->SetFilePermission(0777);
+	}
+	/**
+	 * Wrapper for chmod php function
+	 * @param int $permission expects the same value as $mode from php chmod
+	 */
+	public function SetFilePermission($permission)
+	{
+		if ($this->Filename == null)
+		{
+			return;
+		}
+
+		$path = realpath($this->Filename);
+		if (file_exists($path))
+		{
+			chmod($path, $permission);
+		}
+	}
+	/**
+	 * Checks if the file exists before unlinking it
+	 * Sets all object properties to null
+	 */
+	public function Delete()
+	{
+		if ($this->Filename == null)
+		{
+			return;
+		}
+
+		$path = realpath($this->Filename);
+		if (file_exists($path))
+		{
+			$this->Close();
+			unlink($path);
+		}
+
+		$this->Filename = null;
+		$this->File = null;
+		$this->Type = null;
+		$this->Size = null;
+		$this->PointerToFile = null;
+		$this->TempFilename = null;
+	}
+	/**
+	 * @deprecated
+	 * @param $source is the path to the original file
+	 * @param int $level is the level of compression 9 is the default and the highest
+	 * @param bool $deleteOriginal will delete the original file if set to true and there are no errors in creating the gz file
+	 * @return bool|string returns false on error, path on success
+	 */
+	static public function GzCompress($source, $level = 9, $deleteOriginal = false)
+	{
+		$dest = $source . '.gz';
+		$mode = 'wb' . $level;
+		$error = false;
+		if ($fp_out = gzopen($dest, $mode))
+		{
+			if ($fp_in = fopen($source,'rb'))
+			{
+				while (!feof($fp_in))
+				{
+					gzwrite($fp_out, fread($fp_in, 1024 * 512));
+				}
+				fclose($fp_in);
+			}
+			else
+			{
+				$error = true;
+			}
+			gzclose($fp_out);
+		}
+		else
+		{
+			$error = true;
+		}
+
+		if ($error)
+		{
+			return false;
+		}
+		else
+		{
+			if ($deleteOriginal)
+			{
+				unlink($source);
+			}
+			return $dest;
+		}
+	}
+	/**
+	 * @param string $path is the path you wish to normalize
+	 * @return string of normalized path.
+	 */
+	static function NormalizeDirectorySlashes($path)
+	{
+		$normalized = str_replace(array('C:', '\\'), array('', '/'), $path);
+		return $normalized;
 	}
 }
 ?>

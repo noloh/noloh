@@ -59,7 +59,7 @@ final class URL
 	/**
 	 * @ignore
 	 */
-	private function URL() {}
+	private function __construct() {}
 	/**
 	 * Gets the value of a particular URL token. If that token has not been set, then $defaultValue will be returned
 	 * @param string $tokenName
@@ -208,6 +208,7 @@ final class URL
 		AddScript('_NSetTokens(\''.$tokenString.'\')', Priority::Low);
 		self::UpdateTrails('?' . $tokenString, $GLOBALS['_NURLTokenMode']==2?$tokenString:self::TokenDisplayText(self::$TokenChain, $_SESSION['_NTokens']));
 		$_SESSION['_NTokenChain'] = serialize(self::$TokenChain);
+		return $tokenString;
 	}
 	/**
 	 * Redirects to another URL
@@ -374,13 +375,25 @@ final class URL
 	/**
 	 * Changes the protocol of your current URL. For example, http://www.noloh.com would redirect to https://www.noloh.com
 	 * @param object $protocol
+	 * @param boolean $jsRedirect
 	 */
-	static function SetProtocol($protocol)
+	static function SetProtocol($protocol, $jsRedirect = true)
 	{
 		if($protocol != ($current = self::GetProtocol()))
 		{
-			$search = '/^(' . $current . ')(:.*)$/i';
-			URL::Redirect(preg_replace($search, $protocol . '$2', URL::GetPath()));
+			$search = '/^(' . $current . ')(\\:.*)$/i';
+			$newURL = preg_replace($search, $protocol . '$2', URL::GetPath(false));
+			
+			if ($jsRedirect)
+			{
+				URL::Redirect($newURL);
+			}
+			else
+			{
+				header('HTTP/1.1 301 Moved Permanently');
+				header('Location: ' . $newURL);
+				die();
+			}
 		}
 	}
 }

@@ -39,9 +39,9 @@ class Tab extends Panel
 	 * @param mixed string|Image $mainImage A string to the source, or an Image object used for the center part of this Tab.
 	 * @param mixed string|Image $rightImage A string to the source, or an Image object used for the right part of this Tab.
 	 */
-	function Tab($leftImage=null, $mainImage=null, $rightImage=null, $orientation=System::Horizontal)
+	function __construct($leftImage=null, $mainImage=null, $rightImage=null, $orientation=System::Horizontal)
 	{
-		parent::Panel(0, 0, null, null);	
+		parent::__construct(0, 0, null, null);	
 		if($leftImage)
 		{
 			$this->LeftImage = ($leftImage instanceof Image)?$leftImage:new Image($leftImage);

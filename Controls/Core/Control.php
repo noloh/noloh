@@ -41,6 +41,7 @@ abstract class Control extends Component
 	private $HTMLName;
 	private $Semantics;
 	private $Toggle;
+	private $TabIndex;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -49,9 +50,9 @@ abstract class Control extends Component
 	* @param integer $width The width of this element
 	* @param integer $height The height of this element
  	*/
-	function Control($left = 0, $top = 0, $width = 0, $height = 0)
+	function __construct($left = 0, $top = 0, $width = 0, $height = 0)
 	{
-		parent::Component();
+		parent::__construct();
 		if($left !== null)
 			$this->SetLeft($left);
 		if($top !== null)
@@ -207,15 +208,25 @@ abstract class Control extends Component
 	function SetWidth($width)
 	{
 		$this->Width = $width;
-		if(is_numeric($width))
-			if($width >= 0)
-				NolohInternal::SetProperty('style.width', $width.'px', $this);
+		if (is_numeric($width))
+		{
+			if ($width >= 0)
+			{
+				NolohInternal::SetProperty('style.width', $width . 'px', $this);
+			}
 			else
+			{
 				BloodyMurder('Cannot set Width to a negative value.');
-		elseif(is_numeric(rtrim($width, '%')))
+			}
+		}
+		elseif (is_string($width) && $width !== System::Auto)
+		{
 			NolohInternal::SetProperty('style.width', $width, $this);
-		elseif(is_null($width))
+		}
+		elseif (is_null($width))
+		{
 			NolohInternal::SetProperty('style.width', '', $this);
+		}
 	}
 	/**
 	 * Returns the Height of this Control. Can be either an integer signifying Height in pixels, or can be a string for percents, e.g., '50%'
@@ -232,15 +243,25 @@ abstract class Control extends Component
 	function SetHeight($height)
 	{
 		$this->Height = $height;
-		if(is_numeric($height))
-			if($height >= 0)
-				NolohInternal::SetProperty('style.height', $height.'px', $this);
+		if (is_numeric($height))
+		{
+			if ($height >= 0)
+			{
+				NolohInternal::SetProperty('style.height', $height . 'px', $this);
+			}
 			else
+			{
 				BloodyMurder('Cannot set Height to a negative value.');
-		elseif(is_numeric(rtrim($height, '%')))
+			}
+		}
+		elseif (is_string($height) && $height !== System::Auto)
+		{
 			NolohInternal::SetProperty('style.height', $height, $this);
-		elseif(is_null($height))
+		}
+		elseif (is_null($height))
+		{
 			NolohInternal::SetProperty('style.height', '', $this);
+		}
 	}
 	/**
 	 * Returns the Width, and Height of this Control. Width and Height Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
@@ -297,12 +318,18 @@ abstract class Control extends Component
 	function SetLeft($left)
 	{
 		$this->Left = $left;
-		if(is_numeric($left))
-			NolohInternal::SetProperty('style.left', $left.'px', $this);
-		elseif(is_numeric(rtrim($left, '%')))
+		if (is_numeric($left))
+		{
+			NolohInternal::SetProperty('style.left', $left . 'px', $this);
+		}
+		elseif (is_string($left))
+		{
 			NolohInternal::SetProperty('style.left', $left, $this);
-		elseif(is_null($left))
+		}
+		elseif (is_null($left))
+		{
 			NolohInternal::SetProperty('style.left', '', $this);
+		}
 	}
 	/**
 	 * Returns the Top of this Control. Can be either an integer signifying Top in pixels, or can be a string for percents, e.g., '50%'
@@ -319,12 +346,18 @@ abstract class Control extends Component
 	function SetTop($top)
 	{
 		$this->Top = $top;
-		if(is_numeric($top))
-			NolohInternal::SetProperty('style.top', $top.'px', $this);
-		elseif(is_numeric(rtrim($top, '%')))
+		if (is_numeric($top))
+		{
+			NolohInternal::SetProperty('style.top', $top . 'px', $this);
+		}
+		elseif (is_string($top))
+		{
 			NolohInternal::SetProperty('style.top', $top, $this);
-		elseif(is_null($top))
+		}
+		elseif (is_null($top))
+		{
 			NolohInternal::SetProperty('style.top', '', $this);
+		}
 	}
 	/**
 	 * Returns the Left, and Top of this Control. Left and Top Can be either an integer signifying values in pixels, or can be a string for percents, e.g., '50%'
@@ -393,7 +426,7 @@ abstract class Control extends Component
 	}
 	/**
 	 * Sets the Layout type of this Control. The Default is Layout::Absolute, but other possible values are
-	 * Layout::Relative, Layout::Web (which is the equivalent to CSS static), or Layout::Fixed.
+	 * Layout::Relative, Layout::Web (which is the equivalent to CSS static), Layout::Fixed, Layout::Sticky, or Layout::None.
 	 * @param Layout
 	 */
 	function SetLayout($layout)
@@ -405,7 +438,9 @@ abstract class Control extends Component
 				case 0: $printAs = 'absolute'; break;
 				case 1: $printAs = 'relative'; break;
 				case 2: $printAs = 'static'; break;
-				case 3: $printAs = 'fixed';
+				case 3: $printAs = 'fixed'; break;
+				case 4: $printAs = 'sticky'; break;
+				default: $printAs = '';
 			}
 			NolohInternal::SetProperty('style.position', $printAs, $this);
 			if(is_string($this->Layout))
@@ -626,11 +661,14 @@ abstract class Control extends Component
 	 * Sets the ContextMenu of the Control. It is a Menu that appears when the Control is right-clicked.
 	 * @param ContextMenu $contextMenu
 	 */
-    function SetContextMenu(ContextMenu $contextMenu)
+    function SetContextMenu($contextMenu)
     {
 		$this->ContextMenu = &$contextMenu;
-        $contextMenu->SetParentId(WebPage::That()->Id);
-		NolohInternal::SetProperty('ContextMenu', $contextMenu->Id, $this);
+		if ($contextMenu)
+		{
+			$contextMenu->SetParentId(WebPage::That()->Id);
+		}
+		NolohInternal::SetProperty('ContextMenu', $contextMenu ? $contextMenu->Id : null, $this);
     }
 	/**
 	 * Returns whether or not the Control is Buoyant. Buoyant Controls always float to the top, and compete with only other Buoyant
@@ -766,6 +804,21 @@ abstract class Control extends Component
 	 */
 	function GetHTMLName()	{return $this->HTMLName;}
 	/**
+	 * Returns the tab index for this Control, a positive integer defining the order in which Controls will be focused when a user cycles through Controls with the tab key.
+	 */
+	function GetTabIndex()
+	{
+		return $this->TabIndex;
+	}
+	/**
+	 * Sets the tab index for this Control, a positive integer defining the order in which Controls will be focused when a user cycles through Controls with the tab key.
+	 */
+	function SetTabIndex($tabIndex)
+	{
+		$this->TabIndex = $tabIndex;
+		ClientScript::Set($this, 'tabIndex', $tabIndex, null);
+	}
+	/**
 	 * Returns the Semantics for this Control, which help define how it is used and may be used to aid in search engine optimization.
 	 * @return Semantics|System::Auto
 	 */
@@ -881,7 +934,19 @@ abstract class Control extends Component
 	 * occupying this Control. An array of all the Controls being dragged can be found in the Event::$DragCaught array.
 	 * @param Event $dragCatch
 	 */
-	function SetDragCatch($dragCatch)				{$this->SetEvent($dragCatch, 'DragCatch');}
+	function SetDragCatch($dragCatch)
+	{
+		if (UserAgent::GetName() === UserAgent::IPad)
+		{
+			ClientScript::AddNOLOHSource('Mixed/ShiftIPad.js', false);
+		}
+		else
+		{
+			ClientScript::AddNOLOHSource('Shift.js', true);
+		}
+		
+		$this->SetEvent($dragCatch, 'DragCatch');
+	}
 	/**
 	 * Returns the Focus Event, which gets launched when a user focuses this Control, e.g., by clicking or tabbing into it
 	 * @return Event
@@ -1028,6 +1093,26 @@ abstract class Control extends Component
 	 * @param Event $shiftStop
 	 */
 	function SetShiftStop($shiftStop)				{$this->SetEvent($shiftStop, 'ShiftStop');}
+	/**
+	 * Returns the ShiftsWithStart Event, which gets launched when a user starts shifting another control that this control shifts with
+	 * @return Event
+	 */
+	function GetShiftsWithStart()					{return $this->GetEvent('ShiftsWithStart');}
+	/**
+	 * Sets the ShiftsWithStart Event, which gets launched when a user starts shifting another control that this control shifts with
+	 * @param Event $shiftsWithStart
+	 */
+	function SetShiftsWithStart($shiftsWithStart)	{$this->SetEvent($shiftsWithStart, 'ShiftsWithStart');}
+	/**
+	 * Returns the ShiftsWithStop Event, which gets launched when a user stops shifting another control that this control shifts with
+	 * @return Event
+	 */
+	function GetShiftsWithStop()					{return $this->GetEvent('ShiftsWithStop');}
+	/**
+	 * Sets the ShiftsWithStop Event, which gets launched when a user stops shifting another control that this control shifts with
+	 * @param Event $shiftsWithStop
+	 */
+	function SetShiftsWithStop($shiftsWithStop)		{$this->SetEvent($shiftsWithStop, 'ShiftsWithStop');}
 	/**
 	 * Returns the Leave Event, which gets launched when a Control is removed from it's parent
 	 * @return Event
@@ -1241,15 +1326,23 @@ abstract class Control extends Component
 	}
 	/**
 	 * Gives this Control the active Focus.
+	 * @param integer $delay
 	 */
-	function Focus()
+	function Focus($delay = null)
 	{
-		QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+		if (isset($delay))
+		{
+			ClientScript::Queue($this, "setTimeout(function () {_N('{$this->Id}').focus();}, {$delay});", array(), true, Priority::Low);
+		}
+		else
+		{
+			QueueClientFunction($this, '_N("'.$this->Id.'").focus', array(), false, Priority::Low);
+		}
 	}
 	/**
 	 * @ignore
 	 */
-	function GetAddId()
+	function GetAddId($obj)
 	{
 		return $this->Id;
 	}
@@ -1266,25 +1359,27 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function SearchEngineShow($returnClass=false)
+	function SearchEngineShowClassAttr()
 	{
-		if($returnClass)
-		{
-			//$this->Show();
-			return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className'])) 
-				? ' class="'.$_SESSION['_NPropertyQueue'][$this->Id]['className'].'"' 
-				: '';
-		}
-		elseif($this->Text)
+		return (isset($_SESSION['_NPropertyQueue'][$this->Id]) && isset($_SESSION['_NPropertyQueue'][$this->Id]['className']))
+			? ' class="' . $_SESSION['_NPropertyQueue'][$this->Id]['className'] . '"'
+			: '';
+	}
+	/**
+	 * @ignore
+	 */
+	function SearchEngineShow()
+	{
+		if ($this->Text)
 		{
 			$tag = $this->GetSearchEngineTag();
-			echo '<',$tag, self::SearchEngineShow(true),'>', $this->Text, '</',$tag,'>';
+			echo '<', $tag, self::SearchEngineShowClassAttr(), '>', $this->Text, '</', $tag, '>';
 		}
 	}
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow(&$indent)
+	function NoScriptShowIndent(&$indent)
 	{
 		if($this->Visible === 0)
 			return false;
@@ -1359,7 +1454,7 @@ abstract class Control extends Component
 	/**
 	 * @ignore
 	 */
-	function &__get($nm)
+	function __get($nm)
 	{
 		if(strpos($nm, 'CSS') === 0 && $nm !== 'CSSFile' && $nm !== 'CSSClass' && $nm !== 'CSSClasses')
 		{

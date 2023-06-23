@@ -22,9 +22,9 @@ class Container extends Component
 	 * Be sure to call this from the constructor of any class that extends Container
 	 * @return Container
 	 */
-	function Container()
+	function __construct()
 	{
-		parent::Component();
+		parent::__construct();
 		$this->Controls = new ArrayList();
 		$this->Controls->ParentId = $this->Id;
 	}
@@ -56,7 +56,7 @@ class Container extends Component
 	/**
 	 * @ignore
 	 */
-	function NoScriptShow()
+	function NoScriptShow($indent)
 	{
 		$this->NoScriptShowChildren($indent);
 	}

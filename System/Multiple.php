@@ -20,9 +20,9 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 	 * @param mixed,... $extendsClassesAsDotDotDot
 	 * @return Multiple
 	 */
-	function Multiple($extendsClassesAsDotDotDot)
+	function __construct($extendsClassesAsDotDotDot)
 	{
-		parent::Component();
+		parent::__construct();
 		$args = func_get_args();
 		$numArgs = count($args);
 		if($numArgs == 0)
@@ -127,11 +127,11 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 	function __get($name)
 	{
 		if(property_exists($this->SubObjects[$this->CastClass], $name) ||
-			($this->SubObjects[$this->CastClass] instanceof Object && (method_exists($this->SubObjects[$this->CastClass], 'Get'.$name) || method_exists($this->SubObjects[$this->CastClass], 'get'.$name))))
+			($this->SubObjects[$this->CastClass] instanceof Base && (method_exists($this->SubObjects[$this->CastClass], 'Get'.$name) || method_exists($this->SubObjects[$this->CastClass], 'get'.$name))))
 				return $this->SubObjects[$this->CastClass]->$name;
 		foreach($this->SubObjects as $object)
 			if(property_exists($object, $name) ||
-				($object instanceof Object && (method_exists($object, 'Get'.$name) || method_exists($object, 'get'.$name))))
+				($object instanceof Base && (method_exists($object, 'Get'.$name) || method_exists($object, 'get'.$name))))
 					return $object->$name;
 	}
 	/**
@@ -140,11 +140,11 @@ abstract class Multiple extends Component implements ArrayAccess, Countable, Ite
 	function __set($name, $value)
 	{
 		if(property_exists($this->SubObjects[$this->CastClass], $name) ||
-			($this->SubObjects[$this->CastClass] instanceof Object && (method_exists($this->SubObjects[$this->CastClass], 'Set'.$name) || method_exists($this->SubObjects[$this->CastClass], 'set'.$name))))
+			($this->SubObjects[$this->CastClass] instanceof Base && (method_exists($this->SubObjects[$this->CastClass], 'Set'.$name) || method_exists($this->SubObjects[$this->CastClass], 'set'.$name))))
 				return $this->SubObjects[$this->CastClass]->$name = $value;
 		foreach($this->SubObjects as $object)
 			if(property_exists($object, $name) ||
-				($object instanceof Object && (method_exists($object, 'Set'.$name) || method_exists($object, 'set'.$name))))
+				($object instanceof Base && (method_exists($object, 'Set'.$name) || method_exists($object, 'set'.$name))))
 					return $object->$name = $value;		
 	}
 	/**
