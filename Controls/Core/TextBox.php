@@ -120,6 +120,39 @@ class TextBox extends Control
 		$this->Filter = $filter;
 		$this->UpdateEvent('KeyPress');
 	}
+     /**
+     * @ignore
+     */
+    function GetChange()
+    {
+        $change = $this->GetEvent('Change');
+        if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
+        {
+            ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
+            if(!isset($change['_N']))
+                $change['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
+            Alert('inside');
+        }
+        return $change;
+    }
+    /**
+     * @ignore
+     */
+    function SetChange($change)
+    {
+        if(UserAgent::GetDevice()===UserAgent::Mobile && UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11)
+        {
+            ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
+            $event = new Event();
+            $event['User'] = $change;
+            if(!isset($event['_N']))
+                $event['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
+        }
+        else
+            $event = $change;
+        return $this->SetEvent($event, 'Change');
+        // return parent::SetChange($event);
+    }
 	/**
 	 * Returns the TypePause Event, which gets launched when a user has the TextBox focused, types something, and pauses typing for half a second
 	 * @return Event
@@ -131,7 +164,7 @@ class TextBox extends Control
 		{
 			ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
 			if(!isset($typePause['_N']))
-				$typePause['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
+				$typePause['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this, true);
 		}
 		else
 			ClientScript::AddNOLOHSource('KeyEvents.js', true);
@@ -149,7 +182,7 @@ class TextBox extends Control
 			$event = new Event();
 			$event['User'] = $typePause;
 			if(!isset($event['_N']))
-				$event['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
+				$event['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this, true);
 			$this->SetEvent($event, 'TypePause');
 		}
 		else

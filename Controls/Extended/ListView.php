@@ -390,59 +390,68 @@ class ListView extends Panel
 	 * @param integer $limit The number of rows to return at a time
 	 * @param integer $offset The offset of the first row
 	 * @param ServerEvent $rowCallback The ServerEvent to be called for each row, this allows increased control of your row
+	 * @param array|integer|string An optional specifier for what columns, whether named or numbered which you would like to order your bound results by
 	 */
-	public function Bind($dataSource=null, $constraints=null, $limit=50, $offset=0, $rowCallback=null/*, $storeInMemory = false*/)
+	public function Bind($dataSource=null, $constraints=null, $limit=50, $offset=0, $rowCallback=null, $orderBy=null/*, $storeInMemory = false*/)
 	{
 		$data = null;
 		if($dataSource != null)
 		{
 			$this->Clear();
 			$this->DataSource = $dataSource;
-			$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $dataSource->GetSQL());
-			$this->OriginalSQL = $sql;
-			$this->SortSQL = null;
-			//Row Count
-			$connection = $dataSource->GetConnection();
-			//Check if MSSQL
-			$isMSSQL = $connection->GetType() == Data::MSSQL;
-			
-			$query = 'SELECT count(1) FROM (' . $sql . ') as sub_query ';
-			
-			$numRows = new DataCommand($connection, $query, Data::Num);
-			$numRows = $numRows->Execute();
-			$numRows = $numRows->Data[0][0];
-			//Columns
-			if($constraints || $isMSSQL)
+			if($dataSource instanceof DataCommand)
 			{
-				if($isMSSQL)
+				$sql = preg_replace('/(.*?);*?\s*?\z/i', '$1', $dataSource->GetSQL());
+				$this->OriginalSQL = $sql;
+				$this->SortSQL = null;
+				//Row Count
+				$connection = $dataSource->GetConnection();
+				//Check if MSSQL
+				$isMSSQL = $connection->GetType() == Data::MSSQL;
+			
+				if(preg_match('/(.*?)\sLIMIT.+$/si', $sql, $matches ))
+					$sql = $matches[1];			
+				$query = 'SELECT count(1) FROM (' . $sql . ') as sub_query ';;
+				$numRows = new DataCommand($connection, $query, Data::Num);
+				$numRows = $numRows->Execute();
+				$numRows = $numRows->Data[0][0];
+				//Columns
+				if($constraints || $isMSSQL)
 				{
-					$query = 'SELECT TOP 1 * FROM (' . $sql . ') AS sub_query';
+					if($isMSSQL)
+					{
+						$query = 'SELECT TOP 1 * FROM (' . $sql . ') AS sub_query';
+					}
+					else
+						$query = 'SELECT * FROM (' . $sql . ') AS sub_query LIMIT 1';
+						
+					$columns = new DataCommand($connection, $query, Data::Assoc);
+					$columns = $columns->Execute();
+					if(!empty($columns->Data))
+					{
+						$keys = array_keys($columns->Data[0]);
+						$this->ColumnLookup = array_flip($keys);
+						if($isMSSQL && isset($keys[0]))
+							$this->MSFirstColumn = $keys[0];	
+					}
 				}
-				else
-					$query = 'SELECT * FROM (' . $sql . ') AS sub_query LIMIT 1';
-					
-				$columns = new DataCommand($connection, $query, Data::Assoc);
-				$columns = $columns->Execute();
-				if(!empty($columns->Data))
-				{
-					$keys = array_keys($columns->Data[0]);
-					$this->ColumnLookup = array_flip($keys);
-					if($isMSSQL && isset($keys[0]))
-						$this->MSFirstColumn = $keys[0];	
-				}
+				$this->ApproxCount = $numRows;
+				$sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
+				$this->DataSource = new DataCommand($dataSource->GetConnection(), $sql, $dataSource->ResultType);
+				$this->Limit = $limit;
+				$callBack = true;
+			}
+			elseif(is_array($dataSource))
+			{
+				$this->ApproxCount = count($dataSource);
 			}
 			if($this->HeightSpacer)
-				$this->HeightSpacer->SetHeight($numRows * 20);
+				$this->HeightSpacer->SetHeight($this->ApproxCount * 20);
 			else
 			{
-				$this->HeightSpacer = new Label('', 0, 0, 1, $numRows * 20);
+				$this->HeightSpacer = new Label('', 0, 0, 1, $this->ApproxCount * 20);
 				$this->HeightSpacer->ParentId = $this->BodyPanelsHolder->Id;
 			}
-			$this->ApproxCount = $numRows;
-			$sql = 'SELECT * FROM (' . $sql . ') as sub_query ';
-			$this->DataSource = new DataCommand($dataSource->GetConnection(), $sql, $dataSource->ResultType);
-			$this->Limit = $limit;
-			$callBack = true;
 		}
 		else
 		{
@@ -504,7 +513,9 @@ class ListView extends Panel
 						$columns[] = $properties[0];
 				}			
 			}
+//			System::Log('Data Columns', $this->DataColumns);		
 		}
+		//return;
 		if($this->DataSource instanceof DataCommand)
 		{
 			if(!$loadIntoMemory)
@@ -527,11 +538,16 @@ class ListView extends Panel
 					else
 					{
 						$sql = $this->SortSQL?$this->SortSQL:$this->OriginalSQL;
-						$result = 'SELECT * FROM (' . $sql . ') as sub_query ';
-						$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+						$result = str_ireplace(array('$LIMIT', '$OFFSET'), array($limit, $offset), $sql, $count);
+						//return System::Log($result);
+						if($count < 1)
+						{
+							$result = 'SELECT * FROM (' . $sql . ') as sub_query ';
+							$result .= ' LIMIT ' . $limit . ' OFFSET ' . $offset . ';';
+						}
 					}
 	//				System::Log($result);
-	//				return System::Log($result);
+//					return System::Log($result);
 					$this->DataSource->SetSQL($result);
 					if($callBack)
 					{

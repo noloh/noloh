@@ -21,7 +21,7 @@ require($_NPath . 'Controls/Core/Control.php');
 require($_NPath . 'Statics/UserAgent.php');
 require($_NPath . 'Events/Event.php');
 require($_NPath . 'Events/ClientEvent.php');
-require($_NPath . 'Events/RaceClientEvent.php');
+//require($_NPath . 'Events/RaceClientEvent.php');
 require($_NPath . 'Events/ServerEvent.php');
 require($_NPath . 'Statics/Priority.php');
 require($_NPath . 'Statics/System.php');
@@ -38,6 +38,8 @@ function _NAutoLoad($class)
 			'SugarException' => 	'System/SugarException.php',
 			'Multiple' => 			'System/Multiple.php',
 			
+			//Events
+			'RaceClientEvent' =>	'Events/RaceClientEvent.php',
 			// Collections
 			'Container' => 			'Collections/Container.php',
 			'ControlPair' => 		'Collections/ControlPair.php',
@@ -142,7 +144,10 @@ function _NAutoLoad($class)
 					$callLoad = true;
 			}
 		}
-		require($class . '.php');
+		if((include $class . '.php') === false)
+			if((include str_replace('_', '/', $class) . '.php') === false)
+				BloodyMurder('The class ' . $class . ' is not defined.');
+//		require($class . '.php');
 	//	BloodyMurder('The class ' . $class . ' is not defined.');
 	}
 }

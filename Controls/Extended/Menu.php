@@ -72,7 +72,8 @@ class Menu extends Panel
 		$this->MenuItems->Add($menuItem, true);
 		$menuItem->SetWidth($menuItem->GetWidth());
 		
-		NolohInternal::SetProperty('IsMnu','true', $menuItem);
+		ClientScript::Set($menuItem, 'IsMnu', true, null);
+//		NolohInternal::SetProperty('IsMnu','true', $menuItem);
 		return $menuItem;
 	}
 	/**

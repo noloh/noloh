@@ -56,6 +56,15 @@ class DataConnection extends Object
 	 * @var resource 
 	 */
 	public $ActiveConnection;
+	/**
+	 * Whether the connection should convert your data results to
+	 * their PHP real type equivalents, or leave them as strings.
+	 * 
+	 * Defaults to false!
+	 * 
+	 * @var Boolean
+	 */
+	public $ConvertType;
 	private $Type;	
 	/**
 	 * Constructor
@@ -95,14 +104,52 @@ class DataConnection extends Object
 		{
 			$this->ActiveConnection = mysql_connect($this->Host, $this->Username, $this->Password);
 			mysql_select_db($this->DatabaseName, $this->ActiveConnection);
+//			mysql_set_charset('utf8',$this->ActiveConnection);
 		}
 		elseif($this->Type == Data::MSSQL)
 		{
 			$host = $this->Port?$this->Host . ':' . $this->Port:$this->Host;
-			$this->ActiveConnection = mssql_connect($host, $this->Username, $this->Password);
-			mssql_select_db($this->DatabaseName, $this->ActiveConnection);
+			if (function_exists('sqlsrv_connect'))
+			{
+				$this->ActiveConnection = sqlsrv_connect($host, 
+					array('Database' => $this->DatabaseName, 'UID' => $this->Username, 'PWD' => $this->Password, 'ReturnDatesAsStrings' => true));
+				if(!$this->ActiveConnection ) {
+					$this->ErrorOut();
+				}
+			}
+			else
+			{
+				$this->ActiveConnection = mssql_connect($host, $this->Username, $this->Password);
+				mssql_select_db($this->DatabaseName, $this->ActiveConnection);
+			}
 		}
 		return $this->ActiveConnection;
+	}
+	/**
+	 * Displays the appropriate error to the user and exits the app.
+	 */
+	function ErrorOut()
+	{
+		$type = $this->Type;
+		if($type == Data::Postgres)
+			BloodyMurder(pg_result_error($connection));
+		elseif($type == Data::MySQL)
+			BloodyMurder(mysql_error());
+		elseif($type == Data::MSSQL)
+			if (function_exists('sqlsrv_errors'))
+			{
+				$errStr = '';
+				$errors = sqlsrv_errors();
+				foreach($errors as $error)
+				{
+					$errStr .= 'State: '.$error[ 'SQLSTATE'] . '; ' . 
+						'Code: ' . $error['code'] . '; ' .
+						'Message: ' . $error[ 'message'] . "\n";
+				}
+				BloodyMurder($errStr);
+			}
+			else
+				BloodyMurder(mssql_get_last_message);
 	}
 	/**
 	 * Attempts to close the connection to your database. Note: In most circumstances, this is done automatically.
@@ -117,7 +164,10 @@ class DataConnection extends Object
 			elseif($this->Type == Data::MySQL)
 				return mysql_close($this->ActiveConnection);
 			elseif($this->Type == Data::MSSQL)
-				return mssql_close($this->ActiveConnection);
+				if (function_exists('sqlsrv_close'))
+					return sqlsrv_close($this->ActiveConnection);
+				else
+					return mssql_close($this->ActiveConnection);
 		return false;
 	}
 	/**

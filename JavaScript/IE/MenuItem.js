@@ -28,7 +28,7 @@ function _NMnuTglOut()
 	var mnuItm = mnuItmLbl.parentNode;
 	var outObj = _N(event.toElement.id);
 	//alert(mnuItmLbl.id + ' ' + mnuItm.id + ' ' + outObj.id);
-	if(mnuItm.ItmsPnl != null && (outObj.parentNode.parentNode.id == mnuItm.ItmsPnl || outObj.id == mnuItm.ItmsPnl))
+	if(mnuItm.ItmsPnl != null && ((outObj.parentNode && outObj.parentNode.parentNode && outObj.parentNode.parentNode.id == mnuItm.ItmsPnl) || outObj.id == mnuItm.ItmsPnl))
 		return;
 	else
 	{

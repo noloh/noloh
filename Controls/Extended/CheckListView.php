@@ -39,10 +39,10 @@ class CheckListView extends ListView
 		$tmpCount = $this->Columns->Count();
 		$tmpRight = ($tmpCount > 0)?$this->Columns[$tmpCount-1]->GetRight():$this->CheckColumn->GetRight();
 		if(is_string($text))
-			$this->Columns->Add($tmpColumn = &new ColumnHeader($text, $tmpRight, $width, $this->ColumnsPanel->GetHeight()), true, true);
+			$this->Columns->Add($tmpColumn = new ColumnHeader($text, $tmpRight, $width, $this->ColumnsPanel->GetHeight()), true, true);
 		elseif($text instanceof ColumnHeader)
 		{
-			$this->Columns->Add($tmpColumn = &$text, true);
+			$this->Columns->Add($tmpColumn = $text, true);
 			if($text->GetLeft() == System::Auto)
 				$text->SetLeft($tmpRight);
 		}

@@ -41,6 +41,9 @@ abstract class WebPage extends Component
 	private $BackColor;
 	private $LoadIndicator;
 	private $CSSPropertyArray;
+        
+        static private $AutoIncludes;
+        
 	/**
 	 * Constructor.
 	 * Be sure to call this from the constructor of any class that extends WebPage.
@@ -51,8 +54,9 @@ abstract class WebPage extends Component
 	 * @param string $vanityMessage A message you would like to display in the source of the WebPage
 	 * @return WebPage
 	 */
-	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null)
+	function WebPage($title = 'Unititled Document', $keywords = '', $description = '', $favIconPath = null, $vanityMessage=null, $autoIncludes = array())
 	{
+            self::$AutoIncludes = $autoIncludes;
 		if($_SESSION['_NVisit'] === -1)
 		{
 			$GLOBALS['_NTitle'] = $title;
@@ -127,7 +131,8 @@ abstract class WebPage extends Component
 		{
 			$tmp = $_SESSION['_NPropertyQueue'];
 			unset($_SESSION['_NPropertyQueue']);
-			$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\'';
+			$path2 = Configuration::That()->AddMTimeToExternals ? ($path . '?mtime=' . filemtime(GetAbsolutePath($path))) : $path;
+			$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path2.'\'';
 			//$initialProperties = '\'rel\',\'stylesheet\',\'type\',\'text/css\',\'href\',\''.$path.'\',\'onload\',\'this.onload=null;alert(this.href);\'';
 			NolohInternal::Show('LINK', $initialProperties, $this, 'NHead', hash('md5',$path));
 			if($this->CSSFiles)
@@ -363,7 +368,7 @@ abstract class WebPage extends Component
 		$value = $this->GetEvent($eventType)->GetEventString($eventType, $this->Id);
 		if($eventType === 'Tracker')
 		{
-			$value = preg_replace('/null/', 'location.href.indexOf("#/")==-1?location.href.replace(location.hash,""):location.href.replace("#/",location.href.indexOf("?")==-1?"?":"&")', $value, 1);
+			$value = preg_replace('/null/', 'location.href.indexOf("#!/")==-1?location.href.replace(location.hash,""):location.href.replace("#!/",location.href.indexOf("?")==-1?"?":"&")', $value, 1);
 			QueueClientFunction($this, '_NChangeByObj', array('_N','\'Tracker\'','\''.$value.'\''), false);
 			QueueClientFunction($this, 'eval', array('_N.Tracker'), true, Priority::Low);
 		}
@@ -390,6 +395,12 @@ abstract class WebPage extends Component
 	 */
 	static function SkeletalShow($title, $unsupportedURL, $favIcon, $isMobileApp)
 	{
+            $autoIncludes = '';
+            foreach (self::$AutoIncludes as $include)
+            {
+                $autoIncludes .= '<script src="' . $include . '?mtime=' . filemtime(GetAbsolutePath($include)) . '"></script>';
+            }
+            
 		header('Cache-Control: no-store');
 		//header('Cache-Control: no-cache, must-revalidate, max-age=0');
 		//header('Cache-Control: no-cache');
@@ -397,20 +408,31 @@ abstract class WebPage extends Component
 		header('Content-Type: text/html; charset=UTF-8');
 		//header('Content-Type: text/html; charset=ISO-8859-1');
 		
-		$formatted = '';
+		$headComment = '';
+		if (Configuration::That()->ExposeNOLOH)
+		{
+			$version = GetNOLOHVersion();
+			$headComment = <<<HTML
+
+<!-- Powered by NOLOH  -->
+<!--   www.noloh.com   -->
+<!--      $version      -->
+HTML;
+		}
 		if($GLOBALS['_NVanity'])
 		{
-			$formatted = "\n";
 			$vanity = explode("\n", $GLOBALS['_NVanity']);
 			foreach($vanity as $line)
 			{
-				$formatted .= '<!-- ' . $line . ' -->' . "\n";
+				$headComment .= "\n<!-- " . $line . ' -->';
 			}
-		}
+		}			
+		$headComment .= "\n";
+		
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
-		$url = '(document.URL.indexOf("#/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#/","'.$symbol.'")+"&")
+		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash,"")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&")
                + "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight';
         $isMobileApp = $isMobileApp && UserAgent::GetDevice()===UserAgent::Mobile;
         $oldOpMobile = UserAgent::GetBrowser()===UserAgent::Opera && ($version=UserAgent::GetVersion())>=9 && $version<11;
@@ -419,12 +441,7 @@ abstract class WebPage extends Component
 <!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">' :
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">', '
-
-<!-- Powered by NOLOH  -->
-<!--   www.noloh.com   -->
-<!--      ',GetNOLOHVersion(),'      -->
-',$formatted,'
-
+', $headComment, '
 <HTML lang="en">
   <HEAD id="NHead">
     <TITLE>', $title, '</TITLE>
@@ -436,6 +453,7 @@ abstract class WebPage extends Component
   '"></NOSCRIPT>', $favIcon?'
     <LINK rel="shortcut icon" href="'.$favIcon.'">':'', $isMobileApp && !$oldOpMobile ? '
     <META name="viewport" content="width=device-width, initial-scale=1.0' . ((Configuration::That()->Zoomable)?'':', user-scalable = no') . '">':'', '
+    ' . $autoIncludes . '
   </HEAD>',
 UserAgent::IsIE() ? '
   <BODY>
@@ -450,7 +468,17 @@ UserAgent::IsIE() ? '
 
 <SCRIPT type="text/javascript">
   _NApp = ', $GLOBALS['_NApp'], ';
-  document.cookie = "_NAppCookie=0;";', 
+  document.cookie = "_NAppCookie=0";', $symbol === '&' ? '
+  if(document.URL.indexOf("?") != -1)
+  	location.replace(document.URL.replace("?", "#!/"));' : 
+(UserAgent::GetBrowser()===UserAgent::Firefox ? '
+  if(document.URL.indexOf("#/") != -1)
+  {
+  	location = document.URL.toString().replace("#/", "#!/");
+  	location.reload(false);
+  }' : '
+  if(document.URL.indexOf("#/") != -1)
+  	location.replace(document.URL.replace("#/", "#!/"));'), 
 UserAgent::IsIE6() ? '
   function _NIe6Init()
   {
@@ -533,9 +561,9 @@ UserAgent::IsIE6() ? '
 				$obj->NoScriptShow('  ');
 		}
 		echo 
-'  </BODY>
+' blah </BODY>
 </HTML>';
-		setcookie('_NAppCookie', false, 0, '/');
+		setcookie('_NAppCookie', 0);
 		ob_flush();
 		if(isset($_SESSION['_NDataLinks']))
 			foreach($_SESSION['_NDataLinks'] as $connection)

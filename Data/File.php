@@ -44,8 +44,6 @@ class File extends Object
 		ClientScript::AddNOLOHSource('SendFile.js');
 		AddScript('_NFileReq("' . $_SERVER['PHP_SELF'] . '?_NApp=' . $GLOBALS['_NApp'] . '&_NFileRequest=' . $fileName . '")');
 		$_SESSION['_NFileSend'][$fileName] = array($contentType, $alias);
-		//$webPage = GetComponentById('N1');
-		//$webPage->Controls->Add($iframe = new IFrame($_SERVER['PHP_SELF'].'?NOLOHFileRequest='.$fileName));
 	}
 	/**
 	 * @ignore

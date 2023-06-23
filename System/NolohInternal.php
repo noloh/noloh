@@ -47,13 +47,14 @@ final class NolohInternal
 	public static function ControlQueue()
 	{
         while(list($objId, $bool) = each($_SESSION['_NControlQueueRoot']))
-			self::ShowControl(GetComponentById($objId), $bool);
+			self::ShowControl($objId, $bool);
 		if(isset($GLOBALS['_NAddedSomething']))
 			AddScript('_NQ()', Priority::High);
 	}
 
-	public static function ShowControl($control, $bool)
+	public static function ShowControl($id, $bool)
 	{
+		$control = GetComponentById($id);
 		if($bool)
 		{
 			if($control->GetShowStatus()===0)
@@ -65,11 +66,11 @@ final class NolohInternal
 		}
 		elseif($control->GetShowStatus()!==0)
 			$control->Bury();
-		if(isset($_SESSION['_NControlQueueDeep'][$control->Id]))
+		if(isset($_SESSION['_NControlQueueDeep'][$id]))
 		{
-			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$control->Id]))
-				self::ShowControl(GetComponentById($childObjId)/*, $control*/, $bool);
-			unset($_SESSION['_NControlQueueDeep'][$control->Id]);
+			while (list($childObjId, $bool) = each($_SESSION['_NControlQueueDeep'][$id]))
+				self::ShowControl($childObjId/*, $control*/, $bool);
+			unset($_SESSION['_NControlQueueDeep'][$id]);
 		}
 	}
 
@@ -104,7 +105,8 @@ final class NolohInternal
 			$objId = $newId;
 		if(isset($_SESSION['_NControlInserts'][$objId]))
 		{
-			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'],\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
+			ClientScript::Add('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'],\''.$_SESSION['_NControlInserts'][$objId].'\');', Priority::High);
+//			AddScript('_NAdd(\''.$addTo.'\',\''.$tag.'\',\''.$objId.'\',['.$properties.'],\''.$_SESSION['_NControlInserts'][$objId].'\')', Priority::High);
 			unset($_SESSION['_NControlInserts'][$objId]);
 		}
 		else
@@ -139,7 +141,8 @@ final class NolohInternal
 	public static function GetPropertiesString($objId, $nameValPairs=array())
 	{
 		$nameValPairsString = '';
-		if(count($nameValPairs) === 0 && isset($_SESSION['_NPropertyQueue'][$objId]))
+//		if(count($nameValPairs) === 0 && isset($_SESSION['_NPropertyQueue'][$objId]))
+		if(!$nameValPairs && isset($_SESSION['_NPropertyQueue'][$objId]))
 			$nameValPairs = $_SESSION['_NPropertyQueue'][$objId];
 		foreach($nameValPairs as $name => $val)
 		{
@@ -178,15 +181,19 @@ final class NolohInternal
 			else
 			{
 				$splitStr = explode('i', $objId, 2);
-				$markupPanel = &GetComponentById($splitStr[0]);
+				$markupPanel = GetComponentById($splitStr[0]);
 				if($markupPanel!==null && $markupPanel->GetShowStatus())
 				{
 					ClientScript::AddNOLOHSource('Eventee.js');
 					$nameValPairsString = '';
 					foreach($nameValPairs as $name => $val)
 						$nameValPairsString .= '\''.$name.'\',\''.($name=='href'?$val:$markupPanel->GetEventString($val, $objId)).'\',';
-					AddScript('_NEvteeSetP(\''.$objId.'\',['.rtrim($nameValPairsString,',').'])');
+//					AddScript('_NEvteeSetP(\''.$objId.'\',['.rtrim($nameValPairsString,',').'])');
+					ClientScript::Add('_NEvteeSetP(\''.$objId.'\',['.rtrim($nameValPairsString,',').']);');
+					//Might fix the duplicate eventee set issues? - Asher
+					unset($_SESSION['_NPropertyQueue'][$objId]);
 				}
+				unset($markupPanel);
 			}
 		}
 	}

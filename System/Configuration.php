@@ -32,7 +32,7 @@ class Configuration extends Object implements Singleton
 	 */
 	public $UnsupportedURL;
 	/**
-	 * 
+	 * Allows a developer to specify a URL that mobile users will be redirected to for their mobile-specific app.
 	 * @var string
 	 */
 	public $MobileAppURL;
@@ -91,6 +91,16 @@ class Configuration extends Object implements Singleton
 	 * @var boolean
 	 */
 	public $Zoomable = true;
+	/**
+	 * Whether or not the application will be obvious about using NOLOH. Note: this is not guaranteed; there are still ways to tell.
+	 * @var boolean
+	 */
+	public $ExposeNOLOH = true;
+	/**
+	 * Whether or not a query of mtime will be added to sources. This helps with caching.
+	 * @var boolean
+	 */
+	public $AddMTimeToExternals = false;
 	/**
 	 * Constructor
 	 * @return Configuration

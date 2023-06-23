@@ -81,7 +81,7 @@ _NListenerBundle.prototype.Start = function()
 	{
 		ids = ids.substring(0, ids.length-1);
 		this.Request = _NXHR("POST",
-			url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"),
+			url.indexOf("#!/")==-1 ? url.replace(location.hash,"") : url.replace("#!/",url.indexOf("?")==-1?"?":"&"),
 			function() {_NListenerReqStateChange.call(ref);}, true);
 		this.Request.send("_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NListener="+ids);
 		if(this.Transport == "Stream")
@@ -118,7 +118,7 @@ function _NListenerReqStateChange()
 			else if(poll)
 			{
 				var ref = this;
-				setTimeout(function() {ref.Start();}, interval);
+				setTimeout(function() {ref.Start();}, this.Interval);
 			}
 	}
 }

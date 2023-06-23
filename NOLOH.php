@@ -1,5 +1,11 @@
 <?php
 
+if (!defined('PHP_VERSION_ID'))
+{
+    $version = explode('.', PHP_VERSION);
+    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
+
 $_NCWD = getcwd();
 $_NPath = dirname(__FILE__);
 $_NPath .= strpos($_NPath, '/') === false ? "\\" : '/';
@@ -14,6 +20,6 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  * Gets the current version of NOLOH
  * @return string
  */
-function GetNOLOHVersion() {return '1.7.669';}
+function GetNOLOHVersion() {return '1.7.745.FORK';}
 
 ?>

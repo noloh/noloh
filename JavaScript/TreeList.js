@@ -38,7 +38,6 @@ function _NTreeSlctOne(nodeId)
 	tree.SelectedElements = [node._N.El];
 	tree.SelectedNodes = nodeId;
 	_NTreeSlct(nodeId);
-//	_NTreeSlct(nodeId, elementId);
 }
 function _NTreeSlctTgl(nodeId)
 {

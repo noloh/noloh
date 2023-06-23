@@ -11,6 +11,9 @@
  */
 final class ClientScript
 {
+	const JQuery = 'jquery', JQueryUI = 'jqueryui', Angular = 'angularjs', 
+	MooTools = 'mootools', Dojo = 'dojo', Prototype = 'prototype';
+	
 	private function ClientScript() {}
 	/**
 	 * Adds Javascript code to be run immediately on the client.<br>
@@ -56,6 +59,10 @@ final class ClientScript
 				$_SESSION['_NFunctionQueue'][$id][] = array($codeOrFunction, $paramsArray, $priority);			
 		}
 	}
+	private static function AddMTime($path)
+	{
+		return $path . '?mtime=' . filemtime(GetAbsolutePath($path));
+	}
 	/**
 	 * Adds a Javascript script file to be run immediately on the client after satisfying a race condition. <br>
 	 * The server will keep track of which files have been added so that the same file will not be sent to the client twice.<br>
@@ -67,7 +74,8 @@ final class ClientScript
 		if(!isset($_SESSION['_NScriptSrcs'][$path]))
 		{
 			self::AddNOLOHSource('AddExternal.js');
-			ClientScript::RaceQueue(WebPage::That(), $condition, '_NAddExtSource', array($path));
+			$path2 = Configuration::That()->AddMTimeToExternals ? self::AddMTime($path) : $path;
+			ClientScript::RaceQueue(WebPage::That(), $condition, '_NAddExtSource', array($path2));
 			$_SESSION['_NScriptSrcs'][$path] = true;
 		}
 	}
@@ -148,9 +156,49 @@ final class ClientScript
 			else
 			{
 				self::AddNOLOHSource('AddExternal.js');
-				ClientScript::Add("_NAddExtSource('$path');", Priority::High);
+				$path2 = Configuration::That()->AddMTimeToExternals ? self::AddMTime($path) : $path;
+				ClientScript::Add("_NAddExtSource('$path2');", Priority::High);
 			}
 			$_SESSION['_NScriptSrcs'][$path] = true;
+		}
+	}
+	/**
+	 * Adds a 3rd Party Javascript library and prevents multiple versions of the
+	 * same library from being used. In the case that a name is provided that is
+	 * a ClientScript Static, NOLOH will use the Google CDN hosted version of 
+	 * the latest version of the framework
+	 * 
+	 * See https://developers.google.com/speed/libraries/devguide for a complete
+	 * list of versions available
+	 * 
+	 * @param string $library, shorthand name of the library, or your own name.
+	 * @param string $version The version of the library you wish to use.
+	 * @param string $path If you would like to provide a path to the library
+	 */
+	static function AddLibrary($library, $version, $path=null)
+	{
+		static $libraries = array(
+			self::JQuery => '/jquery/VERSION/jquery.min.js', 
+			self::JQueryUI => '/jqueryui/VERSION/jquery-ui.min.js', 
+			self::Angular => '/angularjs/VERSION/angular.min.js', 
+			self::Dojo => '/dojo/VERSION/dojo/dojo.js', 
+			self::MooTools => '/mootools/VERSION/mootools-yui-compressed.js', 
+			self::Prototype => '/prototype/VERSION/prototype.js'
+		);
+		$library = strtolower($library);
+		if(!isset($_SESSION['_NScriptSrcs'][$library]))
+		{
+			if(!$path && key_exists($library, $libraries))
+			{
+				$path = '//ajax.googleapis.com/ajax/libs';
+				$path .= str_replace('VERSION', strtolower($version), $libraries[$library]);
+			}
+			// if($combine)
+				// $_SESSION['_NScriptSrc'] .= file_get_contents($path);
+			// else
+			self::AddNOLOHSource('AddExternal.js');
+			ClientScript::Add("_NAddExtSource('$path');", Priority::High);
+			$_SESSION['_NScriptSrcs'][$library] = true;
 		}
 	}
 	/**

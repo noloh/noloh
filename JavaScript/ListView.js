@@ -64,6 +64,7 @@ function _NLVSlct(id)
 	panel.SelectedRows[id] = true;
 	panel.StringRep += id + "~d2~";
 	_NSave(panel.parentNode.parentNode.id, "_NSelectedRows", panel.StringRep);
+	console.log('Selected Class is ' +  row.SelCls);
 	if(row.className.indexOf(row.SelCls) == -1)
 		_NSet(id, 'className', row.className + ' ' + row.SelCls);
 }

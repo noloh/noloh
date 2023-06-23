@@ -14,7 +14,7 @@ function _NKeyEvntsPress()
 		this.TypePauseTimeout = setTimeout("var obj = _N('"+this.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause();", 500);
 	}
 }
-function _NKeyEvntsMoTimeout(id)
+function _NKeyEvntsMoTimeout(id, refocus)
 {
 	var btn = document.createElement('input');
 	btn.type = 'button';
@@ -22,6 +22,7 @@ function _NKeyEvntsMoTimeout(id)
 	btn.style.visibility = 'hidden';
 	btn.onclick = function(){
 		_N(id).blur();
+	    if(refocus)
 		_N(id).focus();
 		btn.parentNode.removeChild(btn);
 		delete btn};

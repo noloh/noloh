@@ -63,6 +63,7 @@ class ColumnHeader extends Panel
 		$this->SizeHandle->Cursor = Cursor::WestResize;
 		$this->Caption->ParentId = $this->Id;
 		$this->SizeHandle->ParentId = $this->Id;
+//		$this->Controls->AddRange($this->Caption, $this->SizeHandle);
 		$this->Cursor = Cursor::Arrow;
 		$this->MouseOver = new ClientEvent("this.style.background = 'url(". System::ImagePath() . 'Std/HeadOrange.gif)' . '\';');
 		$this->MouseOut = new ClientEvent("this.style.background = '';");

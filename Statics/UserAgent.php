@@ -161,6 +161,11 @@ final class UserAgent
         }
         elseif(preg_match('!links \(([0-9.]+);!', $agt, $version))
         	$browser = 'li';
+		elseif(preg_match('!\bwindows\b.*?\brv:([0-9.]+)\b!', $agt, $version))
+		{
+			$browser = 'ie';
+        	$_SESSION['_NIsIE'] = false;	//IE11+ is not IEish
+		}
         elseif(empty($name))
         {
         	$browser = 'other';

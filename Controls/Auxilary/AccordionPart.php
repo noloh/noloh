@@ -30,8 +30,8 @@ class AccordionPart extends CollapsePanel implements Groupable
 		$this->Layout = Layout::Relative;
 		
 		$select['System']['Collapse'] = new ClientEvent("_NAccPtExpd('$this->Id');_NClpsPnlTgl('$this->Id');");
-		//$select['System'] = new ClientEvent("_NAccPtExpd('$this->Id');_NSetProperty('{$this->TitlePanel->Controls['Glossy']->Id}', 'Selected', true);");
-		//$deselect['System'] = new ClientEvent("_NClpsPnlTgl('{$this->Id}', false);_NSetProperty('{$this->TitlePanel->Controls['Glossy']->Id}', 'Selected', false);");
+		//$select['System'] = new ClientEvent("_NAccPtExpd('$this->Id');_NSet('{$this->TitlePanel->Controls['Glossy']->Id}', 'Selected', true);");
+		//$deselect['System'] = new ClientEvent("_NClpsPnlTgl('{$this->Id}', false);_NSet('{$this->TitlePanel->Controls['Glossy']->Id}', 'Selected', false);");
 	}
 	/**
 	 * @ignore

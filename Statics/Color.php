@@ -219,6 +219,10 @@ final class Color
 	 */
 	const Gray = '#808080';
 	/**
+	 * <DIV class="ColorPreview" style="background:#808080;"></DIV> 
+	 */
+	const Grey = '#808080';
+	/**
 	 * <DIV class="ColorPreview" style="background:#008000;"></DIV> 
 	 */
 	const Green = '#008000';
@@ -290,6 +294,10 @@ final class Color
 	 * <DIV class="ColorPreview" style="background:#D3D3D3;"></DIV> 
 	 */
 	const LightGrey = '#D3D3D3';
+	/**
+	 * <DIV class="ColorPreview" style="background:#D3D3D3;"></DIV> 
+	 */
+	const LightGray = '#D3D3D3';
 	/**
 	 * <DIV class="ColorPreview" style="background:#FFB6C1;"></DIV> 
 	 */

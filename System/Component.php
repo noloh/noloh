@@ -406,16 +406,20 @@ abstract class Component extends Object
 
 		$vars = (array)$this;
 		//global $OmniscientBeing;
+		$keys = array();
 		foreach ($vars as $key => $val)
 		//{
         	//if(is_null($val))
         	if($val === null)
 				unset($vars[$key]);
+			else
+				$keys[] = $key;
            /* elseif (is_object($val))
             	if($val instanceof Component)
 					$this->$key = new Pointer($val);*/
         //}
-		return array_keys($vars);
+		return $keys;
+//		return array_keys($vars);
 	}
 	/**
 	 * @ignore

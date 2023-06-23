@@ -96,21 +96,20 @@ class DataCommand extends Object
 		if($this->Connection != null && $this->SqlStatement != null)
 		{
 			$type = $this->Connection->GetType();
+			$connection = $this->Connection->Connect();
 			if($type == Data::Postgres)
-				$resource = pg_query($this->Connection->Connect(), $this->SqlStatement);
+				$resource = pg_query($connection, $this->SqlStatement);
 			elseif($type == Data::MySQL)
-				$resource = mysql_query($this->SqlStatement, $this->Connection->Connect());
+				$resource = mysql_query($this->SqlStatement, $connection);
 			elseif($type == Data::MSSQL)
-				$resource = mssql_query($this->SqlStatement, $this->Connection->Connect());
+				if (function_exists('sqlsrv_query'))
+					$resource = sqlsrv_query($connection, $this->SqlStatement);
+				else
+					$resource = mssql_query($this->SqlStatement, $connection);
 				
 			if(!$resource)
 			{
-				if($type == Data::Postgres)
-					BloodyMurder(pg_last_error());
-				elseif($type == Data::MySQL)
-					BloodyMurder(mysql_error());
-				elseif($type == Data::MSSQL)
-					BloodyMurder(mssql_get_last_message);
+				$this->Connection->ErrorOut();
 				return false;
 			}
 			$resultType = $resultType?$resultType:$this->ResultType;

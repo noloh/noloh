@@ -25,7 +25,7 @@ final class URL
 	 * // Assume the two lines are separated out in accordance with good object-oriented programming practices
 	 * URL::SetToken('productid', 17);
 	 * </pre>
-	 * Will have the effect of writing #/productid=17 in the user's URL.
+	 * Will have the effect of writing #!/productid=17 in the user's URL.
 	 */
 	const Display = 1;
 	/**
@@ -160,11 +160,17 @@ final class URL
 		{
 			foreach($tokenChain as $val)
 				$str .= urlencode($val) . '/';
-			$str .= '&';
 		}
-		foreach($keyValuePairs as $key => $val)
-			$str .= urlencode($key) . '=' . urlencode($val) . '&';
-		$str = rtrim($str, '&');
+		//Not necessary, http_build_query does the same thing - Asher
+//		foreach($keyValuePairs as $key => $val)
+//			$str .= urlencode($key) . '=' . urlencode($val) . '&';
+		$tokens = http_build_query($keyValuePairs);
+		
+		if($str && $tokens)
+			$str = $str . '&' . $tokens;
+		elseif($tokens)
+			$str = $tokens;
+			
 		return $GLOBALS['_NURLTokenMode'] == 2 ? base64_encode($str) : $str;
 	}
 	/**
@@ -353,7 +359,7 @@ final class URL
 		{
 			$tokens = self::TokenString(self::$TokenChain, $_SESSION['_NTokens']);
 			if($tokens)
-				$path .= '#/' . $tokens;
+				$path .= '#!/' . $tokens;
 		}
 		return $path;
 	}

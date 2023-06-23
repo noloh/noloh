@@ -73,12 +73,15 @@ final class Application extends Object
 	 * Resets Application to original state
 	 * @param boolean $clearURLTokens Whether the URL Tokens will be cleared out
 	 * @param boolean $clearSessionVariables Whether the session will be cleared out
+	 * @param boolean $alert If a string, it will be alerted to the user before resetting
 	 */
-	public static function Reset($clearURLTokens = true, $clearSessionVariables = true)
+	public static function Reset($clearURLTokens = true, $clearSessionVariables = true, $alert = false)
 	{
 		if(isset($GLOBALS['_NDebugMode']))
 			ob_end_clean();
         echo '/*_N*/';
+		if ($alert)
+			echo 'alert("', str_replace(array('\\',"\n","\r",'"'),array('\\\\','\n','\r','\"'),$alert), '");';
         $webPage = WebPage::That();
         if($webPage != null && !$webPage->GetUnload()->Blank())
         {
@@ -122,7 +125,9 @@ final class Application extends Object
 			FileUpload::ShowInside($_GET['_NFileUpload'], $_GET['_NWidth'], $_GET['_NHeight']);
 		elseif(isset($_GET['_NFileRequest']))
 			File::SendRequestedFile($_GET['_NFileRequest']);
-		elseif((isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) &&
+		elseif(
+			(!isset($_SERVER['HTTP_ACCEPT']) || strpos($_SERVER['HTTP_ACCEPT'], 'text/html')!==0) &&
+			(isset($_SESSION['_NVisit']) || isset($_POST['_NVisit'])) &&
 			(!($host = parse_url((isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:null), PHP_URL_HOST)) ||
 			(UserAgent::IsPPCOpera()) || 
 				$host == (($pos = (strpos($_SERVER['HTTP_HOST'], ':'))) !== false ? substr($_SERVER['HTTP_HOST'], 0, $pos) : $_SERVER['HTTP_HOST'])))
@@ -156,7 +161,10 @@ final class Application extends Object
 			$this->Run();
 		}
 		else
+		{
+			self::UnsetNolohSessionVars();
 			$this->HandleFirstRun();
+		}
 	}
 	private static function CreateError($type)
 	{
@@ -482,6 +490,8 @@ final class Application extends Object
 		if($GLOBALS['_NURLTokenMode'] == 0)
 			return;
 		unset($_GET['_NVisit'], $_GET['_NApp'], $_GET['_NWidth'], $_GET['_NHeight']);
+		if(isset($_GET['_escaped_fragment_']))
+			parse_str(urldecode($_GET['_escaped_fragment_']), $_GET);
 		if($GLOBALS['_NURLTokenMode'] == 1)
 		{
 			URL::$TokenChain = $tokenChain = new ImplicitArrayList('URL', 'AddChainToken', 'RemoveChainTokenAt', 'ClearChainTokens');
@@ -569,7 +579,8 @@ final class Application extends Object
 		if(++$_SESSION['_NVisit'] === 0)
 		{
 			global $_NShowStrategy, $_NWidth, $_NHeight;
-			setcookie('_NAppCookie', false);
+			if(isset($_COOKIE['_NAppCookie']))
+				setcookie('_NAppCookie', $_COOKIE['_NAppCookie'], 1);
 			$_NWidth = isset($_GET['_NWidth']) ? $_GET['_NWidth'] : 1024;
 			$_NHeight = isset($_GET['_NHeight']) ? $_GET['_NHeight'] : 768;
 			$this->HandleTokens();
@@ -644,7 +655,7 @@ final class Application extends Object
 						$href = $key[0]=='?'?(System::FullAppPath().$key):$key;
 						$pos = strpos($href, '?');
 						if($pos !== false)
-							$href = substr($href, 0, $pos) . htmlspecialchars(substr($href, $pos));
+							$href = substr($href, 0, $pos) . (UserAgent::GetName()===UserAgent::Googlebot?'#!/':'?') . htmlspecialchars(substr($href, $pos+1));
 						$tokenLinks .= '<LI><A href="' . $href . '">' . $info[0] . '</A></LI> ';
 					}
 		}
@@ -662,7 +673,7 @@ final class Application extends Object
 			foreach($_NSETokens as $key => $val)
 				unset($_SESSION['_NTokens']);
 			$tokenString = URL::TokenString(URL::$TokenChain, $_SESSION['_NTokens']);
-			$canonicalURL = System::FullAppPath() . ($tokenString ? '?' . $tokenString : '');
+			$canonicalURL = System::FullAppPath() . ($tokenString ? (UserAgent::GetName()===UserAgent::Googlebot?'#!/':'?') . $tokenString : '');
 		}
 		$this->WebPage->SearchEngineShow($canonicalURL, '<UL>'.$tokenLinks.'</UL>');
 		ob_flush();

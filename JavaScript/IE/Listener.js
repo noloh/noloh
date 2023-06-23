@@ -70,7 +70,7 @@ _NListenerBundle.prototype.Start = function()
 	this.Stop();
 	this.Offset = 0;
 	var ref = this, iframe, form, url = location.href, ids = "", id, str, i, count, listener, interval;
-	url = (url.indexOf("#/")==-1 ? url.replace(location.hash,"") : url.replace("#/",url.indexOf("?")==-1?"?":"&"));
+	url = (url.indexOf("#!/")==-1 ? url.replace(location.hash,"") : url.replace("#!/",url.indexOf("?")==-1?"?":"&"));
 	for(i=0, count=this.Ids.length; i<count; ++i)
 		if((listener = _N(id = this.Ids[i])) && listener.ParentId && listener.Started && listener.Enabled)
 		{

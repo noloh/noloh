@@ -79,7 +79,7 @@ class Link extends Label
 	 */
 	function GetDestination()
 	{
-		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? (System::FullAppPath().'#/'.$this->TokenString()) : $this->Destination;
+		return $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? (System::FullAppPath().'#!/'.$this->TokenString()) : $this->Destination;
 	}
 	/**
 	 * Sets the destination for the Link, i.e., where the link will redirect the user after it is clicked. A
@@ -187,7 +187,7 @@ class Link extends Label
 	 */
 	function UpdateTokens()
 	{
-		NolohInternal::SetProperty('href', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ('#/'.$this->TokenString()) : $this->Destination, $this);
+		NolohInternal::SetProperty('href', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ('#!/'.$this->TokenString()) : $this->Destination, $this);
 		$this->UpdateEvent('Click');
 	}
 	/**
@@ -243,6 +243,7 @@ class Link extends Label
 			$this->Control->SetParentId(null);
 		$control->SetOpacity(parent::GetOpacity());
 		$control->SetParentId($this->Id);
+		$control->SetLayout(Layout::Relative);
 		$this->Control = $control;
 		unset($_SESSION['_NFunctionQueue'][$this->Id]['_NAWH']);
 		NolohInternal::SetProperty('style.width', '', $this);
@@ -333,7 +334,18 @@ class Link extends Label
 	function SearchEngineShow()
 	{
 		if($this->Destination !== '#')
-			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode'] ? ($_SESSION['_NURL'].'?'.htmlspecialchars($this->TokenString())) : htmlspecialchars($this->Destination), '">', $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
+		{
+			if($this->Semantics && $this->Semantics !== System::Auto)
+				$semantics = $this->Semantics;
+			if(isset($semantics))
+				echo '<', $this->Semantics, '>';
+			echo '<A href="', $this->Destination===null && $GLOBALS['_NURLTokenMode']
+				? ($_SESSION['_NURL']. (UserAgent::GetName()===UserAgent::Googlebot?'#!/':'?'). htmlspecialchars($this->TokenString()))
+				: htmlspecialchars($this->Destination), '">'
+				, $this->Control ? $this->Control->SearchEngineShow() : $this->Text, '</A>';
+			if(isset($semantics))
+				echo '</', $this->Semantics, '>';
+		}
 		else 
 		{
 			parent::SearchEngineShow();

@@ -22,7 +22,7 @@ function _NShftSta(objArray)
 }
 function _NShftFirstGo(e)
 {
-	var id, obj, deltaZIndex, count = _N.Shifts.length;
+	var id, obj, deltaZIndex, count = _N.Shifts.length, step;
 	if(count > 0)
 		deltaZIndex = ++_N.HighestZ + count - _N(_N.Shifts[0][0]).style.zIndex;
 	event = e;
@@ -38,13 +38,15 @@ function _NShftFirstGo(e)
 			_N.Shifts.ObjsWithStop[id] = obj;
 		if(_N.Shifts[i][4])
 		{
+			step = obj.ShiftStep;
 			obj = obj.cloneNode(true);
 			obj.style.position = "absolute";
-			obj.style.left = _NFindX(id) + "px";
-			obj.style.top = _NFindY(id) + "px";
+			obj.style.left = _NFindX(id, null, false) + "px";
+			obj.style.top = _NFindY(id, null, false) + "px";
 			obj.style.opacity = ".5";
 			_N.Shifts[i][0] = id = obj.id = id + "_Ghost";
 			document.body.appendChild(obj);
+			obj.ShiftStep = step;
 			_N.Shifts.Ghosts.push(i);
 		}
 		_N.Shifts.ActualCount[_N.Shifts[i][7] = _N.Shifts[i][1] + id] = parseInt(_N.Shifts[i][1]==1?obj.style.width: _N.Shifts[i][1]==2?obj.style.height: _N.Shifts[i][1]==4?obj.style.left: obj.style.top);

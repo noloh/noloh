@@ -1,13 +1,12 @@
 function _NMnuTglSubItms(mnuItmId)
 {
-	var menu = _N(mnuItmId);
-	var subMenu =  (menu.ItmsPnl != null)?_N(menu.ItmsPnl):null;
-	var parent = menu.parentNode;
-	if(menu.IsSlct == null)
+	var menu = _N(mnuItmId), subMenu =  _N(menu.ItmsPnl), parent = menu.parentNode;
+	
+	if(!menu.IsSlct)
 	{
-		if(menu.IsMnu != null)
+		if(menu.IsMnu)
 		{
-			MnuItmGlobal = menu.id;
+			_N.MnuItmGlobal = menu.id;
 			document.addEventListener("click", _NMnuHideChldrn, true);
 		}
 		//if(subMenu)
@@ -28,8 +27,8 @@ function _NMnuTglSubItms(mnuItmId)
 	else
 		_NHideChldrn(parent.SlctMnuItm);
 }
-function _NTimeToggle()
-{
+//function _NTimeToggle()
+//{
 	//console.log('mouseout triggered of ' + event.currentTarget.id); 
 	//var menu = event.currentTarget;
 	//console.log(menu.Hide);
@@ -44,32 +43,27 @@ function _NTimeToggle()
 	//	console.log('Adding Timer to ' + menu.id);
 	//	//menu.Hide = setTimeout(_NMnuHideChldrn, /*menu.HideDly*/1000);
 	//}
-}
+//}
 function _NMnuTglOut(event)
 {
 	var mnuItmLbl = _N(event.target.id);
 	var mnuItm = mnuItmLbl.parentNode;
 	var outObj = _N(event.relatedTarget.id);
 	//console.log(mnuItmLbl.id + ' ' + mnuItm.id + ' ' + outObj.id);
-	if(mnuItm.ItmsPnl != null && (outObj.parentNode.parentNode.id == mnuItm.ItmsPnl || outObj.id == mnuItm.ItmsPnl))
-		return;
-	else
-	{
-		var mnuId = (mnuItmLbl.SlctMnuItm != null)?mnuItmLbl.SlctMnuItm:mnuItm.id;
-		_NHideChldrn(mnuId, true);
-	}
+	if(!(mnuItm.ItmsPnl && ((outObj.parentNode && outObj.parentNode.parentNode && outObj.parentNode.parentNode.id == mnuItm.ItmsPnl) || outObj.id == mnuItm.ItmsPnl)))
+		_NHideChldrn(mnuItmLbl.SlctMnuItm || mnuItm.id, true);
 }
 function _NMnuHideChldrn(event)
 {
 	//console.log('_NMnuHideChldrn');
-	_N(MnuItmGlobal).parentNode.IsClk = false;
-	_NHideChldrn(MnuItmGlobal, true, true);
+	_N(_N.MnuItmGlobal).parentNode.IsClk = false;
+	_NHideChldrn(_N.MnuItmGlobal, true, true);
 	document.removeEventListener("click", _NMnuHideChldrn, true);
 }
 function _NHideChldrn(mnuItmId, topLvl, rmEvt)
 {
 	var opnMnu = _N(mnuItmId);
-	if(opnMnu.ItmsPnl != null)
+	if(opnMnu.ItmsPnl)
 	{
 		var chldMnu = _N(opnMnu.ItmsPnl);
 		for(var i=0; i < chldMnu.ChildrenArray.length; ++i)

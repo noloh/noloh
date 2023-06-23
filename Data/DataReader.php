@@ -38,16 +38,18 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 	 * @var Data::Assoc|Data::Numeric|Data::Both 
 	 */
 	public $ResultType;
+	private $ColumnTypes;
 	
 	/**
 	 * Constructor
 	 * Be sure to call this from the constructor of any class that extends DataReader.
 	 * @param mixed Data::Postgres|Data::MySQL|Data::MSSQL|Data::ODBC $type The type of the database.
 	 * @param resource $resource A resource representing the data returned from the database.
-	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Determines how your data columns are indexed .
+	 * @param mixed Data::Assoc|Data::Numeric|Data::Both $resultType Determines how your data columns are indexed.
 	 * @param ServerEvent $callBack
+	 * @param Boolean $convertType Whether to convert returned data into their native PHP equivalents, instead of strings.
 	 */
-	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null)
+	function DataReader($type, $resource, $resultType=Data::Assoc, $callBack=null, $convertType=false)
 	{
 		$this->ResultType = $type;
 		if($callBack)
@@ -71,6 +73,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 				for ($i=0; $i < $numRows; ++$i)
 				{
 					$data = pg_fetch_array($resource, $i, $resultType);
+					//$data = self::ConvertType($type, $resource);
 					if(isset($callBack['constraint']))
 						$data = self::HandleConstraint($data, $callBack['constraint']);
 					
@@ -113,12 +116,31 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 		}
 		elseif($type == Data::MSSQL && $resource !== true)
 		{
-			if($resultType == Data::Both)
-				$resultType = MSSQL_BOTH;
-			elseif($resultType == Data::Assoc)
-				$resultType = MSSQL_ASSOC;
+			if (function_exists('sqlsrv_fetch_array'))
+			{
+				if($resultType == Data::Both)
+					$resultType = SQLSRV_FETCH_BOTH;
+				elseif($resultType == Data::Assoc)
+					$resultType = SQLSRV_FETCH_ASSOC;
+				else
+					$resultType = SQLSRV_FETCH_NUMERIC;
+				$fetch = 'sqlsrv_fetch_array';
+				$next = 'sqlsrv_next_result';
+				$free = 'sqlsrv_free_stmt';
+				
+			}
 			else
-				$resultType = MSSQL_NUM;
+			{
+				if($resultType == Data::Both)
+					$resultType = MSSQL_BOTH;
+				elseif($resultType == Data::Assoc)
+					$resultType = MSSQL_ASSOC;
+				else
+					$resultType = MSSQL_NUM;
+				$fetch = 'mssql_fetch_array';
+				$next = 'mssql_next_result';
+				$free = 'mssql_free_result';
+			}
 		
 			$count = -1;
 			$data = array();
@@ -126,7 +148,7 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 			{
 				++$count;
 				$data[$count] = array();
-				while($row = mssql_fetch_array($resource, $resultType))
+				while($row = $fetch($resource, $resultType))
 				{
 					if(isset($callBack['constraint']))
 						$row = self::HandleConstraint($row, $callBack['constraint']);
@@ -137,13 +159,48 @@ class DataReader extends Object implements ArrayAccess, Countable, Iterator
 						call_user_func_array($callArray, $args);
 					}	
 				}
-			}while (mssql_next_result($resource));
-			mssql_free_result($resource);
+			}while ($next($resource));
+			$free($resource);
 			
 			$this->Data = ($count > 0)?$data:$data[0];
 		}
 		if(!$this->Data)
 			$this->Data = array();
+	}
+	private function DetermineColumnTypes($dbType, $resource)
+	{
+		$this->ColumnTypes = array();
+		if($dbType == Data::Postgres)
+		{
+			$numCols = pg_num_fields($resource);
+			for($i=0; $i < $numCols; ++$i)
+				$this->ColumnTypes[] = pg_field_type($resource, $i);
+		}
+		elseif($dbType == Data::MySQL)
+		{
+			$numCols = mysql_num_fields($resource);
+			for($i=0; $i < $numCols; ++$i)
+				$this->ColumnTypes[] = mysql_field_type($resource, $i);
+		}
+		elseif($dbType == Data::MSSQL)
+		{
+			if (function_exists('sqlsrv_num_fields'))
+			{
+				$numCols = sqlsrv_num_fields($resource);
+				for($i=0; $i < $numCols; ++$i)
+					$this->ColumnTypes[] = sqlsrv_get_field($resource, $i);
+			}
+			else
+			{
+				$numCols = mssql_num_fields($resource);
+				for($i=0; $i < $numCols; ++$i)
+					$this->ColumnTypes[] = mssql_field_type($resource, $i);
+			}
+		}
+	}
+	private function ConvertType($dbType, $data)
+	{
+		
 	}
 	private static function HandleConstraint($data, $constraint)
 	{

@@ -300,6 +300,7 @@ class Image extends Control
 			//	'$im = imagecreatefrom'.$extension.'($src);');
 			if(imagetypes() & constant('IMG_'.strtoupper($extension)))
 				$im = call_user_func('imagecreatefrom'.$extension, $src);
+//			file_put_contents('/tmp/magic', $src);
 		}
 		else
 		{
@@ -313,6 +314,7 @@ class Image extends Control
 			call_user_func_array(array($class, $function), array_merge(array($im), explode(',', urldecode($params))));
 			header('Content-type: image/'.$extension);
 			call_user_func('image'.$extension, $im);
+//			file_put_contents('/tmp/magic', var_export($im, true));
 			imagedestroy($im);
 		}
 	}

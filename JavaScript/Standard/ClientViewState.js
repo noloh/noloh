@@ -65,7 +65,7 @@ function _NSetURL(url, id)
 }
 function _NSetTokens(hash, id)
 {
-	_NSetURL(document.URL.split("#",1)[0] + "#/" + hash, id);
+	_NSetURL(document.URL.split("#",1)[0] + "#!/" + hash, id);
 }
 function _NSet(id, property, value)
 {
@@ -564,7 +564,7 @@ function _NServer()
 {
 	if(!_N.Request)
 	{
-		var url = location.href, hashPos = url.indexOf("#/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
+		var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
 		var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 		for(var i=0; i<sECount; ++i)
 		{
@@ -581,7 +581,7 @@ function _NServer()
 		}
 		_N(_N.LoadIndicator).style.visibility = "visible";
 		_N.Request = _NXHR("POST", 
-	    	hashPos==-1 ? url.replace(location.hash,"") : url.replace("#/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
+	    	hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
 	    	notUnload ? _NReqStateChange : null,
 	    	notUnload);
 		_N.Request.send(str);

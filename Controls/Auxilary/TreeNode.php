@@ -44,6 +44,10 @@ class TreeNode extends Panel
 	private $Selected;
 	private $Value;
 	private $TreeListId;
+	private $SelectBackColor;
+	private $DeselectBackColor;
+	private $SelectColor;
+	private $DeselectColor;
 	/**
 	 * @ignore
 	 */
@@ -242,6 +246,38 @@ class TreeNode extends Panel
 		$this->Element->SetCursor(Cursor::Hand);
 		ClientScript::Set($this, 'El', $this->Element, '_N');
 	}
+	/**
+	* Sets the color of the TreeNode's Text when this TreeNode is selected, 
+	* defaults to white.
+	* 
+	* @param string $color
+	*/
+	function SetSelectColor($color)
+	{
+		ClientScript::Set($this, 'SlClr', $color, '_N');
+		$this->SelectColor = $color;	
+	}
+	/**
+	* Gets the color of the TreeNode's Text when this TreeNode is selected, 
+	* defaults to white.
+	*/
+	function GetSelectColor()	{return $this->SelectColor?$this->SelectColor:'#FFFFFF';}
+	/**
+	* Sets the BackColor of the TreeNode's Text when this TreeNode is selected, 
+	* defaults to #316AC5.
+	* 
+	* @param string $color
+	*/
+	function SetSelectBackColor($color)
+	{
+		ClientScript::Set($this, 'SlBkClr', $color, '_N');	
+		$this->SelectBackColor = $color;
+	}
+	/**
+	* Gets the BackColor of the TreeNode's Text when this TreeNode is selected, 
+	* defaults to #316AC5.
+	*/
+	function GetSelectBackColor()	{return $this->SelectBackColor?$this->SelectBackColor:'#316AC5';}
 	/**
 	 * Returns the TreeNode, if any, having this TreeNode as a sub-node.
 	 * @return TreeNode

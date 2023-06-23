@@ -38,7 +38,7 @@ function _NInit(configs)
 	_N.TimeoutCount = 0;
 	_NInitHelper();
 	if(location.hash=="")
-		location = location + "#/";
+		location = location + "#!/";
 	_N.Hash = location.hash;
 	_N.URL = location.href;
 	try
@@ -88,7 +88,7 @@ function _NCheckURL()
 		_N.Hash = location.hash;
 		_N.URL = location.href;
 		_N.Request = _NXHR("POST", 
-			(targetURL.indexOf("#/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#/",targetURL.indexOf("?")==-1?"?":"&")+"&")
+			(targetURL.indexOf("#!/")==-1 ? targetURL.replace(_N.Hash,"")+(targetURL.indexOf("?")==-1?"?":"&") : targetURL.replace("#!/",targetURL.indexOf("?")==-1?"?":"&")+"&")
            	+ "_NVisit=0&_NApp=" + _NApp + "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight,
            	_NReqStateChange, true);
         _N.Request.send(str);
@@ -126,7 +126,7 @@ function _NSetURL(url, id)
 }
 function _NSetTokens(hash, id)
 {
-	_NSetURL(document.URL.split("#",1)[0] + "#/" + hash, id);
+	_NSetURL(document.URL.split("#",1)[0] + "#!/" + hash, id);
 }
 function _NSetTitle(title)
 {
@@ -624,7 +624,7 @@ function _NServer()
 		try
 		{
 			clearInterval(_N.URLChecker);
-			var url = location.href, hashPos = url.indexOf("#/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
+			var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
 			var str = "_NVisit="+ ++_N.Visit+"&_NApp="+_NApp+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
 			for(var i=0; i<sECount; ++i)
 			{
@@ -641,7 +641,7 @@ function _NServer()
 			}
 			_N(_N.LoadIndicator).style.visibility = "visible";
 		    _N.Request = _NXHR("POST",
-	    		hashPos==-1 ? url.replace(location.hash,"") : url.replace("#/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
+	    		hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
 	    		notUnload ? _NReqStateChange : null,
 	    		notUnload);
 		    _N.Request.send(str);

@@ -70,7 +70,8 @@ class MenuItem extends Panel
 		$this->SetOverBackColor();
 		$this->SetOverTextColor();
 		$this->MouseOver['Toggle'] = new ClientEvent("_NMnuTglSubItms('{$this->Id}');");
-		NolohInternal::SetProperty('TxtLbl', $this->TextLabel->Id, $this);
+		ClientScript::Set($this, 'TxtLbl', $this->TextLabel->GetId(), null);
+//		NolohInternal::SetProperty('TxtLbl', $this->TextLabel->Id, $this);
 		$this->TextLabel->ParentId = $this->Id;
 		$this->MenuItemsPanel->ParentId = $this->Id;
 	}
@@ -82,20 +83,13 @@ class MenuItem extends Panel
 		if(is_string($menuItem))
 			$menuItem = new MenuItem($menuItem);
 		$menuItem->Layout = Layout::Relative;
-		
-		/*else
-		{
+		//Arrow
 			//$tempImage = new Image(System::ImagePath() . "MenuItemArrow.gif", $menuItem->Width - 5, 3);
-			//$this->Controls->Add($tempImage);
-			//NolohInternal::SetProperty("HasChildren", "true", $this->TextLabel);
-			NolohInternal::SetProperty('ChildrenArray', 'Array()', $this->MenuItemsPanel);
-			//AddScript("_N('{$this->TextLabel->Id}').HasChildren = true; _N('{$this->MenuItemsPanel->Id}').ChildrenArray = new Array();");
-		}*/
-//		else
+			
 		if($this->MenuItemsPanel->Controls->Count() <= 0)
 		{
-			NolohInternal::SetProperty('ItmsPnl', "{$this->MenuItemsPanel->Id}", $this);
-			NolohInternal::SetProperty('ChildrenArray', '[]', $this->MenuItemsPanel);
+			ClientScript::Set($this, 'ItmsPnl', $this->MenuItemsPanel->GetId(), null);
+			ClientScript::Set($this->MenuItemsPanel, 'ChildrenArray', '[]', null);
 		}
 		if($this->MenuItemsPanel->GetWidth() < ($width = $menuItem->GetWidth()))
 		{

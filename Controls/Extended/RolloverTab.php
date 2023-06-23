@@ -25,6 +25,7 @@ class RolloverTab extends Panel implements Groupable
 	private $SelectedTab;
 	private $Closeable;
 	private $CloseObject;
+	private $TogglesOff;
 	//private $Selected;
 	
 	/**
@@ -367,16 +368,16 @@ class RolloverTab extends Panel implements Groupable
 		$deselect = parent::GetDeselect();
 		$deselect['User'] = $event;
 	}
-	function SetLeave($event)
-	{
-		parent::SetEvent($event, 'Leave');
-//		if(isset($this->CloseObject))
-//			$this->CloseObject->Click = $this->GetClose();
-	}
-	function GetLeave()
-	{
-		return $this->GetEvent('Leave');
-	}
+	/**
+	 * Sets whether the RolloverTab can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 * @param boolean $bool
+	 */
+	function SetTogglesOff($bool)		{NolohInternal::SetProperty('Tgl', ($this->TogglesOff = $bool), $this);}
+	/**
+	 * Returns whether the RolloverTab can Toggle itself being Selected, or whether something else must be deselected for it to deselect.
+	 * @return boolean
+	 */
+	function GetTogglesOff()			{return ($this->TogglesOff==true);}
 	//Select Event Functions
 	//function GetSelect()				{return $this->GetEvent('Select');}
 	//function SetSelect($newSelect)		{$this->SetEvent($newSelect, 'Select');}

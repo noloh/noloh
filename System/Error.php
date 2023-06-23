@@ -29,7 +29,25 @@ function _NOBErrorHandler($buffer)
 		else
 		{
 			$trace = _NFirstNonNOLOHBacktrace();
-			trigger_error('~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['line']);
+			$obStr = '~OB~'.$matches[1].'~OB~'.$matches[2].'~OB~'.$trace['file'].'~OB~'.$trace['line'];
+			if (PHP_VERSION_ID < 50300)
+				trigger_error($obStr);
+			else
+			{
+				// For ssome bizarre reason, calling _NErrorHandler (with modifications) doesn't work. So code repition appears necessary.
+				setcookie('_NAppCookie', false);
+				if(!in_array('Cache-Control: no-cache', headers_list(), true))
+					++$_SESSION['_NVisit'];
+				$message = (str_replace(array("\n","\r",'"'),array('\n','\r','\"'),$matches[2]).($trace['file']?"\\nin ".str_replace("\\","\\\\",$trace['file'])."\\non line " .$trace['line']:''));
+				$alert = '/*_N*/alert("' . ($GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n$message" : 'An application error has occurred.') . '");';
+				NolohInternal::ResetSecureValuesQueue();
+				global $OmniscientBeing;
+				$_SESSION['_NScript'] = array('', '', '');
+				$_SESSION['_NScriptSrc'] = '';
+				$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
+				return $alert;
+			}
+			
 			//return false;
 			//trigger_error(serialize(error_get_last()));
 			//trigger_error(serialize(error_get_last()));
@@ -96,7 +114,7 @@ function _NErrorHandler($number, $string, $file, $line)
 		$_SESSION['_NScript'] = array('', '', '');
 		$_SESSION['_NScriptSrc'] = '';
 		$_SESSION['_NOmniscientBeing'] = $gzip ? gzcompress(serialize($OmniscientBeing),1) : serialize($OmniscientBeing);
-	    exit();
+		exit();
 	}
 	else
 		return false;

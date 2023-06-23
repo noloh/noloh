@@ -247,10 +247,7 @@ class TreeList extends Panel
 	function Show()
 	{
 		ClientScript::AddNOLOHSource('TreeList.js');
-//		ClientScript::Queue($this, '_NTreeInit', array($this->Id));
-//		AddNolohScriptSrc('TreeList.js');
-//		ClientScript::Add('_NTreeInit(\''.$this->Id.'\')');
-		AddScript('_NTreeInit(\''.$this->Id.'\')');
+		ClientScript::Add('_NTreeInit(\''.$this->Id.'\');');
 		parent::Show();
 	}
 }
