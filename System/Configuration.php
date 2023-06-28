@@ -112,6 +112,11 @@ class Configuration extends Base implements Singleton
 	 */
 	public $ForceSecureProtocol = false;
 	/**
+	 * Array of callback functions to be passed from app to Core for execution
+	 * @var array
+	 */
+	public $CallBacks = [];
+	/**
 	 * Constructor
 	 * @return Configuration
 	 */

@@ -261,6 +261,14 @@ final class Application extends Base
 			$e->CallBackExec();
 		}
 
+		if (isset($config->CallBacks['mobile_sso_validate']))
+		{
+			$class = $config->CallBacks['mobile_sso_validate']['class'];
+			$function = $config->CallBacks['mobile_sso_validate']['function'];
+
+			$run = call_user_func([$class, $function]);
+		}
+
 		if (isset($run) && $run === true)
 		{
 			$this->Run();
