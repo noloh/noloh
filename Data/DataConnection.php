@@ -133,9 +133,8 @@ class DataConnection extends Base
 		$password = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-			$password = Security::Decrypt($password, $encryptionKey, $iv);
+			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$password = Security::Decrypt($password, $encryptionKey);
 		}
 		System::BeginBenchmarking('_N/DataCommand::Connect');
 		if (!self::IsActiveConnection($this->ActiveConnection) || ($this->Type === Data::Postgres && pg_connection_status($this->ActiveConnection) === PGSQL_CONNECTION_BAD))
@@ -148,19 +147,7 @@ class DataConnection extends Base
 
 				if ($this->ActiveConnection === false)
 				{
-					$this->Password = 'XeZw9yGrdAfPJtsAvUaXMzqfdabNNBhKmb1CQzPS4mE=';
-					$this->PasswordEncrypted = true;
-
-					$password = Security::Decrypt($this->Password, $encryptionKey, $iv);
-
-					$connectString = 'dbname = ' . $this->DatabaseName . ' user = ' . $this->Username . ' host = ' . $this->Host . ' port = ' . $this->Port . ' password = ' . $password;
-
-					$this->ActiveConnection = pg_connect($connectString);
-
-					if ($this->ActiveConnection === false)
-					{
-						throw new Exception("Failed to connect to database: {$this->DatabaseName}");
-					}
+					throw new Exception("Failed to connect to database: {$this->DatabaseName}");
 				}
 			}
 			elseif ($this->Type == Data::MySQL)
@@ -988,9 +975,8 @@ SQL;
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$pass = Security::Decrypt($pass, $encryptionKey);
 		}
 
 		$user = $this->Username;
@@ -1151,9 +1137,8 @@ SQL;
 
 		if ($this->PasswordEncrypted)
 		{
-			$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-			$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-			$pass = Security::Decrypt($pass, $encryptionKey, $iv);
+			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$pass = Security::Decrypt($pass, $encryptionKey);
 		}
 		$tempName = 'restore_db_' . date("YmdHis");
 
@@ -1240,10 +1225,22 @@ SQL;
 			BloodyMurder('SendTo only supported for Postgres data connections');
 		}
 
-		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-		$password = $this->PasswordEncrypted ? Security::Decrypt($this->Password, $encryptionKey, $iv) : $this->Password;
-		$targetPassword = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
+		$encryptionKey = false;
+		if($this->PasswordEncrypted)
+		{
+			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$password = Security::Decrypt($this->Password, $encryptionKey)
+		}
+		else
+			$password = $this->Password;
+		
+		if($target->PasswordEncrypted)
+		{
+			$encryptionKey = $encryptionKey || self::GetEncryptionKeyFromPath();
+			$targetPassword = Security::Decrypt($target->Password, $encryptionKey)
+		}
+		else
+			$targetPassword = $target->Password;
 
 		$filename = $target->DatabaseName . '_' . date('Ymdhis');
 		$file = $backupPath . '/' . $filename;
@@ -1295,10 +1292,14 @@ SQL;
 			BloodyMurder('Create Server is only supported for Postgres data connections');
 		}
 
-		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
-		$password = $target->PasswordEncrypted ? Security::Decrypt($target->Password, $encryptionKey, $iv) : $target->Password;
-
+		if($target->PasswordEncrypted)
+		{
+			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$password = Security::Decrypt($target->Password, $encryptionKey);
+		}
+		else
+			$password = $target->Password;
+		
 		// Validate format of additional users array
 		foreach ($userMappings as $user)
 		{
@@ -1342,11 +1343,21 @@ SQL;
 
 		$this->ExecSQL($query);
 	}
-	static function EncryptDBPassword($password)
+	static function EncryptDBPassword($password, $iv=null)
 	{
-		$encryptionKey = '4ySglKtY3qpdqM5xTOBTTMc777rv8qv44qc1v6jdEwU=';
-		$iv = 'lwHnoY6T0KZy7rkqdsHJgw==';
+		$encryptionKey = self::GetEncryptionKeyFromPath();
+		if(is_null($iv) && !is_null(Configuration::$DefaultIV)) 
+			$iv = Configuration::$DefaultIV;
 		return Security::Encrypt($password, $encryptionKey, $iv);
+	}
+	static private function GetEncryptionKeyFromPath($encryptionKeyPath = null)
+	{
+		if(is_null($encryptionKeyPath))
+			$encryptionKeyPath = Configuration::$DefaultEncryptionKeyPath;
+		$encryptionKey = file_get_contents($encryptionKeyPath);
+		if(empty($encryptionKey) || !$encryptionKey)
+			BloodyMurder('No encryption key found at the specified path');
+		return $encryptionKey;
 	}
 	static function ODBCByDSN($dsn, $type, $username = null, $password = null)
 	{

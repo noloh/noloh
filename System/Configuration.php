@@ -117,6 +117,16 @@ class Configuration extends Base implements Singleton
 	 */
 	public $MobileSsoValidationCallBack = array();
 	/**
+	* Specify a default cryptographic IV to be used in DataConnections
+	*
+	*/
+	public $DefaultIV = null;
+	/**
+	* Specify a default path to an Encryption Key to be used in DataConnections
+	*
+	*/
+	public $DefaultEncryptionKeyPath = null;
+	/**
 	 * Constructor
 	 * @return Configuration
 	 */
