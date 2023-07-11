@@ -304,4 +304,23 @@ final class Security
 		}
 		return substr($binaryString, $start, $length);
 	}
+	/**
+	 * Gets encryption key from reading a file at the specified path.
+	 * Does not retain read value in memory itself.
+	 *
+	 * @return string
+	 */
+	static public function GetEncryptionKeyFromPath($encryptionKeyPath = null)
+	{
+		if (is_null($encryptionKeyPath))
+		{
+			$encryptionKeyPath = Configuration::$DefaultEncryptionKeyPath;
+		}
+		$encryptionKey = file_get_contents($encryptionKeyPath);
+		if (empty($encryptionKey))
+		{
+			BloodyMurder('No encryption key found at the specified path');
+		}
+		return $encryptionKey;
+	}
 }

@@ -133,7 +133,7 @@ class DataConnection extends Base
 		$password = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$encryptionKey = Security::GetEncryptionKeyFromPath();
 			$password = Security::Decrypt($password, $encryptionKey);
 		}
 		System::BeginBenchmarking('_N/DataCommand::Connect');
@@ -975,7 +975,7 @@ SQL;
 		$pass = $this->Password;
 		if ($this->PasswordEncrypted)
 		{
-			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$encryptionKey = Security::GetEncryptionKeyFromPath();
 			$pass = Security::Decrypt($pass, $encryptionKey);
 		}
 
@@ -1137,7 +1137,7 @@ SQL;
 
 		if ($this->PasswordEncrypted)
 		{
-			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$encryptionKey = Security::GetEncryptionKeyFromPath();
 			$pass = Security::Decrypt($pass, $encryptionKey);
 		}
 		$tempName = 'restore_db_' . date("YmdHis");
@@ -1228,7 +1228,7 @@ SQL;
 		$encryptionKey = false;
 		if($this->PasswordEncrypted)
 		{
-			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$encryptionKey = Security::GetEncryptionKeyFromPath();
 			$password = Security::Decrypt($this->Password, $encryptionKey)
 		}
 		else
@@ -1236,7 +1236,7 @@ SQL;
 		
 		if($target->PasswordEncrypted)
 		{
-			$encryptionKey = $encryptionKey || self::GetEncryptionKeyFromPath();
+			$encryptionKey = $encryptionKey || Security::GetEncryptionKeyFromPath();
 			$targetPassword = Security::Decrypt($target->Password, $encryptionKey)
 		}
 		else
@@ -1294,7 +1294,7 @@ SQL;
 
 		if($target->PasswordEncrypted)
 		{
-			$encryptionKey = self::GetEncryptionKeyFromPath();
+			$encryptionKey = Security::GetEncryptionKeyFromPath();
 			$password = Security::Decrypt($target->Password, $encryptionKey);
 		}
 		else
@@ -1343,21 +1343,10 @@ SQL;
 
 		$this->ExecSQL($query);
 	}
-	static function EncryptDBPassword($password, $iv=null)
+	static function EncryptDBPassword($password)
 	{
-		$encryptionKey = self::GetEncryptionKeyFromPath();
-		if(is_null($iv) && !is_null(Configuration::$DefaultIV)) 
-			$iv = Configuration::$DefaultIV;
-		return Security::Encrypt($password, $encryptionKey, $iv);
-	}
-	static private function GetEncryptionKeyFromPath($encryptionKeyPath = null)
-	{
-		if(is_null($encryptionKeyPath))
-			$encryptionKeyPath = Configuration::$DefaultEncryptionKeyPath;
-		$encryptionKey = file_get_contents($encryptionKeyPath);
-		if(empty($encryptionKey) || !$encryptionKey)
-			BloodyMurder('No encryption key found at the specified path');
-		return $encryptionKey;
+		$encryptionKey = Security::GetEncryptionKeyFromPath();
+		return Security::Encrypt($password, $encryptionKey);
 	}
 	static function ODBCByDSN($dsn, $type, $username = null, $password = null)
 	{
