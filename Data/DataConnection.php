@@ -1292,14 +1292,15 @@ SQL;
 			BloodyMurder('Create Server is only supported for Postgres data connections');
 		}
 
-		if($target->PasswordEncrypted)
+		if ($target->PasswordEncrypted)
 		{
 			$encryptionKey = Security::GetEncryptionKeyFromPath();
 			$password = Security::Decrypt($target->Password, $encryptionKey);
 		}
 		else
+		{
 			$password = $target->Password;
-		
+		}
 		// Validate format of additional users array
 		foreach ($userMappings as $user)
 		{
