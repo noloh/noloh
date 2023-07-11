@@ -314,7 +314,7 @@ final class Security
 	{
 		if (is_null($encryptionKeyPath))
 		{
-			$encryptionKeyPath = Configuration::$DefaultEncryptionKeyPath;
+			$encryptionKeyPath = Configuration::$EncryptionKeyPath;
 		}
 		$encryptionKey = file_get_contents($encryptionKeyPath);
 		if (empty($encryptionKey))
