@@ -42,6 +42,7 @@ class DataReader extends Base implements ArrayAccess, Countable, Iterator
 	private $ColumnTypes;
 	protected $CallBack;
 	protected $Resource;
+	protected $ColumnNames = array();
 	
 	/**
 	 * Constructor
@@ -200,6 +201,8 @@ class DataReader extends Base implements ArrayAccess, Countable, Iterator
 
 			$count = -1;
 			$data = array();
+
+			$this->ColumnNames = array_column(sqlsrv_field_metadata($resource), 'Name');
 			do
 			{
 				++$count;
@@ -406,6 +409,15 @@ class DataReader extends Base implements ArrayAccess, Countable, Iterator
 	{
 		$this->Resource = null;
 		return (array)$this;
+	}
+	function GetColumns()
+	{
+		if ($this->Type !== Data::MSSQL)
+		{
+			BloodyMurder("DataReader::GetColumns is not supported for this database type");
+		}
+
+		return $this->ColumnNames;
 	}
 }
 ?>
