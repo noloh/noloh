@@ -1229,7 +1229,7 @@ SQL;
 		if($this->PasswordEncrypted)
 		{
 			$encryptionKey = Security::GetEncryptionKeyFromPath();
-			$password = Security::Decrypt($this->Password, $encryptionKey)
+			$password = Security::Decrypt($this->Password, $encryptionKey);
 		}
 		else
 			$password = $this->Password;
@@ -1237,7 +1237,7 @@ SQL;
 		if($target->PasswordEncrypted)
 		{
 			$encryptionKey = $encryptionKey || Security::GetEncryptionKeyFromPath();
-			$targetPassword = Security::Decrypt($target->Password, $encryptionKey)
+			$targetPassword = Security::Decrypt($target->Password, $encryptionKey);
 		}
 		else
 			$targetPassword = $target->Password;
