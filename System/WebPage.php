@@ -618,7 +618,7 @@ UserAgent::IsIE6() ? '
 				$obj->NoScriptShow('  ');
 		}
 		echo 
-' blah </BODY>
+'  </BODY>
 </HTML>';
 		ob_flush();
 		DataConnection::CloseAll(false);

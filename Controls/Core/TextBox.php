@@ -131,7 +131,6 @@ class TextBox extends Control
             ClientScript::AddNOLOHSource('Mixed/KeyEventsOpPPC.js');
             if(!isset($change['_N']))
                 $change['_N'] = new ClientEvent('_NKeyEvntsMoTimeout', $this);
-            Alert('inside');
         }
         return $change;
     }
