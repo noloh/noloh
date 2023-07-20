@@ -29,8 +29,8 @@ require($_NPath . 'Statics/System.php');
 require($_NPath . 'Statics/URL.php');
 require($_NPath . 'Statics/Dir.php');
 
-// If PHP is at least 7.2, try to include vendor components, usually Composer
-if (version_compare(PHP_VERSION, '7.2.0') >= 0)
+// Try to include vendor components, usually Composer
+if (file_exists($_NPath . 'vendor/autoload.php'))
 {
 	include($_NPath . 'vendor/autoload.php');
 }
