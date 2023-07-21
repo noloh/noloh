@@ -66,7 +66,7 @@ abstract class Resource extends Base
 		$this->Response = $data;
 	}
 	
-	function SendResponse()
+	function SendResponse($httpHeader = 'HTTP/1.1 200 OK')
 	{
 		$data = $this->Response;
 		if (is_object($data))
@@ -108,7 +108,7 @@ abstract class Resource extends Base
 			header('Content-Length: ' . strlen($output));
 		}
 
-		header('HTTP/1.1 200 OK');
+		header($httpHeader);
 		header('Content-Type: application/json');
 		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
 		header('Pragma: no-cache');

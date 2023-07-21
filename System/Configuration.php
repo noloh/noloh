@@ -112,10 +112,11 @@ class Configuration extends Base implements Singleton
 	 */
 	public $ForceSecureProtocol = false;
 	/**
-	 * Array of callback functions to be passed from app to Core for execution
-	 * @var array
+	 * Array storing the callback function to be passed from app to Core for validation of mobile sso.
+	 * @var array('Class', 'Function')
+	 * @return boolean
 	 */
-	public $CallBacks = [];
+	public $MobileSsoValidationCallBack = array();
 	/**
 	 * Constructor
 	 * @return Configuration
