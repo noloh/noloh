@@ -448,10 +448,11 @@ final class System
 	}
 	/**
 	 * Responds to client with an http status code and json message.
-	 * @param $response
-	 * @param $httpCode
+	 * @param mixed $response
+	 * @param integer $httpCode
+	 * @param string $contentType
 	 */
-	static function SendHttpResponse($response, $httpCode)
+	static function SendHttpResponse($response, $httpCode, $contentType = 'application/json')
 	{
 		if (is_object($response))
 		{
@@ -478,7 +479,10 @@ final class System
 				$response = get_object_vars($response);
 			}
 		}
-		$output = json_encode($response);
+		if ($contentType === 'application/json')
+		{
+			$output = json_encode($response);
+		}
 
 		while (ob_get_level())
 		{
@@ -493,7 +497,7 @@ final class System
 		}
 
 		static::SetHttpHeaderByStatusCode($httpCode);
-		header('Content-Type: application/json');
+		header('Content-Type: ' . $contentType);
 		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
 		header('Pragma: no-cache');
 
