@@ -266,15 +266,7 @@ final class Application extends Base
 			$class = $config->MobileSsoValidationCallBack[0];
 			$function = $config->MobileSsoValidationCallBack[1];
 
-			if (is_a($class, 'Base'))
-			{
-				$callbackClass = new $class();
-				$functionExists = $callbackClass->HasMethod($function);
-			}
-			else
-			{
-				$functionExists = method_exists($class, $function);
-			}
+			$functionExists = method_exists($class, $function);
 
 			$continue = $functionExists
 				? call_user_func(array($class, $function))

@@ -66,54 +66,10 @@ abstract class Resource extends Base
 		$this->Response = $data;
 	}
 	
-	function SendResponse($httpHeader = 'HTTP/1.1 200 OK')
+	function SendResponse()
 	{
 		$data = $this->Response;
-		if (is_object($data))
-		{
-			if (method_exists($data, 'ToArray'))
-			{
-				// Custom things, namely, Models.
-				$data = $data->ToArray();
-			}
-			elseif ($data instanceof DataCommand)
-			{
-				$data = $data->Execute()->Data;
-			}
-			elseif ($data instanceof DataReader)
-			{
-				$data = $data->Data;
-			}
-			elseif (static::IsAResponseInterface($data))		// Namely for handling GuzzleHttp\Psr7\Response
-			{
-				static::SendResponseFromInterface($data);
-				return;
-			}
-			else
-			{
-				$data = get_object_vars($data);
-			}
-		}
-		$output = json_encode($data);
-
-		while (ob_get_level())
-		{
-			ob_end_clean();
-		}
-
-		if (System::SupportsZip())
-		{
-			$output = gzencode($output);
-			header('Content-Encoding: gzip');
-			header('Content-Length: ' . strlen($output));
-		}
-
-		header($httpHeader);
-		header('Content-Type: application/json');
-		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
-		header('Pragma: no-cache');
-
-		echo $output;
+		System::SendHttpResponse($data, 200);
 	}
 
 	private static function IsAResponseInterface($obj)
