@@ -261,6 +261,20 @@ final class Application extends Base
 			$e->CallBackExec();
 		}
 
+		if (!empty($config->MobileSsoValidationCallBack))
+		{
+			$class = $config->MobileSsoValidationCallBack[0];
+			$function = $config->MobileSsoValidationCallBack[1];
+
+			$functionExists = method_exists($class, $function);
+
+			$continue = $functionExists
+				? call_user_func(array($class, $function))
+				: true;
+
+			$run = (isset($run) && $run && $continue);
+		}
+
 		if (isset($run) && $run === true)
 		{
 			$this->Run();

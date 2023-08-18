@@ -384,6 +384,52 @@ final class System
 		return isset($GLOBALS['_NREST']);
 	}
 	/**
+	 * Builds and sets a http header based on a status code.
+	 * @param $httpCode
+	 */
+	static function SetHttpHeaderByStatusCode($httpCode)
+	{
+		$lookUp = array(
+			200 => 'OK',
+			400 => 'Bad Request',
+			401 => 'Unauthorized',
+			402 => 'Payment Required',
+			403 => 'Forbidden',
+			404 => 'Not Found',
+			405 => 'Method Not Allowed',
+			406 => 'Not Acceptable',
+			407 => 'Proxy Authentication Required',
+			408 => 'Request Timeout',
+			409 => 'Conflict',
+			410 => 'Gone',
+			411 => 'Length Required',
+			412 => 'Precondition Failed',
+			413 => 'Request Entity Too Large',
+			414 => 'Request',
+			415 => 'Unsupported Media Type',
+			416 => 'Requested Range Not Satisfiable',
+			417 => 'Expectation Failed',
+			422 => 'Unprocessable Entity',
+			423 => 'Locked',
+			424 => 'Failed Dependency',
+			425 => 'Unordered Collection',
+			426 => 'Upgrade Required',
+			449 => 'Retry With',
+			450 => 'Blocked by Windows Parental Controls',
+			500 => 'Internal Server Error',
+			501 => 'Not Implemented',
+			502 => 'Bad Gateway',
+			503 => 'Service Unavailable',
+			504 => 'Gateway Timeout',
+			505 => 'HTTP Version Not Supported',
+			506 => 'Variant Also Negotiates',
+			507 => 'Insufficient Storage',
+			509 => 'Bandwidth Limit Exceeded',
+			510 => 'Not Extended'
+		);
+		header('HTTP/1.1 ' . $httpCode . ' ' . $lookUp[$httpCode], true, $httpCode);
+	}
+	/**
 	 * Produces an HTTP error with a specified status code and optional redirect.
 	 * @param integer $statusCode
 	 * @param string $urlRedirect
@@ -392,49 +438,70 @@ final class System
 	{
 		if(UserAgent::IsSpider() || !$urlRedirect)
 		{
-			$lookUp = array(
-				400 => 'Bad Request',
-				401 => 'Unauthorized',
-				402 => 'Payment Required',
-				403 => 'Forbidden',
-				404 => 'Not Found',
-				405 => 'Method Not Allowed',
-				406 => 'Not Acceptable',
-				407 => 'Proxy Authentication Required',
-				408 => 'Request Timeout',
-				409 => 'Conflict',
-				410 => 'Gone',
-				411 => 'Length Required',
-				412 => 'Precondition Failed',
-				413 => 'Request Entity Too Large',
-				414 => 'Request',
-				415 => 'Unsupported Media Type',
-				416 => 'Requested Range Not Satisfiable',
-				417 => 'Expectation Failed',
-				422 => 'Unprocessable Entity',
-				423 => 'Locked',
-				424 => 'Failed Dependency',
-				425 => 'Unordered Collection',
-				426 => 'Upgrade Required',
-				449 => 'Retry With',
-				450 => 'Blocked by Windows Parental Controls',
-				500 => 'Internal Server Error',
-				501 => 'Not Implemented',
-				502 => 'Bad Gateway',
-				503 => 'Service Unavailable',
-				504 => 'Gateway Timeout',
-				505 => 'HTTP Version Not Supported',
-				506 => 'Variant Also Negotiates',
-				507 => 'Insufficient Storage',
-				509 => 'Bandwidth Limit Exceeded',
-				510 => 'Not Extended'
-			);
-			header('HTTP/1.1 ' . $statusCode . ' ' . $lookUp[$statusCode], true, $statusCode);
+			static::SetHttpHeaderByStatusCode($statusCode);
+
 			exit();
 		}
 		else
 			//header('Location: ' . $urlRedirect);
 			ClientScript::Add('location="'.$urlRedirect.'";');
+	}
+	/**
+	 * Responds to client with an http status code and json message.
+	 * @param mixed $response
+	 * @param integer $httpCode
+	 * @param string $contentType
+	 */
+	static function SendHttpResponse($response, $httpCode, $contentType = 'application/json')
+	{
+		if (is_object($response))
+		{
+			if (method_exists($response, 'ToArray'))
+			{
+				// Custom things, namely, Models.
+				$response = $response->ToArray();
+			}
+			elseif ($response instanceof DataCommand)
+			{
+				$response = $response->Execute()->Data;
+			}
+			elseif ($response instanceof DataReader)
+			{
+				$response = $response->Data;
+			}
+			elseif (static::IsAResponseInterface($response))		// Namely for handling GuzzleHttp\Psr7\Response
+			{
+				static::SendResponseFromInterface($response);
+				return;
+			}
+			else
+			{
+				$response = get_object_vars($response);
+			}
+		}
+		if ($contentType === 'application/json')
+		{
+			$output = json_encode($response);
+		}
+
+		while (ob_get_level())
+		{
+			ob_end_clean();
+		}
+
+		if (System::SupportsZip())
+		{
+			$output = gzencode($output);
+			header('Content-Encoding: gzip');
+			header('Content-Length: ' . strlen($output));
+		}
+
+		static::SetHttpHeaderByStatusCode($httpCode);
+		header('Content-Type: ' . $contentType);
+		header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+		header('Pragma: no-cache');
+
+		echo $output;
 	}
 	/**
  	 * Returns the full system path to NOLOH
