@@ -128,6 +128,13 @@ class Configuration extends Base implements Singleton
 	public function __construct()
 	{
 		parent::__construct();
+		if (Configuration::That())
+		{
+			foreach (get_object_vars(Configuration::That()) as $name => $value)
+			{
+				$this->$name = $value;
+			}
+		}
 		$args = func_get_args();
 		$argLength = func_num_args();
         $firstIndex = 0;
