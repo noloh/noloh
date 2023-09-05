@@ -130,7 +130,7 @@ class Configuration extends Base implements Singleton
 		parent::__construct();
 		if (Configuration::That())
 		{
-			foreach(get_object_vars(Configuration::That()) as $name => $value)
+			foreach (get_object_vars(Configuration::That()) as $name => $value)
 			{
 				$this->$name = $value;
 			}
