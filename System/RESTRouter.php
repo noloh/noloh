@@ -224,10 +224,10 @@ abstract class RESTRouter extends Base
 	{
 		$config = Configuration::That();
 
-        if (empty($config))
-        {
-            $config = new Configuration();
-        }
+		if (empty($config))
+		{
+			$config = new Configuration();
+		}
 
 		$className = $config->StartClass;
 
@@ -285,7 +285,7 @@ abstract class RESTRouter extends Base
 			$error = $debugModeError ?: $exception->getMessage();
 		}
 
-        _NLogError($error, $exception);
+		_NLogError($error, $exception);
 
 		echo $error;
 	}
