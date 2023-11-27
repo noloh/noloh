@@ -20,8 +20,6 @@ abstract class RESTRouter extends Base
 	protected $ResourceName;
 	protected $Resource;
 	protected $InputData;
-
-    protected static $Configuration;
 	
 	function __construct()
 	{
