@@ -683,6 +683,16 @@ UserAgent::IsIE6() ? '
 		else
 			return parent::__set($nm, $val);
 	}
+
+    /**
+     * @param string $message
+     * @param Throwable | null $exception
+     * @return void
+     */
+    function LogError($message, $exception)
+    {
+        @error_log($message);
+    }
 }
 
 ?>

@@ -162,9 +162,9 @@ function _NExceptionHandler($exception)
 		}
 	}
 	
-	DisplayError($message);
+	DisplayError($message, $exception);
 }
-function DisplayError($message)
+function DisplayError($message, $exception = null)
 {
 	$level = ob_get_level();
 	for ($i = 0; $i < $level; ++$i)
@@ -183,7 +183,12 @@ function DisplayError($message)
 		++$_SESSION['_NVisit'];
 	}
 	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
-	@error_log($message);
+
+	$webPage = WebPage::That();
+	$webPage ?
+		$webPage->LogError($message, $exception) :
+		@error_log($message);
+
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
 	if ($gzip)
 	{
@@ -197,7 +202,6 @@ function DisplayError($message)
 	$requestDetails = &Application::UpdateRequestDetails();
 	$requestDetails['error_message'] = $message;
 	unset($requestDetails['total_session_io_time']);
-	$webPage = WebPage::That();
 	if ($webPage && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
 	{
 		$webPage->ProcessRequestDetails($requestDetails);
