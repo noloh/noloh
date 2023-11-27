@@ -121,6 +121,13 @@ class Configuration extends Base implements Singleton
 	*
 	*/
 	public $EncryptionKeyPath = null;
+
+
+	/**
+	 * @var Callback function for custom error logging
+	 */
+	protected $LogError;
+
 	/**
 	 * Constructor
 	 * @return Configuration
@@ -238,6 +245,22 @@ class Configuration extends Base implements Singleton
 		$GLOBALS['_NDebugMode'] = $debugMode;
 		$this->DebugMode = $debugMode;
 	}
+
+	public function SetLogError($callback)
+	{
+		if (!is_callable($callback))
+		{
+			BloodyMurder('Configuration LogError must be callable');
+		}
+
+		$this->LogError = $callback;
+	}
+
+	public function GetLogError()
+	{
+		return $this->LogError;
+	}
+
 	/**
 	 * Returns the instance of Configuration currently in use. The name is a pun on the "this" concept. See also Singleton interface.
 	 * @return Configuration

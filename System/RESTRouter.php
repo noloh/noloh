@@ -222,7 +222,13 @@ abstract class RESTRouter extends Base
 	
 	public static function Bootstrap()
 	{
-		$config = new Configuration();
+		$config = Configuration::That();
+
+		if (empty($config))
+		{
+			$config = new Configuration();
+		}
+
 		$className = $config->StartClass;
 
 		Application::SetNolohSessionVars();
@@ -278,6 +284,8 @@ abstract class RESTRouter extends Base
 		{
 			$error = $debugModeError ?: $exception->getMessage();
 		}
+
+		_NLogError($error, $exception);
 
 		echo $error;
 	}

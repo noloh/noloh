@@ -3,6 +3,28 @@
  * @ignore
  */
 // TODO: Move into a class at some point?
+
+
+/**
+ * Calls custom logging function or PHP's error_log
+ * @ignore
+ */
+function _NLogError($message, $exception)
+{
+	$config = Configuration::That();
+	if ($config)
+	{
+		$logError = $config->LogError;
+		!empty($logError) ?
+			$logError($message, $exception) :
+			@error_log($message);
+	}
+	else
+	{
+		@error_log($message);
+	}
+}
+
 /**
  * @ignore
  */
@@ -162,9 +184,9 @@ function _NExceptionHandler($exception)
 		}
 	}
 	
-	DisplayError($message);
+	DisplayError($message, $exception);
 }
-function DisplayError($message)
+function DisplayError($message, $exception = null)
 {
 	$level = ob_get_level();
 	for ($i = 0; $i < $level; ++$i)
@@ -183,7 +205,9 @@ function DisplayError($message)
 		++$_SESSION['_NVisit'];
 	}
 	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
-	@error_log($message);
+
+	_NLogError($message, $exception);
+
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
 	if ($gzip)
 	{
@@ -197,6 +221,7 @@ function DisplayError($message)
 	$requestDetails = &Application::UpdateRequestDetails();
 	$requestDetails['error_message'] = $message;
 	unset($requestDetails['total_session_io_time']);
+
 	$webPage = WebPage::That();
 	if ($webPage && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
 	{
