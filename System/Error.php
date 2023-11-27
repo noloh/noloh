@@ -3,6 +3,28 @@
  * @ignore
  */
 // TODO: Move into a class at some point?
+
+
+/**
+ * Calls custom logging function or PHP's error_log
+ * @ignore
+ */
+function _NLogError($message, $exception)
+{
+	$config = Configuration::That();
+	if ($config)
+	{
+		$logError = $config->LogError;
+		!empty($logError) ?
+			$logError($message, $exception) :
+			@error_log($message);
+	}
+	else
+	{
+		@error_log($message);
+	}
+}
+
 /**
  * @ignore
  */
@@ -184,11 +206,7 @@ function DisplayError($message, $exception = null)
 	}
 	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
 
-	$config = Configuration::That();
-	$logError = $config->LogError;
-	$config && !empty($logError) ?
-		$logError($message, $exception) :
-		@error_log($message);
+	_NLogError($message, $exception);
 
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
 	if ($gzip)

@@ -285,15 +285,7 @@ abstract class RESTRouter extends Base
 			$error = $debugModeError ?: $exception->getMessage();
 		}
 
-        $config = Configuration::That();
-        if ($config)
-        {
-            $logError = $config->LogError;
-            if (!empty($logError))
-            {
-                $logError($error, $exception);
-            }
-        }
+        _NLogError($error, $exception);
 
 		echo $error;
 	}
