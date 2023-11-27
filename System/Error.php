@@ -184,9 +184,10 @@ function DisplayError($message, $exception = null)
 	}
 	$message = str_replace(array("\n", "\r", '"'), array('\n', '\r', '\"'), $message);
 
-	$webPage = WebPage::That();
-	$webPage ?
-		$webPage->LogError($message, $exception) :
+	$config = Configuration::That();
+	$logError = $config->LogError;
+	$config && !empty($logError) ?
+		$logError($message, $exception) :
 		@error_log($message);
 
 	echo '/*_N*/alert("', $GLOBALS['_NDebugMode'] ? "A server error has occurred:\\n\\n{$message}" : $GLOBALS['_NDebugModeError'], '");';
@@ -202,6 +203,8 @@ function DisplayError($message, $exception = null)
 	$requestDetails = &Application::UpdateRequestDetails();
 	$requestDetails['error_message'] = $message;
 	unset($requestDetails['total_session_io_time']);
+
+	$webPage = WebPage::That();
 	if ($webPage && method_exists($webPage, 'ProcessRequestDetails') && !empty($requestDetails) && $requestDetails['visit'] > 0)
 	{
 		$webPage->ProcessRequestDetails($requestDetails);
