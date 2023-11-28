@@ -249,10 +249,11 @@ abstract class RESTRouter extends Base
 		}
 	}
 
-	protected static function ErrorHandling(Exception $exception)
+	protected static function ErrorHandling($exception)
 	{
 		$debugModeError = null;
 		$debugType = null;
+		$debugMode = true;
 
 		$resourceException = ($exception instanceof ResourceException);
 		if (!$resourceException)
@@ -262,10 +263,13 @@ abstract class RESTRouter extends Base
 
 			if ($exception instanceof SqlFriendlyException)
 			{
+				$debugMode = false;
 				$debugType = 'SQL';
+				$debugModeError = $exception->getMessage();
 			}
 			elseif (isset($config))
 			{
+				$debugMode = $config->DebugMode;
 				$debugModeError = $config->DebugModeError;
 				$debugType = $config::Alert;
 			}
@@ -273,16 +277,20 @@ abstract class RESTRouter extends Base
 
 		if (static::$JSONErrors)
 		{
-			$error = array(
-				//'code' => $exception->getCode(),
-				'type' => $debugType ?: (($resourceException) ? $exception->GetErrorType() : get_class($exception)),
-				'message' => $debugModeError ?: $exception->getMessage()
-			);
+			$error = $debugMode ?
+				array('type' => get_class($exception), 'message' => $exception->getMessage()) :
+				array('type' => $debugType, 'message' => $debugModeError);
+
+			if ($resourceException)
+			{
+				$error['type'] = $exception->GetErrorType();
+			}
+
 			$error = json_encode($error);
 		}
 		else
 		{
-			$error = $debugModeError ?: $exception->getMessage();
+			$error = $debugMode ? $debugModeError : $exception->getMessage();
 		}
 
 		_NLogError($error, $exception);
