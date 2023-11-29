@@ -22,7 +22,7 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  */
 function GetNOLOHVersion()
 {
-	return '1.10.4';
+	return '1.10.5';
 }
 
 ?>
