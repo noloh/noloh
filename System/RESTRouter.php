@@ -240,7 +240,10 @@ abstract class RESTRouter extends Base
 
 		try
 		{
-			static::$JSONErrors = $className::$JSONErrors;
+			//static::$JSONErrors = $className::$JSONErrors;
+
+			throw new Exception('THIS IS A RANDOM ERROR THROWN NOT CAUGHT');
+
 			new $className;
 		}
 		catch (Exception $e)
@@ -251,46 +254,57 @@ abstract class RESTRouter extends Base
 
 	protected static function ErrorHandling($exception)
 	{
-		$debugModeError = null;
-		$debugType = null;
-		$debugMode = true;
+		$config = Configuration::That();
 
-		$resourceException = ($exception instanceof ResourceException);
-		if (!$resourceException)
+		if (!empty($config))
 		{
-			header('HTTP/1.1 500 Internal Server Error');
-			$config = Configuration::That();
-
-			if ($exception instanceof SqlFriendlyException)
-			{
-				$debugMode = false;
-				$debugType = 'SQL';
-				$debugModeError = $exception->getMessage();
-			}
-			elseif (isset($config))
-			{
-				$debugMode = $config->DebugMode;
-				$debugModeError = $config->DebugModeError;
-				$debugType = $config::Alert;
-			}
+			$debugMode = $config->DebugMode;
+			$debugModeError = $config->DebugModeError;
+			$debugType = $config::Alert;
+		}
+		else
+		{
+			$debugModeError = null;
+			$debugType = null;
+			$debugMode = true;
 		}
 
 		if (static::$JSONErrors)
 		{
-			$error = $debugMode ?
-				array('type' => get_class($exception), 'message' => $exception->getMessage()) :
-				array('type' => $debugType, 'message' => $debugModeError);
-
-			if ($resourceException)
+			if ($exception instanceof ResourceException)
 			{
-				$error['type'] = $exception->GetErrorType();
+				$error = array(
+					'type'		=> $exception->GetErrorType(),
+					'message'	=> $exception->getMessage()
+				);
+			}
+			elseif ($exception instanceof SqlFriendlyException)
+			{
+				header('HTTP/1.1 500 Internal Server Error');
+				$error = array(
+					'type'		=> 'SQL',
+					'message'	=> $exception->getMessage()
+				);
+			}
+			else
+			{
+				header('HTTP/1.1 500 Internal Server Error');
+				$error = $debugMode ?
+					array(
+						'type' => get_class($exception),
+						'message' => $exception->getMessage()
+					) :
+					array(
+						'type' => $debugType,
+						'message' => $debugModeError
+					);
 			}
 
 			$error = json_encode($error);
 		}
 		else
 		{
-			$error = $debugMode ? $debugModeError : $exception->getMessage();
+			$error = $debugMode ? $exception->getMessage() : $debugModeError;
 		}
 
 		_NLogError($error, $exception);
