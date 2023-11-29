@@ -249,41 +249,55 @@ abstract class RESTRouter extends Base
 		}
 	}
 
-	protected static function ErrorHandling(Exception $exception)
+	protected static function ErrorHandling($exception)
 	{
-		$debugModeError = null;
-		$debugType = null;
+		$config = Configuration::That();
 
-		$resourceException = ($exception instanceof ResourceException);
-		if (!$resourceException)
+		if (!empty($config))
 		{
-			header('HTTP/1.1 500 Internal Server Error');
-			$config = Configuration::That();
-
-			if ($exception instanceof SqlFriendlyException)
-			{
-				$debugType = 'SQL';
-			}
-			elseif (isset($config))
-			{
-				$debugModeError = $config->DebugModeError;
-				$debugType = $config::Alert;
-			}
-		}
-
-		if (static::$JSONErrors)
-		{
-			$error = array(
-				//'code' => $exception->getCode(),
-				'type' => $debugType ?: (($resourceException) ? $exception->GetErrorType() : get_class($exception)),
-				'message' => $debugModeError ?: $exception->getMessage()
-			);
-			$error = json_encode($error);
+			$debugMode = $config->DebugMode;
+			$debugModeError = $config->DebugModeError;
+			$debugType = $config::Alert;
 		}
 		else
 		{
-			$error = $debugModeError ?: $exception->getMessage();
+			$debugModeError = null;
+			$debugType = null;
+			$debugMode = true;
 		}
+
+		if ($exception instanceof ResourceException)
+		{
+			$error = array(
+				'type'		=> $exception->GetErrorType(),
+				'message'	=> $exception->getMessage()
+			);
+		}
+		elseif ($exception instanceof SqlFriendlyException)
+		{
+			header('HTTP/1.1 500 Internal Server Error');
+			$error = array(
+				'type'		=> 'SQL',
+				'message'	=> $exception->getMessage()
+			);
+		}
+		else
+		{
+			header('HTTP/1.1 500 Internal Server Error');
+			$error = $debugMode ?
+				array(
+					'type' => get_class($exception),
+					'message' => $exception->getMessage()
+				) :
+				array(
+					'type' => $debugType,
+					'message' => $debugModeError
+				);
+		}
+
+		$error = static::$JSONErrors ?
+			json_encode($error) :
+			$error['message'];
 
 		_NLogError($error, $exception);
 
