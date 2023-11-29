@@ -266,43 +266,38 @@ abstract class RESTRouter extends Base
 			$debugMode = true;
 		}
 
-		if (static::$JSONErrors)
+		if ($exception instanceof ResourceException)
 		{
-			if ($exception instanceof ResourceException)
-			{
-				$error = array(
-					'type'		=> $exception->GetErrorType(),
-					'message'	=> $exception->getMessage()
-				);
-			}
-			elseif ($exception instanceof SqlFriendlyException)
-			{
-				header('HTTP/1.1 500 Internal Server Error');
-				$error = array(
-					'type'		=> 'SQL',
-					'message'	=> $exception->getMessage()
-				);
-			}
-			else
-			{
-				header('HTTP/1.1 500 Internal Server Error');
-				$error = $debugMode ?
-					array(
-						'type' => get_class($exception),
-						'message' => $exception->getMessage()
-					) :
-					array(
-						'type' => $debugType,
-						'message' => $debugModeError
-					);
-			}
-
-			$error = json_encode($error);
+			$error = array(
+				'type'		=> $exception->GetErrorType(),
+				'message'	=> $exception->getMessage()
+			);
+		}
+		elseif ($exception instanceof SqlFriendlyException)
+		{
+			header('HTTP/1.1 500 Internal Server Error');
+			$error = array(
+				'type'		=> 'SQL',
+				'message'	=> $exception->getMessage()
+			);
 		}
 		else
 		{
-			$error = $debugMode ? $exception->getMessage() : $debugModeError;
+			header('HTTP/1.1 500 Internal Server Error');
+			$error = $debugMode ?
+				array(
+					'type' => get_class($exception),
+					'message' => $exception->getMessage()
+				) :
+				array(
+					'type' => $debugType,
+					'message' => $debugModeError
+				);
 		}
+
+		$error = static::$JSONErrors ?
+			json_encode($error) :
+			$error['message'];
 
 		_NLogError($error, $exception);
 
