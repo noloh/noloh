@@ -1,7 +1,7 @@
 {
   "name": "noloh/noloh",
   "description": "Unified, object-oriented PHP Framework that eliminates the need for HTML, JavaScript, and AJAX",
-  "license": "LGPL v2.1",
+  "license": "LGPL-2.1",
   "require": {
   }
 }
