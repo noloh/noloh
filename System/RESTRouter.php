@@ -240,10 +240,7 @@ abstract class RESTRouter extends Base
 
 		try
 		{
-			//static::$JSONErrors = $className::$JSONErrors;
-
-			throw new Exception('THIS IS A RANDOM ERROR THROWN NOT CAUGHT');
-
+			static::$JSONErrors = $className::$JSONErrors;
 			new $className;
 		}
 		catch (Exception $e)
