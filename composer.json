@@ -1,0 +1,7 @@
+{
+  "name": "noloh",
+  "description": "Unified, object-oriented PHP Framework that eliminates the need for HTML, JavaScript, and AJAX",
+  "license": "LGPL v2.1",
+  "require": {
+  }
+}
