@@ -224,6 +224,15 @@ class Image extends Control
 	{
 		parent::SetText($text === System::Auto ? null : ('\''.$text));
 	}
+	function SetAltText($altText)
+	{
+		parent::SetAltText($altText);
+
+		if (empty($this->GetToolTip()))
+		{
+			$this->SetToolTip($altText);
+		}
+	}
 	/**
 	 * Conjure can be used to render your own images on the fly, e.g., for creating captuas. It lets you specify a callback function, which MUST
 	 * be static, whose first parameter is the image resource, and subsequent parameters can be anything you define. One can then call PHP's image 
