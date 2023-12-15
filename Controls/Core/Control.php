@@ -42,6 +42,7 @@ abstract class Control extends Component
 	private $Semantics;
 	private $Toggle;
 	private $TabIndex;
+	private $AltText;
 	/**
 	* Constructor.
 	* Be sure to call this from the constructor of any class that extends Control
@@ -1123,6 +1124,23 @@ abstract class Control extends Component
 	 * @param Event $shiftStop
 	 */
 	function SetLeave($event)				{$this->SetEvent($event, 'Leave');}
+	/**
+	 * Returns the Alt of the Control, text appears in place of the image if the image fails to load.
+	 * @return string
+	 */
+	function GetAltText()
+	{
+		return $this->AltText;
+	}
+	/**
+	 * Sets the Alt of the Control, text appears in place of the image if the image fails to load.
+	 * @param string $altText
+	 */
+	function SetAltText($altText)
+	{
+		$this->AltText = $altText;
+		NolohInternal::SetProperty('alt', $altText, $this);
+	}
 	/**
 	 * @ignore
 	 */
