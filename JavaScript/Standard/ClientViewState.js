@@ -607,33 +607,73 @@ function _NSE(eventType, id, uploads)
 	if(eventType == "Unload")
 		_NServer();
 }
+function _NPrepareServer()
+{
+	var url = location.href,
+		hashPos = url.indexOf("#!/"),
+		queryPos,
+		unload = false,
+		sECount = _N.SEQ.length,
+		events = "",
+		data = {};
+
+	for (var i=0; i<sECount; ++i)
+	{
+		if (_N.SEQ[i][0] == "Unload")
+		{
+			unload = true;
+		}
+		events += _N.SEQ[i][0] + "@" + _N.SEQ[i][1] + ",";
+	}
+	_N.SEQ = [];
+	events = events.substring(0, events.length - 1);
+
+	data = {
+		_NVisit: ++_N.Visit,
+		_NEventVars: _NEventVarsString(),
+		_NChanges: _NChangeString(),
+		_NEvents: events
+	};
+
+	if (_N.URLTokenLink)
+	{
+		data._NTokenLink = _N.URLTokenLink;
+		_N.URLTokenLink = null;
+	}
+
+	if (_N.Spinner !== false)
+	{
+		_N(_N.LoadIndicator).style.visibility = "visible";
+	}
+
+	url = hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&");
+
+	return {
+		url: url,
+		data: data,
+		unload: unload
+	};
+}
 function _NServer()
 {
-	if(!_N.Request)
+	if (!_N.Request)
 	{
-		var url = location.href, hashPos = url.indexOf("#!/"), queryPos, notUnload = true, sECount = _N.SEQ.length;
-		var str = "_NVisit="+ ++_N.Visit+"&_NEventVars="+_NEventVarsString()+"&_NChanges="+_NChangeString()+"&_NEvents=";
-		for(var i=0; i<sECount; ++i)
+		var str = "",
+			params = _NPrepareServer();
+
+		for (var key in params.data)
 		{
-			if(_N.SEQ[i][0] == "Unload")
-				notUnload = false;
-			str += _N.SEQ[i][0] + "@" + _N.SEQ[i][1] + ",";
+			if (params.data.hasOwnProperty(key))
+			{
+				str += key + "=" + params.data[key] + "&";
+			}
 		}
-		_N.SEQ = [];
-		str = str.substr(0, str.length-1);
-		if(_N.URLTokenLink)
-		{
-			str += "&_NTokenLink="+_N.URLTokenLink;
-			_N.URLTokenLink = null;
-		}
-		if (_N.Spinner !== false)
-		{
-			_N(_N.LoadIndicator).style.visibility = "visible";
-		}
-		_N.Request = _NXHR("POST", 
-	    	hashPos==-1 ? url.replace(location.hash,"") : url.replace("#!/",(queryPos=url.indexOf("?"))==-1||hashPos<queryPos?"?":"&"),
-	    	notUnload ? _NReqStateChange : null,
-	    	notUnload);
+		str = str.substring(0, str.length - 1);
+
+		_N.Request = _NXHR("POST",
+			params.url,
+			params.unload ? null : _NReqStateChange,
+			!params.unload);
 		_N.Request.send(str);
 	}
 }
