@@ -162,6 +162,17 @@ final class Application extends Base
 	{
 		NolohInternal::SaveSessionState();
 
+		if (strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false)
+		{
+			$_POST = array_map(
+				function ($value)
+				{
+					return urldecode($value);
+				},
+				$_POST
+			);
+		}
+
 		try
 		{
 			$GLOBALS['_NURLTokenMode'] = $config->URLTokenMode;
@@ -228,7 +239,10 @@ final class Application extends Base
 					}
 					foreach ($_SESSION['_NFiles'] as $key => $val)
 					{
-						GetComponentById($key)->File = new File($val);
+						if ($file = GetComponentById($key))
+						{
+							$file->File = new File($val);
+						}
 					}
 					if (isset($_POST['_NTokenLink']))
 					{
@@ -241,7 +255,10 @@ final class Application extends Base
 					foreach ($_SESSION['_NFiles'] as $key => $val)
 					{
 						unlink($_SESSION['_NFiles'][$key]['tmp_name']);
-						GetComponentById($key)->File = null;
+						if ($file = GetComponentById($key))
+						{
+							$file->File = null;
+						}
 						unset($_SESSION['_NFiles'][$key]);
 					}
 					if (isset($_POST['_NListener']))
