@@ -578,6 +578,7 @@ function _NReqStateChange()
 		}
 		else
 		{
+			--_N.Visit;
 			alert("HTTP error: " + req.status + "\n" + req.statusText);
 		}
 
