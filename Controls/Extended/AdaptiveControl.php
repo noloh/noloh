@@ -5,7 +5,7 @@ class AdaptiveControl extends ControlPair
 	public $Translated = false;
 	public $Styled = false;
 
-	function __construct($placeholder, $secondControl = null, $left = 0, $top = 0)
+	function __construct($placeholder, $secondControl = null, $left = 0, $top = 0, $adaptiveLabel = true)
 	{
 		$firstControl = new AdaptiveLabel($placeholder);
 		$firstControl->CSSPadding = '0px';
@@ -38,7 +38,7 @@ class AdaptiveControl extends ControlPair
 
 		parent::__construct($firstControl, $secondControl, $left, $top, Layout::Vertical);
 
-		ClientScript::Queue($this, "AdaptiveControl", array($this->First->Id, $this->Second->Id));
+		ClientScript::Queue($this, "AdaptiveControl", array($this->First->Id, $this->Second->Id, $adaptiveLabel));
 
 		if ($secondControl instanceof Kendo\CommonDateTimeBox)
 		{
