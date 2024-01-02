@@ -1,4 +1,4 @@
-var AdaptiveControl = function(labelId, controlId)
+var AdaptiveControl = function(labelId, controlId, adaptiveLabel = true)
 {
 	var label = $('#' + labelId),
 		control = $('#' + controlId),
@@ -13,11 +13,25 @@ var AdaptiveControl = function(labelId, controlId)
 		var el = $(e.target);
 		if ((el.val() || el.val() === 0) && !(el.val() == -1 && el.attr('data-role') == 'combobox'))
 		{
-			label.addClass("AdaptiveLabelFocused");
+			if (adaptiveLabel)
+			{
+				label.addClass("AdaptiveLabelFocused");
+			}
+			else
+			{
+				label.css('visibility', 'hidden');
+			}
 		}
 		else if (!label.attr('data-always-focused'))
 		{
-			label.removeClass("AdaptiveLabelFocused");
+			if (adaptiveLabel)
+			{
+				label.removeClass("AdaptiveLabelFocused");
+			}
+			else
+			{
+				label.css('visibility', 'visible');
+			}
 		}
 	};
 	input.on('input change', checkClass);
