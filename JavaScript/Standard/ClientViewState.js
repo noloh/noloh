@@ -572,14 +572,22 @@ function _NReqStateChange()
 				}
 			}
 		}
-		else if (req.status == 0)
-		{
-			alert("Unable to contact server. Please check your connection.");
-		}
 		else
 		{
+			/*
+				With each server request, the _N.Visit is incremented. In the event that there was a non-200 response
+				(which indicates the Server very likely did not increment its session NVisit) we want to ensure that the
+				client side _N.Visit does not diverge. Therefore we decrement.
+			*/
 			--_N.Visit;
-			alert("HTTP error: " + req.status + "\n" + req.statusText);
+			if (req.status == 0)
+			{
+				alert("Unable to contact server. Please check your connection.");
+			}
+			else
+			{
+				alert("HTTP error: " + req.status + "\n" + req.statusText);
+			}
 		}
 
 		_NUnServer(loadIndicator);
