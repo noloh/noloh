@@ -370,6 +370,11 @@ final class URL
 	 */
 	static function GetProtocol()	
 	{
+		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']))
+		{
+			return $_SERVER['HTTP_X_FORWARDED_PROTO'];
+		}
+
 		return (!isset($_SERVER['HTTPS'])||$_SERVER['HTTPS']==='off'?'http':'https');
 	}
 	/**
