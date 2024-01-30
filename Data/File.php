@@ -70,7 +70,16 @@ class File extends Base
 			header('Content-Length: ' . $fileSize);
 			header('Content-Disposition: attachment; filename=' . basename($fileInfo[1]?$fileInfo[1]:$fileName));
 			header('Content-Transfer-Encoding: binary');
-			readfile($fileName);
+
+			if (isset($contents))
+			{
+				echo $contents;
+			}
+			else
+			{
+				readfile($fileName);
+			}
+
 			unset($_SESSION['_NFileSend'][$fileName]);
 		}
 		else 
