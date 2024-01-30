@@ -56,10 +56,30 @@ class File extends Base
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Content-Description: File Transfer');
 			header('Content-Type: ' . $fileInfo[0]);
-			header('Content-Length: ' . filesize($fileName));
+
+			if (is_file($fileName))
+			{
+				$fileSize = filesize($fileName);
+			}
+			else
+			{
+				$contents = file_get_contents($fileName);
+				$fileSize = strlen($contents);
+			}
+
+			header('Content-Length: ' . $fileSize);
 			header('Content-Disposition: attachment; filename=' . basename($fileInfo[1]?$fileInfo[1]:$fileName));
 			header('Content-Transfer-Encoding: binary');
-			readfile($fileName);
+
+			if (isset($contents))
+			{
+				echo $contents;
+			}
+			else
+			{
+				readfile($fileName);
+			}
+
 			unset($_SESSION['_NFileSend'][$fileName]);
 		}
 		else 
