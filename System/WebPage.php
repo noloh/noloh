@@ -479,7 +479,7 @@ HTML;
 		if(defined('FORCE_GZIP'))
 			ob_start('ob_gzhandler');
 		$symbol = empty($_GET) ? '?' : '&';
-		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(location.hash||"#","")+"'.$symbol.'" : document.URL.replace("#!/","'.$symbol.'")+"&") +
+		$url = '(document.URL.indexOf("#!/")==-1 ? document.URL.replace(/#$/, "").replace(location.hash||"#","")+"'.$symbol.'" : document.URL.replace(/#$/, "").replace("#!/","'.$symbol.'")+"&") +
                "_NVisit=0&_NTimeZone=" + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) +
                "&_NWidth=" + document.documentElement.clientWidth + "&_NHeight=" + document.documentElement.clientHeight + "&_NMaxTouchPoints=" + 
                _NMaxTouchPoints + "&_NBrowserPlatform=" + _NBrowserPlatform + "&_NStrategy=Show"';
