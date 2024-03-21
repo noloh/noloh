@@ -9,7 +9,7 @@ final class Cookie
 {
 	private function __construct() {}
 
-	public static function Set($name, $value, $expires = 0)
+	public static function Set($name, $value, $expires = 0, $sameSite = 'Strict')
 	{
 		if (!is_numeric($expires))
 		{
@@ -25,7 +25,6 @@ final class Cookie
 		}
 
 		$config = Configuration::That();
-		$sameSite = 'Strict';
 		$secure = ($config && $config->ForceSecureProtocol);
 		$httpOnly = true;
 
