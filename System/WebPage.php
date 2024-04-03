@@ -585,7 +585,7 @@ UserAgent::IsIE6() ? '
 	 */
 	function NoScriptShow($indent)
 	{
-		ob_end_clean();
+		Application::ObEndAll();
 		if(defined('FORCE_GZIP'));
 			ob_start('ob_gzhandler');
 		echo 

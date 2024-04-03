@@ -188,11 +188,7 @@ function _NExceptionHandler($exception)
 }
 function DisplayError($message, $exception = null)
 {
-	$level = ob_get_level();
-	for ($i = 0; $i < $level; ++$i)
-	{
-		ob_end_clean();
-	}
+	Application::ObEndAll();
 	header('Content-Type: text/javascript');
 
 	$gzip = defined('FORCE_GZIP');

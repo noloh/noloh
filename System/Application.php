@@ -110,8 +110,7 @@ final class Application extends Base
 	 */
 	public static function Reset($clearURLTokens = true, $clearSessionVariables = true, $alert = false)
 	{
-		if(isset($GLOBALS['_NDebugMode']))
-			ob_end_clean();
+		Application::ObEndAll();
         echo '/*_N*/';
 		if ($alert)
 			echo 'alert("', str_replace(array('\\',"\n","\r",'"'),array('\\\\','\n','\r','\"'),$alert), '");';
@@ -755,6 +754,7 @@ final class Application extends Base
 			$tokenString = $_SERVER['QUERY_STRING'];
 		}
 		NolohInternal::Queues();
+		// TODO: I think this should be Application::ObEndAll() but I am not bold enough to make the change yet
 		ob_end_clean();
 		$gzip = defined('FORCE_GZIP');
 		if ($gzip)
@@ -938,6 +938,17 @@ final class Application extends Base
 				(($home = (strpos(getcwd(), $selfDir = dirname($_SERVER['PHP_SELF']))===false))
 					? System::GetRelativePath($selfDir, '/', '/') . System::GetRelativePath($_SERVER['DOCUMENT_ROOT'], $_SESSION['_NPath'], '/')
 					: $_SESSION['_NRPath']), '/');
+	}
+
+	/**
+	 * @ignore
+	 */
+	public static function ObEndAll()
+	{
+		while (ob_get_level())
+		{
+			ob_end_clean();
+		}
 	}
 }
 
