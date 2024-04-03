@@ -484,10 +484,7 @@ final class System
 			$output = json_encode($response);
 		}
 
-		while (ob_get_level())
-		{
-			ob_end_clean();
-		}
+		Application::ObEndAll();
 
 		if (System::SupportsZip())
 		{

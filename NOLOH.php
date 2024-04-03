@@ -22,7 +22,7 @@ function ComputeNOLOHPath()	{return dirname(__FILE__);}
  */
 function GetNOLOHVersion()
 {
-	return '1.10.12';
+	return '1.10.13';
 }
 
 ?>
