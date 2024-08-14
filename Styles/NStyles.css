@@ -192,6 +192,8 @@ a.NPag:hover
 	transform-origin: 0 0;
 	transform: translate(5px, -16px) scale(0.8, 0.8);
 	margin: 0;
+	color: #475467;
+	font-weight: 550;
 }
 .NMainContextMenu,
 .NPanel.loading-indicator,
