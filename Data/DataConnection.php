@@ -970,6 +970,15 @@ SQL;
 			BloodyMurder('Not yet supported for this database type');
 		}
 	}
+	/**
+	 * Returns the escaped version of the password, especially safe for CLI
+	 * @param $password string
+	 * @return string
+	 */
+	protected function EscapePassword($password)
+	{
+		return str_replace('$', '\\$', $password);
+	}
 	function DBDump($file, $compressionLevel = 5)
 	{
 		$pass = $this->Password;
@@ -986,8 +995,9 @@ SQL;
 
 		if (PHP_OS === 'Linux')
 		{
+			$pass = $this->EscapePassword($pass);
 			$path = file_exists('/usr/bin/pg_dump93') ? '/usr/bin/pg_dump93' : 'pg_dump';
-			$backup = "PGPASSWORD={$pass} {$path} -h {$host} -U {$user} -p {$port}";
+			$backup = "PGPASSWORD=\"{$pass}\" {$path} -h {$host} -U {$user} -p {$port}";
 			$gzip = exec('which gzip 2>&1');
 			if (is_executable ($gzip) && $compressionLevel !== 0)
 			{
@@ -1149,8 +1159,9 @@ SQL;
 		}
 		else
 		{
-			$createCommand = "PGPASSWORD={$pass} createdb -h {$host} -U {$user} -p {$port} {$tempName}";
-			$restoreCommand = "PGPASSWORD={$pass} psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
+			$pass = $this->EscapePassword($pass);
+			$createCommand = "PGPASSWORD=\"{$pass}\" createdb -h {$host} -U {$user} -p {$port} {$tempName}";
+			$restoreCommand = "PGPASSWORD=\"{$pass}\" psql -h {$host} -U {$user} -p {$port} -d {$tempName} -f {$file}";
 		}
 
 		// Create new DB and Restore file into it.
@@ -1233,7 +1244,9 @@ SQL;
 		}
 		else
 			$password = $this->Password;
-		
+
+		$password = $this->EscapePassword($password);
+
 		if($target->PasswordEncrypted)
 		{
 			$encryptionKey = $encryptionKey || Security::GetEncryptionKeyFromPath();
@@ -1241,6 +1254,8 @@ SQL;
 		}
 		else
 			$targetPassword = $target->Password;
+
+		$targetPassword = $this->EscapePassword($targetPassword);
 
 		$filename = $target->DatabaseName . '_' . date('Ymdhis');
 		$file = $backupPath . '/' . $filename;
@@ -1252,7 +1267,7 @@ SQL;
 
 		$target->Close();
 
-		$targetPsql = "PGPASSWORD={$targetPassword} psql -h {$target->Host} -U {$target->Username} -p {$target->Port}";
+		$targetPsql = "PGPASSWORD=\"{$targetPassword}\" psql -h {$target->Host} -U {$target->Username} -p {$target->Port}";
 
 		$command = $targetPsql . " -c \"DROP DATABASE IF EXISTS {$target->DatabaseName}_sendtocopy;\"";
 		System::Execute($command);
@@ -1260,7 +1275,7 @@ SQL;
 		$command = $targetPsql . " -c \"CREATE DATABASE {$target->DatabaseName}_sendtocopy;\"";
 		System::Execute($command);
 
-		$dump = "PGPASSWORD={$password} pg_dump -U {$this->Username} -p {$this->Port} {$this->DatabaseName}";
+		$dump = "PGPASSWORD=\"{$password}\" pg_dump -U {$this->Username} -p {$this->Port} {$this->DatabaseName}";
 		$dumpTo = "{$targetPsql} {$target->DatabaseName}_sendtocopy";
 		$sendTo = "{$dump} | {$dumpTo}";
 		System::Execute($sendTo);
