@@ -267,9 +267,12 @@ function _NAutoLoad($class)
 		foreach (array($classWithoutNamespace, $class) as $className)
 		{
 			if (
-				stream_resolve_include_path($includeFile = ($className . '.php'))
-				|| stream_resolve_include_path($includeFile = (str_replace('_', '/', $className) . '.php'))
-				|| stream_resolve_include_path($includeFile = (strtolower($className) . '.php'))
+				isset($className)
+				&& (
+					stream_resolve_include_path($includeFile = ($className . '.php'))
+					|| stream_resolve_include_path($includeFile = (str_replace('_', '/', $className) . '.php'))
+					|| stream_resolve_include_path($includeFile = (strtolower($className) . '.php'))
+				)
 			)
 			{
 				if ((include $includeFile) === false)
