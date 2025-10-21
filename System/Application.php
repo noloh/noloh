@@ -406,7 +406,11 @@ final class Application extends Base
 				$className = $config->StartClass;
 				try
 				{
-					$webPage = new $className();
+					$reflect = new ReflectionClass($className);
+					if ($reflect->isInstantiable())
+					{
+						$webPage = new $className();
+					}
 				}
 				catch (AbortConstructorException $e)
 				{

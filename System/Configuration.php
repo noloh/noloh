@@ -183,8 +183,12 @@ class Configuration extends Base implements Singleton
 			if (is_subclass_of($classes[$i], 'WebPage') ||
 				is_subclass_of($classes[$i], 'RESTRouter'))
 			{
-				$this->StartClass = $classes[$i];
-				break;
+				$reflect = new ReflectionClass($classes[$i]);
+				if ($reflect->isInstantiable())
+				{
+					$this->StartClass = $classes[$i];
+					break;
+				}
 			}
 		}
     }
