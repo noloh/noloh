@@ -154,6 +154,13 @@ final class Application extends Base
 		}
 		return false;
 	}
+
+	private static function LogSessionError($message, array $error)
+	{
+		$e = new Exception(json_encode($error));
+		_NLogError($message, $e);
+	}
+
 	/**
 	 * Resets Application to original state
 	 * @param boolean $clearURLTokens Whether the URL Tokens will be cleared out
