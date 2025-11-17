@@ -14,6 +14,8 @@ final class Application extends Base
 	 * @ignore
 	 */
 	const Name = '@APPNAME';
+	const DefaultAlgo = 'crc32';
+	const Bin2Hex = 'bin2hex';
 	/**
 	 * @var WebPage
 	 */
@@ -60,15 +62,65 @@ final class Application extends Base
 			System::BeginBenchmarking('_N/Application::Start');
 
 
-			$sessionName = '_NS' . hash('crc32', $_SERVER['PHP_SELF']);	// Protection from different folders or files grabbing same session
-			session_name($sessionName);
+			$algo = getenv('COOKIE_NAME_ALGO') ?: self::DefaultAlgo;
+			if ($algo === self::Bin2Hex)
+			{
+				$sessionName = '_NS' . bin2hex($_SERVER['PHP_SELF']);
+			}
+			else
+			{
+				$sessionName = '_NS' . hash($algo, $_SERVER['PHP_SELF']);	// Protection from different folders or files grabbing same session
+			}
+
+			$currentSessionName = session_name($sessionName);
+			if ($currentSessionName === false)
+			{
+				$error = [
+					'message' => 'Failed to set session name',
+					'session_name' => $sessionName
+				];
+				self::LogSessionError('session_name.failed', $error);
+			}
+
 			Cookie::SetSessionParams();
+			$cookieSessionId = null;
 			if (isset($_COOKIE[$sessionName]))
 			{
-				session_id($_COOKIE[$sessionName]);
+				$cookieSessionId = session_id($_COOKIE[$sessionName]);
+				if ($cookieSessionId === false)
+				{
+					$error = [
+						'message' => 'Failed to set cookie session ID',
+						'session_name' => $sessionName,
+						'current_session_name' => $currentSessionName
+					];
+					self::LogSessionError('cookie_session_id.failed', $error);
+				}
 			}
-			session_start();
+
+			$sessionStarted = session_start();
+			if ($sessionStarted === false)
+			{
+				$error = [
+					'message' => 'Session failed to start',
+					'session_name' => $sessionName,
+					'current_session_name' => $currentSessionName,
+					'cookie_session_id' => $cookieSessionId
+				];
+				self::LogSessionError('session_start.failed', $error);
+			}
+
 			$GLOBALS['_NApp'] = session_id();
+			if ($GLOBALS['_NApp'] === false)
+			{
+				$error = [
+					'message' => 'Failed to set session ID',
+					'session_name' => $sessionName,
+					'current_session_name' => $currentSessionName,
+					'session_started' => $sessionStarted ? 'Yes' : 'No'
+				];
+				self::LogSessionError('session_id.failed', $error);
+			}
 
 
 			self::$RequestDetails['total_session_io_time'] += System::Benchmark('_N/Application::Start');
