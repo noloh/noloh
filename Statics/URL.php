@@ -368,8 +368,13 @@ final class URL
 	 * Returns the protocol segment of the URL. Your webserver must have HTTPS params enabled to check for HTTPS.
 	 * @return URL::HTTP|URL::HTTPS
 	 */
-	static function GetProtocol()	
+	static function GetProtocol()
 	{
+		if (($cfg = Configuration::That()) && $cfg->ForceSecureProtocol)
+		{
+			return self::HTTPS;
+		}
+
 		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']))
 		{
 			return $_SERVER['HTTP_X_FORWARDED_PROTO'];
