@@ -6,6 +6,7 @@ function _NGetNonce()
 _N.Saved = {};
 _N.Changes = {};
 _N.EventVars = {};
+_N.Handlers = {};
 _N.SEQ = [];
 _N.Incubator = {};
 _N.IncubatorRoots = {};
@@ -279,8 +280,26 @@ function _NChangeByObj(obj, property, value)
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	var func = new Function("e", "var obj=_N('"+id+"'); if(_N.QueueDisabled!='"+id+"') {if(e) event=e; var liq=(event && event.target.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth) if(_N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;}, 0); else event=null;}}");
-	return func;
+	var key = id + '\x00' + code;
+	if (!_N.Handlers[key])
+	{
+		var s = document.createElement('SCRIPT');
+		s.type = 'text/javascript';
+		s.nonce = _NGetNonce();
+		s.text = '_N.Handlers[' + JSON.stringify(key) + '] = function(e) {' +
+			'var obj=_N(' + JSON.stringify(id) + ');' +
+			'if(_N.QueueDisabled!=' + JSON.stringify(id) + '){' +
+				'if(e) event=e;' +
+				'var liq=(event && event.target.id==' + JSON.stringify(id) + ');' +
+				'++_N.EventDepth;' +
+				'try{' + code + ';}' +
+				'catch(err){_NAlertError(err);}' +
+				'finally{if(!--_N.EventDepth) if(_N.SEQ.length) window.setTimeout(function(){if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer(); event=null;},0); else event=null;}' +
+			'}' +
+		'};';
+		document.getElementsByTagName('head')[0].appendChild(s);
+	}
+	return _N.Handlers[key];
 }
 function _NCreateEvent(eventType)
 {
