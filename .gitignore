@@ -2,3 +2,5 @@
 composer.phar
 composer-setup.php
 vendor
+node_modules
+package-lock.json

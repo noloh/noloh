@@ -1,0 +1,27 @@
+{
+  "env": {
+    "browser": true,
+    "es3": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 5
+  },
+  "globals": {
+    "_N": "readonly",
+    "_NSet": "readonly",
+    "_NTimer": "writable",
+    "AddScript": "readonly",
+    "Priority": "readonly",
+    "System": "readonly",
+    "Configuration": "readonly",
+    "NolohInternal": "readonly",
+    "UserAgent": "readonly",
+    "URL": "readonly"
+  },
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+    "eqeqeq": ["warn", "always"],
+    "no-implicit-globals": "error"
+  }
+}
