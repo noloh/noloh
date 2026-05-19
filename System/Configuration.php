@@ -234,9 +234,9 @@ class Configuration extends Base implements Singleton
 			$arr['TimeoutTicks'] = floor($timeoutTicks * $factor);
 		
 		
-		if ($this->CsrfProtection && isset($_SESSION['_NCSRFToken']))
+		if ($this->CsrfProtection && isset($_SESSION['_NCsrfToken']))
 		{
-			$arr['CSRFToken'] = $_SESSION['_NCSRFToken'];
+			$arr['CsrfToken'] = $_SESSION['_NCsrfToken'];
 		}
 
 		/*$defaults = array('DebugMode' => 'true');

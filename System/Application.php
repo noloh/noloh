@@ -359,7 +359,7 @@ final class Application extends Base
 					if (Configuration::That()->CsrfProtection && $_SERVER['REQUEST_METHOD'] === 'POST')
 					{
 						$incoming = System::GetHTTPHeader('X-Csrf-Token');
-						if (!isset($_SESSION['_NCSRFToken']) || !hash_equals($_SESSION['_NCSRFToken'], (string)$incoming))
+						if (!isset($_SESSION['_NCsrfToken']) || !hash_equals($_SESSION['_NCsrfToken'], (string)$incoming))
 						{
 							header('HTTP/1.1 403 Forbidden');
 							exit('CSRF token mismatch');
@@ -876,8 +876,8 @@ final class Application extends Base
 		$config = Configuration::That();
 		if ($config->CsrfProtection)
 		{
-			$_SESSION['_NCSRFToken'] = bin2hex(random_bytes(32));
-			header('X-CSRF-Token: ' . $_SESSION['_NCSRFToken']);
+			$_SESSION['_NCsrfToken'] = bin2hex(random_bytes(32));
+			header('X-CSRF-Token: ' . $_SESSION['_NCsrfToken']);
 		}
 		if (++$_SESSION['_NVisit'] === 0)
 		{
@@ -908,7 +908,7 @@ final class Application extends Base
 		}
 		if ($config->CsrfProtection && $_SESSION['_NVisit'] > 0)
 		{
-			AddScript('_N.CSRFToken=' . json_encode($_SESSION['_NCSRFToken']), Priority::High);
+			AddScript('_N.CsrfToken=' . json_encode($_SESSION['_NCsrfToken']), Priority::High);
 		}
 		header('Content-Type: text/javascript; charset=UTF-8');
 		if (isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))
