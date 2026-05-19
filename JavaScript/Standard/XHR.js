@@ -8,6 +8,8 @@ function _NXHR(method, url, readystatechange, async)
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.setRequestHeader("Remote-Scripting", "NOLOH");
 	if (_N.CsrfToken)
+	{
 		xhr.setRequestHeader("X-CSRF-Token", _N.CsrfToken);
+	}
 	return xhr;
 }
