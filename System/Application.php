@@ -237,12 +237,16 @@ final class Application extends Base
 
 	private static function GetSessionStatusName(int $status): string
 	{
-		return match ($status) {
-			PHP_SESSION_DISABLED => 'PHP_SESSION_DISABLED',
-			PHP_SESSION_NONE => 'PHP_SESSION_NONE',
-			PHP_SESSION_ACTIVE => 'PHP_SESSION_ACTIVE',
-			default => "UNKNOWN($status)",
-		};
+		switch ($status) {
+			case PHP_SESSION_DISABLED:
+				return 'PHP_SESSION_DISABLED';
+			case PHP_SESSION_NONE:
+				return 'PHP_SESSION_NONE';
+			case PHP_SESSION_ACTIVE:
+				return 'PHP_SESSION_ACTIVE';
+			default:
+				return "UNKNOWN($status)";
+		}
 	}
 
 	/**
