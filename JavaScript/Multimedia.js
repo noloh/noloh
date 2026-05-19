@@ -12,19 +12,14 @@ function _NTalk(id, val)
 }
 function _NFlashInvoke(id, func)
 {
-	var obj = _N(id + 'I'), evalString = "";
+	var obj = _N(id + 'I');
 	try
 	{
 		if(obj.PercentLoaded() == 100)
 		{
 			_NInvokeArgs = null;
-			var paramsString = "";
-			var lastIndex = arguments.length-1;
-			for(var i=2; i<lastIndex; ++i)
-				paramsString += "arguments["+i+"],";
-			if(lastIndex >= 2)
-				paramsString += "arguments["+lastIndex+"]";
-			evalString = "obj."+func+"("+paramsString+");";
+			var args = Array.prototype.slice.call(arguments, 2);
+			obj[func].apply(obj, args);
 		}
 		else
 			obj.MakeError();
@@ -32,11 +27,6 @@ function _NFlashInvoke(id, func)
 	catch(e)
 	{
 		_NInvokeArgs = arguments;
-		window.setTimeout("_NFlashInvoke.apply(null, _NInvokeArgs);", 250);
-	}
-	finally
-	{
-		if(evalString)
-			eval(evalString);
+		window.setTimeout(function() { _NFlashInvoke.apply(null, _NInvokeArgs); }, 250);
 	}
 }
