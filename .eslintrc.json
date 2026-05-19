@@ -1,7 +1,6 @@
 {
   "env": {
-    "browser": true,
-    "es3": true
+    "browser": true
   },
   "parserOptions": {
     "ecmaVersion": 5
@@ -20,8 +19,7 @@
   },
   "rules": {
     "no-undef": "error",
-    "no-unused-vars": "warn",
-    "eqeqeq": ["warn", "always"],
-    "no-implicit-globals": "error"
+    "no-unused-vars": ["warn", { "vars": "local" }],
+    "eqeqeq": ["warn", "always"]
   }
 }
