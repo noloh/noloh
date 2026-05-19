@@ -356,6 +356,15 @@ final class Application extends Base
 					{
 						die();
 					}
+					if (Configuration::That()->CsrfProtection && $_SERVER['REQUEST_METHOD'] === 'POST')
+					{
+						$incoming = System::GetHTTPHeader('X-Csrf-Token');
+						if (!isset($_SESSION['_NCsrfToken']) || !hash_equals($_SESSION['_NCsrfToken'], (string)$incoming))
+						{
+							header('HTTP/1.1 403 Forbidden');
+							exit('CSRF token mismatch');
+						}
+					}
 					$run = true;
 					if (isset($_POST['_NSkeletonless']) && UserAgent::IsIE())
 					{
@@ -864,6 +873,12 @@ final class Application extends Base
 		header('Cache-Control: no-cache');
 		header('Pragma: no-cache');
 		//header('Cache-Control: no-store');
+		$config = Configuration::That();
+		if ($config->CsrfProtection)
+		{
+			$_SESSION['_NCsrfToken'] = bin2hex(random_bytes(32));
+			header('X-CSRF-Token: ' . $_SESSION['_NCsrfToken']);
+		}
 		if (++$_SESSION['_NVisit'] === 0)
 		{
 			global $_NShowStrategy, $_NWidth, $_NHeight, $_NTimeZone;
@@ -890,6 +905,10 @@ final class Application extends Base
 				return $this->WebPage->NoScriptShow('');
 			}
 			AddScript('_N.Request=null;', Priority::Low);
+		}
+		if ($config->CsrfProtection && $_SESSION['_NVisit'] > 0)
+		{
+			AddScript('_N.CsrfToken=' . json_encode($_SESSION['_NCsrfToken']), Priority::High);
 		}
 		header('Content-Type: text/javascript; charset=UTF-8');
 		if (isset($GLOBALS['_NTokenUpdate']) && (!isset($_POST['_NSkeletonless']) || !UserAgent::IsIE()))

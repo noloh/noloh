@@ -124,6 +124,13 @@ class Configuration extends Base implements Singleton
 
 
 	/**
+	 * Whether CSRF token protection is enabled for this application.
+	 * When true, NOLOH generates, verifies, and regenerates a CSRF token on every request.
+	 * @var boolean
+	 */
+	public $CsrfProtection = false;
+
+	/**
 	 * @var Callback function for custom error logging
 	 */
 	protected $LogError;
@@ -227,6 +234,11 @@ class Configuration extends Base implements Singleton
 			$arr['TimeoutTicks'] = floor($timeoutTicks * $factor);
 		
 		
+		if ($this->CsrfProtection && isset($_SESSION['_NCsrfToken']))
+		{
+			$arr['CsrfToken'] = $_SESSION['_NCsrfToken'];
+		}
+
 		/*$defaults = array('DebugMode' => 'true');
 		foreach($defaults as $key => $val)
 			if($arr[$key] === $defaults[$key])
