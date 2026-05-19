@@ -25,6 +25,9 @@ jobs:
           FILES=$(git diff --name-only --diff-filter=ACM origin/${{ github.base_ref }}...HEAD | grep '\.js$' | tr '\n' ' ')
           echo "files=$FILES" >> $GITHUB_OUTPUT
 
+      - name: Register ESLint problem matcher
+        run: echo "::add-matcher::.github/eslint-matcher.json"
+
       - name: Run ESLint on changed files
         if: steps.changed.outputs.files != ''
         run: npm run lint -- ${{ steps.changed.outputs.files }}
