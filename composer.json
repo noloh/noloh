@@ -3,5 +3,14 @@
   "description": "Unified, object-oriented PHP Framework that eliminates the need for HTML, JavaScript, and AJAX",
   "license": "LGPL-2.1",
   "require": {
+  },
+  "archive": {
+    "exclude": [
+      ".github/**",
+      ".eslintrc.json",
+      "package.json",
+      "package-lock.json",
+      "node_modules"
+    ]
   }
 }
