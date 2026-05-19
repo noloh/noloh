@@ -22,6 +22,7 @@
     "no-unused-vars": ["warn", { "vars": "local" }],
     "eqeqeq": ["warn", "always"],
     "keyword-spacing": ["error", { "before": true, "after": true }],
-    "curly": ["error", "all"]
+    "curly": ["error", "all"],
+    "brace-style": ["error", "allman"]
   }
 }
