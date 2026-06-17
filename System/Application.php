@@ -258,6 +258,7 @@ final class Application extends Base
 	public static function Reset($clearURLTokens = true, $clearSessionVariables = true, $alert = false)
 	{
 		Application::ObEndAll();
+		header('Content-Type: text/javascript; charset=UTF-8');
 		echo '/*_N*/';
 		if ($alert)
 			echo 'alert("', str_replace(array('\\',"\n","\r",'"'),array('\\\\','\n','\r','\"'),$alert), '");';
