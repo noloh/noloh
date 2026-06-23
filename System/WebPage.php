@@ -411,7 +411,7 @@ abstract class WebPage extends Component
 		{
 			$value = preg_replace('/null/', 'location.href.indexOf("#!/")==-1?location.href.replace(location.hash,""):location.href.replace("#!/",location.href.indexOf("?")==-1?"?":"&")', $value, 1);
 			QueueClientFunction($this, '_NChangeByObj', array('_N','\'Tracker\'','\''.$value.'\''), false);
-			QueueClientFunction($this, 'eval', array('_N.Tracker'), true, Priority::Low);
+			QueueClientFunction($this, '_NRunTracker', array(), true, Priority::Low);
 		}
 		else 
 		{
@@ -445,7 +445,7 @@ abstract class WebPage extends Component
 					$include .= '?mtime=' . filemtime(GetAbsolutePath($include));
 				}
 
-                $autoIncludes .= '<script src="' . $include . '"></script>';
+                $autoIncludes .= '<script src="' . $include . '" nonce="' . Application::GetNonce() . '"></script>';
             }
             
 		header('Cache-Control: no-store');
@@ -493,6 +493,7 @@ HTML;
 ', $headComment, '
 <HTML lang="en">
   <HEAD id="NHead">
+    <META name="_NNonce" content="', Application::GetNonce(), '">
     <TITLE>', $title, '</TITLE>
     <NOSCRIPT><META http-equiv="refresh" content="0; url=',
 			$unsupportedURL === null ?
@@ -515,7 +516,7 @@ UserAgent::IsIE() ? '
   </BODY>
 </HTML>
 
-<SCRIPT type="text/javascript">
+<SCRIPT type="text/javascript" nonce="', Application::GetNonce(), '">
   _NMaxTouchPoints = navigator.maxTouchPoints;
   _NBrowserPlatform = navigator.platform;
   queryString = false;', $symbol === '&' ? '
@@ -539,12 +540,13 @@ UserAgent::IsIE6() ? '
   	{
 	    var script = document.createElement("SCRIPT");
 	    script.type = "text/javascript";
+	    script.nonce = "' . Application::GetNonce() . '";
 	    script.text = req.responseText;
 	    if(!queryString)
 	    	document.getElementById("NHead").appendChild(script);
   	}
   }
-  
+
   req = new ActiveXObject("Microsoft.XMLHTTP");
   req.onreadystatechange = _NIe6Init;
   req.open("POST", ' . $url . ', true);
@@ -552,6 +554,7 @@ UserAgent::IsIE6() ? '
 : '
   var script = document.createElement("SCRIPT");
   script.type = "text/javascript";
+  script.nonce = "' . Application::GetNonce() . '";
   script.src = ' . $url . ';
   if(!queryString)
 	document.getElementById("NHead").appendChild(script);', '

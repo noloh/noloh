@@ -25,6 +25,15 @@ final class Application extends Base
 	/**
 	 * @ignore
 	 */
+	public static function GetNonce(): string
+	{
+		if (!isset($GLOBALS['_NNonce']))
+			$GLOBALS['_NNonce'] = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
+		return $GLOBALS['_NNonce'];
+	}
+	/**
+	 * @ignore
+	 */
 	public static function AutoStart()
 	{
 		if (empty($GLOBALS['_NREST']))

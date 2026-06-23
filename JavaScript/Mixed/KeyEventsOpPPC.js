@@ -11,7 +11,8 @@ function _NKeyEvntsPress()
 	if(this.TypePause && (event.keyCode < 37 || event.keyCode > 40))
 	{
 		clearTimeout(this.TypePauseTimeout);
-		this.TypePauseTimeout = setTimeout("var obj = _N('"+this.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause();", 500);
+		var _id = this.id;
+		this.TypePauseTimeout = setTimeout(function() { var obj = _N(_id); _NSave(obj.id, 'value', obj.value); obj.TypePause(); }, 500);
 	}
 }
 function _NKeyEvntsMoTimeout(id, refocus)
@@ -28,5 +29,5 @@ function _NKeyEvntsMoTimeout(id, refocus)
 		delete btn};
 	document.body.appendChild(btn);
 	//setTimeout(btn.onclick, 500);
-	setTimeout("_N('_NTPBut').click();", 500);
+	setTimeout(function() { _N('_NTPBut').click(); }, 500);
 }

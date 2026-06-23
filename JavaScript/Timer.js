@@ -18,7 +18,8 @@ function _NTimer(addTo, id, interval, repeat)
 _NTimer.prototype.Start = function()
 {
 	this.Stop();
-	var func = "var tmr=_N."+this.Id+";if(tmr.onelapsed) tmr.onelapsed();";
+	var id = this.Id;
+	var func = function() { var tmr = _N[id]; if(tmr.onelapsed) tmr.onelapsed(); };
 	this.Ref = this.Repeat ? window.setInterval(func, this.Interval) : window.setTimeout(func, this.Interval);
 };
 _NTimer.prototype.Stop = function()
