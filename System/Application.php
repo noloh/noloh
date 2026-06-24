@@ -309,7 +309,7 @@ final class Application extends Base
 	{
 		// Must run before SaveSessionState: session_start() inside it commits response headers,
 		// after which http_response_code() has no effect.
-		if(!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
+		if (!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
 		{
 			http_response_code(400); // header() cannot be used here — headers not yet committed
 			exit();
@@ -789,8 +789,10 @@ final class Application extends Base
 			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
 			{
 				$parent = GetComponentById(substr($eventInfo[1], 0, $pos));
-				if($parent)
+				if ($parent)
+				{
 					$parent->ExecEvent($eventInfo[0], $eventInfo[1]);
+				}
 				else
 				{
 					unset($GLOBALS['_NSEFromClient']);
@@ -812,10 +814,10 @@ final class Application extends Base
 	private static function IsValidEventsPayload($eventsString)
 	{
 		$events = explode(',', $eventsString);
-		foreach($events as $event)
+		foreach ($events as $event)
 		{
 			$parts = explode('@', $event, 2);
-			if(count($parts) !== 2 || $parts[0] === '' || $parts[1] === '')
+			if (count($parts) !== 2 || $parts[0] === '' || $parts[1] === '')
 			{
 				return false;
 			}
