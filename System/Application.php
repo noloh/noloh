@@ -307,6 +307,13 @@ final class Application extends Base
 	static function GetURL()	{return System::FullAppPath();}
 	function __construct($config)
 	{
+		// Must run before SaveSessionState: session_start() inside it commits response headers,
+		// after which http_response_code() has no effect.
+		if (!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
+		{
+			http_response_code(400); // header() cannot be used here — headers not yet committed
+			exit();
+		}
 		NolohInternal::SaveSessionState();
 
 		if (strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false)
@@ -780,9 +787,42 @@ final class Application extends Base
 				$obj->GetEvent($eventInfo[0])->Exec($execClientEvents, false, true);
 			}
 			elseif(($pos = strpos($eventInfo[1], 'i')) !== false)
-				GetComponentById(substr($eventInfo[1], 0, $pos))->ExecEvent($eventInfo[0], $eventInfo[1]);
+			{
+				$parent = GetComponentById(substr($eventInfo[1], 0, $pos));
+				if ($parent)
+				{
+					$parent->ExecEvent($eventInfo[0], $eventInfo[1]);
+				}
+				else
+				{
+					unset($GLOBALS['_NSEFromClient']);
+					session_abort();
+					header('HTTP/1.1 400 Bad Request');
+					exit();
+				}
+			}
+			else
+			{
+				unset($GLOBALS['_NSEFromClient']);
+				session_abort();
+				header('HTTP/1.1 400 Bad Request');
+				exit();
+			}
 		}
 		unset($GLOBALS['_NSEFromClient']);
+	}
+	private static function IsValidEventsPayload($eventsString)
+	{
+		$events = explode(',', $eventsString);
+		foreach ($events as $event)
+		{
+			$parts = explode('@', $event, 2);
+			if (count($parts) !== 2 || $parts[0] === '' || $parts[1] === '')
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	/**
 	 * @ignore
