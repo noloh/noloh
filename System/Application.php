@@ -309,9 +309,9 @@ final class Application extends Base
 	{
 		// Must run before SaveSessionState: session_start() inside it commits response headers,
 		// after which http_response_code() has no effect.
-		if (!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
+		if(!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
 		{
-			http_response_code(400);
+			http_response_code(400); // header() cannot be used here — headers not yet committed
 			exit();
 		}
 		NolohInternal::SaveSessionState();
