@@ -801,13 +801,6 @@ final class Application extends Base
 					exit();
 				}
 			}
-			else
-			{
-				unset($GLOBALS['_NSEFromClient']);
-				session_abort();
-				header('HTTP/1.1 400 Bad Request');
-				exit();
-			}
 		}
 		unset($GLOBALS['_NSEFromClient']);
 	}
