@@ -797,9 +797,18 @@ final class Application extends Base
 				{
 					unset($GLOBALS['_NSEFromClient']);
 					session_abort();
+					_NLogError('HandleServerEvents 400: i-notation parent not found for event ' . $eventInfo[0] . '@' . $eventInfo[1], null);
 					header('HTTP/1.1 400 Bad Request');
 					exit();
 				}
+			}
+			else
+			{
+				unset($GLOBALS['_NSEFromClient']);
+				session_abort();
+				_NLogError('HandleServerEvents 400: component not found for event ' . $eventInfo[0] . '@' . $eventInfo[1], null);
+				header('HTTP/1.1 400 Bad Request');
+				exit();
 			}
 		}
 		unset($GLOBALS['_NSEFromClient']);

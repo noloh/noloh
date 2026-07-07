@@ -626,7 +626,10 @@ function _NReqStateChange()
 		}
 		else
 		{
-			alert("HTTP error: " + req.status + "\n" + req.statusText);
+			if (req.status !== 400)
+			{
+				alert("HTTP error: " + req.status + "\n" + req.statusText);
+			}
 			_NUnServer();
 		}
 }
