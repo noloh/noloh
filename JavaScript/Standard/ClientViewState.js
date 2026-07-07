@@ -584,7 +584,7 @@ function _NReqStateChange()
 			{
 				alert("Unable to contact server. Please check your connection.");
 			}
-			else
+			else if (req.status !== 400)
 			{
 				alert("HTTP error: " + req.status + "\n" + req.statusText);
 			}
