@@ -4,5 +4,14 @@
   "version": "1.10.23",
   "license": "LGPL-2.1",
   "require": {
+  },
+  "archive": {
+    "exclude": [
+      ".github/**",
+      ".eslintrc.json",
+      "package.json",
+      "package-lock.json",
+      "node_modules"
+    ]
   }
 }
