@@ -11,6 +11,7 @@ function _NKeyEvntsPress()
 	if(this.TypePause && (event.keyCode < 37 || event.keyCode > 40))
 	{
 		clearTimeout(this.TypePauseTimeout);
-		this.TypePauseTimeout = setTimeout("var obj = _N('"+this.id+"'); _NSave(obj.id,'value',obj.value); obj.TypePause();", 500);
+		var _id = this.id;
+		this.TypePauseTimeout = setTimeout(function() { var obj = _N(_id); _NSave(obj.id, 'value', obj.value); obj.TypePause(); }, 500);
 	}
 }

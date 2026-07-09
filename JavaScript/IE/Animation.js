@@ -1,4 +1,4 @@
-/*!Easing Equations by Robert Penner, Copyright © 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
+/*!Easing Equations by Robert Penner, Copyright ï¿½ 2001 Robert Penner. All rights reserved. Modified for NOLOH*/
 
 function _NAni(id, prpty, to, duration, units, easing, from, fps)
 {
@@ -52,7 +52,7 @@ function _NAni(id, prpty, to, duration, units, easing, from, fps)
 		_NSet(this.ObjId, 'style.display', '');
 		_NSet(this.ObjId, 'style.visibility', 'inherit');
 	}
-	this.From = from == null ? (prpty == "opacity" ? (this.Obj.style.filter?parseInt(this.Obj.style.filter.substring(13)):100) : parseInt(eval("this.Obj."+prpty+";"))) : from;
+	this.From = from == null ? (prpty == "opacity" ? (this.Obj.style.filter?parseInt(this.Obj.style.filter.substring(13)):100) : parseInt(prpty.split(".").reduce(function(o, k) { return o[k]; }, this.Obj))) : from;
 	if(isNaN(this.From))
 		this.From = prpty=="style.width"?this.Obj.offsetWidth: prpty=="style.height"?this.Obj.offsetHeight: prpty=="style.left"?this.Obj.offsetLeft: prpty=="style.top"?this.Obj.offsetTop: 0;
 	this.Difference = this.Destination - this.From;

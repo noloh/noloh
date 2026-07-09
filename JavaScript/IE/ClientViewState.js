@@ -1,6 +1,12 @@
+function _NGetNonce()
+{
+	var m = document.querySelector('meta[name="_NNonce"]');
+	return m ? m.content : '';
+}
 _N.Saved = {};
 _N.Changes = {};
 _N.EventVars = {};
+_N.Handlers = {};
 _N.SEQ = [];
 _N.Incubator = {};
 _N.IncubatorRoots = {};
@@ -112,6 +118,17 @@ function _NCheckURL()
 		_N.TimeoutCount = 0;
 	}
 }
+function _NRunTracker()
+{
+	if(_N.Tracker)
+	{
+		var t = document.createElement("SCRIPT");
+		t.type = "text/javascript";
+		t.nonce = _NGetNonce();
+		t.text = _N.Tracker;
+		document.getElementsByTagName("head")[0].appendChild(t);
+	}
+}
 function _NSetURL(url, id)
 {
 	_N.URLTokenLink = id;
@@ -125,7 +142,13 @@ function _NSetURL(url, id)
 	_N.HistoryLength = history.length;
 	setTimeout(function() {document.title = _N.Title;}, 2000);
 	if(_N.Tracker)
-		eval(_N.Tracker);
+	{
+		var t = document.createElement("SCRIPT");
+		t.type = "text/javascript";
+		t.nonce = _NGetNonce();
+		t.text = _N.Tracker;
+		document.getElementsByTagName("head")[0].appendChild(t);
+	}
 }
 function _NSetTokens(hash, id)
 {
@@ -211,7 +234,7 @@ function _NChangeByObj(obj, property, value)
 				if(!obj.onmousedown)
 					_NChangeByObj(obj, "onmousedown", "");
 			case "ChildrenArray":
-				eval("obj." + property + " = " + value + ";");
+				obj[property] = JSON.parse(value);
 				break;
 			case "GroupM":
 				obj._NMultiGroupable = true;
@@ -308,15 +331,37 @@ function _NChangeByObj(obj, property, value)
                 }
 				break;
 			default:
-				eval("obj." + property + " = value;");
+			{
+				var prop = property.split("."), t = obj, i;
+				for(i = 0; i < prop.length - 1; i++)
+					t = t[prop[i]];
+				t[prop[i]] = value;
+			}
 		}
 	return value;
 }
 function _NEvent(code, obj)
 {
 	var id = typeof obj == "object" ? obj.id : obj;
-	eval("var func = function() {if(_N.QueueDisabled!='"+id+"') {var liq=(event && event.srcElement && event.srcElement.id=='"+id+"'); ++_N.EventDepth; try {" + code + ";} catch(err) {_NAlertError(err);} finally {if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function() {if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();}, 0); }}}");
-	return func;
+	var key = id + '\x00' + code;
+	if (!_N.Handlers[key])
+	{
+		var s = document.createElement('SCRIPT');
+		s.type = 'text/javascript';
+		s.nonce = _NGetNonce();
+		s.text = '_N.Handlers[' + JSON.stringify(key) + '] = function() {' +
+			'var obj=_N(' + JSON.stringify(id) + ');' +
+			'if(_N.QueueDisabled!=' + JSON.stringify(id) + '){' +
+				'var liq=(event && event.srcElement && event.srcElement.id==' + JSON.stringify(id) + ');' +
+				'++_N.EventDepth;' +
+				'try{' + code + ';}' +
+				'catch(err){_NAlertError(err);}' +
+				'finally{if(!--_N.EventDepth && _N.SEQ.length) window.setTimeout(function(){if(_N.Uploads && _N.Uploads.length) _NServerWUpl(); else _NServer();},0);}' +
+			'}' +
+		'};';
+		document.getElementsByTagName('head')[0].appendChild(s);
+	}
+	return _N.Handlers[key];
 }
 function _NNoBubble()
 {
@@ -341,7 +386,12 @@ function _NSave(id, property, value)
 		return;
 	var obj = _N(id);
 	if(typeof value == "undefined")
-		eval("value = obj."+property+";");
+	{
+		var prop = property.split("."), t = obj, i;
+		for(i = 0; i < prop.length - 1; i++)
+			t = t[prop[i]];
+		value = t[prop[i]];
+	}
 	if(!_N.Changes[id])
 		_N.Changes[id] = {};
 	switch(property)
@@ -560,18 +610,20 @@ function _NEventVarsString()
 }
 function _NProcessResponse(text)
 {
-	var pos = text.indexOf("/*_N*/"), response = [text.substring(0, pos), text.substring(pos)];
+	var pos = text.indexOf("/*_N*/"), response = [text.substring(0, pos), text.substring(pos + 6)];
 	if(response[0] != "")
 	{
 		var s = document.createElement("SCRIPT");
 		s.type = "text/javascript";
+		s.nonce = _NGetNonce();
 		s.text = response[0];
 		document.getElementsByTagName("head")[0].appendChild(s);
 	}
-	if(_N.DebugMode == "Full")
-		_NDebugFull(response[1]);
-	else
-		eval(response[1]);
+	var s = document.createElement("SCRIPT");
+	s.type = "text/javascript";
+	s.nonce = _NGetNonce();
+	s.text = response[1];
+	document.getElementsByTagName("head")[0].appendChild(s);
 }
 function _NAlertError(err)
 {
