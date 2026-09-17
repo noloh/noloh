@@ -244,7 +244,11 @@ function _NChangeByObj(obj, property, value)
                 }
 				break;
 			default:
-				eval("obj." + property + " = value;");
+				// UsedGenerativeAI
+				if(property.indexOf("attr.") === 0)
+					obj.setAttribute(property.substring("attr.".length), value);
+				else
+					eval("obj." + property + " = value;");
 		}
 	return value;
 }

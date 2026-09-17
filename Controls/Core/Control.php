@@ -651,6 +651,16 @@ abstract class Control extends Component
 		NolohInternal::SetProperty('title', $toolTip, $this);
 	}
 	/**
+	 * Sets an arbitrary HTML attribute (e.g. data-testid) on the Control's rendered element.
+	 * @param string $name
+	 * @param string $value
+	 * @UsedGenerativeAI
+	 */
+	function SetAttribute($name, $value)
+	{
+		NolohInternal::SetProperty('attr.' . $name, $value, $this);
+	}
+	/**
 	 * Returns the ContextMenu of the Control. It is a Menu that appears when the Control is right-clicked.
 	 * @return ContextMenu
 	 */
