@@ -651,6 +651,16 @@ abstract class Control extends Component
 		NolohInternal::SetProperty('title', $toolTip, $this);
 	}
 	/**
+	 * Sets the data-testid attribute on the Control's rendered element, for use as a stable
+	 * automated-test selector.
+	 * @param string $value
+	 * @UsedGenerativeAI
+	 */
+	function SetDataTestId($value)
+	{
+		ClientScript::Set($this, 'testid', $value, 'dataset');
+	}
+	/**
 	 * Returns the ContextMenu of the Control. It is a Menu that appears when the Control is right-clicked.
 	 * @return ContextMenu
 	 */
