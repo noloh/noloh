@@ -312,6 +312,13 @@ final class Application extends Base
 		if (!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
 		{
 			http_response_code(400); // header() cannot be used here — headers not yet committed
+			// UsedGenerativeAI - start
+			_NLogError('invalid_events_payload.exit', new Exception(json_encode([
+				'events' => substr($_POST['_NEvents'], 0, 500),
+				'post_visit' => $_POST['_NVisit'] ?? null,
+				'session_id' => session_id(),
+			])));
+			// UsedGenerativeAI - end
 			exit();
 		}
 		NolohInternal::SaveSessionState();
@@ -366,6 +373,17 @@ final class Application extends Base
 					// Proxy Error, originally done for AKPartners
 					if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
 					{
+						// UsedGenerativeAI - start
+						_NLogError('user_agent_mismatch.die', new Exception(json_encode([
+							'session_user_agent' => $_SESSION['_NOrigUserAgent'] ?? null,
+							'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+							'post_visit' => $_POST['_NVisit'] ?? null,
+							'session_visit' => $_SESSION['_NVisit'] ?? null,
+							'session_id' => session_id(),
+							'session_key_count' => count($_SESSION),
+							'events' => $_POST['_NEvents'] ?? null,
+						])));
+						// UsedGenerativeAI - end
 						die();
 					}
 					if (Configuration::That()->CsrfProtection && $_SERVER['REQUEST_METHOD'] === 'POST')
@@ -374,6 +392,17 @@ final class Application extends Base
 						if (!isset($_SESSION['_NCsrfToken']) || !hash_equals($_SESSION['_NCsrfToken'], (string)$incoming))
 						{
 							header('HTTP/1.1 403 Forbidden');
+							// UsedGenerativeAI - start
+							_NLogError('csrf_mismatch.exit', new Exception(json_encode([
+								'session_has_token' => isset($_SESSION['_NCsrfToken']),
+								'header_present' => $incoming !== null && $incoming !== '',
+								'post_visit' => $_POST['_NVisit'] ?? null,
+								'session_visit' => $_SESSION['_NVisit'] ?? null,
+								'session_id' => session_id(),
+								'session_key_count' => count($_SESSION),
+								'events' => $_POST['_NEvents'] ?? null,
+							])));
+							// UsedGenerativeAI - end
 							exit('CSRF token mismatch');
 						}
 					}
