@@ -366,6 +366,17 @@ final class Application extends Base
 					// Proxy Error, originally done for AKPartners
 					if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
 					{
+						// UsedGenerativeAI - start
+						_NLogError('user_agent_mismatch.die', new Exception(json_encode([
+							'session_user_agent' => $_SESSION['_NOrigUserAgent'] ?? null,
+							'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+							'post_visit' => $_POST['_NVisit'] ?? null,
+							'session_visit' => $_SESSION['_NVisit'] ?? null,
+							'session_id' => session_id(),
+							'session_key_count' => count($_SESSION),
+							'events' => $_POST['_NEvents'] ?? null,
+						])));
+						// UsedGenerativeAI - end
 						die();
 					}
 					if (Configuration::That()->CsrfProtection && $_SERVER['REQUEST_METHOD'] === 'POST')
