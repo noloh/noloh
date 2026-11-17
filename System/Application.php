@@ -312,6 +312,13 @@ final class Application extends Base
 		if (!empty($_POST['_NEvents']) && !self::IsValidEventsPayload($_POST['_NEvents']))
 		{
 			http_response_code(400); // header() cannot be used here — headers not yet committed
+			// UsedGenerativeAI - start
+			_NLogError('invalid_events_payload.exit', new Exception(json_encode([
+				'events' => substr($_POST['_NEvents'], 0, 500),
+				'post_visit' => $_POST['_NVisit'] ?? null,
+				'session_id' => session_id(),
+			])));
+			// UsedGenerativeAI - end
 			exit();
 		}
 		NolohInternal::SaveSessionState();
@@ -363,9 +370,34 @@ final class Application extends Base
 
 				if ($subsequentRun)
 				{
+					// UsedGenerativeAI - start
+					// The client already has a visit, so a session missing the keys set on first run is not a legitimate first run
+					if (isset($_POST['_NVisit']) && (!isset($_SESSION['_NVisit']) || !isset($_SESSION['_NOrigUserAgent'])))
+					{
+						_NLogError('session_empty_on_subsequent_run', new Exception(json_encode([
+							'session_key_count' => count($_SESSION),
+							'session_keys' => count($_SESSION) <= 10 ? array_keys($_SESSION) : null,
+							'session_cookie_sent' => isset($_COOKIE[session_name()]),
+							'post_visit' => $_POST['_NVisit'],
+							'session_id' => session_id(),
+							'events' => $_POST['_NEvents'] ?? null,
+						])));
+					}
+					// UsedGenerativeAI - end
 					// Proxy Error, originally done for AKPartners
 					if ($_SESSION['_NOrigUserAgent'] != $_SERVER['HTTP_USER_AGENT'])
 					{
+						// UsedGenerativeAI - start
+						_NLogError('user_agent_mismatch.die', new Exception(json_encode([
+							'session_user_agent' => $_SESSION['_NOrigUserAgent'] ?? null,
+							'request_user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+							'post_visit' => $_POST['_NVisit'] ?? null,
+							'session_visit' => $_SESSION['_NVisit'] ?? null,
+							'session_id' => session_id(),
+							'session_key_count' => count($_SESSION),
+							'events' => $_POST['_NEvents'] ?? null,
+						])));
+						// UsedGenerativeAI - end
 						die();
 					}
 					if (Configuration::That()->CsrfProtection && $_SERVER['REQUEST_METHOD'] === 'POST')
@@ -374,6 +406,17 @@ final class Application extends Base
 						if (!isset($_SESSION['_NCsrfToken']) || !hash_equals($_SESSION['_NCsrfToken'], (string)$incoming))
 						{
 							header('HTTP/1.1 403 Forbidden');
+							// UsedGenerativeAI - start
+							_NLogError('csrf_mismatch.exit', new Exception(json_encode([
+								'session_has_token' => isset($_SESSION['_NCsrfToken']),
+								'header_present' => $incoming !== null && $incoming !== '',
+								'post_visit' => $_POST['_NVisit'] ?? null,
+								'session_visit' => $_SESSION['_NVisit'] ?? null,
+								'session_id' => session_id(),
+								'session_key_count' => count($_SESSION),
+								'events' => $_POST['_NEvents'] ?? null,
+							])));
+							// UsedGenerativeAI - end
 							exit('CSRF token mismatch');
 						}
 					}
@@ -585,11 +628,15 @@ final class Application extends Base
 					}
 					else
 					{
+						// UsedGenerativeAI
+						_NLogError('first_run_construct_aborted', $e);
 						$message = $e->getMessage();
 					}
 				}
 				catch (Exception $e)
 				{
+					// UsedGenerativeAI
+					_NLogError('first_run_construct_failed', $e);
 					$message = $e->getMessage();
 				}
 				echo 'Critical error: Could not construct WebPage.<br>', $message ? $message : 'Please make sure the WebPage constructor is properly called from the ' . $className . ' constructor.';
@@ -609,6 +656,18 @@ final class Application extends Base
 			{
 				if(isset($_SERVER['HTTP_REMOTE_SCRIPTING']) || isset($_POST['_NEvents']) || !isset($_SESSION['_NVisit']) || isset($_GET['_NWidth']))
 				{
+					// UsedGenerativeAI - start
+					_NLogError('forced_reset.reset', new Exception(json_encode([
+						'session_has_visit' => $sessionVisit,
+						'visit_mismatch' => $visitMismatch,
+						'params_passed_up' => $paramsPassedUp,
+						'post_visit' => $_POST['_NVisit'] ?? null,
+						'session_visit' => $_SESSION['_NVisit'] ?? null,
+						'session_id' => session_id(),
+						'session_key_count' => count($_SESSION),
+						'events' => $_POST['_NEvents'] ?? null,
+					])));
+					// UsedGenerativeAI - end
 					self::Reset(false, false);
 				}
 				$this->TheComingOfTheOmniscientBeing();
